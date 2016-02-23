@@ -111,7 +111,7 @@
     .DetailView(details => details.ClientTemplate(
             Html.Telerik().Grid<ReceiveViewModelDto>()
                     .Name("Receives_<#= ReceiptAllocationID #>")
-                    .ClientEvents(events => events.OnRowDataBound("Receives_onRowDataBound"))
+                                .ClientEvents(events => events.OnRowDataBound("Receives_onRowDataBound").OnDataBound("dataBound"))
                     .Columns(receiveCols =>
                                  {
 @*                                     receiveCols.Template(@<text>
@@ -321,6 +321,12 @@
 
     function totalChanged(item) {
         return false;
+    }
+
+    function grnInfo() { return { grn: document.getElementById('FilterGRN').value } }
+
+    function dataBound() {
+        if (document.getElementById('FilterGRN').value !== "") this.expandRow(this.tbody.find("tr.k-master-row").first());
     }
 </script>
 

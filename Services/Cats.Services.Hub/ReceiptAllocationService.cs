@@ -279,7 +279,7 @@ namespace Cats.Services.Hub
             return x;
         }
 
-        public List<ReceiptAllocation> GetUnclosedAllocationsDetached(int hubId, int commoditySoureType, bool? closedToo, string weightMeasurmentCode, int? CommodityType, bool? receivable)
+        public List<ReceiptAllocation> GetUnclosedAllocationsDetached(int hubId, int commoditySoureType, bool? closedToo, string weightMeasurmentCode, int? CommodityType, bool? receivable, string grn)
         {
             List<ReceiptAllocation> GetDetachecedList = new List<ReceiptAllocation>();
 
@@ -288,7 +288,6 @@ namespace Cats.Services.Hub
             var unclosed = (from rAll in receiptAll
                             where hubId == rAll.HubID
                                  select rAll).ToList();
-
             if (closedToo == null || closedToo == false)
             {
                 unclosed = unclosed.Where(p => p.IsClosed == false).ToList();
@@ -307,6 +306,7 @@ namespace Cats.Services.Hub
                 unclosed = unclosed.Where(p => p.IsFalseGRN == true).ToList();
             }
 
+            unclosed = grn.Length == 0 ? unclosed : unclosed.Where(p => p.Receives.Any(q => q.GRN.Contains(grn))).ToList();
             unclosed = CommodityType.HasValue ? unclosed.Where(p => p.Commodity.CommodityTypeID == CommodityType.Value).ToList() : unclosed.Where(p => p.Commodity.CommodityTypeID == 1).ToList();
 
             foreach (ReceiptAllocation receiptAllocation in unclosed)
