@@ -91,8 +91,8 @@
                                        columns.Bound(c => c.Round).Width(20);
                                        columns.Bound(c => c.MonthYear).Width(30);
                                        columns.Bound(c => c.Quantity).Width(40).Title("Dis. Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" });
-                                       columns.Bound(c => c.GRN).Width(25);
-                                       columns.Bound(c => c.ReceivedDate).Width(40).Format("{0:dd-MMM-yyyy}");
+                                       columns.Bound(c => c.GRN).Width(25).EditorTemplateName("categoryDropDownEditor");
+                                       columns.Bound(c => c.ReceivedDate).Width(40).Format("{0:dd-MMM-yyyy}").HtmlAttributes(new { @class = "form-control cats-datepicker2" });
                                        columns.Bound(c => c.ReceivedAmount).Width(45).Title("Rec. Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" });
                                        columns.Bound(c => c.LossAmount).Width(25).Title("Loss Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" }); ;
                                        columns.ForeignKey(c => c.LossReasonId, (System.Collections.IEnumerable)ViewData["LossReasons"], "Id", "name").Title("Loss code - Reason").Width(40);
@@ -147,7 +147,19 @@
 
 <script>
     
-
+    function categoryDropDownEditor(container, options) {
+        $('<input required data-text-field="CategoryName" data-value-field="CategoryID" data-bind="value:' + options.field + '"/>')
+            .appendTo(container)
+            .kendoDropDownList({
+                autoBind: false,
+                dataSource: {
+                    type: "odata",
+                    transport: {
+                        read: "//demos.telerik.com/kendo-ui/service/Northwind.svc/Categories"
+                    }
+                }
+            });
+    }
     function error_handler(e) {
         if (e.errors) {
             var message = "Errors:\n";
