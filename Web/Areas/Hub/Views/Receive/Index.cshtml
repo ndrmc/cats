@@ -81,11 +81,7 @@
         <label for="cmb_commodity_type" class="add-on">Commodity</label>
         @Html.DropDownList("FilterCommodityTypeID", null, new { @class = "inputs-large" })
     </div>
-     <div class="input-prepend" style="margin-left:50px;">
-         <label for="cmb_commodity_GRN" class="add-on">GRN</label>
-          @*@Html.EditorFor(model => model.Grn, new { @class = "inputs-large" })*@
-         <input type="text"  id="searchGRN" class="inputs-large" /> 
-    </div>
+    
     <label class="checkbox" style="margin-left:50px;">
     <input type="checkbox" id="chk_closed"> Show closed Plans
 @*  </label>
@@ -173,27 +169,27 @@
             $("#modal_body").html(data);
         });
     }
-    $(document).ready(function () {
-        $("#searchGRN").on('input', function () {
+    //$(document).ready(function () {
+    //    $("#searchGRN").on('input', function () {
 
 
-            var mesarement = $('#searchGRN').val();
+    //        var mesarement = $('#searchGRN').val();
            
-            // alert(mesarement);
+    //        // alert(mesarement);
             
-            var gr = $("#ReceiveAllocationGrid" + sourceType).data("kendoGrid");
-            if (gr != null) {
+    //        var gr = $("#ReceiveAllocationGrid" + sourceType).data("kendoGrid");
+    //        if (gr != null) {
              
-                gr.dataSource.filter({
-                    field: "GRN",
-                    operator: "contains",
-                    value: mesarement
-                });
-            }
+    //            gr.dataSource.filter({
+    //                field: "GRN",
+    //                operator: "contains",
+    //                value: mesarement
+    //            });
+    //        }
 
-        });
+    //    });
 
-    });
+    //});
 
     function onSourceTypeChange(type) {
         sourceType = type;
