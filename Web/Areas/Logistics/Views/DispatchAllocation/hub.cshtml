@@ -37,7 +37,7 @@
                                   <div class="accordion-group">
                                       <div class="accordion-heading">
                                           <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#acc_{{item.RequisitionId}}" style="font-size: small ">
-                                              Req.No: {{item.RequisitionNo}}
+                                              Req.No: {{item.RequisitionNo}}  from : {{WarehouseName}}
                                           </a>
                                       </div>
                                       <div id="acc_{{item.RequisitionId}}" class="accordion-body collapse">
@@ -93,11 +93,12 @@
          <modal title="Satellite Warehouse " visible="showModal">
     <form role="form">
       <div class="form-group">
-        <label for="SatelliteWarehouse">Satellite warehouse</label>
-        <input type="email" class="form-control" id="email" placeholder="Enter Satellite warehouse" />
+          <label for="SatelliteWarehouse">Satellite Warehouse</label>
+          
+        <input type="text" class="form-control"  ng-model="WarehouseName" placeholder="Enter Satellite warehouse" />
       </div>
-     
-      <button type="submit" class="btn btn-default">Select</button>
+     {{WarehouseName}}
+      <button type="submit" class="btn btn-default" ng-click="saveWarehouse(WarehouseName)">Select</button>
     </form>
   </modal>
                 

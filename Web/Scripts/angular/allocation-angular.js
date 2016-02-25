@@ -56,13 +56,23 @@ app.factory("savefactory", function ($http) {
 
 app.controller("DragDroController", function ($scope, dragDropService, savefactory)
 {
-$scope.showModal = false;
+    $scope.showModal = false;
+    $scope.WarehouseName = "";
+    
     $scope.handleDrop = function (index) {
         
         $scope.allocated[0].HubId = index;
         $scope.showModal = !$scope.showModal;
     };
-    
+    $scope.saveWarehouse = function (WarehouseName1) {
+        
+        alert(WarehouseName1);
+        $scope.showModal = !$scope.showModal;
+       
+    };
+    //$scope.Warehouse = function () {
+      
+    //};
     $scope.saveAllocation = function () {
 
         savefactory.save($scope.allocated);
