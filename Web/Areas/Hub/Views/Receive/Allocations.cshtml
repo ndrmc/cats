@@ -117,7 +117,7 @@
 @*                                     receiveCols.Template(@<text>
             @item.ReceiptDate.ToCTSPreferedDateFormat(@Html.GetCurrentUser().DatePreference)
             </text>).Title(Html.Translate("Receipt Date"));*@
-                                     receiveCols.Bound(d => d.ReceiptDate).Format("{0:d-MMM-yyyy}");
+                                     receiveCols.Bound(d => d.ReceiptDatePref).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid"});
                                      receiveCols.Bound(d => d.GRN).ClientTemplate("<a href='"+
                                                 @Url.Action("Create", "Receive", new { @ReceiveID = "<#= ReceiveID #>" })
                                            + "' >" + "<#= GRN #></a>");

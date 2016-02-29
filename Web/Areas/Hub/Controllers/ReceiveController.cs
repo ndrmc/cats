@@ -6,12 +6,11 @@ using System.Web.Mvc;
 using Cats.Models.Hubs;
 using Cats.Models.Hubs.ViewModels;
 using Cats.Services.Hub;
-using Cats.Web.Hub;
-using Cats.Web.Hub.Helpers;
 using Newtonsoft.Json;
 using Telerik.Web.Mvc;
 using System.ComponentModel.DataAnnotations;
-
+using Cats.Helpers;
+using Cats.Web.Hub;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 namespace Cats.Areas.Hub.Controllers
@@ -141,11 +140,18 @@ namespace Cats.Areas.Hub.Controllers
         {
             UserProfile user = _userProfileService.GetUser(User.Identity.Name);
             //TODO cascade using allocation id
-            List<ReceiveViewModelDto> receives = _receiveService.ByHubIdAndAllocationIDetached(user.DefaultHub.Value, Guid.Parse(ReceiptAllocationID), grn);
+            List<ReceiveViewModelDto> receives = ChangeUserPreference(_receiveService.ByHubIdAndAllocationIDetached(user.DefaultHub.Value, Guid.Parse(ReceiptAllocationID), grn),user);
             return Json(receives.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
-
+        private List<ReceiveViewModelDto> ChangeUserPreference(List<ReceiveViewModelDto> receives, UserProfile pref)
+        {
+            foreach (var receive in receives)
+            {
+                receive.ReceiptDatePref = receive.ReceiptDate.ToCTSPreferedDateFormat(pref.DatePreference);
+            }
+            return receives;
+        }
         public ActionResult ReceiveDetailAjax([DataSourceRequest] DataSourceRequest request, string ReceiveID)
         {
             UserProfile user = _userProfileService.GetUser(User.Identity.Name);
@@ -328,8 +334,8 @@ namespace Cats.Areas.Hub.Controllers
         public ActionResult ReceiveListGrid(string ReceiptAllocationID, string grn ="")
         {
             UserProfile user = _userProfileService.GetUser(User.Identity.Name);
-            //TODO cascade using allocation id
-            List<ReceiveViewModelDto> receives = _receiveService.ByHubIdAndAllocationIDetached(user.DefaultHub.Value, Guid.Parse(ReceiptAllocationID), grn);
+            //TODO cascade using allocation id 
+            List<ReceiveViewModelDto> receives = ChangeUserPreference(_receiveService.ByHubIdAndAllocationIDetached(user.DefaultHub.Value, Guid.Parse(ReceiptAllocationID), grn), user);
             return View(new GridModel(receives));
         }
 
