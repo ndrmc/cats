@@ -3693,6 +3693,7 @@
     <Content Include="Views\Shared\NewTheme _MainLayout.cshtml" />
     <Content Include="Views\Shared\NewTheme_BreadCrumb.cshtml" />
     <Content Include="Views\Shared\NewTheme_MainMenu.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\AmharicDatePicker.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

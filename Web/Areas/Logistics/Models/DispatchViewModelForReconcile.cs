@@ -138,6 +138,7 @@ namespace Cats.Areas.Logistics.Models
         public string WayBillNo { get; set; }
         public decimal? ReceivedAmount { get; set; }
         public System.DateTime? ReceivedDate { get; set; }
+        public string ReceivedDatePref { get; set; }
         public Nullable<decimal> LossAmount { get; set; }
         public string LossReason { get; set; }
         public int LossReasonId { get; set; }

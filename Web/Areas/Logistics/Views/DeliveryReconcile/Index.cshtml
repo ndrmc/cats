@@ -1,9 +1,11 @@
 ﻿@using Cats.Areas.Logistics.Models
+@using Cats.Helpers
 @using Cats.Models.Hubs
 @using Kendo.Mvc.UI
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_MainLayoutWide.cshtml";
+    var datepref = UserAccountHelper.GetUser(HttpContext.Current.User.Identity.Name).DatePreference;
 }
 <html @*data-ng-app="DeliveryReconcilationModule"*@>
     <head>
@@ -92,12 +94,18 @@
                                        columns.Bound(c => c.MonthYear).Width(30);
                                        columns.Bound(c => c.Quantity).Width(40).Title("Dis. Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" });
                                        columns.Bound(c => c.GRN).Width(25);
-                                       columns.Bound(c => c.ReceivedDate).Width(40).Format("{0:dd-MMM-yyyy}");
+                                       if (datepref == "GC" || datepref == "gc")
+                                       {
+                                           columns.Bound(c => c.ReceivedDate).Width(40).Format("{0:M/d/yyyy}");
+                                       }
+                                       else
+                                       {
+                                           columns.Bound(c => c.ReceivedDatePref).Width(40).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).EditorTemplateName("AmharicDatePicker").Format("{0:M/d/yyyy}");
+                                       }
                                        columns.Bound(c => c.ReceivedAmount).Width(45).Title("Rec. Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" });
                                        columns.Bound(c => c.LossAmount).Width(25).Title("Loss Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" }); ;
                                        columns.ForeignKey(c => c.LossReasonId, (System.Collections.IEnumerable)ViewData["LossReasons"], "Id", "name").Title("Loss code - Reason").Width(40);
                                        //columns.Bound(c => c.LossReason).Width(15);
-                                       //columns.Command(command => command.Custom("Add Contact").Click("Add contact")).Width(100);
 
                                    })
                       .ToolBar(toolbar => toolbar.Save())
@@ -134,7 +142,7 @@
                                       .Update(update => update.Action("DeliveryReconcileUpdate", "DeliveryReconcile"))
                       //.Update("ReconciledDeliveryUpdate", "DeliveryReconcile")
                       //.Destroy("FDP_Destroy","FDP")
-                      )
+                      ).Events(e => e.Edit("onEdit"))
                        .Resizable(resize => resize.Columns(true))
                       )
 
@@ -146,14 +154,14 @@
 
 
 <script>
-    
+
 
     function error_handler(e) {
         if (e.errors) {
             var message = "Errors:\n";
-            $.each(e.errors, function (key, value) {
+            $.each(e.errors, function(key, value) {
                 if ('errors' in value) {
-                    $.each(value.errors, function () {
+                    $.each(value.errors, function() {
                         message += this + "\n";
                     });
                 }
@@ -161,39 +169,59 @@
             alert(message);
         }
     }
-    
-   
-        
-    
-    
-   
+
+
+
+
+
+
     var FDPID = 0;
     function onSelect(e) {
         var id = this.dataItem(e.node).id;
         FDPID = id;
         //alert("FDPID: " + FDPID);
         if (id != null) {
-            
+
             var grid = $("#grid").data("kendoGrid");
             grid.dataSource.read();
             $("#grid").css("display", "block");
             //alert();
         }
     }
-    
+
     function selectedFDPID() {
         //alert($("#AdminUnitTreeView").data("kendoTreeView").dataSource.id);
         var obj = { FDPID: FDPID };
         return obj;
     }
-    
+
 
     var rowCount = 0;
     var gridData = [];
-    
+
     function getRowNo(data) {
         gridData[rowCount] = data;
         return 1 + rowCount++;
-    }  
-    
+    }
+
 </script>
+
+<script type="text/javascript">
+    function onEdit(e) {
+        thisPref.val(e.model.ReceivedDatePref);
+        thisPrefGC.val(e.model.ReceivedDate);
+        thisPref.blur(function(b) {
+            var GCdate = thisPrefGC.val();
+            var ECdate = $(this).val();
+            e.model.set('ReceivedDatePref', ECdate);
+            e.model.set('ReceivedDate', GCdate);
+        });
+        thisPref.click(function (b) {
+            var pickertop = thisPref.offset().top + thisPref.height() - 80;
+            var pickerleft = thisPref.offset().left;
+            $("div[class^='ui-ethdatepicker']").css({ top: pickertop, left: pickerleft, position: 'fixed', 'z-index': '1' });
+        });
+    }
+</script>
+
+
