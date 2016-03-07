@@ -259,7 +259,7 @@ namespace Cats.Models.Hubs
                 //var d = ReceiveDetailViewModelDto(x => x.ReceiptAllocationID == ReceiptAllocationID) 
                 //var list = new List<Receive>().FindAll(x => x.ReceiptAllocationID == ReceiptAllocationID);
 
-
+                
                 
                  //var list  = ReceivesList.FindAll((x => x.ReceiptAllocationID == ReceiptAllocationID));
                 return grn;

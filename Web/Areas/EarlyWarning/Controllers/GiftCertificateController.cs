@@ -192,8 +192,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
             return Json(new[] { giftCertificateDetailsViewModel }.ToDataSourceResult(request, ModelState));
         }
 
-        [AcceptVerbs(HttpVerbs.Get)]
-        [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Delete_needs_assessment)]
+       // [AcceptVerbs(HttpVerbs.Get)]
+       [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Delete_needs_assessment)]
         public ActionResult GiftCertificateDetail_Destroy([DataSourceRequest] DataSourceRequest request,
                                                   GiftCertificateDetailsViewModel giftCertificateDetailsViewModel)
         {

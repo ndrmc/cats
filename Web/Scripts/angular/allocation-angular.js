@@ -56,12 +56,23 @@ app.factory("savefactory", function ($http) {
 
 app.controller("DragDroController", function ($scope, dragDropService, savefactory)
 {
-
-    $scope.handleDrop = function (index) {
-       
-        $scope.allocated[0].HubId = index; 
-    };
+    $scope.showModal = false;
+    $scope.WarehouseName = "";
     
+    $scope.handleDrop = function (index) {
+        
+        $scope.allocated[0].HubId = index;
+        $scope.showModal = !$scope.showModal;
+    };
+    $scope.saveWarehouse = function (WarehouseName1) {
+        
+        alert(WarehouseName1);
+        $scope.showModal = !$scope.showModal;
+       
+    };
+    //$scope.Warehouse = function () {
+      
+    //};
     $scope.saveAllocation = function () {
 
         savefactory.save($scope.allocated);
@@ -189,5 +200,45 @@ app.directive('droppable', function () {
     };
 });
 
+app.directive('modal', function () {
+    return {
+        template: '<div class="modal fade">' +
+            '<div class="modal-dialog">' +
+              '<div class="modal-content">' +
+                '<div class="modal-header">' +
+                  '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+                  '<h4 class="modal-title">{{ title }}</h4>' +
+                '</div>' +
+                '<div class="modal-body" ng-transclude></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>',
+        restrict: 'E',
+        transclude: true,
+        replace: true,
+        scope: true,
+        link: function postLink(scope, element, attrs) {
+            scope.title = attrs.title;
 
+            scope.$watch(attrs.visible, function (value) {
+                if (value == true)
+                    $(element).modal('show');
+                else
+                    $(element).modal('hide');
+            });
+
+            $(element).on('shown.bs.modal', function () {
+                scope.$apply(function () {
+                    scope.$parent[attrs.visible] = true;
+                });
+            });
+
+            $(element).on('hidden.bs.modal', function () {
+                scope.$apply(function () {
+                    scope.$parent[attrs.visible] = false;
+                });
+            });
+        }
+    };
+});
 

@@ -26,6 +26,7 @@
     </head>
     <body @*data-ng-controller="DeliveryReconcilationController"*@>
         <h3>FDP monthly Commodity Receipt Page</h3>
+        
         <div class="container" style="width: 1300px">
             <div id="map_area"></div>
             <div id="div_tree_view" class="span3 well" style="margin-left:0px;width:200px">
@@ -91,10 +92,10 @@
                                        columns.Bound(c => c.Round).Width(20);
                                        columns.Bound(c => c.MonthYear).Width(30);
                                        columns.Bound(c => c.Quantity).Width(40).Title("Dis. Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" });
-                                       columns.Bound(c => c.GRN).Width(25);
-                                       columns.Bound(c => c.ReceivedDate).Width(40).Format("{0:dd-MMM-yyyy}");
+                                       columns.Bound(c => c.GRN).Width(25).HtmlAttributes(new { data_bind = "cats-datepicker2" });
+                                       columns.Bound(c => c.ReceivedDate).Width(40).EditorTemplateName("form-control cats-datepicker2").HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
                                        columns.Bound(c => c.ReceivedAmount).Width(45).Title("Rec. Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" });
-                                       columns.Bound(c => c.LossAmount).Width(25).Title("Loss Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" }); ;
+                                       columns.Bound(c => c.LossAmount).Width(25).Title("Loss Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" }); 
                                        columns.ForeignKey(c => c.LossReasonId, (System.Collections.IEnumerable)ViewData["LossReasons"], "Id", "name").Title("Loss code - Reason").Width(40);
                                        //columns.Bound(c => c.LossReason).Width(15);
                                        //columns.Command(command => command.Custom("Add Contact").Click("Add contact")).Width(100);
@@ -109,6 +110,7 @@
                       //.AutoBind(false)
                       //.Events(events => events.e("onChange"))
                       .Filterable()
+                      
                       .DataSource(datasource =>
                                   datasource
                                       .Ajax()
@@ -147,7 +149,19 @@
 
 <script>
     
-
+    function categoryDropDownEditor(container, options) {
+        $('<input required data-text-field="CategoryName" data-value-field="CategoryID" data-bind="value:' + options.field + '"/>')
+            .appendTo(container)
+            .kendoDropDownList({
+                autoBind: false,
+                dataSource: {
+                    type: "odata",
+                    transport: {
+                        read: "//demos.telerik.com/kendo-ui/service/Northwind.svc/Categories"
+                    }
+                }
+            });
+    }
     function error_handler(e) {
         if (e.errors) {
             var message = "Errors:\n";
