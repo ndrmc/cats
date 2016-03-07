@@ -157,12 +157,12 @@
 
 
 <script>
-    $("#search").keyup(function () {
+    $("#search").keyup(function() {
         $("#search").blur();
         $("#search").focus();
     });
 
-    $("#search").change(function () {
+    $("#search").change(function() {
         applyFilter("ReferenceNumber", $(this).val());
     });
 
@@ -201,9 +201,7 @@
                 operator: "contains",
                 value: filterValue
             });
-        }
-
-        else {
+        } else {
             clearFilters();
         }
 
@@ -225,4 +223,9 @@
         return confirm("Are you sure you wish to delete ?");
     }
 
+</script>
+<script type="text/javascript">
+    $(function () {
+        $("#search").rules("remove");
+    });
 </script>

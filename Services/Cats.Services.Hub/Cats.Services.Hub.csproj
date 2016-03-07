@@ -46,6 +46,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -175,6 +176,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Cats.Web.Adminstration\Cats.Web.Adminstration.csproj">
+      <Project>{7D69AEC0-4CE9-4BFE-BB34-9B92E78DB6E5}</Project>
+      <Name>Cats.Web.Adminstration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Data\Cats.Data.Hub\Cats.Data.Hub.csproj">
       <Project>{b311922a-4002-40b1-aa96-e005b6d436dd}</Project>
       <Name>Cats.Data.Hub</Name>
@@ -190,6 +195,10 @@
     <ProjectReference Include="..\..\Models\Cats.Models\Cats.Models.csproj">
       <Project>{abfb63d2-89fc-45bc-aa4e-5d9b21094b85}</Project>
       <Name>Cats.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cats.Services.Security\Cats.Services.Security.csproj">
+      <Project>{0E706780-A5B2-488C-A502-49526946DEB5}</Project>
+      <Name>Cats.Services.Security</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

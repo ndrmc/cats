@@ -171,6 +171,11 @@ namespace Cats.Helpers
             return date;
         }
 
+        public string ToShortDateString()
+        {
+            string date = string.Format("{0}/{1}/{2}", Day, Month, Year);
+            return date;
+        }
         /// <summary>
         /// Input is gregorian calendar.
         /// </summary>

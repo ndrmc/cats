@@ -111,13 +111,13 @@
     .DetailView(details => details.ClientTemplate(
             Html.Telerik().Grid<ReceiveViewModelDto>()
                     .Name("Receives_<#= ReceiptAllocationID #>")
-                    .ClientEvents(events => events.OnRowDataBound("Receives_onRowDataBound"))
+                                .ClientEvents(events => events.OnRowDataBound("Receives_onRowDataBound").OnDataBound("dataBound"))
                     .Columns(receiveCols =>
                                  {
 @*                                     receiveCols.Template(@<text>
             @item.ReceiptDate.ToCTSPreferedDateFormat(@Html.GetCurrentUser().DatePreference)
             </text>).Title(Html.Translate("Receipt Date"));*@
-                                     receiveCols.Bound(d => d.ReceiptDate).Format("{0:d-MMM-yyyy}");
+                                     receiveCols.Bound(d => d.ReceiptDatePref).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid"});
                                      receiveCols.Bound(d => d.GRN).ClientTemplate("<a href='"+
                                                 @Url.Action("Create", "Receive", new { @ReceiveID = "<#= ReceiveID #>" })
                                            + "' >" + "<#= GRN #></a>");
@@ -321,6 +321,12 @@
 
     function totalChanged(item) {
         return false;
+    }
+
+    function grnInfo() { return { grn: document.getElementById('FilterGRN').value } }
+
+    function dataBound() {
+        if (document.getElementById('FilterGRN').value !== "") this.expandRow(this.tbody.find("tr.k-master-row").first());
     }
 </script>
 
