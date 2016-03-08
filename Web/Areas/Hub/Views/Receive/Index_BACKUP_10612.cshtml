@@ -81,19 +81,23 @@
         <label for="cmb_commodity_type" class="add-on">Commodity</label>
         @Html.DropDownList("FilterCommodityTypeID", null, new {@class = "inputs-large"})
     </div>
-    
+<<<<<<< HEAD
+
     <div class="input-prepend" style="margin-left:50px;">
         <label for="FilterGRN" class="add-on">GRN</label>
         @Html.TextBox("FilterGRN", null, new { @class = "inputs-medium" })
     </div>
 
+=======
+    
+>>>>>>> bugfix
     <label class="checkbox" style="margin-left:50px;">
     <input type="checkbox" id="chk_closed"> Show closed Plans
-@*  </label>
+  </label>
     
      <label class="checkbox" style="margin-left:50px;">
     <input type="checkbox" id="chk_receivable"> Show Receivable Plans
-  </label>*@
+  </label>
 </form>
 </div>
 
@@ -154,6 +158,7 @@
 
 <script>
     var sourceType = 1;
+    
     function getSourceName(type) {
         type = type ? type : sourceType;
         var title;
@@ -173,6 +178,28 @@
             $("#modal_body").html(data);
         });
     }
+    //$(document).ready(function () {
+    //    $("#searchGRN").on('input', function () {
+
+
+    //        var mesarement = $('#searchGRN').val();
+           
+    //        // alert(mesarement);
+            
+    //        var gr = $("#ReceiveAllocationGrid" + sourceType).data("kendoGrid");
+    //        if (gr != null) {
+             
+    //            gr.dataSource.filter({
+    //                field: "GRN",
+    //                operator: "contains",
+    //                value: mesarement
+    //            });
+    //        }
+
+    //    });
+
+    //});
+
     function onSourceTypeChange(type) {
         sourceType = type;
     }
