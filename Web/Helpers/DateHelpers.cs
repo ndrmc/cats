@@ -26,6 +26,22 @@ namespace Cats.Helpers
             }
         }
 
+        public static string ToCtsPreferedDateFormatShort(this DateTime date, string lang)
+        {
+            if (date.Date.Equals(DateTime.Parse("1/1/0001")))
+                return string.Empty;
+            if (lang.ToLower() == "gc")
+            {
+                IFormatProvider provider = new CultureInfo("en-GB");
+                return date.ToString("dd-MMM-yyyy", provider);
+            }
+            else
+            {
+                EthiopianDate ethiopianDate = new EthiopianDate(date);
+                return ethiopianDate.ToShortDateString();
+            }
+        }
+
 
 
         //public static string ToCTSPreferedDateFormat(this Nullable<DateTime> date, string lang)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -81,6 +82,7 @@ namespace Cats.Areas.Logistics.Controllers
 
         public ActionResult ReadDispatchesNotReconciled([DataSourceRequest]DataSourceRequest request, int FDPID)
         {
+            var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             var dispatch = _dispatchService.Get(t => t.FDPID == FDPID, null, "FDP,DispatchAllocation").OrderByDescending(t => t.DispatchDate);
             var dispatchViewModelForReconciles = BindDispatchViewModelForReconciles(dispatch);
             var dispatchViewModelForReconciled = dispatchViewModelForReconciles as List<DispatchViewModelForReconcile> ?? dispatchViewModelForReconciles.ToList();
@@ -96,6 +98,7 @@ namespace Cats.Areas.Logistics.Controllers
                     dispatchViewModelForReconcile.WayBillNo = deliveryReconcile.WayBillNo;
                     dispatchViewModelForReconcile.ReceivedAmount = deliveryReconcile.ReceivedAmount;
                     dispatchViewModelForReconcile.ReceivedDate = deliveryReconcile.ReceivedDate;
+                    dispatchViewModelForReconcile.ReceivedDatePref = deliveryReconcile.ReceivedDate.ToCtsPreferedDateFormatShort(datePref);
                     dispatchViewModelForReconcile.LossAmount = deliveryReconcile.LossAmount;
                     dispatchViewModelForReconcile.LossReasonId = (int) deliveryReconcile.LossReason;
                     dispatchViewModelForReconcile.TransactionGroupID = deliveryReconcile.TransactionGroupID;

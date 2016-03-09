@@ -10,6 +10,7 @@ namespace Cats.Models.Hubs.ViewModels
         [UIHint("DateTime")]
         [DataType(DataType.DateTime)]
         public DateTime ReceiptDate { get; set; }
+        public string ReceiptDatePref { get; set; }
         public string ReceivedByStoreMan { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Cats.Helpers;
 using Cats.Models.Constant;
 using Cats.Services.EarlyWarning;
+using Cats.Services.Procurement;
 using Cats.Services.Security;
 using Cats.ViewModelBinder;
 using Kendo.Mvc.Extensions;
@@ -22,9 +23,10 @@ namespace Cats.Areas.Regional.Controllers
         private readonly IWorkflowStatusService _workflowStatusService;
         private readonly IDonorService _donorService;
         private readonly IRationService _rationService;
+        private readonly ITransportOrderService _transportOrderService;
 
         private readonly IReliefRequisitionDetailService _reliefRequisitionDetailService;
-        public RegionRequisitionsController(IUserAccountService userAccountService, IReliefRequisitionService reliefRequisitionService, IWorkflowStatusService workflowStatusService, IReliefRequisitionDetailService reliefRequisitionDetailService, IDonorService donorService, IRationService rationService)
+        public RegionRequisitionsController(IUserAccountService userAccountService, IReliefRequisitionService reliefRequisitionService, IWorkflowStatusService workflowStatusService, IReliefRequisitionDetailService reliefRequisitionDetailService, IDonorService donorService, IRationService rationService, ITransportOrderService transportOrderService)
         {
             _userAccountService = userAccountService;
             _reliefRequisitionService = reliefRequisitionService;
@@ -32,14 +34,16 @@ namespace Cats.Areas.Regional.Controllers
             _rationService = rationService;
             _workflowStatusService = workflowStatusService;
             _reliefRequisitionDetailService = reliefRequisitionDetailService;
+            _transportOrderService = transportOrderService;
         }
 
         public ActionResult Index()
         {
+            ViewBag.ProgramID = new SelectList(_transportOrderService.GetPrograms(), "ProgramID", "Name");
             return View();
         }
 
-        public ActionResult Requisition_Read([DataSourceRequest] DataSourceRequest request)
+        public ActionResult Requisition_Read([DataSourceRequest] DataSourceRequest request, string reqNoFilter, int? programFilter, int? roundFilter)
         {
             var userRegionID= _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).RegionID;
             var requests = _reliefRequisitionService.Get(t => t.Status == (int)Cats.Models.Constant.ReliefRequisitionStatus.Approved && t.RegionID==userRegionID);
@@ -48,7 +52,7 @@ namespace Cats.Areas.Regional.Controllers
                                                                                                   _workflowStatusService
                                                                                                       .GetStatus(
                                                                                                           WORKFLOW.
-                                                                                                              RELIEF_REQUISITION), datePref).OrderByDescending(m => m.RequisitionID);
+                                                                                                          RELIEF_REQUISITION), datePref).OrderByDescending(m => m.RequisitionID).Where(p => (reqNoFilter.Length == 0 || p.RequisitionNo.Contains(reqNoFilter)) && (programFilter == null || p.ProgramID == programFilter) && (roundFilter == null || p.Round == roundFilter));
             return Json(requestViewModels.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 

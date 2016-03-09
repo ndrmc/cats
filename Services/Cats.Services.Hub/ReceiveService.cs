@@ -90,12 +90,12 @@ namespace Cats.Services.Hub
 
         }
 
-        public List<ReceiveViewModelDto> ByHubIdAndAllocationIDetached(int hubId, Guid receiptAllocationId)
+        public List<ReceiveViewModelDto> ByHubIdAndAllocationIDetached(int hubId, Guid receiptAllocationId, string grn = "")
         {
             List<ReceiveViewModelDto> receives = new List<ReceiveViewModelDto>();
 
             var query = (from r in _unitOfWork.ReceiveRepository.GetAll()
-                         where r.HubID == hubId && r.ReceiptAllocationID == receiptAllocationId
+                         where r.HubID == hubId && r.ReceiptAllocationID == receiptAllocationId && r.GRN.Contains(grn)
                          select new ReceiveViewModelDto()
                          {
                              ReceiptDate = r.ReceiptDate,
