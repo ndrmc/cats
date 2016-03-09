@@ -35,14 +35,14 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IAllocationByRegionService _allocationByRegionService;
         private readonly IUserAccountService _userAccountService;
         private readonly ITransactionService _transactionService;
-        private readonly IStoreService _storeService;
+        //private readonly IStoreService _storeService;
 
         public DispatchAllocationController(IReliefRequisitionService reliefRequisitionService,
             IHubService hubService, IAdminUnitService adminUnitService,
             INeedAssessmentService needAssessmentService,
             IHubAllocationService hubAllocationService,
             IUserAccountService userAccountService,
-            IAllocationByRegionService allocationByRegionService, ITransactionService transactionService, IStoreService storeService)
+            IAllocationByRegionService allocationByRegionService, ITransactionService transactionService)
         {
             _reliefRequisitionService = reliefRequisitionService;
             _hubService = hubService;
@@ -52,7 +52,7 @@ namespace Cats.Areas.Logistics.Controllers
             _userAccountService = userAccountService;
             _allocationByRegionService = allocationByRegionService;
             _transactionService = transactionService;
-            _storeService = storeService;
+            
         }
 
 
@@ -169,7 +169,7 @@ namespace Cats.Areas.Logistics.Controllers
                 ViewBag.regionId = regionId;
                 ViewBag.RegionName = _adminUnitService.GetRegions().Where(r => r.AdminUnitID == regionId).Select(r => r.Name).Single();
                 ViewData["Hubs"] = _hubService.FindBy(h => h.HubOwnerID == 1);
-                ViewData["Stores"] = _storeService.FindBy(s => s.Hub.HubOwnerID == 1); //get DRMFSS stores
+               // ViewData["Stores"] = _storeService.FindBy(s => s.Hub.HubOwnerID == 1); //get DRMFSS stores
                 return View();
             }
             return View();
