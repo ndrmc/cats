@@ -86,6 +86,7 @@
     <Compile Include="Dispatch.cs" />
     <Compile Include="DispatchDetail.cs" />
     <Compile Include="DistributionByAgeDetail.cs" />
+    <Compile Include="HubStoreViewModel.cs" />
     <Compile Include="Ledger.cs">
       <SubType>Code</SubType>
     </Compile>

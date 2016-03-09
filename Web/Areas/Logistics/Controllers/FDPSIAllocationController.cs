@@ -24,6 +24,7 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IHubService _hubService;
         private readonly ISIPCAllocationService _allocationService;
         private readonly ITransactionService _transactionService;
+        private readonly ICommonService _commonService;
 
         public FDPSIAllocationController
             (
@@ -31,8 +32,7 @@ namespace Cats.Areas.Logistics.Controllers
             , ILedgerService ledgerService
             , IHubAllocationService hubAllocationService, IHubService hubService
             ,ISIPCAllocationService allocationService
-            ,ITransactionService transactionService
-            )
+            ,ITransactionService transactionService, ICommonService commonService)
             {
                 this._requisitionService = requisitionService;
                 this._ledgerService = ledgerService;
@@ -40,6 +40,7 @@ namespace Cats.Areas.Logistics.Controllers
             this._hubService = hubService;
                 this._allocationService = allocationService;
                 this._transactionService = transactionService;
+            _commonService = commonService;
             }
 
         public List<RequestAllocationViewModel> getIndexList(int regionId = 0,int RequisitionID=0)
@@ -118,7 +119,8 @@ namespace Cats.Areas.Logistics.Controllers
         {
             ViewBag.regionId = regionId;
             ViewBag.RequisitionID = RequisitionID;
-            ViewBag.Hubs = _hubService.GetAllHub();
+            //ViewBag.Hubs = _hubService.GetAllHub();
+            ViewBag.Hubs = _commonService.GetHubsAndStores();
             ViewBag.AllocatedHub = _hubAllocationService.GetAllocatedHubId(RequisitionID);
             //ViewBag.Allocations = _hubAllocationService.GetAllHubAllocation().Select(m => m.HubID);
             return View();
@@ -182,5 +184,7 @@ namespace Cats.Areas.Logistics.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
 
         }
+
+       
     }
 }

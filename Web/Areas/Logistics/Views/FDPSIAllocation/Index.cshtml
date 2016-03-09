@@ -1,4 +1,5 @@
-﻿@using Cats.Services.Security
+﻿@using Cats.Models
+@using Cats.Services.Security
 @using Cats.Helpers;
 
 @{
@@ -183,9 +184,15 @@
                     <div class="caption font-green-sharp">
                         <div class="form-group form-md-line-input">
                             <select class="form-control" ng-model="selectedHub" id="hubSelector">
-                                @foreach (var hub in ViewBag.Hubs)
-                                {
-                                    <option value="@hub.HubID">@hub.Name [@hub.HubOwner.Name]</option>
+                                @{
+                                    var enumerable = ViewData["Hubs"] as IEnumerable<HubStoreViewModel>;
+                                    if (enumerable != null)
+                                    {
+                                        foreach (var hub in enumerable)
+                                        {
+                                            <option value="@hub.Id">@hub.Name</option>
+                                        }
+                                    }
                                 }
                             </select>
                             <label for="hubSelector">@Html.Translate("Hub")</label>
