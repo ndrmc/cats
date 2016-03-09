@@ -60,6 +60,8 @@
                     @{
                     
                         var enumerable = ViewData["Hubs"] as IEnumerable<Hub>;
+                        var enumerableStores = ViewData["Stores"] as IEnumerable<Store>;
+                        
                         if (enumerable != null)
                         {
                             foreach (var hub in  enumerable)

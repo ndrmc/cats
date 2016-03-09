@@ -33,10 +33,10 @@ namespace Cats.Models.Mapping
             this.Property(t => t.StackCount).HasColumnName("StackCount");
             this.Property(t => t.StoreManName).HasColumnName("StoreManName");
 
-            // Relationships
-            //this.HasRequired(t => t.Hub)
-            //    .WithMany(t => t.Stores)
-            //    .HasForeignKey(d => d.HubID);
+             //Relationships
+            this.HasRequired(t => t.Hub)
+                .WithMany(t => t.Stores)
+                .HasForeignKey(d => d.HubID);
 
         }
     }
