@@ -18,6 +18,7 @@ app.factory("dragDropService", function ($resource)
         
         getRequisitions: $resource(Url + "?regionId=" + regionId)
         
+        
     };
     
    
@@ -26,7 +27,22 @@ app.factory("dragDropService", function ($resource)
 
 
 });
+app.factory("hubService", function ($resource)
+{
 
+    return {
+        
+        getSWarehouse: $resource("Logistics/DispatchAllocation/ReadSWarehouse"  + 1)
+        
+        
+    };
+    
+   
+    
+    
+
+
+});
 app.factory("savefactory", function ($http) {
    
     return {
@@ -54,25 +70,43 @@ app.factory("savefactory", function ($http) {
    
 });
 
-app.controller("DragDroController", function ($scope, dragDropService, savefactory)
+app.controller("DragDroController", function ($scope, $http ,dragDropService, savefactory)
 {
     $scope.showModal = false;
-    $scope.WarehouseName = "";
-    
+    $scope.Warehouse;
+    $scope.WarehouseList = [];
+    $scope.SWarehouseName ;
     $scope.handleDrop = function (index) {
         
-        $scope.allocated[0].HubId = index;
-        $scope.showModal = !$scope.showModal;
-    };
-    $scope.saveWarehouse = function (WarehouseName1) {
         
-        alert(WarehouseName1);
+      
+      $scope.GetWarehouseList1(index);
+      
+       
         $scope.showModal = !$scope.showModal;
+        $scope.allocated[0].HubId = index;
+       
+        
        
     };
-    //$scope.Warehouse = function () {
-      
-    //};
+    $scope.saveWarehouse = function (SWarehouse) {
+        
+       
+        $scope.showModal = !$scope.showModal;
+        $scope.allocated[0].SatelliteWarehouseID = SWarehouse;
+        
+    };
+   
+   
+    
+    $scope.GetWarehouseList1 = function (index) {
+        $http({ method: 'GET', url: '/Logistics/DispatchAllocation/ReadSWarehouse?hubId=' + index }).success(function (data, status, headers, config) { $scope.WarehouseList = data; })
+            .error(function (data, status, headers, config) {
+
+            });
+
+       
+    };
     $scope.saveAllocation = function () {
 
         savefactory.save($scope.allocated);

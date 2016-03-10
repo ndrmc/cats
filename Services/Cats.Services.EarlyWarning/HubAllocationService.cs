@@ -42,7 +42,8 @@ namespace Cats.Services.EarlyWarning
                     RequisitionID = appRequisition.ReqId,
                     AllocationDate = DateTime.Now.Date,
                     ReferenceNo = "001",
-                    HubID = appRequisition.HubId
+                    HubID = appRequisition.HubId,
+                    SatelliteWarehouseID= appRequisition.SatelliteWarehouseID
                 };
                 AddHubAllocation(newHubAllocation);
             }

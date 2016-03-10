@@ -23,7 +23,9 @@ namespace Cats.Services.Transaction
         List<Models.Transaction> PostHRDPlan(HRD plan, Ration ration);
         bool PostGiftCertificate(int giftCertificateId);
         bool PostDeliveryReconcileReceipt(int deliveryID);
-       
+
+        bool RevertGiftCertificate(int giftCertificateId);
+        bool PrintedGiftCertificate(int giftCertificateId);
         bool PostRequestAllocation(int requestId);
         bool PostSIAllocation(int requisitionID);
         bool PostSIAllocationUncommit(int requisitionID);

@@ -73,7 +73,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                                                       ReferenceNo = item.GiftCertificate.ReferenceNo,
                                                                       GiftCertificateID = item.GiftCertificateID,
                                                                       SINumber = item.GiftCertificate.ShippingInstruction.Value,
-                                                                      PortName = item.GiftCertificate.PortName
+                                                                      PortName = item.GiftCertificate.PortName,
+                                                                      IsPrinted= item.GiftCertificate.IsPrinted
                                                                   }).ToList();
 
             return Json(result.ToDataSourceResult(request, ModelState));
@@ -273,7 +274,23 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             return Json(_giftCertificateService.IsBillOfLoadingDuplicate(BillOfLoading), JsonRequestBehavior.AllowGet);
         }
+        [HttpGet]
+        [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]
+        public ActionResult Rejected(int id)
+        {
+            var giftCertificate = _giftCertificateService.FindById(id);
+            var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
+            var giftCertificateViewModel = GiftCertificateViewModelBinder.BindGiftCertificateViewModel(giftCertificate, datePref);
+            return PartialView("_Reject", giftCertificateViewModel);
+        }
 
+        [HttpPost]
+        [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]
+        public ActionResult Reject(int GiftCertificateID)
+        {
+            var result = _transactionService.RevertGiftCertificate(GiftCertificateID);
+            return RedirectToAction("Index",2);
+        }
         [HttpGet]
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]
        public ActionResult Approved(int id)
@@ -354,7 +371,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 Response.AddHeader("Content-Disposition", @"filename= " + fileName + ".docx");
                 Response.TransmitFile(filePath);
                 Response.End();
-           }catch(Exception ex)
+                var result = _transactionService.PrintedGiftCertificate(giftCertificateId);
+            }
+            catch(Exception ex)
            {
 
 

@@ -70,7 +70,7 @@ namespace Cats.Areas.Hub.Controllers
             //ViewData["commodities"] = commodities;
             //ViewData["units"] = _unitService.GetAllUnitViewModels();
 
-
+            viewModel.CreatedDate = receive.CreatedDate;
             viewModel.Grn = receive.GRN;
             viewModel.ReceiptDate = receive.ReceiptDate;
                                                       viewModel.SiNumber=receiptAllocation.SINumber;
@@ -200,11 +200,7 @@ namespace Cats.Areas.Hub.Controllers
             var user = _userProfileService.GetUser(User.Identity.Name);
             var hubOwner = _hub.FindById(user.DefaultHub.Value);
             
-            //when the combobox is disabled the commodity id is not submitted
-            //var receiptAllocation = _receiptAllocationService.FindById(viewModel.ReceiptAllocationId);
-            //viewModel.ReceiveDetailNewViewModel.CommodityId = receiptAllocation.CommodityID;
-            
-            
+           
             if (viewModel.ReceiveId != Guid.Empty)
             {
                 _receiptAllocationId =

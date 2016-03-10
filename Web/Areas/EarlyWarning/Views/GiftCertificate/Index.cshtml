@@ -32,10 +32,10 @@
             <div class="mrgn5-v col-md-4">
                 <div class="input-group ">
                     <div class="input-group-btn">
-                        <button class="btn btn-primary" type="button">@Html.Translate("Search")</button>
+                        <button id="searchButton" class="btn btn-primary" type="button">@Html.Translate("Search")</button>
                     </div>
 
-                    <input type="text" id="search" class="form-control col-md-4"></input>
+                    <input type="text" id="searchCr" placeholder="Search by Reference No " class="form-control col-md-4"></input>
                 </div>
 
             </div>
@@ -79,10 +79,16 @@
             }
             else
             {
-               
+
                 @Html.EarlyWarningOperationButton(
-                        @Url.Action("GenerateTemplate", new { id = item.GiftCertificateID }),
-                        EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template, "<button type=\"button\" class=\"btn btn-xs btn-primary\"><span class=\"fa fa-print\"></span> "+@Html.Translate("Print")+" </button> ", "btn-Print-gift")
+                    @Url.Action("GenerateTemplate", new {id = item.GiftCertificateID}),
+                    EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template, "<button type=\"button\" class=\"btn btn-xs btn-primary\"><span class=\"fa fa-print\"></span> " + @Html.Translate("Print") + " </button> ", "btn-Print-gift")
+                if (item.IsPrinted== false)
+                {
+                    @Html.EarlyWarningOperationButton(
+                        @Url.Action("Rejected", "GiftCertificate", new {id = item.GiftCertificateID}),
+                        EarlyWarningConstants.Operation.Approve_Gift_Certeficate, " <button type=\"button\" class=\"btn btn-xs btn-danger\"><span class=\"fa fa-times\"></span> " + @Html.Translate("Reject") + " </button> ", "btn-Reject-Gift", "", "btnReject")
+            }
             }
             </text>
 
@@ -112,6 +118,19 @@
 <div id="cats-modal"></div>
 <script type="text/javascript">
     $('.btn-Approve-Gift').on('click',
+                 function (e) {
+                     $('#cats-modal').remove();
+                     e.preventDefault();
+                     var $this = $(this)
+                       , $remote = $this.data('remote') || $this.attr('href')
+                       , $modal = $('<div class="modal" id="cats-modal"><div class="modal-body"></div></div>');
+                     console.log($remote);
+                     $('body').append($modal);
+                     $modal.modal({ backdrop: 'static', keyboard: false });
+                     $modal.load($remote);
+                 }
+               );
+    $('.btn-Reject-Gift').on('click',
                  function (e) {
                      $('#cats-modal').remove();
                      e.preventDefault();
@@ -156,14 +175,39 @@
 </script>
 
 <script>
-    $("#search").keyup(function () {
-        $("#search").blur();
-        $("#search").focus();
+
+    $(document).ready(function () {
+        $("#searchButton").on('click', function () {
+
+
+            var mesarement = $('#searchCr').val();
+
+           // alert(mesarement);
+
+            var gr = $("#GiftCertificateGrid").data("kendoGrid");
+           
+            if (gr != null) {
+
+                gr.dataSource.filter({
+                    field: "ReferenceNo",
+                    operator: "contains",
+                    value: mesarement
+                });
+            }
+
+        });
+
     });
 
-    $("#search").change(function () {
-        applyFilter("ReferenceNo", $(this).val());
-    });
+
+    //$("#search").keyup(function () {
+    //    $("#search").blur();
+    //    $("#search").focus();
+    //});
+
+    //$("#search").change(function () {
+    //    applyFilter("ReferenceNo", $(this).val());
+    //});
 
     // attach click event for Clear Filters button 
     // applyFilter function accepts the Field Name and the new value to use for filter.

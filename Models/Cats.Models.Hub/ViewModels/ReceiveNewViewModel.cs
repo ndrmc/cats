@@ -18,7 +18,7 @@ namespace Cats.Models.Hubs.ViewModels
         [Required]
         [Display(Name = "Receipt Date")]
         public DateTime ReceiptDate { get; set; }
-
+        public DateTime CreatedDate { get; set; }
         [Display(Name = "Commodity Source")]
         public string CommoditySource { get; set; }
 
@@ -65,7 +65,15 @@ namespace Cats.Models.Hubs.ViewModels
         [StringLength(50)]
         [UIHint("AmharicTextBox")]
         public string ReceivedByStoreMan { get; set; }
+         public bool EditbleDateGap { get
+        {
 
+            TimeSpan span = DateTime.Now.Subtract(CreatedDate);
+            if ((int)span.TotalDays <= 30)
+                return true;
+            
+                return false;
+        } }
         public Guid ReceiptAllocationId { get; set; }
 
         public bool IsFalseGRN { get; set; }

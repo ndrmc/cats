@@ -979,9 +979,121 @@ namespace Cats.Services.Transaction
             return true;
         }
 #endregion
+        #region Revert GiftCeritifficate
 
+        public bool RevertGiftCertificate(int giftCertificateId)
+        {
+            var giftCertificate = _unitOfWork.GiftCertificateRepository.Get(t => t.GiftCertificateID == giftCertificateId, null, "GiftCertificateDetails").FirstOrDefault();
+            if (giftCertificate == null) return false;
+
+            var transactionGroup = Guid.NewGuid();
+            var transactionDate = DateTime.Now;
+            _unitOfWork.TransactionGroupRepository.Add(new TransactionGroup()
+            {
+                PartitionID = 0,
+                TransactionGroupID = transactionGroup
+            });
+            foreach (var giftCertificateDetail in giftCertificate.GiftCertificateDetails)
+            {
+                var transaction = new Models.Transaction();
+                transaction.TransactionID = Guid.NewGuid();
+                transaction.ProgramID = giftCertificate.ProgramID;
+                transaction.DonorID = giftCertificate.DonorID;
+                transaction.CommoditySourceID = giftCertificateDetail.DFundSourceID;
+                transaction.GiftTypeID = giftCertificateDetail.DFundSourceID;
+                transaction.QuantityInMT = giftCertificateDetail.WeightInMT;
+                transaction.QuantityInUnit = giftCertificateDetail.WeightInMT;
+                transaction.TransactionGroupID = transactionGroup;
+                transaction.TransactionDate = transactionDate;
+                transaction.UnitID = 1;
+                transaction.LedgerID = Ledger.Constants.GIFT_CERTIFICATE;//Goods Promised - Gift Certificate - Commited not found in ledger list
+                transaction.CommodityID = giftCertificateDetail.CommodityID;
+                transaction.ParentCommodityID = giftCertificateDetail.Commodity.ParentID;
+                // transaction.ShippingInstructionID = giftCertificate.SINumber;
+                _unitOfWork.TransactionRepository.Add(transaction);
+
+                transaction = new Models.Transaction();
+                transaction.TransactionID = Guid.NewGuid();
+                transaction.ProgramID = giftCertificate.ProgramID;
+                transaction.DonorID = giftCertificate.DonorID;
+                transaction.QuantityInMT = -giftCertificateDetail.WeightInMT;
+                transaction.TransactionGroupID = transactionGroup;
+                transaction.TransactionDate = transactionDate;
+                transaction.QuantityInUnit = giftCertificateDetail.WeightInMT;
+                transaction.UnitID = 1;
+                transaction.ParentCommodityID = giftCertificateDetail.Commodity.ParentID;
+                transaction.LedgerID = Ledger.Constants.PLEDGE;//Goods Promised - Pledge	 not found in ledger list
+
+                _unitOfWork.TransactionRepository.Add(transaction);
+
+
+            }
+
+            giftCertificate.StatusID = 1;
+            giftCertificate.TransactionGroupID = transactionGroup;
+            _unitOfWork.Save();
+            return true;
+        }
+        #endregion
+
+        #region Printed  GiftCeritifficate
+
+        public bool PrintedGiftCertificate(int giftCertificateId)
+        {
+            var giftCertificate = _unitOfWork.GiftCertificateRepository.Get(t => t.GiftCertificateID == giftCertificateId, null, "GiftCertificateDetails").FirstOrDefault();
+            if (giftCertificate == null) return false;
+
+            var transactionGroup = Guid.NewGuid();
+            var transactionDate = DateTime.Now;
+            _unitOfWork.TransactionGroupRepository.Add(new TransactionGroup()
+            {
+                PartitionID = 0,
+                TransactionGroupID = transactionGroup
+            });
+            foreach (var giftCertificateDetail in giftCertificate.GiftCertificateDetails)
+            {
+                var transaction = new Models.Transaction();
+                transaction.TransactionID = Guid.NewGuid();
+                transaction.ProgramID = giftCertificate.ProgramID;
+                transaction.DonorID = giftCertificate.DonorID;
+                transaction.CommoditySourceID = giftCertificateDetail.DFundSourceID;
+                transaction.GiftTypeID = giftCertificateDetail.DFundSourceID;
+                transaction.QuantityInMT = giftCertificateDetail.WeightInMT;
+                transaction.QuantityInUnit = giftCertificateDetail.WeightInMT;
+                transaction.TransactionGroupID = transactionGroup;
+                transaction.TransactionDate = transactionDate;
+                transaction.UnitID = 1;
+                transaction.LedgerID = Ledger.Constants.GIFT_CERTIFICATE;//Goods Promised - Gift Certificate - Commited not found in ledger list
+                transaction.CommodityID = giftCertificateDetail.CommodityID;
+                transaction.ParentCommodityID = giftCertificateDetail.Commodity.ParentID;
+                // transaction.ShippingInstructionID = giftCertificate.SINumber;
+                _unitOfWork.TransactionRepository.Add(transaction);
+
+                transaction = new Models.Transaction();
+                transaction.TransactionID = Guid.NewGuid();
+                transaction.ProgramID = giftCertificate.ProgramID;
+                transaction.DonorID = giftCertificate.DonorID;
+                transaction.QuantityInMT = -giftCertificateDetail.WeightInMT;
+                transaction.TransactionGroupID = transactionGroup;
+                transaction.TransactionDate = transactionDate;
+                transaction.QuantityInUnit = giftCertificateDetail.WeightInMT;
+                transaction.UnitID = 1;
+                transaction.ParentCommodityID = giftCertificateDetail.Commodity.ParentID;
+                transaction.LedgerID = Ledger.Constants.PLEDGE;//Goods Promised - Pledge	 not found in ledger list
+
+                _unitOfWork.TransactionRepository.Add(transaction);
+
+
+            }
+
+            giftCertificate.IsPrinted = true;
+            giftCertificate.TransactionGroupID = transactionGroup;
+            _unitOfWork.Save();
+            return true;
+        }
+        #endregion
         // commodityId and commodityParentId not found
-#region Post Delivery Reconcile
+        #region Post Delivery Reconcile
 
         public bool PostDeliveryReconcileReceipt(int deliveryReconcileID)
         {
