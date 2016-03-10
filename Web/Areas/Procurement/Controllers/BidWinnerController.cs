@@ -16,7 +16,9 @@ using Cats.Services.Security;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using System;
+using Cats.Services.Hub;
 using log4net;
+using ITransporterService = Cats.Services.Procurement.ITransporterService;
 
 namespace Cats.Areas.Procurement.Controllers
 {
@@ -34,10 +36,11 @@ namespace Cats.Areas.Procurement.Controllers
         private readonly IUserAccountService _userAccountService;
         private readonly ILog _log;
         private readonly ITransportOrderDetailService _transportOrderDetailService;
+        private readonly IDispatchService _dispatchService;
 
         public BidWinnerController(IBidService bidService, ITransporterService transporterService, IBidWinnerService bidWinnerService,
-            IUnitOfWork unitofwork, ITransporterAgreementVersionService transporterAgreementVersionService, IWorkflowStatusService workflowStatusService, 
-            IUserAccountService userAccountService, ILog log, ITransportOrderDetailService transportOrderDetailService)
+            IUnitOfWork unitofwork, ITransporterAgreementVersionService transporterAgreementVersionService, IWorkflowStatusService workflowStatusService,
+            IUserAccountService userAccountService, ILog log, ITransportOrderDetailService transportOrderDetailService, IDispatchService dispatchService)
         {
             _bidService = bidService;
             //_applicationSettingService = applicationSettingService;
@@ -50,6 +53,7 @@ namespace Cats.Areas.Procurement.Controllers
             _userAccountService = userAccountService;
             _log = log;
             _transportOrderDetailService = transportOrderDetailService;
+            _dispatchService = dispatchService;
         }
 
         public ActionResult Index()
@@ -102,7 +106,22 @@ namespace Cats.Areas.Procurement.Controllers
         {
             var winningTransprters = _bidWinnerService.Get(t => t.Position == 1 && t.Status == 1).Select(t => t.Transporter).Distinct();
             var winningTransprterViewModels = TransporterListViewModelBinder(winningTransprters.ToList());
-            return Json(winningTransprterViewModels.ToDataSourceResult(request));
+            var nonWinnerTransporters =
+                _dispatchService.Get(d => d.BidNumber == "Bid-Number")
+                    .Select(d => d.TransporterID)
+                    .Except(_bidWinnerService.GetAllBidWinner().Select(bw => bw.TransporterID)).ToList();
+            
+            var transporters = (from tt in nonWinnerTransporters
+                join transporter in _transporterService.GetAllTransporter()
+                    on tt equals transporter.TransporterID
+                select new TransporterViewModel
+                {
+                    TransporterID = tt,
+                    TransporterName = transporter.Name,
+                    BidContract = "-"
+                }).ToList();
+            var trans = winningTransprterViewModels.Union(transporters).Distinct().OrderBy(t=>t.TransporterName).ToList();
+            return Json(trans.ToDataSourceResult(request));
         }
         public ActionResult SignedContract_Read([DataSourceRequest] DataSourceRequest request)
         {
