@@ -31,7 +31,7 @@
                          
                         
                   
-                      <div class="thumbnail " ng-model='Requisitions' id="container" style=" overflow-y:scroll;" >
+                      <div  ng-model='Requisitions' id="container" style=" overflow-y:scroll;height: 800px" >
                           <div  class="btn btn-navbar btn-draggable " id="{{item.RequisitionId}}"  draggable=""   ng-repeat="item in Requisitions" >
                               <div class="accordion" id="accordion2">
                                   <div class="accordion-group">
@@ -92,7 +92,7 @@
                                 foreach (var eachStore  in store.Stores)
                                 {
                                     <div class="thumbnail span4" droppable="true" drop="handleDrop('@eachStore.StoreID')" style="overflow-y:scroll; overflow-x:hidden" id="@eachStore.StoreID">
-                                        <div class="btn btn-navbar btn-droppable"  >@eachStore.Name (@eachStore.Hub.HubOwner.Name)</div>
+                                        <div class="btn btn-navbar btn-droppable"  >@eachStore.Name (@eachStore.Hub.Name)</div>
                                     </div>
                                 }
                             }

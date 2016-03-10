@@ -196,9 +196,11 @@ namespace Cats.Areas.Logistics.Controllers
             {
                 foreach (var all in allocation)
                 {
+                    
                     var hubAllocated = _hubAllocationService.FindBy(h => h.RequisitionID == all.ReqId).FirstOrDefault();
                     if(hubAllocated!=null)
                     {
+                        
 
                         hubAllocated.AllocatedBy = user.UserProfileID;
                         hubAllocated.AllocationDate = DateTime.Now.Date;
@@ -275,7 +277,7 @@ namespace Cats.Areas.Logistics.Controllers
 
 
         }
-
+        
         public ActionResult RejectRequsition(int id)
         {
             var requistion = _reliefRequisitionService.FindById(id);

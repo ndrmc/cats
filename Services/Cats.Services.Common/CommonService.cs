@@ -307,10 +307,9 @@ namespace Cats.Services.Common
             return null;
         }
 
-        public System.Collections.IEnumerable GetHubsAndStores()
+        public List<HubStoreViewModel> GetHubsAndStores()
         {
-
-            return (
+            var result =  (
                        from store in _unitOfWork.StoreRepository.FindBy(s => s.Hub.HubOwnerID == 1)
                        select new
                                   {
@@ -328,6 +327,10 @@ namespace Cats.Services.Common
                                    HubId = hub.HubID
                                }
                 ).OrderBy(p => p.HubId).ThenBy(p => p.Id).ToList();
+
+            var  stores= result.Select(hubsAndStores => new HubStoreViewModel {Id = hubsAndStores.Id, Name = hubsAndStores.Name}).ToList();
+
+            return stores;
         }
     }
 }
