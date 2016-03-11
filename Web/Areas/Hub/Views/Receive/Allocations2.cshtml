@@ -30,8 +30,8 @@
         .Model(model => model.Id(p => p.ReceiptAllocationID))
         .Read(read => read.Action("AllocationListAjax", "Receive", new { type = allocationType }))
         .Destroy(update => update.Action("DeleteAjax", "Receive"))
-        
-    )
+
+        ).Events(events => events.DataBound("dataBound"))
     .Columns(columns =>
     {
         columns.Bound(dis => dis.CommodityName).Title(Html.Translate("Commodity")).Filterable(true);
@@ -61,14 +61,14 @@
         .Name("Receives_#=ReceiptAllocationID#")
         .Columns(columns =>
         {
-            columns.Bound(d => d.ReceiptDate).Format("{0:d-MMM-yyyy}");
+            columns.Bound(d => d.ReceiptDatePref).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid"});
             columns.Bound(d => d.GRN).ClientTemplate("<a href='" + @Url.Action("Create", "ReceiveNew", new { @receiptAllocationId = "\\#=ReceiveID\\#", @GRN = "\\#=GRN\\#" }) + "'>\\#:GRN\\#</a> &nbsp; ");
             columns.Bound(b => b.ReceivedByStoreMan);
         })
         .DataSource(dataSource => dataSource
             .Ajax()
             .ServerOperation(false)
-            .Read(read => read.Action("ReceiveListAjax", "Receive", new { ReceiptAllocationID = "#=ReceiptAllocationID#" }))
+            .Read(read => read.Action("ReceiveListAjax", "Receive", new { ReceiptAllocationID = "#=ReceiptAllocationID#" }).Data("grnInfo"))
 
             )
     .HtmlAttributes(new { style = "max-height:250px;" })
@@ -130,5 +130,11 @@
         }
     }
     
+    function grnInfo() {return { grn : document.getElementById('FilterGRN').value }}
+
+    function dataBound() {
+        if (document.getElementById('FilterGRN').value !== "") this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+
 
 </script>

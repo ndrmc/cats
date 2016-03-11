@@ -24,7 +24,7 @@ namespace Cats.Services.Hub
         List<Receive> ByHubId(int hubId);
          List<PortViewModel> GetALlPorts();
         Receive FindById(System.Guid id);
-        List<ReceiveViewModelDto> ByHubIdAndAllocationIDetached(int hubId, Guid receiptAllocationId);
+        List<ReceiveViewModelDto> ByHubIdAndAllocationIDetached(int hubId, Guid receiptAllocationId, string grn);
         void Update(List<ReceiveDetail> inserted, List<ReceiveDetail> updated, List<ReceiveDetail> deleted,Receive receive);
 
         ReceiveNewViewModel ReceiptAllocationToReceive(ReceiptAllocation receiptAllocation);

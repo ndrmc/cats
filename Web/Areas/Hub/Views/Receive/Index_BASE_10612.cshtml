@@ -77,17 +77,12 @@
         @Html.DropDownList("HubsID", null, new { @class = "inputs-large", @disabled ="disabled" })
 
     </div>
-    <div class="input-prepend" style="margin-left: 50px;">
-        <label for="cmb_commodity_type" class="add-on">Commodity</label>
-        @Html.DropDownList("FilterCommodityTypeID", null, new {@class = "inputs-large"})
-    </div>
-    
     <div class="input-prepend" style="margin-left:50px;">
-        <label for="FilterGRN" class="add-on">GRN</label>
-        @Html.TextBox("FilterGRN", null, new { @class = "inputs-medium" })
+        <label for="cmb_commodity_type" class="add-on">Commodity</label>
+        @Html.DropDownList("FilterCommodityTypeID", null, new { @class = "inputs-large" })
     </div>
 
-    <label class="checkbox" style="margin-left:50px;">
+  <label class="checkbox" style="margin-left:50px;">
     <input type="checkbox" id="chk_closed"> Show closed Plans
 @*  </label>
     
@@ -262,11 +257,6 @@
 
         $("#FilterCommodityTypeID").change(dataRefresh);
         $("#HubsID").change(dataRefresh);
-        $("#FilterGRN").on('keyup', function (e) {
-            if (e.which === 13) e.preventDefault();
-            else dataRefresh(e);
-        });
-        //$("#FilterGRN").change();
         $("#chk_closed").change(dataRefresh);
         $("#chk_receivable").change(dataRefresh);
     });
@@ -282,9 +272,8 @@
             receivable = "true";
         }
         var commodityType = $("#FilterCommodityTypeID").val();
-        var GRN = $("#FilterGRN").val();
         var HubID = $("#HubsID").val();
-        return { closed: closed, commodityType: commodityType, HubID: HubID, receivable: receivable, grn : GRN};
+        return { closed: closed, commodityType: commodityType, HubID: HubID, receivable: receivable};
     }
     function dataRefresh(refreshGrids) {
         //alert();
@@ -299,7 +288,7 @@
             var urlParams = "";
             var sep = "&";
             for (var i in attribs) {
-                if (attribs[i] !== "") {
+                if (attribs[i] != "") {
                     urlParams += sep + i + "=" + attribs[i];
                     sep = "&";
                 }

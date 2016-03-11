@@ -37,12 +37,16 @@ function init_datepicker(calendar) {
         //    orientation: "left",
         //    autoclose: true
         //});
-        $(".cats-datepicker2").datepicker({
-            rtl: Metronic.isRTL(),
-            orientation: "left",
-            autoclose: true
-        });
+        if (typeof Metronic === 'undefined') {
+            $(".cats-datepicker2").datepicker();
+        } else {
+            $(".cats-datepicker2").datepicker({
+                rtl: Metronic.isRTL(),
+                orientation: "left",
+                autoclose: true
+            });
         }
+    }
 }
 function init_toolbar_button() {
     var button_styles = {
