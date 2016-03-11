@@ -85,7 +85,7 @@
                       .Name("grid")
                       .Columns(columns =>
                                    {
-                                       columns.Bound(c => c.DispatchID).Visible(false);
+                                       columns.Bound(c => c.DeliveryReconcileID).Visible(false);
                                        columns.Bound(c => c.RequisitionNo).Width(30);
                                        columns.Bound(c => c.GIN).Width(25);
                                        columns.Bound(c => c.DispatchDatePref).Width(35).Title("Dis. Date");
@@ -120,7 +120,7 @@
                       .DataSource(datasource =>
                                   datasource
                                       .Ajax()
-                                       .Events(error=>error.Error("error_handler"))
+                                               .Events(error => error.Error("error_handler").RequestEnd("onRequestEnd"))
                                       
                                       .PageSize(10)
                                       .Model(m =>
@@ -172,7 +172,14 @@
 
 
 
-
+    function onRequestEnd(e) {
+        if (e.type === "create") {
+            e.sender.read();
+        }
+        else if (e.type === "update") {
+            e.sender.read();
+        }
+    }
 
 
     var FDPID = 0;
