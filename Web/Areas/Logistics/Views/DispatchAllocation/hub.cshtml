@@ -10,7 +10,7 @@
 
 @section Toolbar
 {
-     
+    <a class="btn toolbar-btn "  id="btnToggle">Hub</a>
    <a class="btn toolbar-btn " data-buttontype="btn_save" href="javascript:onsaveAllocation()"></a>
    <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("Hub", "DispatchAllocation",new {regionId= Request.QueryString["regionid"]})" title="Cancel"></a>
    <a class="btn toolbar-btn " data-buttontype="btn_back_to_list" href="@Url.Action("Index","DispatchAllocation",new {regionId= Request.QueryString["regionid"]})"></a>
@@ -56,7 +56,7 @@
                   </div>
              
               <div class="span8">
-
+                 
                     @{
                     
                         var enumerable = ViewData["Hubs"] as IEnumerable<Hub>;
@@ -65,7 +65,9 @@
                         if (enumerable != null)
                         {
                             var hubs = enumerable as Hub[] ?? enumerable.ToArray();
-                            foreach (var hub in  hubs)
+                            
+                             <div id="Hub">
+                            @foreach (var hub in  hubs)
                             { 
                                 if (hub.HubOwnerID == 1)
                                 {
@@ -87,15 +89,20 @@
                                 }
                                 
                             }
-                            foreach (var store in hubs)
-                            {
-                                foreach (var eachStore  in store.Stores)
-                                {
-                                    <div class="thumbnail span4" droppable="true" drop="handleDrop('@eachStore.StoreID')" style="overflow-y:scroll; overflow-x:hidden" id="@eachStore.StoreID">
-                                        <div class="btn btn-navbar btn-droppable"  >@eachStore.Name (@eachStore.Hub.Name)</div>
-                                    </div>
-                                }
-                            }
+                            </div>
+                            <div id="Store">
+                                 @foreach (var store in hubs)
+                                 {
+                                     foreach (var eachStore in store.Stores)
+                                     {
+                                            <div class="thumbnail span4" droppable="true" drop="handleDrop('@eachStore.StoreID')" style="overflow-y:scroll; overflow-x:hidden" id="@eachStore.StoreID">
+                                            <div class="btn btn-navbar btn-droppable"  >@eachStore.Name (@eachStore.Hub.Name)</div>
+                                            </div>
+                                     }
+                                 }
+
+                            </div>
+                           
                         }
                     
                     } 
@@ -122,9 +129,26 @@
     <script>
         var regionId = '@ViewBag.regionId';
         var RegionName = '@ViewBag.RegionName';
-        var Url = '@Url.Action("ReadRequisitions","DispatchAllocation",new {area = "Logistics"})';
+        var Url = '@Url.Action("ReadRequisitions", "DispatchAllocation", new { area = "Logistics" })';
         var UrlPOST = '@Url.Action("Save","DispatchAllocation",new {area = "Logistics"})';
       
+       
+        $('a#btnToggle').click(function () {
+        
+            $(this).text($(this).text() == 'Hub' ? 'Store' : 'Hub');
+            if ($(this).text() == 'Hub') {
+                document.getElementById("Store").style.display = "none";
+                document.getElementById("Hub").style.display = "block";
+            } else if ($(this).text() == 'Store') {
+                document.getElementById("Hub").style.display = "none";
+                document.getElementById("Store").style.display = "block";
+                
+            }
+        });
+        
+       
+
+       
     </script>
     <style>
         .thumbnail { height: 280px; }
@@ -133,5 +157,7 @@
         .span4 {
             margin: 0px !important;
         }
+
+
 
     </style>
