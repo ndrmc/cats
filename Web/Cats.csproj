@@ -3699,13 +3699,11 @@
     <Content Include="Views\Shared\NewTheme _MainLayout.cshtml" />
     <Content Include="Views\Shared\NewTheme_BreadCrumb.cshtml" />
     <Content Include="Views\Shared\NewTheme_MainMenu.cshtml" />
-<<<<<<< HEAD
+
     <Content Include="Web References\ReportPortal\CacheRefreshPlan2.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
-=======
     <Content Include="Views\Shared\EditorTemplates\AmharicDatePicker.cshtml" />
->>>>>>> 978255ccc71c3e359006396e5e25956d7332a898
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -130,6 +130,7 @@
     <Compile Include="TransporterPaymentRequest.cs" />
     <Compile Include="ViewModels\Dashboard\RecentRequests.cs" />
     <Compile Include="ViewModels\DistributionByAgeViewModel.cs" />
+    <Compile Include="DistibtionStatus.cs" />
     <Compile Include="VWRegionalRequest.cs" />
     <Compile Include="WoredaStockDistributionDetail.cs" />
     <Compile Include="Delivery.cs" />

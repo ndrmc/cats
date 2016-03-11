@@ -150,7 +150,7 @@ namespace Cats.Services.Dashboard
                 {
                     plan = distiribution.PlanName,
                     Woreda = distiribution.WoredaName,
-                    Fdps = distiribution.FDPID.Count().ToString(),
+                    Fdps = distiribution.FDPID,
                     status = distiribution.Status
                    
                 };

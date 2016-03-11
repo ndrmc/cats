@@ -780,6 +780,15 @@ namespace Cats.Data.UnitWork
         }
 
 
+        private IGenericRepository<DistibtionStatus> woredaDistributionDashboardRepository;
+
+        public IGenericRepository<DistibtionStatus> WoredaDistributionDashboardRepository
+        {
+
+            get { return this.woredaDistributionDashboardRepository ?? (this.woredaDistributionDashboardRepository = new GenericRepository<DistibtionStatus>(_context)); }
+
+        }
+
 
 
 
