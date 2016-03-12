@@ -405,7 +405,6 @@ namespace Cats.Services.Procurement
 
             var transportRequision = _unitOfWork.TransportRequisitionDetailRepository.Get(
                 t => t.TransportRequisitionID == transportRequisitionId, null, null).Select(t => t.RequisitionID);
-
             var reqDetails = _unitOfWork.ReliefRequisitionDetailRepository.Get(t => transportRequision.Contains(t.RequisitionID));
             var transportSourceDestination = new List<TransporterRequisition>();
             foreach (var reliefRequisitionDetail in reqDetails)
@@ -418,18 +417,18 @@ namespace Cats.Services.Procurement
                 var reqId = reliefRequisitionDetail.RequisitionID;
                 var storeId = _unitOfWork.HubAllocationRepository.FindBy(t => t.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().StoreId;
                 var hubId = _unitOfWork.HubAllocationRepository.FindBy(t => t.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().HubID;//requi.HubAllocations.FirstOrDefault().HubID;
-                if (storeId!=null && storeId !=0)
-                {
-                    hubId = (int) storeId;
-                }
+                int temp = hubId;
                 var woredaId = reliefRequisitionDetail.FDP.AdminUnitID;
                 var regionId = reliefRequisitionDetail.ReliefRequisition.RegionID;
                 //transportRequisition.TransportRequisitionDetailID = reliefRequisitionDetail.ReliefRequisition.TransportRequisitionDetails.First().TransportRequisitionDetailID;
                 //transportRequisition.RequisitionID = reliefRequisitionDetail.RequisitionID;
                 //transportRequisition.HubID = _unitOfWork.HubAllocationRepository.FindBy(t => t.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().HubID;//requi.HubAllocations.FirstOrDefault().HubID;
                 //transportRequisition.WoredaID = reliefRequisitionDetail.FDP.AdminUnitID;
-
-                var transportBidWinners = _transporterService.GetBidWinner(hubId,woredaId,bidId);
+                if (storeId != null && storeId != 0 )
+                {
+                    temp = (int)storeId;
+                }
+                var transportBidWinners = _transporterService.GetBidWinner(temp,woredaId,bidId);
                
                  
                 //_unitOfWork.BidWinnerRepository.Get(
