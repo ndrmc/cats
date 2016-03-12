@@ -61,7 +61,7 @@
                     
                         var enumerable = ViewData["Hubs"] as IEnumerable<Hub>;
                        
-                        
+                             
                         if (enumerable != null)
                         {
                             var hubs = enumerable as Hub[] ?? enumerable.ToArray();
@@ -95,7 +95,7 @@
                                  {
                                      foreach (var eachStore in store.Stores)
                                      {
-                                            <div class="thumbnail span4" droppable="true" drop="handleDrop('@eachStore.StoreID')" style="overflow-y:scroll; overflow-x:hidden" id="@eachStore.StoreID">
+                                            <div class="thumbnail span4" droppable="true" drop="handleDrop('@eachStore.Hub.HubID _ @eachStore.StoreID')" style="overflow-y:scroll; overflow-x:hidden" id="@eachStore.StoreID _ @eachStore.Hub.HubID" >
                                             <div class="btn btn-navbar btn-droppable"  >@eachStore.Name (@eachStore.Hub.Name)</div>
                                             </div>
                                      }

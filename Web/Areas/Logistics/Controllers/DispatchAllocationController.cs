@@ -155,7 +155,7 @@ namespace Cats.Areas.Logistics.Controllers
             return RedirectToAction("Hub", new { regionId = paramRegionId });
 
         }
-
+        
         public ActionResult AssignHubFromLogisticsDashboard(int paramRegionId)
         {
             ViewBag.regionId = paramRegionId;
@@ -205,7 +205,7 @@ namespace Cats.Areas.Logistics.Controllers
                         hubAllocated.AllocatedBy = user.UserProfileID;
                         hubAllocated.AllocationDate = DateTime.Now.Date;
                         hubAllocated.HubID = all.HubId;
-
+                        hubAllocated.StoreId = all.StoreId;
 
                         _hubAllocationService.EditHubAllocation(hubAllocated);
                     }
