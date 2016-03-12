@@ -11,7 +11,7 @@ namespace Cats.Models
        
        public string PlanName { get; set; }
        public int WoredaID { get; set; }
-       public string RationName { get; set; }
+       
        public int FDPID { get; set; }
       
        public string RegionName { get; set; }

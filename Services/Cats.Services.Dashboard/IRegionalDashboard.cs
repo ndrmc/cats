@@ -14,6 +14,6 @@ namespace Cats.Services.Dashboard
         List<Object> RequisitionsPercentage(int regionID);
         List<Object> GetRecentDispatches(int regionID);
         List<RegionalRequestAllocationChange> GetAllocationChange(int regionID);
-
+        List<DistibtionStatusView> GetDistributions(int regionID);
     }
 }

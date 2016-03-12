@@ -444,54 +444,15 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="">
-                                            <td class="hidden-xs">2055</td>
-                                            <td>Dawent</td>
-                                            <td class="number">{{80|number}}</td>
-                                            <td><span class="label label-default">On process</span></td>
-                                            <td>
-                                                <a href="javascript:;" class="btn btn-sm btn-default">
-                                                    View <i class="icon-chevron-right"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
 
-                                        <tr class="">
-                                            <td class="hidden-xs">1206</td>
-                                            <td>Adhar</td>
-                                            <td>{{45|number}}</td>
-                                            <td><span class="label label-success">Completed</span></td>
-                                            <td>
-                                                <a href="javascript:;" class="btn btn-sm btn-default">
-                                                    View <i class="icon-chevron-right"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
 
-                                        <tr class="">
-                                            <td class="hidden-xs">1207</td>
-                                            <td>Adhar</td>
-                                            <td>{{24|number}}</td>
-                                            <td><span class="label label-success">Completed</span></td>
-                                            <td>
-                                                <a href="javascript:;" class="btn btn-sm btn-default">
-                                                    View <i class="icon-chevron-right"></i>
-                                                </a>
-                                            </td>
+                                        <tr class="" ng-repeat="Distribution in getDistribution">
+                                            <td>{{Distribution.Plan}}</td>
+                                            <th>{{Distribution.Woreda}}</th>
+                                            <td>{{Distribution.FDPs}}</td>
+                                            <th class="number">{{Distribution.Status}} </th>
+                                            
                                         </tr>
-
-                                        <tr class="">
-                                            <td class="hidden-xs">2206</td>
-                                            <td>Adhar</td>
-                                            <td>{{56|number}}</td>
-                                            <td><span class="label label-success">Completed</span></td>
-                                            <td>
-                                                <a href="javascript:;" class="btn btn-sm btn-default">
-                                                    View <i class="icon-chevron-right"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-
 
                                     </tbody>
                                 </table>
@@ -668,6 +629,8 @@
         $scope.AllocationChanges = [];
         $scope.Dispatches = [];
         $scope.Data = [];
+        $scope.Distribtion = [];
+
 
 
         var onRequestsSuccess = function (data) {
@@ -685,7 +648,9 @@
         var onDispatchesSuccess = function (data) {
             $scope.Dispatches = data;
         };
-
+        var onDistributionSuccess = function (data) {
+            $scope.Distribtion = data;
+        };
         var onDashboardDataSuccess = function (data) {
             $scope.Data = data;
         };
@@ -708,14 +673,16 @@
             $http.post("@Url.Action("Dispatches", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDispatchesSuccess);
         };
 
-        $scope.getDispatches = function () {
-            $http.post("@Url.Action("Dispatches", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDispatchesSuccess);
+        $scope.getDistribution = function () {
+            $http.post("@Url.Action("Distributions", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDistributionSuccess);
         };
         
         $scope.getRegionalData = function () {
             $http.post("@Url.Action("RegionalData", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDashboardDataSuccess);
         };
-
+        $scope.getRegionalData = function () {
+            $http.post("@Url.Action("RegionalData", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDashboardDataSuccess);
+        };
         $scope.viewRequistion = function (item) {
             window.location = "@Url.Action("Allocation","ReliefRequisition",new {Area="EarlyWarning"})" + "?id=" + +item.RequisitionID;
         };
@@ -729,6 +696,7 @@
         $scope.getAllocationChanges();
         $scope.getDispatches();
         $scope.getRegionalData();
+        $scope.getDistribution();
     }
 
 
