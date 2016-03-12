@@ -313,7 +313,7 @@ namespace Cats.Services.Common
                        from store in _unitOfWork.StoreRepository.FindBy(s => s.Hub.HubOwnerID == 1)
                        select new
                                   {
-                                      Name = (" -> " + store.Name),
+                                      Name = (" >   " + store.Name),
                                       Id = store.StoreID,
                                       HubId = store.HubID
                                   }
