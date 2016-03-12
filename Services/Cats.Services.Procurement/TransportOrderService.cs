@@ -416,7 +416,12 @@ namespace Cats.Services.Procurement
                 //        t => t.RequisitionID == reliefRequisitionDetail.RequisitionID, null, "HubAllocations").FirstOrDefault();
                 var transRequisDetailId = reliefRequisitionDetail.ReliefRequisition.TransportRequisitionDetails.First().TransportRequisitionDetailID;
                 var reqId = reliefRequisitionDetail.RequisitionID;
+                var storeId = _unitOfWork.HubAllocationRepository.FindBy(t => t.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().StoreId;
                 var hubId = _unitOfWork.HubAllocationRepository.FindBy(t => t.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().HubID;//requi.HubAllocations.FirstOrDefault().HubID;
+                if (storeId!=null && storeId !=0)
+                {
+                    hubId = (int) storeId;
+                }
                 var woredaId = reliefRequisitionDetail.FDP.AdminUnitID;
                 var regionId = reliefRequisitionDetail.ReliefRequisition.RegionID;
                 //transportRequisition.TransportRequisitionDetailID = reliefRequisitionDetail.ReliefRequisition.TransportRequisitionDetails.First().TransportRequisitionDetailID;
