@@ -68,12 +68,15 @@ namespace Cats.Models.Hubs.ViewModels
          public bool EditbleDateGap { get
         {
 
-            TimeSpan span = DateTime.Now.Subtract(CreatedDate);
-            if ((int)span.TotalDays <= 30)
+
+                if (CreatedDate == Convert.ToDateTime("1 / 01 / 0001 12:00:00 AM"))
+                    return false;
+                TimeSpan span = DateTime.Now.Subtract(CreatedDate);
+                if ((int)span.TotalDays <= 30)
+                    return false;
+
                 return true;
-            
-                return false;
-        } }
+            } }
         public Guid ReceiptAllocationId { get; set; }
 
         public bool IsFalseGRN { get; set; }
