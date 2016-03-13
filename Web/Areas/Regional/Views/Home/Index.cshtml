@@ -160,7 +160,7 @@
                                                     View <i class="icon-chevron-right"></i>
                                                 </a>
                                             </th>
-                                           
+
                                         </tr>
                                     </tbody>
                                 </table>
@@ -252,8 +252,8 @@
                                             <td><span class="label label-danger">{{requisition.Status}}</span></td>
                                             <td>
                                                 @* <a ng-href="@Url.Action("Allocation", "ReliefRequisition", new { Area = "EarlyWarning", id = 2 })" class="btn btn-sm btn-default">
-                                                    View <i class="icon-chevron-right"></i>
-                                                </a>*@
+                                                        View <i class="icon-chevron-right"></i>
+                                                    </a>*@
                                                 <a ng-click="viewRequistion(requisition)" class="btn btn-sm btn-default"> View <i class="icon-chevron-right"></i></a>
                                             </td>
                                         </tr>
@@ -280,7 +280,7 @@
                         <div class="portlet-content" ng-controller="stageController">
                             <div id="container" class="chartWrap" draw-requisitions-chart=""></div>
                         </div>
-                       
+
 
                     </div>
                     <!-- /.portlet -->
@@ -342,7 +342,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        
+
 
                                         <tr class="" ng-repeat="dispatch in Dispatches">
                                             <td>{{dispatch[0].Value}}</td>
@@ -421,10 +421,8 @@
                             </h3>
                             <ul class=" pull-right portlet-tools ">
                                 <li>
-                                    <button class="btn btn-sm btn-default">
-                                        Show more
-                                    </button>
 
+                                    <a class="btn btn-sm btn-default" href="@Url.Action("Index", "WoredaStockDistribution", new { Area = "Logistics", regionID = ViewBag.RegionID })"> Show more</a>
                                 </li>
                             </ul>
                         </div>
@@ -446,12 +444,12 @@
                                     <tbody>
 
 
-                                        <tr class="" ng-repeat="Distribution in getDistribution">
-                                            <td>{{Distribution.Plan}}</td>
+                                        <tr class="" ng-repeat="Distribution in Distribtion">
+                                            <td>{{Distribution.plan}}</td>
                                             <th>{{Distribution.Woreda}}</th>
-                                            <td>{{Distribution.FDPs}}</td>
-                                            <th class="number">{{Distribution.Status}} </th>
-                                            
+                                            <td class="number">{{Distribution.Fdps}}</td>
+                                            <th>{{Distribution.status}} </th>
+
                                         </tr>
 
                                     </tbody>
@@ -478,7 +476,7 @@
                             <div id="Age" class="chartWrap" draw-age-chart></div>
                         </div>
 
-                      
+
                         <!-- /.portlet-content -->
 
                     </div>
@@ -532,8 +530,8 @@
                 <!-- /.portlet -->
             </div>
         </div>
-        
-        
+
+
         <div>
             <div class="row" style="border-bottom-width: thin; border-bottom-color: #666; border-bottom-style: inset; margin-top: 5px">
                 <div class="pull-left">
@@ -606,7 +604,7 @@
     $("#RequisitionHeader").click(function () {
         $("#RequisitionContent").slideToggle("slow", "linear");
     });
-    
+
     $("#AllocationChangeHeader").click(function () {
         $("#AllocationChangeContent").slideToggle("slow", "linear");
     });
@@ -640,7 +638,7 @@
         var onRequisitionsSuccess = function (data) {
             $scope.Requisitions = data;
         };
-        
+
         var onAllocationChangesSuccess = function (data) {
             $scope.AllocationChanges = data;
         };
@@ -664,7 +662,7 @@
         $scope.getRequisitions = function () {
             $http.post("@Url.Action("Requisitions", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onRequisitionsSuccess);
         };
-        
+
         $scope.getAllocationChanges = function () {
             $http.post("@Url.Action("AllocationChanges", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onAllocationChangesSuccess);
         };
@@ -676,7 +674,7 @@
         $scope.getDistribution = function () {
             $http.post("@Url.Action("Distributions", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDistributionSuccess);
         };
-        
+
         $scope.getRegionalData = function () {
             $http.post("@Url.Action("RegionalData", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDashboardDataSuccess);
         };
@@ -686,7 +684,7 @@
         $scope.viewRequistion = function (item) {
             window.location = "@Url.Action("Allocation","ReliefRequisition",new {Area="EarlyWarning"})" + "?id=" + +item.RequisitionID;
         };
-        
+
         $scope.viewRequest = function (item) {
             window.location = "@Url.Action("Details","Request",new {Area="EarlyWarning"})" + "?id=" + +item.RegionalRequestID;
          };
