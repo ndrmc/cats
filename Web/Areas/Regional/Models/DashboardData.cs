@@ -17,7 +17,7 @@ namespace Cats.Areas.Regional.Models
         public decimal HubAssignedRequisitions { get; set; }
        
         public int IncomingDispatches { get; set; }
-        public int IncomingCommodity { get; set; }
+        public decimal IncomingCommodity { get; set; }
         public int Above18 { get; set; }
         public int Below5 { get; set; }
         public int Bet5And8 { get; set; }
