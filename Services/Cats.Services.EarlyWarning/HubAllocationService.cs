@@ -44,7 +44,7 @@ namespace Cats.Services.EarlyWarning
                     ReferenceNo = "001",
                     HubID = appRequisition.HubId,
 
-                    StoreId = appRequisition.StoreId,
+                   // StoreId = appRequisition.StoreId,
 
                     SatelliteWarehouseID= appRequisition.SatelliteWarehouseID
 

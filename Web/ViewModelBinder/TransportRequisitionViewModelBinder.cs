@@ -55,11 +55,11 @@ namespace Cats.ViewModelBinder
                 transportRequisitionDetailViewModel.CommodityID = requisitionToDispatch.CommodityID;
                 transportRequisitionDetailViewModel.CommodityName = requisitionToDispatch.CommodityName;
                 transportRequisitionDetailViewModel.HubID = requisitionToDispatch.HubID;
-                transportRequisitionDetailViewModel.OrignWarehouse = requisitionToDispatch.Store != ""
-                                                                         ? requisitionToDispatch.OrignWarehouse + "(" +
-                                                                           requisitionToDispatch.Store + ")"
-                                                                         : requisitionToDispatch.OrignWarehouse;
-
+                //transportRequisitionDetailViewModel.OrignWarehouse = requisitionToDispatch.Store != ""
+                //                                                         ? requisitionToDispatch.OrignWarehouse + "(" +
+                //                                                           requisitionToDispatch.Store + ")"
+                //                                                         : requisitionToDispatch.OrignWarehouse;
+                transportRequisitionDetailViewModel.OrignWarehouse = requisitionToDispatch.OrignWarehouse;
                 transportRequisitionDetailViewModel.QuanityInQtl = requisitionToDispatch.QuanityInQtl.ToPreferedWeightUnit();
                 transportRequisitionDetailViewModel.Region = requisitionToDispatch.RegionName;
                 transportRequisitionDetailViewModel.Zone = requisitionToDispatch.Zone;
@@ -67,7 +67,7 @@ namespace Cats.ViewModelBinder
                 transportRequisitionDetailViewModel.RequisitionID = requisitionToDispatch.RequisitionID;
                 transportRequisitionDetailViewModel.ProgramID = requisitionToDispatch.ProgramID;
                 transportRequisitionDetailViewModel.Program = requisitionToDispatch.Program;
-                transportRequisitionDetailViewModel.Store = requisitionToDispatch.Store;
+                //transportRequisitionDetailViewModel.Store = requisitionToDispatch.Store;
             }
             return transportRequisitionDetailViewModel;
         }

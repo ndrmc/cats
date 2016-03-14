@@ -217,7 +217,7 @@ namespace Cats.Areas.Logistics.Controllers
                         hubAllocated.AllocationDate = DateTime.Now.Date;
                         hubAllocated.HubID = all.HubId;
 
-                        hubAllocated.StoreId = all.StoreId;
+                       // hubAllocated.StoreId = all.StoreId;
 
                         hubAllocated.SatelliteWarehouseID = all.SatelliteWarehouseID;
 
