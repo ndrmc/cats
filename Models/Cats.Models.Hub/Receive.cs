@@ -36,6 +36,7 @@ namespace Cats.Models.Hubs
         public string PortName { get; set; }
         public string PurchaseOrder { get; set; }
         public string SupplierName { get; set; }
+       
         public Nullable<System.Guid> ReceiptAllocationID { get; set; }
         public virtual CommoditySource CommoditySource { get; set; }
         public virtual CommodityType CommodityType { get; set; }

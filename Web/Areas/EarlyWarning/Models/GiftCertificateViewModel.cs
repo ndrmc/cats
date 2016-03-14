@@ -97,7 +97,7 @@ namespace Cats.Areas.GiftCertificate.Models
         /// 	<c>true</c> if this instance is printed; otherwise, <c>false</c>.
         /// </value>
         [Required(ErrorMessage = "Is Printed is required")]
-        public Boolean IsPrinted { get; set; }
+        public bool IsPrinted { get; set; }
 
         /// <summary>
         /// Gets or sets the program ID.

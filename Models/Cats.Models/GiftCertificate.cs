@@ -47,7 +47,7 @@ namespace Cats.Models
                                      {"Vessel", this.Vessel.ToString()},
                                      {"ETA", this.ETA.ToString()},
                                      {"ReferenceNo", this.ReferenceNo.ToString()},
-                                  
+                                     
                                      //{"DModeOfTransport", this.DModeOfTransport.ToString()},
                                      //{"PortName", this.PortName.ToString()},
                                      //{"StatusID", this.StatusID.ToString()},
@@ -55,7 +55,7 @@ namespace Cats.Models
                                     
                                     
                                     
-                                     //{"Program", this.Program.Name.ToString()},
+                                     {"IsPrinted", this.IsPrinted.ToString()},
                                      {"Commodity", this.GiftCertificateDetails[0].Commodity.Name},
                                      {"EstimatedPrice", this.GiftCertificateDetails[0].EstimatedPrice.ToString()},
                                      {"EstimatedTax", this.GiftCertificateDetails[0].EstimatedTax.ToString()},

@@ -38,7 +38,7 @@ namespace Cats.ViewModelBinder
             giftCertificateViewModel.StatusID = giftCertificateModel.StatusID;
             giftCertificateViewModel.DeclarationNumber = giftCertificateModel.DeclarationNumber;
             giftCertificateViewModel.GiftDatePref=giftCertificateModel.GiftDate.ToCTSPreferedDateFormat(userPrefrence);
-
+            giftCertificateViewModel.IsPrinted = giftCertificateModel.IsPrinted;
             var giftCertificateDetail = giftCertificateModel.GiftCertificateDetails.FirstOrDefault();
             if (giftCertificateDetail != null)
                 giftCertificateViewModel.CommodityTypeID = giftCertificateDetail.Commodity.CommodityTypeID;

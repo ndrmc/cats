@@ -66,7 +66,11 @@ namespace Cats.Areas.Regional.Controllers
             //int sum = 0;
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-
+        public JsonResult Distributions(int regionID)
+        {
+            var result = _regionalDashboard.GetDistributions(regionID);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult Dispatches(int regionID)
         {
             var result = _regionalDashboard.GetRecentDispatches(regionID);

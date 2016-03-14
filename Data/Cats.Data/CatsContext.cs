@@ -136,7 +136,7 @@ namespace Cats.Data
         public DbSet<PaymentRequest> PaymentRequests { get; set; }
 
         public DbSet<IDPSReasonType> IDPSReasonTypes { get; set; }
-
+        public DbSet<DistibtionStatus> DistibtionStatus { get; set; }
         public DbSet<WoredaHubLink> WoredaHubLinks { get; set; }
         public DbSet<ActionTypes> ActionTypeses { get; set; }
         public DbSet<WoredaStockDistribution> WoredaStockDistributions { get; set; }
@@ -173,7 +173,7 @@ namespace Cats.Data
             modelBuilder.Configurations.Add(new OtherDispatchAllocationMap());
 
             modelBuilder.Configurations.Add(new DeliveryReconcileMap());
-
+            modelBuilder.Configurations.Add(new DistibtionStatusMap());
             modelBuilder.Configurations.Add(new PaymentRequestMap());
             modelBuilder.Configurations.Add(new SIPCAllocationMap());
             modelBuilder.Configurations.Add(new PromisedContributionMap());

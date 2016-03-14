@@ -405,7 +405,7 @@
                }
             });
         });
-
+        
 
     }
 
@@ -536,10 +536,27 @@
         return data.indexOf(dataItem);
     }
 
+    function makeKendoDirty() {
+        var grid = $("#RequisitionGridDetail").data("kendoGrid");
+        var kdata = grid.dataSource.data();
+        for (var i = 0; i < kdata.length; i++) {
+            kdata[i].dirty = true;
+            var distributionStartDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionStartDate");
+            var distributionEndDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionEndDate");
+            var dsd = kendo.toString(kendo.parseDate(distributionStartDate.value), "MM/dd/yy");
+            var ded = kendo.toString(kendo.parseDate(distributionEndDate.value), "MM/dd/yy");
+            kdata[i].DistributionStartDate = dsd == null ? distributionStartDate.value : dsd;
+            kdata[i].DistributionEndDate = ded == null ? distributionEndDate.value : ded;
+            distributionStartDate.value = kdata[i].DistributionStartDate;
+            distributionEndDate.value = kdata[i].DistributionEndDate;
+        }
+        return true;
+    }
     $(function () {
         $("#SubmitButton").click(function () {
            
             if (validateNoOfBeneficiaries() == true && validateDirectAndPublic() == true && save == true) {
+                makeKendoDirty();
                 save = false;
                 $(this).button('loading');
                 $("#frm_create_utilization").submit();

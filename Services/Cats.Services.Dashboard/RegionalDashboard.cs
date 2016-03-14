@@ -138,7 +138,28 @@ namespace Cats.Services.Dashboard
                     args: regionID);
             return limResult.ToList();
         }
+        public List<DistibtionStatusView> GetDistributions(int regionID)
+        {
+            var r = new List<DistibtionStatusView>();
+            var distibtion = _unitOfWork.WoredaDistributionDashboardRepository.FindBy(t => t.RegionID == regionID);
+          //  var requests = _unitOfWork.RegionalRequestRepository.FindBy(t => t.RegionID == regionID && t.PlanID == currentHRD.PlanID).OrderByDescending(t => t.RegionalRequestID).Take(5);
 
+            foreach (var distiribution in distibtion)
+            {
+                var n = new DistibtionStatusView
+                {
+                    plan = distiribution.PlanName,
+                    Woreda = distiribution.WoredaName,
+                    Fdps = distiribution.FDPID,
+                    status = distiribution.Status
+                   
+                };
+
+                r.Add(n);
+            }
+
+            return r;
+        }
         public void Dispose()
         {
          
