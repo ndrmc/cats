@@ -4,9 +4,14 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Cats.Areas.Regional.Models;
+using Cats.Models.Hubs;
 using Cats.Services.Dashboard;
 using Cats.Services.EarlyWarning;
+using Cats.Services.Hub;
 using Cats.Services.Logistics;
+using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
+using IFDPService = Cats.Services.EarlyWarning.IFDPService;
+using Cats.Web.Hub.Helpers;
 
 namespace Cats.Areas.Regional.Controllers
 {
@@ -21,6 +26,9 @@ namespace Cats.Areas.Regional.Controllers
         private readonly IFDPService _fdpService;
         private readonly IHRDService _hrdService;
         private readonly IUtilizationHeaderSerivce _utilization;
+        private readonly IDispatchService _dispatchService;
+        private readonly IDispatchAllocationService _dispatchAllocationService;
+        private readonly IDeliveryReconcileService _deliveryReconcileService;
 
 
         public FetchDataController(IRegionalDashboard regionalDashboard,
@@ -29,7 +37,7 @@ namespace Cats.Areas.Regional.Controllers
             IAdminUnitService adminUnitService,
             IFDPService fdpService,
             IHRDService hrdService,
-            IUtilizationHeaderSerivce utilization
+            IUtilizationHeaderSerivce utilization, IDispatchService dispatchService, IDeliveryReconcileService deliveryReconcileService, IDispatchAllocationService dispatchAllocationService
 
             )
         {
@@ -40,6 +48,9 @@ namespace Cats.Areas.Regional.Controllers
             _fdpService = fdpService;
             _hrdService = hrdService;
             _utilization = utilization;
+            _dispatchService = dispatchService;
+            _deliveryReconcileService = deliveryReconcileService;
+            _dispatchAllocationService = dispatchAllocationService;
         }
 
         public JsonResult AllocationChanges(int regionID)
@@ -152,9 +163,16 @@ namespace Cats.Areas.Regional.Controllers
             d.Female = female;
             d.Male = male;
 
-            d.IncomingCommodity = 25131;
-            d.IncomingDispatches = 2142;
-
+            
+            var deliveryReconciles = _deliveryReconcileService.GetAllDeliveryReconciles().Select(dr => dr.DispatchID).Distinct();
+            var dispatchOnRegionNonReconcile = _dispatchService.Get(dd => dd.FDP.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID).Where(i => !deliveryReconciles.Contains(i.DispatchID)).ToList();
+            var count = dispatchOnRegionNonReconcile.Count();
+            var dornr = dispatchOnRegionNonReconcile.Select(tt => tt.DispatchAllocationID).Distinct();
+            var amount = _dispatchAllocationService.Get(t => dornr.Contains(t.DispatchAllocationID));
+            var dispatchAllocations = amount as IList<DispatchAllocation> ?? amount.ToList();
+            var amt = dispatchAllocations.ToList().Sum(aa => aa.Amount)*10;
+            d.IncomingCommodity = amt;
+            d.IncomingDispatches = count;
             return Json(d, JsonRequestBehavior.AllowGet);
         }
 
