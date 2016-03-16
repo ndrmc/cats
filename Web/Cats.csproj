@@ -25,6 +25,13 @@
     <SilverlightApplicationList>
     </SilverlightApplicationList>
     <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
+    <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UseGlobalApplicationHostFile />
     <!--<RunOctoPack>True</RunOctoPack>-->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -536,7 +543,6 @@
     <Compile Include="Controllers\UserPreferenceController.cs" />
     <Compile Include="CTSDataSet.cs">
       <DependentUpon>CTSDataSet.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="CTSDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -3693,6 +3699,9 @@
     <Content Include="Views\Shared\NewTheme _MainLayout.cshtml" />
     <Content Include="Views\Shared\NewTheme_BreadCrumb.cshtml" />
     <Content Include="Views\Shared\NewTheme_MainMenu.cshtml" />
+    <Content Include="Web References\ReportPortal\CacheRefreshPlan1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
