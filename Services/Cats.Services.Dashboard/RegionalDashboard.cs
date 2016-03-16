@@ -138,6 +138,16 @@ namespace Cats.Services.Dashboard
                     args: regionID);
             return limResult.ToList();
         }
+        
+             public List<object> GetAllRecentDispatches(int regionID)
+        {
+            var requisitions = new RecentDispatches();
+            var limResult =
+                requisitions.Query(
+                    "SELECT * FROM Dashboard_Regional_Dispatches WHERE RegionID=@0 ORDER BY DispatchDate DESC",
+                    args: regionID);
+            return limResult.ToList();
+        }
         public List<DistibtionStatusView> GetDistributions(int regionID)
         {
             var r = new List<DistibtionStatusView>();
