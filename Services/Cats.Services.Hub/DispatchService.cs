@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using Cats.Data.Hub;
 using Cats.Data.Hub.UnitWork;
 using Cats.Models.Hubs;
-
+using Ledger = Cats.Models.Ledger;
 
 namespace Cats.Services.Hub
 {
@@ -159,14 +159,14 @@ namespace Cats.Services.Hub
                 if (balance.CommodityTypeID == 1)
                 {
                     balance.TotalDispatchedMT = (from v in trans
-                                                 where v.LedgerID == Cats.Models.Ledger.Constants.GOODS_IN_TRANSIT
+                                                 where v.LedgerID == Ledger.Constants.GOODS_IN_TRANSIT
                                                  select v.QuantityInMT).DefaultIfEmpty().Sum();
 
                 }
                 else
                 {
                     balance.TotalDispatchedMT = (from v in trans
-                                                 where v.LedgerID == Cats.Models.Ledger.Constants.GOODS_IN_TRANSIT
+                                                 where v.LedgerID == Ledger.Constants.GOODS_IN_TRANSIT
                                                  select v.QuantityInUnit).DefaultIfEmpty().Sum();
 
                 }
@@ -188,7 +188,7 @@ namespace Cats.Services.Hub
             var query =
                 _unitOfWork.TransactionRepository.Get(
                     t =>
-                    t.LedgerID == Cats.Models.Ledger.Constants.GOODS_ON_HAND_UNCOMMITED && t.ShippingInstruction.Value == SINumber &&
+                    t.LedgerID == Ledger.Constants.GOODS_ON_HAND_UNCOMMITED && t.ShippingInstruction.Value == SINumber &&
                     t.HubID == hubID).Select(t => t.Commodity).Distinct();
 
             return query.ToList();
