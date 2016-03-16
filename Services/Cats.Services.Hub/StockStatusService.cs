@@ -10,7 +10,7 @@ using Cats.Services.Hub.Interfaces;
 using Cats.Data.Hub;
 using Cats.Models.Hubs;
 //using Cats.Helpers;
-
+using Ledger = Cats.Models.Ledger;
 namespace Cats.Services.Hub
 {
     public class StockStatusService : IStockStatusService
@@ -78,7 +78,7 @@ namespace Cats.Services.Hub
 			                                                GROUP BY CommodityID) Commited
 
 			                                                ON GOH.CommodityID = Commited.CommodityID
-			                                                JOIN Commodity on Commodity.CommodityID = GOH.CommodityID", Cats.Models.Ledger.Constants.GOODS_ON_HAND, Cats.Models.Ledger.Constants.COMMITED_TO_FDP, hub, program, "'" + date.AddDays(1).ToString(CultureInfo.InvariantCulture) + "'");
+			                                                JOIN Commodity on Commodity.CommodityID = GOH.CommodityID", Ledger.Constants.GOODS_ON_HAND, Ledger.Constants.COMMITED_TO_FDP, hub, program, "'" + date.AddDays(1).ToString(CultureInfo.InvariantCulture) + "'");
             
             return _unitOfWork.Database.SqlQuery<HubFreeStockView>(query).ToList();
         }
@@ -116,7 +116,7 @@ namespace Cats.Services.Hub
 			                                                ON GOH.CommodityID = Commited.CommodityID
 			                                                JOIN Commodity on Commodity.CommodityID = GOH.CommodityID
 															JOIN Program on Program.ProgramID = GOH.ProgramID
-															JOIN Hub on Hub.HubID = GOH.HubID", Cats.Models.Ledger.Constants.GOODS_ON_HAND,Cats.Models.Ledger.Constants.COMMITED_TO_FDP);
+															JOIN Hub on Hub.HubID = GOH.HubID", Ledger.Constants.GOODS_ON_HAND,Ledger.Constants.COMMITED_TO_FDP);
             return _unitOfWork.Database.SqlQuery<SummaryFreeAndPhysicalStockModel>(query).ToList();
 
 
@@ -144,7 +144,7 @@ namespace Cats.Services.Hub
 			                                               														
 															JOIN Hub on Hub.HubID = GOH.HubID
 															JOin Program on Program.ProgramID =GOH.ProgramID
-															", Cats.Models.Ledger.Constants.GOODS_ON_HAND, Cats.Models.Ledger.Constants.COMMITED_TO_FDP, "'"  + date.AddDays(1).ToString(CultureInfo.InvariantCulture) + "'", program);
+															",Ledger.Constants.GOODS_ON_HAND, Ledger.Constants.COMMITED_TO_FDP, "'"  + date.AddDays(1).ToString(CultureInfo.InvariantCulture) + "'", program);
             return _unitOfWork.Database.SqlQuery<HubFreeStockSummaryView>(query).ToList();
 
         }
@@ -170,7 +170,7 @@ namespace Cats.Services.Hub
 															JOIN Hub on Hub.HubID = GOH.HubID
 															JOin Program on Program.ProgramID =GOH.ProgramID
                                                             Group by GOH.HubID,Hub.Name
-															", Cats.Models.Ledger.Constants.GOODS_ON_HAND, Cats.Models.Ledger.Constants.COMMITED_TO_FDP, "'" + date.AddDays(1).ToString(CultureInfo.InvariantCulture) + "'", hubId);
+															",Ledger.Constants.GOODS_ON_HAND, Ledger.Constants.COMMITED_TO_FDP, "'" + date.AddDays(1).ToString(CultureInfo.InvariantCulture) + "'", hubId);
           return _unitOfWork.Database.SqlQuery<HubFreeStockSummaryView>(query).ToList();
 
       }
@@ -226,8 +226,8 @@ namespace Cats.Services.Hub
 			                                                ON GOH.HubID = DispatchedQuantity.HubID
 
 															JOIN [CatsMaster].[dbo].Hub on Hub.HubID = GOH.HubID
-															", Cats.Models.Ledger.Constants.GOODS_ON_HAND,
-                            Cats.Models.Ledger.Constants.COMMITED_TO_FDP, Cats.Models.Ledger.Constants.GOODS_IN_TRANSIT,
+															", Ledger.Constants.GOODS_ON_HAND,
+                            Ledger.Constants.COMMITED_TO_FDP, Ledger.Constants.GOODS_IN_TRANSIT,
                             "'" + date.AddDays(1).ToString(CultureInfo.InvariantCulture) + "'", program);
           return _unitOfWork.Database.SqlQuery<HubDispatchAllocationViewModel>(query).ToList();
       }
@@ -235,8 +235,8 @@ namespace Cats.Services.Hub
         public List<StockAdjustmentViewModel> Adjustment(int programId,int hubId,int commodityId, int stockType)
         {
             var ledger = stockType == 0
-                             ? Cats.Models.Ledger.Constants.GOODS_ON_HAND
-                             : Cats.Models.Ledger.Constants.COMMITED_TO_FDP;
+                             ? Ledger.Constants.GOODS_ON_HAND
+                             : Ledger.Constants.COMMITED_TO_FDP;
 
             var query = string.Format("SELECT SUM(QuantityInMT) QuantityInMT,c.Name as commodityName, t.CommodityID ,p.Name as ProgramName,t.ProgramID, h.Name as HubName, s.Value as SINumber, s.ShippingInstructionID,t.ProjectCodeID" + Environment.NewLine + 
 	                                                "FROM [Transaction] t inner join ShippingInstruction s on t.ShippingInstructionID = s.ShippingInstructionID" + Environment.NewLine + 
@@ -264,7 +264,7 @@ FROM            dbo.Receive INNER JOIN
 													(SELECT SUM(ABS(QuantityInMT)) QuantityInMT, ProgramID, HubID,t.ShippingInstructionID,s.Value
 	                                                FROM [Transaction] t inner join ShippingInstruction s on t.ShippingInstructionID = s.ShippingInstructionID 
 	                                                WHERE LedgerID = {0}  AND ProgramID = {1} and HubID = {2} and IsFalseGRN = 1 and QuantityInMT > 0 and t.ShippingInstructionID IS NOT NULL
-	                                                GROUP BY ProgramID,HubID,t.ShippingInstructionID,s.Value) Fa on tr.HubID = fa.HubID and tr.ProgramID=fa.ProgramID and tr.ShippingInstructionID = fa.ShippingInstructionID) GROUP BY Fa.Value", Cats.Models.Ledger.Constants.GOODS_ON_HAND, programId, hubId, dateTime);
+	                                                GROUP BY ProgramID,HubID,t.ShippingInstructionID,s.Value) Fa on tr.HubID = fa.HubID and tr.ProgramID=fa.ProgramID and tr.ShippingInstructionID = fa.ShippingInstructionID) GROUP BY Fa.Value", Ledger.Constants.GOODS_ON_HAND, programId, hubId, dateTime);
 
             return _unitOfWork.Database.SqlQuery<TrueAndFlaseGRNStatus>(query).ToList();
         }
@@ -274,13 +274,13 @@ FROM            dbo.Receive INNER JOIN
             int ledgerPlus, LedgerMinus;
             if (stockType == 0)
             {
-                LedgerMinus = Cats.Models.Ledger.Constants.GOODS_ON_HAND;
-                ledgerPlus = Cats.Models.Ledger.Constants.LOSS_IN_TRANSIT;
+                LedgerMinus = Ledger.Constants.GOODS_ON_HAND;
+                ledgerPlus = Ledger.Constants.LOSS_IN_TRANSIT;
             }
             else
             {
-                LedgerMinus = Cats.Models.Ledger.Constants.COMMITED_TO_FDP;
-                ledgerPlus = Cats.Models.Ledger.Constants.PLEDGED_TO_FDP;
+                LedgerMinus = Ledger.Constants.COMMITED_TO_FDP;
+                ledgerPlus = Ledger.Constants.PLEDGED_TO_FDP;
             }
            
 
@@ -392,7 +392,7 @@ FROM            dbo.Receive INNER JOIN
 
             transactionOne.TransactionID = Guid.NewGuid();
             transactionOne.TransactionGroupID = transactionGroupId;
-            transactionOne.LedgerID = Cats.Models.Ledger.Constants.PLEDGED_TO_FDP;// 2;
+            transactionOne.LedgerID = Ledger.Constants.PLEDGED_TO_FDP;// 2;
             transactionOne.HubOwnerID = user.DefaultHubObj.HubOwner.HubOwnerID;
             //transactionOne.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); // 
             transactionOne.HubID = user.DefaultHub.Value;
@@ -420,7 +420,7 @@ FROM            dbo.Receive INNER JOIN
 
             transactionTwo.TransactionID = Guid.NewGuid();
             transactionTwo.TransactionGroupID = transactionGroupId;
-            transactionTwo.LedgerID = Cats.Models.Ledger.Constants.COMMITED_TO_FDP;// 14;
+            transactionTwo.LedgerID =Ledger.Constants.COMMITED_TO_FDP;// 14;
             transactionTwo.HubOwnerID = user.DefaultHubObj.HubOwnerID;
             //transactionTwo.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); // 
             transactionTwo.HubID = user.DefaultHub.Value;
