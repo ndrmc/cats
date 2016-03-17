@@ -12,7 +12,7 @@ using System.Data.Objects.DataClasses;
 using Cats.Data.Hub;
 using Cats.Data.Hub.UnitWork;
 using Cats.Models.Hubs;
-
+using Ledger = Cats.Models.Ledger;
 namespace Cats.Services.Hub
 {
 
@@ -101,7 +101,7 @@ namespace Cats.Services.Hub
         {
             return (_unitOfWork.TransactionRepository.FindBy(
                     t=>t.CommodityID == CommodityID
-                    && t.LedgerID == Cats.Models.Ledger.Constants.GOODS_ON_HAND_UNCOMMITED 
+                    && t.LedgerID == Ledger.Constants.GOODS_ON_HAND_UNCOMMITED 
                     && t.ShippingInstructionID == ShipingInstructionID 
                     && t.HubID ==HubID).FirstOrDefault());
            

@@ -19,6 +19,8 @@ namespace Cats.Areas.Logistics.Models
         public decimal QuanityInQtl { get; set; }
         [Display(Name="Warehouse")]
         public string OrignWarehouse { get; set; }
+
+        public string Store { get; set; }
         public int CommodityID { get; set; }
         [Display(Name="Commodity")]
         public string CommodityName { get; set; }

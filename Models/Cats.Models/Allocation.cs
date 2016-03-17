@@ -10,6 +10,7 @@ namespace Cats.Models
     {
        public int ReqId { get; set; }
        public int HubId { get; set; }
+       //public int? StoreId { get; set; }
 
        public int SatelliteWarehouseID { get; set; }
 

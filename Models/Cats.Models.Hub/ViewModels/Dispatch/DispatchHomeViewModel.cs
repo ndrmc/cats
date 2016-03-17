@@ -12,7 +12,6 @@ namespace Cats.Models.Hubs.ViewModels.Dispatch
        public DispatchHomeViewModel(List<DispatchAllocationViewModelDto> toFdps,List<OtherDispatchAllocation> loans
            , List<OtherDispatchAllocation> transfers,List<CommodityType> commodityTypes,List<AdminUnit> adminUnits,UserProfile user)
        {
-
            ToFDPs = toFdps;// dispatchAllocationService.GetCommitedAllocationsByHubDetached(user.DefaultHub.HubID, user.PreferedWeightMeasurment.ToUpperInvariant(), null, null, null);
 
            Loans = loans;// repository.OtherDispatchAllocation.GetAllToOtherOwnerHubs(user);

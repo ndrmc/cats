@@ -9,7 +9,7 @@ using Cats.Models.Hubs.MetaModels;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Cats.Models.Hubs.ViewModels.Report.Data;
-
+using Ledger = Cats.Models.Ledger;
 namespace Cats.Services.Hub
 {
     public class StoreService:IStoreService
@@ -95,7 +95,7 @@ namespace Cats.Services.Hub
             foreach (var store in hub.Stores)
             {
                 var balance = _unitOfWork.TransactionRepository.FindBy(s => s.StoreID == store.StoreID && commodityId == s.CommodityID &&
-                                s.LedgerID == Cats.Models.Ledger.Constants.GOODS_ON_HAND && s.ShippingInstructionID == SINumber).Select(q => q.QuantityInMT);
+                                s.LedgerID == Ledger.Constants.GOODS_ON_HAND && s.ShippingInstructionID == SINumber).Select(q => q.QuantityInMT);
                     
                 if (balance.Any() && balance.Sum() > 0)
                 {           
@@ -112,7 +112,7 @@ namespace Cats.Services.Hub
             foreach (var store in hub.Stores)
             {
                 var balance = ( _unitOfWork.TransactionRepository.FindBy(s => s.StoreID == store.StoreID && parentCommodityId == s.ParentCommodityID &&
-                                s.LedgerID == Cats.Models.Ledger.Constants.GOODS_ON_HAND).Select(q => q.QuantityInMT));
+                                s.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(q => q.QuantityInMT));
 
                 if (balance.Any() && balance.Sum() > 0)
                 {
@@ -130,7 +130,7 @@ namespace Cats.Services.Hub
             {
 
                 var balance = (_unitOfWork.TransactionRepository.FindBy(s => s.StoreID == store.StoreID && siNumber == s.ShippingInstructionID &&
-                               s.LedgerID == Cats.Models.Ledger.Constants.GOODS_ON_HAND && s.Stack == stack).Select(q => q.QuantityInMT));
+                               s.LedgerID == Ledger.Constants.GOODS_ON_HAND && s.Stack == stack).Select(q => q.QuantityInMT));
 
                
                 if (balance.Any() && balance.Sum() > 0)

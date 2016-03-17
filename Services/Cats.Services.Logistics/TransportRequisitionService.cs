@@ -311,6 +311,20 @@ namespace Cats.Services.Logistics
             return true;
         }
 
+        //public string GetStoreName(int hubId, int requisitionId)
+        //{
+        //    var huballocation =
+        //        _unitOfWork.HubAllocationRepository.FindBy(h => h.HubID == hubId && h.RequisitionID == requisitionId).FirstOrDefault();
+        //    if (huballocation!=null)
+        //    {
+        //        if(huballocation.StoreId != 0 && huballocation.StoreId != null)
+        //        {
+        //           return _unitOfWork.StoreRepository.FindById((int) huballocation.StoreId).Name;
+        //        }
+        //        return "";
+        //    }
+        //    return "";
+        //}
 
         public List<RequisitionToDispatch> GetTransportRequisitionDetail(List<int> requIds)
         {
@@ -326,6 +340,7 @@ namespace Cats.Services.Logistics
                     t => t.StatusID == requisition.Status && t.WorkflowID == (int)WORKFLOW.RELIEF_REQUISITION).FirstOrDefault();
 
                 if (hubAllocation != null) requisitionToDispatch.HubID = hubAllocation.HubID;
+               // requisitionToDispatch.Store = GetStoreName(requisitionToDispatch.HubID, requisition.RequisitionID);
                 requisitionToDispatch.RequisitionID = requisition.RequisitionID;
                 requisitionToDispatch.RequisitionNo = requisition.RequisitionNo;
                 if (requisition.Status != null) requisitionToDispatch.RequisitionStatus = requisition.Status.Value;

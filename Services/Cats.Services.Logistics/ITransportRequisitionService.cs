@@ -30,5 +30,6 @@ namespace Cats.Services.Logistics
         List<TransportRequisitionDetail> GetTransportRequsitionDetails(int programId);
         List<TransportRequisitionDetail> GetTransportRequsitionDetails();
         List<BidNumber> ReturnBids(int transportRequisitionId);
+        //string GetStoreName(int hubId, int requisitionId);
     }
 }

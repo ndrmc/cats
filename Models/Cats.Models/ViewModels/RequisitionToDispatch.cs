@@ -24,6 +24,7 @@ namespace Cats.Models.ViewModels
        public string RegionName { get; set; }
        public int ProgramID { get; set; }
        public string Program { get; set; }
+      // public string Store { get; set; }
 
     }
 }

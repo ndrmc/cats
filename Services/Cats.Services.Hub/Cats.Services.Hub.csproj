@@ -184,6 +184,10 @@
       <Project>{b311922a-4002-40b1-aa96-e005b6d436dd}</Project>
       <Name>Cats.Data.Hub</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Data\Cats.Data.Micro\Cats.Data.Micro.csproj">
+      <Project>{c4b246a0-a33f-426e-9ac1-823702069b2b}</Project>
+      <Name>Cats.Data.Micro</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Models\Cats.Models.Hub\Cats.Models.Hub.csproj">
       <Project>{1467c728-3071-4798-997c-61314b26ef2e}</Project>
       <Name>Cats.Models.Hub</Name>

@@ -4,6 +4,7 @@
 
 var $$scope;
 var timer;
+var HubId, StoreId;
 // Create app Module 
 function onsaveAllocation() {
     $$scope.saveAllocation();
@@ -73,11 +74,32 @@ app.factory("savefactory", function ($http) {
 app.controller("DragDroController", function ($scope, $http ,dragDropService, savefactory)
 {
     $scope.showModal = false;
+    $scope.WarehouseName = "";
+    
+    
     $scope.Warehouse;
     $scope.WarehouseList = [];
     $scope.SWarehouseName ;
     $scope.handleDrop = function (index) {
+       
+
+        HubId = index;
+        StoreId = 0;
+        if (index.indexOf(' ') === -1) {
+            
+            
+        } else {
+            var spaceIndex = index.indexOf(' ');
+           
+            HubId = index.substring(1, spaceIndex - 1);
+            StoreId = index.substring(spaceIndex + 2);
+        }
         
+
+        $scope.allocated[0].StoreId = StoreId;
+        $scope.allocated[0].HubId = HubId;
+       // $scope.showModal = !$scope.showModal;
+
         
       
       $scope.GetWarehouseList1(index);
@@ -88,6 +110,7 @@ app.controller("DragDroController", function ($scope, $http ,dragDropService, sa
        
         
        
+
     };
     $scope.saveWarehouse = function (SWarehouse) {
         
@@ -214,14 +237,15 @@ app.directive('droppable', function () {
 
                     var item = document.getElementById(e.dataTransfer.getData('Text'));
                     this.appendChild(item);
-
+                    
 
                     for (var i = 0; i < $$scope.allocated.length; i++) {
                         if ($$scope.allocated[i].reqId == item.id) {
                             $$scope.allocated.splice(i, 1);
+                            
                         }
                     }
-                    $$scope.allocated.splice(0, 0, { reqId: item.id, HubId: 'index' });
+                    $$scope.allocated.splice(0, 0, { reqId: item.id, HubId: 'index',StoreId: StoreId });
 
                     scope.$apply('drop()');
 

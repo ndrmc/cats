@@ -17,6 +17,7 @@ namespace Cats.Models.Mapping
             this.Property(t => t.HubAllocationID).HasColumnName("HubAllocationID");
             this.Property(t => t.RequisitionID).HasColumnName("RequisitionID");
             this.Property(t => t.HubID).HasColumnName("HubID");
+           // this.Property(t => t.StoreId).HasColumnName("StoreId");
             this.Property(t => t.AllocationDate).HasColumnName("AllocationDate");
             this.Property(t => t.AllocatedBy).HasColumnName("AllocatedBy");
             this.Property(t => t.PartitionId).HasColumnName("PartitionId");

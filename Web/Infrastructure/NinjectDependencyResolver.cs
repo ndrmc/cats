@@ -268,6 +268,7 @@ namespace Cats.Infrastructure
             kernel.Bind<Cats.Services.Administration.IUserProfileService>().To<Cats.Services.Administration.UserProfileService>();
             kernel.Bind<ILossReasonService>().To<LossReasonService>();
             kernel.Bind<ITransporterChequeDetailService>().To<TransporterChequeDetailService>();
+            kernel.Bind<Cats.Services.Administration.IStoreService>().To<Cats.Services.Administration.StoreService>();
         }
         private void AddBindingsHub()
         {

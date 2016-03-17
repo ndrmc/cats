@@ -24,7 +24,7 @@ namespace Cats.Models
         public int AllocatedBy { get; set; }
         public virtual Hub Hub { get; set; }
         public int? PartitionId { get; set; }
-
+        //public int? StoreId { get; set; }
        // public virtual UserProfile UserProfile { get; set; }
         public virtual ReliefRequisition ReliefRequisition { get; set; }
         public virtual ICollection<ProjectCodeAllocation> ProjectCodeAllocations { get; set; }
