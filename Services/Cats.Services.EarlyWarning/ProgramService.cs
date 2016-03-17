@@ -6,7 +6,6 @@ using System.Linq.Expressions;
 using Cats.Data.UnitWork;
 using Cats.Models;
 
-
 namespace Cats.Services.EarlyWarning
 {
 

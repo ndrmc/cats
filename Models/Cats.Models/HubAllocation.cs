@@ -18,7 +18,7 @@ namespace Cats.Models
         public string ReferenceNo { get; set; }
         public int RequisitionID { get; set; }
         public int HubID { get; set; }
-        public int SatelliteWarehouseID { get; set; }
+        public int? SatelliteWarehouseID { get; set; }
         
         public System.DateTime AllocationDate { get; set; }
         public int AllocatedBy { get; set; }

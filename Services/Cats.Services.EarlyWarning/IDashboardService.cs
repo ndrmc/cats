@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Cats.Data.UnitWork;
+﻿using System.Collections.Generic;
 using Cats.Models;
-using System.Collections;
 
 namespace Cats.Services.EarlyWarning
 {

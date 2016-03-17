@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 using Cats.Data.UnitWork;
+using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Models.ViewModels.HRD;
-using Cats.Services.EarlyWarning;
-using Cats.Models;
 
 namespace Cats.Services.EarlyWarning
 {
@@ -61,7 +59,7 @@ namespace Cats.Services.EarlyWarning
             return _unitOfWork.HRDRepository.GetAll();
         }
 
-        public List<HRD> FindBy(System.Linq.Expressions.Expression<Func<HRD, bool>> predicate)
+        public List<HRD> FindBy(Expression<Func<HRD, bool>> predicate)
         {
             return _unitOfWork.HRDRepository.FindBy(predicate);
         }
@@ -70,7 +68,7 @@ namespace Cats.Services.EarlyWarning
         {
             return _unitOfWork.HRDDetailRepository.Get(t => t.HRDID == hrdID);
         }
-        public IEnumerable<HRD> Get(System.Linq.Expressions.Expression<Func<HRD, bool>> filter = null,
+        public IEnumerable<HRD> Get(Expression<Func<HRD, bool>> filter = null,
                                     Func<IQueryable<HRD>, IOrderedQueryable<HRD>> orderBy = null,
                                     string includeProperties = "")
         {

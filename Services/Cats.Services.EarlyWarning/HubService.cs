@@ -4,9 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Cats.Models;
 using Cats.Data.UnitWork;
-
+using Cats.Models;
 
 namespace Cats.Services.EarlyWarning
 {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 using Cats.Data.UnitWork;
+using Cats.Models;
 
 namespace Cats.Services.EarlyWarning
 {
@@ -15,14 +15,14 @@ namespace Cats.Services.EarlyWarning
        {
            _unitOfWork = unitOfWork;
        }
-       public bool AddHrdDonorCoverageDetail(Models.HrdDonorCoverageDetail hrdDonorCoverageDetail)
+       public bool AddHrdDonorCoverageDetail(HrdDonorCoverageDetail hrdDonorCoverageDetail)
        {
            _unitOfWork.HrdDonorCoverageDetailRepository.Add(hrdDonorCoverageDetail);
            _unitOfWork.Save();
            return true;
        }
 
-        public bool DeleteHrdDonorCoverageDetail(Models.HrdDonorCoverageDetail hrdDonorCoverageDetail)
+        public bool DeleteHrdDonorCoverageDetail(HrdDonorCoverageDetail hrdDonorCoverageDetail)
         {
             if (hrdDonorCoverageDetail == null) return false;
             _unitOfWork.HrdDonorCoverageDetailRepository.Delete(hrdDonorCoverageDetail);
@@ -39,33 +39,33 @@ namespace Cats.Services.EarlyWarning
             return true;
         }
 
-        public bool EditHrdDonorCoverageDetail(Models.HrdDonorCoverageDetail hrdDonorCoverageDetail)
+        public bool EditHrdDonorCoverageDetail(HrdDonorCoverageDetail hrdDonorCoverageDetail)
         {
             _unitOfWork.HrdDonorCoverageDetailRepository.Edit(hrdDonorCoverageDetail);
             _unitOfWork.Save();
             return true;
         }
 
-        public Models.HrdDonorCoverageDetail FindById(int id)
+        public HrdDonorCoverageDetail FindById(int id)
         {
             return _unitOfWork.HrdDonorCoverageDetailRepository.FindById(id);
         }
 
-        public List<Models.HrdDonorCoverageDetail> GetAllHrdDonorCoverageDetail()
+        public List<HrdDonorCoverageDetail> GetAllHrdDonorCoverageDetail()
         {
             return _unitOfWork.HrdDonorCoverageDetailRepository.GetAll();
         }
 
-        public List<Models.HrdDonorCoverageDetail> FindBy(System.Linq.Expressions.Expression<Func<Models.HrdDonorCoverageDetail, bool>> predicate)
+        public List<HrdDonorCoverageDetail> FindBy(Expression<Func<HrdDonorCoverageDetail, bool>> predicate)
         {
             return _unitOfWork.HrdDonorCoverageDetailRepository.FindBy(predicate);
         }
 
-        public IEnumerable<Models.HrdDonorCoverageDetail> Get(System.Linq.Expressions.Expression<Func<Models.HrdDonorCoverageDetail, bool>> filter = null, Func<IQueryable<Models.HrdDonorCoverageDetail>, IOrderedQueryable<Models.HrdDonorCoverageDetail>> orderBy = null, string includeProperties = "")
+        public IEnumerable<HrdDonorCoverageDetail> Get(Expression<Func<HrdDonorCoverageDetail, bool>> filter = null, Func<IQueryable<HrdDonorCoverageDetail>, IOrderedQueryable<HrdDonorCoverageDetail>> orderBy = null, string includeProperties = "")
         {
             return _unitOfWork.HrdDonorCoverageDetailRepository.Get(filter, orderBy, includeProperties);
         }
-        public bool AddWoredas(Models.HrdDonorCoverageDetail hrdDonorCoverageDetail)
+        public bool AddWoredas(HrdDonorCoverageDetail hrdDonorCoverageDetail)
         {
             var woredaExists =
                 _unitOfWork.HrdDonorCoverageDetailRepository.FindBy(

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cats.Data.UnitWork;
+using Cats.Models;
+using Cats.Models.Constant;
 
 namespace Cats.Services.EarlyWarning
 {
@@ -15,7 +14,7 @@ namespace Cats.Services.EarlyWarning
         {
             this._unitOfWork = unitOfWork;
         }
-        public string GetStatusName(Models.Constant.WORKFLOW workflow, int statusId)
+        public string GetStatusName(WORKFLOW workflow, int statusId)
         {
             var workflowStatus =
                 _unitOfWork.WorkflowStatusRepository.Get(t => t.WorkflowID == (int)workflow && t.StatusID == statusId).
@@ -31,7 +30,7 @@ namespace Cats.Services.EarlyWarning
         }
 
 
-        public List<Models.WorkflowStatus> GetStatus(Models.Constant.WORKFLOW workflow)
+        public List<WorkflowStatus> GetStatus(WORKFLOW workflow)
         {
           return   _unitOfWork.WorkflowStatusRepository.Get(t => t.WorkflowID == (int) workflow).ToList();
         }

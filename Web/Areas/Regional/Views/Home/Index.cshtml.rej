@@ -1,0 +1,12 @@
+diff a/Web/Areas/Regional/Views/Home/Index.cshtml b/Web/Areas/Regional/Views/Home/Index.cshtml	(rejected hunks)
+@@ -252,8 +252,8 @@
+                                             <td><span class="label label-danger">{{requisition.Status}}</span></td>
+                                             <td>
+                                                 @* <a ng-href="@Url.Action("Allocation", "ReliefRequisition", new { Area = "EarlyWarning", id = 2 })" class="btn btn-sm btn-default">
+-                                                    View <i class="icon-chevron-right"></i>
+-                                                </a>*@
++                                                        View <i class="icon-chevron-right"></i>
++                                                    </a>*@
+                                                 <a ng-click="viewRequistion(requisition)" class="btn btn-sm btn-default"> View <i class="icon-chevron-right"></i></a>
+                                             </td>
+                                         </tr>

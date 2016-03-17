@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 using Cats.Data.UnitWork;
 using Cats.Models;
 using Cats.Models.Constant;
@@ -17,14 +16,14 @@ namespace Cats.Services.EarlyWarning
        {
            _unitOfWork = unitOfWork;
        }
-       public bool AddPlan(Models.Plan plan)
+       public bool AddPlan(Plan plan)
        {
            _unitOfWork.PlanRepository.Add(plan);
            _unitOfWork.Save();
            return true;
         }
 
-       public bool DeletePlan(Models.Plan plan)
+       public bool DeletePlan(Plan plan)
         {
             if (plan == null) return false;
             _unitOfWork.PlanRepository.Delete(plan);
@@ -41,29 +40,29 @@ namespace Cats.Services.EarlyWarning
             return true;
         }
 
-        public bool EditPlan(Models.Plan plan)
+        public bool EditPlan(Plan plan)
         {
             _unitOfWork.PlanRepository.Edit(plan);
             _unitOfWork.Save();
             return true;
         }
 
-        public Models.Plan FindById(int id)
+        public Plan FindById(int id)
         {
             return _unitOfWork.PlanRepository.FindById(id);
         }
 
-        public List<Models.Plan> GetAllPlan()
+        public List<Plan> GetAllPlan()
         {
             return _unitOfWork.PlanRepository.GetAll();
         }
 
-        public List<Models.Plan> FindBy(System.Linq.Expressions.Expression<Func<Models.Plan, bool>> predicate)
+        public List<Plan> FindBy(Expression<Func<Plan, bool>> predicate)
         {
             return _unitOfWork.PlanRepository.FindBy(predicate);
         }
 
-        public IEnumerable<Models.Plan> Get(System.Linq.Expressions.Expression<Func<Models.Plan, bool>> filter = null, Func<IQueryable<Models.Plan>, IOrderedQueryable<Models.Plan>> orderBy = null, string includeProperties = "")
+        public IEnumerable<Plan> Get(Expression<Func<Plan, bool>> filter = null, Func<IQueryable<Plan>, IOrderedQueryable<Plan>> orderBy = null, string includeProperties = "")
         {
             return _unitOfWork.PlanRepository.Get(filter, orderBy, includeProperties);
         }
@@ -204,7 +203,7 @@ namespace Cats.Services.EarlyWarning
        //}
 
 
-     public IEnumerable<HrdDonorCoverage> GetDonorCoverage(System.Linq.Expressions.Expression<Func<HrdDonorCoverage, bool>> filter = null,
+     public IEnumerable<HrdDonorCoverage> GetDonorCoverage(Expression<Func<HrdDonorCoverage, bool>> filter = null,
                         Func<IQueryable<HrdDonorCoverage>, IOrderedQueryable<HrdDonorCoverage>> orderBy = null, string includeProperties = "")
      {
          return _unitOfWork.HrdDonorCoverageRepository.Get(filter, orderBy, includeProperties);

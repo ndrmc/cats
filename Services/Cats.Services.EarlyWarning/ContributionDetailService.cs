@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 using Cats.Data.UnitWork;
+using Cats.Models;
 
 namespace Cats.Services.EarlyWarning
 {
@@ -14,14 +14,14 @@ namespace Cats.Services.EarlyWarning
        {
            _unitOfWork = unitOfWork;
        }
-        public bool AddContributionDetail(Models.ContributionDetail contributionDetail)
+        public bool AddContributionDetail(ContributionDetail contributionDetail)
         {
             _unitOfWork.ContributionDetailRepository.Add(contributionDetail);
             _unitOfWork.Save();
             return true;
         }
 
-        public bool DeleteContributionDetail(Models.ContributionDetail contributionDetail)
+        public bool DeleteContributionDetail(ContributionDetail contributionDetail)
         {
             if (contributionDetail == null) return false;
             _unitOfWork.ContributionDetailRepository.Delete(contributionDetail);
@@ -38,29 +38,29 @@ namespace Cats.Services.EarlyWarning
             return true;
         }
 
-        public bool EditContributionDetail(Models.ContributionDetail contributionDetail)
+        public bool EditContributionDetail(ContributionDetail contributionDetail)
         {
             _unitOfWork.ContributionDetailRepository.Edit(contributionDetail);
             _unitOfWork.Save();
             return true;
         }
 
-        public Models.ContributionDetail FindById(int id)
+        public ContributionDetail FindById(int id)
         {
             return _unitOfWork.ContributionDetailRepository.FindById(id);
         }
 
-        public List<Models.ContributionDetail> GetAllContributionDetail()
+        public List<ContributionDetail> GetAllContributionDetail()
         {
             return _unitOfWork.ContributionDetailRepository.GetAll();
         }
 
-        public List<Models.ContributionDetail> FindBy(System.Linq.Expressions.Expression<Func<Models.ContributionDetail, bool>> predicate)
+        public List<ContributionDetail> FindBy(Expression<Func<ContributionDetail, bool>> predicate)
         {
             return _unitOfWork.ContributionDetailRepository.FindBy(predicate);
         }
 
-        public IEnumerable<Models.ContributionDetail> Get(System.Linq.Expressions.Expression<Func<Models.ContributionDetail, bool>> filter = null, Func<IQueryable<Models.ContributionDetail>, IOrderedQueryable<Models.ContributionDetail>> orderBy = null, string includeProperties = "")
+        public IEnumerable<ContributionDetail> Get(Expression<Func<ContributionDetail, bool>> filter = null, Func<IQueryable<ContributionDetail>, IOrderedQueryable<ContributionDetail>> orderBy = null, string includeProperties = "")
         {
             return _unitOfWork.ContributionDetailRepository.Get(filter, orderBy, includeProperties);
         }

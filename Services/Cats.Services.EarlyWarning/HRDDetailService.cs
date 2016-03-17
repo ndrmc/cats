@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 using Cats.Data.UnitWork;
 using Cats.Models;
 
@@ -56,12 +55,12 @@ namespace Cats.Services.EarlyWarning
             return _unitOfWork.HRDDetailRepository.GetAll();
         }
 
-        public List<HRDDetail> FindBy(System.Linq.Expressions.Expression<Func<HRDDetail, bool>> predicate)
+        public List<HRDDetail> FindBy(Expression<Func<HRDDetail, bool>> predicate)
         {
             return _unitOfWork.HRDDetailRepository.FindBy(predicate);
         }
 
-        public IEnumerable<HRDDetail> Get(System.Linq.Expressions.Expression<Func<HRDDetail, bool>> filter = null,
+        public IEnumerable<HRDDetail> Get(Expression<Func<HRDDetail, bool>> filter = null,
                                     Func<IQueryable<HRDDetail>, IOrderedQueryable<HRDDetail>> orderBy = null,
                                     string includeProperties = "")
         {
