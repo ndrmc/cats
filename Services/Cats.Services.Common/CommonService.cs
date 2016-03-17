@@ -310,16 +310,16 @@ namespace Cats.Services.Common
         public List<HubStoreViewModel> GetHubsAndStores()
         {
             var result =  (
-                       from store in _unitOfWork.StoreRepository.FindBy(s => s.Hub.HubOwnerID == 1)
+                       from store in _unitOfWork.HubRepository.FindBy(s => s.HubParentID != s.HubID)
                        select new
                                   {
                                       Name = (" >   " + store.Name),
-                                      Id = store.StoreID,
+                                      Id = store.HubParentID,
                                       HubId = store.HubID
                                   }
                    ).Union
                 (
-                    from hub in _unitOfWork.HubRepository.FindBy(h => h.HubOwnerID == 1)
+                    from hub in _unitOfWork.HubRepository.FindBy(h => h.HubParentID == h.HubID)
                     select new
                                {
                                    Name = hub.Name,
