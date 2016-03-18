@@ -7,6 +7,7 @@ using Cats.Data.Micro;
 using Cats.Data.Micro.Models;
 using Cats.Data.UnitWork;
 using Cats.Models;
+using Cats.Models.Constant;
 using Cats.Models.ViewModels.Dashboard;
 using RegionalRequest = Cats.Models.RegionalRequest;
 
@@ -33,9 +34,16 @@ namespace Cats.Services.Dashboard
             //dynamic table = new RegionalRequest();
             //var re = table.Find(Categor)*/
             var r = new List<RecentRequests>();
-            var currentHRD = _unitOfWork.HRDRepository.FindBy(m => m.Status == 1).FirstOrDefault(); // m.status changed from 3 to 1
-            var requests =  _unitOfWork.RegionalRequestRepository.FindBy(t => t.RegionID == regionID && t.PlanID==currentHRD.PlanID).OrderByDescending(t=>t.RegionalRequestID).Take(5);
-           
+            //var currentHRD = _unitOfWork.HRDRepository.FindBy(m => m.Status == 1).FirstOrDefault(); // m.status changed from 3 to 1
+            //var requests =  _unitOfWork.RegionalRequestRepository.FindBy(t => t.RegionID == regionID && t.PlanID==currentHRD.PlanID).OrderByDescending(t=>t.RegionalRequestID).Take(5);
+
+            // The above two commented lines converted in to the following
+            var requests =
+                _unitOfWork.RegionalRequestRepository.FindBy(
+                    t => t.RegionID == regionID && t.Status == (int) RegionalRequestStatus.Draft)
+                    .OrderByDescending(t => t.RegionalRequestID)
+                    .Take(5);
+
             foreach (var regionalRequest in requests)
             {
                 var n = new RecentRequests
@@ -94,25 +102,23 @@ namespace Cats.Services.Dashboard
                     "SELECT TOP 5 * FROM Dashborad_Regional_Requisitions WHERE RegionID=@0 ORDER BY RequestedDate DESC",
                     args: regionID);
             return limResult.ToList();*/
-            var r = new List<RecentRequisitions>();
             var currentHRD = _unitOfWork.HRDRepository.FindBy(m => m.Status == 2);//status value cahnged from 3 to 2
-            var requisitions = _unitOfWork.ReliefRequisitionRepository.FindBy(t => t.RegionID == regionID).OrderByDescending(t => t.RequisitionID).Take(5);
+            var requisitions =
+                _unitOfWork.ReliefRequisitionRepository.FindBy(
+                    t => t.RegionID == regionID && t.Status == (int) RegionalRequestStatus.Approved)
+                    .OrderByDescending(t => t.RequisitionID)
+                    .Take(5);
 
-            foreach (var regionalRequisition in requisitions)
+            return requisitions.Select(regionalRequisition => new RecentRequisitions
             {
-                var n = new Models.ViewModels.Dashboard.RecentRequisitions
-                    {
-                        RequisitionID = regionalRequisition.RequisitionID,
-                        RequisitionNo = regionalRequisition.RequisitionNo,
-                        Status = regionalRequisition.Status,
-                        RequestedDate = regionalRequisition.RequestedDate,
-                        BenficiaryNo = regionalRequisition.ReliefRequisitionDetails.Sum(t => t.BenficiaryNo),
-                        Name = regionalRequisition.Commodity.Name,
-                        Amount = regionalRequisition.ReliefRequisitionDetails.Sum(s=>s.Amount)
-                    };
-                r.Add(n);
-            }
-            return r;
+                RequisitionID = regionalRequisition.RequisitionID,
+                RequisitionNo = regionalRequisition.RequisitionNo,
+                Status = regionalRequisition.Status,
+                RequestedDate = regionalRequisition.RequestedDate,
+                BenficiaryNo = regionalRequisition.ReliefRequisitionDetails.Sum(t => t.BenficiaryNo),
+                Name = regionalRequisition.Commodity.Name,
+                Amount = regionalRequisition.ReliefRequisitionDetails.Sum(s => s.Amount)
+            }).ToList();
         }
 
         public List<object> RequisitionsPercentage(int regionID)
