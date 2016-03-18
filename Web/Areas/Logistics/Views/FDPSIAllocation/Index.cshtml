@@ -1,5 +1,4 @@
-﻿@using Cats.Models
-@using Cats.Services.Security
+﻿@using Cats.Services.Security
 @using Cats.Helpers;
 
 @{
@@ -15,7 +14,7 @@
 {
 
     @*<a class="btn toolbar-btn desabled" data-buttontype="btn_save" id="btn_save_submitform" href="javascript:submitform()"></a>
-    <a class="btn toolbar-btn " data-buttontype="btn_cancel" onclick="window.location.reload(false)"></a>*@
+        <a class="btn toolbar-btn " data-buttontype="btn_cancel" onclick="window.location.reload(false)"></a>*@
     <a class="btn grey-salt" data-buttontype="btn_back_to_list" href="@Url.Action("Index", "DispatchAllocation", new { Area = "Logistics",regionid = ViewBag.regionId  })"><i class="fa fa-list"></i> @Html.Translate("Back to List")</a>
 }
 
@@ -27,50 +26,45 @@
 <div id="debug" style="display: none;">deb</div>
 
 <style>
-    #accordion_zone .in
-    {
+    #accordion_zone .in {
         overflow: visible;
     }
-    .allocationscreen *
-    {
+
+    .allocationscreen * {
         font-size: 12px;
     }
 
-    #accordion_zone .ui-draggable-disabled
-    {
+    #accordion_zone .ui-draggable-disabled {
         opacity: 0.75;
     }
-    .button-remove
-    {
+
+    .button-remove {
         display: none;
     }
 
-    #accordion_zone .ui-draggable-disabled .icon-move
-    {
+    #accordion_zone .ui-draggable-disabled .icon-move {
         visibility: hidden;
     }
-    #accordion_zone .ui-draggable-disabled .button-remove
-    {
 
+    #accordion_zone .ui-draggable-disabled .button-remove {
         display: inline;
     }
-    .drag-reciever
-    {
+
+    .drag-reciever {
         margin-top: 5px;
         border: solid 1px #EEE;
         border-radius: 4px;
     }
 
-    [ng-app] .SI
-    {
+    [ng-app] .SI {
         background: #95d0db;
     }
-    [ng-app] .PC
-    {
+
+    [ng-app] .PC {
         background: #6e8f96;
     }
-    .label2
-    {
+
+    .label2 {
         width: 50%;
         float: left;
         color: #777;
@@ -78,8 +72,7 @@
         font-size: 12px;
     }
 
-    .value2
-    {
+    .value2 {
         width: 50%;
         float: left;
         color: #000;
@@ -97,15 +90,15 @@
 </div>
 <div ng-app="drag-and-drop" ng-controller="oneCtrl" class="allocationscreen">
     @*<fieldset>
-        <legend style="font-size:16px;">@Html.Translate("SI/ProjectCode Allocation ")</legend>
+            <legend style="font-size:16px;">@Html.Translate("SI/ProjectCode Allocation ")</legend>
 
-    </fieldset>*@
+        </fieldset>*@
     <div class="row">
         <div class="col-sm-3">
             @*<div style="height: 30px;" data-drop="true" ng-model='list1' data-jqyoui-options="optionsList2" jqyoui-droppable="{multiple:true}">
-                <b>@Html.Translate("Requisition")</b>
-            </div>
-            <hr />*@
+                    <b>@Html.Translate("Requisition")</b>
+                </div>
+                <hr />*@
 
             <div class="portlet light bordered bg-inverse">
                 <div class="portlet-title">
@@ -161,8 +154,8 @@
 
                                                             {{fdp.name}} [{{fdp.allocatedAmount | number:2}} of {{fdp.requestedAmount | number:2}}]
                                                             <!--
-                                        <span ng-repeat="allocation in fdp.Allocations"> {{allocation.Code}} {{allocation.AllocatedAmount}}  </span>
-                                            -->
+                                                            <span ng-repeat="allocation in fdp.Allocations"> {{allocation.Code}} {{allocation.AllocatedAmount}}  </span>
+                                                                -->
                                                         </div>
 
                                                     </div>
@@ -184,7 +177,7 @@
                     <div class="caption font-green-sharp">
                         <div class="form-group form-md-line-input">
                             <select class="form-control" ng-model="selectedHub" id="hubSelector">
-                               @foreach (var hub in ViewBag.Hubs)
+                                @foreach (var hub in ViewBag.Hubs)
                                 {
                                     <option value="@hub.HubID">@hub.Name [@hub.HubOwner.Name]</option>
                                 }
@@ -202,20 +195,20 @@
                 </div>
                 <div class="portlet-body">
                     @*<div class="well">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group form-md-line-input">
-                                    <select class="form-control" ng-model="selectedHub" id="hubSelector">
-                                        @foreach (var hub in ViewBag.Hubs)
-                                        {
-                                            <option value="@hub.HubID">@hub.Name [@hub.HubOwner.Name]</option>
-                                        }
-                                    </select>
-                                    <label for="hubSelector">@Html.Translate("Hub")</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <select class="form-control" ng-model="selectedHub" id="hubSelector">
+                                            @foreach (var hub in ViewBag.Hubs)
+                                            {
+                                                <option value="@hub.HubID">@hub.Name [@hub.HubOwner.Name]</option>
+                                            }
+                                        </select>
+                                        <label for="hubSelector">@Html.Translate("Hub")</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>*@
+                        </div>*@
                     <div class="row">
                         <div ng-repeat="si in SIPCCodes" class="col-sm-4" ng-show="si.HubId==selectedHub" ng-cloak>
                             <div class="drag-reciever {{si.type}}" style="padding:4px;">
@@ -235,32 +228,47 @@
                 </div>
             </div>
         </div>
-</div>
+    </div>
 
-<div class="col-md-12" style="display:none;">
-    <table class="table table-stripped">
-        <tr>
-            <td>@Html.Translate("SIPCAllocationID")</td>
-            <td>@Html.Translate("RequisitionDetailID")</td>
-            <td>@Html.Translate("Code")</td>
-            <td>@Html.Translate("AllocatedAmount")</td>
-            <td>@Html.Translate("AllocationType")</td>
-        </tr>
-        <tbody ng-repeat="item in requisitionDetail">
-            <tr ng-repeat="alloc in item.Allocations">
-                <td>{{alloc.SIPCAllocationID}}</td>
-                <td>{{item.RequestDetailId}}</td>
-                <td>{{alloc.Code}}</td>
-                <td>{{alloc.AllocatedAmount}}</td>
-                <td>{{alloc.AllocationType}}</td>
+    <div class="col-md-12" style="display:none;">
+        <table class="table table-stripped">
+            <tr>
+                <td>@Html.Translate("SIPCAllocationID")</td>
+                <td>@Html.Translate("RequisitionDetailID")</td>
+                <td>@Html.Translate("Code")</td>
+                <td>@Html.Translate("AllocatedAmount")</td>
+                <td>@Html.Translate("AllocationType")</td>
             </tr>
+            <tbody ng-repeat="item in requisitionDetail">
+                <tr ng-repeat="alloc in item.Allocations">
+                    <td>{{alloc.SIPCAllocationID}}</td>
+                    <td>{{item.RequestDetailId}}</td>
+                    <td>{{alloc.Code}}</td>
+                    <td>{{alloc.AllocatedAmount}}</td>
+                    <td>{{alloc.AllocationType}}</td>
+                </tr>
 
-        </tbody>
-        <tr></tr>
+            </tbody>
+            <tr></tr>
 
-    </table>
-</div>
+        </table>
+    </div>
 
+    <modal title="Custom Amount" visible="showAmountModal">
+        <form role="form">
+            <div class="form-group">
+                <label for="EnterAmount">Enter Amount</label>
+
+
+                <input type="number" data-ng-model="s.selected" />
+
+
+                Maximum of {{viewAmount}}
+            </div>
+
+            <button type="submit" class="btn btn-default" ng-click="saveWarehouse(s.selected)">Select</button>
+        </form>
+    </modal>
 </div>
 
 <script type="text/javascript">
@@ -295,7 +303,8 @@
         $scope.updateUrl="@Url.Action("UpdateAllocation", "FDPSIAllocation", new { Area = "Logistics" })"
         $scope.promoteUrl="@Url.Action("updateRequisitionStatus", "FDPSIAllocation", new { Area = "Logistics" })"
         $scope.selectedHub=@ViewBag.AllocatedHub;
-
+        $scope.showAmountModal = false;
+        $scope.viewAmount =0;
         $scope.list1 = [];
         $scope.list2 = [];
         $scope.list3 = [];
@@ -500,7 +509,7 @@
 
                 if($scope.SIPCCodes[i].availableAmount/1<item.requestedAmount/1)
                 {
-                    $("#SIPC" + ind).css("display", "none");
+                    $("#SIPC" + ind).css("display", "block");
                 }
                 else {
                     $("#SIPC" + ind).css("display", "block");
@@ -509,17 +518,19 @@
         };
 
         $scope.stopCallback = function (event, ui) {
-           // console.log('Why did you stop draggin me?');
+
             for(var i in $scope.SIPCCodes)
             {
                 var ind=i/1+1;
                 $("#SIPC" + ind).css("display", "block");
 
             }
+           // alert('Why did you stop draggin me?');
+
         };
 
         $scope.dragCallback = function (event, ui) {
-            // console.log('hey, look I`m flying');
+            //alert('hey , look I`m flying');
         };
 
         $scope.dropCallback = function (event, ui) {
@@ -530,7 +541,7 @@
 
             $scope.refreshList();
             var target = $(event.target).data("id");
-            console.log('hey, you dumped on ' + target + ' :-(', event);
+          //  alert('hey, you dumped on ' + target + ' :-(', event);
         };
 
         $scope.assigneAllocation = function (requestIndex, siIndex, amount) {
@@ -538,8 +549,17 @@
             $scope.saved=0;
             var location = $scope.allAdminRegions[requestIndex];
             amount = location.requestedAmount - location.allocatedAmount;
+            alert(amount);
+            alert($scope.SIPCCodes[siIndex].availableAmount);
+            if($scope.SIPCCodes[siIndex].availableAmount/1<amount/1)
+            {
+                alert("shortage");
+                $scope.viewAmount = amount;
+                $scope.showAmountModal= true;
+            }
             var avail=$scope.SIPCCodes[siIndex].availableAmount-amount;
-
+            //alert(siIndex);
+            //alert(amount);
             $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
             $scope.allAdminRegions[requestIndex].allocatedAmount = amount;
             $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
@@ -738,15 +758,54 @@
         };
         $scope.loadPage();
     });
+App.directive('modal', function () {
+    return {
+        template: '<div class="modal fade">' +
+            '<div class="modal-dialog">' +
+              '<div class="modal-content">' +
+                '<div class="modal-header">' +
+                  '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+                  '<h4 class="modal-title">{{ title }}</h4>' +
+                '</div>' +
+                '<div class="modal-body" ng-transclude></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>',
+        restrict: 'E',
+        transclude: true,
+        replace: true,
+        scope: true,
+        link: function postLink(scope, element, attrs) {
+            scope.title = attrs.title;
 
+            scope.$watch(attrs.visible, function (value) {
+                if (value == true)
+                    $(element).modal('show');
+                else
+                    $(element).modal('hide');
+            });
+
+            $(element).on('shown.bs.modal', function () {
+                scope.$apply(function () {
+                    scope.$parent[attrs.visible] = true;
+                });
+            });
+
+            $(element).on('hidden.bs.modal', function () {
+                scope.$apply(function () {
+                    scope.$parent[attrs.visible] = false;
+                });
+            });
+        }
+    };
+});
 
 
 </script>
 
 
 <style>
-    .list-fdp
-    {
+    .list-fdp {
         padding-left: 10px;
     }
 </style>

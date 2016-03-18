@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Sockets;
 using System.Text;
 using Cats.Data.UnitWork;
 using Cats.Models;
@@ -309,13 +310,25 @@ namespace Cats.Services.Common
 
         public List<HubStoreViewModel> GetHubsAndStores()
         {
+            var vresult = ( from hublist in _unitOfWork.HubRepository.GetAll()
+
+                select new
+                {
+                  
+                    Name = ("<b>" + hublist.Name + "</b>"),
+                    Id = hublist.HubID,
+                    HubId = hublist.HubParentID
+                }
+                ).OrderBy(p => p.HubId).ThenBy(p => p.Id).ToList();
+
+            
             var result =  (
                        from store in _unitOfWork.HubRepository.FindBy(s => s.HubParentID != s.HubID)
                        select new
                                   {
-                                      Name = (" >   " + store.Name),
-                                      Id = store.HubParentID,
-                                      HubId = store.HubID
+                                      Name = ("-->  " + store.Name),
+                                      Id = store.HubID,
+                                      HubId = store.HubParentID
                                   }
                    ).Union
                 (
@@ -324,8 +337,8 @@ namespace Cats.Services.Common
                                {
                                    Name = hub.Name,
                                    Id = hub.HubID,
-                                   HubId = hub.HubID
-                               }
+                                   HubId = hub.HubParentID
+                    }
                 ).OrderBy(p => p.HubId).ThenBy(p => p.Id).ToList();
 
             var  stores= result.Select(hubsAndStores => new HubStoreViewModel {Id = hubsAndStores.Id, Name = hubsAndStores.Name}).ToList();
