@@ -151,7 +151,7 @@
                                             <td>
                                                 <div>
                                                     <span>
-                                                        {{request.Status}}
+                                                        @*{{request.Status}}*@ Draft
                                                     </span>
                                                 </div>
                                             </td>
@@ -238,7 +238,7 @@
                                             <th class="number">Beneficiaries</th>
                                             <th class="number">Amount(QT)</th>
                                             <th>Status</th>
-                                            <th class="align-center">Action</th>
+                                            @*<th class="align-center">Action</th>*@
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -248,13 +248,13 @@
                                             <th>{{requisition.Name}}</th>
                                             <td class="number">{{requisition.BenficiaryNo|number}}</td>
                                             <th class="number">{{requisition.Amount|number}} QT</th>
-
-                                            <td><span class="label label-danger">{{requisition.Status}}</span></td>
+                                            <td><span class="label label-danger">Approved</span></td>
+                                            @*<td><span class="label label-danger">{{requisition.Status}}</span></td>*@
                                             <td>
                                                 @* <a ng-href="@Url.Action("Allocation", "ReliefRequisition", new { Area = "EarlyWarning", id = 2 })" class="btn btn-sm btn-default">
                                                         View <i class="icon-chevron-right"></i>
                                                     </a>*@
-                                                <a ng-click="viewRequistion(requisition)" class="btn btn-sm btn-default"> View <i class="icon-chevron-right"></i></a>
+                                                @*<a ng-click="viewRequistion(requisition)" class="btn btn-sm btn-default"> View <i class="icon-chevron-right"></i></a>*@
                                             </td>
                                         </tr>
 

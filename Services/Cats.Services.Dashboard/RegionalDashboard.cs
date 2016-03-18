@@ -33,7 +33,7 @@ namespace Cats.Services.Dashboard
             //dynamic table = new RegionalRequest();
             //var re = table.Find(Categor)*/
             var r = new List<RecentRequests>();
-            var currentHRD = _unitOfWork.HRDRepository.FindBy(m => m.Status == 3).FirstOrDefault();
+            var currentHRD = _unitOfWork.HRDRepository.FindBy(m => m.Status == 1).FirstOrDefault(); // m.status changed from 3 to 1
             var requests =  _unitOfWork.RegionalRequestRepository.FindBy(t => t.RegionID == regionID && t.PlanID==currentHRD.PlanID).OrderByDescending(t=>t.RegionalRequestID).Take(5);
            
             foreach (var regionalRequest in requests)
@@ -95,7 +95,7 @@ namespace Cats.Services.Dashboard
                     args: regionID);
             return limResult.ToList();*/
             var r = new List<RecentRequisitions>();
-            var currentHRD = _unitOfWork.HRDRepository.FindBy(m => m.Status == 3);
+            var currentHRD = _unitOfWork.HRDRepository.FindBy(m => m.Status == 2);//status value cahnged from 3 to 2
             var requisitions = _unitOfWork.ReliefRequisitionRepository.FindBy(t => t.RegionID == regionID).OrderByDescending(t => t.RequisitionID).Take(5);
 
             foreach (var regionalRequisition in requisitions)
