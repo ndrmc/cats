@@ -65,7 +65,7 @@
                   .Columns(columns =>
                                {
                                    columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "ReciptPlanForLoan", new {id = "#=LoanReciptPlanID#"}) + " '>#=SiNumber#</a>  ").Width(100);
-                                   columns.Bound(m => m.Donor).Width(200).Title(@Html.Translate("Loan Source")).Width(100);
+                                   columns.Bound(m => m.Donor).Width(200).Title(@Html.Translate("Donor")).Width(100);
                                    columns.Bound(m => m.ProgramName).Title(@Html.Translate("Program")).Width(100);
                                    columns.Bound(m => m.CommodityName).Width(200).Title(@Html.Translate("Commodity")).Width(100);
                                    //columns.Bound(m => m.CommoditySourceName).Width(200).Title(@Html.Translate("Commodity Source")).Width(100);

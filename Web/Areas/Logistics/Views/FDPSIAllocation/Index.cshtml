@@ -256,17 +256,20 @@
 
     <modal title="Custom Amount" visible="showAmountModal">
         <form role="form">
+            <div class="form-group" data-ng-show="ValiedAmount">
+                <p class="error-container">Amount should not Exides {{viewQmount}}  </p>
+            </div>
             <div class="form-group">
                 <label for="EnterAmount">Enter Amount</label>
 
 
-                <input type="number" data-ng-model="s.selected" />
+                <input type="number" data-ng-model="CustomAmount" />
 
 
-                Maximum of {{viewAmount}}
+                Maximum of {{viewQmount}}
             </div>
 
-            <button type="submit" class="btn btn-default" ng-click="saveWarehouse(s.selected)">Select</button>
+            <button type="submit" class="btn btn-default" ng-click="addCustomAmount(CustomAmount)">Select</button>
         </form>
     </modal>
 </div>
@@ -304,12 +307,14 @@
         $scope.promoteUrl="@Url.Action("updateRequisitionStatus", "FDPSIAllocation", new { Area = "Logistics" })"
         $scope.selectedHub=@ViewBag.AllocatedHub;
         $scope.showAmountModal = false;
-        $scope.viewAmount =0;
+        $scope.ValiedAmount=false;
         $scope.list1 = [];
         $scope.list2 = [];
         $scope.list3 = [];
         $scope.list4 = [];
         $scope.unallocated = [];
+        $scope.viewQmount=0;
+
         $scope.allocations = { "si001": [], "si002": [] };
 
         $scope.list5 = [
@@ -334,6 +339,18 @@
 
 
         }
+        $scope.addCustomAmount = function (CustomAmount) {
+
+            if(CustomAmount.value > $scope.viewQmount.value)
+            {
+                $scope.ValiedAmount = !$scope.ValiedAmount;
+            }
+            else
+            {
+                $scope.showAmountModal= !$scope.showAmountModal;
+            }
+
+        };
         var updateError=function()
         {
             $('#modalContent').html("Error");
@@ -398,6 +415,37 @@
                     si.allocatedRequests.splice(i,1);
                     return;
                 }
+            }
+        }
+        $scope.allocateCustomAdminRegion = function (location,index, customAmount) {
+            if (location.type == "zone") {
+                for (var w in location.woredas) {
+                    $scope.allocateCustomAdminRegion(location.woredas[w],index);
+                }
+            }
+            else if (location.type == "woreda") {
+                for (var f in location.fdps) {
+                    var fdp = location.fdps[f];
+                    if (!fdp.allocatedAmount) {
+                        fdp.allocatedAmount = customAmount;
+                        fdp.allocatedIndirect = index;
+                        $scope.allocateCustomAdminRegion(location.fdps[f],index);
+                    }
+
+                }
+            }
+            else
+            {
+
+                if(!location.Allocations[0])
+                {
+                    location.Allocations[0]={};
+                }
+
+                location.Allocations[0].Code=$scope.SIPCCodes[index-1].codeId;
+                location.Allocations[0].AllocationType=$scope.SIPCCodes[index-1].type;
+                location.Allocations[0].AllocatedAmount=customAmount
+
             }
         }
         $scope.allocateAdminRegion = function (location,index) {
@@ -507,12 +555,12 @@
                // $("#SIPC" + ind).css("visibility", "hidden");
 
 
-                if($scope.SIPCCodes[i].availableAmount/1<item.requestedAmount/1)
+                if($scope.SIPCCodes[i].availableAmount/1>0)
                 {
                     $("#SIPC" + ind).css("display", "block");
                 }
                 else {
-                    $("#SIPC" + ind).css("display", "block");
+                    $("#SIPC" + ind).css("display", "none");
                 }
             }
         };
@@ -549,27 +597,36 @@
             $scope.saved=0;
             var location = $scope.allAdminRegions[requestIndex];
             amount = location.requestedAmount - location.allocatedAmount;
-            alert(amount);
-            alert($scope.SIPCCodes[siIndex].availableAmount);
+
             if($scope.SIPCCodes[siIndex].availableAmount/1<amount/1)
             {
-                alert("shortage");
-                $scope.viewAmount = amount;
-                $scope.showAmountModal= true;
+
+                $scope.viewQmount = $scope.SIPCCodes[siIndex].availableAmount;
+                $scope.showAmountModal= !$scope.showAmountModal;
+                var customAmount = $scope.SIPCCodes[siIndex].availableAmount;// use this var to accept new value default will be available amount
+                var avail=$scope.SIPCCodes[siIndex].availableAmount-customAmount;
+
+                $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
+                $scope.allAdminRegions[requestIndex].allocatedAmount = amount;
+                $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
+                $scope.SIPCCodes[siIndex].allocatedRequests.push($scope.allAdminRegions[requestIndex]);
+                $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,customAmount);
+                $scope.calculateAllocated();
+                alert("Sortage");
             }
+            else
+            {
             var avail=$scope.SIPCCodes[siIndex].availableAmount-amount;
-            //alert(siIndex);
-            //alert(amount);
+
             $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
             $scope.allAdminRegions[requestIndex].allocatedAmount = amount;
             $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
             $scope.SIPCCodes[siIndex].allocatedRequests.push($scope.allAdminRegions[requestIndex]);
-
-
             $scope.allocateAdminRegion(location,siIndex/1 + 1);
-
-
             $scope.calculateAllocated();
+            }
+
+
         }
         $scope.getSIPCIndex=function(id,type)
         {
@@ -758,47 +815,47 @@
         };
         $scope.loadPage();
     });
-App.directive('modal', function () {
-    return {
-        template: '<div class="modal fade">' +
-            '<div class="modal-dialog">' +
-              '<div class="modal-content">' +
-                '<div class="modal-header">' +
-                  '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-                  '<h4 class="modal-title">{{ title }}</h4>' +
+    App.directive('modal', function () {
+        return {
+            template: '<div class="modal fade">' +
+                '<div class="modal-dialog">' +
+                  '<div class="modal-content">' +
+                    '<div class="modal-header">' +
+                      '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+                      '<h4 class="modal-title">{{ title }}</h4>' +
+                    '</div>' +
+                    '<div class="modal-body" ng-transclude></div>' +
+                  '</div>' +
                 '</div>' +
-                '<div class="modal-body" ng-transclude></div>' +
-              '</div>' +
-            '</div>' +
-          '</div>',
-        restrict: 'E',
-        transclude: true,
-        replace: true,
-        scope: true,
-        link: function postLink(scope, element, attrs) {
-            scope.title = attrs.title;
+              '</div>',
+            restrict: 'E',
+            transclude: true,
+            replace: true,
+            scope: true,
+            link: function postLink(scope, element, attrs) {
+                scope.title = attrs.title;
 
-            scope.$watch(attrs.visible, function (value) {
-                if (value == true)
-                    $(element).modal('show');
-                else
-                    $(element).modal('hide');
-            });
-
-            $(element).on('shown.bs.modal', function () {
-                scope.$apply(function () {
-                    scope.$parent[attrs.visible] = true;
+                scope.$watch(attrs.visible, function (value) {
+                    if (value == true)
+                        $(element).modal('show');
+                    else
+                        $(element).modal('hide');
                 });
-            });
 
-            $(element).on('hidden.bs.modal', function () {
-                scope.$apply(function () {
-                    scope.$parent[attrs.visible] = false;
+                $(element).on('shown.bs.modal', function () {
+                    scope.$apply(function () {
+                        scope.$parent[attrs.visible] = true;
+                    });
                 });
-            });
-        }
-    };
-});
+
+                $(element).on('hidden.bs.modal', function () {
+                    scope.$apply(function () {
+                        scope.$parent[attrs.visible] = false;
+                    });
+                });
+            }
+        };
+    });
 
 
 </script>
