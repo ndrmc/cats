@@ -263,7 +263,7 @@
                 <label for="EnterAmount">Enter Amount</label>
 
 
-                <input type="number" data-ng-model="CustomAmount" />
+                <input type="number" data-ng-model="CustomAmount" data-ng-value="" />
 
 
                 Maximum of {{viewQmount}}
@@ -314,7 +314,7 @@
         $scope.list4 = [];
         $scope.unallocated = [];
         $scope.viewQmount=0;
-
+        $scope.CustomAmount = 0;
         $scope.allocations = { "si001": [], "si002": [] };
 
         $scope.list5 = [
@@ -460,9 +460,13 @@
                     if (!fdp.allocatedAmount) {
                         fdp.allocatedAmount = fdp.requestedAmount;
                         fdp.allocatedIndirect = index;
-                        $scope.allocateAdminRegion(location.fdps[f],index);
+                        $scope.allocateAdminRegion(location.fdps[f], index);
+                    } 
+                    else {
+                        fdp.allocatedAmount =  fdp.requestedAmount - fdp.allocatedAmount;
+                        fdp.allocatedIndirect = index;
+                        $scope.allocateAdminRegion(location.fdps[f], index);
                     }
-
                 }
             }
             else
@@ -602,6 +606,7 @@
             {
 
                 $scope.viewQmount = $scope.SIPCCodes[siIndex].availableAmount;
+                $scope.CustomAmount = $scope.SIPCCodes[siIndex].availableAmount;
                 $scope.showAmountModal= !$scope.showAmountModal;
                 var customAmount = $scope.SIPCCodes[siIndex].availableAmount;// use this var to accept new value default will be available amount
                 var avail=$scope.SIPCCodes[siIndex].availableAmount-customAmount;
@@ -612,7 +617,7 @@
                 $scope.SIPCCodes[siIndex].allocatedRequests.push($scope.allAdminRegions[requestIndex]);
                 $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,customAmount);
                 $scope.calculateAllocated();
-                alert("Sortage");
+                
             }
             else
             {
