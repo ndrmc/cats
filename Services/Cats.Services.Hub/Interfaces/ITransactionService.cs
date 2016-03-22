@@ -54,8 +54,9 @@ namespace Cats.Services.Hub
         Boolean SaveReceiptTransaction(ReceiveViewModel receiveModels, UserProfile user, Boolean reverse=false);
 
        bool ReceiptTransaction(ReceiveNewViewModel viewModel,Boolean reverse=false);
+       bool ReceiptDetailsTransaction(ReceiveNewViewModel viewModel, Boolean reverse = false, bool isOnEdit = false);
 
-
+       
 
         /// <summary>
         /// Saves the dispatch transaction.
