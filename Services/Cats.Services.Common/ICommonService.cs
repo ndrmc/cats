@@ -67,7 +67,7 @@ namespace Cats.Services.Common
         string GetCommditySourceName(int id);
         int GetWoredaBeneficiaryNo(int planId, int woredaId, int roundOrMonth, int program);
 
-
+        List<HubStoreViewModel> GetHubsAndStores();
     }
 }
 

@@ -18,13 +18,13 @@ namespace Cats.Models
         public string ReferenceNo { get; set; }
         public int RequisitionID { get; set; }
         public int HubID { get; set; }
-        public int SatelliteWarehouseID { get; set; }
+        public int? SatelliteWarehouseID { get; set; }
         
         public System.DateTime AllocationDate { get; set; }
         public int AllocatedBy { get; set; }
         public virtual Hub Hub { get; set; }
         public int? PartitionId { get; set; }
-
+        //public int? StoreId { get; set; }
        // public virtual UserProfile UserProfile { get; set; }
         public virtual ReliefRequisition ReliefRequisition { get; set; }
         public virtual ICollection<ProjectCodeAllocation> ProjectCodeAllocations { get; set; }

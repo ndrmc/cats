@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Cats.Models;
 using Cats.Data;
 using Cats.Models;
+using Cats.Services.Common;
 using Cats.Services.Procurement;
 using Cats.Services.EarlyWarning;
 
@@ -24,18 +25,20 @@ namespace Cats.Areas.Procurement.Controllers
         private readonly IProgramService _programService;
         private readonly ITransportBidPlanDetailService _transportBidPlanDetailService;
         private readonly IHubService _hubService;
+        private readonly ICommonService _commonService;
 
         public TransportBidPlanController(ITransportBidPlanService transportBidPlanServiceParam
                                           , IAdminUnitService adminUnitServiceParam
                                           , IProgramService programServiceParam
                                           , ITransportBidPlanDetailService transportBidPlanDetailServiceParam
-                                          , IHubService hubServiceParam)
+                                          , IHubService hubServiceParam, ICommonService commonService)
         {
             this._transportBidPlanService = transportBidPlanServiceParam;
             this._adminUnitService = adminUnitServiceParam;
             this._programService = programServiceParam;
             this._transportBidPlanDetailService = transportBidPlanDetailServiceParam;
             this._hubService = hubServiceParam;
+            _commonService = commonService;
         }
         public TransportBidPlan fetchFromDB(int id)
         {
@@ -276,6 +279,7 @@ namespace Cats.Areas.Procurement.Controllers
         public ActionResult WarehouseSelection(int id = 0)
         {
             TransportBidPlan transportbidplan = fetchFromDB(id);
+            //ViewBag.WarehouseID = _commonService.GetHubsAndStores();
             ViewBag.WarehouseID = _hubService.GetAllHub();
             @ViewBag.bidPlan = transportbidplan;
             ViewBag.RegionCollection = _adminUnitService.FindBy(t => t.AdminUnitTypeID == 2);
