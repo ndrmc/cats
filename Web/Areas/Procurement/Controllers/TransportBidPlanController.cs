@@ -279,8 +279,8 @@ namespace Cats.Areas.Procurement.Controllers
         public ActionResult WarehouseSelection(int id = 0)
         {
             TransportBidPlan transportbidplan = fetchFromDB(id);
-            //ViewBag.WarehouseID = _commonService.GetHubsAndStores();
-            ViewBag.WarehouseID = _hubService.GetAllHub();
+            ViewBag.WarehouseID = _commonService.GetHubsAndStores();
+            //ViewBag.WarehouseID = _hubService.GetAllHub();
             @ViewBag.bidPlan = transportbidplan;
             ViewBag.RegionCollection = _adminUnitService.FindBy(t => t.AdminUnitTypeID == 2);
             List<WarehouseProgramViewModel> table = GetWoredaWarehouseProgram(id,0);

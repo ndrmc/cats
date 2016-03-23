@@ -178,7 +178,7 @@ namespace Cats.Areas.Logistics.Controllers
         [HttpGet]
         public JsonResult ReadSWarehouse(int hubId)
         {
-            var SWarehouse = _hubService.GetAllHub().Where(r => r.HubOwnerID == hubId);
+            var SWarehouse = _hubService.GetAllHub().Where(r => r.HubParentID == hubId);
             return this.Json(
            (from obj in SWarehouse select new { Id = obj.HubID, Name = obj.Name })
            , JsonRequestBehavior.AllowGet

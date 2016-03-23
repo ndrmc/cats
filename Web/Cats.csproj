@@ -726,6 +726,8 @@
     <Content Include="Areas\Logistics\Views\Swap\Edit.cshtml" />
     <Content Include="Areas\Logistics\Views\Swap\Index.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\Request\DetailNonFoodItems.cshtml" />
+    <Content Include="Areas\EarlyWarning\Views\GiftCertificate\_Reject.cshtml" />
+    <Content Include="Areas\Hub\Views\Dispatch\_SISelector.cshtml" />
     <Content Include="ApplicationHost.config" />
     <None Include="Areas\Logistics\Views\DispatchAllocation\_AllocateProjectCode.cshtml" />
     <Content Include="Content\2013.1.219\Black\editor.png" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Cats.Data.UnitWork;
 using Cats.Models;
 
@@ -15,14 +16,14 @@ namespace Cats.Services.EarlyWarning
         {
             this._unitOfWork = unitOfWork;
         }
-        public bool AddSeason(Models.Season season)
+        public bool AddSeason(Season season)
         {
             _unitOfWork.SeasonRepository.Add(season);
             _unitOfWork.Save();
             return true;
         }
 
-        public bool DeleteSeason(Models.Season season)
+        public bool DeleteSeason(Season season)
         {
             if (season == null) return false;
             _unitOfWork.SeasonRepository.Delete(season);
@@ -39,29 +40,29 @@ namespace Cats.Services.EarlyWarning
             return true;
         }
 
-        public bool EditSeason(Models.Season season)
+        public bool EditSeason(Season season)
         {
             _unitOfWork.SeasonRepository.Edit(season);
             _unitOfWork.Save();
             return true;
         }
 
-        public Models.Season FindById(int id)
+        public Season FindById(int id)
         {
             return _unitOfWork.SeasonRepository.FindById(id);
         }
 
-        public List<Models.Season> GetAllSeason()
+        public List<Season> GetAllSeason()
         {
             return _unitOfWork.SeasonRepository.GetAll();
         }
 
-        public List<Models.Season> FindBy(System.Linq.Expressions.Expression<Func<Models.Season, bool>> predicate)
+        public List<Season> FindBy(Expression<Func<Season, bool>> predicate)
         {
             return _unitOfWork.SeasonRepository.FindBy(predicate);
         }
 
-        public IEnumerable<Models.Season> Get(System.Linq.Expressions.Expression<Func<Models.Season, bool>> filter = null, Func<IQueryable<Models.Season>, IOrderedQueryable<Models.Season>> orderBy = null, string includeProperties = "")
+        public IEnumerable<Season> Get(Expression<Func<Season, bool>> filter = null, Func<IQueryable<Season>, IOrderedQueryable<Season>> orderBy = null, string includeProperties = "")
         {
             return _unitOfWork.SeasonRepository.Get(filter, orderBy, includeProperties);
         }

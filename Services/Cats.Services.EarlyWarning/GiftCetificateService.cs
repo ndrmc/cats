@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using Cats.Data.UnitWork;
 using Cats.Models;
 using Cats.Models.Constant;
-using Cats.Models.Partial;
 
 namespace Cats.Services.EarlyWarning
 {

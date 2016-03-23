@@ -9,7 +9,6 @@ using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Models.ViewModels;
 
-
 namespace Cats.Services.EarlyWarning
 {
 

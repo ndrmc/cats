@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using Cats.Models;
 
 namespace Cats.Services.EarlyWarning
@@ -19,7 +18,7 @@ namespace Cats.Services.EarlyWarning
         List<FDP> GetAllFDP();
         List<FDP> FindBy(Expression<Func<FDP, bool>> predicate);
 
-        IEnumerable<FDP> Get(System.Linq.Expressions.Expression<Func<FDP, bool>> filter = null,
+        IEnumerable<FDP> Get(Expression<Func<FDP, bool>> filter = null,
                              Func<IQueryable<FDP>, IOrderedQueryable<FDP>> orderBy = null,
                              string includeProperties = "");
 

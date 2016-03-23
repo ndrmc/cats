@@ -2,11 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Cats.Data.UnitWork;
-using System.Collections;
 using Cats.Models;
-
 
 namespace Cats.Services.EarlyWarning
 {
@@ -122,7 +121,7 @@ namespace Cats.Services.EarlyWarning
             return (from _beneficiaryDetail in beneficiaryDetail join _adminUnit in _unitOfWork.AdminUnitRepository.GetAll() 
                      on _beneficiaryDetail.RegionalRequest.AdminUnit.AdminUnitID equals _adminUnit.AdminUnitID where _adminUnit.AdminUnitID == RegionId 
                      group _beneficiaryDetail by new { _beneficiaryDetail.RegionalRequest.Month, _beneficiaryDetail.Fdp.AdminUnit.AdminUnitID } 
-                     into _Beneficiaries select new ZonalBeneficiaries() { Month = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(_Beneficiaries.Key.Month), 
+                     into _Beneficiaries select new ZonalBeneficiaries() { Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(_Beneficiaries.Key.Month), 
                          Zone = _unitOfWork.AdminUnitRepository.FindBy(t => t.AdminUnitID == _Beneficiaries.Key.AdminUnitID).FirstOrDefault().Name, 
                          Request = _Beneficiaries.Sum(m => m.Beneficiaries), Allocation = ZonalAllocation(RegionId, _Beneficiaries.Key.Month,
                          _Beneficiaries.Key.AdminUnitID), HRD = ZonalHRD(RegionId, _Beneficiaries.Key.Month, _Beneficiaries.Key.AdminUnitID) });

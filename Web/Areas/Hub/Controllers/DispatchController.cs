@@ -34,6 +34,7 @@ using IProgramService = Cats.Services.Hub.IProgramService;
 using IProjectCodeService = Cats.Services.Hub.IProjectCodeService;
 using IShippingInstructionService = Cats.Services.Hub.IShippingInstructionService;
 using IUnitService = Cats.Services.Hub.IUnitService;
+using Cats.Areas.Logistics.Models;
 
 namespace Cats.Areas.Hub.Controllers
 {
@@ -63,7 +64,8 @@ namespace Cats.Areas.Hub.Controllers
         private readonly IContactService _contactService;
         private readonly ISMSService _smsService;
         private readonly IReliefRequisitionService _reliefRequisitionService;
-
+        private readonly Services.Common.ILedgerService _ledgerService;
+        private readonly IHubAllocationService _hubAllocationService;
         public DispatchController(IDispatchAllocationService dispatchAllocationService, IDispatchService dispatchService,
             IUserProfileService userProfileService, IOtherDispatchAllocationService otherDispatchAllocationService,
             IDispatchDetailService dispatchDetailService, IUnitService unitService, ICommodityTypeService commodityTypeService,
@@ -71,7 +73,7 @@ namespace Cats.Areas.Hub.Controllers
             ICommodityService commodityService, ITransactionService transactionService, IStoreService storeService,
             IAdminUnitService adminUnitService, IHubService hubService, IFDPService fdpService,
             IProjectCodeService projectCodeService, IShippingInstructionService shippingInstructionService,
-            ISMSGatewayService smsGatewayService, IContactService contactService, ISMSService smsService, IReliefRequisitionService reliefRequisitionService)
+            ISMSGatewayService smsGatewayService, IContactService contactService, ISMSService smsService, IReliefRequisitionService reliefRequisitionService, Services.Common.ILedgerService ledgerService, IHubAllocationService hubAllocationService)
             : base(userProfileService)
         {
             _dispatchAllocationService = dispatchAllocationService;
@@ -96,6 +98,8 @@ namespace Cats.Areas.Hub.Controllers
             _contactService = contactService;
             _smsService = smsService;
             _reliefRequisitionService = reliefRequisitionService;
+            _ledgerService = ledgerService;
+            _hubAllocationService = hubAllocationService;
         }
         public void populateLookups(UserProfile user)
         {
@@ -178,8 +182,22 @@ namespace Cats.Areas.Hub.Controllers
             var loanAllocations = _otherDispatchAllocationService.GetCommitedLoanAllocationsDetached(user, hub, closed, commodityType);
             return Json(loanAllocations.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
+        public FreeSIPC getSIPCLists(int reqId, int CommodityID)
+        {
+            var hubId = _hubAllocationService.GetAllocatedHubId(reqId);
+            List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodity(hubId, CommodityID);
+            List<Services.Common.LedgerService.AvailableProjectCodes> freePCCodes = _ledgerService.GetFreePCCodesByCommodity(hubId, CommodityID);
+            FreeSIPC free = new FreeSIPC { FreePCCodes = freePCCodes, FreeSICodes = freeSICodes };
+            return free;
+        }
 
+        public JsonResult AvailableSI(int reqId, int ComID)
+        {
+            var hubId = _hubAllocationService.GetAllocatedHubId(reqId);
+            List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodity(hubId, ComID);
+            return (Json(freeSICodes, JsonRequestBehavior.AllowGet));
 
+        }
         public ActionResult DispatchedToTransferListAjax([DataSourceRequest] DataSourceRequest request, int? HubID, bool? closed, int? commodityType)
         {
             var user = _userProfileService.GetUser(User.Identity.Name);
@@ -321,6 +339,7 @@ namespace Cats.Areas.Hub.Controllers
                 dispatch.DispatchedByStoreMan = editdispatch.DispatchedByStoreMan;
                 dispatch.CommodityID = detail.CommodityID;
                 dispatch.CommodityChildID = detail.CommodityChildID;
+
                 //dispatch.Year = editdispatch.PeriodYear;
                 //dispatch.Month = editdispatch.PeriodMonth;
                 //dispatch.Round = editdispatch.Round;
@@ -373,6 +392,10 @@ namespace Cats.Areas.Hub.Controllers
         public ActionResult CreateDispatch(DispatchViewModel dispatchviewmodel)
         {
             ViewBag.UnitID = new SelectList(_unitService.GetAllUnit(), "UnitID", "Name", dispatchviewmodel.UnitID);
+            var errors = ModelState
+    .Where(x => x.Value.Errors.Count > 0)
+    .Select(x => new { x.Key, x.Value.Errors })
+    .ToArray();
             if (ModelState.IsValid)
             {
 

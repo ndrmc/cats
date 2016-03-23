@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 using Cats.Data.UnitWork;
+using Cats.Models;
 
 namespace Cats.Services.EarlyWarning
 {
@@ -14,14 +14,14 @@ namespace Cats.Services.EarlyWarning
        {
            _unitOfWork = unitOfWork;
        } 
-       public bool AddInKindContributionDetail(Models.InKindContributionDetail inKindContributionDetail)
+       public bool AddInKindContributionDetail(InKindContributionDetail inKindContributionDetail)
        {
            _unitOfWork.InKindContributionDetailRepository.Add(inKindContributionDetail);
            _unitOfWork.Save();
            return true;
        }
 
-        public bool DeleteInKindContributionDetail(Models.InKindContributionDetail inKindContributionDetail)
+        public bool DeleteInKindContributionDetail(InKindContributionDetail inKindContributionDetail)
         {
             if (inKindContributionDetail == null) return false;
             _unitOfWork.InKindContributionDetailRepository.Delete(inKindContributionDetail);
@@ -38,29 +38,29 @@ namespace Cats.Services.EarlyWarning
             return true;
         }
 
-        public bool EditInKindContributionDetail(Models.InKindContributionDetail inKindContributionDetail)
+        public bool EditInKindContributionDetail(InKindContributionDetail inKindContributionDetail)
         {
             _unitOfWork.InKindContributionDetailRepository.Edit(inKindContributionDetail);
             _unitOfWork.Save();
             return true;
         }
 
-        public Models.InKindContributionDetail FindById(int id)
+        public InKindContributionDetail FindById(int id)
         {
             return _unitOfWork.InKindContributionDetailRepository.FindById(id);
         }
 
-        public List<Models.InKindContributionDetail> GetAllInKindContributionDetail()
+        public List<InKindContributionDetail> GetAllInKindContributionDetail()
         {
             return _unitOfWork.InKindContributionDetailRepository.GetAll();
         }
 
-        public List<Models.InKindContributionDetail> FindBy(System.Linq.Expressions.Expression<Func<Models.InKindContributionDetail, bool>> predicate)
+        public List<InKindContributionDetail> FindBy(Expression<Func<InKindContributionDetail, bool>> predicate)
         {
             return _unitOfWork.InKindContributionDetailRepository.FindBy(predicate);
         }
 
-        public IEnumerable<Models.InKindContributionDetail> Get(System.Linq.Expressions.Expression<Func<Models.InKindContributionDetail, bool>> filter = null, Func<IQueryable<Models.InKindContributionDetail>, IOrderedQueryable<Models.InKindContributionDetail>> orderBy = null, string includeProperties = "")
+        public IEnumerable<InKindContributionDetail> Get(Expression<Func<InKindContributionDetail, bool>> filter = null, Func<IQueryable<InKindContributionDetail>, IOrderedQueryable<InKindContributionDetail>> orderBy = null, string includeProperties = "")
         {
             return _unitOfWork.InKindContributionDetailRepository.Get(filter, orderBy, includeProperties);
         }

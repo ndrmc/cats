@@ -697,6 +697,8 @@ namespace Cats.Models.Hubs
         public string Region { get; set; }
         public string Zone { get; set; }
         public string Woreda { get; set; }
+
+      
         public int? PlanId { get; set; }
         public int? RequisitionId { get; set; }
         [Required]

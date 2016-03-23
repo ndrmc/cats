@@ -25,7 +25,8 @@ namespace Cats.Models.Mapping
             this.Property(t => t.HubID).HasColumnName("HubID");
             this.Property(t => t.Name).HasColumnName("Name");
             this.Property(t => t.HubOwnerID).HasColumnName("HubOwnerID");
-
+            this.Property(t => t.HubParentID).HasColumnName("HubParentID");
+            
             // Relationships
             this.HasRequired(t => t.HubOwner)
                 .WithMany(t => t.Hubs)

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using Cats.Data.UnitWork;
 using Cats.Models;
 using log4net;
-
 
 namespace Cats.Services.EarlyWarning
 {
@@ -32,7 +32,7 @@ namespace Cats.Services.EarlyWarning
                 _unitOfWork.Save();
                 return true;
             }
-            catch (System.Data.ConstraintException ex)
+            catch (ConstraintException ex)
             {
                 Logger.Error("",new Exception(ex.InnerException.Message.ToString(CultureInfo.InvariantCulture)));
                 throw new Exception(ex.ToString());

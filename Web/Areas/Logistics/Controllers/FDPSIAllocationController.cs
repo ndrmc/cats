@@ -71,7 +71,7 @@ namespace Cats.Areas.Logistics.Controllers
  //               SIAllocations = getSIAllocations(item.HubAllocations.ToList()[0].ProjectCodeAllocations.ToList()),
                 FDPRequests=getRequestDetail(item),
                 FreeSIPCCodes = getSIPCLists(item.RequisitionID, (int)item.CommodityID),
-
+                
             }).ToList();
 
             return result;

@@ -7,7 +7,6 @@ using System.Linq.Expressions;
 using Cats.Data.UnitWork;
 using Cats.Models;
 
-
 namespace Cats.Services.EarlyWarning
 {
 
@@ -62,7 +61,7 @@ namespace Cats.Services.EarlyWarning
         {
             return _unitOfWork.FDPRepository.FindBy(predicate);
         }
-        public IEnumerable<FDP> Get(System.Linq.Expressions.Expression<Func<FDP, bool>> filter = null,
+        public IEnumerable<FDP> Get(Expression<Func<FDP, bool>> filter = null,
                                     Func<IQueryable<FDP>, IOrderedQueryable<FDP>> orderBy = null,
                                     string includeProperties = "")
         {

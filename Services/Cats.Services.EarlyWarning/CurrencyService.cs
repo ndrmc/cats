@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 using Cats.Data.UnitWork;
+using Cats.Models;
 
 namespace Cats.Services.EarlyWarning
 {
@@ -16,14 +16,14 @@ namespace Cats.Services.EarlyWarning
            _unitOfWork = unitOfWork;
        }
 
-        public bool AddCurrency(Models.Currency currency)
+        public bool AddCurrency(Currency currency)
         {
             _unitOfWork.CurrencyRepository.Add(currency);
             _unitOfWork.Save();
             return true;
         }
 
-        public bool DeleteCurrency(Models.Currency currency)
+        public bool DeleteCurrency(Currency currency)
         {
             if (currency == null) return false;
             _unitOfWork.CurrencyRepository.Delete(currency);
@@ -40,29 +40,29 @@ namespace Cats.Services.EarlyWarning
             return true;
         }
 
-        public bool EditCurrency(Models.Currency currency)
+        public bool EditCurrency(Currency currency)
         {
             _unitOfWork.CurrencyRepository.Edit(currency);
             _unitOfWork.Save();
             return true;
         }
 
-        public Models.Currency FindById(int id)
+        public Currency FindById(int id)
         {
             return _unitOfWork.CurrencyRepository.FindById(id);
         }
 
-        public List<Models.Currency> GetAllCurrency()
+        public List<Currency> GetAllCurrency()
         {
             return _unitOfWork.CurrencyRepository.GetAll();
         }
 
-        public List<Models.Currency> FindBy(System.Linq.Expressions.Expression<Func<Models.Currency, bool>> predicate)
+        public List<Currency> FindBy(Expression<Func<Currency, bool>> predicate)
         {
             return _unitOfWork.CurrencyRepository.FindBy(predicate);
         }
 
-        public IEnumerable<Models.Currency> Get(System.Linq.Expressions.Expression<Func<Models.Currency, bool>> filter = null, Func<IQueryable<Models.Currency>, IOrderedQueryable<Models.Currency>> orderBy = null, string includeProperties = "")
+        public IEnumerable<Currency> Get(Expression<Func<Currency, bool>> filter = null, Func<IQueryable<Currency>, IOrderedQueryable<Currency>> orderBy = null, string includeProperties = "")
         {
             return _unitOfWork.CurrencyRepository.Get(filter, orderBy, includeProperties);
         }

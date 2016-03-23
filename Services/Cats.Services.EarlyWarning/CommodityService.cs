@@ -7,7 +7,6 @@ using System.Linq.Expressions;
 using Cats.Data.UnitWork;
 using Cats.Models;
 
-
 namespace Cats.Services.EarlyWarning
 {
 
@@ -77,8 +76,7 @@ namespace Cats.Services.EarlyWarning
 
         }
 
-        public IEnumerable<Commodity> Get(System.Linq.Expressions.
-           Expression<Func<Commodity, bool>> filter = null,
+        public IEnumerable<Commodity> Get(Expression<Func<Commodity, bool>> filter = null,
            Func<IQueryable<Commodity>, IOrderedQueryable<Commodity>> orderBy = null, string includeProperties = "")
         {
             return _unitOfWork.CommodityRepository.Get(filter, orderBy, includeProperties);

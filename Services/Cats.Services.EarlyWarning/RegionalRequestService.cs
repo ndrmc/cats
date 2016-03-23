@@ -6,9 +6,6 @@ using Cats.Data.UnitWork;
 using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Models.Security;
-using Cats.Models.ViewModels;
-using UserProfile = Cats.Models.Security.UserProfile;
-
 
 namespace Cats.Services.EarlyWarning
 {
@@ -193,7 +190,7 @@ namespace Cats.Services.EarlyWarning
         }
 
 
-        public bool ApproveRequest(int id, Cats.Models.Security.UserInfo userInfo)
+        public bool ApproveRequest(int id, UserInfo userInfo)
         {
             var req = _unitOfWork.RegionalRequestRepository.FindById(id);
             req.Status = (int)RegionalRequestStatus.Approved;
