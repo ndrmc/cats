@@ -308,7 +308,6 @@
         $scope.selectedHub=@ViewBag.AllocatedHub;
         $scope.showAmountModal = false;
         $scope.ValiedAmount=false;
-        $scope.dataIn = 0; 
         $scope.list1 = [];
         $scope.list2 = [];
         $scope.list3 = [];
@@ -342,7 +341,6 @@
         }
         $scope.addCustomAmount = function (CustomAmount) {
 
-            alert(CustomAmount.value - $scope.viewQmount.value);
             if(CustomAmount.value > $scope.viewQmount.value)
             {
                 $scope.ValiedAmount = !$scope.ValiedAmount;
@@ -610,11 +608,7 @@
 
                 $scope.viewQmount = $scope.SIPCCodes[siIndex].availableAmount;
                 $scope.CustomAmount = $scope.SIPCCodes[siIndex].availableAmount;
-                $scope.dataIn = 0;
                 $scope.showAmountModal= !$scope.showAmountModal;
-                $scope.$watch('dataIn', function() {
-                   
-              
                 var customAmount = $scope.SIPCCodes[siIndex].availableAmount;// use this var to accept new value default will be available amount
                 var avail=$scope.SIPCCodes[siIndex].availableAmount-customAmount;
                 //if($scope.allAdminRegions[requestIndex].allocatedAmount != 0)
@@ -632,7 +626,7 @@
 
                 $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,customAmount);
                 $scope.calculateAllocated();
-                });
+               
             }
             else
             {

@@ -1,0 +1,13 @@
+diff a/Web/Areas/Logistics/Views/FDPSIAllocation/Index.cshtml b/Web/Areas/Logistics/Views/FDPSIAllocation/Index.cshtml	(rejected hunks)
+@@ -610,7 +610,11 @@
+ 
+                 $scope.viewQmount = $scope.SIPCCodes[siIndex].availableAmount;
+                 $scope.CustomAmount = $scope.SIPCCodes[siIndex].availableAmount;
++                $scope.dataIn = 0;
+                 $scope.showAmountModal= !$scope.showAmountModal;
++                $scope.$watch('dataIn', function() {
++                   
++              
+                 var customAmount = $scope.SIPCCodes[siIndex].availableAmount;// use this var to accept new value default will be available amount
+                 var avail=$scope.SIPCCodes[siIndex].availableAmount-customAmount;
+                 //if($scope.allAdminRegions[requestIndex].allocatedAmount != 0)
