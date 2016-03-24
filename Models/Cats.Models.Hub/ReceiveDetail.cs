@@ -15,6 +15,7 @@ namespace Cats.Models.Hubs
         public int? CommodityChildID { get; set; }
         public decimal SentQuantityInUnit { get; set; }
         public int UnitID { get; set; }
+        public int? SiNumber { get; set; }
         public decimal SentQuantityInMT { get; set; }
         public string Description { get; set; }
         public virtual Commodity Commodity { get; set; }

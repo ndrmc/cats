@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Cats.Models.Hubs.ViewModels.Common;
 
 namespace Cats.Models.Hubs.ViewModels
 {
     public class ReceiveNewViewModel
     {
+        public System.Collections.IEnumerable Commodities;
+        public System.Collections.IEnumerable Units;
         #region View Properties 
 
         public Guid ReceiveId { get; set; }
@@ -127,6 +130,7 @@ namespace Cats.Models.Hubs.ViewModels
 
         public AllocationStatusViewModel AllocationStatusViewModel { get; set; }
 
+        public List<ReceiveDetailsViewModel> ReceiveDetailsViewModels { get; set; } 
         #endregion 
     }
 }
