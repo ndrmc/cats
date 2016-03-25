@@ -16,6 +16,7 @@ using Cats.Services.Transaction;
 using Cats.ViewModelBinder;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using System.Web.UI;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -245,15 +246,49 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 }
                 reliefRequisitionNew.MonthName = RequestHelper.MonthName(reliefRequisitionNew.Month);
             }
+            ViewBag.RequestId = id;
             return View(input);
         }
+
+        public ActionResult ShowRepeatedRequisitions()
+        {
+            return View("_RepeatedRequisitions");
+        }
+
+        public ActionResult RepeatedRequisitions()
+        {
+            return View();
+        }
+
 
         [HttpPost]
         public ActionResult NewRequisiton(List<DataFromGrid> input, int id = 0)
         {
+
             var requId = 0;
             var requisistionNos = input.Select(m => m.RequisitionNo);
-            var requsitionNo = _reliefRequisitionService.FindBy(m => requisistionNos.Contains(m.RequisitionNo) && m.RegionalRequestID != id);
+
+            var duplicates = requisistionNos.GroupBy(x => x)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key)
+                .ToList();
+            //if (duplicates.Any())
+            //{
+            //    var dupliatedRequisitionNos = string.Empty;
+            //    foreach (string requisition in duplicates)
+            //    {
+            //        if (dupliatedRequisitionNos == string.Empty) dupliatedRequisitionNos = requisition;
+            //        else dupliatedRequisitionNos = dupliatedRequisitionNos + "," + requisition;
+            //    }
+
+            //    ModelState.AddModelError("Errors",
+            //            String.Format("{0} Requisition Nos are duplicated. Please Change the Requisition Nos",
+            //                dupliatedRequisitionNos));
+            //    return NewRequisiton(id);
+            //}
+
+
+            var requsitionNo = _reliefRequisitionService.FindBy(m => requisistionNos.Contains(m.RequisitionNo)); // && m.RegionalRequestID != id
             if (requsitionNo.Count>0)
             {
                 var requsisions = _reliefRequisitionService.GetRequisitionByRequestId(id).ToList();
@@ -269,7 +304,32 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     reliefRequisitionNew.MonthName = RequestHelper.MonthName(reliefRequisitionNew.Month);
                 }
                 if (existingRequisitionNo != null)
-                    ModelState.AddModelError("Errors",String.Format("{0} Requisition No already existed please Change Requisition No", existingRequisitionNo.RequisitionNo));
+                {
+                    ModelState.AddModelError("Errors",
+                        String.Format("{0} Requisition No already existed please Change Requisition No",
+                            existingRequisitionNo.RequisitionNo));
+                    var repeatedRequisitions = requsitionNo.Select(requisision => new ReliefRequisitionNew
+                    {
+                        RequisitionNo = requisision.RequisitionNo,
+                        Region = requisision.AdminUnit.Name,
+                        Zone = requisision.AdminUnit.Name,
+                        Round = requisision.Round,
+                        RequestedDate = requisision.RequestedDate,
+                    }).ToList();
+                    ViewData["RepeatedRequisitions"] = repeatedRequisitions;
+                    //return NewRequisiton(id);
+                    //RedirectToAction("ShowRepeatedRequisitions");
+                    //RedirectToAction("RepeatedRequisitions");
+
+
+                    ViewBag.JS = "ShowPopup()";
+                    return NewRequisiton(id);
+
+                    //ClientScript.RegisterStartupScript(GetType(), "hwa", "alert('Hello World');", true);
+                    //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "text", "Func()", true);
+                    //ScriptManager.RegisterStartupScript(Controller, this.ControllerContext.Controller.GetType(),"text", "ShowPopup()");
+                    //return new EmptyResult();
+                }
                 return View(requsisions);
             }
                 

@@ -9,12 +9,15 @@
 
 <fieldset>
     <legend>
-        New  Requisiton For Distribution
+        New Requisiton For Distribution
+
     </legend>
+    <button type="button" style="background-color: firebrick; height: 20px; width: 15px;" disabled="disabled"></button> Duplicate Requisition Numbers!
 </fieldset>
+ 
 @section Toolbar
 {
-    <a class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_create_Requistions"></a>
+    <a class="btn toolbar-btn " id="btnSave" data-buttontype="btn_save" data-submittedform="frm_create_Requistions"></a>
     <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("CancelChanges", "ReliefRequisition", new { id = Model.First().RegionalRequestId})" title="Cancel"></a>
 }
 
@@ -78,13 +81,29 @@
             </tr>
         </thead>
         <tbody>
-            @{ int index = 0; }
-            @foreach (var item in Model)
-            {
+            @{
+                int index = 0;
+                int counter = 0;
+                var requisitionNos = new List<string>();
+            }
+             @foreach (var item in Model)
+             {
+                 requisitionNos.Add(@item.Input.RequisitionNo);
+             }
+
+        @foreach (var item in Model)
+        {
+            counter = requisitionNos.Count(c => c.Contains(@item.Input.RequisitionNo));
                 <tr>
                     <td>
-@*                        @Html.TextBox("input[" + index + "].RequisitionNo", item.Input.RequisitionNo, new { @style = "width:80%; border:none; !important;" })*@
-                          <input type='text'  name="input[@index].RequisitionNo" id="txtRequisitionID" value="@item.Input.RequisitionNo" style = "width:80%; border:none; !important;"/>
+                        @if (counter >1)
+                        {
+                            <input type='text' name="input[@index].RequisitionNo" id="txtRequisitionID" value="@item.Input.RequisitionNo" style="width: 80%; background-color: firebrick; font-weight: bold; border: none; !important;" onchange="Validate();"/>
+                        }
+                       @if (counter <=1)
+                       {
+                           <input type='text' name="input[@index].RequisitionNo" id="txtRequisitionID" value="@item.Input.RequisitionNo" style="width: 80%; border: none; !important;" onchange="Validate();" />
+                       }
                         @Html.ValidationMessageFor(modelItem => item.RequisitionNo)
                     </td>
                     <td>
@@ -168,7 +187,7 @@
 
                    @* </td>*@
                 </tr>
-            
+                requisitionNos.Add(@item.Input.RequisitionNo);
                 index++;
             }
         </tbody>
@@ -178,13 +197,82 @@
        @* <input class="btn btn-success" type="submit" value="Save Change" />*@
     </p>
 }
+<div id='dialogDiv' class='modal fade bs-modal-md' tabindex="-1" aria-hidden="true">
+    <div id='dialogContent'>
+    </div>
+</div>
+    
 <script>
     $(document).ready(function() {
         $("#kGrid").kendoGrid({
             pageable: false,
             scrollable: true,
-            sortable: true
+            sortable: true,
+        }).Events(evt => {
+            evt.Edit("Validate");
         });
-        
+
     });
+
+    function ShowPopup() {
+        $('#cats-modal').remove();
+        e.preventDefault();
+        var $this = $(this),
+            $remote = $this.data('remote') || $this.attr('href'),
+            $modal = $('<div class="modal" id="cats-modal"><div class="modal-body"></div></div>');
+        console.log($remote);
+        $('body').append($modal);
+        $modal.modal({ backdrop: 'static', keyboard: false });
+        $modal.load($remote);
+    };
+
+    
+    function Validate(e) {
+        
+        var requisitionsNos = [];
+        var entityGrid = $("#kGrid").data("kendoGrid");
+        var data = entityGrid.dataSource.data();
+        var totalNumber = data.length;
+
+        for (var i = 0; i < totalNumber; i++) {       
+            var name = "input[" + i + "]." + "RequisitionNo";
+            var x = document.getElementsByName(name);
+            requisitionsNos[i] = x[0].value;
+        }
+
+        for (var i = 0; i < totalNumber; i++) {
+            var name = "input[" + i + "]." + "RequisitionNo";
+            var x = document.getElementsByName(name);
+            var requisitionNo = x[0].value;
+            var count = requisitionsNos.filter(function(value) {
+                return value == requisitionNo;
+            }).length;
+            if (count > 1)
+                $(x).css({ "background-color": "firebrick", "font-weight": "bold" });
+        }
+
+    }
+
+
+</script>
+
+               
+
+                     
+<script type="text/javascript">
+     @ViewBag.JS
+    function ShowPopup() {
+        e.preventDefault();
+        var $remote = 'ReliefRequisition/RepeatedRequisitions'; //$(this).attr('href');
+        $('#dialogContent').load($remote, function() {
+            $('#dialogDiv').modal({
+                backdrop: 'static',
+                keyboard: false
+            }, 'show');
+            //bindForm(this);
+            $(".modal-dialog").removeClass("modal-sm").addClass("modal-md");
+        });
+        return false;
+    }
+
 </script>
