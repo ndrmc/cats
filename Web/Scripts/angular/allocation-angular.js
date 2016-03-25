@@ -123,7 +123,7 @@ app.controller("DragDroController", function ($scope, $http ,dragDropService, sa
    
     
     $scope.GetWarehouseList1 = function (index) {
-        $http({ method: 'GET', url: '/Logistics/DispatchAllocation/ReadSWarehouse?hubId=' + index }).success(function (data, status, headers, config) { $scope.WarehouseList = data; })
+        $http({ method: 'GET', url: '~/DispatchAllocation/ReadSWarehouse?hubId=' + index }).success(function (data, status, headers, config) { $scope.WarehouseList = data; })
             .error(function (data, status, headers, config) {
 
             });
