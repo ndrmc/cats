@@ -266,29 +266,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
 
             var requId = 0;
-            var requisistionNos = input.Select(m => m.RequisitionNo);
-
-            var duplicates = requisistionNos.GroupBy(x => x)
-                .Where(g => g.Count() > 1)
-                .Select(g => g.Key)
-                .ToList();
-            //if (duplicates.Any())
-            //{
-            //    var dupliatedRequisitionNos = string.Empty;
-            //    foreach (string requisition in duplicates)
-            //    {
-            //        if (dupliatedRequisitionNos == string.Empty) dupliatedRequisitionNos = requisition;
-            //        else dupliatedRequisitionNos = dupliatedRequisitionNos + "," + requisition;
-            //    }
-
-            //    ModelState.AddModelError("Errors",
-            //            String.Format("{0} Requisition Nos are duplicated. Please Change the Requisition Nos",
-            //                dupliatedRequisitionNos));
-            //    return NewRequisiton(id);
-            //}
-
-
-            var requsitionNo = _reliefRequisitionService.FindBy(m => requisistionNos.Contains(m.RequisitionNo)); // && m.RegionalRequestID != id
+            var requisistionNos = input.Select(m => m.RequisitionNo);       
+            var requsitionNo = _reliefRequisitionService.FindBy(m => requisistionNos.Contains(m.RequisitionNo) && m.RegionalRequestID != id);
             if (requsitionNo.Count>0)
             {
                 var requsisions = _reliefRequisitionService.GetRequisitionByRequestId(id).ToList();
@@ -304,32 +283,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     reliefRequisitionNew.MonthName = RequestHelper.MonthName(reliefRequisitionNew.Month);
                 }
                 if (existingRequisitionNo != null)
-                {
                     ModelState.AddModelError("Errors",
                         String.Format("{0} Requisition No already existed please Change Requisition No",
-                            existingRequisitionNo.RequisitionNo));
-                    var repeatedRequisitions = requsitionNo.Select(requisision => new ReliefRequisitionNew
-                    {
-                        RequisitionNo = requisision.RequisitionNo,
-                        Region = requisision.AdminUnit.Name,
-                        Zone = requisision.AdminUnit.Name,
-                        Round = requisision.Round,
-                        RequestedDate = requisision.RequestedDate,
-                    }).ToList();
-                    ViewData["RepeatedRequisitions"] = repeatedRequisitions;
-                    //return NewRequisiton(id);
-                    //RedirectToAction("ShowRepeatedRequisitions");
-                    //RedirectToAction("RepeatedRequisitions");
-
-
-                    ViewBag.JS = "ShowPopup()";
-                    return NewRequisiton(id);
-
-                    //ClientScript.RegisterStartupScript(GetType(), "hwa", "alert('Hello World');", true);
-                    //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "text", "Func()", true);
-                    //ScriptManager.RegisterStartupScript(Controller, this.ControllerContext.Controller.GetType(),"text", "ShowPopup()");
-                    //return new EmptyResult();
-                }
+                            existingRequisitionNo.RequisitionNo));                 
                 return View(requsisions);
             }
                 
