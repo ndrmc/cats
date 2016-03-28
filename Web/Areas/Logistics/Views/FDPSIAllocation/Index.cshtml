@@ -441,11 +441,7 @@
                     location.Allocations[0].Code="";
                     location.Allocations[0].AllocationType="";
                     location.Allocations[0].AllocatedAmount = 0;
-<<<<<<< HEAD
 
-=======
-                   
->>>>>>> bugfix
                 }
 
 
@@ -862,7 +858,20 @@
         {
             $scope.saved=1;
             var param = [];
-            var k = $scope.allAdminRegions;
+            for(var i in $scope.allAdminRegions)
+            {
+                var location=$scope.allAdminRegions[i];
+                // location.name=location.name + i;
+
+                for(var a in location.Allocations)
+                {
+                    var siindex=$scope.getSIPCIndex(location.Allocations[a].Code,location.Allocations[a].AllocationType)
+                    if(siindex>=0)
+                    {
+                        param.push(location.Allocations[a]);
+                    }
+                }
+            }
             for(var i in $scope.requisitionDetail)
             {
                 var item=$scope.requisitionDetail[i];
