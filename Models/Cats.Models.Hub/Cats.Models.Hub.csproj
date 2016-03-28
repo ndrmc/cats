@@ -106,6 +106,7 @@
     <Compile Include="ViewModels\DispatchReportViewModel.cs" />
     <Compile Include="ViewModels\ReceiptAllocationViewModelDto.cs" />
     <Compile Include="ViewModels\ReceiveDetailNewViewModel.cs" />
+    <Compile Include="ViewModels\ReceiveDetailsViewModel.cs" />
     <Compile Include="ViewModels\ReceiveNewViewModel.cs" />
     <Compile Include="ViewModels\ReceiveViewModelDto.cs" />
     <Compile Include="VWTransferredStock.cs" />
@@ -447,6 +448,7 @@
   <ItemGroup>
     <Folder Include="Helpers\" />
     <Folder Include="Partials\Generator\" />
+    <Folder Include="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

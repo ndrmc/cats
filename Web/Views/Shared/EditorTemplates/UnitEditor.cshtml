@@ -1,0 +1,6 @@
+﻿@(Html.Kendo().DropDownList()
+        .Name("UnitId") 
+    .DataValueField("Id") 
+    .DataTextField("Name") 
+    .BindTo((System.Collections.IEnumerable)ViewBag.Units) 
+)

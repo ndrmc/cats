@@ -16,6 +16,7 @@ using Cats.Services.Transaction;
 using Cats.ViewModelBinder;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using System.Web.UI;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -245,14 +246,27 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 }
                 reliefRequisitionNew.MonthName = RequestHelper.MonthName(reliefRequisitionNew.Month);
             }
+            ViewBag.RequestId = id;
             return View(input);
         }
+
+        public ActionResult ShowRepeatedRequisitions()
+        {
+            return View("_RepeatedRequisitions");
+        }
+
+        public ActionResult RepeatedRequisitions()
+        {
+            return View();
+        }
+
 
         [HttpPost]
         public ActionResult NewRequisiton(List<DataFromGrid> input, int id = 0)
         {
+
             var requId = 0;
-            var requisistionNos = input.Select(m => m.RequisitionNo);
+            var requisistionNos = input.Select(m => m.RequisitionNo);       
             var requsitionNo = _reliefRequisitionService.FindBy(m => requisistionNos.Contains(m.RequisitionNo) && m.RegionalRequestID != id);
             if (requsitionNo.Count>0)
             {
@@ -269,7 +283,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     reliefRequisitionNew.MonthName = RequestHelper.MonthName(reliefRequisitionNew.Month);
                 }
                 if (existingRequisitionNo != null)
-                    ModelState.AddModelError("Errors",String.Format("{0} Requisition No already existed please Change Requisition No", existingRequisitionNo.RequisitionNo));
+                    ModelState.AddModelError("Errors",
+                        String.Format("{0} Requisition No already existed please Change Requisition No",
+                            existingRequisitionNo.RequisitionNo));                 
                 return View(requsisions);
             }
                 

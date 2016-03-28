@@ -1,0 +1,37 @@
+﻿@using Kendo.Mvc.UI
+@using Cats.Helpers
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="myModalLabel" class="modal-title">@Html.Translate("Repeated Requisitions")</h4>
+            </div>
+            <div class="modal-body">
+                @(Html.Kendo().Grid((IEnumerable<Cats.Models.ViewModels.ReliefRequisitionNew>)ViewData["RepeatedRequisitions"])
+          .Name("gridRepeatedRequisitions")
+          .Columns(columns =>
+          {
+              columns.Bound(p => p.RequisitionNo).Title(@Html.Translate("RequisitionNo"));
+              columns.Bound(p => p.Region).Title(@Html.Translate("Region"));
+              columns.Bound(p => p.Zone).Title(@Html.Translate("Zone"));
+              columns.Bound(p => p.Round).Title(@Html.Translate("Round"));
+              columns.Bound(p => p.RequestedDate).Title(@Html.Translate("Requested Date"));
+          })
+          .Sortable()
+          .DataSource(dataSource => dataSource
+                                        .Ajax()
+                                        .PageSize(5)
+          ).Selectable(select => select.Mode(GridSelectionMode.Single)))
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">(@Html.Translate("Cancel"))</button>
+            </div>
+
+
+        </div>
+    </div>
+

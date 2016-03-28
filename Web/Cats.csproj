@@ -112,6 +112,10 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\System.Web.Helpers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -729,6 +733,8 @@
     <Content Include="Areas\EarlyWarning\Views\GiftCertificate\_Reject.cshtml" />
     <Content Include="Areas\Hub\Views\Dispatch\_SISelector.cshtml" />
     <Content Include="ApplicationHost.config" />
+    <Content Include="Areas\EarlyWarning\Views\Shared\_RepeatedRequisitions.cshtml" />
+    <Content Include="Areas\EarlyWarning\Views\ReliefRequisition\RepeatedRequisitions.cshtml" />
     <None Include="Areas\Logistics\Views\DispatchAllocation\_AllocateProjectCode.cshtml" />
     <Content Include="Content\2013.1.219\Black\editor.png" />
     <Content Include="Content\2013.1.219\Black\imagebrowser.png" />
