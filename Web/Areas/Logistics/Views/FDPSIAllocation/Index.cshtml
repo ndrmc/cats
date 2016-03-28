@@ -389,8 +389,19 @@
             // alert(adminIndex);
             $scope.saved=0;
             var location = $scope.allAdminRegions[adminIndex];
-            $scope.removeAllocation(location);
 
+            for(var i in $scope.allAdminRegions)
+            {
+                var inlocation=$scope.allAdminRegions[i];
+                // location.name=location.name + i;
+
+                for(var a in inlocation.Allocations)
+                {
+                    if(location.FDPId==inlocation.FDPId && location.RequestDetailId==inlocation.RequestDetailId && inlocation.type=="FDP")
+                        $scope.removeAllocation(inlocation);
+                }
+            }
+            $scope.removeAllocation(location);
             $scope.calculateAllocated();
         }
         $scope.removeAllocation=function(location)
@@ -430,7 +441,7 @@
                     location.Allocations[0].Code="";
                     location.Allocations[0].AllocationType="";
                     location.Allocations[0].AllocatedAmount = 0;
-                   
+
                 }
 
 
@@ -442,7 +453,7 @@
             var si=$scope.SIPCCodes[siindex];
             for(var i in si.allocatedRequests)
             {
-                if(si.allocatedRequests[i].index==fdpindex)
+                if(si.allocatedRequests[i].index==fdpindex && si.allocatedRequests[i].allocatedAmount !=0)
                 {
                     si.availableAmount = si.availableAmount/1 +  si.allocatedRequests[i].allocatedAmount/1;
                     si.allocatedRequests.splice(i,1);
@@ -847,6 +858,7 @@
         {
             $scope.saved=1;
             var param = [];
+            var k = $scope.allAdminRegions;
             for(var i in $scope.requisitionDetail)
             {
                 var item=$scope.requisitionDetail[i];
