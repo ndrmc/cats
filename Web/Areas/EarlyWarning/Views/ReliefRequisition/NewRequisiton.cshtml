@@ -12,7 +12,9 @@
         New Requisiton For Distribution
 
     </legend>
-    <button type="button" style="background-color: firebrick; height: 20px; width: 15px;" disabled="disabled"></button> Duplicate Requisition Numbers!
+    @*<button type="button" style="background-color: firebrick; height: 20px; width: 15px;" disabled="disabled"></button>
+    <p id="duplicate"></p> Duplicate Requisition Numbers!*@
+    <h6 id="duplicate"> <span class="label label-default" id="duplicatespan" style="background-color: firebrick; ">Duplicate Requisition Numbers!</span></h6>
 </fieldset>
  
 @section Toolbar
@@ -239,18 +241,23 @@
             var x = document.getElementsByName(name);
             requisitionsNos[i] = x[0].value;
         }
-
+        var totalRepeatedNos = 0;
         for (var i = 0; i < totalNumber; i++) {
             var name = "input[" + i + "]." + "RequisitionNo";
             var x = document.getElementsByName(name);
-            var requisitionNo = x[0].value;
+            var requisitionNo = requisitionsNos[i];
             var count = requisitionsNos.filter(function(value) {
                 return value == requisitionNo;
             }).length;
-            if (count > 1)
+            if (count > 1) {
                 $(x).css({ "background-color": "firebrick", "font-weight": "bold" });
+                totalRepeatedNos = totalRepeatedNos + 1;
+            } else $(x).css({ "background-color": "white", "font-weight": "normal" });
         }
-
+        //var duplicate = document.getElementById("")
+        if (totalRepeatedNos >= 1)
+            $("#duplicatespan").show();
+        else $("#duplicatespan").hide();
     }
 
 
