@@ -85,6 +85,7 @@
         <tbody>
             @{
                 int index = 0;
+                int repeatedCounter = 0;
                 int counter = 0;
                 var requisitionNos = new List<string>();
             }
@@ -92,6 +93,15 @@
              {
                  requisitionNos.Add(@item.Input.RequisitionNo);
              }
+            @{
+                var repeated = requisitionNos.GroupBy(x => x).Where(g => g.Count() > 1).ToList();
+                if (repeated.Any())
+                {
+                    <script type="text/javascript">
+                        $("#duplicatespan").show();
+                    </script>
+                }
+            }
 
         @foreach (var item in Model)
         {
@@ -99,7 +109,8 @@
                 <tr>
                     <td>
                         @if (counter >1)
-                        {
+                        {        
+                                               
                             <input type='text' name="input[@index].RequisitionNo" id="txtRequisitionID" value="@item.Input.RequisitionNo" style="width: 80%; background-color: firebrick; font-weight: bold; border: none; !important;" onchange="Validate();"/>
                         }
                        @if (counter <=1)
@@ -192,13 +203,14 @@
                 requisitionNos.Add(@item.Input.RequisitionNo);
                 index++;
             }
+           
         </tbody>
     </table>
     <p>
         @*<input class="btn btn-success" type="submit" value="Save Change" />*@
        @* <input class="btn btn-success" type="submit" value="Save Change" />*@
     </p>
-}
+                            }
 <div id='dialogDiv' class='modal fade bs-modal-md' tabindex="-1" aria-hidden="true">
     <div id='dialogContent'>
     </div>
@@ -260,14 +272,17 @@
         else $("#duplicatespan").hide();
     }
 
-
+    function HideDuplicateFlag(number)
+    {
+        if(number == 0) $("#duplicatespan").hide();
+    }
 </script>
 
                
 
                      
 <script type="text/javascript">
-     @ViewBag.JS
+    @ViewBag.JS
     function ShowPopup() {
         e.preventDefault();
         var $remote = 'ReliefRequisition/RepeatedRequisitions'; //$(this).attr('href');
