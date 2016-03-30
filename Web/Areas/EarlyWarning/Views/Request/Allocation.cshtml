@@ -128,99 +128,118 @@
 
 <div ng-app ng-controller="RequestAllocationController">
 
-        <div class="section-hilite summaryview" style="width:90%; background:#FFF">
-            <!--
-            <div class="loading"><i class="fa fa-book fa-fw fa-border"></i> loading</div>
-            -->
-                <table style="width:90%; background:#FFF">
-                <tr>
-                    <td class="fldlabel">Reference : </td><td class="fldvalue">@Model.ReferenceNumber</td>
-                    <td class="fldlabel">Region : </td><td class="fldvalue">@Model.Region</td>
-                    <td class="fldlabel">Program : </td><td class="fldvalue">@Model.Program</td>
-                </tr>
-                <tr>
-                    <td class="fldlabel">@Html.Translate("Request Date") : </td><td class="fldvalue">@Model.RequestDate</td>
-                    <td class="fldlabel">@Html.Translate("Year") : </td><td class="fldvalue">@Model.Year</td>
-                    <td class="fldlabel">@Html.Translate("Ration") : </td><td class="fldvalue">@Model.Ration </td>
-                </tr>
-            </table>
-        </div>
-        
-       
-    <div class="section-hilite token-inputs" style="padding:1px;">
-         <table >
-             <tr><td style="padding-left:20px; padding-right:4px;">
-                 
-                 @Html.Translate("Commodities") </td><td><input id="txt_requested_commodities" class="flat-input" /></td></tr>
-         </table> 
+    <div class="section-hilite summaryview" style="width: 90%; background: #FFF">
+        <!--
+        <div class="loading"><i class="fa fa-book fa-fw fa-border"></i> loading</div>
+        -->
+        <table style="width: 90%; background: #FFF">
+            <tr>
+                <td class="fldlabel">Reference : </td><td class="fldvalue">@Model.ReferenceNumber</td>
+                <td class="fldlabel">Region : </td><td class="fldvalue">@Model.Region</td>
+                <td class="fldlabel">Program : </td><td class="fldvalue">@Model.Program</td>
+            </tr>
+            <tr>
+                <td class="fldlabel">@Html.Translate("Request Date") : </td><td class="fldvalue">@Model.RequestDate</td>
+                <td class="fldlabel">@Html.Translate("Year") : </td><td class="fldvalue">@Model.Year</td>
+                <td class="fldlabel">@Html.Translate("Ration") : </td><td class="fldvalue">@Model.Ration </td>
+            </tr>
+        </table>
     </div>
 
-    
-        <div class="k-widget k-grid" style="height:400px; overflow:scroll;">
-            <table id="tbl_allocation" >
-                <thead class="k-grid-header">
-                <tr>
-                    <th style="width:50px; padding:7px;">No.</th>
-                    <th style="width:150px; padding:7px;">Zone</th>
-                    <th style="width:150px">Woreda</th>
-                    <th style="width:150px">FDP</th>
-                   <!-- <th style="width:150px">Planned</th>-->
-                    <th style="width:150px">Beneficiary</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody class="k-grid-content">
-                <tr  ng-repeat="allocation in allocations">
-                    <td>{{$index+1}}</td>
-                    
-                    <td>{{allocation.Zone}}</td>
-                    <td>{{allocation.Woreda}}</td>
-                    <td>
-                        <a ng-click="onFdpListShow($index)" id="fdp_selector_button{{$index}}" class="edit_button" href="javascript:_Void()">{{allocation.FDP}}</a>
-                    </td>
-                    <!--<td>{{allocation.PlannedBeneficiaries}}</td>-->
-                    <td><input class="flat-input txt_beneficiaries" onfocus="onGridInputFocus(this)"  onchange="onAllocationBeneficiaryChange({{$index}})" ng-model="allocation.Beneficiaries"  /></td>
-                    <td><button class="edit_button btn btn-danger"  ng-click="deleteRequestedFDP($index)"><i class="icon-trash icon-white"></i> Delete</button></td>
-                </tr>
-                <tr id="newAllocationEdit" style="display:none;">
-                    <td></td>
-                    <td>{{newAllocation.Zone}}</td>
-                    <td>{{newAllocation.Woreda}}</td>
-                    <td><a ng-click="onFdpListShow('new')" id="fdp_selector_buttonnew" class="edit_button" href="#">{{newAllocation.FDP}}</a></td>
-                   <!-- <td></td>-->
-                    <td><input class="flat-input" ng-model="newAllocation.Beneficiaries" id="txtNewAllocationBeneficiaries"  /></td>
-                    <td>
-                        <button class="edit_button btn btn-primary"   ng-click="saveAllocation(newAllocation,true)"><i class="icon-ok icon-white"></i>Save</button>
-                        <button class="edit_button btn"   ng-click="onCreateAllocationCancel()"><i class="icon-trash icon-white"></i>Cancel</button>
 
-                    </td>
-                </tr>
-                <tr style="display:none;"><td colspan="6"></td></tr>
-                <tr id="cmdAddAllocation">
-                    <td colspan="5"></td>
-                    <td>
-                        <button class="edit_button btn btn-primary"  ng-click="onCreateNewAllocation()"><i class="icon-plus icon-white"></i> New</button>
-                    </td>
-                </tr>
-                    </tbody>
-            </table>
-            <div style="height:350px; "></div>
-        </div>
-    
-    <div id="div_form_template" style="display:none;">
-        <button type="button" class="close" data-dismiss="popover" style="margin-top:-30px; margin-right:10px;" onclick="hidePopover()">×</button>
-        <div class="controls" style="width: 276px; min-height:100px; overflow:hidden;">
+    <div class="section-hilite token-inputs" style="padding: 1px;">
+        <table >
+            <tr><td style="padding-left: 20px; padding-right: 4px;">
+
+                @Html.Translate("Commodities") </td><td><input id="txt_requested_commodities" class="flat-input"/></td></tr>
+        </table>
+    </div>
+
+
+    <div class="k-widget k-grid" style="height: 400px; overflow: scroll;">
+        <table id="tbl_allocation">
+            <thead class="k-grid-header">
+            <tr>
+                <th style="width: 50px; padding: 7px;">No.</th>
+                <th style="width: 150px; padding: 7px;">Zone</th>
+                <th style="width: 150px">Woreda</th>
+                <th style="width: 150px">FDP</th>
+                <!-- <th style="width:150px">Planned</th>-->
+                <th style="width: 150px">Beneficiary</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody class="k-grid-content">
+            <tr ng-repeat="allocation in allocations">
+                <td>{{$index+1}}</td>
+
+                <td>{{allocation.Zone}}</td>
+                <td>{{allocation.Woreda}}</td>
+                <td>
+                    <a ng-click="onFdpListShow($index)" id="fdp_selector_button{{$index}}" class="edit_button" href="javascript:_Void()">{{allocation.FDP}}</a>
+                </td>
+                <!--<td>{{allocation.PlannedBeneficiaries}}</td>-->
+                <td><input class="flat-input txt_beneficiaries" onfocus="onGridInputFocus(this)" onchange="onAllocationBeneficiaryChange({ {$index }})" ng-model="allocation.Beneficiaries"/></td>
+                <td><button class="edit_button btn btn-danger" ng-click="deleteRequestedFDP($index)"><i class="icon-trash icon-white"></i> Delete</button></td>
+            </tr>
+            <tr id="newAllocationEdit" style="display: none;">
+                <td></td>
+                <td>{{newAllocation.Zone}}</td>
+                <td>{{newAllocation.Woreda}}</td>
+                <td><a ng-click="onFdpListShow('new')" id="fdp_selector_buttonnew" class="edit_button" href="#">{{newAllocation.FDP}}</a></td>
+                <!-- <td></td>-->
+                <td><input class="flat-input" ng-model="newAllocation.Beneficiaries" id="txtNewAllocationBeneficiaries"/></td>
+                <td>
+                    <button class="edit_button btn btn-primary" ng-click="saveAllocation(newAllocation,true)"><i class="icon-ok icon-white"></i>Save</button>
+                    <button class="edit_button btn" ng-click="onCreateAllocationCancel()"><i class="icon-trash icon-white"></i>Cancel</button>
+
+                </td>
+            </tr>
+            <tr style="display: none;"><td colspan="6"></td></tr>
+            <tr id="cmdAddAllocation">
+                <td colspan="5"></td>
+                <td>
+                    <button class="edit_button btn btn-primary" ng-click="onCreateNewAllocation()"><i class="icon-plus icon-white"></i> New</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div style="height: 350px;"></div>
+    </div>
+
+    <div id="div_form_template" style="display: none;">
+        <button type="button" class="close" data-dismiss="popover" style="margin-top: -30px; margin-right: 10px;" onclick="hidePopover()">×</button>
+        <div class="controls" style="width: 276px; min-height: 100px; overflow: hidden;">
             @Html.Partial("~/Views/Shared/_AdminUnitTree.cshtml")
         </div>
-   </div>
+    </div>
 
     <div id="activity_indicator" class="pending-requests">
-        <div class="activity_indicator" show="{{pendingRequests>0}}"><img src="~/Content/images/loading.gif" /></div>
+        <div class="activity_indicator" show="{{pendingRequests>0}}"><img src="~/Content/images/loading.gif"/>
+        </div>
 
     </div>
-    <div style="height:200px;"></div>
+    <div style="height: 200px;"></div>
 </div>
 
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <p>The data you entered is already registered. </p>
+                @*<p class="text-warning"><small>If you want modify, please edit the existing one.</small></p>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                @*<button type="button" class="btn btn-primary">Save changes</button>*@
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(function(){
         $(".onAllocatoinChange").change(function(){});

@@ -3715,6 +3715,7 @@
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
     <Content Include="Views\Shared\EditorTemplates\AmharicDatePicker.cshtml" />
+    <Content Include="Views\Shared\_AdminUnitTree.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

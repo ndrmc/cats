@@ -285,7 +285,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 if (existingRequisitionNo != null)
                     ModelState.AddModelError("Errors",
                         String.Format("{0} Requisition No already existed please Change Requisition No",
-                            existingRequisitionNo.RequisitionNo));                 
+                            existingRequisitionNo.RequisitionNo));
                 return View(requsisions);
             }
                 

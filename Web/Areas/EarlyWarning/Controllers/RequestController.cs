@@ -5,6 +5,8 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Net.Mime;
 using System.Web.Mvc;
 using Cats.Areas.EarlyWarning.Models;
 using Cats.Infrastructure;
@@ -531,11 +533,22 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (regionalRequestDetailViewModel != null && ModelState.IsValid)
             {
                 RegionalRequestDetail model = BindRegionalRequestDetail(regionalRequestDetailViewModel);
+
+                var requestDetails = _regionalRequestDetailService.FindBy(t => t.RegionalRequestID == model.RegionalRequestID);
+                var existingRequest = requestDetails.Where(r => r.Fdpid == model.Fdpid);
+                if (existingRequest.Any())
+                    return Json(new {success = 0, record = regionalRequestDetailViewModel, message = "Data duplicated"},
+                        JsonRequestBehavior.AllowGet);
+
                 _regionalRequestDetailService.AddCommodityFdp(model);
                 regionalRequestDetailViewModel.RegionalRequestDetailID = model.RegionalRequestDetailID;
-                return Json(new { success = 1, record = regionalRequestDetailViewModel }, JsonRequestBehavior.AllowGet);
+                return Json(new {success = 1, record = regionalRequestDetailViewModel}, JsonRequestBehavior.AllowGet);
+
             }
             return Json(new { success = 0, record = regionalRequestDetailViewModel, message = "Invalid input" }, JsonRequestBehavior.AllowGet);
+
+
+
             // return RedirectToAction("Allocation_Read", new {request=new DataSourceRequest(), id = regionalRequestDetailViewModel.RegionalRequestID });
             /*
             var requestDetails = _regionalRequestDetailService.FindBy(t => t.RegionalRequestID == regionalRequestDetailViewModel.RegionalRequestID);

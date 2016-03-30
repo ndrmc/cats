@@ -172,6 +172,9 @@ function RequestAllocationController($scope, $http, $timeout) {
                         $('#newAllocationEdit').hide();
                         $("#cmdAddAllocation").show();
                         $scope.allocations.push(response.record);
+                    } else {
+                        if (response.message == "Data duplicated")
+                            $("#myModal").modal('show');
                     }
                     //$scope.onFetchRequestAllocationDataSuccess(response.Data);
                     //console.log(" Is New", response.Data);
@@ -183,7 +186,9 @@ function RequestAllocationController($scope, $http, $timeout) {
             })
             .error(function (data2, status, headers, config) {
                 $scope.onRequestDone();
-               // alert("Error " + data2);
+                //console.log("Failled!" + data2.success);
+                //alert("Error " + data2);
+                
             });
 
         //alert(reqFDP.RegionalRequestDetailID);
