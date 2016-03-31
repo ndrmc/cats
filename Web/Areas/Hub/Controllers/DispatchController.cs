@@ -195,7 +195,8 @@ namespace Cats.Areas.Hub.Controllers
         {
             var hubId = _hubAllocationService.GetAllocatedHubId(reqId);
             List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodity(hubId, ComID);
-            return (Json(freeSICodes, JsonRequestBehavior.AllowGet));
+            var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
+            return (Json(tlistFiltered, JsonRequestBehavior.AllowGet));
 
         }
         public ActionResult DispatchedToTransferListAjax([DataSourceRequest] DataSourceRequest request, int? HubID, bool? closed, int? commodityType)
