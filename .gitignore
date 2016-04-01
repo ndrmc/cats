@@ -135,3 +135,4 @@ Web/Web.config
 *.docx
 *.datasource
 *.config
+Web/Areas/EarlyWarning/Views/Request/Allocation.cshtml.rej
