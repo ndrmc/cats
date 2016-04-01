@@ -18,5 +18,10 @@ namespace Cats.Areas.EarlyWarning.Models
         public int RegionId { get; set; }
         public int Beneficiaries { get; set; }
         public int PlannedBeneficiaries { get; set; }
+        /// <summary>
+        /// Added by Nigus
+        ///
+        /// </summary>
+        public string ShowRegion { get; set; }
     }
 }

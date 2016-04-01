@@ -266,7 +266,25 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
 
             var requId = 0;
-            var requisistionNos = input.Select(m => m.RequisitionNo);       
+            var requisistionNos = input.Select(m => m.RequisitionNo).ToList();
+
+            //var duplicateRequisitionNos = requisistionNos.GroupBy(g => g).Where(g => g.Count() > 1).ToList();
+            //if (duplicateRequisitionNos.Any())
+            //{
+            //    var duplicatedValues = string.Empty;
+            //    foreach (var requisionNo in duplicateRequisitionNos)
+            //    {
+            //        if (duplicatedValues == string.Empty) duplicatedValues = requisionNo.Key;
+            //        else duplicatedValues = duplicatedValues + "," + requisionNo.Key;
+            //    }
+            //    ModelState.AddModelError("Errors",
+            //           string.Format("{0} Requisition Nos are duplicated please Change Requisition Nos marked red.",
+            //               duplicatedValues));
+               
+            //    return View();
+            //}
+
+            //
             var requsitionNo = _reliefRequisitionService.FindBy(m => requisistionNos.Contains(m.RequisitionNo) && m.RegionalRequestID != id);
             if (requsitionNo.Count>0)
             {
@@ -284,8 +302,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 }
                 if (existingRequisitionNo != null)
                     ModelState.AddModelError("Errors",
-                        String.Format("{0} Requisition No already existed please Change Requisition No",
+                        string.Format("{0} Requisition No already existed please Change Requisition No",
                             existingRequisitionNo.RequisitionNo));
+
                 return View(requsisions);
             }
                 

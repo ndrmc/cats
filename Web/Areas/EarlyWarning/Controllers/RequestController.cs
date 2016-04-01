@@ -785,9 +785,36 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
 
             var requestDetails = _regionalRequestDetailService.FindBy(t => t.RegionalRequestID == id);
-            var requestDetailViewModels = (from dtl in requestDetails select BindRegionalRequestDetailViewModel(dtl));
-            //requestDetailViewModels.RegionalRequestID = id;
-            return Json(requestDetailViewModels.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+            var requestDetailViewModels =
+                (from dtl in requestDetails select BindRegionalRequestDetailViewModel(dtl)).OrderBy(o => o.Zone)
+                    .ThenBy(o => o.Woreda);
+            //requestDetailViewModels.RegionalRequestID = id;         
+            var zones = requestDetailViewModels.Select(s => s.Zone).Distinct();
+            var allocations = new List<RegionalRequestDetailViewModel>();
+            var zoneFirstAllocations = new List<RegionalRequestDetailViewModel>();
+            foreach (var zone in zones)
+            {
+                var zoneFirstAllocatoin = requestDetailViewModels.FirstOrDefault(z => z.Zone == zone);
+                if(zoneFirstAllocatoin != null) zoneFirstAllocations.Add(zoneFirstAllocatoin);
+            }
+            foreach (var requestDetailViewModel in requestDetailViewModels)
+            {
+                var allocation =
+                    zoneFirstAllocations.FirstOrDefault(
+                        z =>
+                            z.Zone == requestDetailViewModel.Zone && z.Woreda == requestDetailViewModel.Woreda &&
+                            z.Fdpid == requestDetailViewModel.Fdpid);
+                if (allocation != null)
+                    requestDetailViewModel.ShowRegion = "show";
+                allocations.Add(requestDetailViewModel);
+            }
+            //foreach (var zone in zones)
+            //{
+            //    var firstAllocation = requestDetailViewModels.FirstOrDefault(f => f.Zone == zone);
+            //    if (requestDetailViewModels.FirstOrDefault(f => f.Zone == zone) != null)
+            //        requestDetailViewModels.FirstOrDefault(f => f.Zone == zone).ShowRegion = true;
+            //}
+            return Json(allocations.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
         private RegionalRequestDetailViewModel BindRegionalRequestDetailViewModel(RegionalRequestDetail regionalRequestDetail)

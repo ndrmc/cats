@@ -99,6 +99,14 @@
                 {
                     <script type="text/javascript">
                         $("#duplicatespan").show();
+                        $("#btnSave").hide();
+                    </script>
+                }
+                else
+                {
+                    <script type="text/javascript">
+                        $("#duplicatespan").hide();
+                        $("#btnSave").show();
                     </script>
                 }
             }
@@ -267,15 +275,17 @@
             } else $(x).css({ "background-color": "white", "font-weight": "normal" });
         }
         //var duplicate = document.getElementById("")
-        if (totalRepeatedNos >= 1)
+        if (totalRepeatedNos >= 1){
             $("#duplicatespan").show();
-        else $("#duplicatespan").hide();
+            $('#btnSave').hide();
+        }
+        else {
+            $("#duplicatespan").hide();
+            $('#btnSave').show();
+        }
     }
 
-    function HideDuplicateFlag(number)
-    {
-        if(number == 0) $("#duplicatespan").hide();
-    }
+  
 </script>
 
                

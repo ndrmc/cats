@@ -74,8 +74,8 @@ function RequestAllocationController($scope, $http, $timeout) {
     $scope.fetchRequestAllocationData = function (id) {
         $scope.onRequestStart();
         $http.get($scope.ServerUrls.Allocation_Read, { params: { id: id } })
-                .success(function (response, status, headers, config)
-                {
+                .success(function (response, status, headers, config) {
+                //console.log("Data filtering is successful.");
                     $scope.onRequestDone();
                     $scope.onFetchRequestAllocationDataSuccess(response.Data);
                 })
