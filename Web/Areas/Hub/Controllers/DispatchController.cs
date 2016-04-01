@@ -427,6 +427,7 @@ namespace Cats.Areas.Hub.Controllers
                 dispatch.RequisitionId = dispatchviewmodel.RequisitionId;
                 dispatch.DispatchID = dispatchviewmodel.DispatchID;
                 dispatch.CommodityID = dispatchviewmodel.CommodityID;
+                dispatch.ShippingInstructionID = dispatchviewmodel.ShippingInstructionID;
                 dispatch.CommodityChildID = dispatchviewmodel.CommodityChildID;
                 //dispatch.Quantity = UserProfile.PreferedWeightMeasurment.ToLower() == "mt" ? dispatchviewmodel.Quantity : dispatchviewmodel.Quantity / 10;
                 
@@ -467,6 +468,7 @@ namespace Cats.Areas.Hub.Controllers
                                 Round = prevdispatch.Round,
                                 TransporterID = prevdispatch.TransporterID,
                                 UserProfileID = prevdispatch.UserProfileID,
+                              
                                 WeighBridgeTicketNumber = prevdispatch.WeighBridgeTicketNumber
                             }, true);
                 }
