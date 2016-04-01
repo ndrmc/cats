@@ -1,4 +1,6 @@
-﻿@using Cats.Helpers
+﻿@using Cats.Areas.Procurement.Models
+@using Cats.Helpers
+@using DocumentFormat.OpenXml.Drawing.Diagrams
 @{
 
     ViewBag.Title = "Details";
@@ -103,7 +105,7 @@
         </div>
 
         <div class="table-responsive">
-        <table class="table table-bordered">
+        <table class="table table-bordered" ng-app="">
             <tr>
                 <th rowspan="2" style='text-align: center; vertical-align: middle'>S.No</th>
                 <th rowspan="2" style='text-align: center; vertical-align: middle'>Source Warehouse</th>
@@ -121,23 +123,70 @@
 
             @{
                 var count = 0;
-
-                foreach (var item in ViewBag.regionPlanDistinct)
+                var planList = (IEnumerable<RfqViewModel>) ViewBag.regionPlanDistinct;
+                var distinctWareHouses = planList.Select(s => s.SourceWarehouse).Distinct().ToList();
+                var zoneCount = 0;
+                var wareHouseCount = 0;
+                foreach (var wareHouse in distinctWareHouses)
                 {
-                    count++;
+                    wareHouseCount = 0;
+                    var plansByWareHouses = planList.Where(p => p.SourceWarehouse == wareHouse);
+                    var wareHouseSum = plansByWareHouses.Select(s => s.Quantity).Sum();
+                    var distinctZones = plansByWareHouses.Select(s => s.DestinationZone).Distinct().ToList();
+                    var totalPlansIntheWareHouse = plansByWareHouses.Count();
+                    var totaldistinictZones = distinctZones.Count();
+                    totalPlansIntheWareHouse = totalPlansIntheWareHouse + totaldistinictZones;
+                    foreach (var zone in distinctZones)
+                    {
+                        zoneCount = 0;
+                        var plans = plansByWareHouses.Where(s => s.DestinationZone == zone);
+                        var zoneSum = plans.Select(s => s.Quantity).Sum();
+                        var totalPlanInZone = plans.Count();
+                        foreach (var item in plans)
+                        {
+                            count++;
+                            <tr>
+                                <td>@count</td>
+                                @* <td>@item.SourceWarehouse</td>*@
+                                @if (wareHouseCount == 0)
+                                {
+                                    <td rowspan='@totalPlansIntheWareHouse'>@item.SourceWarehouse</td>
+                                    wareHouseCount = wareHouseCount + 1;
+                                }
+
+                                @*<td>@item.DestinationZone</td>*@
+                             @if (zoneCount == 0)
+                             {
+                                 <td rowspan='@totalPlanInZone'>@item.DestinationZone</td>
+                                 zoneCount = zoneCount + 1;
+                             }
+                               
+                                <td>@item.DestinationWoreda</td>
+                                <td style='text-align: right'>@string.Format("{0:N0}", @item.Quantity) </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+                        // Insert subtotal row for zone
+                        <tr>
+                        <td colspan="4" style='text-align: center; vertical-align: middle'><b>Sub Total</b> </td>
+                        <td style='text-align: right'><b>@string.Format("{0:N0}", zoneSum)</b></td>
+                        <td></td>
+                        <td></td>
+            <td></td>
+                            </tr>
+                    }
+                    //Insert grand total row for source warehouse
                     <tr>
-                        <td>@count</td>
-                        <td>@item.SourceWarehouse</td>
-                        <td>@item.DestinationZone</td>
-                        <td>@item.DestinationWoreda</td>
-                        <td style='text-align: right'>@string.Format("{0:N0}", @item.Quantity) </td>
+                    <td colspan="4" style='text-align: center; vertical-align: middle'><b>Total</b> </td>
+                    <td style='text-align: right'><b>@string.Format("{0:N0}", wareHouseSum)</b></td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                    </tr>
+                        <td></td></tr>
                 }
                 <tr>
-                    <td colspan="4" style='text-align: center; vertical-align: middle'><b>Total</b> </td>
+                    <td colspan="4" style='text-align: center; vertical-align: middle'><b>Grand Total</b> </td>
                     <td style='text-align: right'><b>@string.Format("{0:N0}", @ViewBag.total)</b></td>
                     <td></td>
                     <td></td>
