@@ -54,20 +54,36 @@ Plans
                             <div class="form-group">
                                     
                                 @Html.Label(Html.Translate("Assessment From"), new { @class = "col-sm-4 control-label cats-date-pref" })
-                                    
+
                                 <div class="col-sm-8">
-                                    @Html.TextBoxFor(m => m.StartDate, new { @class = "form-control cats-datepicker2" })
-                                    @Html.ValidationMessageFor(m => m.StartDate)
+                                    @if(Model.Status != (int)PlanStatus.Approved)
+                                    { 
+                                          @Html.TextBoxFor(m => m.StartDate, new {@class = "form-control cats-datepicker2"})
+                                          @Html.ValidationMessageFor(m => m.StartDate)
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(m => m.StartDate, new { @class = "form-control", Disabled = true })
+                                    }
+                                   
                                 </div>
                             </div>
                            
                             <div class="form-group">
                                     
                                 @Html.Label(Html.Translate("To"), new { @class = "col-sm-4 control-label cats-date-pref" })
-                                   
+
                                 <div class="col-sm-8">
-                                    @Html.TextBoxFor(m => m.EndDate, new { @class = "form-control cats-datepicker2" })
-                                    @Html.ValidationMessageFor(m => m.EndDate)
+                                    @if (Model.Status != (int)PlanStatus.Approved)
+                                    {
+                                        @Html.TextBoxFor(m => m.EndDate, new { @class = "form-control cats-datepicker2" })
+                                        @Html.ValidationMessageFor(m => m.EndDate)
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(m => m.EndDate, new { @class = "form-control", Disabled = true })
+                                    }
+                                   
                                 </div>
 
                             </div>
@@ -81,19 +97,29 @@ Plans
                         @(Html.Kendo().Grid<Cats.Models.NeedAssessmentHeaderViewModel>()
                               .Name("grid")
                               .Columns(columns =>
-                                  {
-                                      columns.Bound(p => p.RegionName).Title(Html.Translate("Region"));
-                                      columns.Bound(p => p.SeasonName).Visible(true).Width(100).Title(Html.Translate("Season"));
-                                      columns.Bound(p => p.Date).Title(Html.Translate("Need Assessment Created Date")).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;", title = "Need Assessment Created Date" });
-                                      columns.Bound(p => p.NeedACreaterName).Title(Html.Translate("Created By")).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title = "Created By" });
-                                      columns.Bound(p => p.IsApproved).Visible(false);
-                                      columns.Command(p =>
-                                          {
-                                              p.Custom("Edit").Click("NeedAssessmentEdit").Text("<span class=\"fa fa-pencil-square-o\"></span> Edit ");
-                                              p.Custom("Delete").Click("DeleteNeedAssessment").Text("<span class=\"fa fa-times\"></span> Delete ");
+                              {
+                                  columns.Bound(p => p.RegionName).Title(Html.Translate("Region"));
+                                  columns.Bound(p => p.SeasonName).Visible(true).Width(100).Title(Html.Translate("Season"));
+                                  columns.Bound(p => p.Date).Title(Html.Translate("Need Assessment Created Date")).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;", title = "Need Assessment Created Date" });
+                                  columns.Bound(p => p.NeedACreaterName).Title(Html.Translate("Created By")).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title = "Created By" });
+                                  columns.Bound(p => p.IsApproved).Visible(false);
 
-                                          });
-                                  })
+                                  if (Model.Status != (int) PlanStatus.Approved)
+                                  {
+                                      columns.Command(p =>
+                                      {
+                                          p.Custom("Edit").Click("NeedAssessmentEdit").Text("<span class=\"fa fa-pencil-square-o\"></span> Edit ");
+                                          p.Custom("Delete").Click("DeleteNeedAssessment").Text("<span class=\"fa fa-times\"></span> Delete ");
+
+                                      });
+                                  }
+                                  else
+                                  {
+                                               
+                                               
+                                               columns.Command(p =>p.Custom("Edit").Click("ViewAssessmentEdit").Text("<span class=\"fa fa-search\"></span> View "));
+                                  }
+                              })
                               .HtmlAttributes(new { style = "height: 300px" })
                               .Sortable()
                               .Scrollable()
@@ -162,7 +188,13 @@ Plans
         window.location = null;
         window.location = "@Url.Action("EditNeedAssessment", "NeedAssessment")" + "?id=" + dataItem.NeedAID;
     }
+    function ViewAssessmentEdit(e) {
+        e.preventDefault();
 
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location = null;
+        window.location = "@Url.Action("EditNeedAssessment", "NeedAssessment")" + "?id=" + dataItem.NeedAID;
+    }
     function DeleteNeedAssessment(e) {
         e.preventDefault();
 
