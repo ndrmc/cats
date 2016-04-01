@@ -85,23 +85,45 @@ namespace Cats.Services.Procurement
                     t => t.DestinationID == woredaId && t.TransporterID != transporterId);
             var secondWinner = new List<TransportBidQuotation>();
             var winnerTransporter = new List<TransportBidQuotation>();
-
+            var selectedTransportersId = new List<int>();
             if (bidQoutation.Count > 0)
             {
                 if (bidQoutation.Count == 1)
                     secondTransporter = 1;
 
-                secondWinner = bidQoutation
-                    .GroupBy(g => g.TransportBidQuotationID)
-                    .OrderByDescending(o => o.Key)
-                    .Select(s => new {Qoutation = s.ToList()})
-                    .ToList()[secondTransporter - 1].Qoutation;
-
+                //secondWinner = bidQoutation
+                //    .GroupBy(g => g.TransportBidQuotationID)
+                //    .OrderByDescending(o => o.Key)
+                //    .Select(s => new { Qoutation = s.ToList() })
+                //    .ToList()[secondTransporter - 1].Qoutation;
+                var topwinners = bidQoutation.OrderByDescending(g => g.TransportBidQuotationID).ToList();
+              
+                  
+                int count = 0;
+                foreach (var topwinner in topwinners)
+                {
+                    if (count == 5) break;
+                    if (!selectedTransportersId.Contains(topwinner.TransporterID))
+                    {
+                        var transportBidQuotation = new TransportBidQuotation{TransporterID = topwinner.TransporterID};
+                        var transporterHeaderInfo = new TransportBidQuotationHeader
+                        {
+                            TransporterId = topwinner.TransporterID,
+                            Transporter = _unitOfWork.TransporterRepository.FindById(topwinner.TransporterID)
+                        };
+                        transportBidQuotation.TransportBidQuotationHeader = transporterHeaderInfo;
+                        secondWinner.Add(transportBidQuotation);
+                        selectedTransportersId.Add(topwinner.TransporterID);
+                        count++;
+                    }
+                }
 
             }
             
             //DRMFSS
-            var drmfssTransporters = GetDrmfssTransporters().Where(m=>m.TransporterID!=transporterId);
+            var drmfssTransporters =
+                GetDrmfssTransporters()
+                    .Where(m => m.TransporterID != transporterId && !selectedTransportersId.Contains(m.TransporterID));
             foreach (var transporter in drmfssTransporters)
             {
 

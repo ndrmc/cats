@@ -275,14 +275,8 @@ namespace Cats.Services.EarlyWarning
             {
                 var requisition = _unitOfWork.ReliefRequisitionRepository.FindById(requisitonNumber.Key);
                 requisition.RequisitionNo = requisitonNumber.Value;
-              
-
             }
-
-            _unitOfWork.Save();
-           
-           
-           
+            _unitOfWork.Save();         
             return true;
         }
 

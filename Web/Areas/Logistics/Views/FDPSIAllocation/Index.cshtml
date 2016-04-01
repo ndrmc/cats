@@ -146,13 +146,13 @@
                                             <div id="collapse_woreda{{woreda.woredaId}}" class="accordion-body dd-list collapse" style="height: 0px;">
                                                 <div class="accordion-inner">
                                                     <div class="list-fdp dd-item" ng-repeat="fdp in woreda.fdps">
-                                                        <div data-allocated="0" data-index="{{fdp.index}}" class="admin-list dd-handle btn-draggable" ng-model="unallocated" data-drag="fdp.allocatedAmount<fdp.requestedAmount" data-jqyoui-options="{revert: 'invalid'}"
+                                                        <div data-allocated="0" data-index="{{fdp.index}}" class="admin-list dd-handle btn-draggable" ng-model="unallocated" data-drag="fdp.allocatedAmount<fdp.requestedAmount || fdp.totalAllocatedAmount<fdp.requestedAmount" data-jqyoui-options="{revert: 'invalid'}"
                                                              jqyoui-draggable="{index: {{fdp.id}},placeholder:'keep',animate:true, onStart:'startCallback(fdp, $index)', onStop: 'stopCallback', onDrag: 'dragCallback'}">
                                                             <i class="icon-move"></i>
 
                                                             <button class="btn red btn-xs button-remove" ng-click="on_remove_allocation(fdp.index)"><i class="fa fa-times-circle"></i></button>
 
-                                                            {{fdp.name}} [{{fdp.allocatedAmount | number:2}} of {{fdp.requestedAmount | number:2}}]
+                                                            {{fdp.name}} [{{fdp.totalAllocatedAmount | number:2}} of {{fdp.requestedAmount | number:2}}]
                                                             <!--
                                                             <span ng-repeat="allocation in fdp.Allocations"> {{allocation.Code}} {{allocation.AllocatedAmount}}  </span>
                                                                 -->
@@ -217,7 +217,8 @@
                                 <div class="allocated-list" style="background: rgb(248, 248, 248); overflow: hidden; border-radius: 4px; height: 200px;" data-drop="true" ng-model='list1' id="SIPC{{si.index}}" data-index="{{si.index}}" data-jqyoui-options="optionsList1" jqyoui-droppable="{multiple:true,onDrop:dropCallback,onDrop:'dropCallback',onOver: 'overCallback', onOut: 'outCallback'}">
                                     <ul class="nav nav-list ">
                                         <li class="btn-draggable" data-allocated="1" ng-repeat="item in si.allocatedRequests" data-drag="1" data-jqyoui-options="{revert: 'invalid'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}" data-index="{{item.index}}">
-                                            <a href="#" ng-show="si.index==item.allocated">{{item.name}} [{{item.allocatedAmount | number:2}}]</a>
+                                            @*  <button class="btn red btn-xs " ng-click="showEdit(item.type)"><i class="fa fa-times-circle"></i></button>*@
+                                            <a href ng-click="showEdit(item.type, item.allocatedAmount, item.index)" ng-show="si.index==item.allocated && item.allocatedAmount > 0  ">{{item.name}} [{{item.allocatedAmount | number:2}}]</a>
                                         </li>
                                     </ul>
 
@@ -269,7 +270,7 @@
                 Maximum of {{viewQmount}}
             </div>
 
-            <button type="submit" class="btn btn-default" ng-click="addCustomAmount(CustomAmount)">Select</button>
+            <button id="CustomeAmountBtn" type="submit" class="btn btn-default" ng-click="addCustomAmount(CustomAmount)">Select</button>
         </form>
     </modal>
 </div>
@@ -308,6 +309,10 @@
         $scope.selectedHub=@ViewBag.AllocatedHub;
         $scope.showAmountModal = false;
         $scope.ValiedAmount=false;
+        $scope.isSelected2 = false;
+        $scope.modalFor=0;
+        $scope.requestIndexG=0;
+        $scope.siIndexG=0;
         $scope.list1 = [];
         $scope.list2 = [];
         $scope.list3 = [];
@@ -316,7 +321,7 @@
         $scope.viewQmount=0;
         $scope.CustomAmount = 0;
         $scope.allocations = { "si001": [], "si002": [] };
-
+        $scope.EditLocation=[];
         $scope.list5 = [
 
         ];
@@ -341,17 +346,63 @@
         }
         $scope.addCustomAmount = function (CustomAmount) {
 
-            if(CustomAmount.value > $scope.viewQmount.value)
+
+            if(CustomAmount > $scope.viewQmount)
             {
                 $scope.ValiedAmount = !$scope.ValiedAmount;
             }
-            else
+            else if($scope.modalFor ==0)
             {
                 $scope.showAmountModal= !$scope.showAmountModal;
+                $scope.isSelected2 = true;
+                var location = $scope.allAdminRegions[$scope.requestIndexG];
+                amount = location.requestedAmount - CustomAmount;//location.allocatedAmount;
+               // var customAmount =  $scope.CustomAmount; //$scope.SIPCCodes[$scope.siindexG].availableAmount; use this var to accept new value default will be available amount
+                var avail=$scope.SIPCCodes[$scope.siindexG].availableAmount-CustomAmount;
+                if($scope.allAdminRegions[ $scope.requestIndexG].allocatedAmount != 0)
+                {
+
+                    var temp = angular.copy($scope.allAdminRegions[ $scope.requestIndexG]);
+                    $scope.allAdminRegions.push(temp);
+                    $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
+                }
+                $scope.allAdminRegions[$scope.requestIndexG].allocated = $scope.siindexG/1 + 1;
+
+                $scope.allAdminRegions[$scope.requestIndexG].totalAllocatedAmount = $scope.allAdminRegions[$scope.requestIndexG].totalAllocatedAmount + CustomAmount;
+                $scope.allAdminRegions[$scope.requestIndexG].allocatedAmount =  CustomAmount;
+                $scope.SIPCCodes[$scope.siindexG].availableAmount = Math.round(100*avail)/100;
+                // the below code removes the duplicated fdp id from sioccides list
+                $scope.SIPCCodes[$scope.siindexG].allocatedRequests.push($scope.allAdminRegions[$scope.requestIndexG]);
+
+                $scope.allocateCustomAdminRegion(location,$scope.siindexG/1 + 1,CustomAmount);
+                $scope.calculateAllocated();
+            }
+            else if($scope.modalFor ==1)
+            {
+                $scope.showAmountModal= !$scope.showAmountModal;
+<<<<<<< HEAD
                 $scope.dataIn = 1;
+=======
+                $scope.EditLocation.totalAllocatedAmount= ($scope.EditLocation.totalAllocatedAmount-  $scope.EditLocation.allocatedAmount) + CustomAmount;
+                $scope.EditLocation.allocatedAmount= CustomAmount;
+
+>>>>>>> eba4604ff09eea89c5041a4e0971cb17e88d755e
             }
 
         };
+        $scope.showEdit = function(type, allocatedAmount, index) {
+            if(type =="FDP")
+            {
+                var location = $scope.allAdminRegions[index];
+                $scope.modalFor = 1;
+                $scope.EditLocation=location;
+                $scope.viewQmount= allocatedAmount;
+                $scope.showAmountModal= !$scope.showAmountModal;
+            }
+        }
+        $scope.confiremedAmonut = function() {
+            return $scope.isSelected2;
+        }
         var updateError=function()
         {
             $('#modalContent').html("Error");
@@ -361,8 +412,19 @@
             // alert(adminIndex);
             $scope.saved=0;
             var location = $scope.allAdminRegions[adminIndex];
-            $scope.removeAllocation(location);
 
+            for(var i in $scope.allAdminRegions)
+            {
+                var inlocation=$scope.allAdminRegions[i];
+                // location.name=location.name + i;
+
+                for(var a in inlocation.Allocations)
+                {
+                    if(location.FDPId==inlocation.FDPId && location.RequestDetailId==inlocation.RequestDetailId && inlocation.type=="FDP")
+                        $scope.removeAllocation(inlocation);
+                }
+            }
+            $scope.removeAllocation(location);
             $scope.calculateAllocated();
         }
         $scope.removeAllocation=function(location)
@@ -383,8 +445,10 @@
                     var fdp = location.fdps[f];
                     if (!fdp.allocatedAmount) {
                         fdp.allocatedAmount = 0;
+                        fdp.totalAllocatedAmount = 0;
                         fdp.allocatedIndirect = 0;
                         fdp.allocated = 0;
+
                     }
 
                 }
@@ -394,11 +458,13 @@
                 location.allocatedAmount = 0;
                 location.allocatedIndirect = 0;
                 location.allocated = 0;
+                location.totalAllocatedAmount = 0;
                 if(location.Allocations[0])
                 {
                     location.Allocations[0].Code="";
                     location.Allocations[0].AllocationType="";
-                    location.Allocations[0].AllocatedAmount=0
+                    location.Allocations[0].AllocatedAmount = 0;
+
                 }
 
 
@@ -410,7 +476,7 @@
             var si=$scope.SIPCCodes[siindex];
             for(var i in si.allocatedRequests)
             {
-                if(si.allocatedRequests[i].index==fdpindex)
+                if(si.allocatedRequests[i].index==fdpindex && si.allocatedRequests[i].allocatedAmount !=0)
                 {
                     si.availableAmount = si.availableAmount/1 +  si.allocatedRequests[i].allocatedAmount/1;
                     si.allocatedRequests.splice(i,1);
@@ -428,11 +494,16 @@
                 for (var f in location.fdps) {
                     var fdp = location.fdps[f];
                     if (!fdp.allocatedAmount) {
-                        fdp.allocatedAmount = customAmount;
+                        fdp.allocatedAmount = fdp.requestedAmount;
+                        fdp.totalAllocatedAmount = fdp.requestedAmount;
                         fdp.allocatedIndirect = index;
-                        $scope.allocateCustomAdminRegion(location.fdps[f],index);
+                        $scope.allocateAdminRegion(location.fdps[f], index);
                     }
-
+                    else {
+                        fdp.allocatedAmount =  fdp.requestedAmount - fdp.allocatedAmount;
+                        fdp.allocatedIndirect = index;
+                        $scope.allocateAdminRegion(location.fdps[f], index);
+                    }
                 }
             }
             else
@@ -460,6 +531,7 @@
                     var fdp = location.fdps[f];
                     if (!fdp.allocatedAmount) {
                         fdp.allocatedAmount = fdp.requestedAmount;
+                        fdp.totalAllocatedAmount = fdp.requestedAmount;
                         fdp.allocatedIndirect = index;
                         $scope.allocateAdminRegion(location.fdps[f], index);
                     }
@@ -504,7 +576,7 @@
         $scope.addItemToList = function (item) {
             item.id = $scope.unallocated.length;
             item.index = $scope.unallocated.length;
-
+            item.totalAllocatedAmount=0;
             $scope.unallocated.push(item);
             $scope.allAdminRegions.push(item);
             item.allocated = 0;
@@ -519,7 +591,7 @@
                     woreda.allocatedAmount = 0;
                     woreda.requestedAmount = 0;
                     for (var f in woreda.fdps) {
-                        woreda.allocatedAmount += woreda.fdps[f].allocatedAmount;
+                        woreda.allocatedAmount += woreda.fdps[f].totalAllocatedAmount;
                         woreda.requestedAmount += woreda.fdps[f].requestedAmount;
                     }
                     $scope.requests[z].allocatedAmount += woreda.allocatedAmount;
@@ -558,15 +630,23 @@
                 var ind=i/1+1;
                 console.log('  Avaialable: ' + ind);
                // $("#SIPC" + ind).css("visibility", "hidden");
-
-
-                if($scope.SIPCCodes[i].availableAmount/1>0)
-                {
-                    $("#SIPC" + ind).css("display", "block");
-                }
-                else {
-                    $("#SIPC" + ind).css("display", "none");
-                }
+                if (item.type==="FDP") {
+                   if ($scope.SIPCCodes[i].availableAmount / 1 > 0) {
+                       $("#SIPC" + ind).css("display", "block");
+                   } else {
+                       $("#SIPC" + ind).css("display", "none");
+                   }
+               }
+               else
+               {
+                   if($scope.SIPCCodes[i].availableAmount/1<item.requestedAmount/1)
+                   {
+                       $("#SIPC" + ind).css("display", "none");
+                   }
+                   else {
+                       $("#SIPC" + ind).css("display", "block");
+                   }
+               }
             }
         };
 
@@ -601,13 +681,14 @@
             // alert(requestIndex + "," + siIndex);
             $scope.saved=0;
             var location = $scope.allAdminRegions[requestIndex];
-            amount = location.requestedAmount - location.allocatedAmount;
+            amount = location.requestedAmount - location.totalAllocatedAmount;
 
             if($scope.SIPCCodes[siIndex].availableAmount/1<amount/1)
             {
-
+                $scope.modalFor = 0;
                 $scope.viewQmount = $scope.SIPCCodes[siIndex].availableAmount;
                 $scope.CustomAmount = $scope.SIPCCodes[siIndex].availableAmount;
+<<<<<<< HEAD
                 $scope.showAmountModal= !$scope.showAmountModal;
                 var customAmount = $scope.SIPCCodes[siIndex].availableAmount;// use this var to accept new value default will be available amount
                 var avail=$scope.SIPCCodes[siIndex].availableAmount-customAmount;
@@ -627,16 +708,33 @@
                 $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,customAmount);
                 $scope.calculateAllocated();
                
+=======
+                $scope.ValiedAmount = false;
+                $scope.showAmountModal = !$scope.showAmountModal;
+                $scope.siindexG=siIndex;
+                $scope.requestIndexG=requestIndex;
+                //stop and wait for the  modual popup input
+
+
+>>>>>>> eba4604ff09eea89c5041a4e0971cb17e88d755e
             }
             else
             {
             var avail=$scope.SIPCCodes[siIndex].availableAmount-amount;
+            if($scope.allAdminRegions[requestIndex].allocatedAmount != 0)
+            {
 
+                var temp = angular.copy($scope.allAdminRegions[requestIndex]);
+                $scope.allAdminRegions.push(temp);
+                $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
+            }
             $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
-            $scope.allAdminRegions[requestIndex].allocatedAmount = $scope.allAdminRegions[requestIndex].allocatedAmount+ amount;
+            $scope.allAdminRegions[requestIndex].allocatedAmount =  amount;
+            $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
             $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
             $scope.SIPCCodes[siIndex].allocatedRequests.push($scope.allAdminRegions[requestIndex]);
-            $scope.allocateAdminRegion(location,siIndex/1 + 1);
+                // $scope.allocateAdminRegion(location,siIndex/1 + 1);
+            $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,amount);
             $scope.calculateAllocated();
             }
 
@@ -811,16 +909,31 @@
         {
             $scope.saved=1;
             var param = [];
-            for(var i in $scope.requisitionDetail)
+            for(var i in $scope.allAdminRegions)
             {
-                var item=$scope.requisitionDetail[i];
-                for(var alloc in item.Allocations)
-                {
-                    item.Allocations[alloc].RequisitionDetailID=item.RequestDetailId;
-                    param.push(item.Allocations[alloc]);
-                }
+                var location=$scope.allAdminRegions[i];
+                // location.name=location.name + i;
 
+                for(var a in location.Allocations)
+                {
+                    var siindex=$scope.getSIPCIndex(location.Allocations[a].Code,location.Allocations[a].AllocationType)
+                    if(siindex>=0)
+                    {
+                        location.Allocations[a].RequisitionDetailID=location.RequestDetailId;
+                        param.push(location.Allocations[a]);
+                    }
+                }
             }
+            //for(var i in $scope.requisitionDetail)
+            //{
+            //    var item=$scope.requisitionDetail[i];
+            //    for(var alloc in item.Allocations)
+            //    {
+            //        item.Allocations[alloc].RequisitionDetailID=item.RequestDetailId;
+            //        param.push(item.Allocations[alloc]);
+            //    }
+
+            //}
             $http.post($scope.updateUrl, param).success(updateSuccess).error(updateError);
             if (showmodal) {
                 $('#modalContent').html("...");

@@ -417,18 +417,24 @@ namespace Cats.Services.Procurement
                 var reqId = reliefRequisitionDetail.RequisitionID;
                 //var storeId = _unitOfWork.HubAllocationRepository.FindBy(t => t.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().StoreId;
                 var hubId = _unitOfWork.HubAllocationRepository.FindBy(t => t.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().HubID;//requi.HubAllocations.FirstOrDefault().HubID;
+                var sWarehouseID =
+                    _unitOfWork.HubAllocationRepository.FindBy(
+                        t => t.RequisitionID == reliefRequisitionDetail.RequisitionID)
+                        .FirstOrDefault()
+                        .SatelliteWarehouseID;
                 int temp = hubId;
                 var woredaId = reliefRequisitionDetail.FDP.AdminUnitID;
                 var regionId = reliefRequisitionDetail.ReliefRequisition.RegionID;
+
                 //transportRequisition.TransportRequisitionDetailID = reliefRequisitionDetail.ReliefRequisition.TransportRequisitionDetails.First().TransportRequisitionDetailID;
                 //transportRequisition.RequisitionID = reliefRequisitionDetail.RequisitionID;
                 //transportRequisition.HubID = _unitOfWork.HubAllocationRepository.FindBy(t => t.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().HubID;//requi.HubAllocations.FirstOrDefault().HubID;
                 //transportRequisition.WoredaID = reliefRequisitionDetail.FDP.AdminUnitID;
-                //if (storeId != null && storeId != 0 )
-                //{
-                //    temp = (int)storeId;
-                //}
-                var transportBidWinners = _transporterService.GetBidWinner(hubId,woredaId,bidId);
+                if (sWarehouseID != null && sWarehouseID != 0)
+                {
+                    temp = (int)sWarehouseID;
+                }
+                var transportBidWinners = _transporterService.GetBidWinner(temp,woredaId,bidId);
                
                  
                 //_unitOfWork.BidWinnerRepository.Get(

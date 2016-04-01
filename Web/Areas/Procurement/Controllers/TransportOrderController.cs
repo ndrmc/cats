@@ -37,13 +37,15 @@ namespace Cats.Areas.Procurement.Controllers
         private readonly IAdminUnitService _adminUnitService;
         private readonly ITransReqWithoutTransporterService _transReqWithoutTransporterService;
         private readonly ITransporterService _transporterService;
+        private readonly IHubService _hubService;
         private readonly ITransportBidQuotationService _bidQuotationService;
 
         public TransportOrderController(ITransportOrderService transportOrderService,
             ITransportRequisitionService transportRequisitionService,
             IWorkflowStatusService workflowStatusService, ILog log,
             ITransReqWithoutTransporterService transReqWithoutTransporterService, ITransportOrderDetailService transportOrderDetailService,
-            IAdminUnitService adminUnitService, ITransporterService transporterService, ITransportBidQuotationService bidQuotationService)
+            IAdminUnitService adminUnitService, ITransporterService transporterService, ITransportBidQuotationService bidQuotationService,
+            IHubService hubService)
         {
             this._transportOrderService = transportOrderService;
             this._transportRequisitionService = transportRequisitionService;
@@ -54,6 +56,7 @@ namespace Cats.Areas.Procurement.Controllers
             _transReqWithoutTransporterService = transReqWithoutTransporterService;
             _transportOrderDetailService = transportOrderDetailService;
             _bidQuotationService = bidQuotationService;
+            _hubService = hubService;
         }
 
 
@@ -599,13 +602,25 @@ namespace Cats.Areas.Procurement.Controllers
                             Woreda = detail.FDP.AdminUnit.Name,
                             FDP = detail.FDP.Name,
                             RequisitionNo = detail.ReliefRequisition.RequisitionNo,
-                            WinnerAssignedByLogistics = detail.WinnerAssignedByLogistics
-                           // Donor=detail.Donor.Name
-	
+                            WinnerAssignedByLogistics = detail.WinnerAssignedByLogistics,
+                            
+                            SatelliteWarehouseName = GetSName(detail.ReliefRequisition.HubAllocations.First().SatelliteWarehouseID)
+                        // Donor=detail.Donor.Name
 
-                        });
+
+                    });
 
             // return transportContractDetail;
+        }
+
+        private string GetSName(int? id)
+        {
+            if (id != null)
+            {
+                var k = _hubService.FindById(id.Value);
+                return k.Name;
+            }
+            else return string.Empty;
         }
         private TransportContractViewModel GetTransportOrder(TransportOrder transportOrder)
         {

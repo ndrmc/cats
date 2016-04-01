@@ -222,7 +222,7 @@
                   columns.Bound(p => p.Commodity).Title(@Html.Translate("Commodity"));
                   columns.Bound(p => p.FDP).Title(@Html.Translate("Destination"));
                   columns.ForeignKey(p => p.HubID, (IEnumerable)ViewBag.HubID, "hubID", "Name").Width(100).Title(Html.Translate("Origin Warehouse")).ClientFooterTemplate(Html.Translate("Total"));
-                  // columns.Bound(p => p.DistanceFromOrigin);
+                  columns.Bound(p => p.SatelliteWarehouseName).Title(@Html.Translate("Satellite Warehouse")).ClientFooterTemplate("Satellite Warehouse");
                   columns.Bound(p => p.QuantityQtl).Title(@Html.Translate("Qantity")).ClientFooterTemplate("<div style='text-align: right;'><b>#=kendo.format('{0:N0}', sum)#</b></div>").HtmlAttributes(new { align = "right" }).Format("{0:n2}").HeaderHtmlAttributes(new { @class = "cats-unit-pref-grid" });
                   columns.Bound(p => p.TariffPerQtl).Title(@Html.Translate("Tariff / Qtl")).HtmlAttributes(new { style = "background-color:lightgray" }).Format("{0:n2}").Width(100).HtmlAttributes(new { align = "Right" });
                   columns.Bound(p => p.TotalAmount).Title(@Html.Translate("Total Amount")).ClientFooterTemplate("<div style='text-align: right;'><b>#=kendo.format('{0:N0}', sum)#</b></div>").Format("{0:N0}").HtmlAttributes(new { align = "Right" });
@@ -299,7 +299,7 @@
                 $(document).on('click', '.generateTO', function(ev) {
                     generateSubstituteTransporterOrders();
                 });
-
+                
                 $(document).on('change',".anotherTransporter", function(){
                     //alert(this.value);
                     var woredaId = $(this).attr("id");
