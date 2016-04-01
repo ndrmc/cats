@@ -30,6 +30,7 @@ namespace Cats.Areas.Procurement.Models
         public string Donor { get; set; }
         public string Region { get; set; }
         public bool? WinnerAssignedByLogistics { get; set; }
+        public string SatelliteWarehouseName { get; set; }
         public decimal TotalAmount
         {
             get { return QuantityQtl*TariffPerQtl; }

@@ -599,11 +599,12 @@ namespace Cats.Areas.Procurement.Controllers
                             Woreda = detail.FDP.AdminUnit.Name,
                             FDP = detail.FDP.Name,
                             RequisitionNo = detail.ReliefRequisition.RequisitionNo,
-                            WinnerAssignedByLogistics = detail.WinnerAssignedByLogistics
-                           // Donor=detail.Donor.Name
-	
+                            WinnerAssignedByLogistics = detail.WinnerAssignedByLogistics,
+                        SatelliteWarehouseName = detail.ReliefRequisition.HubAllocations.First().SatelliteWarehouseID.ToString()
+                        // Donor=detail.Donor.Name
 
-                        });
+
+                    });
 
             // return transportContractDetail;
         }
