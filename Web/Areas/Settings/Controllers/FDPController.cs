@@ -62,14 +62,15 @@ namespace Cats.Areas.Settings.Controllers
                     //foreach (var viewModel in fdpViewModel)
                     //{
 
-                    if (CheckIfDFPExists((int)adminUnitID, fdpViewModel.Name))
-                        {
-                            fdpViewModel.AdminUnitID = adminUnitID.Value;
-                            var fdp = FDPViewModelBinder.BindFDP(fdpViewModel);
-                            _fdpService.AddFDP(fdp);
-                            //result.Add(fdpViewModel);
-                        }
-                   // }
+                    if (!CheckIfFdpExists((int) adminUnitID, fdpViewModel.Name))
+                    {
+                        fdpViewModel.AdminUnitID = adminUnitID.Value;
+                        var fdp = FDPViewModelBinder.BindFDP(fdpViewModel);
+                        _fdpService.AddFDP(fdp);
+                        //result.Add(fdpViewModel);
+                    }
+                    else ModelState.AddModelError("Errors", @"Error: The FDP is duplicated.");
+                    // }
                 }
                 catch (Exception ex)
                 {
@@ -79,15 +80,11 @@ namespace Cats.Areas.Settings.Controllers
             return Json(result.ToDataSourceResult(request, ModelState));
         }
 
-        private bool CheckIfDFPExists(int woredaId , string name)
+        private bool CheckIfFdpExists(int woredaId , string name)
         {
             try
             {
-                if (_fdpService.FindBy(f => f.Name == name && f.AdminUnitID == woredaId).Any())
-                {
-                    return false;
-                }
-                else return true;
+                return _fdpService.FindBy(f => f.Name == name && f.AdminUnitID == woredaId).Any();
             }
             catch (Exception)
             {
