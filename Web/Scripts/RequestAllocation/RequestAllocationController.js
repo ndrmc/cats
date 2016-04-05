@@ -4,7 +4,7 @@ var requestMockdata = {
     ,allocations:[]
     ,commoditiesList:[]
 };
-function RequestAllocationController($scope, $http, $timeout) {
+function RequestAllocationController($scope, $http, $timeout, $filter) {
     $scope.pendingRequests = 0;
     $scope.request = {};
     $scope.allocations = [];
@@ -193,6 +193,7 @@ function RequestAllocationController($scope, $http, $timeout) {
                         $('#newAllocationEdit').hide();
                         $("#cmdAddAllocation").show();
                         $scope.allocations.push(response.record);
+                        $scope.selectVisible();
                     } else {
                         if (response.message == "Data duplicated")
                             $("#myModal").modal('show');
@@ -235,6 +236,7 @@ function RequestAllocationController($scope, $http, $timeout) {
         //{RegionID:@Model.RegionID , ZoneID: @Model.ZoneID ,WoredaID: @Model.WoredaID ,FDPID: @Model.FDPID }
     };
     $scope.selectVisible = function () {
+        $scope.allocations = $filter('orderBy')($scope.allocations, "Zone");
         for (var z in $scope.allocations) {
             if ($scope.allocations[z].Zone === "Zone 1")
                 $scope.allocations[z].showA = true;

@@ -123,8 +123,7 @@ namespace Cats.Areas.PSNP
             {
                 RedirectToAction("Index");
             }
-            //var reportPath = Server.MapPath("~/Report/PSNP/AnnualPlan.rdlc");
-            var reportPath = Server.MapPath("~/Report/PSNP/AnnualReport2.rdl");
+            var reportPath = Server.MapPath("~/Report/PSNP/AnnualPlan.rdlc");
             var reportData =
                 _regionalPSNPPlanService.GetAnnualPlanRpt(id)
                     .OrderBy(o => o.RegionName)

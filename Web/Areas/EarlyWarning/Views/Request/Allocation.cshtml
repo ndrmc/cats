@@ -200,7 +200,7 @@
                 }
             }*@
 
-                <tr ng-repeat="allocation in allocations | orderBy:['Zone', 'Woreda']" ng-show="isUniqueZone($index) || allocation.showA ">
+                <tr ng-repeat="allocation in allocations | orderBy:['Zone', 'Woreda', 'FDP']" ng-show="isUniqueZone($index) || allocation.showA ">
                     <td>{{$index+1}} </td>
 
                     <td ng-show="isUniqueZone($index)"><button ng-click="ChangeVisible(allocation.Zone)" ng-show="allocation.showA"> -</button> <button ng-click="ChangeVisible(allocation.Zone)" ng-show="!allocation.showA"> + </button> <b class="margin-right-10">{{allocation.Zone}}</b> </td>
