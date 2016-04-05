@@ -3006,6 +3006,7 @@
       <DependentUpon>RFQModel.xsd</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\cats.pubxml" />
+    <Content Include="Report\PSNP\AnnualReport2.rdl" />
     <None Include="RFQModel.xsd">
       <SubType>Designer</SubType>
       <Generator>MSDataSetGenerator</Generator>
