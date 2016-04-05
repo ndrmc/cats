@@ -123,8 +123,14 @@ namespace Cats.Areas.PSNP
             {
                 RedirectToAction("Index");
             }
-            var reportPath = Server.MapPath("~/Report/PSNP/AnnualPlan.rdlc");
-            var reportData = _regionalPSNPPlanService.GetAnnualPlanRpt(id);
+            //var reportPath = Server.MapPath("~/Report/PSNP/AnnualPlan.rdlc");
+            var reportPath = Server.MapPath("~/Report/PSNP/AnnualReport2.rdl");
+            var reportData =
+                _regionalPSNPPlanService.GetAnnualPlanRpt(id)
+                    .OrderBy(o => o.RegionName)
+                    .ThenBy(o => o.ZoneName)
+                    .OrderBy(o => o.WoredaName);
+
             var dataSourceName = "annualplan";
             var result = ReportHelper.PrintReport(reportPath, reportData, dataSourceName);
 
