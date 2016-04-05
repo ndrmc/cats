@@ -200,19 +200,20 @@
                 }
             }*@
 
+                <tr ng-repeat="allocation in allocations | orderBy:['Zone', 'Woreda']" ng-show="isUniqueZone($index) || allocation.showA ">
+                    <td>{{$index+1}} </td>
 
-            <tr ng-repeat="allocation in allocations">
-                <td>{{$index+1}}</td>
-                @**@
-                <td><p>{{allocation.Zone}}</p></td>
-                <td>{{allocation.Woreda}}</td>
-                <td>
-                    <a ng-click="onFdpListShow($index)" id="fdp_selector_button{{$index}}" class="edit_button" href="javascript:_Void()">{{allocation.FDP}}</a>
-                </td>
-                @*<td>{{allocation.PlannedBeneficiaries}}</td>*@
-                <td><input class="flat-input txt_beneficiaries" onfocus="onGridInputFocus(this)" onchange="onAllocationBeneficiaryChange({{$index}})" ng-model="allocation.Beneficiaries"/></td>
-                <td><button class="edit_button btn btn-danger" ng-click="deleteRequestedFDP($index)"><i class="icon-trash icon-white"></i> Delete</button></td>
-            </tr> 
+                    <td ng-show="isUniqueZone($index)"><button ng-click="ChangeVisible(allocation.Zone)" ng-show="allocation.showA"> -</button> <button ng-click="ChangeVisible(allocation.Zone)" ng-show="!allocation.showA"> + </button> <b class="margin-right-10">{{allocation.Zone}}</b> </td>
+                    <td ng-show="!isUniqueZone($index)"></td>
+                    <td ng-show="allocation.showA">{{allocation.Woreda}}</td>
+                    <td ng-show="allocation.showA">
+                        <a ng-click="onFdpListShow($index)" id="fdp_selector_button{{$index}}" class="edit_button" href="javascript:_Void()">{{allocation.FDP}}</a>
+                    </td>
+                    <!--<td>{{allocation.PlannedBeneficiaries}}</td>-->
+                    <td ng-show="allocation.showA"><input class="flat-input txt_beneficiaries" onfocus="onGridInputFocus(this)" onchange="onAllocationBeneficiaryChange({{$index}})" ng-model="allocation.Beneficiaries" /></td>
+                    <td ng-show="allocation.showA"><button class="edit_button btn btn-danger" ng-click="deleteRequestedFDP($index)"><i class="icon-trash icon-white"></i> Delete</button></td>
+                </tr>
+
             <tr id="newAllocationEdit" style="display: none;">
                 <td></td>
                 <td>{{newAllocation.Zone}}</td>

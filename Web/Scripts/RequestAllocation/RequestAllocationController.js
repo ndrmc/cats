@@ -13,7 +13,20 @@ function RequestAllocationController($scope, $http, $timeout) {
     $scope.ServerUrls = ServerUrls;
     $scope.RegionalRequestID = RegionalRequestID;
     $scope.RationID = RequestRation;
+   var indexedAllocations = [];
+     
+    $scope.allocationsToFilter = function () {
+        indexedAllocations = [];
+        return $scope.allocations;
+    }
 
+    $scope.filterAllocations = function (allocations) {
+        var allocationIsNew = indexedAllocations.indexOf(allocations.Zone) == -1;
+        if (allocationIsNew) {
+            indexedAllocations.push(allocations.Zone);
+        }
+        return allocationIsNew;
+    }
     $scope.onFetchRequestSummaryDataSuccess = function (data) {
         $scope.request = data;
         $scope.fetchCommodityListData($scope.RationID);
@@ -21,8 +34,16 @@ function RequestAllocationController($scope, $http, $timeout) {
 
     $scope.onFetchRequestAllocationDataSuccess = function (data) {
         $scope.allocations = data;
+        $scope.selectVisible();
     };
-
+    $scope.isUniqueZone = function (index) {
+        if (index === 0)
+            return true;
+        else if ($scope.allocations[index].Zone === $scope.allocations[index - 1].Zone)
+            return false;
+        else
+            return true;
+    }
     $scope.onFetchCommodityListDataSuccess = function (data, requestedItems) {
         $scope.commoditiesList = data;
         $("#txt_requested_commodities").tokenInput(data,
@@ -213,6 +234,24 @@ function RequestAllocationController($scope, $http, $timeout) {
         showFDPSelector({ target: element, callback: "onAllocationFDPChange", adminUnit: selectedFDP });
         //{RegionID:@Model.RegionID , ZoneID: @Model.ZoneID ,WoredaID: @Model.WoredaID ,FDPID: @Model.FDPID }
     };
+    $scope.selectVisible = function () {
+        for (var z in $scope.allocations) {
+            if ($scope.allocations[z].Zone === "Zone 1")
+                $scope.allocations[z].showA = true;
+            else
+                $scope.allocations[z].showA = false;
+
+        }
+    }
+    $scope.ChangeVisible = function (zone) {
+
+        for (var z in $scope.allocations) {
+            if ($scope.allocations[z].Zone === zone)
+                $scope.allocations[z].showA = !$scope.allocations[z].showA;
+
+
+        }
+    }
     $scope.onAllocatoinChange=function(index)
     {
         var selectedAlloc = $scope.allocations[index];
