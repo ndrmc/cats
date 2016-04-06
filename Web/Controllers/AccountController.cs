@@ -91,6 +91,7 @@ namespace Cats.Controllers
                     // Logistics user permissions
                     UserPermissionCache logisticsPermissionCache = new UserPermissionCache(storage, CatsGlobals.CATS, CatsGlobals.LOGISTICS, dbUser, true, false);
                     Session[CatsGlobals.LOGISTICS_PERMISSIONS] = logisticsPermissionCache;
+                    
 
                     // Procurement user permissions
                     UserPermissionCache procurementPermissionCache = new UserPermissionCache(storage, CatsGlobals.CATS, CatsGlobals.PROCUREMENT, dbUser, true, false);

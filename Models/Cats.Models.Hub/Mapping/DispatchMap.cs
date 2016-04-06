@@ -55,6 +55,7 @@ namespace Cats.Models.Hubs.Mapping
             this.Property(t => t.RequisitionNo).HasColumnName("RequisitionNo");
             this.Property(t => t.BidNumber).HasColumnName("BidNumber");
             this.Property(t => t.TransporterID).HasColumnName("TransporterID");
+            this.Property(t => t.ShippingInstructionID).HasColumnName("ShippingInstructionID");
             this.Property(t => t.DriverName).HasColumnName("DriverName");
             this.Property(t => t.PlateNo_Prime).HasColumnName("PlateNo_Prime");
             this.Property(t => t.PlateNo_Trailer).HasColumnName("PlateNo_Trailer");

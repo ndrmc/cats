@@ -6,8 +6,11 @@
 @{
 
     var user = (UserIdentity)HttpContext.Current.User.Identity;
+
     var role = UserRoleHelper.GetUserRole(user.Profile.UserName);
     var lang = user.Profile.LanguageCode;
+    var azmanRollLogistics = Session[CatsGlobals.LOGISTICS_PERMISSIONS];
+
     ViewBag.CurrentUser = user;
 
     //  Translator.CurrentLanguage = lang;
@@ -537,9 +540,9 @@
                             </ul>
                         </li>*@
 
-                            break;
-                        case (int)UserType.CASETEAM.LOGISTICS:
-
+                    break;
+                case (int)UserType.CASETEAM.LOGISTICS:
+                    //if(azmanRollLogistics.)
                     <li class="classic-menu-dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Html.Translate2(PAGE_NAME, "Dispatch")<i class="fa fa-angle-down"></i></a>
                         <ul class="dropdown-menu pull-left">

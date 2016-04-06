@@ -1750,7 +1750,8 @@ namespace Cats.Services.Hub
                 dispatch.TransporterID = dispatchViewModel.TransporterID;
                 dispatch.UserProfileID = dispatchViewModel.UserProfileID;
             dispatch.WeighBridgeTicketNumber = dispatchViewModel.WeighBridgeTicketNumber;
-           
+            dispatch.ShippingInstructionID = dispatchViewModel.ShippingInstructionID.Value;
+
 
             //dispatch.Type = dispatchViewModel.Type;
 
