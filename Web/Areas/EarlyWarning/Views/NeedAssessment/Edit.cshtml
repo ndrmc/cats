@@ -43,7 +43,7 @@
           columns.Template(c => { }).Title(Html.Translate("Projected Total")).HtmlAttributes(new { @class = "calculated" }).ClientTemplate("<span class='rowCount totalProjected' rowCount='#=rowCount#' nextRow='#=getRowNo(data)#'>#=calculateTotalProjected(data)# </span>");
 
 
-          columns.Bound(p => p.NonPSNPFromWoredasDOA).Title(Html.Translate("Non PSNP DOA")).Width(200).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;", title = "Non PSNP From Woredas DOA"}).Format("{0:n0}").HtmlAttributes(new {align = "Right"});
+          columns.Bound(p => p.NonPSNPFromWoredasDOA).Title(Html.Translate("Duration of Assistance")).Width(200).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;", title = "Duration of Assistance" }).Format("{0:n0}").HtmlAttributes(new {align = "Right"});
 
       })
 
@@ -77,15 +77,16 @@
 
                                     .Model(model =>
                                     {
-                                    model.Id(p => p.NAId);
+                                        model.Id(p => p.NAId);
 
                                         if (ViewBag.Status == 2)
                                         {
                                             model.Field(p => p.ProjectedMale).Editable(false);
                                             model.Field(p => p.ProjectedFemale).Editable(false);
                                             model.Field(p => p.Woreda).Editable(false);
+                                            model.Field(p => p.NonPSNPFromWoredasDOA).Editable(false);
                                         }
-                                        model.Field(p => p.NonPSNPFromWoredasDOA).Editable(false);
+
                                         model.Field(p => p.WoredaName).Editable(false);
                                         model.Field(p => p.Total).Editable(false);
                                         model.Field(p => p.TotalBeneficiaries).Editable(false);
