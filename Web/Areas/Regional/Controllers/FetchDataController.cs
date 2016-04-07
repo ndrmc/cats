@@ -4,11 +4,13 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Cats.Areas.Regional.Models;
+using Cats.Models.Constant;
 using Cats.Models.Hubs;
 using Cats.Services.Dashboard;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Hub;
 using Cats.Services.Logistics;
+using Cats.ViewModelBinder;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using IFDPService = Cats.Services.EarlyWarning.IFDPService;
 using Cats.Web.Hub.Helpers;
@@ -29,8 +31,8 @@ namespace Cats.Areas.Regional.Controllers
         private readonly IDispatchService _dispatchService;
         private readonly IDispatchAllocationService _dispatchAllocationService;
         private readonly IDeliveryReconcileService _deliveryReconcileService;
-
-
+        private readonly INeedAssessmentService _needAssessmentService;
+        private readonly IPlanService _planService;
         public FetchDataController(IRegionalDashboard regionalDashboard,
             IRegionalRequestService regionalRequestService,
             IReliefRequisitionService reliefRequisitionService,
@@ -38,7 +40,7 @@ namespace Cats.Areas.Regional.Controllers
             IFDPService fdpService,
             IHRDService hrdService,
             IUtilizationHeaderSerivce utilization, IDispatchService dispatchService, IDeliveryReconcileService deliveryReconcileService, IDispatchAllocationService dispatchAllocationService
-
+            ,INeedAssessmentService needAssessmentService,IPlanService planService
             )
         {
             _regionalDashboard = regionalDashboard;
@@ -51,6 +53,8 @@ namespace Cats.Areas.Regional.Controllers
             _dispatchService = dispatchService;
             _deliveryReconcileService = deliveryReconcileService;
             _dispatchAllocationService = dispatchAllocationService;
+            _needAssessmentService = needAssessmentService;
+            _planService = planService;
         }
 
         public JsonResult AllocationChanges(int regionID)
@@ -194,6 +198,26 @@ namespace Cats.Areas.Regional.Controllers
                 TotalRequistions = requisitions.Count
             };
             return Json(d, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult Assesments(int regionID = 0)
+        {       
+            var plans =
+                (from p in
+                    _needAssessmentService.FindBy(
+                        a => a.Region == regionID && a.Plan.Status == (int) PlanStatus.Approved)
+                    select new
+                    {
+                        p.PlanID,
+                        p.Plan.PlanName,
+                        StartDate =
+                            p.Plan.StartDate.ToString("MMMM") + " " + p.Plan.StartDate.Day + "," +
+                            p.Plan.StartDate.Year,
+                        EndDate =
+                            p.Plan.EndDate.ToString("MMMM") + " " + p.Plan.EndDate.Day + "," + p.Plan.EndDate.Year,
+                        p.Plan.Status,
+                    }).Distinct().ToList();
+            return Json(plans, JsonRequestBehavior.AllowGet);
         }
     }
 }
