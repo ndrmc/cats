@@ -74,7 +74,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewData["TypeOfNeedAssessment"] =
                 _typeOfNeedAssessmentService.FindBy(t => t.TypeOfNeedAssessmentID == typeOfNeed).Select(
                     a => a.TypeOfNeedAssessment1).SingleOrDefault();
-
+           
             var region = _needAssessmentService.FindBy(t => t.NeedAID == id).SingleOrDefault();
             if (region != null) ViewData["region"] = region.Region;
             ViewData["Id"] = id;
@@ -83,6 +83,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (region != null) ViewBag.Zones = _adminUnitService.GetZones(region.Region).ToList();
 
             var needAssessment = _needAssessmentService.FindById(id);
+            ViewData["Status"] = needAssessment.Plan.Status;
             return View(needAssessment);
         }
         public ActionResult Approved()

@@ -29,9 +29,15 @@
                     </button>
                 }
                 <ul class="dropdown-menu pull-right">
-                    <li><a class="btn green-haze-stripe" href="@Url.Action("Hub", "DispatchAllocation", new { regionid = ViewBag.regionId })">@Html.Translate("Hub allocation")</a></li>
-                    <!--<li><a  class="btn green-haze-stripe" href="@Url.Action("Index", "SIAllocation", new { Area = "Logistics", regionid = ViewBag.regionId })">PC/SI code allocation</a></li>-->
-                    <li><a class="btn green-haze-stripe" href="@Url.Action("CreateTransportRequisition", "TransportRequisition", new { regionId = ViewBag.regionId })">@Html.Translate("Generate Transport Requisition")</a></li>
+
+                    @Html.EarlyWarningOperationButton(
+                                                    @Url.Action("Detail", new { id = item.GiftCertificateID }),
+                                                    EarlyWarningConstants.Operation.Edit_Gift_Certificate, " <button type=\"button\" class=\"btn btn-xs btn-primary\"><span class=\"fa fa-list\"></span>" + @Html.Translate("Detail") + " </button> ")
+
+
+                    <li><a class="btn green-haze-stripe" href="@Url.Action("Hub", "DispatchAllocation", new {regionid = ViewBag.regionId})">@Html.Translate("Hub allocation")</a></li>
+                    <!--<li><a class="btn green-haze-stripe" href="@Url.Action("Index", "SIAllocation", new {Area = "Logistics", regionid = ViewBag.regionId})">PC/SI code allocation</a></li>-->
+                    <li><a class="btn green-haze-stripe" href="@Url.Action("CreateTransportRequisition", "TransportRequisition", new {regionId = ViewBag.regionId})">@Html.Translate("Generate Transport Requisition"),</a></li>
                 </ul>
             </div>
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>

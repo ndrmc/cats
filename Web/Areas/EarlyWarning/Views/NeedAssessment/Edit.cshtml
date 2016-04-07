@@ -79,7 +79,7 @@
                                     {
                                     model.Id(p => p.NAId);
 
-                                        if (ViewBag.Status != 5)
+                                        if (ViewBag.Status == 2)
                                         {
                                             model.Field(p => p.ProjectedMale).Editable(false);
                                             model.Field(p => p.ProjectedFemale).Editable(false);
