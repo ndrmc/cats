@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Cats.Areas.EarlyWarning.Models;
 using Cats.Services.EarlyWarning;
 using System.Web.Mvc;
@@ -16,9 +14,9 @@ using Cats.Services.Common;
 using Master = Cats.Models.Constant.Master;
 using Cats.Helpers;
 using Cats.Data.UnitWork;
-using System.Reflection;
 using Cats.Security;
 using log4net;
+using NetSqlAzMan.Providers;
 using GiftCertificateViewModel = Cats.Areas.GiftCertificate.Models.GiftCertificateViewModel;
 
 namespace Cats.Areas.EarlyWarning.Controllers
@@ -56,6 +54,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             var gifts = _giftCertificateService.Get(t=>t.StatusID==id,null, "GiftCertificateDetails,Donor,GiftCertificateDetails.Detail,GiftCertificateDetails.Commodity");
             var giftsViewModel = GiftCertificateViewModelBinder.BindListGiftCertificateViewModel(gifts.ToList(), datePref,true);
+
+            var user = UserAccountHelper.GetUser(HttpContext.User.Identity.Name);
+            var roles = _userAccountService.GetUserPermissions(user.UserName);
+
             return View(giftsViewModel);
         }
 
