@@ -1,5 +1,8 @@
 ﻿@using Kendo.Mvc.UI
 @using Cats.Helpers
+
+@using Cats.Security
+@using Cats.Services.Security
 @{
     ViewBag.ViewWidth = "Wide";
     ViewBag.Title = @Html.Translate("Index");
@@ -29,15 +32,19 @@
                     </button>
                 }
                 <ul class="dropdown-menu pull-right">
+                                       
+                   
+                    
 
-                    @Html.EarlyWarningOperationButton(
-                                                    @Url.Action("Detail", new { id = item.GiftCertificateID }),
-                                                    EarlyWarningConstants.Operation.Edit_Gift_Certificate, " <button type=\"button\" class=\"btn btn-xs btn-primary\"><span class=\"fa fa-list\"></span>" + @Html.Translate("Detail") + " </button> ")
-
-
-                    <li><a class="btn green-haze-stripe" href="@Url.Action("Hub", "DispatchAllocation", new {regionid = ViewBag.regionId})">@Html.Translate("Hub allocation")</a></li>
+                    <li>@Html.LogisticsOperationButton(
+                                                @Url.Action("Hub", "DispatchAllocation", new { regionid = ViewBag.regionId }),
+                                               LogisticsConstants.Operation.Hub_allocation, @Html.Translate("Hub allocation"));</li>
+                    @*<li><a class="btn green-haze-stripe" href="@Url.Action("Hub", "DispatchAllocation", new {regionid = ViewBag.regionId})">@Html.Translate("Hub allocation")</a></li>*@
                     <!--<li><a class="btn green-haze-stripe" href="@Url.Action("Index", "SIAllocation", new {Area = "Logistics", regionid = ViewBag.regionId})">PC/SI code allocation</a></li>-->
-                    <li><a class="btn green-haze-stripe" href="@Url.Action("CreateTransportRequisition", "TransportRequisition", new {regionId = ViewBag.regionId})">@Html.Translate("Generate Transport Requisition"),</a></li>
+                     <li>@Html.LogisticsOperationButton(
+                                                @Url.Action("CreateTransportRequisition", "TransportRequisition", new { regionId = ViewBag.regionId }),
+                                               LogisticsConstants.Operation.Generate_transport_requisition, @Html.Translate("Generate Transport Requisition"));</li>
+                   @* <li><a class="btn green-haze-stripe" href="@Url.Action("CreateTransportRequisition", "TransportRequisition", new {regionId = ViewBag.regionId})">@Html.Translate("Generate Transport Requisition"),</a></li>*@
                 </ul>
             </div>
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>

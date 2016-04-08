@@ -1,6 +1,8 @@
 ﻿@model List<int?>
 @using Kendo.Mvc.UI
 @using Cats.Helpers
+@using Cats.Security
+@using Cats.Services.Security
 
 @{
     var gridid = Guid.NewGuid().ToString();
@@ -20,7 +22,7 @@
     .Name("ApprovedRequsitions")
     .Columns(columns =>
     {
-        
+
         columns.Bound(e => e.RequisitionNo).Width(120).Title(@Html.Translate("Requisition No")).Filterable(false);
         columns.Bound(e => e.Program).Width(120).Title(@Html.Translate("Program")).Filterable(true);
         columns.Bound(e => e.MonthName).Width(120).Title(@Html.Translate("Month")).Filterable(true);
@@ -33,8 +35,11 @@
         columns.Bound(e => e.BenficiaryNo).Title("Beneficiaries").Width(120).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title =@Html.Translate("Benficiary No") }).Format("{0:n0}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).Filterable(false);
         //columns.Bound(e => e.Status).Title("").Width(120).ClientTemplate("<a class='action-link assign-code#=Status#' href='" + @Url.Action("Index", "FDPSIAllocation", new { Area = "Logistics", regionid = ViewBag.regionId }) + "&RequisitionID=#=RequisitionId#'>PC/SI Allocate</a>  ").Filterable(false);
         //columns.Bound(e => e.Status).Width(90).Title("Status");
+        //@Url.Action("Create", "GiftCertificate", new { Area = "EarlyWarning" }),
+        //            EarlyWarningConstants.Operation.New_Gift_Certificate, "<button type=\"button\" class=\"btn btn-success\"><span class=\"fa fa-plus\"></span> " + @Html.Translate("New Gift Certificate") + " </button>", "btn btn-success", "btn_new_record")
+        if(LogisticsConstants.Operation.Hub_allocation.ToString() == "Hub_allocation")
         columns.Command(p =>  p.Custom(@Html.Translate("Reject")).Click("onReject")).Width(100);
-        
+
     })
    
                         .DataSource(dataSource => dataSource
