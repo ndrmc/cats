@@ -37,29 +37,30 @@ Plans
                         @(Html.Kendo().Grid<Cats.Models.ViewModels.HRD.HRDViewModel>()
     .Name("grid")
     .Columns(columns =>
+    {
+        //columns.Bound(p => p.HRDName);
+        columns.Bound(p => p.Plan).Title(Html.Translate("HRD Name")).ClientTemplate(
+                        @Html.EarlyWarningOperationButton(
+                            @Url.Action("Detail", "HRD", new { id = "#=HRDID#" })+"?Grid-group=Region-asc",
+                            EarlyWarningConstants.Operation.View_HRD_Detail, "#=Plan#").ToString());
+        columns.Bound(p => p.Ration).Title("Ration No");
+        columns.Bound(p => p.StartDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
+        columns.Bound(p => p.EndDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
+        columns.Bound(p => p.CreatedBy);
+        columns.Bound(p => p.CreatedDatePref).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
+        columns.Bound(p => p.Status);
+        columns.Command(p =>
         {
-            //columns.Bound(p => p.HRDName);
-            columns.Bound(p => p.Plan).Title(Html.Translate("HRD Name")).ClientTemplate(
-                            @Html.EarlyWarningOperationButton(
-                                @Url.Action("Detail", "HRD", new { id = "#=HRDID#" })+"?Grid-group=Region-asc",
-                                EarlyWarningConstants.Operation.View_HRD_Detail, "#=Plan#").ToString());
-            columns.Bound(p => p.Ration).Title("Ration No");
-            columns.Bound(p => p.StartDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
-            columns.Bound(p => p.EndDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
-            columns.Bound(p => p.CreatedBy);
-            columns.Bound(p => p.CreatedDatePref).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
-            columns.Bound(p => p.Status);
-            columns.Command(p =>
-            {
-                p.Custom("Edit").Click("hrdEdit").Text("<span class=\"fa fa-pencil-square-o\"></span> Edit ");
-                p.Custom("Approve").Click("approveHRD").Text("<span class=\"fa fa-check\"></span> Approve ");
-                p.Custom("Summary").Click("showSummary").Text("<span class=\"fa fa-list\"></span> Summary ");
+            p.Custom("Edit").Click("hrdEdit").Text("<span class=\"fa fa-pencil-square-o\"></span> Edit ");
+            p.Custom("Approve").Click("approveHRD").Text("<span class=\"fa fa-check\"></span> Approve ");
+            p.Custom("Summary").Click("showSummary").Text("<span class=\"fa fa-list\"></span> Summary ");
+            p.Custom("Delete").Click("deleteHRD").Text("<span class=\"fa fa-times fa-fw\"></span> Delete ");  
+                    
+        });
 
-            });
-            
-          
 
-        })
+
+    })
             .Sortable()
             .Scrollable()
              .Pageable()
@@ -81,19 +82,19 @@ Plans
     </div>
 </div>
 <div class="modal" id="cats-modal">
-<div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      
-        <div class="modal-header">
-          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-          <h4 id="myModalLabel" class="modal-title">@Html.Translate("Approve Gift Certificate")</h4>
-        </div>
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="myModalLabel" class="modal-title">@Html.Translate("Approve Gift Certificate")</h4>
+            </div>
 
 
             <div class="modal-body">
-              
+
                 <p>
-                   Are you sure do you want to approve HRD?
+                    Are you sure do you want to approve HRD?
                 </p>
 
             </div>
@@ -101,20 +102,48 @@ Plans
                 <button id="yes" class="btn btn-primary" type="submit">Yes</button>
                 <button id="no"class="btn" data-dismiss="modal" aria-hidden="true">No</button>
             </div>
-   
-       
+
+
+        </div>
     </div>
 </div>
-    </div>
+    <!-- Added by Nigus-->
+               <div class="modal" id="cats-modal-delete">
+                   <div class="modal-dialog modal-sm">
+                       <div class="modal-content">
+
+                           <div class="modal-header">
+                               <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                               <h4 id="myModalLabel" class="modal-title">@Html.Translate("Delete HRD")</h4>
+                           </div>
+
+
+                           <div class="modal-body">
+
+                               <p>
+                                   Are you sure do you want to delete the HRD?
+                               </p>
+
+                           </div>
+                           <div class="modal-footer">
+                               <button id="yes-delete" class="btn btn-primary" type="submit">Yes</button>
+                               <button id="no" class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+                           </div>
+
+
+                       </div>
+                   </div>
+               </div>
 <script>
     function onDataBound(e) {
-        
+
         $(".table-responsive .k-button").removeClass("k-button").addClass("btn btn-xs mrgn3-b col-md-11");
         $(".k-grid-Edit").addClass("btn-warning");
         $(".k-grid-Approve").addClass("btn-success");
         $(".k-grid-Summary").addClass("btn-primary");
+        $(".k-grid-Delete").addClass("btn-danger");
     }
-    
+
     function approveHRD(e) {
         e.preventDefault();
         var grid = this;
@@ -127,7 +156,21 @@ Plans
             window.location = "@Url.Action("ApproveHRD", "HRD")" + "/" + dataItem.HRDID;
 
         });
+    }
 
+    //Added by Nigus
+    function deleteHRD(e) {
+        e.preventDefault();
+        var grid = this;
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var row = $(e.currentTarget).closest("tr");
+        $('#cats-modal-delete').modal('show');
+
+        $("#yes-delete").click(function() {
+
+            window.location = "@Url.Action("DeleteHRD", "HRD")" + "/" + dataItem.HRDID;
+
+        });
     }
 
     function showSummary(e) {
