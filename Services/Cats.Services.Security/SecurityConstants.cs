@@ -103,6 +103,10 @@ namespace Cats.Security
             {
                 return "Approve HRD";
             }
+            if ((operation == Operation.Old_HRD))
+            {
+                return "Old HRD";
+            }
             if ((operation == Operation.Approve_Need_Assessment))
             {
                 return "Approve Need Assessment";
@@ -274,6 +278,10 @@ namespace Cats.Security
             if ((operation == Operation.View_Approved_HRD))
             {
                 return "View Approved HRD";
+            }
+            if ((operation == Operation.View_Old_HRD))
+            {
+                return "View Old HRD";
             }
             if ((operation == Operation.View_approved_needs_assesment))
             {
@@ -451,6 +459,10 @@ namespace Cats.Security
             /// </summary>
             Approve_HRD,
             /// <summary>
+            /// Operation View Old HRD
+            /// </summary>
+            Old_HRD,
+            /// <summary>
             /// Operation Approve Need Assessment
             /// </summary>
             Approve_Need_Assessment,
@@ -618,6 +630,10 @@ namespace Cats.Security
             /// Operation View Approved HRD
             /// </summary>
             View_Approved_HRD,
+            /// <summary>
+            /// Operation View Old HRD
+            /// </summary>
+            View_Old_HRD,
             /// <summary>
             /// Operation View approved needs assesment
             /// </summary>
