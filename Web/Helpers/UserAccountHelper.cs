@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -8,7 +9,9 @@ using System.Web.Mvc;
 using Cats.Services.Security;
 using Cats.Models.Security;
 using System.Web.Security;
+using Cats.Security;
 using NetSqlAzMan.Cache;
+using NetSqlAzMan.Interfaces;
 
 namespace Cats.Helpers
 {
@@ -203,6 +206,62 @@ namespace Cats.Helpers
             }
 
             return permissionsCache;
+        }
+
+        public static bool EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation operationEW, PsnpConstants.Operation
+            operationPSNP)
+        {
+            //return MvcHtmlString.Create(@"<a data-buttontype=" + dataButtontype + "  class=" + ccsClass + " href=" + url + ">" + text + "</a>");
+
+            var ewConstants = new EarlyWarningConstants();
+            var ewCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.EarlyWarning);
+
+            var psnpConstants = new PsnpConstants();
+            var psnpCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.PSNP);
+
+            // If cache is null then force the user to sign-in again
+            if (null == ewCache)
+            {
+                Signout();
+                return false;
+            }
+
+            if (ewCache.CheckAccess(ewConstants.ItemName(operationEW), DateTime.Now) == AuthorizationType.Allow)
+            {
+                return true;
+            }
+            if (psnpCache.CheckAccess(psnpConstants.ItemName(operationPSNP), DateTime.Now) == AuthorizationType.Allow)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation operationEW)
+        {
+            //return MvcHtmlString.Create(@"<a data-buttontype=" + dataButtontype + "  class=" + ccsClass + " href=" + url + ">" + text + "</a>");
+
+            var ewConstants = new EarlyWarningConstants();
+            var ewCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.EarlyWarning);
+
+            // If cache is null then force the user to sign-in again
+            if (null == ewCache )
+            {
+                Signout();
+                return false;
+            }
+
+            if (ewCache.CheckAccess(ewConstants.ItemName(operationEW), DateTime.Now) == AuthorizationType.Allow)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private static MvcHtmlString Signout()
+        {
+            FormsAuthentication.SignOut();
+            return MvcHtmlString.Create(string.Empty);
         }
 
     }

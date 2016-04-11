@@ -41,7 +41,7 @@ namespace Cats.Helpers
             return MvcHtmlString.Create(html);
         }
 
-        public static MvcHtmlString EarlyWarningOperationJsLink(this HtmlHelper helper, EarlyWarningConstants.Operation operation, string text = "", string clickFunction = "", string ccsClass = "", string dataButtontype = "", string id = "")
+        public static MvcHtmlString EarlyWarningOperationJsLink(this HtmlHelper helper, EarlyWarningConstants.Operation operation, string text = "", string clickFunction = "", string ccsClass = "btn-Approve-Gift", string dataButtontype = "", string id = "")
         {
             //return MvcHtmlString.Create(@"<a data-buttontype=" + dataButtontype + "  class=" + ccsClass + " href=" + url + ">" + text + "</a>");
 
@@ -59,10 +59,10 @@ namespace Cats.Helpers
             if (ewCache.CheckAccess(constants.ItemName(operation), DateTime.Now) == AuthorizationType.Allow)
             {
                 //html = @"<a data-buttontype=" + dataButtontype + " class=" + ccsClass + " href=" + url + ">" + text + "</a>";
-                html = "<span";
+                html = @"<a href='#'";
                 if (ccsClass != "")
                 {
-                    html += " class=" + ccsClass;
+                    html += " class='btn-success'";
                 }
                 if (id != "")
                 {
@@ -72,17 +72,14 @@ namespace Cats.Helpers
                 {
                     html += " data-buttontype=" + dataButtontype;
                 }
-                if (clickFunction != "")
+                html += ">";
+                if (clickFunction != "" && text != "")
                 {
-                    html += " onclick=" + clickFunction;
-                }
-                if (text != "")
-                {
-                    html += " >" + text + "</span>";
+                    html += "<button type = 'button' class='btn btn-xs btn-success' ><span class='fa fa-check'></span>" + text + "</button></a>";
                 }
                 else
                 {
-                    html += " ></span>";
+                    html += " ><span class='fa fa-check'></span></a>";
                 }
             }
             return MvcHtmlString.Create(html);

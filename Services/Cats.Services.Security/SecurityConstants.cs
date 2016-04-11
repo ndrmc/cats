@@ -139,6 +139,10 @@ namespace Cats.Security
             {
                 return "Edit Gift Certificate";
             }
+            if ((operation == Operation.Edit_HRD))
+            {
+                return "Edit HRD";
+            }
             if ((operation == Operation.Edit_needs_assessment))
             {
                 return "Edit needs assessment";
@@ -486,6 +490,10 @@ namespace Cats.Security
             /// Operation Edit Gift Certificate
             /// </summary>
             Edit_Gift_Certificate,
+            /// <summary>
+            /// Operation Edit HRD
+            /// </summary>
+            Edit_HRD,
             /// <summary>
             /// Operation Edit needs assessment
             /// </summary>
