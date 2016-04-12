@@ -37,7 +37,7 @@
         //columns.Bound(e => e.Status).Width(90).Title("Status");
         //@Url.Action("Create", "GiftCertificate", new { Area = "EarlyWarning" }),
         //            EarlyWarningConstants.Operation.New_Gift_Certificate, "<button type=\"button\" class=\"btn btn-success\"><span class=\"fa fa-plus\"></span> " + @Html.Translate("New Gift Certificate") + " </button>", "btn btn-success", "btn_new_record")
-        if(LogisticsConstants.Operation.Hub_allocation.ToString() == "Hub_allocation")
+        if(LogisticsConstants.Operation.Reject_Approved_Requisition.ToString() == "Reject_Approved_Requisition")
         columns.Command(p =>  p.Custom(@Html.Translate("Reject")).Click("onReject")).Width(100);
 
     })

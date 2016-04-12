@@ -115,6 +115,10 @@ namespace Cats.Security
             {
                 return "Approve HRD";
             }
+            if ((operation == Operation.Old_HRD))
+            {
+                return "Old HRD";
+            }
             if ((operation == Operation.Approve_Need_Assessment))
             {
                 return "Approve Need Assessment";
@@ -298,6 +302,10 @@ namespace Cats.Security
             if ((operation == Operation.View_Approved_HRD))
             {
                 return "View Approved HRD";
+            }
+            if ((operation == Operation.View_Old_HRD))
+            {
+                return "View Old HRD";
             }
             if ((operation == Operation.View_approved_needs_assesment))
             {
@@ -487,6 +495,10 @@ namespace Cats.Security
             /// </summary>
             Approve_HRD,
             /// <summary>
+            /// Operation View Old HRD
+            /// </summary>
+            Old_HRD,
+            /// <summary>
             /// Operation Approve Need Assessment
             /// </summary>
             Approve_Need_Assessment,
@@ -666,6 +678,10 @@ namespace Cats.Security
             /// Operation View Approved HRD
             /// </summary>
             View_Approved_HRD,
+            /// <summary>
+            /// Operation View Old HRD
+            /// </summary>
+            View_Old_HRD,
             /// <summary>
             /// Operation View approved needs assesment
             /// </summary>
@@ -1278,7 +1294,72 @@ namespace Cats.Security
              {
                  return "Warehouse selection";
              }
-             throw new System.ArgumentException("Unknown Operation name", "operation");
+            if ((operation == Operation.Reject_Approved_Requisition))
+            {
+                return "Reject Approved Requisition";
+            }
+ if ((operation == Operation.Revert_Local_Purchase))
+            {
+                return "Revert Local Purchase";
+            }
+             if ((operation == Operation.Remove_Local_Purchase))
+            {
+                return "Remove Local Purchase";
+            }
+            if ((operation == Operation.Delete_Transfer_Plan))
+            {
+                return "Delete Transfer Plan";
+            }
+ if ((operation == Operation.Delete_Donation))
+            {
+                return "Delete Donation";
+            }
+ if ((operation == Operation.Revert_Donation))
+            {
+                return "Revert Donation";
+            }
+            if ((operation == Operation.Recive_Plan_For_Loan_Create))
+            {
+                return "Recive Plan For Loan Create";
+            }
+ if ((operation == Operation.Recive_Plan_For_Loan_Delete))
+            {
+                return "Recive Plan For Loan Delete";
+            }
+            if ((operation == Operation.Recive_Plan_For_Loan_Revert))
+            {
+                return "Recive Plan For Loan Revert";
+            }
+        if ((operation == Operation.Add_Swap))
+            {
+                return "Add Swap";
+            }
+ if ((operation == Operation.View_SI_Swap))
+            {
+                return "View SI Swap";
+            }
+ if ((operation == Operation.Edit_Swap))
+            {
+                return "Edit Swap";
+            }
+
+ if ((operation == Operation.Approve_Swap))
+            {
+                return "Approve Swap";
+            }
+ if ((operation == Operation.Edit_Bid_Plan))
+            {
+                return "Edit Bid Plan";
+            }
+            if ((operation == Operation.Delete_Bid_Plan))
+            {
+                return "Delete Bid Plan";
+            }
+            if ((operation == Operation.Add_Bid_Plan))
+            {
+                return "Add Bid Plan";
+            }
+            throw new System.ArgumentException("Unknown Operation name", "operation");
 
              #endregion
          }
@@ -1291,7 +1372,22 @@ namespace Cats.Security
         {
             /// <summary>
             /// Operation Add new donation
-            /// </summary>
+            Delete_Transfer_Plan,
+            Add_Bid_Plan,
+            Add_Swap,
+            Delete_Bid_Plan,
+            View_SI_Swap,
+            Edit_Swap,
+            Edit_Bid_Plan,
+            Approve_Swap,
+            Recive_Plan_For_Loan_Revert,
+            Recive_Plan_For_Loan_SI_View,
+            Recive_Plan_For_Loan_Delete,
+            Recive_Plan_For_Loan_Create,
+            Delete_Donation,
+            Revert_Donation,
+            Revert_Local_Purchase,
+            Remove_Local_Purchase,
             Add_new_donation,
             /// <summary>
             /// Operation Add new local purchase
@@ -1487,6 +1583,9 @@ namespace Cats.Security
             /// Operation Warehouse selection
             /// </summary>
             Warehouse_selection,
+
+            Reject_Approved_Requisition,
+
         }
         #endregion
     }

@@ -1,7 +1,8 @@
 ﻿@using Cats.Areas.Logistics.Models
 @using Kendo.Mvc.UI
 @using Cats.Helpers
-
+@using Cats.Security
+@using Cats.Services.Security
 @{
     ViewBag.Title = @Html.Translate("Index");
     //Layout = "~/Views/Shared/_MainLayout.cshtml";
@@ -37,28 +38,39 @@
                 <a href="javascript:;" class="remove" data-original-title="" title=""></a>
             </div>*@
         <div class="actions">
+            @if (LogisticsConstants.Operation.Add_new_local_purchase.ToString() == "Add_new_local_purchase") {
             <a class="btn green btn-xs" href="@Url.Action("Create", "LocalPurchase")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
-</div>
+                }
+        </div>
     </div>
     <div class="portlet-body">
         <div class="table-responsive">
             @(Html.Kendo().Grid<LocalPurchaseViewModel>()
               .Name("grid")
               .Columns(columns =>
+              {
+              if (LogisticsConstants.Operation.Local_purchase_link.ToString() == "Local_purchase_link") {
+                  columns.Bound(m => m.SiNumber).Title(Html.Translate("SI Number")).
+              ClientTemplate("<a href='" + Url.Action("Details", "LocalPurchase", new { id = "#=LocalPurchaseID#" }) + " '>#=SiNumber#</a>  ");
+              }
+
+              columns.Bound(m => m.Program).Title(Html.Translate("Program"));
+              columns.Bound(m => m.DonorName).Width(200).Title(Html.Translate("Donor"));
+              columns.Bound(m => m.SupplierName).Width(200).Title(Html.Translate("Supplier Name"));
+              columns.Bound(m => m.Commodity).Width(200).Title(Html.Translate("Commodity"));
+              columns.Bound(m => m.ReferenceNumber).Title(Html.Translate("Reference Number"));
+              columns.Bound(m => m.Quantity).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Quantity"));
+              columns.Bound(m => m.Status).Title(Html.Translate("Status"));
+              if (LogisticsConstants.Operation.Remove_Local_Purchase.ToString() == "Remove_Local_Purchase")
+              {
+                  columns.Command(m => m.Custom("Revert").Click("OnRevert"));
+              }
+                  if (LogisticsConstants.Operation.Remove_Local_Purchase.ToString() == "Remove_Local_Purchase")
                   {
-                      columns.Bound(m => m.SiNumber).Title(Html.Translate("SI Number")).
-                          ClientTemplate("<a href='" + Url.Action("Details", "LocalPurchase", new { id = "#=LocalPurchaseID#" }) + " '>#=SiNumber#</a>  "); ;
-                      columns.Bound(m => m.Program).Title(Html.Translate("Program"));
-                      columns.Bound(m => m.DonorName).Width(200).Title(Html.Translate("Donor"));
-                      columns.Bound(m => m.SupplierName).Width(200).Title(Html.Translate("Supplier Name"));
-                      columns.Bound(m => m.Commodity).Width(200).Title(Html.Translate("Commodity"));
-                      columns.Bound(m => m.ReferenceNumber).Title(Html.Translate("Reference Number"));
-                      columns.Bound(m => m.Quantity).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Quantity"));
-                      columns.Bound(m => m.Status).Title(Html.Translate("Status"));
-                      columns.Command(m => m.Custom("Revert").Click("OnRevert"));
                       columns.Command(m => m.Custom("Delete").Click("OnDelete"));
                   }
+              }
 
               )
 
@@ -72,7 +84,7 @@
                                             .Ajax()
                                             .Model(model => model.Id(m => m.LocalPurchaseID))
                                             .Read(read => read.Action("LocalPurchase_Read", "LocalPurchase"))
-                    //.Update(update => update.Action("Commodity_Update", "Request"))
+              //.Update(update => update.Action("Commodity_Update", "Request"))
               )
             )
         </div>

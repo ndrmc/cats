@@ -71,9 +71,10 @@ namespace Cats.Areas.Settings.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("Errors", @"Error: The FDP is duplicated.");
+                        ModelState.AddModelError("Errors",
+                            @"The FDP name is duplicated. The new FDP is not saved.Please try with different name.");
                         //return Redirect("~/Setting/FDP/Index");
-                        return  RedirectToAction("Index", "FDP", new { Area = "Settings" });
+                        //return  RedirectToAction("Index", "FDP", new { Area = "Settings" });
                     }
                     // }
                 }

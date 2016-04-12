@@ -185,6 +185,18 @@ namespace Cats.Helpers
             return MvcHtmlString.Create(html);
         }
 
+        public static string isValidOperation(LogisticsConstants.Operation operation)
+        {
+            var constants = new LogisticsConstants();
+            string acces="";
+            var ewCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.Logistics);
+             
+            if (ewCache.CheckAccess(constants.ItemName(operation), DateTime.Now) == AuthorizationType.Allow)
+            {
+                acces = operation.ToString();
+            }
+            return acces;
+        }
         public static MvcHtmlString LogisticOperationMenuItem(this HtmlHelper helper, string text, string url, LogisticsConstants.Operation operation, string ccsClass = "", string dataButtontype = "")
         {
             var constants = new LogisticsConstants();
