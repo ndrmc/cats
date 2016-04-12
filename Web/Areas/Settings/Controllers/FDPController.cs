@@ -26,7 +26,7 @@ namespace Cats.Areas.Settings.Controllers
         }
         //
         // GET: /FDP/
-
+        [AllowAnonymous]
         public ActionResult Index()
         {
             ViewBag.RegionCollection = _adminUnitService.GetAllRegions();
@@ -47,8 +47,8 @@ namespace Cats.Areas.Settings.Controllers
             return Json(fdpsViewModel.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
-
-        [AcceptVerbs(HttpVerbs.Post)]
+        [AllowAnonymous]
+        //[AcceptVerbs(HttpVerbs.Post)]
         public ActionResult FDP_Create([DataSourceRequest] DataSourceRequest request, FDPViewModel fdpViewModel , int? adminUnitID)
         {
 
@@ -69,7 +69,12 @@ namespace Cats.Areas.Settings.Controllers
                         _fdpService.AddFDP(fdp);
                         //result.Add(fdpViewModel);
                     }
-                    else ModelState.AddModelError("Errors", @"Error: The FDP is duplicated.");
+                    else
+                    {
+                        ModelState.AddModelError("Errors", @"Error: The FDP is duplicated.");
+                        //return Redirect("~/Setting/FDP/Index");
+                        return  RedirectToAction("Index", "FDP", new { Area = "Settings" });
+                    }
                     // }
                 }
                 catch (Exception ex)

@@ -601,7 +601,15 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _hrdService.EditHRD(hrd);
             return RedirectToAction("Index");
         }
-        
+
+        //Added by Nigus
+        public ActionResult DeleteHRD(int id)
+        {
+            var hrd = _hrdService.FindById(id);
+            _hrdService.DeleteHRD(hrd);
+            return RedirectToAction("Index");
+        }
+
         public ActionResult PublishHRD(int id)
         {
             _hrdService.PublishHrd(id);
