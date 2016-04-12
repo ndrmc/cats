@@ -1,6 +1,7 @@
 ﻿@using Cats.Areas.Logistics.Models
 @using Cats.Helpers
 @using Kendo.Mvc.UI
+@using Cats.Security
 @{
 
     ViewBag.Title = Html.Translate("Index");
@@ -52,7 +53,10 @@
                 <a href="javascript:;" class="remove" data-original-title="" title=""></a>
             </div>*@
         <div class="actions">
-            <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn green" href="@Url.Action("Create", "Swap")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
+            @if (LogisticsConstants.Operation.Add_new_donation.ToString() == "Add_new_donation")
+            {
+                <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn green" href="@Url.Action("Create", "Swap")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
+            }
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
         </div>
     </div>
@@ -62,10 +66,11 @@
                   .Name("grid")
                   .Columns(columns =>
                   {
-                      columns.Bound(m => m.ReferenceNumber).Title(@Html.Translate("Reference"));
-
-                      columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "Swap", new {id = "#=TransferID#"}) + " '>#=SiNumber#</a>  ");
-
+                  columns.Bound(m => m.ReferenceNumber).Title(@Html.Translate("Reference"));
+                      if (LogisticsConstants.Operation.View_SI_Swap.ToString() == "View_SI_Swap")
+                      {
+                          columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "Swap", new {id = "#=TransferID#"}) + " '>#=SiNumber#</a>  ");
+                      }
                       columns.Bound(m => m.SourceSwapName).Title(@Html.Translate("Swap Issuer"));
                       columns.Bound(m => m.DestinationHubName).Title(@Html.Translate("Swap Receiver"));
 
