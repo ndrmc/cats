@@ -28,6 +28,11 @@ namespace Cats.Services.EarlyWarning
         {
 
             if (hrd == null) return false;
+            var hrdDetails = _unitOfWork.HRDDetailRepository.FindBy(h => h.HRDID == hrd.HRDID);
+            foreach (var hrdDetail in hrdDetails)
+            {
+                _unitOfWork.HRDDetailRepository.Delete(hrdDetail);
+            }
             _unitOfWork.HRDRepository.Delete(hrd);
             _unitOfWork.Save();
             return true;

@@ -2,6 +2,7 @@
 @using Kendo.Mvc.UI
 @using LanguageHelpers.Localization
 @using Cats.Helpers
+@using Cats.Security
 
 @{
     ViewBag.Title = "Index";
@@ -21,7 +22,11 @@ Donors
     <div class="col-md-12 box-body" style="display: block;">
         <div class="row">
             <div class="mrgn5-v text-right col-md-12">
-                <a data-buttontype="btn_new_record"  class="btn btn-success btn-sm " href="@Url.Action("Create", "DonorCoverage")"><span class="fa fa-plus"></span>New Donor</a>
+                @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_donor_coverage))
+                {
+                    <a data-buttontype="btn_new_record" class="btn btn-success btn-sm " href="@Url.Action("Create", "DonorCoverage")"><span class="fa fa-plus"></span>New Donor</a>
+                }
+                
             </div>
         </div>
         <div class="table-responsive">

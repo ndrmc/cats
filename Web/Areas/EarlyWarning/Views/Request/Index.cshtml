@@ -109,19 +109,19 @@
                      columns.Bound(request => request.PlanId).Title(
                          Html.Translate("Action"))
                          .ClientTemplate("# if (StatusID == 1 || StatusID==5) { #" +
-                            "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; " +
-                         "# if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request)) { #" +
-                            "<a href='" + Url.Action("Allocation", "Request", new { id = "#=RegionalRequestID#" }) + " '>Allocate</a>  " +
-                         "# } #" +
-                         "# if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request)) { #" +
-                            "<a onclick=\"return confirmDelete()\" href='" + Url.Action("Delete", "Request", new { id = "#=RegionalRequestID#" }) + " '>Delete</a>  " +
-                         "# } #" +
-                         "# } else { #" +
-                           "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; "+
-                        "# } #"
-                    );
+                                    "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; " +
+                                 "# if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Request_Allocation)) { #" +
+                                    "<a href='" + Url.Action("Allocation", "Request", new { id = "#=RegionalRequestID#" }) + " '>Allocate</a>  " +
+                                 "# } #" +
+                                 "# if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Delete_Request)) { #" +
+                                    "<a onclick=\"return confirmDelete()\" href='" + Url.Action("Delete", "Request", new { id = "#=RegionalRequestID#" }) + " '>Delete</a>  " +
+                                 "# } #" +
+                                 "# } else { #" +
+                                   "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; "+
+                                "# } #"
+                            );
 
-                 })
+                        })
                                     .Sortable()
                                     .Scrollable()
                                     .HtmlAttributes(new { style = "height:430px;" })

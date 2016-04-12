@@ -3,6 +3,7 @@
 @using Cats.Areas.GiftCertificate.Models
 @using Cats.Helpers
 @using Cats.Models
+@using Cats.Security
 @using Kendo.Mvc.UI
 @using LanguageHelpers.Localization
 @{
@@ -169,47 +170,71 @@
             <div class="table-responsive box-body">
                 @(Html.Kendo().Grid<GiftCertificateDetailsViewModel>()
            .Name("Grid")
-           .ToolBar(commands => commands.Create())
+            .ToolBar(commands =>
+            {
+                if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_Gift_Certificate_Detail))
+                {
+                    commands.Create();
+                }
+            })
            .Editable(editing => editing.Mode(GridEditMode.InLine))
            .Columns(columns =>
-                        {
-                            columns.AutoGenerate(false);
-                            columns.ForeignKey(o => o.CommodityID, (IEnumerable<Commodity>)ViewData["Commodities"], "CommodityID", "Name").Title(Html.Translate("Commodity"))
-                                .Filterable(true);
-                            columns.Bound(o => o.BillOfLoading).Title(@Html.Translate("Bill of Loading"));
+           {
+               columns.AutoGenerate(false);
+               columns.ForeignKey(o => o.CommodityID, (IEnumerable<Commodity>)ViewData["Commodities"], "CommodityID", "Name").Title(Html.Translate("Commodity"))
+                   .Filterable(true);
+               columns.Bound(o => o.BillOfLoading).Title(@Html.Translate("Bill of Loading"));
 
-                            columns.Bound(o => o.YearPurchased).Title(@Html.Translate("Year Purchased")).HtmlAttributes(new { align = "right" });//.HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
+               columns.Bound(o => o.YearPurchased).Title(@Html.Translate("Year Purchased")).HtmlAttributes(new { align = "right" });//.HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
 
-                            columns.Bound(o => o.AccountNumber).Title(@Html.Translate("Acc. No")).HtmlAttributes(new { align = "right" });
-                            columns.Bound(o => o.WeightInMT).Title(Html.Translate("Sent Qty (MT)")).HtmlAttributes(new { align = "right" }).Format("{0:N3}");
-                            columns.Bound(o => o.EstimatedPrice).Title(@Html.Translate("Est. Price")).HtmlAttributes(new { align = "right" }).Format("{0:N2}");
-                            columns.Bound(o => o.EstimatedTax).Title(Html.Translate("Est. Tax")).HtmlAttributes(new { align = "right" }).Format("{0:N2}");
+               columns.Bound(o => o.AccountNumber).Title(@Html.Translate("Acc. No")).HtmlAttributes(new { align = "right" });
+               columns.Bound(o => o.WeightInMT).Title(Html.Translate("Sent Qty (MT)")).HtmlAttributes(new { align = "right" }).Format("{0:N3}");
+               columns.Bound(o => o.EstimatedPrice).Title(@Html.Translate("Est. Price")).HtmlAttributes(new { align = "right" }).Format("{0:N2}");
+               columns.Bound(o => o.EstimatedTax).Title(Html.Translate("Est. Tax")).HtmlAttributes(new { align = "right" }).Format("{0:N2}");
 
-                            columns.ForeignKey(o => o.DCurrencyID, (System.Collections.IEnumerable)ViewData["DCurrencies"], "DetailID", "Name").Title(Html.Translate("Currency"))
-                                .Filterable(true);
-                            columns.ForeignKey(o => o.DFundSourceID, (System.Collections.IEnumerable)ViewData["DFundSources"], "DetailID", "Name").Title(Html.Translate("Fund Source"))
-                                .Filterable(true);
-                            columns.ForeignKey(o => o.DBudgetTypeID, (System.Collections.IEnumerable)ViewData["DBudgetTypes"], "DetailID", "Name").Title(Html.Translate("Fund Type"))
-                                .Filterable(true);
-                            columns.Bound(o => o.ExpiryDate).Title(Html.Translate("Expiry Date")).Format("{0:dd/MM/yyyy}");
-                            columns.Command(commands => commands.Destroy().HtmlAttributes(new { align = "center" })).Title(Html.Translate("Action")).Width((80));
-                            columns.Command(commands => commands.Edit()).Title(@Html.Translate("Est. Price")).Width((170));
-                        })
+               columns.ForeignKey(o => o.DCurrencyID, (System.Collections.IEnumerable)ViewData["DCurrencies"], "DetailID", "Name").Title(Html.Translate("Currency"))
+                   .Filterable(true);
+               columns.ForeignKey(o => o.DFundSourceID, (System.Collections.IEnumerable)ViewData["DFundSources"], "DetailID", "Name").Title(Html.Translate("Fund Source"))
+                   .Filterable(true);
+               columns.ForeignKey(o => o.DBudgetTypeID, (System.Collections.IEnumerable)ViewData["DBudgetTypes"], "DetailID", "Name").Title(Html.Translate("Fund Type"))
+                   .Filterable(true);
+               columns.Bound(o => o.ExpiryDate).Title(Html.Translate("Expiry Date")).Format("{0:dd/MM/yyyy}");
+               columns.Command(commands => commands.Destroy().HtmlAttributes(new { align = "center" })).Title(Html.Translate("Action")).Width((80));
+               columns.Command(commands => commands.Edit()).Title(@Html.Translate("Est. Price")).Width((170));
+           })
 
            .DataSource(binding => binding.Ajax()
                                        .Read(read => read.Action("GiftCertificateDetail_Read", "GiftCertificate", new { id = Model.GiftCertificateID }))
-                                       .Create(create => create.Action("GiftCertificateDetail_Create", "GiftCertificate", new { id = Model.GiftCertificateID }))
-                                       .Update(update => update.Action("GiftCertificateDetail_Update", "GiftCertificate"))
-                                       .Destroy(destroy => destroy.Action("GiftCertificateDetail_Destroy", "GiftCertificate"))
+                                       .Create(create =>
+                                       {
+                                           if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.New_Gift_Certificate))
+                                           {
+                                               create.Action("GiftCertificateDetail_Create", "GiftCertificate", new {id = Model.GiftCertificateID});
+                                           }
+                                       })
+                                       .Update(update =>
+                                       {
+                                           if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_Gift_Certificate))
+                                           {
+                                               update.Action("GiftCertificateDetail_Update", "GiftCertificate");
+                                           }
+                                       })
+                                       .Destroy(destroy =>
+                                       {
+                                           if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Delete_Gift_Certificate))
+                                           {
+                                               destroy.Action("GiftCertificateDetail_Destroy", "GiftCertificate");
+                                           }
+                                       })
                                        .Model(m =>
                                        {
                                            m.Id(t => t.GiftCertificateDetailID);
                                            m.Field(t => t.CommodityID).DefaultValue(-1);
-                                           
+
                                        }).ServerOperation(true)
-                                      
-                        //                              .Batch(true)
-                        //.ServerOperation(false)
+
+        //                              .Batch(true)
+        //.ServerOperation(false)
         ).Events(e => e.DataBound("onDataBound"))
            .Navigatable().Scrollable().HtmlAttributes(new { style = "width:100%;" })
                     )
@@ -217,8 +242,10 @@
             </div>
 
             <div class="box-footer text-center">
-
-                <a id="save_button" class="btn btn btn-primary " data-buttontype="btn_save" href="javascript:saverecords()"><span class="fa fa-save"></span> @Html.Translate("Save")</a>
+                @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_Gift_Certificate))
+                {
+                    <a id="save_button" class="btn btn btn-primary " data-buttontype="btn_save" href="javascript:saverecords()"><span class="fa fa-save"></span> @Html.Translate("Save")</a>
+                }
                 <a class="btn btn-default "  itemtypedata-buttontype="btn_cancel" href="@Url.Action("Index", "GiftCertificate")"><span class="fa fa-lg fa-times-circle"></span> @Html.Translate("Cancel")</a>
             </div>
         </div>

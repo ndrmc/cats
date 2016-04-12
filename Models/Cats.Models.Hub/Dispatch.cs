@@ -26,6 +26,8 @@ namespace Cats.Models.Hubs
         public int PeriodYear { get; set; }
         public int PeriodMonth { get; set; }
         public int Round { get; set; }
+        public int ShippingInstructionID { get; set; }
+    
         public int UserProfileID { get; set; }
         public System.DateTime DispatchDate { get; set; }
         public System.DateTime CreatedDate { get; set; }

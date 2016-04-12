@@ -612,6 +612,7 @@
         $scope.promot = function (RequisitionId,showmodal) {
             var param = { RequisitionId:RequisitionId };
             $http.post($scope.promoteUrl, param).success(promotSuccess).error(updateError);
+           // alert($scope.promoteUrl);
             if (showmodal) {
                 $('#modalContent').html("");
                 $('#myModal').modal('show');

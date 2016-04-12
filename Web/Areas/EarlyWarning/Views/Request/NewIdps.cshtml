@@ -1,5 +1,6 @@
 ﻿@using System.Collections
 @using Cats.Helpers
+@using Cats.Security
 @model Cats.Models.HRDPSNPPlan
 
 @{
@@ -68,8 +69,11 @@ Requistions
                 </div>
 
                 <div class="box-footer text-center">
-                    <button class="btn btn-primary " type="submit" data-buttontype="btn_forward" data-submittedform="frm_create_request"><span class="fa fa-save"></span> Save</button>
-                    <a class="btn  btn-default"  href="@Url.Action("Index", "Request")" ><span class="fa fa-lg fa-times-circle"></span> Cancel</a>
+                    @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_New_IDPS_request))
+                    {
+                        <button class="btn btn-primary " type="submit" data-buttontype="btn_forward" data-submittedform="frm_create_request"><span class="fa fa-save"></span> Save</button>
+                    }
+                    <a class="btn  btn-default" href="@Url.Action("Index", "Request")"><span class="fa fa-lg fa-times-circle"></span> Cancel</a>
                 </div>
             }
 

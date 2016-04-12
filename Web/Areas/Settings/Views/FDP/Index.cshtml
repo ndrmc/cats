@@ -104,23 +104,23 @@
         @(Html.Kendo().Grid<Cats.Areas.Settings.Models.ViewModels.FDPViewModel>()
               .Name("grid")
               .Columns(columns =>
+              {
+                  columns.Bound(c => c.Name);
+                  columns.Bound(c => c.FDPID).Visible(false);
+                  columns.Command(command =>
                   {
-                      columns.Bound(c => c.Name);
-                      columns.Bound(c => c.FDPID).Visible(false);
-                      columns.Command(command =>
-                          {
-                              command.Custom("Delete").Click("OnDelete");
-                              command.Custom("Add Contact").Click("AddContact");
-                              command.Custom("Details").Click("Details");
-                          }).Width(300);
-                      //columns.Command(command => command.Custom("Add Contact").Click("Add contact")).Width(100);
+                      command.Custom("Delete").Click("OnDelete");
+                      command.Custom("Add Contact").Click("AddContact");
+                      command.Custom("Details").Click("Details");
+                  }).Width(300);
+                  //columns.Command(command => command.Custom("Add Contact").Click("Add contact")).Width(100);
 
-                  }).ToolBar(toolbar =>
-                      {
-                          toolbar.Save();
-                          toolbar.Create();
-                          //toolbar.Custom().Text("Add FDP").HtmlAttributes(new { id = "addFDP" });
-                      })
+              }).ToolBar(toolbar =>
+              {
+                  toolbar.Save(); 
+                  toolbar.Create();
+                  //toolbar.Custom().Text("Add FDP").HtmlAttributes(new { id = "addFDP" });
+              })
               .Editable(edit => edit.Mode(GridEditMode.InCell))
               //.Pageable()
               .Selectable(t => t.Mode(GridSelectionMode.Single))
@@ -136,7 +136,7 @@
                               .Create(create => create.Action("FDP_Create", "FDP").Data("selectedWoredaId"))
                               .Update("FDP_Update", "FDP")
                               .Destroy(update => update.Action("FDP_Destroy", "FDP"))
-                //.Destroy("FDP_Destroy","FDP")
+              //.Destroy("FDP_Destroy","FDP")
               )
               )
 
@@ -168,6 +168,17 @@
         }
         alert("First FDP:" + fdpNames[0]);
     }
+
+    $("#saveChangesCommand").click(function (e) {
+        e.preventDefault();
+        var entityGrid = $("#kGrid").data("kendoGrid");
+        var data = entityGrid.dataSource.data();
+        var fdpNames = [];
+        for (var i = 0; i < data.length; i++) {
+            fdpNames[i] = data[i];
+        }
+        alert("First FDP:" + fdpNames[0]);
+    });
 </script>
 <script>
     $("#addFDP").click(function (e) {

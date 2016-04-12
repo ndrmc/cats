@@ -1,6 +1,7 @@
 ﻿@using Cats.Areas.EarlyWarning.Models
 @using Kendo.Mvc.UI
 @using Cats.Helpers
+@using Cats.Security
 @using LanguageHelpers.Localization
 
 @{
@@ -33,7 +34,11 @@ Ration
                     <a href="javascript:;" class="remove" data-original-title="" title=""></a>
                 </div>*@
             <div class="actions">
-                <a data-buttontype="btn_new_record" id="btnCreate" class="btn btn-circle btn-default btn-sm green-stripe " href="@Url.Action("Create", "Ration")"><span class="fa fa-plus"> </span> @Html.Translate("New Ration")</a>
+                @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_ration))
+                {
+                    <a data-buttontype="btn_new_record" id="btnCreate" class="btn btn-circle btn-default btn-sm green-stripe " href="@Url.Action("Create", "Ration")"><span class="fa fa-plus"> </span> @Html.Translate("New Ration")</a>
+                }
+                
                 <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
             </div>
         </div>
@@ -54,7 +59,13 @@ Ration
 
 
 
-                  }).Events(ev => ev.DataBound("resetRowNumber"))
+                  }).Events(ev =>
+                  {
+                      if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_ration))
+                      {
+                          ev.DataBound("resetRowNumber");
+                      }
+                  })
                   .DataSource(datasource => datasource.Ajax().Read("Ration_Read", "Ration"))
                   .HtmlAttributes(new {style = "height:430px;"})
 

@@ -38,29 +38,38 @@ Plans
 @(Html.Kendo().Grid<Cats.Models.ViewModels.HRD.HRDViewModel>()
     .Name("grid")
     .Columns(columns =>
+    {
+
+        columns.Bound(p => p.Plan).Title(Html.Translate("HRD Name")).ClientTemplate(
+                            @Html.EarlyWarningOperationButton(
+                                @Url.Action("Detail", "HRD", new { id = "#=HRDID#" }),
+                                EarlyWarningConstants.Operation.New_HRD, "#=Plan#").ToString());
+        columns.Bound(p => p.Ration).Title("Ration No");
+        columns.Bound(p => p.StartDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
+        columns.Bound(p => p.EndDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
+        columns.Bound(p => p.CreatedBy);
+        columns.Bound(p => p.CreatedDatePref).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).Width(120);
+
+        columns.Bound(p => p.Status);
+
+        columns.Command(p =>
         {
-           
-            columns.Bound(p => p.Plan).Title(Html.Translate("HRD Name")).ClientTemplate(
-                                @Html.EarlyWarningOperationButton(
-                                    @Url.Action("Detail", "HRD", new { id = "#=HRDID#" }),
-                                    EarlyWarningConstants.Operation.New_HRD, "#=Plan#").ToString());
-            columns.Bound(p => p.Ration).Title("Ration No");
-            columns.Bound(p => p.StartDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
-            columns.Bound(p => p.EndDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
-            columns.Bound(p => p.CreatedBy);
-            columns.Bound(p => p.CreatedDatePref).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).Width(120);
-           
-            columns.Bound(p => p.Status);
+            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Modify_HRD))
+            {
+                p.Custom("Edit").Click("hrdEdit").Text("<span class=\"fa fa-pencil-square-o\"></span> Edit ");
+            }
+            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Publish_HRD))
+            {
+                p.Custom("Publish").Click("publishHRD").Text("<span class=\"fa fa-check\"></span> Publish ");
+            }
+            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.HRD_Summary))
+            {
+                p.Custom("Summary").Click("showSummary").Text("<span class=\"fa fa-list\"></span> Summary ");
+            }
 
-            columns.Command(p =>
-                {
-                    p.Custom("Edit").Click("hrdEdit").Text("<span class=\"fa fa-pencil-square-o\"></span> Edit ");
-                    p.Custom("Publish").Click("publishHRD").Text("<span class=\"fa fa-check\"></span> Publish ");
-                    p.Custom("Summary").Click("showSummary").Text("<span class=\"fa fa-list\"></span> Summary ");
+        });
 
-                });     
-
-        })
+    })
     .Scrollable()
     .Sortable()
      .Pageable()
@@ -69,9 +78,9 @@ Plans
           .Ajax()
             .Model(model => model.Id(p => p.HRDID))
             .Read(read => read.Action("ApprovedHRD_Read", "HRD"))
- 
+
      )
-   
+
       )
 
                     </div>

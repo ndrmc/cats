@@ -340,7 +340,8 @@ namespace Cats.Areas.Hub.Controllers
                 dispatch.DispatchedByStoreMan = editdispatch.DispatchedByStoreMan;
                 dispatch.CommodityID = detail.CommodityID;
                 dispatch.CommodityChildID = detail.CommodityChildID;
-
+                dispatch.ShippingInstructionID = editdispatch.ShippingInstructionID;
+                //dispatch.ShippingInstructionID=
                 //dispatch.Year = editdispatch.PeriodYear;
                 //dispatch.Month = editdispatch.PeriodMonth;
                 //dispatch.Round = editdispatch.Round;
@@ -367,7 +368,7 @@ namespace Cats.Areas.Hub.Controllers
                 _dispatchAllocationService.Get(t => t.DispatchAllocationID == dispatch.DispatchAllocationID, null,
                                                "ShippingInstruction,ProjectCode").FirstOrDefault();
 
-            if (dispatchAllocation.ShippingInstruction != null)
+            if (dispatchAllocation.ShippingInstruction != null && !dispatch.ShippingInstructionID.HasValue)
                 dispatch.SINumber = dispatchAllocation.ShippingInstruction.Value;
             if (dispatchAllocation.ProjectCode != null)
                 dispatch.ProjectNumber = dispatchAllocation.ProjectCode.Value;
