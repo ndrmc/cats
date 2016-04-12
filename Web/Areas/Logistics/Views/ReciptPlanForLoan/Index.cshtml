@@ -1,6 +1,7 @@
 ﻿@using Cats.Areas.Logistics.Models
 @using Kendo.Mvc.UI
 @using Cats.Helpers
+@using Cats.Security
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_MainLayout.cshtml";
@@ -87,7 +88,10 @@
                         <a href="javascript:;" class="remove" data-original-title="" title=""></a>
                     </div>*@
                 <div class="actions">
-                    <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn green" href="@Url.Action("Create", "ReciptPlanForLoan")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
+                    @if (LogisticsConstants.Operation.Recive_Plan_For_Loan_Create.ToString() == "Recive_Plan_For_Loan_Create")
+                    {
+                        <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn green" href="@Url.Action("Create", "ReciptPlanForLoan")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
+                    }
                     <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
                 </div>
             </div>
@@ -98,28 +102,37 @@
 
                   .Sortable()
                   .Scrollable()
-                            //.HtmlAttributes(new { style = "height:430px;" })
-                            //.TableHtmlAttributes(new {@class = "table table-condensed"})
+                  //.HtmlAttributes(new { style = "height:430px;" })
+                  //.TableHtmlAttributes(new {@class = "table table-condensed"})
                   .Columns(columns =>
-                               {
-                                   columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "ReciptPlanForLoan", new { id = "#=LoanReciptPlanID#" }) + " '>#=SiNumber#</a>  ").Width(100);
-                                   columns.Bound(m => m.Donor).Width(200).Title(@Html.Translate("Donor")).Width(100);
-                                   columns.Bound(m => m.ProgramName).Title(@Html.Translate("Program")).Width(100);
-                                   columns.Bound(m => m.CommodityName).Width(200).Title(@Html.Translate("Commodity")).Width(100);
-                                   //columns.Bound(m => m.CommoditySourceName).Width(200).Title(@Html.Translate("Commodity Source")).Width(100);
-                                   columns.Bound(m => m.Quantity).HtmlAttributes(new { align = "right" }).Title(@Html.Translate("Quantity in MT")).Width(100);
-                                   columns.Bound(m => m.CreatedDate).Title(Html.Translate("Created Date")).Width(100);
-                                   columns.Bound(m => m.IsFalseGRN).Title(Html.Translate("Receivable")).Width(100).ClientTemplate("# if (IsFalseGRN) { # Receivable # }else {#  #} #").HtmlAttributes(new { @style = "text-align:center" });
-                                   ;
-                                   columns.Bound(m => m.Status).Title(Html.Translate("Status")).Width(100);
-                                   columns.Command(p =>
-                                                       {
-                                                           p.Custom("Revert").Click("OnRevert");
-                                                           p.Custom("Delete").Click("OnDelete");
-                                                       }).Width(250);
+                  {
+                      if (LogisticsConstants.Operation.Recive_Plan_For_Loan_SI_View.ToString() == "Recive_Plan_For_Loan_SI_View")
+                      {
+                          columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "ReciptPlanForLoan", new {id = "#=LoanReciptPlanID#"}) + " '>#=SiNumber#</a>  ").Width(100);
+                      }
+                      columns.Bound(m => m.Donor).Width(200).Title(@Html.Translate("Donor")).Width(100);
+                      columns.Bound(m => m.ProgramName).Title(@Html.Translate("Program")).Width(100);
+                      columns.Bound(m => m.CommodityName).Width(200).Title(@Html.Translate("Commodity")).Width(100);
+                      //columns.Bound(m => m.CommoditySourceName).Width(200).Title(@Html.Translate("Commodity Source")).Width(100);
+                      columns.Bound(m => m.Quantity).HtmlAttributes(new { align = "right" }).Title(@Html.Translate("Quantity in MT")).Width(100);
+                      columns.Bound(m => m.CreatedDate).Title(Html.Translate("Created Date")).Width(100);
+                      columns.Bound(m => m.IsFalseGRN).Title(Html.Translate("Receivable")).Width(100).ClientTemplate("# if (IsFalseGRN) { # Receivable # }else {#  #} #").HtmlAttributes(new { @style = "text-align:center" });
+                      ;
+                      columns.Bound(m => m.Status).Title(Html.Translate("Status")).Width(100);
+                      columns.Command(p =>
+                      {
+                      if (LogisticsConstants.Operation.Revert_Donation.ToString() == "Revert_Donation")
+                      {
+                          p.Custom("Revert").Click("OnRevert");
+                      }
+                          if (LogisticsConstants.Operation.Delete_Donation.ToString() == "Delete_Donation")
+                          {
+                              p.Custom("Delete").Click("OnDelete");
+                          }
+                      }).Width(250);
 
 
-                               }
+                  }
 
                   )
 
@@ -133,7 +146,7 @@
                                                 .Ajax()
                                                 .Model(model => model.Id(m => m.LoanReciptPlanID))
                                                 .Read(read => read.Action("LoanReciptPlan_Read", "ReciptPlanForLoan"))
-                            //.Update(update => update.Action("Commodity_Update", "Request"))
+                  //.Update(update => update.Action("Commodity_Update", "Request"))
 
                   )
                   .Resizable(resize => resize.Columns(true))

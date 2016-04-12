@@ -1,5 +1,6 @@
 ﻿@using Cats.Helpers
 @using Kendo.Mvc.UI
+@using Cats.Security
 @model List<Cats.Areas.Procurement.Models.TransportBidPlanViewModel>
 
 
@@ -33,9 +34,13 @@
         </div>
 
         <div class="actions">
-            <a class="btn btn-circle btn-default green-stripe toolbar-btn" href="@Url.Action("Create", "TransportBidPlan")">
-                <i class="fa fa-plus-circle "></i> @Html.Translate("New Bid Plan")
-            </a>
+          @if (LogisticsConstants.Operation.Add_Bid_Plan.ToString() == "Add_Bid_Plan")
+          {
+              <a class="btn btn-circle btn-default green-stripe toolbar-btn" href="@Url.Action("Create", "TransportBidPlan")">
+
+                  <i class="fa fa-plus-circle "></i> @Html.Translate("New Bid Plan")
+              </a>
+          }
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
         </div>
     </div>
@@ -51,9 +56,18 @@
 
                   columns.Command(command =>
                   {
-                      command.Custom("Edit").Click("editRecord");
-                      command.Custom("Warehouse Selection").Click("selectWarehouse");
-                      command.Custom("Delete").Click("deleteRecord");
+                      if (LogisticsConstants.Operation.Edit_Bid_Plan.ToString() == "Edit_Bid_Plan")
+                      {
+                          command.Custom("Edit").Click("editRecord");
+                      }
+                      if (LogisticsConstants.Operation.Warehouse_selection.ToString() == "Warehouse_selection")
+                      {
+                          command.Custom("Warehouse Selection").Click("selectWarehouse");
+                      }
+                      if (LogisticsConstants.Operation.Delete_Bid_Plan.ToString() == "Delete_Bid_Plan")
+                      {
+                          command.Custom("Delete").Click("deleteRecord");
+                      }
                   });
               })
 

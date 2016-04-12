@@ -1,5 +1,6 @@
 ﻿@using Cats.Helpers
 @using Cats.Models.Constant
+@using Cats.Security
 @model Cats.Models.Transfer
 @{
     ViewBag.Title = @Html.Translate("Detail");
@@ -61,10 +62,16 @@
                 <ul class="dropdown-menu pull-right">
                     @if (Model.StatusID == (int) LocalPurchaseStatus.Draft)
                     {
-                    <li><a id="btnEdit" class="btn green-sharp-stripe" href="@Url.Action("Edit", "Swap", new {id = Model.TransferID})">@Html.Translate(" Edit")</a></li>
-                    <li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "Swap", new {id = Model.TransferID})">@Html.Translate("Approve(Send to Hub)")</a></li>
+                        if (LogisticsConstants.Operation.Edit_Swap.ToString() == "Edit_Swap")
+                        {
+                            <li><a id="btnEdit" class="btn green-sharp-stripe" href="@Url.Action("Edit", "Swap", new {id = Model.TransferID})">@Html.Translate(" Edit")</a></li>
+                        }
+                        if (LogisticsConstants.Operation.Approve_Swap.ToString() == "Approve_Swap")
+                        {
+                            <li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "Swap", new {id = Model.TransferID})">@Html.Translate("Approve(Send to Hub)")</a></li>
+                        }
                     }
-                
+
                 </ul>
             </div>
             

@@ -1,12 +1,16 @@
 ﻿@using Cats.Helpers
 @using Kendo.Mvc.UI
+@using Cats.Security
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
 @section Toolbar
 {
+    @if (LogisticsConstants.Operation.Add_new_donation.ToString() == "Add_new_donation")
+    {
     <a data-buttontype="btn_new_record" id="btnAddDonation" class="btn toolbar-btn " href="@Url.Action("AddNewDonation", "Donation")"></a>
+    }
 }
 @section LeftBar
 {}
@@ -29,18 +33,26 @@
         columns.Bound(p => p.CommodityName).Title(Html.Translate("Commodity")).Width(150);
         columns.Bound(p => p.StrETA).Title(Html.Translate("ETA")).Width(100);
         columns.Bound(p => p.DonationHeaderPlanID).Visible(false);
-        
+
         columns.Command(p =>
         {
+        if (LogisticsConstants.Operation.Edit_donation.ToString() == "Edit_donation")
+        {
             p.Custom("Edit").Click("Edit");
+        }
+        if (LogisticsConstants.Operation.Revert_Donation.ToString() == "Revert_Donation")
+        {
             p.Custom("Revert").Click("OnRevert");
-            p.Custom("Delete").Click("OnDelete");
-
+        }
+            if (LogisticsConstants.Operation.Delete_Donation.ToString() == "Delete_Donation")
+            {
+                p.Custom("Delete").Click("OnDelete");
+            }
         });
     })
-    
+
     //.Editable(editable => editable.Mode(GridEditMode.InCell))
-   
+
     .Sortable()
     .Scrollable()
     .HtmlAttributes(new { style = "height:430px;" })
