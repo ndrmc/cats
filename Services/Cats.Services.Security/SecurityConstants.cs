@@ -1,4 +1,8 @@
 ﻿using System;
+using NetSqlAzMan.Interfaces;
+using NetSqlAzMan.Cache;
+using System.Web;
+
 namespace Cats.Security
 {
     #region EarlyWarning Security Constants
@@ -30,6 +34,18 @@ namespace Cats.Security
                 return "EW-Logistics Planner";
             }
             throw new System.ArgumentException("Unknown Role name", "role");
+        }
+        public  string isValidOperation(LogisticsConstants.Operation operation)
+        {
+            var constants = new LogisticsConstants();
+            string acces = "";
+            var ewCache 
+             = (UserPermissionCache)HttpContext.Current.Session["LOGISTICS_PERMISSIONS"];
+            if (ewCache.CheckAccess(constants.ItemName(operation), DateTime.Now) == AuthorizationType.Allow)
+            {
+                acces = operation.ToString();
+            }
+            return acces;
         }
         /// <summary>
         /// Retrieve Item name from a Task Enum.

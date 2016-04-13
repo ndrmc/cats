@@ -735,6 +735,7 @@
     <Content Include="ApplicationHost.config" />
     <Content Include="Areas\EarlyWarning\Views\Shared\_RepeatedRequisitions.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\ReliefRequisition\RepeatedRequisitions.cshtml" />
+    <Content Include="Areas\Hub\Views\ReceiveNew\Commodities.cshtml" />
     <None Include="Areas\Logistics\Views\DispatchAllocation\_AllocateProjectCode.cshtml" />
     <Content Include="Content\2013.1.219\Black\editor.png" />
     <Content Include="Content\2013.1.219\Black\imagebrowser.png" />

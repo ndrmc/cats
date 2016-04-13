@@ -207,7 +207,8 @@ namespace Cats.Areas.Hub.Controllers
         public ActionResult Commodities(Guid? receiptAllocationId, string grn, Guid? receiveId)
         {
             ViewBag.receiveId = receiveId;
-            ViewBag.Commodities = _commodityService.GetAllSubCommodities().Select(c => new CommodityModel() { Id = c.CommodityID, Name = c.Name }).ToList();
+            ViewBag.Commodities = _commodityService.GetAllCommodity().Select(c => new CommodityModel() { Id = c.CommodityID, Name = c.Name }).ToList();
+            ViewBag.SubCommodities = _commodityService.GetAllSubCommodities().Select(c => new SubCommodity() { Id = c.CommodityID, Name = c.Name }).ToList();
             ViewBag.Units = _unitService.GetAllUnit().Select(u => new UnitModel() { Id = u.UnitID, Name = u.Name }).ToList();
             ViewBag.SI = _shippingInstructionService.GetAllShippingInstruction().Select(s => new Cats.Models.Hubs.ViewModels.ShippingInstructionModel() { Id = s.ShippingInstructionID, Value = s.Value }).ToList();
             
@@ -216,7 +217,8 @@ namespace Cats.Areas.Hub.Controllers
 
         public ActionResult ReadCommoditiesFromReceive([DataSourceRequest] DataSourceRequest request, Guid? receiveId)
         {
-            ViewBag.Commodities = _commodityService.GetAllSubCommodities().Select(c => new CommodityModel() { Id = c.CommodityID, Name = c.Name }).ToList();
+            ViewBag.Commodities = _commodityService.GetAllCommodity().Select(c => new CommodityModel() { Id = c.CommodityID, Name = c.Name }).ToList();
+            ViewBag.SubCommodities = _commodityService.GetAllSubCommodities().Select(c => new SubCommodity() { Id = c.CommodityID, Name = c.Name }).ToList();
             ViewBag.Units = _unitService.GetAllUnit().Select(u => new UnitModel() { Id = u.UnitID, Name = u.Name }).ToList();
             ViewBag.SI = _shippingInstructionService.GetAllShippingInstruction().Select(s => new Cats.Models.Hubs.ViewModels.ShippingInstructionModel() { Id = s.ShippingInstructionID, Value = s.Value }).ToList();
             
