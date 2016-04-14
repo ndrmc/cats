@@ -619,7 +619,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult DeleteHRD(int id)
         {
             var hrd = _hrdService.FindById(id);
-            _hrdService.DeleteHRD(hrd);
+            //_hrdService.DeleteHRD(hrd);
+            hrd.Status = -1;
+            _hrdService.EditHRD(hrd);
             return RedirectToAction("Index");
         }
 
