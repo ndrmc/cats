@@ -1876,7 +1876,7 @@ namespace Cats.Services.Hub
                 DispatchAllocation newDispatchAllocation = new DispatchAllocation();
                 newDispatchAllocation = tempDispatchAllocation;
                 newDispatchAllocation.ShippingInstructionID = dispatchViewModel.ShippingInstructionID;
-                newDispatchAllocation.DispatchAllocationID = new Guid();
+                newDispatchAllocation.DispatchAllocationID = Guid.Empty;
                 _unitOfWork.DispatchAllocationRepository.Add(newDispatchAllocation);
                 if(newDispatchAllocation.RequisitionId.HasValue)
                 PostSIAllocation(newDispatchAllocation.RequisitionId.Value);
