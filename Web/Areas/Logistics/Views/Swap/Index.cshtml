@@ -67,7 +67,7 @@
                   .Columns(columns =>
                   {
                   columns.Bound(m => m.ReferenceNumber).Title(@Html.Translate("Reference"));
-                      if (LogisticsConstants.Operation.View_SI_Swap.ToString() == "View_SI_Swap")
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.View_SI_Swap).ToString() == "View_SI_Swap")
                       {
                           columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "Swap", new {id = "#=TransferID#"}) + " '>#=SiNumber#</a>  ");
                       }

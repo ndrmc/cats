@@ -35,18 +35,7 @@ namespace Cats.Security
             }
             throw new System.ArgumentException("Unknown Role name", "role");
         }
-        public  string isValidOperation(LogisticsConstants.Operation operation)
-        {
-            var constants = new LogisticsConstants();
-            string acces = "";
-            var ewCache 
-             = (UserPermissionCache)HttpContext.Current.Session["LOGISTICS_PERMISSIONS"];
-            if (ewCache.CheckAccess(constants.ItemName(operation), DateTime.Now) == AuthorizationType.Allow)
-            {
-                acces = operation.ToString();
-            }
-            return acces;
-        }
+        
         /// <summary>
         /// Retrieve Item name from a Task Enum.
         /// </summary>
@@ -1315,7 +1304,20 @@ namespace Cats.Security
 
              #endregion
          }
-
+        public static string isValidOperation(LogisticsConstants.Operation operation)
+        {
+            var constants = new LogisticsConstants();
+            string acces = "";
+            var ewCache
+             = (UserPermissionCache)HttpContext.Current.Session["LOGISTICS_PERMISSIONS"];
+            if (ewCache == null)
+                return "";
+            if (ewCache.CheckAccess(constants.ItemName(operation), DateTime.Now) == AuthorizationType.Allow)
+            {
+                acces = operation.ToString();
+            }
+            return acces;
+        }
         #region Enums
         /// <summary>
         /// Operations Enumeration

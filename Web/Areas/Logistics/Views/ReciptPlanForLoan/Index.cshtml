@@ -106,7 +106,7 @@
                   //.TableHtmlAttributes(new {@class = "table table-condensed"})
                   .Columns(columns =>
                   {
-                      if (LogisticsConstants.Operation.Recive_Plan_For_Loan_SI_View.ToString() == "Recive_Plan_For_Loan_SI_View")
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Recive_Plan_For_Loan_SI_View).ToString() == "Recive_Plan_For_Loan_SI_View")
                       {
                           columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "ReciptPlanForLoan", new {id = "#=LoanReciptPlanID#"}) + " '>#=SiNumber#</a>  ").Width(100);
                       }
@@ -121,11 +121,11 @@
                       columns.Bound(m => m.Status).Title(Html.Translate("Status")).Width(100);
                       columns.Command(p =>
                       {
-                      if (LogisticsConstants.Operation.Revert_Donation.ToString() == "Revert_Donation")
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() == "Revert_Donation")
                       {
                           p.Custom("Revert").Click("OnRevert");
                       }
-                          if (LogisticsConstants.Operation.Delete_Donation.ToString() == "Delete_Donation")
+                          if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() == "Delete_Donation")
                           {
                               p.Custom("Delete").Click("OnDelete");
                           }

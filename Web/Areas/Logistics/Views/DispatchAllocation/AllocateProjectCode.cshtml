@@ -35,7 +35,7 @@
         //columns.Bound(e => e.Status).Title(@Html.LogisticsOperationButton(
         //    @Url.Action("Index", "FDPSIAllocation", new { Area = "Logistics", regionid = ViewBag.regionId }),
         //    LogisticsConstants.Operation.SI_PC_allocation, "<a class='action-link assign-code#=Status#' href='" + "&RequisitionID=#=RequisitionId#'>" + Html.Translate("PC/SI Allocate") + "</a>", "", @Html.Translate("Status")));
-        if (LogisticsConstants.Operation.SI_PC_allocation.ToString()== "SI_PC_allocation")
+        if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.SI_PC_allocation).ToString()== "SI_PC_allocation")
             columns.Bound(e => e.Status).Title(@Html.Translate("Status")).Width(120).ClientTemplate("<a class='action-link assign-code#=Status#' href='" + @Url.Action("Index", "FDPSIAllocation", new { Area = "Logistics", regionid = ViewBag.regionId }) + "&RequisitionID=#=RequisitionId#'>"+ Html.Translate("PC/SI Allocate")+"</a>").Filterable(false);
 
 
