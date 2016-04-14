@@ -636,8 +636,8 @@ namespace Cats.Services.Security
             config["connectionStringName"] = "CatsContext";
             config["storeName"] = store;
             config["applicationName"] = application;
-            config["userLookupType"] = "DB";
-            config["defaultDomain"] = "";
+            config["userLookupType"] = "LDAP";
+            config["defaultDomain"] = "DefaultDomain";
             config["UseWCFCacheService"] = "false";
 
             return config;
@@ -712,20 +712,21 @@ namespace Cats.Services.Security
         }
 
 
-        public bool RemoveRole(string user, string application, string role)
+        public bool RemoveRole(string userName, string applicationName, string roleName)
         {
 
 
 
             //_provider.Initialize("AuthorizationRoleProvider", ConfigureAuthorizationRoleProvider("CATS", ""));
             //var provider = ((NetSqlAzMan.Providers.NetSqlAzManRoleProvider)Roles.Provider);
-            var provider = new NetSqlAzManRoleProvider();
-            provider.Initialize("RoleProvider", ConfigureAuthorizationRoleProvider("CATS",""));
-            var users = new string[] { user };
-            var userRoles = new string[] { role };
+            //var provider = new NetSqlAzManRoleProvider();
+            //provider.Initialize("RoleProvider", ConfigureAuthorizationRoleProvider("CATS", application));
+            //var users = new string[] { user };
+            //var userRoles = new string[] { role };
 
-            provider.ApplicationName = application;
-            provider.RemoveUsersFromRoles(users, userRoles);
+            //provider.ApplicationName = application;
+            //provider.RemoveUsersFromRoles(users, userRoles);
+
 
 
             //const string store = "CATS";
@@ -746,12 +747,68 @@ namespace Cats.Services.Security
             //}
             //catch(Exception ex)
             //{
-                
+
             //}
-            
-            
+
+
             //azManRole.DeleteDelegateAuthorization();
             //azManRole.DeleteDelegateAuthorization();
+
+            const string store = "CATS";
+
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["CatsContext"].ConnectionString;
+            //IAzManStorage storage = new SqlAzManStorage(connectionString);
+            //IAzManStore mystore = storage.GetStore(store); //or storage["My Store"]
+            //IAzManApplication application = mystore.GetApplication(applicationName);
+
+            //IAzManItem role = application.GetItem(roleName);
+            //if (role.ItemType != ItemType.Role)
+            //    throw new ArgumentException(String.Format("{0} must be a Role.", roleName));
+            //foreach (IAzManAuthorization auth in role.GetAuthorizations())
+            //{
+            //    string displayName;
+            //    auth.GetMemberInfo(out displayName);
+            //    if (string.Compare(userName, displayName, true) == 0)
+            //    {
+            //        auth.Delete();
+            //    }
+            //}
+
+            using (IAzManStorage storage = new SqlAzManStorage(connectionString))
+            {
+                try
+                {
+                    storage.OpenConnection();
+                    storage.BeginTransaction();
+                    //IAzManApplication application = storage[store][application];
+                    IAzManStore mystore = storage.GetStore(store); //or storage["My Store"]
+                    IAzManApplication application = mystore.GetApplication(applicationName);
+                    IAzManItem role = application.GetItem(roleName);
+                    if (role.ItemType != ItemType.Role)
+                        throw new ArgumentException(String.Format("{0} must be a Role.", roleName));
+                    foreach (IAzManAuthorization auth in role.GetAuthorizations())
+                    {
+                        string displayName;
+                        auth.GetMemberInfo(out displayName);
+                        if (String.Compare(userName, displayName, true) == 0)
+                        {
+                            auth.Delete();
+                        }
+                    }
+                    storage.CommitTransaction();
+                    //Rebuild StorageCache
+                    //this.InvalidateCache(false);
+                }
+                catch
+                {
+                    storage.RollBackTransaction();
+                    throw;
+                }
+                finally
+                {
+                    storage.CloseConnection();
+                }
+            }
 
             return true;
         }
