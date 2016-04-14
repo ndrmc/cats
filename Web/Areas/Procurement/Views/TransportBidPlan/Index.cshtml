@@ -56,15 +56,15 @@
 
                   columns.Command(command =>
                   {
-                      if (LogisticsConstants.Operation.Edit_Bid_Plan.ToString() == "Edit_Bid_Plan")
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_Bid_Plan).ToString() == "Edit_Bid_Plan")
                       {
                           command.Custom("Edit").Click("editRecord");
                       }
-                      if (LogisticsConstants.Operation.Warehouse_selection.ToString() == "Warehouse_selection")
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Warehouse_selection).ToString() == "Warehouse_selection")
                       {
                           command.Custom("Warehouse Selection").Click("selectWarehouse");
                       }
-                      if (LogisticsConstants.Operation.Delete_Bid_Plan.ToString() == "Delete_Bid_Plan")
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Bid_Plan).ToString() == "Delete_Bid_Plan")
                       {
                           command.Custom("Delete").Click("deleteRecord");
                       }

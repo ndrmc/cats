@@ -36,15 +36,15 @@
 
         columns.Command(p =>
         {
-        if (LogisticsConstants.Operation.Edit_donation.ToString() == "Edit_donation")
+        if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_donation).ToString() == "Edit_donation")
         {
             p.Custom("Edit").Click("Edit");
         }
-        if (LogisticsConstants.Operation.Revert_Donation.ToString() == "Revert_Donation")
+        if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() == "Revert_Donation")
         {
             p.Custom("Revert").Click("OnRevert");
         }
-            if (LogisticsConstants.Operation.Delete_Donation.ToString() == "Delete_Donation")
+            if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() == "Delete_Donation")
             {
                 p.Custom("Delete").Click("OnDelete");
             }

@@ -1,6 +1,7 @@
 ﻿@using Cats.Areas.Logistics.Models
 @using Kendo.Mvc.UI
 @using Cats.Helpers
+@using Cats.Models
 @using Cats.Security
 @using Cats.Services.Security
 @{
@@ -38,7 +39,7 @@
                 <a href="javascript:;" class="remove" data-original-title="" title=""></a>
             </div>*@
         <div class="actions">
-            @if (LogisticsConstants.Operation.Add_new_local_purchase.ToString() == "Add_new_local_purchase") {
+            @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Add_new_local_purchase) == "Add_new_local_purchase") {
             <a class="btn green btn-xs" href="@Url.Action("Create", "LocalPurchase")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
                 }
@@ -50,7 +51,7 @@
               .Name("grid")
               .Columns(columns =>
               {
-              if (LogisticsConstants.Operation.Local_purchase_link.ToString() == "Local_purchase_link") {
+              if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Local_purchase_link).ToString() == "Local_purchase_link") {
                   columns.Bound(m => m.SiNumber).Title(Html.Translate("SI Number")).
               ClientTemplate("<a href='" + Url.Action("Details", "LocalPurchase", new { id = "#=LocalPurchaseID#" }) + " '>#=SiNumber#</a>  ");
               }
@@ -62,11 +63,11 @@
               columns.Bound(m => m.ReferenceNumber).Title(Html.Translate("Reference Number"));
               columns.Bound(m => m.Quantity).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Quantity"));
               columns.Bound(m => m.Status).Title(Html.Translate("Status"));
-              if (LogisticsConstants.Operation.Remove_Local_Purchase.ToString() == "Remove_Local_Purchase")
+              if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Remove_Local_Purchase).ToString() == "Remove_Local_Purchase")
               {
                   columns.Command(m => m.Custom("Revert").Click("OnRevert"));
               }
-                  if (LogisticsConstants.Operation.Remove_Local_Purchase.ToString() == "Remove_Local_Purchase")
+                  if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Remove_Local_Purchase).ToString() == "Remove_Local_Purchase")
                   {
                       columns.Command(m => m.Custom("Delete").Click("OnDelete"));
                   }

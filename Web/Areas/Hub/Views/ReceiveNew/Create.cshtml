@@ -21,7 +21,9 @@
     @*<a class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_receive"></a>
         <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="#" title="Cancel"></a>*@
     <a data-buttontype="btn_save" data-submittedform="frm_receive" class="btn btn-fit-height grey-salt toolbar-btn"><i class="fa fa-save"></i> @Html.Translate("Save")</a>
-    <a data-buttontype="btn_cancel" title="Cancel" class="btn btn-fit-height grey-salt toolbar-btn" href="#"><i class="fa fa-times-circle"></i> @Html.Translate("Cancel")</a>
+  
+<a class="btn grey-salt " href='@Url.Action("index", "Receive" )'  data-buttontype="btn_cancel"><i class="fa fa-times-circle"></i> @Html.Translate("Cancel")</a>
+
 }
 
 
@@ -278,10 +280,11 @@
                 </div>
                 <div class="actions">
                     <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
-                    @*@if (@ViewBag.isEditMode)
-                    {*@
-                    <a class="btn btn-default green-haze-stripe" href="@Url.Action("Commodities", "ReceiveNew", new { @receiptAllocationId = Model.ReceiptAllocationId, @grn = Model.Grn, @receiveId = Model.ReceiveId })" title="Commodities">Commodities</a>
-                    @*}*@
+
+                    @if (ViewBag.isEditMode == true)
+                    {
+                    <a class="btn btn-default green-haze-stripe" href="@Url.Action("Commodities", "ReceiveNew", new { @receiptAllocationId = Model.ReceiptAllocationId, @grn = Model.Grn, @receiveId = Model.ReceiveId })" title="Commodities">Add New Commodities</a>
+                    }
                     
                 </div>
             </div>
@@ -516,18 +519,19 @@
     $(document).ready(function () {
         $("#ReceiveDetailNewViewModel_SentQuantityInUnit").on('input', function () {
 
-
+           // alert("why ?");
             var mesarement = $('#ReceiveDetailNewViewModel_UnitId').val();
 
             var sentValue = $('#ReceiveDetailNewViewModel_SentQuantityInUnit').val();
-            if (mesarement === 1) {
-                //alert(sentValue);
+            
+            if (mesarement === '1') {
+               
                 $('#ReceiveDetailNewViewModel_SentQuantityInMt').val(sentValue * (1 / 20));
             }
-            else if (mesarement === 8) {
+            else if (mesarement === '8') {
                 $('#ReceiveDetailNewViewModel_SentQuantityInMt').val(sentValue * (1 / 1000));
             }
-            else if (mesarement === 9) {
+            else if (mesarement === '9') {
                 $('#ReceiveDetailNewViewModel_SentQuantityInMt').val(sentValue * (1 / 10));
             }
 
@@ -535,18 +539,18 @@
     });
     $(document).ready(function () {
         $("#ReceiveDetailNewViewModel_ReceivedQuantityInUnit").on('input', function () {
-
+            
             var mesarement = $('#ReceiveDetailNewViewModel_UnitId').val();
 
             var sentValue = $('#ReceiveDetailNewViewModel_ReceivedQuantityInUnit').val();
-            if (mesarement === 1) {
+            if (mesarement === '1') {
                 //alert(sentValue);
                 $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val(sentValue * (1 / 20));
             }
-            else if (mesarement === 8) {
+            else if (mesarement === '8') {
                 $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val(sentValue * (1 / 1000));
             }
-            else if (mesarement === 9) {
+            else if (mesarement === '9') {
                 $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val(sentValue * (1 / 10));
             }
 

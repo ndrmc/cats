@@ -34,7 +34,7 @@
     .Name("grid")
     .Columns(columns =>
     {
-        if (LogisticsConstants.Operation.View_Payment_Requests.ToString() == "View_Payment_Requests")
+        if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.View_Payment_Requests).ToString() == "View_Payment_Requests")
         {
             columns.Bound(p => p.TransporterName).Title(Html.Translate("Transporter Name"))
                 .ClientTemplate("<a href='" + Url.Action("PaymentRequests", "TransporterPaymentRequest",

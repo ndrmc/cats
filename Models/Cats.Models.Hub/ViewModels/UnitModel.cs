@@ -10,4 +10,9 @@ namespace Cats.Models.Hubs
         public int Id { get; set; }
         public string Name { get; set; }
     }
+    public class SubCommodity
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
 }

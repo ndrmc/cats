@@ -71,7 +71,7 @@
                 <a href="javascript:;" class="remove" data-original-title="" title=""></a>
             </div>*@
         <div class="actions">
-            @if (LogisticsConstants.Operation.Add_new_transfer_plan.ToString() == "Add_new_transfer_plan")
+            @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Add_new_transfer_plan).ToString() == "Add_new_transfer_plan")
             {
                 <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn green" href="@Url.Action("Create", "Transfer")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
             }
@@ -84,7 +84,7 @@
                   .Name("grid")
                   .Columns(columns =>
                   {
-                      if (LogisticsConstants.Operation.Transfer_plan_link.ToString() == "Transfer_plan_link")
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Transfer_plan_link).ToString() == "Transfer_plan_link")
                       {
                           columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "Transfer", new {id = "#=TransferID#"}) + " '>#=SiNumber#</a>  ");
                       }
@@ -96,7 +96,7 @@
                       columns.Bound(m => m.CreatedDate).Title(@Html.Translate("Created Date"));
                       columns.Bound(m => m.DestinationHubName).Title(@Html.Translate("Destination hub"));
                       columns.Bound(m => m.StatusName).Title(@Html.Translate("Status Name"));
-                      if (LogisticsConstants.Operation.Delete_Transfer_Plan.ToString() == "Delete_Transfer_Plan")
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Transfer_Plan).ToString() == "Delete_Transfer_Plan")
                       {
                           columns.Command(p => p.Custom("Delete").Click("OnDelete")).Width(250);
                       }
