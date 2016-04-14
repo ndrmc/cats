@@ -30,7 +30,7 @@
                     {
                         columns.ForeignKey(p => p.CommodityId, (IEnumerable<Cats.Models.Hubs.CommodityModel>)ViewBag.Commodities, "Id", "Name").EditorTemplateName("CommodityEditor").Width(150).Title(Html.Translate("Commodity"));
                         //columns.ForeignKey(p => p.SiNumber, (IEnumerable<Cats.Models.Hubs.ViewModels.ShippingInstructionModel>)ViewBag.SI, "Id", "Value").EditorTemplateName("SIEditor").Width(150).Title(Html.Translate("SI Number"));
-                        columns.ForeignKey(p => p.CommodityChildID, (IEnumerable<Cats.Models.Hubs.SubCommodity>)ViewBag.SubCommodities, "Id", "Name").EditorTemplateName("SubCommodityEditor").Width(150).Title(Html.Translate("Sub Commodity"));
+                        columns.ForeignKey(p => p.CommodityChildID, (IEnumerable<Cats.Models.Hubs.SubCommodity>)ViewBag.SubCommodities, "Id", "Name").EditorTemplateName("CommodityChildEditor").Width(150).Title(Html.Translate("Sub Commodity"));
                         //columns.ForeignKey(p => p.CommodityId, (IEnumerable<Cats.Models.Hubs.CommodityModel>)ViewBag.SubCommodities, "Id", "Name").EditorTemplateName("SubCommoditiesEditor").Width(150).Title(Html.Translate("Commodity"));
                        // columns.Bound(p => p.CommodityChildID).Width(100);
                         columns.Bound(p => p.Description).Width(100);
