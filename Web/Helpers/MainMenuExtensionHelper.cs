@@ -40,7 +40,51 @@ namespace Cats.Helpers
             }
             return MvcHtmlString.Create(html);
         }
-        
+
+        public static MvcHtmlString EarlyWarningOperationJsLink(this HtmlHelper helper, EarlyWarningConstants.Operation operation, string text = "", string clickFunction = "", string ccsClass = "btn-Approve-Gift", string dataButtontype = "", string id = "")
+        {
+            //return MvcHtmlString.Create(@"<a data-buttontype=" + dataButtontype + "  class=" + ccsClass + " href=" + url + ">" + text + "</a>");
+
+            var constants = new EarlyWarningConstants();
+            var ewCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.EarlyWarning);
+
+            // If cache is null then force the user to sign-in again
+            if (null == ewCache)
+            {
+                Signout();
+                return MvcHtmlString.Create(string.Empty);
+            }
+
+            var html = string.Empty;
+            if (ewCache.CheckAccess(constants.ItemName(operation), DateTime.Now) == AuthorizationType.Allow)
+            {
+                //html = @"<a data-buttontype=" + dataButtontype + " class=" + ccsClass + " href=" + url + ">" + text + "</a>";
+                html = @"<a href='#'";
+                if (ccsClass != "")
+                {
+                    html += " class='btn-success'";
+                }
+                if (id != "")
+                {
+                    html += " id=" + id;
+                }
+                if (dataButtontype != "")
+                {
+                    html += " data-buttontype=" + dataButtontype;
+                }
+                html += ">";
+                if (clickFunction != "" && text != "")
+                {
+                    html += "<button type = 'button' class='btn btn-xs btn-success' ><span class='fa fa-check'></span>" + text + "</button></a>";
+                }
+                else
+                {
+                    html += " ><span class='fa fa-check'></span></a>";
+                }
+            }
+            return MvcHtmlString.Create(html);
+        }
+
         public static MvcHtmlString EarlyWarningOperationButton(this HtmlHelper helper, string url, EarlyWarningConstants.Operation operation, string text = "", string ccsClass = "", string dataButtontype = "", string id = "")
         {
             var constants = new EarlyWarningConstants();

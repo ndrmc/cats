@@ -11,11 +11,16 @@
                             @Url.Action("Index", "HRD"),
                             EarlyWarningConstants.Operation.View_HRD_list, "<i class=\"fa fa-inbox\"></i> HRD Lists")
     </li>
-    <li>
-        @Html.EarlyWarningOperationButton(
-                            @Url.Action("ApprovedHRDs", "HRD"),
-                            EarlyWarningConstants.Operation.View_Approved_HRD, "<i class=\"fa fa-inbox\"></i> Approved HRD")
-    </li>
+            <li>
+                @Html.EarlyWarningOperationButton(
+                    @Url.Action("ApprovedHRDs", "HRD"),
+                    EarlyWarningConstants.Operation.View_Approved_HRD, "<i class=\"fa fa-inbox\"></i> Approved HRD")
+            </li>
+            <li>
+                @Html.EarlyWarningOperationButton(
+                            @Url.Action("OldHRD", "HRD"),
+                            EarlyWarningConstants.Operation.View_Approved_HRD, "<i class=\"fa fa-inbox\"></i> Old HRD List")
+            </li>
     <li>
         @Html.EarlyWarningOperationButton(
                             @Url.Action("CurrentHRDs", "HRD"),

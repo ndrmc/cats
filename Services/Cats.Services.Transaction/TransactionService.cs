@@ -1105,8 +1105,6 @@ namespace Cats.Services.Transaction
             _unitOfWork.TransactionGroupRepository.Add(new TransactionGroup() { PartitionID = 0, TransactionGroupID = transactionGroup });
 
 
-
-
             var transaction = new Models.Transaction();
             transaction.TransactionID = Guid.NewGuid();
 
@@ -1114,13 +1112,26 @@ namespace Cats.Services.Transaction
             if (reliefRequisition != null)
                 transaction.ProgramID = reliefRequisition.ProgramID;
             var orDefault = _unitOfWork.DispatchRepository.Get(t => t.DispatchID == deliveryReconcile.DispatchID).FirstOrDefault();
-            if (orDefault !=null)
-                transaction.DonorID = orDefault.DispatchAllocation.DonorID;
+            if (orDefault != null)
+            {
+                var dispatchAllocation =
+                    _unitOfWork.DispatchAllocationRepository.Get(
+                        d => d.DispatchAllocationID == orDefault.DispatchAllocationID).FirstOrDefault();
+                if (dispatchAllocation != null)
+                    transaction.DonorID = dispatchAllocation.DonorID;
+            }
             transaction.TransactionGroupID = transactionGroup;
             transaction.TransactionDate = transactionDate;
             var dispatch = _unitOfWork.DispatchRepository.Get(t => t.DispatchID == deliveryReconcile.DispatchID).FirstOrDefault();
-            if (dispatch !=null)
-                transaction.ShippingInstructionID = dispatch.DispatchAllocation.ShippingInstructionID;
+            if (dispatch != null)
+            {
+                var dispatchAllocation =
+                    _unitOfWork.DispatchAllocationRepository.Get(
+                        d => d.DispatchAllocationID == dispatch.DispatchAllocationID).FirstOrDefault();
+                if (dispatchAllocation != null)
+                    transaction.ShippingInstructionID = dispatchAllocation.ShippingInstructionID;
+                //transaction.ShippingInstructionID = dispatch.DispatchAllocation.ShippingInstructionID;
+            }
             if (reliefRequisition != null) transaction.PlanId = reliefRequisition.RegionalRequest.PlanID;
             if (reliefRequisition != null) transaction.Round = reliefRequisition.RegionalRequest.Round;
             //transaction.LedgerID = Ledger.Constants.DELIVERY_RECEIPT;

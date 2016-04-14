@@ -1,6 +1,7 @@
 ﻿@using Cats.Areas.EarlyWarning.Models
 @using Cats.Helpers
 @using Cats.Models.Constant
+@using Cats.Security
 @using Kendo.Mvc.UI
 
 @model Cats.Areas.EarlyWarning.Models.SearchRequsetViewModel
@@ -58,7 +59,10 @@
             <a href="javascript:;" class="remove" data-original-title="" title=""></a>
         </div>
         <div class="actions">
-            <a class="btn btn-circle btn-default btn-sm green-stripe" data-buttontype="btn_new_record" href="@Url.Action("New", "Request")"><i class="fa fa-plus-circle"></i> @Html.Translate("New Request")</a>
+            @Html.EarlyWarningOperationButton(
+                        @Url.Action("New", "Request", new { Area = "EarlyWarning" }),
+                        EarlyWarningConstants.Operation.Add_new_request, "<button type=\"button\" class=\"btn btn-success\"><i class='fa fa - plus - circle'></i>" + @Html.Translate("New Request") + "</button>", "btn", "btn_new_record")
+            
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
         </div>
     </div>
@@ -87,29 +91,37 @@
 
             @<text>
                 @if (item.StatusID == (int)RegionalRequestStatus.Draft)
-                            {
-            @Html.ActionLink("Approve", "ApproveRequest", "Request", new { Area = "EarlyWarning", id = @item.RegionalRequestID })
-                            }
-                            else
-                            {
-            @item.Status
-            @Html.ActionLink("Approve", "ApproveRequest", "Request", new { Area = "EarlyWarning", id = @item.RegionalRequestID })
-                            }
+                {
+                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request))
+                    {
+                        @Html.ActionLink("Approve", "ApproveRequest", "Request", new {Area = "EarlyWarning", id = @item.RegionalRequestID})
+                    }
+                }
+                else
+                {
+                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request))
+                    {
+                        @item.Status
+                        @Html.ActionLink("Approve", "ApproveRequest", "Request", new {Area = "EarlyWarning", id = @item.RegionalRequestID})
+                    }
+                }
             </text>);
                      columns.Bound(request => request.PlanId).Title(
                          Html.Translate("Action"))
                          .ClientTemplate("# if (StatusID == 1 || StatusID==5) { #" +
-                             "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; " +
-                         "<a href='" + Url.Action("Allocation", "Request", new { id = "#=RegionalRequestID#" }) + " '>Allocate</a>  " +
-                         "<a onclick=\"return confirmDelete()\" href='" + Url.Action("Delete", "Request", new { id = "#=RegionalRequestID#" }) + " '>Delete</a>  " +
-                          "# } else { #" +
-                           "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; "+
-                           "# } #"
-                         );
+                                    "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; " +
+                                 "# if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Request_Allocation)) { #" +
+                                    "<a href='" + Url.Action("Allocation", "Request", new { id = "#=RegionalRequestID#" }) + " '>Allocate</a>  " +
+                                 "# } #" +
+                                 "# if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Delete_Request)) { #" +
+                                    "<a onclick=\"return confirmDelete()\" href='" + Url.Action("Delete", "Request", new { id = "#=RegionalRequestID#" }) + " '>Delete</a>  " +
+                                 "# } #" +
+                                 "# } else { #" +
+                                   "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; "+
+                                "# } #"
+                            );
 
-
-
-                 })
+                        })
                                     .Sortable()
                                     .Scrollable()
                                     .HtmlAttributes(new { style = "height:430px;" })

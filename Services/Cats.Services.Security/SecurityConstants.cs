@@ -88,6 +88,14 @@ namespace Cats.Security
             {
                 return "Add new commodity allocation";
             }
+            if ((operation == Operation.Add_new_donor_coverage))
+            {
+                return "Add new donor coverage";
+            }
+            if ((operation == Operation.Add_new_contribution))
+            {
+                return "Add new contribution";
+            }
             if ((operation == Operation.Add_New_IDPS_request))
             {
                 return "Add New IDPS request";
@@ -100,6 +108,10 @@ namespace Cats.Security
             {
                 return "Add new request";
             }
+            if ((operation == Operation.Add_Gift_Certificate_Detail))
+            {
+                return "Add Gift Certeficate Detail";
+            }
             if ((operation == Operation.Approve_Gift_Certeficate))
             {
                 return "Approve Gift Certeficate";
@@ -107,6 +119,10 @@ namespace Cats.Security
             if ((operation == Operation.Approve_HRD))
             {
                 return "Approve HRD";
+            }
+            if ((operation == Operation.Old_HRD))
+            {
+                return "Old HRD";
             }
             if ((operation == Operation.Approve_Need_Assessment))
             {
@@ -136,9 +152,17 @@ namespace Cats.Security
             {
                 return "Delete Gift Certificate";
             }
+            if ((operation == Operation.Delete_HRD))
+            {
+                return "Delete HRD";
+            }
             if ((operation == Operation.Delete_needs_assessment))
             {
                 return "Delete needs assessment";
+            }
+            if ((operation == Operation.Delete_Request))
+            {
+                return "Delete Request";
             }
             if ((operation == Operation.Edit_Gift_Certificate))
             {
@@ -252,6 +276,10 @@ namespace Cats.Security
             {
                 return "Print requisitions";
             }
+            if ((operation == Operation.Publish_HRD))
+            {
+                return "Publish HRD";
+            }
             if ((operation == Operation.Ration__Add_new_item))
             {
                 return "Ration- Add new item";
@@ -279,6 +307,10 @@ namespace Cats.Security
             if ((operation == Operation.View_Approved_HRD))
             {
                 return "View Approved HRD";
+            }
+            if ((operation == Operation.View_Old_HRD))
+            {
+                return "View Old HRD";
             }
             if ((operation == Operation.View_approved_needs_assesment))
             {
@@ -436,6 +468,14 @@ namespace Cats.Security
             /// </summary>
             Add_new_commodity_allocation,
             /// <summary>
+            /// Operation Add new donor coverage
+            /// </summary>
+            Add_new_donor_coverage,
+            /// <summary>
+            /// Operation Add new contribution
+            /// </summary>
+            Add_new_contribution,
+            /// <summary>
             /// Operation Add new ration
             /// </summary>
             Add_New_IDPS_request,
@@ -448,6 +488,10 @@ namespace Cats.Security
             /// </summary>
             Add_new_request,
             /// <summary>
+            /// Operation Add Gift Certificate Detail
+            /// </summary>
+            Add_Gift_Certificate_Detail,
+            /// <summary>
             /// Operation Approve Gift Certeficate
             /// </summary>
             Approve_Gift_Certeficate,
@@ -455,6 +499,10 @@ namespace Cats.Security
             /// Operation Approve HRD
             /// </summary>
             Approve_HRD,
+            /// <summary>
+            /// Operation View Old HRD
+            /// </summary>
+            Old_HRD,
             /// <summary>
             /// Operation Approve Need Assessment
             /// </summary>
@@ -484,9 +532,17 @@ namespace Cats.Security
             /// </summary>
             Delete_Gift_Certificate,
             /// <summary>
+            /// Operation Delete HRD
+            /// </summary>
+            Delete_HRD,
+            /// <summary>
             /// Operation Delete needs assessment
             /// </summary>
             Delete_needs_assessment,
+            /// <summary>
+            /// Operation Delete request
+            /// </summary>
+            Delete_Request,
             /// <summary>
             /// Operation Edit Gift Certificate
             /// </summary>
@@ -596,6 +652,10 @@ namespace Cats.Security
             /// </summary>
             Print_requisitions,
             /// <summary>
+            /// Operation Publish HRD
+            /// </summary>
+            Publish_HRD,
+            /// <summary>
             /// Operation Ration- Add new item
             /// </summary>
             Ration__Add_new_item,
@@ -623,6 +683,10 @@ namespace Cats.Security
             /// Operation View Approved HRD
             /// </summary>
             View_Approved_HRD,
+            /// <summary>
+            /// Operation View Old HRD
+            /// </summary>
+            View_Old_HRD,
             /// <summary>
             /// Operation View approved needs assesment
             /// </summary>

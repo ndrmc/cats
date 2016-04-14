@@ -51,15 +51,24 @@ Plans
         columns.Bound(p => p.Status);
         columns.Command(p =>
         {
-            p.Custom("Edit").Click("hrdEdit").Text("<span class=\"fa fa-pencil-square-o\"></span> Edit ");
-            p.Custom("Approve").Click("approveHRD").Text("<span class=\"fa fa-check\"></span> Approve ");
-            p.Custom("Summary").Click("showSummary").Text("<span class=\"fa fa-list\"></span> Summary ");
-            p.Custom("Delete").Click("deleteHRD").Text("<span class=\"fa fa-times fa-fw\"></span> Delete ");  
-                    
+            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Modify_HRD))
+            {
+                p.Custom("Edit").Click("hrdEdit").Text("<span class=\"fa fa-pencil-square-o\"></span> Edit ");
+            }
+            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_HRD))
+            {
+                p.Custom("Approve").Click("approveHRD").Text("<span class=\"fa fa-check\"></span> Approve ");
+            }
+            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.HRD_Summary))
+            {
+                p.Custom("Summary").Click("showSummary").Text("<span class=\"fa fa-list\"></span> Summary ");
+            }
+            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Delete_HRD))
+            {
+                p.Custom("Delete").Click("deleteHRD").Text("<span class=\"fa fa-times fa-fw\"></span> Delete ");
+            }
         });
-
-
-
+                    
     })
             .Sortable()
             .Scrollable()

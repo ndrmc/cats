@@ -1,4 +1,6 @@
-﻿@using Cats.Models.ViewModels
+﻿@using Cats.Helpers
+@using Cats.Models.ViewModels
+@using Cats.Security
 @using Cats.Services.Security
 @using Kendo.Mvc.UI
 @model  List<Cats.Models.Contribution>
@@ -37,7 +39,11 @@ Donors
                        
                     </div>
                     <div class="mrgn5-v text-right col-md-4">
-                        <a data-buttontype="btn_new_record"  class="btn btn-success btn-sm " href="@Url.Action("Create", "Contribution")"><span class="fa fa-plus"></span> New Contribution</a>
+                        @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_contribution))
+                        {
+                            <a data-buttontype="btn_new_record" class="btn btn-success btn-sm " href="@Url.Action("Create", "Contribution")"><span class="fa fa-plus"></span> New Contribution</a>
+                        }
+                        
                     </div>
                 </div>
                 <div class="table-responsive">

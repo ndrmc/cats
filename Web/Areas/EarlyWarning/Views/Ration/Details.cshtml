@@ -2,6 +2,7 @@
 @using Cats.Areas.EarlyWarning.Models
 @using Cats.Helpers
 @using Cats.Models
+@using Cats.Security
 @using Kendo.Mvc.UI
 @model RationViewModel
 
@@ -84,10 +85,19 @@
                   })
                   .ToolBar(toolbar =>
                   {
-                      toolbar.Save().SaveText(Html.Translate("Save Changes"));
-                      toolbar.Create();
+                      if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_ration))
+                      {
+                          toolbar.Save().SaveText(Html.Translate("Save Changes"));
+                          toolbar.Create();
+                      }
                   })
-                  .Editable(editable => editable.Mode(GridEditMode.InCell))
+                  .Editable(editable =>
+                  {
+                      if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_ration))
+                      {
+                          editable.Mode(GridEditMode.InCell);
+                      }
+                  })
                   .Pageable()
                   .Sortable()
                   .Scrollable()

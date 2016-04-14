@@ -117,7 +117,7 @@
 
               }).ToolBar(toolbar =>
               {
-                  toolbar.Save(); 
+                  toolbar.Save();
                   toolbar.Create();
                   //toolbar.Custom().Text("Add FDP").HtmlAttributes(new { id = "addFDP" });
               })
@@ -130,6 +130,7 @@
               .DataSource(datasource =>
                           datasource
                               .Ajax()
+                              .Events(error => error.Error("error_handler").RequestEnd("onRequestEnd"))
                               //.ServerOperation(false)
                               .Model(m => m.Id(t => t.FDPID))
                               .Read(read => read.Action("FDP_Read", "FDP").Data("selectedWoredaId"))
@@ -142,6 +143,25 @@
 
     </div>
 </div>
+<!-- Added by Nigus-->
+<!--Popup Error message-->
+<div id="errorMessageModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p id="errormessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--End popup-->
 
 <style scoped>
     .demo-section {
@@ -179,6 +199,31 @@
         }
         alert("First FDP:" + fdpNames[0]);
     });
+
+    //Added by Nigus
+    //function error_handler(e) {
+    //    if (e.errors) {
+    //        var message = "";
+    //        $.each(e.errors, function (key, value) {
+    //            if ('errors' in value) {
+    //                $.each(value.errors, function () {
+    //                    message += this + "\n";
+    //                });
+    //            }
+    //        });
+           
+    //        //alert(message);
+    //    }
+    //}
+    function onRequestEnd(e) {
+        if (e.type === "create") {
+            e.sender.read();
+        }
+        else if (e.type === "update") {
+            e.sender.read();
+        }
+    }
+
 </script>
 <script>
     $("#addFDP").click(function (e) {
@@ -210,6 +255,10 @@
                 }
             });
             alert(message);
+            e.Edit("onEdit");
+            //$('#errormessage').Value = message;
+            //$("#errorMessageModal").modal('show');
+           
         }
     }
 

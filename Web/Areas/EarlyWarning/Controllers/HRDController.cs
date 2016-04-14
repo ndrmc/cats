@@ -100,6 +100,11 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             return View();
         }
+        [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Old_HRD)]
+        public ActionResult OldHRD()
+        {
+            return View();
+        }
 
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_Current_HRD)]
         public ActionResult CurrentHRDs()
@@ -220,6 +225,14 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
 
             var hrds = _hrdService.Get(m => m.Status == 2).OrderByDescending(m => m.HRDID);
+            var hrdsToDisplay = GetHrds(hrds).ToList();
+            return Json(hrdsToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+        }
+        [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_Approved_HRD)]
+        public ActionResult OldHRD_Read([DataSourceRequest] DataSourceRequest request)
+        {
+
+            var hrds = _hrdService.Get(m => m.Status >2).OrderByDescending(m => m.HRDID);
             var hrdsToDisplay = GetHrds(hrds).ToList();
             return Json(hrdsToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -606,7 +619,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult DeleteHRD(int id)
         {
             var hrd = _hrdService.FindById(id);
-            _hrdService.DeleteHRD(hrd);
+            //_hrdService.DeleteHRD(hrd);
+            hrd.Status = -1;
+            _hrdService.EditHRD(hrd);
             return RedirectToAction("Index");
         }
 
