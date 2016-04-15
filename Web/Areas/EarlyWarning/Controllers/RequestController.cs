@@ -190,17 +190,29 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private void PopulateLookup()
         {
             var user = _userAccountService.GetUserDetail(HttpContext.User.Identity.Name);
-            ViewBag.RegionID = user.RegionalUser ? new SelectList(_commonService.GetAminUnits(t => t.AdminUnitTypeID == 2 && t.AdminUnitID == user.RegionID), "AdminUnitID", "Name") : new SelectList(_commonService.GetAminUnits(t => t.AdminUnitTypeID == 2), "AdminUnitID", "Name");
+            ViewBag.RegionID = user.RegionalUser
+                ? new SelectList(
+                    _commonService.GetAminUnits(t => t.AdminUnitTypeID == 2 && t.AdminUnitID == user.RegionID),
+                    "AdminUnitID", "Name")
+                : new SelectList(_commonService.GetAminUnits(t => t.AdminUnitTypeID == 2), "AdminUnitID", "Name");
 
             if (user.CaseTeam != null && user.CaseTeam != 0)
             {
                 switch (user.CaseTeam)
                 {
                     case 1://earlywarning
-                        ViewBag.ProgramId = new SelectList(_commonService.GetPrograms().Where(p => p.ProgramID == (int)Programs.Releif || p.ProgramID==(int)Programs.IDPS).Take(2), "ProgramID", "Name");
+                        ViewBag.ProgramId =
+                            new SelectList(
+                                _commonService.GetPrograms()
+                                    .Where(
+                                        p => p.ProgramID == (int) Programs.Releif || p.ProgramID == (int) Programs.IDPS)
+                                    .Take(2), "ProgramID", "Name");
                         break;
                     case 2: //PSNP
-                        ViewBag.ProgramId = new SelectList(_commonService.GetPrograms().Where(p => p.ProgramID == (int)Programs.PSNP).Take(2), "ProgramID", "Name");
+                        ViewBag.ProgramId =
+                            new SelectList(
+                                _commonService.GetPrograms().Where(p => p.ProgramID == (int) Programs.PSNP).Take(2),
+                                "ProgramID", "Name");
                         ViewBag.program = "PSNP";
                         break;
                 }
@@ -339,15 +351,15 @@ namespace Cats.Areas.EarlyWarning.Controllers
                             return View(hrdpsnpPlan);
                         }
 
-                        exisiting =
-                            _regionalRequestService.FindBy(r => r.PlanID == psnphrdPlanInfo.HRDPSNPPlan.PlanID
-                                                                &&
-                                                                r.ProgramId ==
-                                                                psnphrdPlanInfo.HRDPSNPPlan.ProgramID &&
-                                                                r.RegionID == psnphrdPlanInfo.HRDPSNPPlan.RegionID
-                                                                && r.Year == psnphrdPlanInfo.HRDPSNPPlan.Year
-                                                                && r.Month == psnphrdPlanInfo.HRDPSNPPlan.Month)
-                                                   .Count;
+                        //exisiting =
+                        //    _regionalRequestService.FindBy(r => r.PlanID == psnphrdPlanInfo.HRDPSNPPlan.PlanID
+                        //                                        &&
+                        //                                        r.ProgramId ==
+                        //                                        psnphrdPlanInfo.HRDPSNPPlan.ProgramID &&
+                        //                                        r.RegionID == psnphrdPlanInfo.HRDPSNPPlan.RegionID
+                        //                                        && r.Year == psnphrdPlanInfo.HRDPSNPPlan.Year
+                        //                                        && r.Month == psnphrdPlanInfo.HRDPSNPPlan.Month)
+                        //                           .Count;
                     }
                     else
                     {
@@ -357,20 +369,20 @@ namespace Cats.Areas.EarlyWarning.Controllers
                             PopulateLookup();
                             return View(hrdpsnpPlan);
                         }
-                        exisiting =
-                           _regionalRequestService.FindBy(r => r.PlanID == psnphrdPlanInfo.HRDPSNPPlan.PSNPPlanID
-                                                               &&
-                                                               r.ProgramId ==
-                                                               psnphrdPlanInfo.HRDPSNPPlan.ProgramID &&
-                                                               r.RegionID == psnphrdPlanInfo.HRDPSNPPlan.RegionID
-                                                               && r.Year == psnphrdPlanInfo.HRDPSNPPlan.Year
-                                                               && r.Month == psnphrdPlanInfo.HRDPSNPPlan.Month
-                                                               && r.Round == psnphrdPlanInfo.HRDPSNPPlan.Round)
-                                                  .Count;
+                        //exisiting =
+                        //   _regionalRequestService.FindBy(r => r.PlanID == psnphrdPlanInfo.HRDPSNPPlan.PSNPPlanID
+                        //                                       &&
+                        //                                       r.ProgramId ==
+                        //                                       psnphrdPlanInfo.HRDPSNPPlan.ProgramID &&
+                        //                                       r.RegionID == psnphrdPlanInfo.HRDPSNPPlan.RegionID
+                        //                                       && r.Year == psnphrdPlanInfo.HRDPSNPPlan.Year
+                        //                                       && r.Month == psnphrdPlanInfo.HRDPSNPPlan.Month
+                        //                                       && r.Round == psnphrdPlanInfo.HRDPSNPPlan.Round)
+                        //                          .Count;
                     }
 
-                    if (exisiting == 0)
-                    {
+                    //if (exisiting == 0)
+                    //{
                         RegionalRequest req = CretaeRegionalRequest(psnphrdPlanInfo);
                         var model = getRequestDetai(req.RegionalRequestID);
                         ViewBag.message = "Request Created";
@@ -385,11 +397,11 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
                         }
                         return RedirectToAction("Details" + "/" + req.RegionalRequestID);
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("Errors", @"A request with the same parameters has already been made");
-                    }
+                    //}
+                    //else
+                    //{
+                    //    ModelState.AddModelError("Errors", @"A request with the same parameters has already been made");
+                    //}
 
                 }
                 else
