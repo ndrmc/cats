@@ -1,6 +1,6 @@
 ﻿@(Html.Kendo().DropDownList()
-            .Name("CommodityId") 
+            .Name("CommodityChildID") 
     .DataValueField("Id") 
     .DataTextField("Name") 
-        .BindTo((System.Collections.IEnumerable)ViewBag.Commodities) 
+        .BindTo((System.Collections.IEnumerable)ViewBag.SubCommodities) 
 )

@@ -25,9 +25,10 @@ namespace Cats.Services.Hub
         private readonly IShippingInstructionService _shippingInstructionService;
         private readonly IProjectCodeService _projectCodeService;
 
-        public TransactionService(Data.Hub.UnitWork.IUnitOfWork unitOfWork, IAccountService accountService, IShippingInstructionService shippingInstructionService, IProjectCodeService projectCodeService)
+        public TransactionService(Data.Hub.UnitWork.IUnitOfWork unitOfWork, Data.UnitWork.IUnitOfWork unitOfWorkNew, IAccountService accountService, IShippingInstructionService shippingInstructionService, IProjectCodeService projectCodeService)
         {
             this._unitOfWork = unitOfWork;
+            this._unitOfWorkNew = unitOfWorkNew;
             this._accountService = accountService;
             this._shippingInstructionService = shippingInstructionService;
             this._projectCodeService = projectCodeService;
@@ -1757,12 +1758,12 @@ namespace Cats.Services.Hub
                 if (allocationDetail.AllocationType ==daModel.TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
                 {
                     transaction.ShippingInstructionID = allocationDetail.Code;
-                    hubID1 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+                    hubID1 = (int)_unitOfWorkNew.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
                 }
                 else
                 {
                     transaction.ProjectCodeID = allocationDetail.Code;
-                    hubID1 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+                    hubID1 = (int)_unitOfWorkNew.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
 
                 }
 
@@ -1816,11 +1817,11 @@ namespace Cats.Services.Hub
                 {
                     var siCode = allocationDetail.Code.ToString();
                     var shippingInstruction =
-                        _unitOfWork.ShippingInstructionRepository.Get(t => t.Value == siCode).
+                        _unitOfWorkNew.ShippingInstructionRepository.Get(t => t.Value == siCode).
                             FirstOrDefault();
                     if (shippingInstruction != null) transaction.ShippingInstructionID = shippingInstruction.ShippingInstructionID;
 
-                    hubID2 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code &&
+                    hubID2 = (int)_unitOfWorkNew.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code &&
                             m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
 
 
@@ -1830,11 +1831,11 @@ namespace Cats.Services.Hub
                     var detail = allocationDetail;
                     var code = detail.Code.ToString();
                     var projectCode =
-                        _unitOfWork.ProjectCodeRepository.Get(t => t.Value == code).
+                        _unitOfWorkNew.ProjectCodeRepository.Get(t => t.Value == code).
                             FirstOrDefault();
                     if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
 
-                    hubID2 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
+                    hubID2 = (int)_unitOfWorkNew.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
                                m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
 
                 }
@@ -1876,7 +1877,27 @@ namespace Cats.Services.Hub
                 DispatchAllocation newDispatchAllocation = new DispatchAllocation();
                 newDispatchAllocation = tempDispatchAllocation;
                 newDispatchAllocation.ShippingInstructionID = dispatchViewModel.ShippingInstructionID;
-                newDispatchAllocation.DispatchAllocationID = Guid.Empty;
+                newDispatchAllocation.Amount = tempDispatchAllocation.Amount;
+                newDispatchAllocation.Beneficiery = tempDispatchAllocation.Beneficiery;
+                newDispatchAllocation.BidRefNo = tempDispatchAllocation.BidRefNo;
+                newDispatchAllocation.CommodityID = tempDispatchAllocation.CommodityID;
+                
+
+                newDispatchAllocation.DonorID = tempDispatchAllocation.DonorID;
+                newDispatchAllocation.FDPID = tempDispatchAllocation.FDPID;
+                newDispatchAllocation.HubID = tempDispatchAllocation.HubID;
+                newDispatchAllocation.Month = tempDispatchAllocation.Month;
+                newDispatchAllocation.PartitionId = tempDispatchAllocation.PartitionId;
+                newDispatchAllocation.ProgramID = tempDispatchAllocation.ProgramID;
+                newDispatchAllocation.ProjectCodeID = tempDispatchAllocation.ProjectCodeID;
+                newDispatchAllocation.RequisitionNo = tempDispatchAllocation.RequisitionNo;
+                newDispatchAllocation.Round = tempDispatchAllocation.Round;
+              
+                newDispatchAllocation.TransporterID = tempDispatchAllocation.TransporterID;
+                newDispatchAllocation.Unit = tempDispatchAllocation.Unit;
+                newDispatchAllocation.Year = tempDispatchAllocation.Year;
+                //newDispatchAllocation.DispatchAllocationID = Guid.Empty;
+                //newDispatchAllocation.DispatchAllocationID = Guid.NewGuid();
                 _unitOfWork.DispatchAllocationRepository.Add(newDispatchAllocation);
                 if(newDispatchAllocation.RequisitionId.HasValue)
                 PostSIAllocation(newDispatchAllocation.RequisitionId.Value);
