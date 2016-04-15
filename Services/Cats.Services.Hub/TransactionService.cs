@@ -1831,11 +1831,11 @@ namespace Cats.Services.Hub
                     var detail = allocationDetail;
                     var code = detail.Code.ToString();
                     var projectCode =
-                        _unitOfWorkNew.ProjectCodeRepository.Get(t => t.Value == code).
+                        _unitOfWork.ProjectCodeRepository.Get(t => t.Value == code).
                             FirstOrDefault();
                     if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
 
-                    hubID2 = (int)_unitOfWorkNew.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
+                    hubID2 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
                                m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
 
                 }
@@ -1875,7 +1875,7 @@ namespace Cats.Services.Hub
             if (dispatchViewModel.ShippingInstructionID != tempDispatchAllocation.ShippingInstructionID)
             {
                 DispatchAllocation newDispatchAllocation = new DispatchAllocation();
-                newDispatchAllocation = tempDispatchAllocation;
+               // newDispatchAllocation = tempDispatchAllocation;
                 newDispatchAllocation.ShippingInstructionID = dispatchViewModel.ShippingInstructionID;
                 newDispatchAllocation.Amount = tempDispatchAllocation.Amount;
                 newDispatchAllocation.Beneficiery = tempDispatchAllocation.Beneficiery;
@@ -1899,6 +1899,7 @@ namespace Cats.Services.Hub
                 //newDispatchAllocation.DispatchAllocationID = Guid.Empty;
                 //newDispatchAllocation.DispatchAllocationID = Guid.NewGuid();
                 _unitOfWork.DispatchAllocationRepository.Add(newDispatchAllocation);
+                _unitOfWork.Save();
                 if(newDispatchAllocation.RequisitionId.HasValue)
                 PostSIAllocation(newDispatchAllocation.RequisitionId.Value);
             }
