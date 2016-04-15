@@ -26,6 +26,13 @@ namespace Cats.Areas.Regional
                 defaults: new { controller = "Home", action = "Index" },
                 namespaces: new[] { "Cats.Areas.Regional.Controllers" }
                 );
+
+            context.MapRoute(
+                name: "Regional_NeedAssessment",
+                url: "Regional/NeedAssessment",
+                defaults: new { controller = "NeedAssessment", action = "Index" },
+                namespaces: new[] { "Cats.Areas.EarlyWarning.Controllers" }
+                );
         }
     }
 }
