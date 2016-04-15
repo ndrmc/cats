@@ -1,5 +1,6 @@
 ﻿@using Cats.Helpers
 @using Cats.Models.Constant
+@using Cats.Security
 @using Kendo.Mvc.UI
 
 @{
@@ -64,19 +65,31 @@ Requistions
 
             @<text>
                 @if (item.StatusID == (int)ReliefRequisitionStatus.Draft)
-{
-            <a href="@Url.Action("Edit", "ReliefRequisition", new { Area = "EarlyWarning", id = item.RequisitionID })"><i class="fa fa-edit"></i></a>
-            <a href="@Url.Action("SendToLogistics", "ReliefRequisition", new { Area = "EarlyWarning", id = item.RequisitionID })"><i class="fa fa-ok"></i></a>
-            <a href="@Url.Action("RequistionDetailEdit", "ReliefRequisition", new { Area = "EarlyWarning", id = item.RequisitionID })"><i class="fa fa-pencil"></i></a>
-}
-else
-{
+                {
+                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition)
+                        || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.New_requisition))
+                    {
+                        <a href="@Url.Action("Edit", "ReliefRequisition", new { Area = "EarlyWarning", id = item.RequisitionID })"><i class="fa fa-edit"></i></a>
+                    }
+                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.New_requisition)
+                        || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.New_requisition))
+                    {
+                        <a href="@Url.Action("SendToLogistics", "ReliefRequisition", new { Area = "EarlyWarning", id = item.RequisitionID })"><i class="fa fa-ok"></i></a>
+                    }
+                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition)
+                        || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.New_requisition))
+                    {
+                        <a href="@Url.Action("RequistionDetailEdit", "ReliefRequisition", new {Area = "EarlyWarning", id = item.RequisitionID})"><i class="fa fa-pencil"></i></a>
+                    }
+                }
+            else
+            {
             @item.Status
 }
             </text>);
 
 
-                 })
+})
     .Editable(editable => editable.Mode(GridEditMode.PopUp))
     .Pageable(t=>t.PageSizes(new int[]{10,30,50}))
     .Groupable()
@@ -86,7 +99,7 @@ else
     .Events(ev => ev.DataBound("resetRowNumber"))
     .DataSource(dataSource => dataSource
         .Ajax()
-        //.PageSize(10)
+            //.PageSize(10)
 
             .Model(model =>
             {
@@ -103,12 +116,26 @@ else
             })
 
         .Read(read => read.Action("Requisition_Search", "ReliefRequisition", new {
-                                    RegionID=@ViewBag.Filter.RegionID,
-                                    ProgramID=@ViewBag.Filter.ProgramID,
-                                    id=@ViewBag.Filter.StatusID
-                                    }))
-        .Update(update => update.Action("Requisition_Update", "ReliefRequisition"))
-        .Destroy(update => update.Action("Requisition_Destroy", "ReliefRequisition"))
+            RegionID=@ViewBag.Filter.RegionID,
+            ProgramID=@ViewBag.Filter.ProgramID,
+            id=@ViewBag.Filter.StatusID
+        }))
+        .Update(update =>
+        {
+            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition)
+                || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.New_requisition))
+            {
+                update.Action("Requisition_Update", "ReliefRequisition");
+            }
+        })
+        .Destroy(update =>
+        {
+            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition)
+                || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.New_requisition))
+            {
+                update.Action("Requisition_Destroy", "ReliefRequisition");
+            }
+        })
     )
                     )
                 </div>
