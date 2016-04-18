@@ -62,7 +62,10 @@
             @Html.EarlyWarningOperationButton(
                         @Url.Action("New", "Request", new { Area = "EarlyWarning" }),
                         EarlyWarningConstants.Operation.Add_new_request, "<button type=\"button\" class=\"btn btn-success\"><i class='fa fa - plus - circle'></i>" + @Html.Translate("New Request") + "</button>", "btn", "btn_new_record")
-            
+            @Html.RegionalOperationButton(
+                        @Url.Action("New", "Request", new { Area = "EarlyWarning" }),
+                        RegionalConstants.Operation.Add_new_regional_request, "<button type=\"button\" class=\"btn btn-success\"><i class='fa fa - plus - circle'></i>" + @Html.Translate("New Request") + "</button>", "btn", "btn_new_record")
+
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
         </div>
     </div>
@@ -92,14 +95,16 @@
             @<text>
                 @if (item.StatusID == (int)RegionalRequestStatus.Draft)
                 {
-                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request))
+                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request)
+                        || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Approve_regional_request))
                     {
                         @Html.ActionLink("Approve", "ApproveRequest", "Request", new {Area = "EarlyWarning", id = @item.RegionalRequestID})
                     }
                 }
                 else
                 {
-                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request))
+                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request)
+                        || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Approve_regional_request))
                     {
                         @item.Status
                         @Html.ActionLink("Approve", "ApproveRequest", "Request", new {Area = "EarlyWarning", id = @item.RegionalRequestID})

@@ -1,6 +1,7 @@
 ﻿@using Cats.Areas.Logistics.Models
 @using Kendo.Mvc.UI
 @using Cats.Helpers
+@using Cats.Security
 
 @model Cats.Areas.Logistics.Models.WoredaStockDistributionWithDetailViewModel
 @{
@@ -15,9 +16,12 @@
 }
 @section Toolbar
 {
-    <button id="SubmitButton" data-buttontype="btn_save" class="btn btn-default" data-loading-text="Saving...">Save</button>
+    @if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_woreda_distribution))
+    {
+        <button id="SubmitButton" data-buttontype="btn_save" class="btn btn-default" data-loading-text="Saving...">Save</button>
     @*<a id="SaveButton" class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_create_utilization" title="Save"></a>
-    *@<a class="btn toolbar-btn "  data-buttontype="btn_cancel" href="@Url.Action("Index", "WoredaStockDistribution")" title="Cancel"></a>
+    *@<a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("Index", "WoredaStockDistribution")" title="Cancel"></a>
+    }
 
     
     
@@ -315,11 +319,17 @@
                           //// columns.Bound(p => p.DistributionEndDate);
 
                       })
-         //.ToolBar(toolBar=>toolBar.Save())
-                      .Editable(editable => editable.Mode(GridEditMode.InCell))
+                      //.ToolBar(toolBar=>toolBar.Save())
+                      .Editable(editable =>
+                      {
+                          if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_Distribution_Entry))
+                          {
+                              editable.Mode(GridEditMode.InCell);
+                          }
+                      })
 
                       .Scrollable()
-         //.Selectable(t => t.Mode(GridSelectionMode.Single))
+                      //.Selectable(t => t.Mode(GridSelectionMode.Single))
                       .Navigatable()
                       .HtmlAttributes(new { style = "height:350px;" })
                        .Events(events => events.Change("onDataBound"))
@@ -329,9 +339,9 @@
                                                     .Batch(true)
                                                     .ServerOperation(false)
                                                     .Events(error => error.Error("error_handler"))
-                          //.Group(m => m.Add(t => t.CommodityName))
-                          // .Events(e=>e.RequestEnd("onRequestEnd"))
-                          // .ServerOperation(false)
+                                                    //.Group(m => m.Add(t => t.CommodityName))
+                                                    // .Events(e=>e.RequestEnd("onRequestEnd"))
+                                                    // .ServerOperation(false)
                                                     .Model(model =>
                                                     {
                                                         model.Id(p => p.WoredaStockDistributionDetailID);
@@ -353,8 +363,8 @@
                                                     })
                                                     .ServerOperation(false)
 
-                   //.Read(read => read.Action("WoredaStockDetail_Read", "WoredaStockDistribution", new {woredaStockDistributionID =Model.WoredaStockDistributionID, woredaID=Model.WoredaID,planID=Model.PlanID,month=Model.Month}))
-         //.Update(update => update.Action("UpdateWoredaDistribution", "WoredaStockDistribution"))
+                      //.Read(read => read.Action("WoredaStockDetail_Read", "WoredaStockDistribution", new {woredaStockDistributionID =Model.WoredaStockDistributionID, woredaID=Model.WoredaID,planID=Model.PlanID,month=Model.Month}))
+                      //.Update(update => update.Action("UpdateWoredaDistribution", "WoredaStockDistribution"))
 
 
                       )

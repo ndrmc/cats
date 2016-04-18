@@ -1,6 +1,7 @@
 ﻿@using Cats.Areas.Logistics.Models
 @using Cats.Helpers
 @using Cats.Models.Hubs
+@using Cats.Security
 @using Kendo.Mvc.UI
 @{
     ViewBag.Title = "Index";
@@ -111,7 +112,14 @@
 
                   })
                   .ToolBar(toolbar => toolbar.Save())
-                  .Editable(edit => edit.Mode(GridEditMode.InCell))
+                  .Editable(edit =>
+                  {
+                      if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_Distribution_Entry))
+                      {
+                          edit.Mode(GridEditMode.InCell);
+                      }
+
+                  })
                   .Scrollable(t => t.Height(400))
                   //.Selectable(t => t.Mode(GridSelectionMode.Single))
                   .Navigatable()
