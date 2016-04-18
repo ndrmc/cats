@@ -64,6 +64,8 @@ namespace Cats.Models.Hubs
         //[Remote("NotFoundSI", "Receive", AdditionalFields = "SINumber", ErrorMessage = "The Commodity Selected is Not Found for this SINumber")]
         public int CommodityID { get; set; }
 
+        public int? CommodityChildID { get; set; }
+
         [Required(ErrorMessage = "required")]
         [Range(0.1, 999999.99)]
       //  [UIHint("PreferedWeightMeasurment")]
@@ -99,6 +101,7 @@ namespace Cats.Models.Hubs
             model.ReceivedQuantityInUnit = ReceiveDetailModel.QuantityInUnit;
             model.CommodityGradeID = ReceiveDetailModel.CommodityGradeID;
             model.CommodityID = ReceiveDetailModel.CommodityID;
+            model.CommodityChildID = ReceiveDetailModel.CommodityChildID ?? 0; 
             model.SentQuantityInMT = ReceiveDetailModel.SentQuantityInMT;
             model.SentQuantityInUnit = ReceiveDetailModel.SentQuantityInUnit;
             model.ReceiveID = ReceiveDetailModel.ReceiveID;

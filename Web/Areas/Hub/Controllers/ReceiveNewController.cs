@@ -242,11 +242,12 @@ namespace Cats.Areas.Hub.Controllers
                          ReceivedQuantityInMt = transaction.QuantityInMT,
                          ReceivedQuantityInUnit = transaction.QuantityInUnit,
                          SiNumber = transaction.ShippingInstructionID,
-                         CommodityChildID = receives.CommodityChildID,
+                         CommodityChildID = receives.CommodityChildID ?? 0,
                          UnitId = receives.UnitID,
                          ReceiveDetailsId = receives.ReceiveDetailID,
                          ReceiveDetailsIdString = receives.ReceiveDetailID.ToString()
                      }).ToList();
+
                 return Json(receiveDetailsViewModels.ToDataSourceResult(request));
             }
             else
@@ -267,6 +268,7 @@ namespace Cats.Areas.Hub.Controllers
                 {
                     rdvm = new ReceiveDetailsViewModel();
                     rdvm = receiveDetailsViewModels;
+                    
                     rdvm.ReceiveDetailsId = Guid.NewGuid();
                     receiveModel.ReceiveDetailsViewModels = new List<ReceiveDetailsViewModel> {rdvm};
                     _transactionService.ReceiptDetailsTransaction(receiveModel);
@@ -277,6 +279,7 @@ namespace Cats.Areas.Hub.Controllers
                 {
                     rdvm = new ReceiveDetailsViewModel();
                     rdvm = receiveDetailsViewModels;
+                    
                     receiveModel.ReceiveDetailsViewModels = new List<ReceiveDetailsViewModel> { rdvm };
                     _transactionService.ReceiptDetailsTransaction(receiveModel, false, true);
 
