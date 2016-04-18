@@ -129,85 +129,83 @@ namespace Cats.ViewModelBinder
 
             //var requestdetail = requestDetails.FirstOrDefault();
 
-            if (woredaRequestDetail != null && woredaRequestDetail.Count != 0)
+            if (woredaRequestDetail == null || woredaRequestDetail.Count == 0) return dt;
+            var requestdetail = woredaRequestDetail.FirstOrDefault().RegionalRequestDetails.FirstOrDefault();
+
+            if (requestdetail != null)
             {
-                var requestdetail = woredaRequestDetail.FirstOrDefault().RegionalRequestDetails.FirstOrDefault();
-
-                if (requestdetail != null)
+                foreach (var ds in requestdetail.RequestDetailCommodities)
                 {
-                    foreach (var ds in requestdetail.RequestDetailCommodities)
-                    {
-                        var col = new DataColumn(ds.Commodity.Name.Trim() + " in " + preferedweight.ToUpper().Trim(), typeof(decimal));
-                        col.ExtendedProperties.Add("ID", ds.CommodityID);
-                        dt.Columns.Add(col);
-                    }
+                    var col = new DataColumn(ds.Commodity.Name.Trim() + " in " + preferedweight.ToUpper().Trim(), typeof(decimal));
+                    col.ExtendedProperties.Add("ID", ds.CommodityID);
+                    dt.Columns.Add(col);
                 }
+            }
 
-                foreach (var singleWoreda in woredaRequestDetail)
+            foreach (var singleWoreda in woredaRequestDetail)
+            {
+                var dr = dt.NewRow();
+
+                dr[colZone] = singleWoreda.zone;
+                dr[colWoreda] = singleWoreda.Woreda;
+
+                dr[colNoBeneficiary] = singleWoreda.RequestedBeneficiaryNo;
+                if (programID != 3)
                 {
-                    var dr = dt.NewRow();
+                    dr[colNoPlannedBeneficiary] = singleWoreda.PlannedBeneficaryNo;
+                    dr[colDifference] = singleWoreda.Difference;
+                }
+                var details = singleWoreda.RegionalRequestDetails;
+                //var groupedByWoreda = (
+                //                          from regionalRequestDetail in requestDetails
+                //                          group regionalRequestDetail by regionalRequestDetail.Fdp.AdminUnit
+                //                          into g
+                //                          select g
+                //                      );
 
-                    dr[colZone] = singleWoreda.zone;
-                    dr[colWoreda] = singleWoreda.Woreda;
+                //decimal accumelate = 0;
 
-                    dr[colNoBeneficiary] = singleWoreda.RequestedBeneficiaryNo;
-                    if (programID != 3)
+
+                foreach (var requestDetailCommodity in requestdetail.RequestDetailCommodities)
+                {
+                    decimal amount = 0;
+
+                    foreach (var requestDetail in details)
                     {
-                        dr[colNoPlannedBeneficiary] = singleWoreda.PlannedBeneficaryNo;
-                        dr[colDifference] = singleWoreda.Difference;
-                    }
-                    var details = singleWoreda.RegionalRequestDetails;
-                    //var groupedByWoreda = (
-                    //                          from regionalRequestDetail in requestDetails
-                    //                          group regionalRequestDetail by regionalRequestDetail.Fdp.AdminUnit
-                    //                          into g
-                    //                          select g
-                    //                      );
-
-                    //decimal accumelate = 0;
-
-
-                    foreach (var requestDetailCommodity in requestdetail.RequestDetailCommodities)
-                    {
-                        decimal amount = 0;
-
-                        foreach (var requestDetail in details)
+                        foreach (var commodity in requestDetail.RequestDetailCommodities)
                         {
-                            foreach (var commodity in requestDetail.RequestDetailCommodities)
+                            if (commodity.CommodityID == requestDetailCommodity.CommodityID)
                             {
-                                if (commodity.CommodityID == requestDetailCommodity.CommodityID)
-                                {
-                                    amount = amount + commodity.Amount;
-                                }
-
+                                amount = amount + commodity.Amount;
                             }
 
                         }
 
-                        var rDetatils = singleWoreda.RegionalRequestDetails;
-                        //_requestDetailCommodityService.FindBy(requestDetailCommodity.CommodityID);
+                    }
 
-                        DataColumn col = null;
-                        foreach (DataColumn column in dt.Columns)
-                        {
-                            if (requestDetailCommodity.CommodityID.ToString() ==
-                                column.ExtendedProperties["ID"].ToString())
-                            {
-                                col = column;
-                                break;
-                            }
-                        }
+                    var rDetatils = singleWoreda.RegionalRequestDetails;
+                    //_requestDetailCommodityService.FindBy(requestDetailCommodity.CommodityID);
 
-                        if (col != null)
+                    DataColumn col = null;
+                    foreach (DataColumn column in dt.Columns)
+                    {
+                        if (requestDetailCommodity.CommodityID.ToString() ==
+                            column.ExtendedProperties["ID"].ToString())
                         {
-                            //_requestDetailCommodityService.FindBy(y=>y.CommodityID)
-                            //dr[col.ColumnName] = requestDetailCommodity.Amount.ToPreferedWeightUnit();
-                            dr[col.ColumnName] = amount.ToPreferedWeightUnit();
+                            col = column;
+                            break;
                         }
                     }
 
-                    dt.Rows.Add(dr);
+                    if (col != null)
+                    {
+                        //_requestDetailCommodityService.FindBy(y=>y.CommodityID)
+                        //dr[col.ColumnName] = requestDetailCommodity.Amount.ToPreferedWeightUnit();
+                        dr[col.ColumnName] = amount.ToPreferedWeightUnit();
+                    }
                 }
+
+                dt.Rows.Add(dr);
             }
 
             return dt;

@@ -542,23 +542,22 @@ namespace Cats.Areas.EarlyWarning.Controllers
         }
         public ActionResult Allocation_Create2(RegionalRequestDetailViewModel regionalRequestDetailViewModel)
         {
-            if (regionalRequestDetailViewModel != null && ModelState.IsValid)
-            {
-                RegionalRequestDetail model = BindRegionalRequestDetail(regionalRequestDetailViewModel);
+            if (regionalRequestDetailViewModel == null || !ModelState.IsValid)
+                return Json(new {success = 0, record = regionalRequestDetailViewModel, message = "Invalid input"},
+                    JsonRequestBehavior.AllowGet);
 
-                var requestDetails = _regionalRequestDetailService.FindBy(t => t.RegionalRequestID == model.RegionalRequestID);
-                var existingRequest = requestDetails.Where(r => r.Fdpid == model.Fdpid);
-                if (existingRequest.Any())
-                    return Json(new {success = 0, record = regionalRequestDetailViewModel, message = "Data duplicated"},
-                        JsonRequestBehavior.AllowGet);
+            RegionalRequestDetail model = BindRegionalRequestDetail(regionalRequestDetailViewModel);
 
-                _regionalRequestDetailService.AddCommodityFdp(model);
-                regionalRequestDetailViewModel.RegionalRequestDetailID = model.RegionalRequestDetailID;
-                return Json(new {success = 1, record = regionalRequestDetailViewModel}, JsonRequestBehavior.AllowGet);
-
-            }
-            return Json(new { success = 0, record = regionalRequestDetailViewModel, message = "Invalid input" }, JsonRequestBehavior.AllowGet);
-
+            var requestDetails =
+                _regionalRequestDetailService.FindBy(t => t.RegionalRequestID == model.RegionalRequestID);
+            var existingRequest = requestDetails.Where(r => r.Fdpid == model.Fdpid);
+            if (existingRequest.Any())
+                return Json(new {success = 0, record = regionalRequestDetailViewModel, message = "Data duplicated"},
+                    JsonRequestBehavior.AllowGet); 
+            
+            _regionalRequestDetailService.AddCommodityFdp(model);
+            regionalRequestDetailViewModel.RegionalRequestDetailID = model.RegionalRequestDetailID;
+            return Json(new {success = 1, record = regionalRequestDetailViewModel}, JsonRequestBehavior.AllowGet);
 
 
             // return RedirectToAction("Allocation_Read", new {request=new DataSourceRequest(), id = regionalRequestDetailViewModel.RegionalRequestID });
@@ -612,7 +611,24 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 _regionalRequestService.Get(t => t.RegionalRequestID == id, null, "AdminUnit,Program,Ration").FirstOrDefault();
             var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
             var requestModelView = RequestViewModelBinder.BindRegionalRequestViewModel(request, statuses, datePref);
-            ViewBag.RegionCollection = _adminUnitService.FindBy(t => t.AdminUnitTypeID == 2 && t.AdminUnitID == request.RegionID);
+
+          
+            var hrd = _hrdService.FindBy(m => m.PlanID == request.PlanID).FirstOrDefault();
+            var hrdWoerdasId = _HRDDetailService.FindBy(h => h.HRDID == hrd.HRDID).Select(w => w.WoredaID).ToList();
+
+            var adminUnits = _adminUnitService.FindBy(t => t.AdminUnitTypeID == 2 && t.AdminUnitID == request.RegionID);
+            var woredasNotInHrd = new List<int>();
+            foreach (var region in adminUnits)
+            {
+                foreach (var zone in region.AdminUnit1)
+                {
+                    woredasNotInHrd.AddRange(from woreda in zone.AdminUnit1
+                        where !hrdWoerdasId.Contains(woreda.AdminUnitID)
+                        select woreda.AdminUnitID);
+                }
+            }
+            ViewBag.WoredasNotHrd = woredasNotInHrd;
+            ViewBag.RegionCollection = adminUnits;
             if (request != null && request.Program.ProgramID == (int)Programs.PSNP)
             {
                 ViewBag.program = "PSNP";
@@ -1124,7 +1140,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
                 var details = regionalRequest.RegionalRequestDetails;
                 var hrd = _hrdService.FindBy(m => m.PlanID == regionalRequest.PlanID).FirstOrDefault();
-
+               
 
 
                 var woredaG = (from detail in details
