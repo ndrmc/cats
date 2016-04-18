@@ -29,10 +29,11 @@ namespace Cats.Tests.Service_Tests
         [SetUp]
         public void Init()
         {
-            var unitOfWork = new Mock<IUnitOfWork>();
-            var dispatches = new List<Dispatch>()
+            var unitOfWork = new Mock<Cats.Data.UnitWork.IUnitOfWork>();
+            var unitOfWorkHub = new Mock<IUnitOfWork>();
+            var dispatches = new List<Cats.Models.Dispatch>()
                                        {
-                                           new Dispatch()
+                                           new Cats.Models.Dispatch()
                                                 {
                                                     DispatchID = Guid.NewGuid(),
                                                     PartitionId = 1,
@@ -57,16 +58,75 @@ namespace Cats.Tests.Service_Tests
                                                 }
                                                     
                                        };
-            var dispatchRepositoy = new Mock<IGenericRepository<Dispatch>>();
+            var dispatchRepositoy = new Mock<Cats.Data.Repository.IGenericRepository<Cats.Models.Dispatch>>();
             dispatchRepositoy.Setup(
                 t =>
-                t.Get(It.IsAny<Expression<Func<Dispatch, bool>>>(),
-                      It.IsAny<Func<IQueryable<Dispatch>, IOrderedQueryable<Dispatch>>>(),
+                t.Get(It.IsAny<Expression<Func<Cats.Models.Dispatch, bool>>>(),
+                      It.IsAny<Func<IQueryable<Cats.Models.Dispatch>, IOrderedQueryable<Cats.Models.Dispatch>>>(),
                       It.IsAny<string>())).Returns(dispatches);
             dispatchRepositoy.Setup(t => t.FindById(It.IsAny<Guid>())).Returns((Guid id) => dispatches.
                                                                                                  FirstOrDefault(t => t.DispatchID == id));
 
-            var commodityTypes = new List<CommodityType>()
+            var dispatchesHub = new List<Dispatch>()
+                                       {
+                                           new Dispatch()
+                                                {
+                                                    DispatchID = Guid.NewGuid(),
+                                                    PartitionId = 1,
+                                                    HubID = 1,
+                                                    GIN = "GIN-123",
+                                                    FDPID = 1,
+                                                    WeighBridgeTicketNumber = "",
+                                                    RequisitionNo = "REQ-123",
+                                                    BidNumber = "00000",
+                                                    TransporterID = 1,
+                                                    DriverName = "Abebe",
+                                                    PlateNo_Prime = "3-123456",
+                                                    PlateNo_Trailer = "3-123457",
+                                                    PeriodYear = 2014,
+                                                    PeriodMonth = 12,
+                                                    Round = 1,
+                                                    UserProfileID = 1,
+                                                    DispatchDate = DateTime.Now,
+                                                    CreatedDate = DateTime.Now,
+                                                    Remark = "Sample Remark",
+                                                    DispatchedByStoreMan = "Kebede",
+                                                }
+
+                                       };
+            var dispatchRepositoyHub = new Mock<IGenericRepository<Dispatch>>();
+            dispatchRepositoyHub.Setup(
+                t =>
+                t.Get(It.IsAny<Expression<Func<Dispatch, bool>>>(),
+                      It.IsAny<Func<IQueryable<Dispatch>, IOrderedQueryable<Dispatch>>>(),
+                      It.IsAny<string>())).Returns(dispatchesHub);
+            dispatchRepositoyHub.Setup(t => t.FindById(It.IsAny<Guid>())).Returns((Guid id) => dispatchesHub.
+                                                                                                 FirstOrDefault(t => t.DispatchID == id));
+
+
+            var commodityTypes = new List<Cats.Models.CommodityType>()
+                                       {
+                                           new Cats.Models.CommodityType()
+                                                {
+                                                    CommodityTypeID = 1,
+                                                    Name = "Cereal"
+                                                },
+                                           new Cats.Models.CommodityType()
+                                                {
+                                                    CommodityTypeID = 2,
+                                                    Name = "CSB"
+                                                }         
+                                       };
+            var commodityTypeRepositoy = new Mock<Cats.Data.Repository.IGenericRepository<Cats.Models.CommodityType>>();
+            commodityTypeRepositoy.Setup(
+                t =>
+                t.Get(It.IsAny<Expression<Func<Cats.Models.CommodityType, bool>>>(),
+                      It.IsAny<Func<IQueryable<Cats.Models.CommodityType>, IOrderedQueryable<Cats.Models.CommodityType>>>(),
+                      It.IsAny<string>())).Returns(commodityTypes);
+            commodityTypeRepositoy.Setup(t => t.FindById(It.IsAny<int>())).Returns((int id) => commodityTypes.
+                                                                                                 FirstOrDefault(t => t.CommodityTypeID == id));
+
+            var commodityTypesHub = new List<CommodityType>()
                                        {
                                            new CommodityType()
                                                 {
@@ -77,28 +137,40 @@ namespace Cats.Tests.Service_Tests
                                                 {
                                                     CommodityTypeID = 2,
                                                     Name = "CSB"
-                                                }         
+                                                }
                                        };
-            var commodityTypeRepositoy = new Mock<IGenericRepository<CommodityType>>();
-            commodityTypeRepositoy.Setup(
+            var commodityTypeRepositoyHub = new Mock<IGenericRepository<CommodityType>>();
+            commodityTypeRepositoyHub.Setup(
                 t =>
                 t.Get(It.IsAny<Expression<Func<CommodityType, bool>>>(),
                       It.IsAny<Func<IQueryable<CommodityType>, IOrderedQueryable<CommodityType>>>(),
-                      It.IsAny<string>())).Returns(commodityTypes);
-            commodityTypeRepositoy.Setup(t => t.FindById(It.IsAny<int>())).Returns((int id) => commodityTypes.
+                      It.IsAny<string>())).Returns(commodityTypesHub);
+            commodityTypeRepositoyHub.Setup(t => t.FindById(It.IsAny<int>())).Returns((int id) => commodityTypesHub.
                                                                                                  FirstOrDefault(t => t.CommodityTypeID == id));
 
-            var transactionRepository = new Mock<IGenericRepository<Transaction>>();
-            transactionRepository.Setup(t => t.Add(It.IsAny<Transaction>())).Returns(true);
-            var transactionGroupRepository = new Mock<IGenericRepository<TransactionGroup>>();
-            transactionGroupRepository.Setup(t => t.Add(It.IsAny<TransactionGroup>())).Returns(true);
+            var transactionRepository = new Mock<Cats.Data.Repository.IGenericRepository<Cats.Models.Transaction>>();
+            transactionRepository.Setup(t => t.Add(It.IsAny<Cats.Models.Transaction>())).Returns(true);
+
+            var transactionRepositoryHub = new Mock<IGenericRepository<Transaction>>();
+            transactionRepositoryHub.Setup(t => t.Add(It.IsAny<Transaction>())).Returns(true);
+
+            var transactionGroupRepository = new Mock<Cats.Data.Repository.IGenericRepository<Cats.Models.TransactionGroup>>();
+            transactionGroupRepository.Setup(t => t.Add(It.IsAny<Cats.Models.TransactionGroup>())).Returns(true);
+
+            var transactionGroupRepositoryHub = new Mock<IGenericRepository<TransactionGroup>>();
+            transactionGroupRepositoryHub.Setup(t => t.Add(It.IsAny<TransactionGroup>())).Returns(true);
 
             unitOfWork.Setup(t => t.DispatchRepository).Returns(dispatchRepositoy.Object);
             unitOfWork.Setup(t => t.CommodityTypeRepository).Returns(commodityTypeRepositoy.Object);
             unitOfWork.Setup(t => t.TransactionRepository).Returns(transactionRepository.Object);
             unitOfWork.Setup(t => t.TransactionGroupRepository).Returns(transactionGroupRepository.Object);
             unitOfWork.Setup(t => t.Save());
-            _hubTransactionService = new TransactionService(unitOfWork.Object,null,null,null);
+            unitOfWorkHub.Setup(t => t.DispatchRepository).Returns(dispatchRepositoyHub.Object);
+            unitOfWorkHub.Setup(t => t.CommodityTypeRepository).Returns(commodityTypeRepositoyHub.Object);
+            unitOfWorkHub.Setup(t => t.TransactionRepository).Returns(transactionRepositoryHub.Object);
+            unitOfWorkHub.Setup(t => t.TransactionGroupRepository).Returns(transactionGroupRepositoryHub.Object);
+            unitOfWorkHub.Setup(t => t.Save());
+            _hubTransactionService = new TransactionService(unitOfWorkHub.Object, unitOfWork.Object, null,null,null);
         }
 
         [TearDown]
