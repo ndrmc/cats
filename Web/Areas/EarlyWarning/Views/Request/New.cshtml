@@ -1,5 +1,6 @@
 ﻿@using System.Collections
 @using Cats.Helpers
+@using Cats.Security
 @model Cats.Models.HRDPSNPPlan
 
 
@@ -76,8 +77,13 @@
                 <a href="javascript:;" class="remove" data-original-title="" title=""></a>
             </div>*@
             <div class="actions">
-                <a id="headersubmit" class="btn btn-circle btn-default btn-sm green-stripe loading-btn" data-loading-text="Saving..."><span class="fa fa-save"></span> @Html.Translate("Save")</a>
-                <a class="btn btn-circle btn-default btn-sm red-stripe" href="@Url.Action("Index", "Request")"><span class="fa fa-times"></span> @Html.Translate("Cancel")</a>
+                @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_request)
+                || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_regional_request))
+                {
+                    <a id="headersubmit" class="btn btn-circle btn-default btn-sm green-stripe loading-btn" data-loading-text="Saving..."><span class="fa fa-save"></span> @Html.Translate("Save")</a>
+                    <a class="btn btn-circle btn-default btn-sm red-stripe" href="@Url.Action("Index", "Request")"><span class="fa fa-times"></span> @Html.Translate("Cancel")</a>
+                }
+                
                 <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
             </div>
         </div>
@@ -233,8 +239,12 @@
 
 
                 <div class="form-footer" style="display: none;">
-                    <button class="btn btn-primary" id="formsubmit" type="submit" data-submittedform="frm_create_request"><span class="fa fa-save"></span> Save</button>
-                    <a class="btn  btn-default" href="@Url.Action("Index", "Request")"><span class="fa fa-lg fa-times-circle"></span> Cancel</a>
+                    @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_request)
+                    || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_regional_request))
+                    {
+                        <button class="btn btn-primary" id="formsubmit" type="submit" data-submittedform="frm_create_request"><span class="fa fa-save"></span> Save</button>
+                        <a class="btn  btn-default" href="@Url.Action("Index", "Request")"><span class="fa fa-lg fa-times-circle"></span> Cancel</a>
+                    }
                 </div>
             }
         </div>

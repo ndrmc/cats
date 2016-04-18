@@ -838,6 +838,10 @@ namespace Cats.Security
             {
                 return "PSNP plan history";
             }
+            if ((operation == Operation.Print_request))
+            {
+                return "Print request";
+            }
             if ((operation == Operation.Reject_Request))
             {
                 return "Reject_Request";
@@ -995,6 +999,10 @@ namespace Cats.Security
             /// Operation PSNP plan history
             /// </summary>
             PSNP_plan_history,
+            /// <summary>
+            /// Operation Print Request
+            /// </summary>
+            Print_request,
             /// <summary>
             /// Operation Reject_Request
             /// </summary>

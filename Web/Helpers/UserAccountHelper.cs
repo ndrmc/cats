@@ -218,22 +218,13 @@ namespace Cats.Helpers
 
             var psnpConstants = new PsnpConstants();
             var psnpCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.PSNP);
-
-            // If cache is null then force the user to sign-in again
-            if (null == ewCache)
-            {
-                Signout();
-                return false;
-            }
-
-            if (ewCache.CheckAccess(ewConstants.ItemName(operationEW), DateTime.Now) == AuthorizationType.Allow)
+            
+            if (ewCache.CheckAccess(ewConstants.ItemName(operationEW), DateTime.Now) == AuthorizationType.Allow
+                || psnpCache.CheckAccess(psnpConstants.ItemName(operationPSNP), DateTime.Now) == AuthorizationType.Allow)
             {
                 return true;
             }
-            if (psnpCache.CheckAccess(psnpConstants.ItemName(operationPSNP), DateTime.Now) == AuthorizationType.Allow)
-            {
-                return true;
-            }
+
             return false;
         }
 
@@ -252,6 +243,68 @@ namespace Cats.Helpers
             }
 
             if (ewCache.CheckAccess(ewConstants.ItemName(operationEW), DateTime.Now) == AuthorizationType.Allow)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool PsnpOperationCheck(PsnpConstants.Operation operationPsnp)
+        {
+            //return MvcHtmlString.Create(@"<a data-buttontype=" + dataButtontype + "  class=" + ccsClass + " href=" + url + ">" + text + "</a>");
+
+            var psnpConstants = new PsnpConstants();
+            var psnpCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.PSNP);
+
+            // If cache is null then force the user to sign-in again
+            if (null == psnpCache)
+            {
+                Signout();
+                return false;
+            }
+
+            if (psnpCache.CheckAccess(psnpConstants.ItemName(operationPsnp), DateTime.Now) == AuthorizationType.Allow)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool EarlyWarningRegionalOperationCheck(EarlyWarningConstants.Operation operationEW, RegionalConstants.Operation
+            operationRegional)
+        {
+            //return MvcHtmlString.Create(@"<a data-buttontype=" + dataButtontype + "  class=" + ccsClass + " href=" + url + ">" + text + "</a>");
+
+            var ewConstants = new EarlyWarningConstants();
+            var ewCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.EarlyWarning);
+
+            var regionalConstants = new RegionalConstants();
+            var regionalCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.Region);
+            
+            if (ewCache.CheckAccess(ewConstants.ItemName(operationEW), DateTime.Now) == AuthorizationType.Allow
+                || regionalCache.CheckAccess(regionalConstants.ItemName(operationRegional), DateTime.Now) == AuthorizationType.Allow)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool RegionalOperationCheck(RegionalConstants.Operation operationRegional)
+        {
+            //return MvcHtmlString.Create(@"<a data-buttontype=" + dataButtontype + "  class=" + ccsClass + " href=" + url + ">" + text + "</a>");
+
+            var regionalConstants = new RegionalConstants();
+            var regionalCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.Region);
+
+            // If cache is null then force the user to sign-in again
+            if (null == regionalCache)
+            {
+                Signout();
+                return false;
+            }
+
+            if (regionalCache.CheckAccess(regionalConstants.ItemName(operationRegional), DateTime.Now) == AuthorizationType.Allow)
             {
                 return true;
             }

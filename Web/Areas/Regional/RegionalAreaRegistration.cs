@@ -26,6 +26,7 @@ namespace Cats.Areas.Regional
                 defaults: new { controller = "Home", action = "Index" },
                 namespaces: new[] { "Cats.Areas.Regional.Controllers" }
                 );
+            
         }
     }
 }
