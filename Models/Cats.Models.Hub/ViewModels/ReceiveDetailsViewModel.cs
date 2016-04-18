@@ -16,7 +16,7 @@ namespace Cats.Models.Hubs.ViewModels
             SentQuantityInMt = 0;
             ReceivedQuantityInUnit = 0;
             ReceivedQuantityInMt = 0;
-
+            
         }
 
 
@@ -30,7 +30,7 @@ namespace Cats.Models.Hubs.ViewModels
         public int CommodityId { get; set; }
 
         [Display(Name = "Sub Commodity")]
-        public int? CommodityChildID { get; set; }
+        public int CommodityChildID  { get; set; }
 
         [Display(Name = "Description")]
         public string Description { get; set; }
@@ -85,6 +85,7 @@ namespace Cats.Models.Hubs.ViewModels
             model.ReceivedQuantityInUnit = ReceiveDetailModel.QuantityInUnit;
             model.CommodityGradeID = ReceiveDetailModel.CommodityGradeID;
             model.CommodityID = ReceiveDetailModel.CommodityID;
+            model.CommodityChildID = ReceiveDetailModel.CommodityChildID ?? 0;
             model.SentQuantityInMT = ReceiveDetailModel.SentQuantityInMT;
             model.SentQuantityInUnit = ReceiveDetailModel.SentQuantityInUnit;
             model.ReceiveID = ReceiveDetailModel.ReceiveID;

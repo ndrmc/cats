@@ -36,7 +36,7 @@
                         columns.Bound(p => p.Description).Width(100);
                         columns.ForeignKey(p => p.UnitId, (IEnumerable<Cats.Models.Hubs.UnitModel>)ViewBag.Units, "Id", "Name").EditorTemplateName("UnitEditor").Width(80);
                         //columns.ForeignKey(p => p.UnitId, Model.Units, "UnitID", "Name").Title(Html.Translate("Units"));
-                        //columns.Bound(p => p.CommodityId).Title(Html.Translate("Commodity ID")).Width(150);
+                      //  columns.Bound(p => p.CommodityId).Title(Html.Translate("Commodity ID")).Width(150);
                         columns.Bound(p => p.SentQuantityInUnit).Width(100);
                         columns.Bound(p => p.SentQuantityInMt).Width(100);
                         columns.Bound(p => p.ReceivedQuantityInUnit).Width(100);
