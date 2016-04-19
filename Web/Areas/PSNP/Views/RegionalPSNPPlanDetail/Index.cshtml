@@ -3,6 +3,7 @@
 @using Kendo.Mvc.UI;
 @using Cats.Models;
 @using Cats.Models.PSNP;
+@using Cats.Security
 @using LanguageHelpers.Localization
 @model System.Data.DataTable
 
@@ -130,9 +131,24 @@
                     </button>
                     <ul class="dropdown-menu pull-right">
                         @foreach (FlowTemplate actions in state.InitialStateFlowTemplates){
-                            <li class="edit_button">
-                                <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>
-                            </li>
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Complete_Plan) && actions.Name == "Complete")
+                            {
+                                <li class="edit_button">
+                                    <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>
+                                </li>
+                            }
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Reverse_Request) && actions.Name == "Complete")
+                            {
+                                <li class="edit_button">
+                                    <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>
+                                </li>
+                            }
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Approve_Request) && actions.Name == "Approve")
+                            {
+                                <li class="edit_button">
+                                    <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>
+                                </li>
+                            }
                         }
                         <li class="divider"></li>
                         <li class="edit_button">
@@ -147,14 +163,19 @@
                     <ul class="dropdown-menu pull-right">
                         @if (state.AllowedAccessLevel >= 2)
                         {
-                            <li><a class="btn green-haze-stripe" data-original-title="" title="" href="@Url.Action("Edit", "RegionalPSNPPlanDetail", new {Area = "PSNP", id = plan.RegionalPSNPPlanID})">Edit</a></li>
-                        }
-                        @*@if (state.AllowedAccessLevel <= 1)
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_PSNP_plan))
+                            {
+                                <li><a class="btn green-haze-stripe" data-original-title="" title="" href="@Url.Action("Edit", "RegionalPSNPPlanDetail", new {Area = "PSNP", id = plan.RegionalPSNPPlanID})">Edit</a></li>
+                            }
+                        }@*@if (state.AllowedAccessLevel <= 1)
                 {
                     <li><a href="@Url.Action("Delete", "RegionalPSNPPlan", new { Area = "PSNP", id = plan.RegionalPSNPPlanID })">@Html.Translate("Delete")</a></li>
                 }*@</ul>
                 </div>
-                <a class="btn green dropdown-toggle toolbar-btn" href="#" target="_blank" id="toolbar_button_print" title="Print"><i class="fa fa-print"></i> @Html.Translate("Print")</a>
+                @if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Print_request))
+                {
+                    <a class="btn green dropdown-toggle toolbar-btn" href="#" target="_blank" id="toolbar_button_print" title="Print"><i class="fa fa-print"></i> @Html.Translate("Print")</a>
+                }
                 @*<a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
             </div>
         </div>

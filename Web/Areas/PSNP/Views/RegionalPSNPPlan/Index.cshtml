@@ -3,6 +3,7 @@
 @using Cats.Models
 @using Cats.Services.Security;
 @using Cats.Helpers
+@using Cats.Security
 @model IEnumerable<RegionalPSNPPlan>
 
 @{
@@ -40,7 +41,10 @@
             <a href="javascript:;" class="remove" data-original-title="" title=""></a>
         </div>*@
         <div class="actions">
-            <a class="btn btn-circle btn-default green-sharp-stripe" data-buttontype="btn_new_record" href="@Url.Action("Create", "RegionalPSNPPlan")"><i class="fa fa-plus"></i> @Html.Translate("Create")</a>
+            @if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Add_new_plan))
+            {
+                <a class="btn btn-circle btn-default green-sharp-stripe" data-buttontype="btn_new_record" href="@Url.Action("Create", "RegionalPSNPPlan")"><i class="fa fa-plus"></i> @Html.Translate("Create")</a>
+            }
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
         </div>
     </div>
