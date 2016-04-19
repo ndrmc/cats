@@ -215,14 +215,16 @@
                           })
                           .ToolBar(toolbar =>
                           {
-                              if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition))
+                              if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition)
+                              || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_requisition))
                               {
                                   toolbar.Save();
                               }
                           })
                           .Editable(editable =>
                           {
-                              if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition))
+                              if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition)
+                              || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_requisition))
                               {
                                   editable.Mode(GridEditMode.InCell);
                               }
