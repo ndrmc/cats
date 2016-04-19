@@ -229,7 +229,10 @@ namespace Cats.Security
             {
                 return "Reject_Request";
             }
-
+            if ((operation == Operation.Requisition_Allocation))
+            {
+                return "Requisition Allocation";
+            }
             if ((operation == Operation.HRD_Summary))
             {
                 return "HRD Summary";
@@ -292,6 +295,10 @@ namespace Cats.Security
             {
                 return "Requisition exceptions";
             }
+            if ((operation == Operation.Requistion_Detail_Edit))
+            {
+                return "Requistion Detail Edit";
+            }
             if ((operation == Operation.Reverse_Request))
             {
                 return "Reverse_Request";
@@ -299,6 +306,10 @@ namespace Cats.Security
             if ((operation == Operation.Set_Default_Ration))
             {
                 return "Set Default Ration";
+            }
+            if ((operation == Operation.Send_To_Logistics))
+            {
+                return "Send To Logistics";
             }
             if ((operation == Operation.View_Approved_Gift_Certificate))
             {
@@ -668,6 +679,14 @@ namespace Cats.Security
             /// </summary>
             Requisition_exceptions,
             /// <summary>
+            /// Operation Requisition Detail Edit
+            /// </summary>
+            Requistion_Detail_Edit,
+            /// <summary>
+            /// Operation Requisition Allocation
+            /// </summary>
+            Requisition_Allocation,
+            /// <summary>
             /// Operation Reverse_Request
             /// </summary>
             Reverse_Request,
@@ -675,6 +694,10 @@ namespace Cats.Security
             /// Operation Set Default Ration
             /// </summary>
             Set_Default_Ration,
+            /// <summary>
+            /// Operation Send To Logistics
+            /// </summary>
+            Send_To_Logistics,
             /// <summary>
             /// Operation View Approved Gift Certificate
             /// </summary>
@@ -794,6 +817,10 @@ namespace Cats.Security
             {
                 return "Add new Ration";
             }
+            if ((operation == Operation.Add_Request))
+            {
+                return "Add Request";
+            }
             if ((operation == Operation.Add_new_resource_allocation))
             {
                 return "Add new resource allocation";
@@ -814,6 +841,10 @@ namespace Cats.Security
             {
                 return "Delete PSNP plan";
             }
+            if ((operation == Operation.Delete_Request))
+            {
+                return "Delete Request";
+            }
             if ((operation == Operation.Edit__plan))
             {
                 return "Edit  plan";
@@ -825,6 +856,10 @@ namespace Cats.Security
             if ((operation == Operation.Edit_ration))
             {
                 return "Edit ration";
+            }
+            if ((operation == Operation.Edit_requisition))
+            {
+                return "Edit requisition";
             }
             if ((operation == Operation.New_requisition))
             {
@@ -851,6 +886,18 @@ namespace Cats.Security
             {
                 return "Remove commodity";
             }
+            if ((operation == Operation.Request_Allocation))
+            {
+                return "Request Allocation";
+            }
+            if ((operation == Operation.Requisition_Allocation))
+            {
+                return "Requisition Allocation";
+            }
+            if ((operation == Operation.Requistion_Detail_Edit))
+            {
+                return "Requistion Detail Edit";
+            }
             if ((operation == Operation.Reverse_Request))
             {
                 return "Reverse_Request";
@@ -858,6 +905,10 @@ namespace Cats.Security
             if ((operation == Operation.Select_default_ration))
             {
                 return "Select default ration";
+            }
+            if ((operation == Operation.Send_To_Logistics))
+            {
+                return "Send To Logistics";
             }
             if ((operation == Operation.View__plan_menu_item))
             {
@@ -956,6 +1007,10 @@ namespace Cats.Security
             /// </summary>
             Add_new_Ration,
             /// <summary>
+            /// Operation Add Request
+            /// </summary>
+            Add_Request,
+            /// <summary>
             /// Operation Add new resource allocation
             /// </summary>
             Add_new_resource_allocation,
@@ -976,6 +1031,10 @@ namespace Cats.Security
             /// </summary>
             Delete_PSNP_plan,
             /// <summary>
+            /// Operation Delete Request
+            /// </summary>
+            Delete_Request,
+            /// <summary>
             /// Operation Edit  plan
             /// </summary>
             Edit__plan,
@@ -987,6 +1046,10 @@ namespace Cats.Security
             /// Operation Edit ration
             /// </summary>
             Edit_ration,
+            /// <summary>
+            /// Operation Edit requisition
+            /// </summary>
+            Edit_requisition,
             /// <summary>
             /// Operation New requisition
             /// </summary>
@@ -1012,6 +1075,18 @@ namespace Cats.Security
             /// </summary>
             Remove_commodity,
             /// <summary>
+            /// Operation Request Allocation
+            /// </summary>
+            Request_Allocation,
+            /// <summary>
+            /// Operation Requisition Allocation
+            /// </summary>
+            Requisition_Allocation,
+            /// <summary>
+            /// Operation Requistion Detail Edit
+            /// </summary>
+            Requistion_Detail_Edit,
+            /// <summary>
             /// Operation Reverse_Request
             /// </summary>
             Reverse_Request,
@@ -1019,6 +1094,10 @@ namespace Cats.Security
             /// Operation Select default ration
             /// </summary>
             Select_default_ration,
+            /// <summary>
+            /// Operation Send To Logistics
+            /// </summary>
+            Send_To_Logistics,
             /// <summary>
             /// Operation View  plan menu item
             /// </summary>

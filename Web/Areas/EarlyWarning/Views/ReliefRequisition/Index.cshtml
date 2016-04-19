@@ -71,17 +71,17 @@ Requistions
                 @if (item.StatusID == (int)ReliefRequisitionStatus.Draft)
                 {
                     if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition)
-                        || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.New_requisition))
+                        || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_requisition))
                     {
                         <a href="@Url.Action("Edit", "ReliefRequisition", new { Area = "EarlyWarning", id = item.RequisitionID })"><i class="fa fa-edit"></i></a>
                     }
-                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.New_requisition)
-                        || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.New_requisition))
+                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Send_To_Logistics)
+                        || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Send_To_Logistics))
                     {
                         <a href="@Url.Action("SendToLogistics", "ReliefRequisition", new { Area = "EarlyWarning", id = item.RequisitionID })"><i class="fa fa-ok"></i></a>
                     }
-                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition)
-                        || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.New_requisition))
+                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Requistion_Detail_Edit)
+                        || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Requistion_Detail_Edit))
                     {
                         <a href="@Url.Action("RequistionDetailEdit", "ReliefRequisition", new {Area = "EarlyWarning", id = item.RequisitionID})"><i class="fa fa-pencil"></i></a>
                     }

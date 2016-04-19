@@ -34,7 +34,8 @@ Ration
                     <a href="javascript:;" class="remove" data-original-title="" title=""></a>
                 </div>*@
             <div class="actions">
-                @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_ration))
+                @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_ration)
+                    || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Add_new_Ration))
                 {
                     <a data-buttontype="btn_new_record" id="btnCreate" class="btn btn-circle btn-default btn-sm green-stripe " href="@Url.Action("Create", "Ration")"><span class="fa fa-plus"> </span> @Html.Translate("New Ration")</a>
                 }
@@ -61,7 +62,8 @@ Ration
 
                   }).Events(ev =>
                   {
-                      if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_ration))
+                      if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_ration)
+                      || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_ration))
                       {
                           ev.DataBound("resetRowNumber");
                       }
