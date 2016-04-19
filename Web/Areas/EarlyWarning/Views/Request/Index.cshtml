@@ -61,11 +61,16 @@
         <div class="actions">
             @Html.EarlyWarningOperationButton(
                         @Url.Action("New", "Request", new { Area = "EarlyWarning" }),
-                        EarlyWarningConstants.Operation.Add_new_request, "<button type=\"button\" class=\"btn btn-success\"><i class='fa fa - plus - circle'></i>" + @Html.Translate("New Request") + "</button>", "btn", "btn_new_record")
+                        EarlyWarningConstants.Operation.Add_new_request, "<button type=\"button\" class=\"btn btn-success\">" +
+                        "<i class='fa fa - plus - circle'></i>" + @Html.Translate("New Request") + "</button>", "btn", "btn_new_record")
             @Html.RegionalOperationButton(
                         @Url.Action("New", "Request", new { Area = "EarlyWarning" }),
-                        RegionalConstants.Operation.Add_new_regional_request, "<button type=\"button\" class=\"btn btn-success\"><i class='fa fa - plus - circle'></i>" + @Html.Translate("New Request") + "</button>", "btn", "btn_new_record")
-
+                        RegionalConstants.Operation.Add_new_regional_request, "<button type=\"button\" class=\"btn btn-success\">" +
+                        "<i class='fa fa - plus - circle'></i>" + @Html.Translate("New Request") + "</button>", "btn", "btn_new_record")
+            @Html.PSNPOperationButton(
+                        @Url.Action("New", "Request", new { Area = "EarlyWarning" }),
+                        PsnpConstants.Operation.Add_Request, "<button type=\"button\" class=\"btn btn-success\">" +
+                        "<i class='fa fa - plus - circle'></i>" + @Html.Translate("New Request") + "</button>", "btn", "btn_new_record")
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
         </div>
     </div>
@@ -96,6 +101,7 @@
                 @if (item.StatusID == (int)RegionalRequestStatus.Draft)
                 {
                     if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request)
+                        || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Approve_Request)
                         || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Approve_regional_request))
                     {
                         @Html.ActionLink("Approve", "ApproveRequest", "Request", new {Area = "EarlyWarning", id = @item.RegionalRequestID})
@@ -104,6 +110,7 @@
                 else
                 {
                     if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request)
+                        || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Approve_Request)
                         || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Approve_regional_request))
                     {
                         @item.Status
@@ -115,10 +122,12 @@
                          Html.Translate("Action"))
                          .ClientTemplate("# if (StatusID == 1 || StatusID==5) { #" +
                                     "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; " +
-                                 "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Request_Allocation) + "' == 'True') { #" +
+                                 "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Request_Allocation) + "' == 'True'" +
+                                " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Request_Allocation) + "' == 'True') { #" +
                                     "<a href='" + Url.Action("Allocation", "Request", new { id = "#=RegionalRequestID#" }) + " '>Allocate</a>  " +
                                  "# } #" +
-                                 "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Delete_Request) + "' == 'True') { #" +
+                                 "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Delete_Request) + "' == 'True'" +
+                                " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Delete_Request) + "' == 'True') { #" +
                                     "<a onclick=\"return confirmDelete()\" href='" + Url.Action("Delete", "Request", new { id = "#=RegionalRequestID#" }) + " '>Delete</a>  " +
                                  "# } #" +
                                  "# } else { #" +

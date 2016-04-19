@@ -51,17 +51,21 @@ Requistions
                 <div class="table-responsive">
 
                     @(Html.Kendo().Grid<Cats.Areas.EarlyWarning.Models.ReliefRequisitionViewModel>().Name("Grid").Columns(columns =>
-{
-    columns.Template(t => { }).Title("N<u>o</u>").ClientTemplate("#= renderNumber(data) #").Width(50);
-    columns.Bound(requisition => requisition.RequisitionNo).Title("Requisition N<u>o</u>").ClientTemplate("<a href='" + Url.Action("Allocation", "ReliefRequisition", new { id = "#=RequisitionID#" }) + " '>#=RequisitionNo#</a>  ");
-    columns.Bound(requisition => requisition.Commodity);
-    columns.Bound(requisition => requisition.Region);
-    columns.Bound(requisition => requisition.Zone);
-    columns.Bound(requisition => requisition.MonthRound).Title("Round/Month").HeaderHtmlAttributes(new { @class = "number" });
-    columns.Bound(requisiton => requisiton.Program);
-    columns.Bound(t => t.RequestedDateEt).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).Width(160);
-    columns.Bound((t => t.RequestRefNo)).Title("Request No");
-    columns.Bound(requisition => requisition.Status).Template(
+                {
+                    columns.Template(t => { }).Title("N<u>o</u>").ClientTemplate("#= renderNumber(data) #").Width(50);
+                    columns.Bound(requisition => requisition.RequisitionNo).Title("Requisition N<u>o</u>")
+                        .ClientTemplate("# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Requisition_Allocation) + "' == 'True'" +
+                                " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Requisition_Allocation) + "' == 'True') { #" +
+                                    "<a href='" + Url.Action("Allocation", "ReliefRequisition", new { id = "#=RequisitionID#" }) + " '>#=RequisitionNo#</a>  " +
+                                "# } #");
+                    columns.Bound(requisition => requisition.Commodity);
+                    columns.Bound(requisition => requisition.Region);
+                    columns.Bound(requisition => requisition.Zone);
+                    columns.Bound(requisition => requisition.MonthRound).Title("Round/Month").HeaderHtmlAttributes(new { @class = "number" });
+                    columns.Bound(requisiton => requisiton.Program);
+                    columns.Bound(t => t.RequestedDateEt).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).Width(160);
+                    columns.Bound((t => t.RequestRefNo)).Title("Request No");
+                    columns.Bound(requisition => requisition.Status).Template(
 
             @<text>
                 @if (item.StatusID == (int)ReliefRequisitionStatus.Draft)
