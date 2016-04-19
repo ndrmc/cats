@@ -1897,7 +1897,7 @@ namespace Cats.Services.Hub
                 newDispatchAllocation.Unit = tempDispatchAllocation.Unit;
                 newDispatchAllocation.Year = tempDispatchAllocation.Year;
                 //newDispatchAllocation.DispatchAllocationID = Guid.Empty;
-                //newDispatchAllocation.DispatchAllocationID = Guid.NewGuid();
+                newDispatchAllocation.DispatchAllocationID = Guid.NewGuid();
                 _unitOfWork.DispatchAllocationRepository.Add(newDispatchAllocation);
                 _unitOfWork.Save();
                 if(newDispatchAllocation.RequisitionId.HasValue)
