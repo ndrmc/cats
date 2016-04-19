@@ -1,5 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition">
+  <DataSources>
+    <DataSource Name="CTSDataSet">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>4debd161-b905-4c55-b6f2-045ecd25a1c2</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="TPRL">
+      <Fields>
+        <Field Name="TransporterName">
+          <DataField>TransporterName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CommodityName">
+          <DataField>CommodityName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Source">
+          <DataField>Source</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="ShortageBirr">
+          <DataField>ShortageBirr</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="FreightCharge">
+          <DataField>FreightCharge</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="ReceivedQuantity">
+          <DataField>ReceivedQuantity</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="ShortageQuantity">
+          <DataField>ShortageQuantity</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="ShortageBirrInWords">
+          <DataField>ShortageBirrInWords</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="FreightChargeInWords">
+          <DataField>FreightChargeInWords</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="NoRecords">
+          <DataField>NoRecords</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>CTSDataSet</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <rd:DataSetInfo>
+        <rd:DataSetName>CTSDataSet</rd:DataSetName>
+        <rd:SchemaPath>C:\Users\Biruk T\Documents\cats\Web\CTSDataSet.xsd</rd:SchemaPath>
+        <rd:TableName>TPRL</rd:TableName>
+        <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
+        <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
+        <rd:TableAdapterName>TPRLTableAdapter</rd:TableAdapterName>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
   <Body>
     <ReportItems>
       <Tablix Name="content">
@@ -264,6 +331,75 @@
                 </TablixCell>
               </TablixCells>
             </TablixRow>
+            <TablixRow>
+              <Height>0.25in</Height>
+              <TablixCells>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Textbox3">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>=Fields!ReferenceNo.Value</Value>
+                              <Style>
+                                <FontFamily>Nyala</FontFamily>
+                                <FontSize>12pt</FontSize>
+                                <FontWeight>Bold</FontWeight>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>Textbox3</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Style>None</Style>
+                        </Border>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Textbox4">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value />
+                              <Style>
+                                <FontFamily>Tahoma</FontFamily>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>Textbox4</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Style>None</Style>
+                        </Border>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+              </TablixCells>
+            </TablixRow>
           </TablixRows>
         </TablixBody>
         <TablixColumnHierarchy>
@@ -277,12 +413,13 @@
             <TablixMember />
             <TablixMember />
             <TablixMember />
+            <TablixMember />
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>TPRL</DataSetName>
         <Top>0.17442in</Top>
         <Left>0.06572in</Left>
-        <Height>0.72222in</Height>
+        <Height>0.97222in</Height>
         <Width>7.25015in</Width>
         <Style>
           <Border>
@@ -374,7 +511,7 @@
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>TPRL</DataSetName>
-        <Top>1.32158in</Top>
+        <Top>1.37366in</Top>
         <Left>0.06572in</Left>
         <Height>0.40278in</Height>
         <Width>7.25016in</Width>
@@ -1274,74 +1411,6 @@
     <PageWidth>8.27in</PageWidth>
     <Style />
   </Page>
-  <AutoRefresh>0</AutoRefresh>
-  <DataSources>
-    <DataSource Name="CTSDataSet">
-      <ConnectionProperties>
-        <DataProvider>System.Data.DataSet</DataProvider>
-        <ConnectString>/* Local Connection */</ConnectString>
-      </ConnectionProperties>
-      <rd:DataSourceID>4debd161-b905-4c55-b6f2-045ecd25a1c2</rd:DataSourceID>
-    </DataSource>
-  </DataSources>
-  <DataSets>
-    <DataSet Name="TPRL">
-      <Query>
-        <DataSourceName>CTSDataSet</DataSourceName>
-        <CommandText>/* Local Query */</CommandText>
-      </Query>
-      <Fields>
-        <Field Name="TransporterName">
-          <DataField>TransporterName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="CommodityName">
-          <DataField>CommodityName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="Source">
-          <DataField>Source</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="ShortageBirr">
-          <DataField>ShortageBirr</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="FreightCharge">
-          <DataField>FreightCharge</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="ReceivedQuantity">
-          <DataField>ReceivedQuantity</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="ShortageQuantity">
-          <DataField>ShortageQuantity</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="ShortageBirrInWords">
-          <DataField>ShortageBirrInWords</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="FreightChargeInWords">
-          <DataField>FreightChargeInWords</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="NoRecords">
-          <DataField>NoRecords</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-      </Fields>
-      <rd:DataSetInfo>
-        <rd:DataSetName>CTSDataSet</rd:DataSetName>
-        <rd:SchemaPath>C:\Users\Biruk T\Documents\cats\Web\CTSDataSet.xsd</rd:SchemaPath>
-        <rd:TableName>TPRL</rd:TableName>
-        <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
-        <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
-        <rd:TableAdapterName>TPRLTableAdapter</rd:TableAdapterName>
-      </rd:DataSetInfo>
-    </DataSet>
-  </DataSets>
   <EmbeddedImages>
     <EmbeddedImage Name="Embelem">
       <MIMEType>image/png</MIMEType>
@@ -1991,6 +2060,6 @@ CJk1xpVt3aZsLYUIIRQkhJAIOmHNMdkI4BsA+rkkhBAybfqVLd2obCvb9xJCQUIIKZBBAN8BsA7AHwA4
 JbZAWcvlIWTO6dYEyGtgtzxCCAUJIaSKScCtOwGsyfC/CWvmySfBrl2EzAbjAA7Basf7EqzJ6YQQQkFCCCEhnFOvx2EVxn9SvT4N4GNcHkIK5h1Y0Y9D6sWCdEIIBQkhhBRJFpZH93UAfwqrjbAuUG7nEhHicNonQAa5JIQQChJCCJldBuG2IIUSKPep1ycBfIRLRKqII0p42A0jKEAIIRQkhBBSAoGi1580a+LkPiVQ2MGLLATSSoAc1kQIp6MTQihICCGkzBiHO/vE5iPa62MAtnKZSAXQCasG5Ij2IoQQChJCCKlA/Ie5pZo4+QiA/eAUeVJa+gEcVfepLUKYfkUIoSAhhJAFyiCCUZTVsKbH66/9XCoyBxyFNQldf/VwWQghFCSEEFLd9KjXa76P3xny2sDlIgXQFSI8TnJZCCGEgoQQQooh7BC5WBMnd6vXnbAmzpPqI6HukePqZd8zI1waQgihICGEkLlgBG6bVZ2tSphs1d5eC0ZUFgpdALqV2OhUL/ttQgghFCSEEFJyOnMcTvcrYbJWEy0r1NukfDgJq8C8E9aQwS71OsqlIYQQChJCCKlkjuY41C4FcJsSLCtgTZ9vhpUKZn+OzJzLsBoaHIfVHvq0Eh9d2ucIIYRQkBBCSNUxqF65vPC1cKMpd6r3b1OCRRctt6N6alkSSlToYmNQvZ2GW/tzWn0tIYSQMkVIKbkKhBBSgez/+ou5Pm0LFsBKFVut3m5QwsVPLjFTbAvkfCLgOIBsxOey6vM2PbBqN6AJDkJIBEe/+zkuAqk4/v8BAHh2Zv100HCTAAAAAElFTkSuQmCC</ImageData>
     </EmbeddedImage>
   </EmbeddedImages>
-  <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>0f35cea5-6243-4b98-993e-f8de12cdd9c0</rd:ReportID>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
 </Report>
