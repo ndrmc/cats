@@ -1,5 +1,6 @@
 ﻿@using Cats.Areas.Procurement.Models
 @using Cats.Helpers
+@using Cats.Security
 @using DocumentFormat.OpenXml.Drawing.Diagrams
 @{
 
@@ -16,7 +17,10 @@
 
 @section Toolbar
 {
-    <a class="btn default  grey-salt toolbar-btn" href="@Url.Action("Print", "RFQ", new {Area = "Procurement", bidID = @ViewBag.bid, regionID = @ViewBag.reg})"><i class="fa fa-print"></i> @Html.Translate("Print RFQ")</a>
+    @if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Print_RFQ))
+    {
+        <a class="btn default  grey-salt toolbar-btn" href="@Url.Action("Print", "RFQ", new {Area = "Procurement", bidID = @ViewBag.bid, regionID = @ViewBag.reg})"><i class="fa fa-print"></i> @Html.Translate("Print RFQ")</a>
+    }
 }
 
 @section Scripts{

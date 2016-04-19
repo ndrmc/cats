@@ -1,5 +1,6 @@
 ﻿@using Cats.Areas.Procurement.Models
 @using Cats.Helpers
+@using Cats.Security
 @using Kendo.Mvc.UI
 @{
     ViewBag.Title = "Generate Winners";
@@ -28,7 +29,10 @@
             <span class="caption-helper">  </span>
         </div>
         <div class="actions">
-            <a class="btn btn-circle btn-default green-sharp-stripe toolbar-btn " data-toggle="modal" data-target="#myModal"><i class="fa fa-asterisk"></i> @Html.Translate("Generate")</a>
+            @if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Generate_Winners_for_a_bid))
+            {
+                <a class="btn btn-circle btn-default green-sharp-stripe toolbar-btn " data-toggle="modal" data-target="#myModal"><i class="fa fa-asterisk"></i> @Html.Translate("Generate")</a>
+            }
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
         </div>
     </div>

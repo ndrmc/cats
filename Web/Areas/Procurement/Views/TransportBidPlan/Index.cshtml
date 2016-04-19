@@ -34,7 +34,8 @@
         </div>
 
         <div class="actions">
-          @if (LogisticsConstants.Operation.Add_Bid_Plan.ToString() == "Add_Bid_Plan")
+          @if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Add_Bid_Plan)
+            || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Create_new_bid_plan))
           {
               <a class="btn btn-circle btn-default green-stripe toolbar-btn" href="@Url.Action("Create", "TransportBidPlan")">
 
@@ -56,15 +57,18 @@
 
                   columns.Command(command =>
                   {
-                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_Bid_Plan).ToString() == "Edit_Bid_Plan")
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_Bid_Plan).ToString() == "Edit_Bid_Plan"
+                      || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Edit_bid_plan))
                       {
                           command.Custom("Edit").Click("editRecord");
                       }
-                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Warehouse_selection).ToString() == "Warehouse_selection")
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Warehouse_selection).ToString() == "Warehouse_selection"
+                      || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Transport_warehouse_assignment))
                       {
                           command.Custom("Warehouse Selection").Click("selectWarehouse");
                       }
-                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Bid_Plan).ToString() == "Delete_Bid_Plan")
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Bid_Plan).ToString() == "Delete_Bid_Plan"
+                      || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Delete_bid_plan))
                       {
                           command.Custom("Delete").Click("deleteRecord");
                       }

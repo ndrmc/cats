@@ -1,4 +1,5 @@
 ﻿@using Cats.Helpers
+@using Cats.Security
 @using Kendo.Mvc.UI
 @model IEnumerable<Cats.Procurement.Models.TransporterPOCO>
 @{
@@ -33,7 +34,10 @@
             <a href="javascript:;" class="remove" data-original-title="" title=""></a>
         </div>
         <div class="actions">
-            <a class="btn btn-circle btn-default btn-sm green-stripe" data-buttontype="btn_new_record" href="@Url.Action("Create", "Transporter")"><i class="fa fa-plus-circle"></i> @Html.Translate("Create Transporter")</a>
+            @if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Create_Transporter))
+            {
+                <a class="btn btn-circle btn-default btn-sm green-stripe" data-buttontype="btn_new_record" href="@Url.Action("Create", "Transporter")"><i class="fa fa-plus-circle"></i> @Html.Translate("Create Transporter")</a>
+            }
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
         </div>
     </div>
@@ -52,8 +56,14 @@
                   {
                       //command.Edit(); 
                       //  command.Custom("Edit").Click("editRecordAjax");
-                      command.Custom("Edit").Click("editRecord");
-                      command.Destroy();
+                      if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Edit_Transporter))
+                      {
+                          command.Custom("Edit").Click("editRecord");
+                      }
+                      if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Delete_Transporter))
+                      {
+                          command.Destroy();
+                      }
                   }).Width(330);
               })
 

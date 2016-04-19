@@ -34,9 +34,14 @@
         ProcurementCheckAccess.Operation.Create_New_Bid_Proposal,
         "<i class=\"icon-plus\"></i>", "btn", "btn_new_record"
         )*@
-
-    <a id="btnAddProposal" data-buttontype="btn_new_record" class="btn btn-fit-height grey-salt" href="@Url.Action("Create", "PriceQuotation")"><i class="fa fa-plus-circle"></i> @Html.Translate("Create New Bid")</a>
-    <a id="btnAddProposal" data-buttontype="btn_new_record" class="btn btn-fit-height grey-salt" href="@Url.Action("RevertWinners", "PriceQuotation")"><i class="fa fa-plus-circle"></i> @Html.Translate("Revert A plan")</a>
+    @if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Create_Price_Quotation))
+    {
+        <a id="btnAddProposal" data-buttontype="btn_new_record" class="btn btn-fit-height grey-salt" href="@Url.Action("Create", "PriceQuotation")"><i class="fa fa-plus-circle"></i> @Html.Translate("Create New Bid")</a>
+    }
+    @if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Revert_Winners))
+    {
+        <a id="btnAddProposal" data-buttontype="btn_new_record" class="btn btn-fit-height grey-salt" href="@Url.Action("RevertWinners", "PriceQuotation")"><i class="fa fa-plus-circle"></i> @Html.Translate("Revert A plan")</a>
+    }
 }
 
 
@@ -77,8 +82,14 @@
 
                       columns.Command(p =>
                       {
-                          p.Custom("Edit").Click("edit_Proposal");
-                          p.Custom("Approve").Click("approve_Proposal");
+                          if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Edit_Bid_Proposal))
+                          {
+                              p.Custom("Edit").Click("edit_Proposal");
+                          }
+                          if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Approve_bid))
+                          {
+                              p.Custom("Approve").Click("approve_Proposal");
+                          }
                           // p.Custom("Delete").Click("delete_proposal");
 
                       }).Width(250);

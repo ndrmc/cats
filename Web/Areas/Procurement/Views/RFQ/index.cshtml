@@ -1,4 +1,5 @@
 ﻿@using Cats.Helpers
+@using Cats.Security
 @model  IEnumerable<Cats.Models.TransportBidQuotation>
 
 @{
@@ -27,7 +28,10 @@
                 @Html.DropDownList("BidID", null, "--- Select Bid ---", new {@class = "form-control"})
             </div>
             <div class="col-md-4">
-                <input type="submit" value="Select" class="btn btn-default" />
+                @if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.View_Request_For_Quotation))
+                {
+                    <input type="submit" value="Select" class="btn btn-default"/>
+                }
             </div>
         </div>@*
             <div class="control-group">
@@ -36,8 +40,8 @@
                     @Html.DropDownList("RegionID")
                 </div>
             </div>*@
-        
-    }
+
+                }
 </div>
 <div class="portlet light bordered">
     <div class="portlet-title">
