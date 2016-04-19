@@ -1,6 +1,7 @@
 ﻿@using Cats.Areas.Procurement.Models
 @using Kendo.Mvc.UI
 @using Cats.Helpers
+@using Cats.Security
 
 @model Cats.Models.ViewModels.TransportRequisitionWithTransporter
 
@@ -21,31 +22,38 @@
 
 <div>
 @(Html.Kendo().Grid<TransportOrderViewModel>().Name("Grid").Columns(columns =>
-      {
-          columns.Template(t => { }).Title("No").ClientTemplate(
-             "#= renderNumber(data) #").Width(30);
-          columns.Bound(to => to.ContractNumber).Width(200).ClientTemplate("<a href='" + Url.Action("TransportContract", "TransportOrder", new { Area = "Hub", id = "#=TransportOrderID#" }) + " '>#=ContractNumber#</a>  ").HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;" });
-   
-    columns.Bound(to => to.Transporter).Width(100);
-    columns.Bound(to => to.BidDocumentNo).Width(70).Title(Html.Translate("Bid Document #")).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal" });;
-    columns.Bound(to => to.OrderExpiryDateET).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
-    columns.Bound(to => to.StartDate).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
-    columns.Bound(to => to.EndDate).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
-    columns.Bound(to => to.RequestedDispatchDateET).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
-    columns.Bound(to => to.TransportOrderNo).Width(100).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal" }); ;
-    columns.Bound(to => to.Status).Width(60);
+{
+if (HubConstants.isValidOperation(HubConstants.Operation.View_transport_order_list).ToString() == "View_transport_order_list")
+{
+    columns.Template(t => { }).Title("No").ClientTemplate(
+        "#= renderNumber(data) #").Width(30);
+    columns.Bound(to => to.ContractNumber).Width(200).ClientTemplate("<a href='" + Url.Action("TransportContract", "TransportOrder", new {Area = "Hub", id = "#=TransportOrderID#"}) + " '>#=ContractNumber#</a>  ").HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
+}
+columns.Bound(to => to.Transporter).Width(100);
+columns.Bound(to => to.BidDocumentNo).Width(70).Title(Html.Translate("Bid Document #")).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal" });;
+columns.Bound(to => to.OrderExpiryDateET).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
+columns.Bound(to => to.StartDate).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
+columns.Bound(to => to.EndDate).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
+columns.Bound(to => to.RequestedDispatchDateET).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
+columns.Bound(to => to.TransportOrderNo).Width(100).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal" }); ;
+columns.Bound(to => to.Status).Width(60);
+if (HubConstants.isValidOperation(HubConstants.Operation.New_dispatch_to_FDPs).ToString() == "New_dispatch_to_FDPs")
+{
+    columns.Bound(to => to.TransportOrderID).Width(120).ClientTemplate("<a href='" + Url.Action("GenerateDispatchAllocation", "TransportOrder", new {Area = "Procurement", id = "#=TransportOrderID#"}) + " '>Create Dispatch Plan</a>  ").HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal"});
+}
+    if (HubConstants.isValidOperation(HubConstants.Operation.Close_dispatch_plan_to_FDPs).ToString() == "Close_dispatch_plan_to_FDPs")
+    {
+        columns.Command(to => to.Custom("Reject").Click("onReject")).Width(70).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal"});
+        ;
 
-    columns.Bound(to => to.TransportOrderID).Width(120).ClientTemplate("<a href='" + Url.Action("GenerateDispatchAllocation", "TransportOrder", new { Area = "Procurement", id = "#=TransportOrderID#" }) + " '>Create Dispatch Plan</a>  ").HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal" });
-    columns.Command(to => to.Custom("Reject").Click("onReject")).Width(70).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal" }); ; 
+    }
 
 
-
-
-      })
+})
      .Scrollable()
      .Filterable()
      .Sortable()
-     
+
     .DataSource(dataSource => dataSource
         .Ajax()
         .Model(model =>model.Id(p => p.TransportOrderID))

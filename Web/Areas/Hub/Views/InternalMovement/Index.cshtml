@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<Cats.Models.Hubs.ViewModels.InternalMovementLogViewModel>
 @using Cats.Web.Hub.Helpers
+@using Cats.Security
 @{
     ViewBag.Title = Html.Translate("Internal Movment");
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,10 +9,13 @@
 
 
 @Html.Partial("DisplayHub")
-
+                      @if (HubConstants.isValidOperation(HubConstants.Operation.New_internal_movement).ToString() == "New_internal_movement")
+                      {
 <p>
+
     List of Internal Movments in your current warehouse, Please click @Html.ActionLink("New internal movement", "Create", "InternalMovement") to move itmes.
 </p>
+}
 <div style="margin-bottom:20px;">
         
 </div>

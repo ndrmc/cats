@@ -1900,7 +1900,16 @@ namespace Cats.Services.Hub
                 newDispatchAllocation.DispatchAllocationID = Guid.NewGuid();
                 _unitOfWork.DispatchAllocationRepository.Add(newDispatchAllocation);
                 _unitOfWork.Save();
-                if(newDispatchAllocation.RequisitionId.HasValue)
+                daModel.SIPCAllocation allocation = new daModel.SIPCAllocation
+                {
+                    Code = 000,
+                    AllocatedAmount = newDispatchAllocation.Amount,
+                    AllocationType = "SI",
+                   
+                };
+                _unitOfWorkNew.SIPCAllocationRepository.Add(allocation);
+                _unitOfWorkNew.Save();
+                if (newDispatchAllocation.RequisitionId.HasValue)
                 PostSIAllocation(newDispatchAllocation.RequisitionId.Value);
             }
            
