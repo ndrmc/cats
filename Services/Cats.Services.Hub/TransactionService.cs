@@ -1892,7 +1892,7 @@ namespace Cats.Services.Hub
                 newDispatchAllocation.ProjectCodeID = tempDispatchAllocation.ProjectCodeID;
                 newDispatchAllocation.RequisitionNo = tempDispatchAllocation.RequisitionNo;
                 newDispatchAllocation.Round = tempDispatchAllocation.Round;
-              
+                newDispatchAllocation.RequisitionId = tempDispatchAllocation.RequisitionId;
                 newDispatchAllocation.TransporterID = tempDispatchAllocation.TransporterID;
                 newDispatchAllocation.Unit = tempDispatchAllocation.Unit;
                 newDispatchAllocation.Year = tempDispatchAllocation.Year;
@@ -1900,15 +1900,22 @@ namespace Cats.Services.Hub
                 newDispatchAllocation.DispatchAllocationID = Guid.NewGuid();
                 _unitOfWork.DispatchAllocationRepository.Add(newDispatchAllocation);
                 _unitOfWork.Save();
-                daModel.SIPCAllocation allocation = new daModel.SIPCAllocation
+                var allocationFirst = _unitOfWorkNew.SIPCAllocationRepository.Get(t => t.ReliefRequisitionDetail.RequisitionID == newDispatchAllocation.RequisitionId.Value).FirstOrDefault();
+                if (allocationFirst != null)
                 {
-                    Code = 000,
-                    AllocatedAmount = newDispatchAllocation.Amount,
-                    AllocationType = "SI",
-                   
-                };
-                _unitOfWorkNew.SIPCAllocationRepository.Add(allocation);
-                _unitOfWorkNew.Save();
+                    daModel.SIPCAllocation allocation = new daModel.SIPCAllocation();
+
+                    allocation.Code = newDispatchAllocation.ShippingInstructionID.Value;
+                    allocation.AllocatedAmount = dispatchViewModel.Quantity;
+                    allocation.AllocationType = allocationFirst.AllocationType;
+                    allocation.RequisitionDetailID = allocationFirst.RequisitionDetailID;
+                    _unitOfWorkNew.SIPCAllocationRepository.Add(allocation);
+                    _unitOfWorkNew.Save();
+
+
+                }
+               
+              
                 if (newDispatchAllocation.RequisitionId.HasValue)
                 PostSIAllocation(newDispatchAllocation.RequisitionId.Value);
             }
