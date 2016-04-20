@@ -78,6 +78,7 @@
             </div>*@
             <div class="actions">
                 @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_request)
+                || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Add_Request)
                 || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_regional_request))
                 {
                     <a id="headersubmit" class="btn btn-circle btn-default btn-sm green-stripe loading-btn" data-loading-text="Saving..."><span class="fa fa-save"></span> @Html.Translate("Save")</a>
@@ -240,6 +241,7 @@
 
                 <div class="form-footer" style="display: none;">
                     @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_request)
+                    || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Add_Request)
                     || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_regional_request))
                     {
                         <button class="btn btn-primary" id="formsubmit" type="submit" data-submittedform="frm_create_request"><span class="fa fa-save"></span> Save</button>

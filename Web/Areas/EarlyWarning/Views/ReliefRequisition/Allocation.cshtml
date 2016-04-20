@@ -55,11 +55,13 @@
                 <div class="btn-group">
                     <button class="btn green dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis"></i> Action <i class="fa fa-angle-down"></i></button>
                     <ul class="dropdown-menu pull-right" style="-moz-min-width: 120px; -ms-min-width: 120px; -o-min-width: 120px; -webkit-min-width: 120px; min-width: 120px;">
-                        @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition))
+                        @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition)
+                            || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_requisition))
                         {
                             <li><a class="btn green-haze-stripe" data-buttontype="btn_edit" href="@Url.Action("Edit", "ReliefRequisition", new {id = @Model.RequisitionID})"> Edit</a></li>
                         }
-                        @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Requisition))
+                        @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Requisition)
+                            || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Approve_Monthly_relife_requisitions))
                         {
                             <li><a href="@Url.Action("SendToLogistics", "ReliefRequisition", new {id = Model.RequisitionID})" class="btn green-haze-stripe  btn-Approve-allocation"> @Html.Translate("Approve")</a></li>
                         }
@@ -213,14 +215,16 @@
                           })
                           .ToolBar(toolbar =>
                           {
-                              if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition))
+                              if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition)
+                              || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_requisition))
                               {
                                   toolbar.Save();
                               }
                           })
                           .Editable(editable =>
                           {
-                              if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition))
+                              if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition)
+                              || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_requisition))
                               {
                                   editable.Mode(GridEditMode.InCell);
                               }
