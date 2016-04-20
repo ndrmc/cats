@@ -311,6 +311,48 @@ namespace Cats.Helpers
             return false;
         }
 
+        public static bool ProcurementOperationCheck(ProcurementConstants.Operation operationProcurement)
+        {
+            //return MvcHtmlString.Create(@"<a data-buttontype=" + dataButtontype + "  class=" + ccsClass + " href=" + url + ">" + text + "</a>");
+
+            var procurementConstants = new ProcurementConstants();
+            var procurementCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.Procurement);
+
+            // If cache is null then force the user to sign-in again
+            if (null == procurementCache)
+            {
+                Signout();
+                return false;
+            }
+
+            if (procurementCache.CheckAccess(procurementConstants.ItemName(operationProcurement), DateTime.Now) == AuthorizationType.Allow)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool LogisticsOperationCheck(LogisticsConstants.Operation operationLogistics)
+        {
+            //return MvcHtmlString.Create(@"<a data-buttontype=" + dataButtontype + "  class=" + ccsClass + " href=" + url + ">" + text + "</a>");
+
+            var logisticsConstants = new LogisticsConstants();
+            var logisticsCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.Logistics);
+
+            // If cache is null then force the user to sign-in again
+            if (null == logisticsCache)
+            {
+                Signout();
+                return false;
+            }
+
+            if (logisticsCache.CheckAccess(logisticsConstants.ItemName(operationLogistics), DateTime.Now) == AuthorizationType.Allow)
+            {
+                return true;
+            }
+            return false;
+        }
+
         private static MvcHtmlString Signout()
         {
             FormsAuthentication.SignOut();

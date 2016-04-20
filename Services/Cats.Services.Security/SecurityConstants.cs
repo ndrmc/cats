@@ -1706,13 +1706,37 @@ namespace Cats.Security
         /// <returns>The Operation Name.</returns>
         public virtual string ItemName(Operation operation)
         {
+            if ((operation == Operation.Active_bid))
+            {
+                return "Active bid";
+            }
+            if ((operation == Operation.Approve_bid))
+            {
+                return "Approve bid";
+            }
             if ((operation == Operation.Assign_Transporter))
             {
                 return "Assign Transporter";
             }
+            if ((operation == Operation.Bid_detail_update))
+            {
+                return "Bid detail update";
+            }
             if ((operation == Operation.Bid_Planning))
             {
                 return "Bid Planning";
+            }
+            if ((operation == Operation.Create_Transporter))
+            {
+                return "Create Transporter";
+            }
+            if ((operation == Operation.Close_bid))
+            {
+                return "Close bid";
+            }
+            if ((operation == Operation.Create_Price_Quotation))
+            {
+                return "Create Price Quotation";
             }
             if ((operation == Operation.Create_new_bid))
             {
@@ -1726,6 +1750,10 @@ namespace Cats.Security
             {
                 return "Create New Bid Proposal";
             }
+            if ((operation == Operation.Delete_Transporter))
+            {
+                return "Delete Transporter";
+            }
             if ((operation == Operation.Delete_bid_plan))
             {
                 return "Delete bid plan";
@@ -1737,6 +1765,10 @@ namespace Cats.Security
             if ((operation == Operation.Delete_Transport_Supplier))
             {
                 return "Delete Transport Supplier";
+            }
+            if ((operation == Operation.Edit_Transporter))
+            {
+                return "Edit Transporter";
             }
             if ((operation == Operation.Edit_bid))
             {
@@ -1801,6 +1833,10 @@ namespace Cats.Security
             if ((operation == Operation.Print_RFQ))
             {
                 return "Print RFQ";
+            }
+            if ((operation == Operation.Revert_Winners))
+            {
+                return "Revert Winners";
             }
             if ((operation == Operation.Request_Approval))
             {
@@ -1878,6 +1914,10 @@ namespace Cats.Security
             {
                 return "View Winners for Contract";
             }
+            if ((operation == Operation.Woreda_Bid_Status))
+            {
+                return "View Woreda Bid Status";
+            }
             if ((operation == Operation.Winners_Dispatch_Locations))
             {
                 return "Winners Dispatch Locations";
@@ -1892,13 +1932,37 @@ namespace Cats.Security
         public enum Operation
         {
             /// <summary>
+            /// Operation Active bid
+            /// </summary>
+            Active_bid,
+            /// <summary>
+            /// Operation Approve bid
+            /// </summary>
+            Approve_bid,
+            /// <summary>
             /// Operation Assign Transporter
             /// </summary>
             Assign_Transporter,
             /// <summary>
+            /// Operation Bid detail update
+            /// </summary>
+            Bid_detail_update,
+            /// <summary>
             /// Operation Bid Planning
             /// </summary>
             Bid_Planning,
+            /// <summary>
+            /// Operation Create Transporter
+            /// </summary>
+            Create_Transporter,
+            /// <summary>
+            /// Operation Close bid
+            /// </summary>
+            Close_bid,
+            /// <summary>
+            /// Operation Close bid
+            /// </summary>
+            Create_Price_Quotation,
             /// <summary>
             /// Operation Create new bid
             /// </summary>
@@ -1912,6 +1976,10 @@ namespace Cats.Security
             /// </summary>
             Create_New_Bid_Proposal,
             /// <summary>
+            /// Operation Delete Transporter
+            /// </summary>
+            Delete_Transporter,
+            /// <summary>
             /// Operation Delete bid plan
             /// </summary>
             Delete_bid_plan,
@@ -1923,6 +1991,10 @@ namespace Cats.Security
             /// Operation Delete Transport Supplier
             /// </summary>
             Delete_Transport_Supplier,
+            /// <summary>
+            /// Operation Edit Transporter
+            /// </summary>
+            Edit_Transporter,
             /// <summary>
             /// Operation Edit bid
             /// </summary>
@@ -1987,6 +2059,10 @@ namespace Cats.Security
             /// Operation Print RFQ
             /// </summary>
             Print_RFQ,
+            /// <summary>
+            /// Operation Revert Winners
+            /// </summary>
+            Revert_Winners,
             /// <summary>
             /// Operation Request Approval
             /// </summary>
@@ -2063,6 +2139,10 @@ namespace Cats.Security
             /// Operation View Winners for Contract
             /// </summary>
             View_Winners_for_Contract,
+            /// <summary>
+            /// Operation View Woreda Bid Status
+            /// </summary>
+            Woreda_Bid_Status,
             /// <summary>
             /// Operation Winners Dispatch Locations
             /// </summary>
