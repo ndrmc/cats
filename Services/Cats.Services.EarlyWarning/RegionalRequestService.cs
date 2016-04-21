@@ -273,7 +273,6 @@ namespace Cats.Services.EarlyWarning
 
                     if (hrd != null)
                     {
-
                         var lastRequest =
                             _unitOfWork.RegionalRequestRepository.FindBy(
                                 r => r.RegionID == plan.RegionID && r.ProgramId == (int)Programs.Releif && r.PlanID == plan.PlanID).
@@ -290,9 +289,6 @@ namespace Cats.Services.EarlyWarning
                                                      select detail.WoredaID).ToList();
                             beneficiaryInfos = LastReliefRequest(lastRequest, applicableWoredas);
                             // var lastRequestDetail = LastReliefRequest(lastRequest);
-
-
-
                         }
                         else
                         {
@@ -324,10 +320,10 @@ namespace Cats.Services.EarlyWarning
                     foreach (var woreda in woredas)
                     {
                         AdminUnit woreda1 = woreda;
-                        List<FDP> WoredaFDPs =
+                        List<FDP> woredaFdPs =
                             _unitOfWork.FDPRepository.FindBy(w => w.AdminUnitID == woreda1.AdminUnitID);
                         ICollection<BeneficiaryInfo> woredabeneficiaries =
-                            (from FDP fdp in WoredaFDPs
+                            (from FDP fdp in woredaFdPs
                              select new BeneficiaryInfo { FDPID = fdp.FDPID, FDPName = fdp.Name, Beneficiaries = 0 }).
                                 ToList();
                         benficiaries.AddRange(woredabeneficiaries);
@@ -361,10 +357,12 @@ namespace Cats.Services.EarlyWarning
             List<BeneficiaryInfo> benficiaries = new List<BeneficiaryInfo>();
             foreach (var psnpPlan in plan.RegionalPSNPPlanDetails.Where(m=>m.StartingMonth<=month))
             {
-                List<FDP> WoredaFDPs = _unitOfWork.FDPRepository.FindBy(w => w.AdminUnitID == psnpPlan.PlanedWoredaID
-                    && w.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID);
+                List<FDP> woredaFdPs = _unitOfWork.FDPRepository.FindBy(w => w.AdminUnitID == psnpPlan.PlanedWoredaID
+                                                                             &&
+                                                                             w.AdminUnit.AdminUnit2.AdminUnit2
+                                                                                 .AdminUnitID == regionID);
                 ICollection<BeneficiaryInfo> woredaBeneficiaries =
-               (from FDP fdp in WoredaFDPs
+               (from FDP fdp in woredaFdPs
                 select
                     new BeneficiaryInfo { FDPID = fdp.FDPID, FDPName = fdp.Name, Beneficiaries = 0 })
                    .ToList();

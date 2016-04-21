@@ -12,7 +12,11 @@
   <DataSets>
     <DataSet Name="TPRL">
       <Fields>
-        <Field Name="TransporterName">
+         <Field Name="ReferenceNo">
+          <DataField>ReferenceNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+          <Field Name="TransporterName">
           <DataField>TransporterName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
