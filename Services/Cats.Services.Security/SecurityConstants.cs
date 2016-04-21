@@ -287,6 +287,10 @@ namespace Cats.Security
             {
                 return "Ration- Add new item";
             }
+            if ((operation == Operation.Reject_GiftCertificate))
+            {
+                return "Reject GiftCertificate";
+            }
             if ((operation == Operation.Request_Allocation))
             {
                 return "Request Allocation";
@@ -671,6 +675,10 @@ namespace Cats.Security
             /// </summary>
             Ration__Add_new_item,
             /// <summary>
+            /// Operation Reject GiftCertificate
+            /// </summary>
+            Reject_GiftCertificate,
+            /// <summary>
             /// Operation Request Allocation
             /// </summary>
             Request_Allocation,
@@ -832,6 +840,10 @@ namespace Cats.Security
             if ((operation == Operation.Approve_Request))
             {
                 return "Approve Request";
+            }
+            if ((operation == Operation.Complete_Plan))
+            {
+                return "Complete Plan";
             }
             if ((operation == Operation.Delete__allocated_resource))
             {
@@ -1022,6 +1034,10 @@ namespace Cats.Security
             /// Operation Approve Request
             /// </summary>
             Approve_Request,
+            /// <summary>
+            /// Operation Complete Plan
+            /// </summary>
+            Complete_Plan,
             /// <summary>
             /// Operation Delete  allocated resource
             /// </summary>
@@ -2764,6 +2780,10 @@ namespace Cats.Security
             {
                 return "Approve regional request";
             }
+            if ((operation == Operation.Delete_Request))
+            {
+                return "Delete Request";
+            }
             if ((operation == Operation.Delete_needs_assessment))
             {
                 return "Delete needs assessment";
@@ -2795,6 +2815,10 @@ namespace Cats.Security
             if (operation == Operation.Print_requisition)
             {
                 return "Print Requisition";
+            }
+            if (operation == Operation.Request_Allocation)
+            {
+                return "Request Allocation";
             }
             if ((operation == Operation.Vew_requests_menu_item))
             {
@@ -2906,6 +2930,10 @@ namespace Cats.Security
             /// </summary>
             Approve_regional_request,
             /// <summary>
+            /// Operation Delete Request
+            /// </summary>
+            Delete_Request,
+            /// <summary>
             /// Operation Delete needs assessment
             /// </summary>
             Delete_needs_assessment,
@@ -2936,6 +2964,10 @@ namespace Cats.Security
             /// Operation Print Requisition
             /// </summary>
             Print_requisition,
+            /// <summary>
+            /// Operation Request Allocation
+            /// </summary>
+            Request_Allocation,
             /// <summary>
             /// Operation Vew requests menu item
             /// </summary>
@@ -3030,6 +3062,10 @@ namespace Cats.Security
             {
                 return "Approve Payment request";
             }
+            if ((operation == Operation.Close_Payment_Request))
+            {
+                return "Close Payment Request";
+            }
             if ((operation == Operation.Collect_cheque))
             {
                 return "Collect cheque";
@@ -3037,6 +3073,10 @@ namespace Cats.Security
             if ((operation == Operation.Contract_agreement_link))
             {
                 return "Contract agreement link";
+            }
+            if ((operation == Operation.Generate_Agreement_Template))
+            {
+                return "Generate Agreement Template";
             }
             if ((operation == Operation.Issue_cheque))
             {
@@ -3049,6 +3089,14 @@ namespace Cats.Security
             if ((operation == Operation.Payment_request_detail))
             {
                 return "Payment request detail";
+            }
+            if ((operation == Operation.Print_Check_Payment))
+            {
+                return "Print Check Payment";
+            }
+            if ((operation == Operation.Rejected_by_finance))
+            {
+                return "Rejected by finance";
             }
             if ((operation == Operation.Transporter_link))
             {
@@ -3119,6 +3167,10 @@ namespace Cats.Security
             /// </summary>
             Approve_Payment_request,
             /// <summary>
+            /// Operation Close Payment Request
+            /// </summary>
+            Close_Payment_Request,
+            /// <summary>
             /// Operation Collect cheque
             /// </summary>
             Collect_cheque,
@@ -3126,6 +3178,10 @@ namespace Cats.Security
             /// Operation Contract agreement link
             /// </summary>
             Contract_agreement_link,
+            /// <summary>
+            /// Operation Generate Agreement Template
+            /// </summary>
+            Generate_Agreement_Template,
             /// <summary>
             /// Operation Issue cheque
             /// </summary>
@@ -3138,6 +3194,14 @@ namespace Cats.Security
             /// Operation Payment request detail
             /// </summary>
             Payment_request_detail,
+            /// <summary>
+            /// Operation Print Check Payment
+            /// </summary>
+            Print_Check_Payment,
+            /// <summary>
+            /// Operation Rejected by finance
+            /// </summary>
+            Rejected_by_finance,
             /// <summary>
             /// Operation Transporter link
             /// </summary>

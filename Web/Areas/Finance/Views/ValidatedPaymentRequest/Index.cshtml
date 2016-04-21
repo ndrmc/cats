@@ -1,6 +1,7 @@
 ﻿@using Cats.Areas.Procurement.Models
 @using Cats.Helpers
 @using Cats.Models
+@using Cats.Security
 @using Cats.Services.Security
 @using Kendo.Mvc.UI
 
@@ -40,11 +41,12 @@
                         columns.Bound(p => p.TransporterName).Title(Html.Translate("Transporter Name")).ClientTemplate("<a style='cursor: pointer;' onclick=\"ListActiveTosFor(#=TransporterID#, \'#=TransporterName#\');\" >#=TransporterName#</a>");
                         columns.Bound(p => p.BidContract).Title(Html.Translate("Bid Number"));
                         columns.Bound(p => p.TransporterID).Title(Html.Translate("Actions"))
-                                       .ClientTemplate("<a href='" + Url.Action("GenerateAgreementTemplate", "BidWinner",
-                                       new { Area = "Procurement", transporterID = "#=TransporterID#" }) + " '>Generate Agreement</a>  ");
-                        //columns.Command(command => command.Custom("SignContract").Click("OnSignContract"));
+                            .ClientTemplate(
+                                "# if ('" + UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Generate_Agreement_Template) + "' == 'True') { #" +
+                                "<a href='" + Url.Action("GenerateAgreementTemplate", "BidWinner", new {Area = "Procurement", transporterID = "#=TransporterID#"}) + " '>Generate Agreement</a>  " +
+                                "# } #");
+                        //.Editable(editable => editable.Mode(GridEditMode.InCell))
                     })
-                                        //.Editable(editable => editable.Mode(GridEditMode.InCell))
                     .Scrollable()
                     .Sortable()
                     .Filterable()
