@@ -813,6 +813,10 @@ namespace Cats.Security
         /// <returns>The Operation Name.</returns>
         public virtual string ItemName(Operation operation)
         {
+            if ((operation == Operation.Approve_Plan))
+            {
+                return "Approve Plan";
+            }
             if ((operation == Operation.Add_commodity))
             {
                 return "Add commodity";
@@ -893,7 +897,10 @@ namespace Cats.Security
             {
                 return "Reject_Request";
             }
-
+            if ((operation == Operation.Request_Revision))
+            {
+                return "Request Revision";
+            }
             if ((operation == Operation.Remove_commodity))
             {
                 return "Remove commodity";
@@ -906,6 +913,10 @@ namespace Cats.Security
             {
                 return "Requisition Allocation";
             }
+            if ((operation == Operation.Reject_Plan))
+            {
+                return "Reject Plan";
+            }
             if ((operation == Operation.Requistion_Detail_Edit))
             {
                 return "Requistion Detail Edit";
@@ -914,6 +925,10 @@ namespace Cats.Security
             {
                 return "Reverse_Request";
             }
+            if ((operation == Operation.Reverse_Plan))
+            {
+                return "Reverse Plan";
+            }
             if ((operation == Operation.Select_default_ration))
             {
                 return "Select default ration";
@@ -921,6 +936,10 @@ namespace Cats.Security
             if ((operation == Operation.Send_To_Logistics))
             {
                 return "Send To Logistics";
+            }
+            if ((operation == Operation.Submit_Revision))
+            {
+                return "Submit Revision";
             }
             if ((operation == Operation.View__plan_menu_item))
             {
@@ -998,6 +1017,10 @@ namespace Cats.Security
             {
                 return "View Requisitions";
             }
+            if ((operation == Operation.Under_Revision))
+            {
+                return "Under Revision";
+            }
             throw new System.ArgumentException("Unknown Operation name", "operation");
         }
         #region Enums
@@ -1006,6 +1029,10 @@ namespace Cats.Security
         /// </summary>
         public enum Operation
         {
+            /// <summary>
+            /// Operation Approve Plan
+            /// </summary>
+            Approve_Plan,
             /// <summary>
             /// Operation Add commodity
             /// </summary>
@@ -1087,9 +1114,21 @@ namespace Cats.Security
             /// </summary>
             Reject_Request,
             /// <summary>
+            /// Operation Reverse Plan
+            /// </summary>
+            Reverse_Plan,
+            /// <summary>
             /// Operation Remove commodity
             /// </summary>
             Remove_commodity,
+            /// <summary>
+            /// Operation Reject Plan
+            /// </summary>
+            Reject_Plan,
+            /// <summary>
+            /// Operation Request Revision
+            /// </summary>
+            Request_Revision,
             /// <summary>
             /// Operation Request Allocation
             /// </summary>
@@ -1114,6 +1153,10 @@ namespace Cats.Security
             /// Operation Send To Logistics
             /// </summary>
             Send_To_Logistics,
+            /// <summary>
+            /// Operation Submit Revision
+            /// </summary>
+            Submit_Revision,
             /// <summary>
             /// Operation View  plan menu item
             /// </summary>
@@ -1190,6 +1233,10 @@ namespace Cats.Security
             /// Operation View Requisitions
             /// </summary>
             View_Requisitions,
+            /// <summary>
+            /// Operation Under Revision
+            /// </summary>
+            Under_Revision,
         }
         #endregion
     }
