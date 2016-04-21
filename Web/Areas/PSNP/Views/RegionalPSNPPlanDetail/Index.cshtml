@@ -137,7 +137,7 @@
                                     <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>
                                 </li>
                             }
-                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Reverse_Request) && actions.Name == "Complete")
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Reverse_Request) && actions.Name == "Reverse Request")
                             {
                                 <li class="edit_button">
                                     <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>

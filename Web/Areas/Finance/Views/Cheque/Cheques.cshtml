@@ -1,5 +1,6 @@
 ﻿@using Cats.Helpers
 @using Cats.Models
+@using Cats.Security
 
 @{
     ViewBag.Title = "Index";
@@ -102,17 +103,30 @@
                                             <ul class="dropdown-menu pull-right">
                                                 @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
                                                 {
-                                                    <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterChequeId)" title="@actions.Name">@actions.Name</a></li>
+                                                    if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Approve_cheque) && actions.Name == "Approve Cheque")
+                                                    {
+                                                        <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterChequeId)" title="@actions.Name">@actions.Name</a></li>
+                                                    }
+                                                    if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Collect_cheque) && actions.Name == "Collect Cheque")
+                                                    {
+                                                        <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterChequeId)" title="@actions.Name">@actions.Name</a></li>
+                                                    }
                                                 }
                                                 <li class="divider"></li>
-                                                <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)">History</a></li>
-                                            </ul>
-                                            @{
-                                if (state.StateNo >= 1)
-                                {
-                                    <a class="btn btn-default btn-xs blue-steel-stripe" style="margin-left: 5px;" href="@Url.Action("PrintCheckPayment", "Cheque", new {transporterID = ViewBag.TransporterID, checkno = item.CheckNo, pvn = item.PaymentVoucherNo})">Print</a>
-                                }
-                                            }
+                                                @if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.View_history))
+                                                {
+                                                    <li class="edit_button"><a href = "javascript:workflow_history(@item.BusinessProcessID)" > History </a></li>
+                                                }
+                                    </ul>
+                                    @{
+                                    if (state.StateNo >= 1)
+                                    {
+                                        if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Print_Check_Payment))
+                                         {
+                                             <a class="btn btn-default btn-xs blue-steel-stripe" style="margin-left: 5px;" href="@Url.Action("PrintCheckPayment", "Cheque", new {transporterID = ViewBag.TransporterID, checkno = item.CheckNo, pvn = item.PaymentVoucherNo})">Print</a>
+                                         }
+                                    }
+                                    }
                                         </div>
                                     </td>
                                 </tr>
@@ -203,7 +217,11 @@
                             <div class="row">
                                 <div class="message-box" style="float: left;" id="messageboxCollectiveCheque"></div>
                             </div>
-                            <button id="btnSaveCollectiveCheque" class="btn blue" type="submit">Save</button>
+                            @if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Issue_cheque))
+                            {
+                                <button id="btnSaveCollectiveCheque" class="btn blue" type="submit">Save</button>
+                            }
+                            
                         </div>
 
                     }

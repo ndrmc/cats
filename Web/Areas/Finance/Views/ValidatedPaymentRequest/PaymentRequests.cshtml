@@ -5,6 +5,7 @@
 @using Cats.Models
 @using Cats.Services.Security;
 @using Cats.Helpers
+@using Cats.Security
 @using FluentAssertions
 @model IEnumerable<Cats.Areas.Finance.Models.TransporterPaymentRequestViewModel>
 @{
@@ -319,7 +320,10 @@
                                             }
                                         </td>
                                         <td>
-                                            <button class="btn btn-default btn-xs green-meadow-stripe" style="" data-ng-click="loadLabourCost(@item.TransporterPaymentRequestID,@state.StateNo)">@Html.Translate("Payment Deductions")</button>
+                                            @if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Payment_deduction))
+                                            {
+                                                <button class="btn btn-default btn-xs green-meadow-stripe" style="" data-ng-click="loadLabourCost(@item.TransporterPaymentRequestID,@state.StateNo)">@Html.Translate("Payment Deductions")</button>
+                                            }
                                             @*<a href="@Url.Action("LabourCost", "ValidatedPaymentRequest")">Labour Cost</a>*@
                                         </td>
                                         <td>
@@ -332,7 +336,22 @@
                                                     <ul class="dropdown-menu pull-right">
                                                         @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
                                                         {
-                                                            <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterPaymentRequestID)" title="@actions.Name">@Html.Translate(@actions.Name)</a></li>
+                                                            if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Approve_Payment_request) && actions.Name == "Approve Payment")
+                                                            {
+                                                                <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterPaymentRequestID)" title="@actions.Name">@Html.Translate(@actions.Name)</a></li>
+                                                            }
+                                                            if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Rejected_by_finance) && actions.Name == "Rejected by finance")
+                                                            {
+                                                                <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterPaymentRequestID)" title="@actions.Name">@Html.Translate(@actions.Name)</a></li>
+                                                            }
+                                                            if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Close_Payment_Request) && actions.Name == "Payment Request Closed")
+                                                            {
+                                                                <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterPaymentRequestID)" title="@actions.Name">@Html.Translate(@actions.Name)</a></li>
+                                                            }
+                                                            if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Issue_cheque) && actions.Name == "Generate Cheque")
+                                                            {
+                                                                <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterPaymentRequestID)" title="@actions.Name">@Html.Translate(@actions.Name)</a></li>
+                                                            }
                                                         }
                                                         <li class="divider"></li>
                                                         <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)">@Html.Translate("History")</a></li>
