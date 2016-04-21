@@ -287,6 +287,10 @@ namespace Cats.Security
             {
                 return "Ration- Add new item";
             }
+            if ((operation == Operation.Reject_GiftCertificate))
+            {
+                return "Reject GiftCertificate";
+            }
             if ((operation == Operation.Request_Allocation))
             {
                 return "Request Allocation";
@@ -670,6 +674,10 @@ namespace Cats.Security
             /// Operation Ration- Add new item
             /// </summary>
             Ration__Add_new_item,
+            /// <summary>
+            /// Operation Reject GiftCertificate
+            /// </summary>
+            Reject_GiftCertificate,
             /// <summary>
             /// Operation Request Allocation
             /// </summary>
@@ -2772,6 +2780,10 @@ namespace Cats.Security
             {
                 return "Approve regional request";
             }
+            if ((operation == Operation.Delete_Request))
+            {
+                return "Delete Request";
+            }
             if ((operation == Operation.Delete_needs_assessment))
             {
                 return "Delete needs assessment";
@@ -2803,6 +2815,10 @@ namespace Cats.Security
             if (operation == Operation.Print_requisition)
             {
                 return "Print Requisition";
+            }
+            if (operation == Operation.Request_Allocation)
+            {
+                return "Request Allocation";
             }
             if ((operation == Operation.Vew_requests_menu_item))
             {
@@ -2914,6 +2930,10 @@ namespace Cats.Security
             /// </summary>
             Approve_regional_request,
             /// <summary>
+            /// Operation Delete Request
+            /// </summary>
+            Delete_Request,
+            /// <summary>
             /// Operation Delete needs assessment
             /// </summary>
             Delete_needs_assessment,
@@ -2944,6 +2964,10 @@ namespace Cats.Security
             /// Operation Print Requisition
             /// </summary>
             Print_requisition,
+            /// <summary>
+            /// Operation Request Allocation
+            /// </summary>
+            Request_Allocation,
             /// <summary>
             /// Operation Vew requests menu item
             /// </summary>

@@ -118,11 +118,13 @@
                          .ClientTemplate("# if (StatusID == 1 || StatusID==5) { #" +
                                     "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; " +
                                  "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Request_Allocation) + "' == 'True'" +
-                                " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Request_Allocation) + "' == 'True') { #" +
+                                 " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Request_Allocation) + "' == 'True'" +
+                                " || '" + UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Request_Allocation) + "' == 'True') { #" +
                                     "<a href='" + Url.Action("Allocation", "Request", new { id = "#=RegionalRequestID#" }) + " '>Allocate</a>  " +
                                  "# } #" +
                                  "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Delete_Request) + "' == 'True'" +
-                                " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Delete_Request) + "' == 'True') { #" +
+                                 " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Delete_Request) + "' == 'True'" +
+                                " || '" + UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Delete_Request) + "' == 'True') { #" +
                                     "<a onclick=\"return confirmDelete()\" href='" + Url.Action("Delete", "Request", new { id = "#=RegionalRequestID#" }) + " '>Delete</a>  " +
                                  "# } #" +
                                  "# } else { #" +
