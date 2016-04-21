@@ -353,6 +353,27 @@ namespace Cats.Helpers
             return false;
         }
 
+        public static bool FinanceOperationCheck(FinanceConstants.Operation operationFinance)
+        {
+            //return MvcHtmlString.Create(@"<a data-buttontype=" + dataButtontype + "  class=" + ccsClass + " href=" + url + ">" + text + "</a>");
+
+            var financeConstants = new FinanceConstants();
+            var financeCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.Finance);
+
+            // If cache is null then force the user to sign-in again
+            if (null == financeCache)
+            {
+                Signout();
+                return false;
+            }
+
+            if (financeCache.CheckAccess(financeConstants.ItemName(operationFinance), DateTime.Now) == AuthorizationType.Allow)
+            {
+                return true;
+            }
+            return false;
+        }
+
         private static MvcHtmlString Signout()
         {
             FormsAuthentication.SignOut();
