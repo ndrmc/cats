@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Cats.Helpers
+@using Cats.Security
+@{
     ViewBag.Title = "WoredasWithOutBidOffer";
     Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
     //Layout = "~/Views/Shared/_MainLayout.cshtml";
@@ -32,7 +34,10 @@
 
                 <div class="col-md-3">
                     <div class="" style="margin: 25px 0;">
-                        <input type="submit" value="Get Data" class="btn btn-default" />
+                        @if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Woreda_Bid_Status))
+                        {
+                            <input type="submit" value="Get Data" class="btn btn-default" />
+                        }
                     </div>
                 </div>
             </div>
