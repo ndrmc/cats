@@ -456,25 +456,14 @@
                           .Groupable().TableHtmlAttributes(new { @style = "", @class = "table table-condensed" })
                            .DataSource(dataSource => dataSource
         .Ajax()
-        .Group(a=> { a.Add("Zone", typeof (string)); })
+
         .Aggregates(a =>
         {
             a.Add("Beneficiaries", typeof(int)).Sum();
             a.Add("PlannedBeneficiaries", typeof(int)).Sum();
-        }))
-                          //.DataSource(datasource =>
-                          //{
-                          //    datasource
-                          //        .Ajax()
+        }).Group(a => { a.Add("Zone", typeof(string)); })
+        )
 
-                          //        .Aggregates(aggregates =>
-                          //        {
-                          //            aggregates.Add(p => p.DataView.Table.DataSet..DataSetName..Columns.Beneficiaries).Sum();
-
-                          //            aggregates.Add(p => p.PlannedBeneficiaries).Sum();
-                          //        })
-                          //        .Group(group => { @group.Add(m => m.Zone); });
-                          //})
                           )
         </div>
     </div>
