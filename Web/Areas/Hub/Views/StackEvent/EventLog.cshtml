@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Cats.Models.Hubs.ViewModels.StackEventLogViewModel>
+﻿@using Cats.Security
+@model IEnumerable<Cats.Models.Hubs.ViewModels.StackEventLogViewModel>
 
 
 <div style="min-height: 500px; padding-top:20px;">
@@ -6,7 +7,8 @@
     <div style="margin-bottom:20px;">
         <input type="button" value="Add New Event" class="t-button"  id="addNewEvent"/>
     </div>
-
+    @if (HubConstants.isValidOperation(HubConstants.Operation.Add_new_event).ToString() == "Add_new_event")
+    {
 @{ Html.Telerik().Window()
             .Name("AddNewEventWindow")
             .Title("Add new event")
@@ -18,7 +20,7 @@
             .Render();
     }
 
-
+}
 
 @(Html.Telerik().Grid(Model)
             .Name("EventGrid")

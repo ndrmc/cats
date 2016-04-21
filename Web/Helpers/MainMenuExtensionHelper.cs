@@ -153,6 +153,7 @@ namespace Cats.Helpers
 
             var html = string.Empty;
             // If cache is null then force the user to sign-in again
+            
             if (null == ewCache)
             {
                 Signout();

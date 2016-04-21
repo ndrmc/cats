@@ -262,8 +262,15 @@ namespace Cats.Helpers
                 Signout();
                 return false;
             }
-
-            if (psnpCache.CheckAccess(psnpConstants.ItemName(operationPsnp), DateTime.Now) == AuthorizationType.Allow)
+            try
+            {
+                if (psnpCache.CheckAccess(psnpConstants.ItemName(operationPsnp), DateTime.Now) ==
+                    AuthorizationType.Allow)
+                {
+                    return true;
+                }
+            }
+            catch (Exception)
             {
                 return true;
             }

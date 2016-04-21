@@ -1,4 +1,5 @@
 ﻿@using System.Collections
+@using System.Diagnostics
 @using Cats.Areas.EarlyWarning.Models
 @model System.Data.DataTable
 @using Cats.Helpers
@@ -321,7 +322,7 @@
                     </div>*@
             </div>
             <div class="row">
-                <div class="col-md-4">       DETAILS
+                <div class="col-md-4">
                     <div class="form-group">
                         @Html.LabelFor(m => modelRequest.Region, new { @class = "col-md-4 control-label" })
                         <div class="col-md-7">
@@ -423,20 +424,25 @@
         <div class="table-responsive">
             @(Html.Kendo().Grid(Model)
                   .Name("Grid")
-                  .Columns(columns =>
+                  .Columns(columns  =>
                   {
+
                       foreach (System.Data.DataColumn column in Model.Columns)
                       {
                           if (column.DataType == typeof(decimal))
                           {
-                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N2}");
+                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N2}").ClientGroupFooterTemplate("sum:#:sum#");;
                               //.HeaderHtmlAttributes(new { @class = "cats-unit-pref-grid" })
 
                           }
                           else if (column.DataType == typeof(int))
                           {
-                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" });
+                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).ClientGroupFooterTemplate("sum:#:sum#");
 
+                          }
+                          else if(column.ColumnName == "Zone")
+                          {
+                              columns.Bound(column.ColumnName).Groupable(true);
                           }
                           else
                           {
@@ -444,13 +450,32 @@
                           }
 
                       }
-
                   })
                   .Sortable()
                   .Scrollable()
                           .Groupable().TableHtmlAttributes(new { @style = "", @class = "table table-condensed" })
+                           .DataSource(dataSource => dataSource
+        .Ajax()
+        .Group(a=> { a.Add("Zone", typeof (string)); })
+        .Aggregates(a =>
+        {
+            a.Add("Beneficiaries", typeof(int)).Sum();
+            a.Add("PlannedBeneficiaries", typeof(int)).Sum();
+        }))
+                          //.DataSource(datasource =>
+                          //{
+                          //    datasource
+                          //        .Ajax()
 
-            )
+                          //        .Aggregates(aggregates =>
+                          //        {
+                          //            aggregates.Add(p => p.DataView.Table.DataSet..DataSetName..Columns.Beneficiaries).Sum();
+
+                          //            aggregates.Add(p => p.PlannedBeneficiaries).Sum();
+                          //        })
+                          //        .Group(group => { @group.Add(m => m.Zone); });
+                          //})
+                          )
         </div>
     </div>
 </div>
