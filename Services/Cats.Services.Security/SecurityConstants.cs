@@ -2820,6 +2820,10 @@ namespace Cats.Security
             {
                 return "Request Allocation";
             }
+            if ((operation == Operation.View_Need_Assessment_Detail))
+            {
+                return "View Need Assessment Detail";
+            }
             if ((operation == Operation.Vew_requests_menu_item))
             {
                 return "Vew requests menu item";
@@ -2968,6 +2972,10 @@ namespace Cats.Security
             /// Operation Request Allocation
             /// </summary>
             Request_Allocation,
+            /// <summary>
+            /// Operation View Need Assessment Detail
+            /// </summary>
+            View_Need_Assessment_Detail,
             /// <summary>
             /// Operation Vew requests menu item
             /// </summary>
