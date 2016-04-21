@@ -138,17 +138,18 @@ namespace Cats.Areas.EarlyWarning.Controllers
             regionalRequest.ProgramId = hrdpsnpPlanInfo.HRDPSNPPlan.ProgramID;
             regionalRequest.DonorID = hrdpsnpPlanInfo.HRDPSNPPlan.DonorID;
             regionalRequest.RequestedBy = user.UserProfileID;
-            regionalRequest.RationID = hrdpsnpPlanInfo.HRDPSNPPlan.RationID.HasValue ? hrdpsnpPlanInfo.HRDPSNPPlan.RationID.Value : _applicationSettingService.getDefaultRation();
+            regionalRequest.RationID = hrdpsnpPlanInfo.HRDPSNPPlan.RationID.HasValue
+                ? hrdpsnpPlanInfo.HRDPSNPPlan.RationID.Value
+                : _applicationSettingService.getDefaultRation();
             regionalRequest.Round = hrdpsnpPlanInfo.HRDPSNPPlan.Round;
             regionalRequest.RegionalRequestDetails = (from item in hrdpsnpPlanInfo.BeneficiaryInfos
-                                                      where item.Selected == false
-                                                      select new RegionalRequestDetail()
-                                                                 {
-                                                                     Beneficiaries = item.Beneficiaries,
-                                                                     Fdpid = item.FDPID
-                                                                 }).ToList();
+                where item.Selected == false
+                select new RegionalRequestDetail
+                {
+                    Beneficiaries = item.Beneficiaries,
+                    Fdpid = item.FDPID
+                }).ToList();
             _regionalRequestService.AddRegionalRequest(regionalRequest);
-
             return regionalRequest;
         }
 
@@ -340,7 +341,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 HRDPSNPPlanInfo psnphrdPlanInfo = _regionalRequestService.PlanToRequest(hrdpsnpPlan);
                 if (psnphrdPlanInfo != null)
                 {
-                    var exisiting = 0;
+                    //var exisiting = 0;
 
                     if (psnphrdPlanInfo.HRDPSNPPlan.ProgramID == (int)Programs.Releif)
                     {
@@ -404,11 +405,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     //}
 
                 }
-                else
-                {
-                    ModelState.AddModelError("Errors", @"Can Not Create Request! Duration of Assistance for this region is Completed ");
-                }
-
+                ModelState.AddModelError("Errors", @"Can Not Create Request! Duration of Assistance for this region is Completed ");
             }
             ViewBag.SeasonID = new SelectList(_commonService.GetSeasons(), "SeasonID", "Name");
             PopulateLookup();
@@ -612,21 +609,24 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
             var requestModelView = RequestViewModelBinder.BindRegionalRequestViewModel(request, statuses, datePref);
 
-          
-            var hrd = _hrdService.FindBy(m => m.PlanID == request.PlanID).FirstOrDefault();
-            var hrdWoerdasId = _HRDDetailService.FindBy(h => h.HRDID == hrd.HRDID).Select(w => w.WoredaID).ToList();
-
             var adminUnits = _adminUnitService.FindBy(t => t.AdminUnitTypeID == 2 && t.AdminUnitID == request.RegionID);
             var woredasNotInHrd = new List<int>();
-            foreach (var region in adminUnits)
+           
+            if (request != null && request.Program.ProgramID == (int) Programs.Releif)
             {
-                foreach (var zone in region.AdminUnit1)
+                var hrd = _hrdService.FindBy(m => m.PlanID == request.PlanID).FirstOrDefault();
+                var hrdWoerdasId = _HRDDetailService.FindBy(h => h.HRDID == hrd.HRDID).Select(w => w.WoredaID).ToList();
+                foreach (var region in adminUnits)
                 {
-                    woredasNotInHrd.AddRange(from woreda in zone.AdminUnit1
-                        where !hrdWoerdasId.Contains(woreda.AdminUnitID)
-                        select woreda.AdminUnitID);
+                    foreach (var zone in region.AdminUnit1)
+                    {
+                        woredasNotInHrd.AddRange(from woreda in zone.AdminUnit1
+                            where !hrdWoerdasId.Contains(woreda.AdminUnitID)
+                            select woreda.AdminUnitID);
+                    }
                 }
             }
+
             ViewBag.WoredasNotHrd = woredasNotInHrd;
             ViewBag.RegionCollection = adminUnits;
             if (request != null && request.Program.ProgramID == (int)Programs.PSNP)

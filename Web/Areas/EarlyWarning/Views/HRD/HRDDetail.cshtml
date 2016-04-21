@@ -115,20 +115,20 @@
       .Sortable()
       .HtmlAttributes(new { style = "height: 450px" })
       .Navigatable()
-      .DataSource(datasource=>datasource
-      .Ajax()
-       .Aggregates(aggregates =>
-                       {
-                           aggregates.Add(p => p.NumberOfBeneficiaries).Sum();
-                           //aggregates.Add(p => p.UnitsOnOrder).Average();
-                           //aggregates.Add(p => p.ProductName).Count();
-                           //aggregates.Add(p => p.UnitPrice).Sum();
-                       })
-      .Group(group =>
-           {
-               group.Add(m => m.Region);
-               group.Add(m => m.Zone);
-           })
+    .DataSource(datasource=>datasource
+    .Ajax()
+    .Aggregates(aggregates =>
+                    {
+                        aggregates.Add(p => p.NumberOfBeneficiaries).Sum();
+                        //aggregates.Add(p => p.UnitsOnOrder).Average();
+                        //aggregates.Add(p => p.ProductName).Count();
+                        //aggregates.Add(p => p.UnitPrice).Sum();
+                    })
+    .Group(group =>
+        {
+            group.Add(m => m.Region);
+            group.Add(m => m.Zone);
+        })
               //.PageSize(15)
        .Events(events => events.Error("error_handler"))
        .Events(events => events.Change("onGridKeydown"))
