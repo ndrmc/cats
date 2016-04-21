@@ -59,18 +59,13 @@
             <a href="javascript:;" class="remove" data-original-title="" title=""></a>
         </div>
         <div class="actions">
-            @Html.EarlyWarningOperationButton(
-                        @Url.Action("New", "Request", new { Area = "EarlyWarning" }),
-                        EarlyWarningConstants.Operation.Add_new_request, "<button type=\"button\" class=\"btn btn-success\">" +
-                        "<i class='fa fa - plus - circle'></i>" + @Html.Translate("New Request") + "</button>", "btn", "btn_new_record")
-            @Html.RegionalOperationButton(
-                        @Url.Action("New", "Request", new { Area = "EarlyWarning" }),
-                        RegionalConstants.Operation.Add_new_regional_request, "<button type=\"button\" class=\"btn btn-success\">" +
-                        "<i class='fa fa - plus - circle'></i>" + @Html.Translate("New Request") + "</button>", "btn", "btn_new_record")
-            @Html.PSNPOperationButton(
-                        @Url.Action("New", "Request", new { Area = "EarlyWarning" }),
-                        PsnpConstants.Operation.Add_Request, "<button type=\"button\" class=\"btn btn-success\">" +
-                        "<i class='fa fa - plus - circle'></i>" + @Html.Translate("New Request") + "</button>", "btn", "btn_new_record")
+            @if(UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_request)
+                || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_regional_request)
+                || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Add_Request))
+            {
+                <a href = "@Url.Action("New", "Request", new { Area = "EarlyWarning" })" class="btn" data-buttontype="btn_new_record"><button type = "button" class="btn btn-success"><i class="fa fa - plus - circle"></i>New Request</button></a>
+            }
+            
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
         </div>
     </div>
@@ -82,19 +77,19 @@
     .Name("RequestListGrid")
     .Columns(columns =>
                  {
-                     columns.Template(t => { }).Title("No").ClientTemplate("#= renderNumber(data) #").Width(50);
-                     columns.Bound(request => request.ReferenceNumber).ClientTemplate
-                         ("<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>#=ReferenceNumber#</a>").Width(160);
-                     columns.Bound(request => request.Region).Width(100);
-                     columns.Bound(request => request.Year).Width(70);
-                     columns.Bound(request => request.MonthName).Title(Html.Translate("Month")).Width(70);
-                     if (Model.ProgramID == 1)
-                     {
-                         columns.Bound(request => request.Round).Width(50).Title(Html.Translate("Round"));
-                     }
-                     columns.Bound(request => request.Program).Width(160);
-                     columns.Bound(request => request.RequestDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).Width(160);
-                     columns.Bound(request => request.Status).Template(
+                columns.Template(t => { }).Title("No").ClientTemplate("#= renderNumber(data) #").Width(50);
+                columns.Bound(request => request.ReferenceNumber).ClientTemplate
+                    ("<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>#=ReferenceNumber#</a>").Width(160);
+                columns.Bound(request => request.Region).Width(100);
+                columns.Bound(request => request.Year).Width(70);
+                columns.Bound(request => request.MonthName).Title(Html.Translate("Month")).Width(70);
+                if (Model.ProgramID == 1)
+                {
+                    columns.Bound(request => request.Round).Width(50).Title(Html.Translate("Round"));
+                }
+                columns.Bound(request => request.Program).Width(160);
+                columns.Bound(request => request.RequestDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).Width(160);
+                columns.Bound(request => request.Status).Template(
 
 
             @<text>
