@@ -218,7 +218,7 @@
                                     <ul class="nav nav-list ">
                                         <li class="btn-draggable" data-allocated="1" ng-repeat="item in si.allocatedRequests" data-drag="1" data-jqyoui-options="{revert: 'invalid'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}" data-index="{{item.index}}">
                                             @*  <button class="btn red btn-xs " ng-click="showEdit(item.type)"><i class="fa fa-times-circle"></i></button>*@
-                                            <a href ng-click="showEdit(item.type, item.allocatedAmount, item.index)" ng-show="si.index==item.allocated && item.allocatedAmount > 0  ">{{item.name}} [{{item.allocatedAmount | number:2}}]</a>
+                                            <a href ng-click="showEdit(item.type, item.allocatedAmount, item.index, si.index)" ng-show="si.index==item.allocated && item.allocatedAmount > 0  ">{{item.name}} [{{item.allocatedAmount | number:2}}]</a>
                                         </li>
                                     </ul>
 
@@ -380,19 +380,24 @@
             else if($scope.modalFor ==1)
             {
                 $scope.showAmountModal= !$scope.showAmountModal;
+                var AdjestedallocatedAmount = $scope.EditLocation.allocatedAmount - CustomAmount;
                 $scope.EditLocation.totalAllocatedAmount= ($scope.EditLocation.totalAllocatedAmount-  $scope.EditLocation.allocatedAmount) + CustomAmount;
                 $scope.EditLocation.allocatedAmount= CustomAmount;
+               
+                $scope.SIPCCodes[$scope.siindexG].availableAmount = $scope.SIPCCodes[$scope.siindexG].availableAmount  + AdjestedallocatedAmount ;
 
             }
 
         };
-        $scope.showEdit = function(type, allocatedAmount, index) {
+        $scope.showEdit = function(type, allocatedAmount, index, siIndex) {
             if(type =="FDP")
             {
                 var location = $scope.allAdminRegions[index];
                 $scope.modalFor = 1;
                 $scope.EditLocation=location;
                 $scope.viewQmount= allocatedAmount;
+                $scope.siindexG = siIndex-1;
+               
                 $scope.showAmountModal= !$scope.showAmountModal;
             }
         }
