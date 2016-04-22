@@ -1288,7 +1288,11 @@ namespace Cats.Security
              {
                  return "Assign transporter";
              }
-             if ((operation == Operation.Edit_donation))
+            if ((operation == Operation.Change_Transporter))
+            {
+                return "Change Transporter";
+            }
+            if ((operation == Operation.Edit_donation))
              {
                  return "Edit donation";
              }
@@ -1557,6 +1561,7 @@ namespace Cats.Security
             Revert_Local_Purchase,
             Remove_Local_Purchase,
             Add_new_donation,
+            Change_Transporter,
             /// <summary>
             /// Operation Add new local purchase
             /// </summary>

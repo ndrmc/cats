@@ -3,6 +3,7 @@
 @using Cats.Models.Constant
 @using Kendo.Mvc.UI
 @using Cats.Helpers
+@using Cats.Security
 
 @model Cats.Models.ViewModels.TransportRequisitionWithTransporter
 
@@ -83,8 +84,10 @@
         <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("List Of Transport Orders")</div>
         <div class="tools"><a href="#" class="collapse" data-original-title="" title=""></a></div>
         <div class="actions">
-            <a data-buttontype="btn_new_record" class="btn green" href="@Url.Action("TransportRequisitions","TransportOrder",new {Area="Procurement"})"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
-
+            @if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Add_new_transport_order))
+            {
+                <a data-buttontype="btn_new_record" class="btn green" href="@Url.Action("TransportRequisitions", "TransportOrder", new {Area = "Procurement"})"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
+            }
             <div class="btn-group">
                 <button class="btn green dropdown-toggle" data-toggle="dropdown">
                     @Html.Translate("Action")
@@ -92,9 +95,14 @@
                 </button>
 
                 <ul class="dropdown-menu pull-right">
-                    <li><a class="btn green-sharp-stripe" id="btnApproveMultipleTos" href="@Url.Action("MultipleApproval", "TransportOrder", new {Area = "Procurement"})">@Html.Translate("Approve Multiple TOs")</a></li>
-                    <li><a class="btn green-sharp-stripe" id="btnReverseRequsition" href="@Url.Action("RevertRequsitions", "TransportOrder", new {Area = "Procurement"})">@Html.Translate("Revert Requsitions")</a></li>
-
+                    @if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transport_order))
+                    {
+                        <li><a class="btn green-sharp-stripe" id="btnApproveMultipleTos" href="@Url.Action("MultipleApproval", "TransportOrder", new {Area = "Procurement"})">@Html.Translate("Approve Multiple TOs")</a></li>
+                    }
+                    @if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Reject_Approved_Requisition))
+                    {
+                        <li><a class="btn green-sharp-stripe" id="btnReverseRequsition" href="@Url.Action("RevertRequsitions", "TransportOrder", new {Area = "Procurement"})">@Html.Translate("Revert Requsitions")</a></li>
+                    }
                     @*<li><a href="#"></a></li>*@
                 </ul>
 
