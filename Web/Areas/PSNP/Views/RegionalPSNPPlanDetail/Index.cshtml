@@ -137,13 +137,43 @@
                                     <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>
                                 </li>
                             }
-                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Reverse_Request) && actions.Name == "Reverse Request")
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Reverse_Plan) && actions.Name == "Reverse")
                             {
                                 <li class="edit_button">
                                     <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>
                                 </li>
                             }
-                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Approve_Request) && actions.Name == "Approve")
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.PSNP_plan_Ask_approval) && actions.Name == "Ask Approval")
+                            {
+                                <li class="edit_button">
+                                    <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>
+                                </li>
+                            }
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Approve_Plan) && actions.Name == "Approve")
+                            {
+                                <li class="edit_button">
+                                    <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>
+                                </li>
+                            }
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Request_Revision) && actions.Name == "Request Revision")
+                            {
+                                <li class="edit_button">
+                                    <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>
+                                </li>
+                            }
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Submit_Revision) && actions.Name == "Submit Revision")
+                            {
+                                <li class="edit_button">
+                                    <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>
+                                </li>
+                            }
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Under_Revision) && actions.Name == "Under Revision")
+                            {
+                                <li class="edit_button">
+                                    <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>
+                                </li>
+                            }
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Reject_Plan) && actions.Name == "Reject")
                             {
                                 <li class="edit_button">
                                     <a class="btn green-haze-stripe" href="javascript:promot_workflow(@plan.AttachedBusinessProcess.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@plan.RegionalPSNPPlanID)" title="@actions.Name">@Html.Translate(@actions.Name)</a>

@@ -44,36 +44,38 @@ Plans
                               .Columns(columns =>
                               {
                                   columns.Bound(p => p.AssessmentName).Title(Html.Translate("Assessment Name")).ClientTemplate(
-                                      @Html.EarlyWarningOperationButton(
-                                          @Url.Action("Detail", "NeedAssessment", new {id = "#=PlanID#"}),
-                                          EarlyWarningConstants.Operation.View_Need_Assessment_Detail, "#=AssessmentName#").ToString());
+                                      "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail) + "' == 'True'" +
+                                        " || '" + UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.View_Need_Assessment_Detail) + "' == 'True') { #" +
+                                            "<a href='" + Url.Action("Detail", "NeedAssessment", new { id = "#=PlanID#" }) + " '> " + "#=AssessmentName#" + "</a>  " +
+                                         "# } #"
+                                          );
                                   columns.Bound(p => p.StartDate).Title(Html.Translate("Start Date"));
                                   columns.Bound(p => p.EndDate).Title(Html.Translate("End Date"));
                                   columns.Bound(p => p.Status).Title(Html.Translate("Status"));
                                   columns.Command(p =>
-                                  { 
+                                  {
                                       if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment)
                                       || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Approve__need_assesment))
                                       {
                                           p.Custom("Approve").Click("approveNeedAssessment").Text("<span class=\"fa fa-check\"></span> Approve ");
                                       }
                                   });
-                                    //p => p.Custom("Approve")
-                                    //         .Click("approveNeedAssessment")
-                                    //         .Text(
+                                  //p => p.Custom("Approve")
+                                  //         .Click("approveNeedAssessment")
+                                  //         .Text(
 
-                                    //              @Html.EarlyWarningOperationJsLink(
-                                    //                    EarlyWarningConstants.Operation.View_Need_Assessment_Detail, "Approve", "approveNeedAssessment").ToString()
+                                  //              @Html.EarlyWarningOperationJsLink(
+                                  //                    EarlyWarningConstants.Operation.View_Need_Assessment_Detail, "Approve", "approveNeedAssessment").ToString()
 
-                                    //          )
+                                  //          )
 
-                                    //columns.Template(
-                                    //          @<text>
-                                    //          @Html.EarlyWarningOperationJsLink(
-                                    //              EarlyWarningConstants.Operation.View_Need_Assessment_Detail, "Approve", "approveNeedAssessment").ToString()
-                                    //          </text>
-                                    //      ).Width("200px");
-                                })
+                                  //columns.Template(
+                                  //          @<text>
+                                  //          @Html.EarlyWarningOperationJsLink(
+                                  //              EarlyWarningConstants.Operation.View_Need_Assessment_Detail, "Approve", "approveNeedAssessment").ToString()
+                                  //          </text>
+                                  //      ).Width("200px");
+                              })
                               .HtmlAttributes(new { style = "height: 430px" })
                               .Pageable()
                               .Sortable()
