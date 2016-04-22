@@ -1,5 +1,6 @@
 ﻿@using Cats.Areas.Procurement.Models
 @using Cats.Helpers
+@using Cats.Security
 @using Cats.Services.Security
 @using Kendo.Mvc.UI
 @using LanguageHelpers.Localization
@@ -161,7 +162,13 @@
                   .Events(events => events.Edit("onEdit"))
                   //.ToolBar(toolBar => toolBar.Save())
                   .Groupable()
-                  .Editable(editable => editable.Mode(GridEditMode.InCell))
+                  .Editable(editable =>
+                  {
+                      if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Edit_Tariff))
+                      {
+                          editable.Mode(GridEditMode.InCell);
+                      }
+                  })
                   .Events(events => events.DataBound("onDataBound"))
                   .HtmlAttributes(new {style = "height:430px;"})
                   .Events(ev => ev.Save(@"function(e){
@@ -226,8 +233,8 @@
                     if (CheckFeildName(fieldName)) {
 
                         if ('@IsTariffEntry' === 'False') {
-                            $("#myModal").modal('show');
-                            this.closeCell();//Prevent editing
+                            //$("#myModal").modal('show');
+                            //this.closeCell();//Prevent editing
                         }
 
                     }
