@@ -88,7 +88,7 @@
                         <a href="javascript:;" class="remove" data-original-title="" title=""></a>
                     </div>*@
                 <div class="actions">
-                    @if (LogisticsConstants.Operation.Recive_Plan_For_Loan_Create.ToString() == "Recive_Plan_For_Loan_Create")
+                    @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Recive_Plan_For_Loan_Create).ToString() == "Recive_Plan_For_Loan_Create")
                     {
                         <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn green" href="@Url.Action("Create", "ReciptPlanForLoan")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
                     }

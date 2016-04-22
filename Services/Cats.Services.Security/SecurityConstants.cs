@@ -1514,6 +1514,11 @@ namespace Cats.Security
             {
                 return "Add Bid Plan";
             }
+            if ((operation == Operation.Recive_Plan_For_Loan_SI_View))
+            {
+                return "Recive Plan For Loan SI View";
+            }
+            
             throw new System.ArgumentException("Unknown Operation name", "operation");
 
              #endregion
@@ -1548,6 +1553,7 @@ namespace Cats.Security
             Edit_Swap,
             Edit_Bid_Plan,
             Approve_Swap,
+            Recive_Plan_For_Loan_View,
             Recive_Plan_For_Loan_Revert,
             Recive_Plan_For_Loan_SI_View,
             Recive_Plan_For_Loan_Delete,

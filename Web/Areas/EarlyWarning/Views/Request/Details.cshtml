@@ -437,7 +437,7 @@
                           }
                           else if (column.DataType == typeof(int))
                           {
-                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).ClientGroupFooterTemplate("<div style='float: right'>#= kendo.toString(sum, 'N2') #</div>");
+                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).ClientGroupFooterTemplate("<div style='float: right'>#= kendo.toString(sum, 'N2') #</div>").ClientFooterTemplate("Sum: #=sum#"); ;
 
                           }
                           else if(column.ColumnName == "Zone")
@@ -456,7 +456,17 @@
                           .Groupable()
                            .DataSource(dataSource => dataSource
         .Ajax()
+         .Model(model =>
+         {
+             foreach (System.Data.DataColumn column in Model.Columns)
+             {
 
+                 model.Field(column.ColumnName, column.DataType);
+             }
+         }).Read(read =>
+
+    read.Action("StatusGeneric", "Configuration")
+    )
         .Aggregates(a =>
         {
             a.Add("Beneficiaries", typeof(int)).Sum();
