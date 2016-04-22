@@ -2,6 +2,7 @@
 @using Cats.Models.ViewModels
 @using Kendo.Mvc.UI
 @using Cats.Helpers
+@using Cats.Security
 
 @model Cats.Models.ViewModels.TransportRequisitionWithTransporter
 @{
@@ -76,7 +77,10 @@
         </div>
 
         <div id="div_select">
-            <a class="btn green toolbar-btn" data-buttontype=" " id="btnAssign" data-submittedform="frm_assign_transporter">@Html.Translate("Assign Transporter")</a><hr />
+            @if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Assign_transporter))
+            {
+                <a class="btn green toolbar-btn" data-buttontype=" " id="btnAssign" data-submittedform="frm_assign_transporter">@Html.Translate("Assign Transporter")</a><hr />
+            }
             @(Html.Kendo().Grid(Model.TransReqwithOutTransporters)
                   .Name("grid")
                   .Columns(columns =>
@@ -90,7 +94,7 @@
                       columns.Bound(p => p.QuantityQtl).Title(Html.Translate("Quantity")).HtmlAttributes(new {align = "right"}).Format("{0:n2}").HeaderHtmlAttributes(new {@class = "cats-unit-pref-grid"});
 
                   })
-                  .Scrollable().TableHtmlAttributes(new{@class="table table-condensed"})
+                  .Scrollable().TableHtmlAttributes(new {@class = "table table-condensed"})
                   .DataSource(datasource => datasource.Server()
 
                       .Model(model => model.Id(p => p.TransReqWithoutTransporterID))
