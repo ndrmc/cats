@@ -437,12 +437,12 @@
                           }
                           else if (column.DataType == typeof(int))
                           {
-                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).ClientGroupFooterTemplate("sum:#:sum#");
+                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).ClientFooterTemplate("sum:#:sum#").ClientGroupFooterTemplate("sum:#:sum#");
 
                           }
                           else if(column.ColumnName == "Zone")
                           {
-                              columns.Bound(column.ColumnName).Groupable(true);
+                              columns.Bound(column.ColumnName);
                           }
                           else
                           {
