@@ -431,7 +431,7 @@
                       {
                           if (column.DataType == typeof(decimal))
                           {
-                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N2}").ClientGroupFooterTemplate("sum:#:sum#");;
+                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N2}").ClientGroupFooterTemplate("sum:#:sum#");
                               //.HeaderHtmlAttributes(new { @class = "cats-unit-pref-grid" })
 
                           }
@@ -461,7 +461,12 @@
         {
             a.Add("Beneficiaries", typeof(int)).Sum();
             a.Add("PlannedBeneficiaries", typeof(int)).Sum();
-        }).Group(a => { a.Add("Zone", typeof(string)); })
+        }).Group(a =>
+        {
+            a.Add("Zone", typeof(string));
+            //a.Add("Beneficiaries", typeof(int));
+            //a.Add("PlannedBeneficiaries", typeof(int));
+        })
         )
 
                           )
