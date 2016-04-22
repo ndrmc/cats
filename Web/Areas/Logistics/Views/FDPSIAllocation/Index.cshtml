@@ -380,11 +380,11 @@
             else if($scope.modalFor ==1)
             {
                 $scope.showAmountModal= !$scope.showAmountModal;
-                var j = $scope.EditLocation.allocatedAmount - CustomAmount;
+                var AdjestedallocatedAmount = $scope.EditLocation.allocatedAmount - CustomAmount;
                 $scope.EditLocation.totalAllocatedAmount= ($scope.EditLocation.totalAllocatedAmount-  $scope.EditLocation.allocatedAmount) + CustomAmount;
                 $scope.EditLocation.allocatedAmount= CustomAmount;
                
-                $scope.SIPCCodes[$scope.siindexG].availableAmount = $scope.SIPCCodes[$scope.siindexG].availableAmount  + j ;
+                $scope.SIPCCodes[$scope.siindexG].availableAmount = $scope.SIPCCodes[$scope.siindexG].availableAmount  + AdjestedallocatedAmount ;
 
             }
 

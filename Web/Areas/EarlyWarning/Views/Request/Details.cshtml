@@ -437,7 +437,7 @@
                           }
                           else if (column.DataType == typeof(int))
                           {
-                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).ClientFooterTemplate("sum:#:sum#").ClientGroupFooterTemplate("sum:#:sum#");
+                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).ClientGroupFooterTemplate("<div style='float: right'>#= kendo.toString(sum, 'N2') #</div>");
 
                           }
                           else if(column.ColumnName == "Zone")
@@ -453,7 +453,7 @@
                   })
                   .Sortable()
                   .Scrollable()
-                          .Groupable().TableHtmlAttributes(new { @style = "", @class = "table table-condensed" })
+                          .Groupable()
                            .DataSource(dataSource => dataSource
         .Ajax()
 
