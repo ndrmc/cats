@@ -1829,6 +1829,10 @@ namespace Cats.Security
             {
                 return "Delete Transport Supplier";
             }
+            if ((operation == Operation.Edit_Tariff))
+            {
+                return "Edit Tariff";
+            }
             if ((operation == Operation.Edit_Transporter))
             {
                 return "Edit Transporter";
@@ -2078,6 +2082,10 @@ namespace Cats.Security
             /// Operation Edit Transport Supplier
             /// </summary>
             Edit_Transport_Supplier,
+            /// <summary>
+            /// Operation Edit Tariff
+            /// </summary>
+            Edit_Tariff,
             /// <summary>
             /// Operation Export bid
             /// </summary>
