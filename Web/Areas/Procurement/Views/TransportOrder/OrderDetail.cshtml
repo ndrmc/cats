@@ -1,6 +1,7 @@
 ﻿@model Cats.Areas.Procurement.Models.TransportContractViewModel
 @using System.Collections
 @using Cats.Helpers
+@using Cats.Security
 @using Cats.Services.Security
 @using Kendo.Mvc.UI
 
@@ -76,7 +77,10 @@
                             <div class="input-group col-sm-8" style="padding: 0 15px 0 15px;">
                                 @Html.TextBoxFor(m => m.Transporter, new {Disabled = true, @class = "form-control"})
                                 <span class="input-group-addon">
-                                    <a href="#" class="transChange">@Html.Translate("Change")</a>
+                                    @if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Change_Transporter))
+                                    {
+                                        <a href="#" class="transChange">@Html.Translate("Change")</a>
+                                    }
                                 </span>
                             </div>
                         </div>
@@ -228,8 +232,20 @@
                   columns.Bound(p => p.TotalAmount).Title(@Html.Translate("Total Amount")).ClientFooterTemplate("<div style='text-align: right;'><b>#=kendo.format('{0:N0}', sum)#</b></div>").Format("{0:N0}").HtmlAttributes(new { align = "Right" });
                   columns.Bound(p => p.WinnerAssignedByLogistics).Hidden(true);
               })
-              .ToolBar(toolBar => toolBar.Save())
-              .Editable(editable => editable.Mode(GridEditMode.InCell))
+              .ToolBar(toolBar =>
+              {
+                  if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Edit_transport_order))
+                  {
+                      toolBar.Save();
+                  }
+              })
+              .Editable(editable =>
+              {
+                  if(UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Edit_transport_order))
+                  {
+                      editable.Mode(GridEditMode.InCell);
+                  }
+              })
               .Events(events => events.DataBound("onDataBound"))
               .Scrollable()
               .Sortable()

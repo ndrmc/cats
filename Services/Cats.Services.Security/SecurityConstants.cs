@@ -1288,7 +1288,11 @@ namespace Cats.Security
              {
                  return "Assign transporter";
              }
-             if ((operation == Operation.Edit_donation))
+            if ((operation == Operation.Change_Transporter))
+            {
+                return "Change Transporter";
+            }
+            if ((operation == Operation.Edit_donation))
              {
                  return "Edit donation";
              }
@@ -1518,7 +1522,14 @@ namespace Cats.Security
             {
                 return "Recive Plan For Loan SI View";
             }
-            
+            if ((operation == Operation.Sign_transport_order))
+            {
+                return "Sign transport order";
+            }
+            if ((operation == Operation.Revert_transport_order))
+            {
+                return "Revert transport order";
+            }
             throw new System.ArgumentException("Unknown Operation name", "operation");
 
              #endregion
@@ -1563,6 +1574,9 @@ namespace Cats.Security
             Revert_Local_Purchase,
             Remove_Local_Purchase,
             Add_new_donation,
+            Change_Transporter,
+            Sign_transport_order,
+            Revert_transport_order,
             /// <summary>
             /// Operation Add new local purchase
             /// </summary>
