@@ -460,18 +460,32 @@
                 location.allocatedIndirect = 0;
                 location.allocated = 0;
                 location.totalAllocatedAmount = 0;
-                if(location.Allocations[0])
-                {
+               
+                if(location.Allocations[0]) {
+                    var tempcode = location.Allocations[0].Code;
                     location.Allocations[0].Code="";
                     location.Allocations[0].AllocationType="";
                     location.Allocations[0].AllocatedAmount = 0;
-
+                   // $scope.allocatedAdjestment(tempcode,location.index); 
                 }
 
 
 
             }
         }
+        //$scope.allocatedAdjestment = function(code,fdpindex)
+        //{
+           
+        //    for(var i in $scope.SIPCCodes)
+        //    {
+        //        if(i.SIPCCodes === code && si.allocatedRequests[i].allocatedAmount !=0)
+        //        {
+        //            si.availableAmount = si.availableAmount/1 +  si.allocatedRequests[i].allocatedAmount/1;
+                   
+        //            return;
+        //        }
+        //    }
+        //}
         $scope.deleteSIPCAllocation = function(siindex,fdpindex)
         {
             var si=$scope.SIPCCodes[siindex];

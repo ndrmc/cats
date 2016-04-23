@@ -1730,6 +1730,8 @@ namespace Cats.Services.Hub
 
             foreach (var allocationDetail in allocationDetails)
             {
+                if(allocationDetail.TransactionGroup ==null)
+                { 
                 var transaction = new Models.Transaction
                 {
                     TransactionID = Guid.NewGuid(),
@@ -1746,24 +1748,35 @@ namespace Cats.Services.Hub
                 transaction.QuantityInMT = -allocationDetail.AllocatedAmount;
                 transaction.QuantityInUnit = -allocationDetail.AllocatedAmount;
                 transaction.LedgerID = Ledger.Constants.COMMITED_TO_FDP;
+                if(allocationDetail.ReliefRequisitionDetail.CommodityID!=0)
                 transaction.CommodityID = allocationDetail.ReliefRequisitionDetail.CommodityID;
                 transaction.ParentCommodityID = allocationDetail.ReliefRequisitionDetail.Commodity.ParentID;
                 transaction.FDPID = allocationDetail.ReliefRequisitionDetail.FDPID;
-                transaction.ProgramID = (int)allocationDetail.ReliefRequisitionDetail.ReliefRequisition.ProgramID;
+                transaction.ProgramID = (int) allocationDetail.ReliefRequisitionDetail.ReliefRequisition.ProgramID;
                 transaction.RegionID = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionID;
                 transaction.PlanId = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionalRequest.PlanID;
                 transaction.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
 
                 int hubID1 = 0;
-                if (allocationDetail.AllocationType ==daModel.TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
+                if (allocationDetail.AllocationType == daModel.TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
                 {
                     transaction.ShippingInstructionID = allocationDetail.Code;
-                    hubID1 = (int)_unitOfWorkNew.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+                    hubID1 =
+                        (int)
+                            _unitOfWorkNew.TransactionRepository.FindBy(
+                                m =>
+                                    m.ShippingInstructionID == allocationDetail.Code &&
+                                    m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
                 }
                 else
                 {
                     transaction.ProjectCodeID = allocationDetail.Code;
-                    hubID1 = (int)_unitOfWorkNew.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+                    hubID1 =
+                        (int)
+                            _unitOfWorkNew.TransactionRepository.FindBy(
+                                m =>
+                                    m.ProjectCodeID == allocationDetail.Code &&
+                                    m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
 
                 }
 
@@ -1780,8 +1793,9 @@ namespace Cats.Services.Hub
                 else
                 {
                     transaction.HubID =
-                                      _unitOfWorkNew.HubAllocationRepository.FindBy(r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
-                                              h => h.HubID).FirstOrDefault();
+                        _unitOfWorkNew.HubAllocationRepository.FindBy(
+                            r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
+                                h => h.HubID).FirstOrDefault();
                 }
 
 
@@ -1807,7 +1821,7 @@ namespace Cats.Services.Hub
                 transaction2.CommodityID = allocationDetail.ReliefRequisitionDetail.CommodityID;
                 transaction2.ParentCommodityID = allocationDetail.ReliefRequisitionDetail.Commodity.ParentID;
                 transaction2.FDPID = allocationDetail.ReliefRequisitionDetail.FDPID;
-                transaction2.ProgramID = (int)allocationDetail.ReliefRequisitionDetail.ReliefRequisition.ProgramID;
+                transaction2.ProgramID = (int) allocationDetail.ReliefRequisitionDetail.ReliefRequisition.ProgramID;
                 transaction2.RegionID = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionID;
                 transaction2.PlanId = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionalRequest.PlanID;
                 transaction2.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
@@ -1819,10 +1833,14 @@ namespace Cats.Services.Hub
                     var shippingInstruction =
                         _unitOfWorkNew.ShippingInstructionRepository.Get(t => t.Value == siCode).
                             FirstOrDefault();
-                    if (shippingInstruction != null) transaction.ShippingInstructionID = shippingInstruction.ShippingInstructionID;
+                    if (shippingInstruction != null)
+                        transaction.ShippingInstructionID = shippingInstruction.ShippingInstructionID;
 
-                    hubID2 = (int)_unitOfWorkNew.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code &&
-                            m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+                    hubID2 =
+                        (int)
+                            _unitOfWorkNew.TransactionRepository.FindBy(
+                                m => m.ShippingInstructionID == allocationDetail.Code &&
+                                     m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
 
 
                 }
@@ -1835,8 +1853,11 @@ namespace Cats.Services.Hub
                             FirstOrDefault();
                     if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
 
-                    hubID2 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
-                               m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+                    hubID2 =
+                        (int) _unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
+                                                                            m.LedgerID == Ledger.Constants.GOODS_ON_HAND)
+                            .Select(m => m.HubID)
+                            .FirstOrDefault();
 
                 }
 
@@ -1849,8 +1870,9 @@ namespace Cats.Services.Hub
                 else
                 {
                     transaction2.HubID =
-                                       _unitOfWorkNew.HubAllocationRepository.FindBy(r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
-                                               h => h.HubID).FirstOrDefault();
+                        _unitOfWorkNew.HubAllocationRepository.FindBy(
+                            r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
+                                h => h.HubID).FirstOrDefault();
 
                 }
 
@@ -1858,7 +1880,9 @@ namespace Cats.Services.Hub
                 allocationDetail.TransactionGroupID = transactionGroup;
                 _unitOfWorkNew.SIPCAllocationRepository.Edit(allocationDetail);
                 //result.Add(transaction);
+
             }
+        }
             var requisition = _unitOfWorkNew.ReliefRequisitionRepository.FindById(requisitionID);
             requisition.Status = 4;
             _unitOfWorkNew.ReliefRequisitionRepository.Edit(requisition);
