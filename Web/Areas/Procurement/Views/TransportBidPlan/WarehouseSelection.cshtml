@@ -2,6 +2,7 @@
 @using Kendo.Mvc.UI
 @using Cats.Areas.Procurement.Models
 @using Cats.Helpers
+@using Cats.Security
 
 @model List<Cats.Areas.Procurement.Models.WarehouseProgramViewModel>
 
@@ -24,7 +25,10 @@
         <a class="btn default  grey-salt toolbar-btn" href="@Url.Action("Index", "TransportBidPlan", new {Area = "Procurement"})"><i class="fa fa-list"></i> @Html.Translate("Back to List")</a>
     </div>
     <div id="" class="pull-right tooltips" data-placement="top">
-        <a class="btn default  grey-salt toolbar-btn" href="@Url.Action("Create/" + ViewBag.bidPlan.TransportBidPlanID, "bid", new { Area = "Procurement" })"><i class="fa fa-plus-circle"></i> @Html.Translate("Create Bid")</a>
+        @if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Create_new_bid))
+        {
+            <a class="btn default  grey-salt toolbar-btn" href="@Url.Action("Create/" + ViewBag.bidPlan.TransportBidPlanID, "bid", new {Area = "Procurement"})"><i class="fa fa-plus-circle"></i> @Html.Translate("Create Bid")</a>
+        }
     </div>
     @*<li> <a href="@Url.Action("Create/" + ViewBag.bidPlan.TransportBidPlanID, "bid", new { Area = "Procurement" })"><i class="icon-chevron-left"></i>@Html.Translate("Create Bid")</a></li>*@
     @*<li> <a href="@Url.Action("Index", "TransportBidPlan", new { Area = "Procurement" })"><i class="icon-chevron-left"></i>@Html.Translate("Back to List")</a></li>*@
