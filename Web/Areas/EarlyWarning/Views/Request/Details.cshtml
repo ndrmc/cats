@@ -426,14 +426,9 @@
                   .Name("Grid")
                   .Columns(columns  =>
                   {
-                      var currZone = "";
 
                       foreach (System.Data.DataColumn column in Model.Columns)
                       {
-                          if (currZone == "")
-                          {
-                              currZone = column.Table.Rows[0].ItemArray.ToString();
-                          }
                           if (column.DataType == typeof(decimal))
                           {
                               columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N2}").ClientGroupFooterTemplate("sum:#:sum#");
@@ -468,7 +463,9 @@
 
                  model.Field(column.ColumnName, column.DataType);
              }
-         }).Read(read => read.Action("StatusGeneric", "Configuration")
+         }).Read(read =>
+
+    read.Action("StatusGeneric", "Configuration")
     )
         .Aggregates(a =>
         {

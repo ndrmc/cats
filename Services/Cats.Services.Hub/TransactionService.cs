@@ -1730,7 +1730,7 @@ namespace Cats.Services.Hub
 
             foreach (var allocationDetail in allocationDetails)
             {
-                if(allocationDetail.TransactionGroup ==null)
+                if(allocationDetail.TransactionGroup ==null && allocationDetail.ReliefRequisitionDetail != null)
                 { 
                 var transaction = new Models.Transaction
                 {

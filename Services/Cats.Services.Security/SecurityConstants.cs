@@ -1526,12 +1526,20 @@ namespace Cats.Security
             {
                 return "Sign transport order";
             }
+            if ((operation == Operation.UnCommit_Allocation))
+            {
+                return "UnCommit Allocation";
+            }
+            if ((operation == Operation.Approve_Allocation))
+            {
+                return "Approve Allocation";
+            }
             if ((operation == Operation.Revert_transport_order))
             {
                 return "Revert transport order";
             }
             throw new System.ArgumentException("Unknown Operation name", "operation");
-
+           
              #endregion
          }
         public static string isValidOperation(LogisticsConstants.Operation operation)
@@ -1577,6 +1585,9 @@ namespace Cats.Security
             Change_Transporter,
             Sign_transport_order,
             Revert_transport_order,
+            UnCommit_Allocation,
+            Approve_Allocation,
+
             /// <summary>
             /// Operation Add new local purchase
             /// </summary>

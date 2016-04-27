@@ -1,7 +1,7 @@
 ﻿@model List<int?>
 @using Kendo.Mvc.UI
 @using Cats.Helpers
-
+@using Cats.Security
 @{
 
     var gridid = Guid.NewGuid().ToString();
@@ -33,12 +33,13 @@
         columns.Bound(e => e.BenficiaryNo).Title(@Html.Translate("Beneficiaries")).Width(90).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title = "Benficiary No" }).Format("{0:n0}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).Filterable(false);
         columns.Bound(e => e.Status).Title(@Html.Translate("Status"));//.Width(120).ClientTemplate("<a class='action-link assign-code#=Status#' href='" + @Url.Action("Index", "FDPSIAllocation", new { Area = "Logistics", regionid = ViewBag.regionId }) + "&RequisitionID=#=RequisitionId#'>PC/SI Allocate</a>  ").Filterable(false);
         columns.Command(e =>
-            {
+        {
+            if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.UnCommit_Allocation).ToString() == "UnCommit_Allocation")
                 e.Custom(@Html.Translate("Uncommmit")).Click("onUnCommit");
-                
+            if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_Allocation).ToString() == "Approve_Allocation")
                 e.Custom(@Html.Translate("Approve")).Click("onApprove");
-                
-            }).Width(200);
+
+        }).Width(200);
 
 
         //columns.Bound(e => e.Round).Width(120).Title("Round");
@@ -48,7 +49,7 @@
                             .Ajax()
                             .Read(read => read.Action("AllocateProjectCode", "DispatchAllocation", new { regionId = Model[0], status = Model[1] }))
 
-                           // .PageSize(5)
+                         // .PageSize(5)
                          )
                          .Scrollable(scroll => scroll.Height(350))
                          .Selectable(select => select.Mode(GridSelectionMode.Single))
@@ -61,10 +62,10 @@
                                      .IsEqualTo(@Html.Translate("Is equal to"))
                                      .IsNotEqualTo(@Html.Translate("Is not equal to"))
                           )))
-        //.Filterable()
+                         //.Filterable()
                          .Sortable()
                          .HtmlAttributes(new { style = "height:450px;" })
-        //.Pageable()
+//.Pageable()
 )
 
 

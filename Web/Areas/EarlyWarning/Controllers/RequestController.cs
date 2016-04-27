@@ -1214,7 +1214,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                     RegionalRequestDetails = oneWoreda
                                 });
             }
-            return result.OrderBy(t=>t.zone).ToList();
+            return result;
         }
 
         public JsonResult GetPlan(int programID)

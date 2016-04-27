@@ -383,7 +383,7 @@
                 var AdjestedallocatedAmount = $scope.EditLocation.allocatedAmount - CustomAmount;
                 $scope.EditLocation.totalAllocatedAmount= ($scope.EditLocation.totalAllocatedAmount-  $scope.EditLocation.allocatedAmount) + CustomAmount;
                 $scope.EditLocation.allocatedAmount= CustomAmount;
-               
+
                 $scope.SIPCCodes[$scope.siindexG].availableAmount = $scope.SIPCCodes[$scope.siindexG].availableAmount  + AdjestedallocatedAmount ;
 
             }
@@ -397,7 +397,7 @@
                 $scope.EditLocation=location;
                 $scope.viewQmount= allocatedAmount;
                 $scope.siindexG = siIndex-1;
-               
+
                 $scope.showAmountModal= !$scope.showAmountModal;
             }
         }
@@ -461,7 +461,7 @@
                 location.allocatedIndirect = 0;
                 location.allocated = 0;
                 location.totalAllocatedAmount = 0;
-               
+
                 if(location.Allocations[0]) {
                     if(!temp)
                         $scope.adjustAmount(location.Allocations[0].Code,location.Allocations[0].AllocatedAmount );
@@ -469,7 +469,7 @@
                     location.Allocations[0].Code="";
                     location.Allocations[0].AllocationType="";
                     location.Allocations[0].AllocatedAmount = 0;
-                   // $scope.allocatedAdjestment(tempcode,location.index); 
+                   // $scope.allocatedAdjestment(tempcode,location.index);
                 }
 
 
@@ -491,20 +491,20 @@
         }
         $scope.clearSIPCAllocation = function()
         {
-            //$scope.SIPCCodes[si].allocatedRequests[i].totalAllocatedAmount === 0 &&  
+            //$scope.SIPCCodes[si].allocatedRequests[i].totalAllocatedAmount === 0 &&
             for(var si in $scope.SIPCCodes) {
-               
+
                     for (var i in $scope.SIPCCodes[si].allocatedRequests) {
-                        
+
                             if (   $scope.SIPCCodes[si].allocatedRequests[i].allocatedAmount === 0)
                             {
-                                
+
                                 $scope.SIPCCodes[si].allocatedRequests.splice(i, 1);
                                 return;
                             }
-                        
+
                     }
-                
+
             }
         }
         $scope.deleteSIPCAllocation = function(siindex,fdpindex)
@@ -738,14 +738,14 @@
             var avail=$scope.SIPCCodes[siIndex].availableAmount-amount;
             if($scope.allAdminRegions[requestIndex].allocatedAmount != 0)
             {
-                
+
                 var temp = angular.copy($scope.allAdminRegions[requestIndex]);
                 alocated =  $scope.existSIPCIndex(temp,$scope.SIPCCodes[siIndex].codeId);
                 $scope.allAdminRegions.push(temp);
                 $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
-                
+
             }
-            
+
             $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
             $scope.allAdminRegions[requestIndex].allocatedAmount =  amount;
             $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
@@ -764,24 +764,24 @@
         $scope.existSIPCIndex=function(temp, fdpID)
         {
             for(var si in $scope.SIPCCodes) {
-               
+
                 for (var i in $scope.SIPCCodes[si].allocatedRequests) {
-                        
+
                     if (   $scope.SIPCCodes[si].allocatedRequests[i].FDPId === temp.FDPId)
                     {
                         if(temp.Allocations[0] && $scope.SIPCCodes[si].allocatedRequests[i].Allocations[0] )
                         {
                             if (   $scope.SIPCCodes[si].allocatedRequests[i].Allocations[0].Code === fdpID)//temp.Allocations[0].Code
-                            {  
-                              
+                            {
+
                                 alert("Duplicated FDP");
                                 return 1;
                         }
                         }
                     }
-                        
+
                 }
-                
+
             }
             return 0;
         }
