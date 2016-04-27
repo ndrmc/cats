@@ -158,18 +158,6 @@ namespace Cats.ViewModelBinder
                 {
                     subtotalBeneficiary += singleWoreda.RequestedBeneficiaryNo;
                     subtotalPlannedBeneficiary += singleWoreda.PlannedBeneficaryNo;
-
-                    if (woredaRequestDetail.Last().Equals(singleWoreda))
-                    {
-                        var drSubtotal = dt.NewRow();
-
-                        drSubtotal[colZone] = currentZone;
-                        drSubtotal[colWoreda] = "Subtotal";
-                        drSubtotal[colNoBeneficiary] = subtotalBeneficiary;
-                        drSubtotal[colNoPlannedBeneficiary] = subtotalPlannedBeneficiary;
-                        drSubtotal[colDifference] = subtotalPlannedBeneficiary - subtotalBeneficiary;
-                        dt.Rows.Add(drSubtotal);
-                    }
                 }
                 else if (currentZone != singleWoreda.zone)
                 {
@@ -249,6 +237,17 @@ namespace Cats.ViewModelBinder
                 }
 
                 dt.Rows.Add(dr);
+                if (woredaRequestDetail.Last().Equals(singleWoreda))
+                {
+                    var drSubtotal = dt.NewRow();
+
+                    drSubtotal[colZone] = currentZone;
+                    drSubtotal[colWoreda] = "Subtotal";
+                    drSubtotal[colNoBeneficiary] = subtotalBeneficiary;
+                    drSubtotal[colNoPlannedBeneficiary] = subtotalPlannedBeneficiary;
+                    drSubtotal[colDifference] = subtotalPlannedBeneficiary - subtotalBeneficiary;
+                    dt.Rows.Add(drSubtotal);
+                }
             }
 
             return dt;
