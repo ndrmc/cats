@@ -144,6 +144,35 @@ namespace Cats.ViewModelBinder
 
             foreach (var singleWoreda in woredaRequestDetail)
             {
+
+                if (currentZone == "")
+                {
+                    currentZone = singleWoreda.zone;
+                    subtotalBeneficiary = singleWoreda.RequestedBeneficiaryNo;
+                    subtotalPlannedBeneficiary = singleWoreda.PlannedBeneficaryNo;
+                }
+                else if (currentZone == singleWoreda.zone)
+                {
+                    subtotalBeneficiary += singleWoreda.RequestedBeneficiaryNo;
+                    subtotalPlannedBeneficiary += singleWoreda.PlannedBeneficaryNo;
+                }
+                else if (currentZone != singleWoreda.zone)
+                {
+                    var drSubtotal = dt.NewRow();
+
+                    drSubtotal[colZone] = currentZone;
+                    drSubtotal[colWoreda] = "Subtotal";
+                    drSubtotal[colNoBeneficiary] = subtotalBeneficiary;
+                    drSubtotal[colNoPlannedBeneficiary] = subtotalPlannedBeneficiary;
+                    drSubtotal[colDifference] = subtotalPlannedBeneficiary - subtotalBeneficiary;
+                    dt.Rows.Add(drSubtotal);
+
+                    currentZone = singleWoreda.zone;
+                    subtotalBeneficiary = singleWoreda.RequestedBeneficiaryNo;
+                    subtotalPlannedBeneficiary = singleWoreda.PlannedBeneficaryNo;
+                }
+
+
                 var dr = dt.NewRow();
 
                 dr[colZone] = singleWoreda.zone;
@@ -206,6 +235,17 @@ namespace Cats.ViewModelBinder
                 }
 
                 dt.Rows.Add(dr);
+                if (woredaRequestDetail.Last().Equals(singleWoreda))
+                {
+                    var drSubtotal = dt.NewRow();
+
+                    drSubtotal[colZone] = currentZone;
+                    drSubtotal[colWoreda] = "Subtotal";
+                    drSubtotal[colNoBeneficiary] = subtotalBeneficiary;
+                    drSubtotal[colNoPlannedBeneficiary] = subtotalPlannedBeneficiary;
+                    drSubtotal[colDifference] = subtotalPlannedBeneficiary - subtotalBeneficiary;
+                    dt.Rows.Add(drSubtotal);
+                }
             }
 
             return dt;

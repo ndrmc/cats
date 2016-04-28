@@ -433,7 +433,6 @@
                           {
                               columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N2}").ClientGroupFooterTemplate("sum:#:sum#");
                               //.HeaderHtmlAttributes(new { @class = "cats-unit-pref-grid" })
-
                           }
                           else if (column.DataType == typeof(int))
                           {
@@ -442,7 +441,7 @@
                           }
                           else if(column.ColumnName == "Zone")
                           {
-                              columns.Bound(column.ColumnName);
+                              //columns.Bound(column.ColumnName);
                           }
                           else
                           {

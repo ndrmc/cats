@@ -134,8 +134,7 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult BidWinningTransporters_read([DataSourceRequest] DataSourceRequest request)
         {
             var transprtersWithActiveTO =
-                _transportOrderService.Get(t => t.StatusID >= 3, null, "Transporter").Select(t => t.Transporter).
-                    Distinct();
+                _transportOrderService.Get(t => t.StatusID >= 3, null, "Transporter").Select(t => t.Transporter).Distinct();
             var winningTransprterViewModels = TransporterListViewModelBinder(transprtersWithActiveTO.ToList());
             return Json(winningTransprterViewModels.ToDataSourceResult(request));
         }
@@ -155,11 +154,16 @@ namespace Cats.Areas.Logistics.Controllers
                                                                     TransporterName = transporter.Name,
                                                                     BidContract = firstOrDefault.Bid.BidNumber
                                                                 }
-                                                          : null;
+                                                          : new TransporterViewModel
+                                                                {
+                                                                    TransporterID = transporter.TransporterID,
+                                                                    TransporterName = transporter.Name,
+                                                                    BidContract = "No associated bid was found for the transporter"
+                                                                };
                                            }).ToList();
         }
 
-        public ActionResult PaymentRequests(int transporterID)
+        public ActionResult PaymentRequests(int transporterID = 0)
         {
             var statuses = _workflowStatusService.GetStatus(WORKFLOW.TRANSPORT_ORDER);
             var currentUser = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name);
@@ -170,6 +174,7 @@ namespace Cats.Areas.Logistics.Controllers
                 .Get(t => t.TransportOrder.TransporterID == transporterID
                           && t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo < 2, null,
                      "Delivery,Delivery.DeliveryDetails,TransportOrder").ToList();
+
             var transporterPaymentRequests = TransporterPaymentRequestViewModelBinder(paymentRequests);
             var transportOrder =
                 _TransportOrderService.Get(t => t.TransporterID == transporterID && t.StatusID >= 3, null, "Transporter")
@@ -185,6 +190,48 @@ namespace Cats.Areas.Logistics.Controllers
             return View(transporterPaymentRequests);
         }
 
+        public JsonResult PaymentRequests2(int transporterID =0)
+        {
+            var statuses = _workflowStatusService.GetStatus(WORKFLOW.TRANSPORT_ORDER);
+            var currentUser = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name);
+
+            var datePref = currentUser.DatePreference;
+            ViewBag.TargetController = "TransporterPaymentRequest";
+            var paymentRequests = _transporterPaymentRequestService
+                .Get(t => t.TransportOrder.TransporterID == transporterID
+                          && t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo < 2, null,
+                     "Delivery,Delivery.DeliveryDetails,TransportOrder").ToList();
+            //var paymentRequests = _transporterPaymentRequestService
+            //   .Get(t => t.TransportOrder.TransporterID == 4
+            //             , null,
+            //        "Delivery,Delivery.DeliveryDetails,TransportOrder").Take(10).ToList();
+            var transporterPaymentRequests = TransporterPaymentRequestViewModelBinder(paymentRequests);
+            var transportOrder =
+                _TransportOrderService.Get(t => t.TransporterID == transporterID && t.StatusID >= 3, null, "Transporter")
+                    .FirstOrDefault();
+            var transportOrderViewModel = TransportOrderViewModelBinder.BindTransportOrderViewModel(transportOrder,
+                                                                                                 datePref, statuses);
+            if (transportOrderViewModel != null)
+            {
+                ViewBag.TransportOrderViewModel = transportOrderViewModel;
+                ViewBag.TransporterID = transportOrderViewModel.TransporterID;
+            }
+            if (TempData["CustomError"] != null)
+            {
+                ModelState.AddModelError("Errors", TempData["CustomError"].ToString());
+            }
+
+            var incommingGrns = (from tp in transporterPaymentRequests
+                select
+                    new IncommingGRNViewModel
+                    {
+                        ContractNumber = tp.ContractNumber,
+                        GRN = tp.GRN,
+                        ReferenceNo = tp.ReferenceNo,
+                        RequisitionNo = tp.RequisitionNo
+                    }).ToList();
+            return Json(incommingGrns, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult TransporterDetail(int transporterID)
         {
             var transporter = _transporterService.FindById(transporterID);
@@ -334,7 +381,7 @@ namespace Cats.Areas.Logistics.Controllers
                     bidDocNo = transportOrderdetail.TransportOrder.BidDocumentNo;
                 }
                 if (dispatch == null || request.Delivery.DeliveryDetails.FirstOrDefault() == null) continue;
-
+                var allocatedDispatchAmount = dispatch.DispatchAllocation.Amount;
                 var dispathedAmount = (decimal) 0.0;
                 var childCommodity = string.Empty;
                 var firstOrDefault = dispatch.DispatchDetails.FirstOrDefault();
@@ -414,6 +461,7 @@ namespace Cats.Areas.Logistics.Controllers
                         Transporter = dispatch.Transporter,
                         ChildCommodity = childCommodity,
                         DispatchDate = dispatchedDate.ToCTSPreferedDateFormat(datePref),
+                        AllocatedDispatchAmount = allocatedDispatchAmount,
                         DispatchedAmount = dispathedAmount,
                         BidDocumentNo = bidDocNo,
                         Checked = false,
