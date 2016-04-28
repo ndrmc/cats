@@ -134,8 +134,7 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult BidWinningTransporters_read([DataSourceRequest] DataSourceRequest request)
         {
             var transprtersWithActiveTO =
-                _transportOrderService.Get(t => t.StatusID >= 3, null, "Transporter").Select(t => t.Transporter).
-                    Distinct();
+                _transportOrderService.Get(t => t.StatusID >= 3, null, "Transporter").Select(t => t.Transporter).Distinct();
             var winningTransprterViewModels = TransporterListViewModelBinder(transprtersWithActiveTO.ToList());
             return Json(winningTransprterViewModels.ToDataSourceResult(request));
         }
@@ -155,7 +154,12 @@ namespace Cats.Areas.Logistics.Controllers
                                                                     TransporterName = transporter.Name,
                                                                     BidContract = firstOrDefault.Bid.BidNumber
                                                                 }
-                                                          : null;
+                                                          : new TransporterViewModel
+                                                                {
+                                                                    TransporterID = transporter.TransporterID,
+                                                                    TransporterName = transporter.Name,
+                                                                    BidContract = "No associated bid was found for the transporter"
+                                                                };
                                            }).ToList();
         }
 
@@ -334,7 +338,7 @@ namespace Cats.Areas.Logistics.Controllers
                     bidDocNo = transportOrderdetail.TransportOrder.BidDocumentNo;
                 }
                 if (dispatch == null || request.Delivery.DeliveryDetails.FirstOrDefault() == null) continue;
-
+                var allocatedDispatchAmount = dispatch.DispatchAllocation.Amount;
                 var dispathedAmount = (decimal) 0.0;
                 var childCommodity = string.Empty;
                 var firstOrDefault = dispatch.DispatchDetails.FirstOrDefault();
@@ -414,6 +418,7 @@ namespace Cats.Areas.Logistics.Controllers
                         Transporter = dispatch.Transporter,
                         ChildCommodity = childCommodity,
                         DispatchDate = dispatchedDate.ToCTSPreferedDateFormat(datePref),
+                        AllocatedDispatchAmount = allocatedDispatchAmount,
                         DispatchedAmount = dispathedAmount,
                         BidDocumentNo = bidDocNo,
                         Checked = false,
