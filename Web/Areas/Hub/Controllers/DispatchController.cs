@@ -197,6 +197,7 @@ namespace Cats.Areas.Hub.Controllers
             List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodity(hubId, ComID);
             var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
             tlistFiltered= tlistFiltered.Where(item => item.amount > 0);
+            ViewBag.AvailableSIList = tlistFiltered;
             return (Json(tlistFiltered, JsonRequestBehavior.AllowGet));
 
         }
@@ -386,6 +387,11 @@ namespace Cats.Areas.Hub.Controllers
             {
                 dispatch.Commodity = commodity.Name;
             }
+            var hubId = _hubAllocationService.GetAllocatedHubId(dispatch.RequisitionId?? 0);
+            List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodity(hubId, dispatch.CommodityID);
+            var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
+            tlistFiltered = tlistFiltered.Where(item => item.amount > 0).ToList(); 
+            ViewBag.AvailableSIList = tlistFiltered;
             ViewBag.plannedAmount = dispatch.plannedAmount;
             return View(dispatch);
 
