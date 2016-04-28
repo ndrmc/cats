@@ -159,7 +159,7 @@ namespace Cats.Areas.Logistics.Controllers
                                            }).ToList();
         }
 
-        public ActionResult PaymentRequests(int transporterID)
+        public ActionResult PaymentRequests(int transporterID = 0)
         {
             var statuses = _workflowStatusService.GetStatus(WORKFLOW.TRANSPORT_ORDER);
             var currentUser = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name);
@@ -170,6 +170,7 @@ namespace Cats.Areas.Logistics.Controllers
                 .Get(t => t.TransportOrder.TransporterID == transporterID
                           && t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo < 2, null,
                      "Delivery,Delivery.DeliveryDetails,TransportOrder").ToList();
+
             var transporterPaymentRequests = TransporterPaymentRequestViewModelBinder(paymentRequests);
             var transportOrder =
                 _TransportOrderService.Get(t => t.TransporterID == transporterID && t.StatusID >= 3, null, "Transporter")
@@ -185,6 +186,48 @@ namespace Cats.Areas.Logistics.Controllers
             return View(transporterPaymentRequests);
         }
 
+        public JsonResult PaymentRequests2(int transporterID =0)
+        {
+            var statuses = _workflowStatusService.GetStatus(WORKFLOW.TRANSPORT_ORDER);
+            var currentUser = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name);
+
+            var datePref = currentUser.DatePreference;
+            ViewBag.TargetController = "TransporterPaymentRequest";
+            var paymentRequests = _transporterPaymentRequestService
+                .Get(t => t.TransportOrder.TransporterID == transporterID
+                          && t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo < 2, null,
+                     "Delivery,Delivery.DeliveryDetails,TransportOrder").ToList();
+            //var paymentRequests = _transporterPaymentRequestService
+            //   .Get(t => t.TransportOrder.TransporterID == 4
+            //             , null,
+            //        "Delivery,Delivery.DeliveryDetails,TransportOrder").Take(10).ToList();
+            var transporterPaymentRequests = TransporterPaymentRequestViewModelBinder(paymentRequests);
+            var transportOrder =
+                _TransportOrderService.Get(t => t.TransporterID == transporterID && t.StatusID >= 3, null, "Transporter")
+                    .FirstOrDefault();
+            var transportOrderViewModel = TransportOrderViewModelBinder.BindTransportOrderViewModel(transportOrder,
+                                                                                                 datePref, statuses);
+            if (transportOrderViewModel != null)
+            {
+                ViewBag.TransportOrderViewModel = transportOrderViewModel;
+                ViewBag.TransporterID = transportOrderViewModel.TransporterID;
+            }
+            if (TempData["CustomError"] != null)
+            {
+                ModelState.AddModelError("Errors", TempData["CustomError"].ToString());
+            }
+
+            var incommingGrns = (from tp in transporterPaymentRequests
+                select
+                    new IncommingGRNViewModel
+                    {
+                        ContractNumber = tp.ContractNumber,
+                        GRN = tp.GRN,
+                        ReferenceNo = tp.ReferenceNo,
+                        RequisitionNo = tp.RequisitionNo
+                    }).ToList();
+            return Json(incommingGrns, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult TransporterDetail(int transporterID)
         {
             var transporter = _transporterService.FindById(transporterID);
