@@ -1230,7 +1230,6 @@
 <script>
     function DetailGRN() {   
         var transporterId = $('#incommingGRN option:selected').val();
-        alert(transporterId);
-        window.location = "@Url.Action("PaymentRequests", "TransporterPaymentRequest", new {Area = "Logistics"})" + "?transporterID =" + transporterId; //+Transport "/" + bidId ;
+        window.location = "@Url.Action("PaymentRequests", "TransporterPaymentRequest", new {Area = "Logistics"})" + "?transporterID=" + transporterId;
     }
 </script>
