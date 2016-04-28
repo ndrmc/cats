@@ -50,7 +50,7 @@ namespace Cats.Areas.Logistics.Controllers
 
         private readonly IGiftCertificateDetailService _giftCertificateDetailService;
         private readonly hub.IReceiptAllocationService _receiptAllocationService;
-
+        private readonly ITransporterPaymentRequestService _transporterPaymentRequestService;
         public HomeController(IReliefRequisitionService reliefRequisitionService,
             hub.IDispatchAllocationService dispatchAllocationService,
             IUserAccountService userAccountService,
@@ -66,7 +66,7 @@ namespace Cats.Areas.Logistics.Controllers
             IHRDDetailService hrdDetailService,
             IRationDetailService rationDetailService,
             IProgramService programService,
-            IStockStatusService stockStatusService, IReceiptPlanDetailService receiptPlanDetailService, IDeliveryService deliveryService, IGiftCertificateDetailService giftCertificateDetailService, hub.IReceiptAllocationService receiptAllocationService)
+            IStockStatusService stockStatusService, IReceiptPlanDetailService receiptPlanDetailService, IDeliveryService deliveryService, IGiftCertificateDetailService giftCertificateDetailService, hub.IReceiptAllocationService receiptAllocationService,ITransporterPaymentRequestService transporterPaymentRequestService)
         {
             this._reliefRequisitionService = reliefRequisitionService;
             _dispatchAllocationService = dispatchAllocationService;
@@ -88,6 +88,7 @@ namespace Cats.Areas.Logistics.Controllers
             _deliveryService = deliveryService;
             _giftCertificateDetailService = giftCertificateDetailService;
             _receiptAllocationService = receiptAllocationService;
+            _transporterPaymentRequestService = transporterPaymentRequestService;
         }
 
         public ActionResult Index()
@@ -293,6 +294,23 @@ namespace Cats.Areas.Logistics.Controllers
                                                                                                                              BidId = b.BidID
                                                                                                                          });
             return Json(bids, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetTransporters2()
+        {
+            var paymentRequests = _transporterPaymentRequestService
+                .Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo < 2
+                ).Select(t => t.TransportOrder.TransporterID).Distinct().ToList();
+            var transporters =
+                _transportOrderService.FindBy(
+                    s =>
+                        s.StatusID < (int) (Cats.Models.Constant.TransportOrderStatus.Approved) &&
+                        paymentRequests.Contains(s.TransporterID)).Select(p => new
+                        {
+                            name = p.Transporter.Name,
+                            TransporterId = p.TransporterID
+                        }).Distinct().ToList();
+            return Json(transporters, JsonRequestBehavior.AllowGet);
         }
 
         private IEnumerable<Cats.Models.ViewModels.TransporterViewModel> GetBidWinners(IEnumerable<BidWinner> bidWinners)
