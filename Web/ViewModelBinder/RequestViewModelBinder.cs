@@ -54,7 +54,7 @@ namespace Cats.ViewModelBinder
             if (regionalRequest.UserProfile != null)
                 regionalRequestViewModel.RequestedBy = regionalRequest.UserProfile.FirstName + " " +
                                                        regionalRequest.UserProfile.LastName;
-            if (regionalRequest.UserProfile1 != null && regionalRequest.Status == (int) Cats.Models.Constant.RegionalRequestStatus.Approved)
+            if (regionalRequest.UserProfile1 != null && regionalRequest.Status == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
                 regionalRequestViewModel.ApprovedBy = regionalRequest.UserProfile1.FirstName + " " +
                                                       regionalRequest.UserProfile1.LastName;
             return regionalRequestViewModel;
@@ -96,7 +96,7 @@ namespace Cats.ViewModelBinder
             return request;
         }
 
-       
+
 
 
         public static DataTable TransposeDataNew(List<PLANWithRegionalRequestViewModel> woredaRequestDetail, int programID, string preferedweight)
@@ -142,9 +142,12 @@ namespace Cats.ViewModelBinder
                 }
             }
 
+            var currentZone = "";
+            var subtotalBeneficiary = 0;
+            var subtotalPlannedBeneficiary = 0;
+            //woredaRequestDetail = woredaRequestDetail.Sort(t => t.zone);
             foreach (var singleWoreda in woredaRequestDetail)
             {
-
                 if (currentZone == "")
                 {
                     currentZone = singleWoreda.zone;
@@ -171,7 +174,6 @@ namespace Cats.ViewModelBinder
                     subtotalBeneficiary = singleWoreda.RequestedBeneficiaryNo;
                     subtotalPlannedBeneficiary = singleWoreda.PlannedBeneficaryNo;
                 }
-
 
                 var dr = dt.NewRow();
 
@@ -294,7 +296,7 @@ namespace Cats.ViewModelBinder
                                         from regionalRequestDetail in requestDetails
                                         group regionalRequestDetail by regionalRequestDetail.Fdp.AdminUnit
                                             into g
-                                            select g
+                                        select g
                                       );
 
                 foreach (var requestDetail in requestDetails)
