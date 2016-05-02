@@ -1717,9 +1717,10 @@ namespace Cats.Services.Hub
             }
             return false;
         }
-        public bool PostSIAllocation(int requisitionID)
+        public bool PostSIAllocation(int requisitionID, int siPCAllocationID)
         {
-            var allocationDetails = _unitOfWorkNew.SIPCAllocationRepository.Get(t => t.ReliefRequisitionDetail.RequisitionID == requisitionID);
+            var allocationDetails = _unitOfWorkNew.SIPCAllocationRepository.Get(t => t.ReliefRequisitionDetail.RequisitionID == requisitionID, null,  "ReliefRequisitionDetail");
+            allocationDetails =allocationDetails.Where(t => t.SIPCAllocationID == siPCAllocationID);
             if (allocationDetails == null) return false;
             var d =  new daModel.TransactionGroup();
             var transactionGroup = Guid.NewGuid();
@@ -1924,6 +1925,7 @@ namespace Cats.Services.Hub
                 newDispatchAllocation.DispatchAllocationID = Guid.NewGuid();
                 _unitOfWork.DispatchAllocationRepository.Add(newDispatchAllocation);
                 _unitOfWork.Save();
+                int siPCAllocationID = 0;
                 var allocationFirst = _unitOfWorkNew.SIPCAllocationRepository.Get(t => t.ReliefRequisitionDetail.RequisitionID == newDispatchAllocation.RequisitionId.Value).FirstOrDefault();
                 if (allocationFirst != null)
                 {
@@ -1936,12 +1938,12 @@ namespace Cats.Services.Hub
                     _unitOfWorkNew.SIPCAllocationRepository.Add(allocation);
                     _unitOfWorkNew.Save();
 
-
+                    siPCAllocationID = allocation.SIPCAllocationID;
                 }
                
               
                 if (newDispatchAllocation.RequisitionId.HasValue)
-                PostSIAllocation(newDispatchAllocation.RequisitionId.Value);
+                PostSIAllocation(newDispatchAllocation.RequisitionId.Value, siPCAllocationID);
             }
            
             if (dispatchViewModel.DispatchID != null)
