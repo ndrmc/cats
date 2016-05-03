@@ -194,7 +194,7 @@ namespace Cats.Areas.Logistics.Controllers
         {
             var statuses = _workflowStatusService.GetStatus(WORKFLOW.TRANSPORT_ORDER);
             var currentUser = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name);
-
+            ViewBag.TransporterId = transporterID;
             var datePref = currentUser.DatePreference;
             ViewBag.TargetController = "TransporterPaymentRequest";
             var paymentRequests = _transporterPaymentRequestService
