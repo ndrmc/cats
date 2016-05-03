@@ -381,13 +381,16 @@ namespace Cats.Areas.Logistics.Controllers
                     bidDocNo = transportOrderdetail.TransportOrder.BidDocumentNo;
                 }
                 if (dispatch == null || request.Delivery.DeliveryDetails.FirstOrDefault() == null) continue;
-                var allocatedDispatchAmount = dispatch.DispatchAllocation.Amount;
+                // Converted to bag unit: by dividing by 0.05
+                var allocatedDispatchAmount = decimal.Round(dispatch.DispatchAllocation.Amount / (decimal)0.05, 2, MidpointRounding.AwayFromZero);
                 var dispathedAmount = (decimal) 0.0;
                 var childCommodity = string.Empty;
                 var firstOrDefault = dispatch.DispatchDetails.FirstOrDefault();
                 if (firstOrDefault != null)
                 {
-                    dispathedAmount = firstOrDefault.DispatchedQuantityInMT.ToQuintal();
+                    //dispathedAmount = firstOrDefault.DispatchedQuantityInMT.ToQuintal();
+                    // Converted to bag unit: by dividing by 0.05
+                    dispathedAmount = decimal.Round(firstOrDefault.DispatchedQuantityInMT.ToQuintal() / (decimal)0.05, 2, MidpointRounding.AwayFromZero);
                 }
 
                 var dispatchedDate = dispatch.DispatchDate.Date;
