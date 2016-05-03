@@ -385,7 +385,8 @@
                                     <a href="#" class="collapse" data-original-title="" title=""></a>
                                 </div>
                                 <div class="actions">
-                                    <a class="btn green" onclick="DetailGRN()" ><i class="fa fa-list"></i> @Html.Translate("Detail")</a>
+                                    <input type="text" id="hiddenTransporterIdValue" name="myText" style="display:none">
+                                    <a class="btn green" onclick="DetailGRN()"><i class="fa fa-list"></i> @Html.Translate("Detail")</a>
                                     <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
                                 </div>
                             </div>
@@ -950,7 +951,8 @@
                     .success(function(data, status, hstatus, headers, configeaders, config) {
                         $scope.IncommingGRNs.GRN = data;
                     }).error(function() {});
-
+              
+                $('#hiddenTransporterIdValue').val(transporterId);
             };
 
             $scope.Detail = function (transporterId) {
@@ -1228,8 +1230,8 @@
 
 </script>
 <script>
-    function DetailGRN() {   
-        var transporterId = $('#incommingGRN option:selected').val();
+    function DetailGRN() {
+        var transporterId = $('#hiddenTransporterIdValue').val();    
         window.location = "@Url.Action("PaymentRequests", "TransporterPaymentRequest", new {Area = "Logistics"})" + "?transporterID=" + transporterId;
     }
 </script>
