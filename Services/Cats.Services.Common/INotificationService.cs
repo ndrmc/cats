@@ -25,5 +25,6 @@ namespace Cats.Services.Common
         bool AddNotificationForProcurmentForGRNDiscripancy(string destinationURl, int transportOrderId,
                                                            string transportOrderNo);
 
+        bool AddNotificationForRegionOnNeedAssessmentApproval(string destinationURL, Plan plan);
     }
 }
