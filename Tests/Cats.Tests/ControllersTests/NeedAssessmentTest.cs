@@ -270,7 +270,7 @@ NeedAssessmentHeader=new NeedAssessmentHeader(){AdminUnit=new AdminUnit(){Name="
                                                                     needAssessmentDetailService.Object,
                                                                     seasonService.Object,
                                                                     typeOfNeedAssessmentService.Object,
-                                                                    log.Object, planService.Object, commonService.Object,userAccountService.Object);
+                                                                    log.Object, planService.Object, commonService.Object,userAccountService.Object,null);
         }
         [TearDown]
         public void Dispose()
