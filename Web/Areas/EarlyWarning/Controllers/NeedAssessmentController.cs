@@ -30,7 +30,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly IPlanService _planService;
         private readonly ICommonService _commonService;
         private readonly IUserAccountService _userAccountService;
-       
+        private readonly INotificationService _notificationService;
 
 
         public NeedAssessmentController(INeedAssessmentService needAssessmentService,
@@ -40,7 +40,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                         ISeasonService seasonService, ITypeOfNeedAssessmentService typeOfNeedAssessmentService,
                                         ILog log, 
                                         IPlanService planService,
-                                        ICommonService commonService,IUserAccountService userAccountService)
+                                        ICommonService commonService,IUserAccountService userAccountService,
+                                        INotificationService notificationService)
         {
             _needAssessmentService = needAssessmentService;
             _adminUnitService = adminUnitService;
@@ -52,7 +53,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _planService = planService;
             _commonService = commonService;
             _userAccountService = userAccountService;
-            
+            _notificationService = notificationService;
         }
 
       
@@ -248,7 +249,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             var plan = _planService.FindById(id);
             plan.Status = (int) PlanStatus.Approved;
-            _planService.EditPlan(plan);
+            var status = _planService.EditPlan(plan);
+            //if(status)SendNotification(plan);
             return RedirectToAction("Index");
         }
 
@@ -432,6 +434,21 @@ namespace Cats.Areas.EarlyWarning.Controllers
             return RedirectToAction("Detail", "NeedAssessment", new { id = needAssessment.PlanID });
         }
     }
+        /// <summary>
+        /// Send notification to regional users
+        /// </summary>
+        /// <param name="Plan"></param>
+        private void SendNotification(Plan Plan)
+        {
+            if (Request.Url != null && Request.Url.Host == "localhost")
+                return;
+                    
+            var destinationURl = "http://" + Request.Url.Authority +
+                                    Request.ApplicationPath +
+                                    "/EarlyWarning/NeedAssessment/Detail/" +
+                                    Plan.PlanID;
 
+            _notificationService.AddNotificationForRegionOnNeedAssessmentApproval(destinationURl, Plan);
+        }
     }
 }
