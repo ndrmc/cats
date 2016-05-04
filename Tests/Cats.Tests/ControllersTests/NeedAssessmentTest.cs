@@ -263,6 +263,7 @@ NeedAssessmentHeader=new NeedAssessmentHeader(){AdminUnit=new AdminUnit(){Name="
             commonService.Setup(t => t.GetStatus(It.IsAny<WORKFLOW>())).Returns(_status);
 
 
+
             var notificationService = new Mock<NotificationService>();
             _needAssessmentController = new NeedAssessmentController(needAssessmentService.Object,
                 adminUnitService.Object,
@@ -272,6 +273,16 @@ NeedAssessmentHeader=new NeedAssessmentHeader(){AdminUnit=new AdminUnit(){Name="
                 typeOfNeedAssessmentService.Object,
                 log.Object, planService.Object, commonService.Object, userAccountService.Object,
                 notificationService.Object);
+
+
+            _needAssessmentController=new NeedAssessmentController(needAssessmentService.Object,
+                                                                    adminUnitService.Object,
+                                                                    needAssessmentHeaderService.Object,
+                                                                    needAssessmentDetailService.Object,
+                                                                    seasonService.Object,
+                                                                    typeOfNeedAssessmentService.Object,
+                                                                    log.Object, planService.Object, commonService.Object,userAccountService.Object,null);
+
         }
         [TearDown]
         public void Dispose()
