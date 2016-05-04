@@ -8,6 +8,8 @@ using System.Web.Mvc;
 using Cats.Services.Security;
 using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
+using System.Text.RegularExpressions;
+
 namespace Cats.Helpers
 {
     public static class  NotificationHelper
@@ -16,7 +18,7 @@ namespace Cats.Helpers
         {
             try
             {
-                var notificationService = (INotificationService)DependencyResolver.Current.GetService(typeof(INotificationService));
+               var notificationService = (INotificationService)DependencyResolver.Current.GetService(typeof(INotificationService));
                
                 var user = HttpContext.Current.User.Identity.Name;
                 List<Cats.Models.Notification> totallUnread = null;
@@ -102,7 +104,8 @@ namespace Cats.Helpers
                 for (int i = 0; i < max;i ++ )
                 {
                     str = str + "<li>";
-                    str = str + "<a href=" + totallUnread[i].Url + ">";
+                    // str = str + "<a href=" + totallUnread[i].Url + ">";
+                    str = str + "<a href=" + GetRelativeURL(totallUnread[i].Url) + ">"; 
                     str = str + totallUnread[i].Text;
                     str = str + "</li>";
                     str = str + "</a>";
@@ -120,6 +123,13 @@ namespace Cats.Helpers
             {
                 return MvcHtmlString.Create("");
             }
+        }
+
+        public static string   GetRelativeURL(string AbsURL)
+        {
+           var extractedUrl=  AbsURL.Substring(AbsURL.IndexOf("//", StringComparison.Ordinal) + 1);
+            extractedUrl= extractedUrl.Substring(extractedUrl.IndexOf("//", StringComparison.Ordinal) + 1);
+            return extractedUrl;
         }
 
         public static HtmlString GetActiveNotifications()

@@ -239,7 +239,35 @@ namespace Cats.Services.Common
             }
 
         }
-        #endregion
+
+       public bool AddNotificationForRegionOnNeedAssessmentApproval(string destinationURL, Plan plan)
+       {
+            try
+            {
+                var notification = new Notification
+                {
+                    Text = "Approved need assessment " + plan.PlanName,
+                    CreatedDate = DateTime.Now.Date,
+                    IsRead = false,
+                    Id = 1,
+                    RecordId = plan.PlanID,
+                    Url = destinationURL,
+                    TypeOfNotification = "Approval",
+                    Application = Application.EARLY_WARNING
+                };
+
+                AddNotification(notification);
+                return true;
+
+            }
+            catch (Exception)
+            {
+                return false;
+
+            }
+        }
+
+       #endregion
 
 
 
