@@ -364,7 +364,7 @@ namespace Cats.Areas.Logistics.Controllers
                 var request = transporterPaymentRequest;
 
                 var dispatch =
-                    _dispatchService.Get(t => t.DispatchID == request.Delivery.DispatchID, null, "Hub, FDP").
+                    _dispatchService.Get(t => t.DispatchID == request.Delivery.DispatchID, null, "Hub, FDP, DispatchAllocation").
                         FirstOrDefault();
                 var transportOrderdetail =
                     _transportOrderDetailService.FindBy(
@@ -386,12 +386,15 @@ namespace Cats.Areas.Logistics.Controllers
                 var dispathedAmount = (decimal) 0.0;
                 var childCommodity = string.Empty;
                 var firstOrDefault = dispatch.DispatchDetails.FirstOrDefault();
-                if (firstOrDefault != null)
-                {
+
+                var dispatchDetails = dispatch.DispatchDetails.Sum(dd => dd.DispatchedQuantityInMT);
+
+                //if (firstOrDefault != null)
+                //{
                     //dispathedAmount = firstOrDefault.DispatchedQuantityInMT.ToQuintal();
                     // Converted to bag unit: by dividing by 0.05
-                    dispathedAmount = decimal.Round(firstOrDefault.DispatchedQuantityInMT.ToQuintal() / (decimal)0.05, 2, MidpointRounding.AwayFromZero);
-                }
+                dispathedAmount = decimal.Round(dispatchDetails.ToBag(), 2, MidpointRounding.AwayFromZero);
+                //}
 
                 var dispatchedDate = dispatch.DispatchDate.Date;
                 var dispatchDetail = dispatch.DispatchDetails.FirstOrDefault();
