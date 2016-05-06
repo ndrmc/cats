@@ -2997,6 +2997,7 @@
     <Content Include="Areas\Logistics\Views\LogisticsStockStatus\FalseAndTrueGRNStockStatus.cshtml" />
     <Content Include="Areas\Procurement\Views\PriceQuotation\RevertWinners.cshtml" />
     <Content Include="Areas\Regional\Views\Dispatch\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\PriceQuotation\AddWoreda.cshtml" />
     <None Include="dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>dataset.Designer.cs</LastGenOutput>

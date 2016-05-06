@@ -37,6 +37,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private IUserAccountService _userAccountService;
         private ILog _log;
         private IPlanService _planService;
+        private IHubService _hubService;
         private readonly Cats.Services.Transaction.ITransactionService _transactionService;
 
         public HRDController(IAdminUnitService adminUnitService, IHRDService hrdService,
@@ -44,7 +45,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                              IHRDDetailService hrdDetailService, ICommodityService commodityService,
                              INeedAssessmentDetailService needAssessmentDetailService, INeedAssessmentHeaderService needAssessmentService,
                              IWorkflowStatusService workflowStatusService, ISeasonService seasonService, 
-                             IUserAccountService userAccountService, ILog log,IPlanService planService, ITransactionService transactionService)
+                             IUserAccountService userAccountService, ILog log,IPlanService planService, IHubService hubService, 
+                             ITransactionService transactionService)
         {
             _adminUnitService = adminUnitService;
             _hrdService = hrdService;
@@ -59,6 +61,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _userAccountService = userAccountService;
             _log = log;
             _planService = planService;
+            _hubService = hubService;
             _transactionService = transactionService;
         }
 
@@ -814,6 +817,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
          ViewBag.RegionID = new SelectList(_adminUnitService.GetRegions(), "AdminUnitID", "Name");
          ViewBag.ZoneID = new SelectList(_adminUnitService.FindBy(m => m.AdminUnitTypeID == 3), "AdminUnitID", "Name");
          ViewBag.WoredaID = new SelectList(_adminUnitService.FindBy(m => m.AdminUnitTypeID == 4), "AdminUnitID", "Name");
+         ViewBag.SourceWarehouseID = new SelectList(_hubService.GetAllHub(), "HubID", "Name");
          var addWoredaViewModel = new HrdAddWoredaViewModel();
          addWoredaViewModel.HRDID = id;
          addWoredaViewModel.StartingMonth = hrd.Plan.StartDate.Month;

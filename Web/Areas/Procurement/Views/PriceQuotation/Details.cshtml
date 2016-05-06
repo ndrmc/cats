@@ -24,6 +24,7 @@
 
 @section Toolbar{
     @* <a class="btn toolbar-btn " data-buttontype="btn_save" href="javascript:saverecords()"></a>*@
+<a id="btnAddWoreda" class="btn toolbar-btn " href="@Url.Action("AddWoreda", "PriceQuotation", new { id = Model.TransportBidQuotationHeaderID })">@Html.Translate("Add Woreda")</a>
     <a id="btnAddProposal" data-buttontype="btn_back_to_list" class="btn grey-salt" href="@Url.Action("BidProposalHeader", "PriceQuotation")"><i class="fa fa-list"></i> @Html.Translate("Back to list")</a>
 }
 
