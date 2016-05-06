@@ -3728,6 +3728,7 @@
     <Content Include="Views\Shared\EditorTemplates\SIEditor.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\CommodityChildEditor.cshtml" />
     <Content Include="Views\Shared\_AdminUnitTreeForAllocation.cshtml" />
+    <Content Include="Views\Shared\GetUnreadNotificationDetail.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

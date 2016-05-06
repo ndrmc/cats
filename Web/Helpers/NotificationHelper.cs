@@ -114,7 +114,9 @@ namespace Cats.Helpers
                 str = str + "</ul>";
                 if (totallUnread.Count > 5)
                 {
-                    str = str + "<a href=/Home/GetUnreadNotificationDetail>" + "More...</a>";
+                    // str = str + "<a href=/Home/GetUnreadNotificationDetail>" + "More...</a>";
+                    str = str + "<a href= @Url.Action(GetUnreadNotificationDetail, Home)>" + "More...</a>";
+                    
                 }
                
                 return MvcHtmlString.Create(str);
