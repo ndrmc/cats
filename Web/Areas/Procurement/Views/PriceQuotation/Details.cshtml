@@ -9,8 +9,8 @@
 @{
     ViewBag.Title = "OrderDetail";
     var headerID = Model.TransportBidQuotationHeaderID;
-    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
-    //Layout = "~/Views/Shared/_MainLayout.cshtml";
+    //Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
     ViewBag.PageTitle = "Edit Bid Proposal Detail";
     ViewBag.PageTitleDescription = "";
 
@@ -27,100 +27,100 @@
 <a id="btnAddWoreda" class="btn toolbar-btn " href="@Url.Action("AddWoreda", "PriceQuotation", new { id = Model.TransportBidQuotationHeaderID })">@Html.Translate("Add Woreda")</a>
     <a id="btnAddProposal" data-buttontype="btn_back_to_list" class="btn grey-salt" href="@Url.Action("BidProposalHeader", "PriceQuotation")"><i class="fa fa-list"></i> @Html.Translate("Back to list")</a>
 }
-
+ 
 @*<h4>Bid Proposal Data Entry</h4>*@
 
-<div class="well form-horizontal" id="ContractHeader">
-    <div class="row">
-        <div class="col-md-6">
+<div class="well form-horizontal span12" id="ContractHeader">
+    <div class="row span12">
+        <div class="span6">
             <div class="form-group">
-                <div class="col-md-3 control-label">
+                <div class="span3 control-label">
                     @Html.LabelFor(m => m.BidNumber)
                 </div>
-                <div class="col-md-7">
+                <div class="span7">
                     @Html.TextBoxFor(m => m.BidNumber, new { Disabled = true, @class="form-control" })
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="span6">
             <div class="form-group">
-                <div class="col-md-3 control-label">
+                <div class="span3 control-label">
                     @Html.LabelFor(m => m.Region)
                 </div>
-                <div class="col-md-7">
+                <div class="span7">
                     @Html.TextBoxFor(m => m.Region, new { Disabled = true, @class = "form-control" })
                 </div>
             </div>
         </div>
 
     </div>
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row span12">
+        <div class="span6">
             <div class="form-group">
-                <div class="col-md-3 control-label">
+                <div class="span3 control-label">
                     @Html.LabelFor(m => m.Transporter)
                 </div>
-                <div class="col-md-7">
+                <div class="span7">
                     @Html.TextBoxFor(m => m.Transporter, new { Disabled = true, @class = "form-control" })
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="span6">
             <div class="form-group">
-                <div class="col-md-3 control-label">
+                <div class="span3 control-label">
                     @Html.LabelFor(m => m.OffersCount)
                 </div>
-                <div class="col-md-7">
+                <div class="span7">
                     @Html.TextBoxFor(m => m.OffersCount, new { Disabled = true, @class = "form-control" })
                 </div>
 
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row span12">
+        <div class="span6">
             <div class="form-group">
-                <div class="col-md-3 control-label">
+                <div class="span3 control-label">
                     @Html.LabelFor(m => m.EnteredBy)
                 </div>
-                <div class="col-md-7">
+                <div class="span7">
                     @Html.TextBoxFor(m => m.EnteredBy, new { Disabled = true, @class = "form-control" })
                 </div>
             </div>
         </div>
 
 
-        <div class="col-md-6">
+        <div class="span6">
             <div class="form-group">
-                <div class="col-md-3 control-label">
+                <div class="span3 control-label">
                     @Html.LabelFor(m => m.BidBondAmount)
                 </div>
-                <div class="col-md-7">
+                <div class="span7">
                     @Html.TextBoxFor(m => m.BidBondAmount, new { Disabled = true, @class = "form-control" })
                 </div>
             </div>
         </div>
 
     </div>
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row span12">
+        <div class="span6">
             <div class="form-group">
-                <div class="col-md-3 control-label">
+                <div class="span3 control-label">
                     @Html.LabelFor(m => m.Status)
                 </div>
-                <div class="col-md-7">
+                <div class="span7">
                     @Html.TextBoxFor(m => m.Status, new { Disabled = true, @class = "form-control" })
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="span6">
             <div class="form-group">
-                <div class="col-md-3 control-label">
+                <div class="span3 control-label">
                     @Html.Label("BID Proposal ID")
                 </div>
-                <div class="col-md-7">
+                <div class="span7">
                     @Html.TextBoxFor(m => m.TransportBidQuotationHeaderID, new { Disabled = true, @class = "form-control" })
                 </div>
             </div>
@@ -199,24 +199,49 @@
     </div>
 </div>
 
-            <div id="myModal" class="modal fade">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">Confirmation</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p style="font-weight: bold">@Html.Translate("You don't have a previlage to edit Price Quotation")</p>
-                            <p style="font-weight: bold" class="text-warning"><small>@Html.Translate("Please contact the system administrator.")</small></p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">@Html.Translate("Close")</button>
-                        </div>
-                    </div>
-                </div>
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
             </div>
-            <script>
+            <div class="modal-body">
+                <p style="font-weight: bold">@Html.Translate("You don't have a previlage to edit Price Quotation")</p>
+                <p style="font-weight: bold" class="text-warning"><small>@Html.Translate("Please contact the system administrator.")</small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Html.Translate("Close")</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="dialogDiv" class="modal hide fade in">
+    <div id="dialogContent"></div>
+</div>
+
+            <script type="text/javascript">
+                $(function () {
+
+                    //Optional: turn the chache off
+                    $.ajaxSetup({ cache: false });
+
+                    $('#btnAddWoreda').click(function () {
+
+                         
+                        $('#dialogContent').load(this.href, function () {
+                            $('#dialogDiv').modal({
+                                backdrop: 'static',
+                                keyboard: true
+                            }, 'show');
+                            //alert("");
+                        });
+                        return false;
+                    });
+                });
+
                 function onDataBound(e) {
                     var grid = $("#grid").data("kendoGrid");
                     $(grid.tbody).on("focus", "input", function (e) {
@@ -269,3 +294,4 @@
                 //};
 
             </script>
+

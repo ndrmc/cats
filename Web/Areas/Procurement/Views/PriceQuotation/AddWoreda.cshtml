@@ -15,16 +15,18 @@
 {
 
     @Html.HiddenFor(m => m.TransportBidQuotationHeaderID)
+    @Html.HiddenFor(m => m.TransporterID)
+    @Html.HiddenFor(m => m.BidID)
     <div class="modal-body">
 
         <div class="form-horizontal">
-
+            
             <div class="control-group" id="region">
                 <div class="control-label">
                     @Html.Label(Html.Translate("Source Warehouse"))
                 </div>
                 <div class="controls" id="div_region">
-                    @Html.DropDownList("SourceWarehouseID", "--Select Warehouse--")
+                    @Html.DropDownList("hubID", "--Select Warehouse--")
 
                 </div>
 

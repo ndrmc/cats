@@ -1127,7 +1127,7 @@ namespace Cats.Areas.Procurement.Controllers
         // Add a missing woreda in price quotation page
         public ActionResult AddWoreda(int id)
         {
-            var bidQuotation = _bidQuotationService.FindById(id);
+            var bidQuotation = _transportBidQuotationHeaderService.FindById(id);
             if (bidQuotation == null)
             {
                 return HttpNotFound();
@@ -1135,8 +1135,11 @@ namespace Cats.Areas.Procurement.Controllers
             ViewBag.RegionID = new SelectList(_adminUnitService.GetRegions(), "AdminUnitID", "Name");
             ViewBag.ZoneID = new SelectList(_adminUnitService.FindBy(m => m.AdminUnitTypeID == 3), "AdminUnitID", "Name");
             ViewBag.WoredaID = new SelectList(_adminUnitService.FindBy(m => m.AdminUnitTypeID == 4), "AdminUnitID", "Name");
+            ViewBag.hubID = new SelectList(_hubService.GetAllHub(), "HUBID", "Name");
             var addWoredaViewModel = new BidAddWoredaViewModel();
             addWoredaViewModel.TransportBidQuotationHeaderID = id;
+            addWoredaViewModel.TransporterID = bidQuotation.Transporter.TransporterID;
+            addWoredaViewModel.BidID = bidQuotation.Bid.BidID;
             return PartialView(addWoredaViewModel);
         }
         [HttpPost]
