@@ -116,9 +116,9 @@ namespace Cats.Helpers
                 {
                     string local = System.Web.HttpContext.Current.Request.Url.ToString();
                     if (local.Contains("/trunk"))
-                        str = str + "<a href=../trunk/Home/GetUnreadNotificationDetail>" + "More...</a>";
-                   
-                     str = str + "<a href=../Home/GetUnreadNotificationDetail>" + "More...</a>";
+                        str = str + "<a href=/trunk/Home/GetUnreadNotificationDetail>" + "More...</a>";
+                    else
+                     str = str + "<a href=/Home/GetUnreadNotificationDetail>" + "More...</a>";
                     
                 }
                
