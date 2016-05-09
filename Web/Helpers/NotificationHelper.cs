@@ -114,7 +114,10 @@ namespace Cats.Helpers
                 str = str + "</ul>";
                 if (totallUnread.Count > 5)
                 {
-                    
+                    string local = System.Web.HttpContext.Current.Request.Url.ToString();
+                    if (local.Contains("/trunk"))
+                        str = str + "<a href=../trunk/Home/GetUnreadNotificationDetail>" + "More...</a>";
+                   
                      str = str + "<a href=../Home/GetUnreadNotificationDetail>" + "More...</a>";
                     
                 }
@@ -131,6 +134,9 @@ namespace Cats.Helpers
         {
            var extractedUrl=  AbsURL.Substring(AbsURL.IndexOf("//", StringComparison.Ordinal) + 1);
             extractedUrl= extractedUrl.Substring(extractedUrl.IndexOf("//", StringComparison.Ordinal) + 1);
+            string local = System.Web.HttpContext.Current.Request.Url.ToString();
+            if (local.Contains( "/trunk"))
+                extractedUrl = "/trunk" + extractedUrl;
             return extractedUrl;
         }
 
