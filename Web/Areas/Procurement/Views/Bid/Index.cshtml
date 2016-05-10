@@ -102,7 +102,13 @@
                                       .Filterable()
                                       .ClientDetailTemplateId("template")
                                       //.HtmlAttributes(new { style = "height:430px;" })
-                                      .Editable(editable => editable.Mode(GridEditMode.PopUp))
+                                      .Editable(editable =>
+                                      {
+                                          if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Edit_bid))
+                                          {
+                                              editable.Mode(GridEditMode.PopUp);
+                                          }
+                                      })
                                       .Navigatable()
                                       .DataSource(dataSource => dataSource
                                           .Ajax()
@@ -131,8 +137,20 @@
                             columns.Bound(b => b.CPO).Width(80);
 
                         })
-                        .ToolBar(toolBar => toolBar.Save())
-                        .Editable(editable => editable.Mode(GridEditMode.InCell))
+                        .ToolBar(toolBar =>
+                        {
+                            if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Bid_detail_update))
+                            {
+                                toolBar.Save();
+                            }
+                        })
+                        .Editable(editable =>
+                        {
+                            if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Bid_detail_update))
+                            {
+                                editable.Mode(GridEditMode.InCell);
+                            }
+                        })
                         .Events(events => events.DataBound("onDataBound"))
                         .DataSource(dataSource => dataSource
                             .Ajax()
