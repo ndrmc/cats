@@ -774,7 +774,7 @@
                             if (   $scope.SIPCCodes[si].allocatedRequests[i].Allocations[0].Code === fdpID)//temp.Allocations[0].Code
                             {
 
-                                alert("Duplicated FDP");
+                               
                                 return 1;
                         }
                         }
@@ -861,7 +861,7 @@
         var GetListSuccessCB = function (resp, status, headers, config) {
             $$scope=$scope;
             $scope.response=resp;
-            $scope.MapViewModel(resp)
+            $scope.MapViewModel(resp);
             $scope.initUi();
             $scope.updateSavedAllocations();
             $scope.saved=1;
@@ -892,10 +892,15 @@
                         woredasHash[fdpRequest.WoredaName]={name: fdpRequest.WoredaName, type: "woreda", woredaId: w,fdps:[]};
                         w++;
                     }
-                    if(fdpRequest.RequestedAmount)
+                    for (var silist in fdpRequest.Allocations) {
+                        
+                        var requisitionDetail1 ={Allocations:fdpRequest.Allocations,RequestDetailId:fdpRequest.RequestDetailId,FDPId:fdpRequest.FDPId,type: "FDP", name: fdpRequest.FDPName, requestedAmount: fdpRequest.Allocations[silist].AllocatedAmount};
+                        woredasHash[fdpRequest.WoredaName].fdps.push(requisitionDetail1);
+                    }
+                    if(fdpRequest.RequestedAmount  )//&& !fdpRequest.Allocations
                     {
                         var requisitionDetail={Allocations:fdpRequest.Allocations,RequestDetailId:fdpRequest.RequestDetailId,FDPId:fdpRequest.FDPId,type: "FDP", name: fdpRequest.FDPName, requestedAmount: fdpRequest.RequestedAmount};
-                        woredasHash[fdpRequest.WoredaName].fdps.push(requisitionDetail)
+                        woredasHash[fdpRequest.WoredaName].fdps.push(requisitionDetail);
                     }
                 }
                 for(var ws in woredasHash)
