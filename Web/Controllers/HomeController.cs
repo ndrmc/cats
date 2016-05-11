@@ -279,6 +279,9 @@ namespace Cats.Controllers
         {
             var extractedUrl = AbsURL.Substring(AbsURL.IndexOf("//", StringComparison.Ordinal) + 1);
             extractedUrl = extractedUrl.Substring(extractedUrl.IndexOf("//", StringComparison.Ordinal) + 1);
+            string local = System.Web.HttpContext.Current.Request.Url.ToString();
+            if (local.Contains("/trunk"))
+                extractedUrl = "/trunk" + extractedUrl;
             return extractedUrl;
         }
         public ActionResult GetUnreadNotificationDetail([DataSourceRequest] DataSourceRequest request)

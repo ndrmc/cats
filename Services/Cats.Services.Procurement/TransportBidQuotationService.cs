@@ -24,6 +24,21 @@ namespace Cats.Services.Procurement
         }
 
 
+        public bool AddWoreda(TransportBidQuotation transportBidQuotation)
+        {
+            var detail = _unitOfWork.TransportBidQuotationRepository.FindBy(
+                    m => m.TransportBidQuotationHeaderID == transportBidQuotation.TransportBidQuotationHeaderID 
+                    && m.DestinationID == transportBidQuotation.DestinationID).FirstOrDefault();
+            if (detail == null)
+            {
+                _unitOfWork.TransportBidQuotationRepository.Add(transportBidQuotation);
+                _unitOfWork.Save();
+                return true;
+            }
+            return false;
+        }
+
+
         public bool UpdateTransportBidQuotation(TransportBidQuotation item)
         {
             if (item == null) return false;

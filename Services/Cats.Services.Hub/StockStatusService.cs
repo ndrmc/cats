@@ -69,12 +69,12 @@ namespace Cats.Services.Hub
 
                                                 (SELECT SUM(QuantityInMT) QuantityInMT, CommodityID 
 	                                                FROM [Transaction]
-	                                                WHERE LedgerID = {0} and HubID  = {2} and ProgramID = {3} and ShippingInstructionID IS NOT NULL
+	                                                WHERE LedgerID = {0} and HubID  = {2}  and ShippingInstructionID IS NOT NULL
 	                                                GROUP BY CommodityID) GOH
 	                                                LEFT JOIN
 		                                                (SELECT ABS(SUM(QuantityInMT)) QuantityInMT, CommodityID 
 			                                                FROM [Transaction]
-			                                                WHERE LedgerID = {1} and HubID  = {2} and ProgramID = {3} AND TransactionDate < =  {4} and ShippingInstructionID IS NOT NULL
+			                                                WHERE LedgerID = {1} and HubID  = {2} and  TransactionDate < =  {4} and ShippingInstructionID IS NOT NULL
 			                                                GROUP BY CommodityID) Commited
 
 			                                                ON GOH.CommodityID = Commited.CommodityID
