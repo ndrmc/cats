@@ -383,7 +383,8 @@
                 var AdjestedallocatedAmount = $scope.EditLocation.allocatedAmount - CustomAmount;
                 $scope.EditLocation.totalAllocatedAmount= ($scope.EditLocation.totalAllocatedAmount-  $scope.EditLocation.allocatedAmount) + CustomAmount;
                 $scope.EditLocation.allocatedAmount= CustomAmount;
-
+                
+                $scope.EditLocation.Allocations[0].AllocatedAmount= CustomAmount;
                 $scope.SIPCCodes[$scope.siindexG].availableAmount = $scope.SIPCCodes[$scope.siindexG].availableAmount  + AdjestedallocatedAmount ;
 
             }
@@ -552,7 +553,7 @@
 
                 location.Allocations[0].Code=$scope.SIPCCodes[index-1].codeId;
                 location.Allocations[0].AllocationType=$scope.SIPCCodes[index-1].type;
-                location.Allocations[0].AllocatedAmount=customAmount
+                location.Allocations[0].AllocatedAmount = customAmount;
 
             }
         }
@@ -713,7 +714,30 @@
             var target = $(event.target).data("id");
           //  alert('hey, you dumped on ' + target + ' :-(', event);
         };
+        $scope.assigneAllocationOnPageLoad = function (requestIndex, siIndex, amount) {
+            // alert(requestIndex + "," + siIndex);
+            $scope.saved=0;
+            var alocated = 0;
+            var location = $scope.allAdminRegions[requestIndex];
+            //amount = location.requestedAmount - location.allocatedAmount;
+            var avail=$scope.SIPCCodes[siIndex].availableAmount-amount;
+            
+            $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
+            $scope.allAdminRegions[requestIndex].allocatedAmount = amount;
+            $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
+            var temp = angular.copy($scope.allAdminRegions[requestIndex]);
+            alocated =  $scope.existSIPCIndex(temp,$scope.SIPCCodes[siIndex].codeId);
+            if(alocated===0)
+            {
+            $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
+            $scope.SIPCCodes[siIndex].allocatedRequests.push(temp);
 
+}
+          //  $scope.allocateAdminRegion(location,siIndex/1 + 1);
+
+            $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,amount);
+            $scope.calculateAllocated();
+        }
         $scope.assigneAllocation = function (requestIndex, siIndex, amount) {
             // alert(requestIndex + "," + siIndex);
             $scope.saved=0;
@@ -803,12 +827,11 @@
                 var location=$scope.allAdminRegions[i];
                // location.name=location.name + i;
 
-                for(var a in location.Allocations)
-                {
-                    var siindex=$scope.getSIPCIndex(location.Allocations[a].Code,location.Allocations[a].AllocationType)
+                for(var a in location.Allocations) {
+                    var siindex = $scope.getSIPCIndex(location.Allocations[a].Code, location.Allocations[a].AllocationType)
                     if(siindex>=0)
                     {
-                        $scope.assigneAllocation(i, siindex, location.Allocations[a].AllocatedAmount);
+                        $scope.assigneAllocationOnPageLoad(i, siindex, location.Allocations[a].AllocatedAmount);
                     }
                 }
             }
@@ -892,11 +915,11 @@
                         woredasHash[fdpRequest.WoredaName]={name: fdpRequest.WoredaName, type: "woreda", woredaId: w,fdps:[]};
                         w++;
                     }
-                    for (var silist in fdpRequest.Allocations) {
+                    //for (var silist in fdpRequest.Allocations) {
                         
-                        var requisitionDetail1 ={Allocations:fdpRequest.Allocations,RequestDetailId:fdpRequest.RequestDetailId,FDPId:fdpRequest.FDPId,type: "FDP", name: fdpRequest.FDPName, requestedAmount: fdpRequest.Allocations[silist].AllocatedAmount};
-                        woredasHash[fdpRequest.WoredaName].fdps.push(requisitionDetail1);
-                    }
+                    //    var requisitionDetail1 ={Allocations:fdpRequest.Allocations,RequestDetailId:fdpRequest.RequestDetailId,FDPId:fdpRequest.FDPId,type: "FDP", name: fdpRequest.FDPName, requestedAmount: fdpRequest.Allocations[silist].AllocatedAmount};
+                    //    woredasHash[fdpRequest.WoredaName].fdps.push(requisitionDetail1);
+                    //}
                     if(fdpRequest.RequestedAmount  )//&& !fdpRequest.Allocations
                     {
                         var requisitionDetail={Allocations:fdpRequest.Allocations,RequestDetailId:fdpRequest.RequestDetailId,FDPId:fdpRequest.FDPId,type: "FDP", name: fdpRequest.FDPName, requestedAmount: fdpRequest.RequestedAmount};
