@@ -380,12 +380,12 @@
             else if($scope.modalFor ==1)
             {
                 $scope.showAmountModal= !$scope.showAmountModal;
-                var AdjestedallocatedAmount = $scope.EditLocation.allocatedAmount - CustomAmount;
+                var adjustedallocatedAmount = $scope.EditLocation.allocatedAmount - CustomAmount;
                 $scope.EditLocation.totalAllocatedAmount= ($scope.EditLocation.totalAllocatedAmount-  $scope.EditLocation.allocatedAmount) + CustomAmount;
                 $scope.EditLocation.allocatedAmount= CustomAmount;
                 
                 $scope.EditLocation.Allocations[0].AllocatedAmount= CustomAmount;
-                $scope.SIPCCodes[$scope.siindexG].availableAmount = $scope.SIPCCodes[$scope.siindexG].availableAmount  + AdjestedallocatedAmount ;
+                $scope.SIPCCodes[$scope.siindexG].availableAmount = $scope.SIPCCodes[$scope.siindexG].availableAmount  + adjustedallocatedAmount ;
 
             }
 
@@ -395,8 +395,11 @@
             {
                 var location = $scope.allAdminRegions[index];
                 $scope.modalFor = 1;
-                $scope.EditLocation=location;
-                $scope.viewQmount= allocatedAmount;
+                $scope.EditLocation = location;
+                var compAmount = allocatedAmount + ($scope.allAdminRegions[index].requestedAmount - $scope.allAdminRegions[index].totalAllocatedAmount);
+                if ((allocatedAmount + $scope.SIPCCodes[siIndex-1].availableAmount ) < compAmount)
+                    compAmount = allocatedAmount + $scope.SIPCCodes[siIndex-1].availableAmount;
+                $scope.viewQmount = compAmount;// allocatedAmount + ($scope.allAdminRegions[index].requestedAmount - $scope.allAdminRegions[index].totalAllocatedAmount);// allocatedAmount;
                 $scope.siindexG = siIndex-1;
 
                 $scope.showAmountModal= !$scope.showAmountModal;
