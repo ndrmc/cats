@@ -148,7 +148,7 @@ namespace Cats.Tests.ControllersTests
                                                needAssesmentHeaderService.Object,
                                                workflowSatusService.Object,
                                                seasonService.Object, userAccountService.Object,
-                                               log.Object, planService.Object,null
+                                               log.Object, planService.Object,null, null
                 );
 
            _hrdController.ControllerContext = controllerContext.Object;
