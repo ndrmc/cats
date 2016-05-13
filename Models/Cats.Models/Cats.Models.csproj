@@ -130,6 +130,7 @@
     <Compile Include="TransporterCheque.cs" />
     <Compile Include="TransporterChequeDetail.cs" />
     <Compile Include="TransporterPaymentRequest.cs" />
+    <Compile Include="ViewModels\Bid\BidAddWoredaViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\RecentRequests.cs" />
     <Compile Include="ViewModels\DistributionByAgeViewModel.cs" />
     <Compile Include="DistibtionStatus.cs" />
