@@ -149,8 +149,7 @@ namespace Cats.Services.Logistics
                                  "/Procurement/TransportOrder/NotificationNewRequisitions?recordId=" + transportRequisition.TransportRequisitionID;
                 return;
             }
-            destinationURl = "http://" + HttpContext.Current.Request.Url.Authority +
-                             HttpContext.Current.Request.ApplicationPath +
+            destinationURl = 
                              "/Procurement/TransportOrder/NotificationNewRequisitions?recordId=" + transportRequisition.TransportRequisitionID;
             _notificationService.AddNotificationForProcurementFromLogistics(destinationURl, transportRequisition);
         }
