@@ -19,10 +19,13 @@ Requistions
 }
 
 <div class="row">
+    @section LeftBar
+{
     @Html.Partial("_RegionalRequestLeftBar")
+}
     <div class="col-md-10  col-sm-9">
         <div class=" box box-primary ">
-            @using (Html.BeginForm("NewIdps", "Request", FormMethod.Post, new { id = "frm_create_request" }))
+            @using (Html.BeginForm("NewIdps", "Request", FormMethod.Post, new {id = "frm_create_request"}))
             {
 
                 <div class="box-body row">
@@ -32,7 +35,7 @@ Requistions
                                 @Html.LabelFor(model => model.ProgramID, "Program")
                             </div>
                             <div class="col-sm-8">
-                                @Html.TextBox("Program", "IDPS", new {disabled = true,@class = "form-control"})
+                                @Html.TextBox("Program", "IDPS", new {disabled = true, @class = "form-control"})
                                 @Html.ValidationMessageFor(model => model.ProgramID)
                             </div>
                         </div>
@@ -41,7 +44,7 @@ Requistions
                                 @Html.LabelFor(model => model.RegionID, "Region")
                             </div>
                             <div class="col-sm-8">
-                                @Html.DropDownList("RegionID", null, String.Empty, new { @class = "form-control" })
+                                @Html.DropDownList("RegionID", null, String.Empty, new {@class = "form-control"})
                                 @Html.ValidationMessageFor(model => model.RegionID)
                             </div>
                         </div>
@@ -52,7 +55,7 @@ Requistions
                                 @Html.Label("IDPS Reason")
                             </div>
                             <div class="col-sm-8">
-                                @Html.DropDownList("ReasonType", ViewBag.IDPSReasonType as SelectList, new { @class = "form-control" })
+                                @Html.DropDownList("ReasonType", ViewBag.IDPSReasonType as SelectList, new {@class = "form-control"})
 
                             </div>
                         </div>
@@ -61,7 +64,7 @@ Requistions
                                 @Html.LabelFor(model => model.RationID, Html.Translate("Ration"))
                             </div>
                             <div class="col-sm-8">
-                                @Html.DropDownList("RationID", null, String.Empty, new { @class = "form-control" })
+                                @Html.DropDownList("RationID", null, String.Empty, new {@class = "form-control"})
                                 @Html.ValidationMessageFor(model => model.RationID)
                             </div>
                         </div>
