@@ -155,7 +155,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
         private RegionalRequest CreateRegionalRequest(HRDPSNPPlanInfo hrdpsnpPlanInfo, FormCollection collection, int planid, int reasonTypeID)
         {
-
+            int id;
+            if (!int.TryParse(collection["RegionId"].ToString(CultureInfo.InvariantCulture), out id)) return null; // if region id has null value
             int regionId = Convert.ToInt32(collection["RegionId"].ToString(CultureInfo.InvariantCulture));
             var programId = 3;
             UserProfile user = _userProfileService.GetUser(User.Identity.Name);
