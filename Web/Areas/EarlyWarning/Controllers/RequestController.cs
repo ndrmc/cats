@@ -469,7 +469,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             Plan plan = null;
             int id;
-            if (!int.TryParse(collection["RegionId"].ToString(CultureInfo.InvariantCulture), out id)) return View(); // if region id has null value
+            if (!int.TryParse(collection["RegionId"].ToString(CultureInfo.InvariantCulture), out id)) return RedirectToAction("NewIdps");  // if region id has null value
+            if (id == 0) RedirectToAction("NewIdps"); // region not selected
+
             var reasonTypeID = int.Parse(collection["ReasonType"].ToString(CultureInfo.InvariantCulture));
 
             DateTime startDate = DateTime.Now.Date;
