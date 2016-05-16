@@ -41,7 +41,7 @@ Requistions
                                 @Html.LabelFor(model => model.RegionID, "Region")
                             </div>
                             <div class="col-sm-8">
-                                @Html.DropDownList("RegionID", null, String.Empty, new { @class = "form-control" })
+                                @Html.DropDownList("RegionID", ViewBag.RegionId as SelectList, new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.RegionID)
                             </div>
                         </div>

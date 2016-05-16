@@ -453,8 +453,14 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [HttpGet]
         public ActionResult NewIdps()
         {
+            AdminUnit adunit = new AdminUnit();
+            adunit.AdminUnitID = 0;
+            adunit.Name = "Select region";
+            var regions = new List<AdminUnit>();
+            regions.Add(adunit);
+            regions.AddRange(_adminUnitService.GetRegions());
             ViewBag.RationID = new SelectList(_commonService.GetRations(), "RationID", "RefrenceNumber");
-            ViewBag.RegionID = new SelectList(_adminUnitService.GetRegions(), "AdminUnitID", "Name", 0);
+            ViewBag.RegionID = new SelectList(regions, "AdminUnitID", "Name", 0);
             ViewBag.IDPSReasonType = new SelectList(_idpsReasonTypeServices.GetAllIDPSReasonType(), "IDPSId", "Name");
             return View();
         }
