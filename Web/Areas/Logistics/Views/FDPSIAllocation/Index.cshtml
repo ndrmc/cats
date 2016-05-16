@@ -380,12 +380,12 @@
             else if($scope.modalFor ==1)
             {
                 $scope.showAmountModal= !$scope.showAmountModal;
-                var AdjestedallocatedAmount = $scope.EditLocation.allocatedAmount - CustomAmount;
+                var adjustedallocatedAmount = $scope.EditLocation.allocatedAmount - CustomAmount;
                 $scope.EditLocation.totalAllocatedAmount= ($scope.EditLocation.totalAllocatedAmount-  $scope.EditLocation.allocatedAmount) + CustomAmount;
                 $scope.EditLocation.allocatedAmount= CustomAmount;
                 
                 $scope.EditLocation.Allocations[0].AllocatedAmount= CustomAmount;
-                $scope.SIPCCodes[$scope.siindexG].availableAmount = $scope.SIPCCodes[$scope.siindexG].availableAmount  + AdjestedallocatedAmount ;
+                $scope.SIPCCodes[$scope.siindexG].availableAmount = $scope.SIPCCodes[$scope.siindexG].availableAmount  + adjustedallocatedAmount ;
 
             }
 
@@ -395,8 +395,11 @@
             {
                 var location = $scope.allAdminRegions[index];
                 $scope.modalFor = 1;
-                $scope.EditLocation=location;
-                $scope.viewQmount= allocatedAmount;
+                $scope.EditLocation = location;
+                var compAmount = allocatedAmount + ($scope.allAdminRegions[index].requestedAmount - $scope.allAdminRegions[index].totalAllocatedAmount);
+                if ((allocatedAmount + $scope.SIPCCodes[siIndex-1].availableAmount ) < compAmount)
+                    compAmount = allocatedAmount + $scope.SIPCCodes[siIndex-1].availableAmount;
+                $scope.viewQmount = compAmount;// allocatedAmount + ($scope.allAdminRegions[index].requestedAmount - $scope.allAdminRegions[index].totalAllocatedAmount);// allocatedAmount;
                 $scope.siindexG = siIndex-1;
 
                 $scope.showAmountModal= !$scope.showAmountModal;
@@ -765,17 +768,23 @@
 
                 var temp = angular.copy($scope.allAdminRegions[requestIndex]);
                 alocated =  $scope.existSIPCIndex(temp,$scope.SIPCCodes[siIndex].codeId);
+                if(alocated===0)
+                {
                 $scope.allAdminRegions.push(temp);
                 $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
-
+                }
+                else
+                    
+                    alert(" Selected FDP has been allocated  from  " +   $scope.SIPCCodes[siIndex].Code + " Number");
             }
 
-            $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
-            $scope.allAdminRegions[requestIndex].allocatedAmount =  amount;
-            $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
-            $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
+           
             if(alocated===0)
-                {
+            { 
+                $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
+                $scope.allAdminRegions[requestIndex].allocatedAmount =  amount;
+                $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
+                $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
             $scope.SIPCCodes[siIndex].allocatedRequests.push($scope.allAdminRegions[requestIndex]);
                 // $scope.allocateAdminRegion(location,siIndex/1 + 1);
             $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,amount);
@@ -798,7 +807,6 @@
                             if (   $scope.SIPCCodes[si].allocatedRequests[i].Allocations[0].Code === fdpID)//temp.Allocations[0].Code
                             {
 
-                               
                                 return 1;
                         }
                         }

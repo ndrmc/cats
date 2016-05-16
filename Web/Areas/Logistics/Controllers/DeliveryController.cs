@@ -599,8 +599,7 @@ namespace Cats.Areas.Logistics.Controllers
                                          transportOrderId;
                         return;
                     }
-                    destinationURl = "http://" + Request.Url.Authority +
-                                     Request.ApplicationPath +
+                    destinationURl =
                                      "/Logistics/Delivery/Dispatches/" +
                                      transportOrderId;
 

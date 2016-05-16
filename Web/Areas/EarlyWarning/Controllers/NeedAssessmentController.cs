@@ -443,8 +443,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (Request.Url != null && Request.Url.Host == "localhost")
                 return;
                     
-            var destinationURl = "http://" + Request.Url.Authority +
-                                    Request.ApplicationPath +
+            var destinationURl =
                                     "/EarlyWarning/NeedAssessment/Detail/" +
                                     Plan.PlanID;
 
