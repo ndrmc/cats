@@ -9,15 +9,30 @@
     <title>CATS: Commodity Allocation & Tracking System</title>
     <%--<script src="/Scripts/kendo/2013.1.319/jquery.min.js"></script>
     <link href="/Content/themes/default/bootstrap.min.css" rel="stylesheet"/>--%>
-    
+    <link href="Content/jquery-ui.min.css" rel="stylesheet"/>
 </head>
 <body>
     <form id="form1" runat="server">
         <div>
-            <asp:ScriptManager ID="ScriptManager1" runat="server">
+            
+            
+            <asp:ScriptManager ID="ScriptManager1"  EnablePageMethods="true" 
+                EnablePartialRendering="true" runat="server">
             </asp:ScriptManager>
-            <rsweb:ReportViewer ID="ReportViewer1" runat="server" SizeToReportContent="True" ShowPrintButton="true" KeepSessionAlive="true"  ZoomMode="PageWidth" Height="100%" Width="100%">
-            </rsweb:ReportViewer>
+            <rsweb:ReportViewer ID="rvREXReport" runat="server" Width="100%" Height="798px"
+            Style="display: table !important; margin: 0px; overflow: auto !important;" 
+            ShowBackButton="true" onreportrefresh="rrvREXReport_ReportRefresh">
+            </rsweb:ReportViewer> 
+            <iframe id="frmPrint" name="frmPrint" runat="server" style = "display:none"></iframe>
+            <div id="spinner" class="spinner" style="display:none;">
+                <table align="center" valign="middle" style="height:100%;width:100%">
+                    <tr>
+                        <td><img id="img-spinner" src="Content/images/loading.gif" alt="Printing"/></td>
+                        <td><span style="font-family:Verdana; font-weight:bold;font-size:10pt;width:86px;">Printing...</span></td>
+                    </tr>
+                </table>
+            </div>
+            
         </div>
     </form>
     <%--<script >
@@ -27,7 +42,137 @@
         $("#ReportViewer1_ctl04").css("background", "none");
         $("#ParameterTable_ReportViewer1_ctl04").css("background", "none");
     </script>--%>
+    <script type="text/javascript" src="Scripts/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="Scripts/jquery-ui.min.js"></script>
     
+    <script>
+        $(document).ready(function() {
+            $("#spinner").bind("ajaxSend", function() {
+                $(this).show();
+            }).bind("ajaxStop", function() {
+                $(this).hide();
+            }).bind("ajaxError", function() {
+                $(this).hide();
+            });
+            $(function() {
+                showDatePicker();
+            });
+        });
+
+        function showDatePicker() {
+
+            var parameterRow = $("#ParametersRowrvREXReport");
+            var innerTable = $(parameterRow).find("table").find("table");
+            var span = innerTable.find("span:contains('Date')");
+            if (span) {
+                var innerRow = $(span).parent().parent();
+                var innerCell = innerRow.find("td").eq(1);
+                var textFrom = innerCell.find("input[type=text]");
+                innerCell = innerRow.find("td").eq(4);
+                var textTo = innerCell.find("input[type=text]");
+
+                $(textFrom).datepicker({
+                    defaultDate: "+1w",
+                    dateFormat: 'dd/mm/yy',
+                    changeMonth: true,
+                    numberOfMonths: 1,
+                    onClose: function(selectedDate) {
+                        $(textTo).datepicker("option", "minDate", selectedDate);
+                    }
+                });
+                $(textFrom).focus(function(e) {
+                    e.preventDefault();
+                    $(textFrom).datepicker("show");
+                });
+                $(textTo).datepicker({
+                    defaultDate: "+1w",
+                    dateFormat: 'dd/mm/yy',
+                    changeMonth: true,
+                    numberOfMonths: 1,
+                    onClose: function(selectedDate) {
+                        $(textFrom).datepicker("option", "maxDate", selectedDate);
+                    }
+                });
+                $(textTo).focus(function() {
+                    $(textTo).datepicker("show");
+                });
+            }
+        }
+
+        //Function that is called on Successful AJAX method call.  These are referenced in the "CallServerMethodBeforePrint" function that is created from code behind and will exist in the final rendering of the page.
+        function ServerCallSucceeded(result, context) {
+            var iFrameURL = "<%=iFrameURL%>";
+            window.frames['frmPrint'].document.location.href = iFrameURL;
+            window.frames['frmPrint'].focus();
+            var timeout = window.setTimeout("window.frames[\"frmPrint\"].focus();window.frames[\"frmPrint\"].print();", 500);
+            window.setTimeout("ServerCallAfterPrint(this)", 2000);
+        }
+
+        function ServerCallSucceededAfterPrint(result, context) {
+        }
+
+        //Function that is called on failure or error in AJAX method call. These are referenced in the "CallServerMethodBeforePrint" function that is created from code behind and will exist in the final rendering of the page.
+        function ServerCallFailed(result, context) {
+        }
+
+        function ServerCallBeforePrint(btn) {
+            $('#spinner').show();
+            var context = new Object();
+            //example of passing multiple args
+            context.flag = new Array('Today', 'Tomorrow');
+            //This "CallServerMethodBeforePrint" function is created from code behind and will exist in the final rendering of the page
+            CallServerMethodBeforePrint(context.flag, context);
+        }
+
+        function ServerCallAfterPrint(btn) {
+            var context = new Object();
+            //example of passing multiple args
+            context.flag = new Array('Today', 'Tomorrow');
+            //This "CallServerAfterPrint" function is created from code behind and will exist in the final rendering of the page
+            CallServerAfterPrint(context.flag, context);
+            $('#spinner').hide();
+        }
+
+        function printPDF(btn) {
+            ServerCallBeforePrint(btn);
+        }
+
+        function showPrintButton() {
+            var table = $("table[title='Refresh']");
+            var parentTable = $(table).parents('table');
+            var parentDiv = $(parentTable).parents('div').parents('div').first();
+            var btnPrint = $("<input type='button' id='btnPrint' name='btnPrint' value='Print' style=\"font-family:Verdana;font-size:8pt;width:86px\"/>");
+            var btnClose = $("<input type='button' id='btnClose' name='btnClose'value='Close' style=\"font-family:Verdana;font-size:8pt;width:86px\"/>");
+            btnPrint.click(function() {
+                printPDF(this);
+            });
+            btnClose.click(function() {
+                window.close();
+            });
+            if (parentDiv.find("input[value='Print']").length == 0) {
+                parentDiv.append('<table cellpadding="0" cellspacing="0" toolbarspacer="true" style="display:inline-block;width:6px;"><tbody><tr><td></td></tr></tbody></table>');
+                parentDiv.append('<div id="customDiv" class=" " style="display:inline-block;font-family:Verdana;font-size:8pt;vertical-align:inherit;"><table cellpadding="0" cellspacing="0"><tbody><tr><td><span style="cursor:pointer;" class="HighlightDiv" onclick="javascript:printPDF(this);" ><img src="../Images/Buttons/printer_blue_small.png" alt="Print Report" title="Print Report" width="18px" height="18px" style="margin-top:4px"/></span></td></tr></tbody></table></div>');
+                parentDiv.append('<table cellpadding="0" cellspacing="0" toolbarspacer="true" style="display:inline-block;width:10px;"><tbody><tr><td></td></tr></tbody></table>');
+                parentDiv.append('<div id="customDiv" class=" " style="display:inline-block;font-family:Verdana;font-size:8pt;vertical-align:inherit;"><table cellpadding="0" cellspacing="0" style="display:inline;"><tbody><tr><td><span style="cursor:pointer;" class="HighlightDiv" onclick="javascript:window.close();"><img src="../Images/cross-circle-frame.png" alt="Close Report" title="Close Report" width="18px" height="18px" style="margin-top:4px"/></span></td></tr></tbody></table></div>');
+            }
+        }
+        function cfnReportsViewer_ViewReport(selectedTreeKeyGuidValue, ReportName, VenueExamCounter) {
+            var windowWidth = 1000;
+            var windowHeight = 800;
+            var left = (screen.width / 2) - (windowWidth / 2);
+            var top = (screen.height / 2) - (windowHeight / 2);
+            var myForm = document.getElementById("frmReportViewer");
+            if (myForm) {
+                myForm.target = "PopupReport";
+            }
+            $("#hfAccessObjectGuid").val(selectedTreeKeyGuidValue);
+            $("#hfReportName").val(ReportName);
+            $("#hfVenueExamCounter").val(VenueExamCounter);
+            var thePopup = window.open("about:blank", "PopupReport", 'scrollbars=yes,status=yes,toolbar=yes,menubar=no,location=no,resizable=no,fullscreen=yes, width=' + windowWidth + ', height=' + windowHeight + ', top=' + top + ', left=' + left);
+            window.setTimeout(document.getElementById("frmReportViewer").submit(), 500);
+            return false;
+        }
+    </script>
 
 </body>
 
