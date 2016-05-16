@@ -452,9 +452,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [HttpGet]
         public ActionResult NewIdps()
         {
-            AdminUnit adunit = new AdminUnit();
+            var adunit = new AdminUnit();
             adunit.AdminUnitID = 0;
-            adunit.Name = "Select region";
+            adunit.Name = "Select a region";
             var regions = new List<AdminUnit>();
             regions.Add(adunit);
             regions.AddRange(_adminUnitService.GetRegions());
