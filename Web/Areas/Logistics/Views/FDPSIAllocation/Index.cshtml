@@ -768,17 +768,23 @@
 
                 var temp = angular.copy($scope.allAdminRegions[requestIndex]);
                 alocated =  $scope.existSIPCIndex(temp,$scope.SIPCCodes[siIndex].codeId);
+                if(alocated===0)
+                {
                 $scope.allAdminRegions.push(temp);
                 $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
-
+                }
+                else
+                    
+                    alert(" Selected FDP has been allocated  from  " +   $scope.SIPCCodes[siIndex].Code + " Number");
             }
 
-            $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
-            $scope.allAdminRegions[requestIndex].allocatedAmount =  amount;
-            $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
-            $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
+           
             if(alocated===0)
-                {
+            { 
+                $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
+                $scope.allAdminRegions[requestIndex].allocatedAmount =  amount;
+                $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
+                $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
             $scope.SIPCCodes[siIndex].allocatedRequests.push($scope.allAdminRegions[requestIndex]);
                 // $scope.allocateAdminRegion(location,siIndex/1 + 1);
             $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,amount);
@@ -801,7 +807,6 @@
                             if (   $scope.SIPCCodes[si].allocatedRequests[i].Allocations[0].Code === fdpID)//temp.Allocations[0].Code
                             {
 
-                                alert("FDP Allocated From This SI" );
                                 return 1;
                         }
                         }
