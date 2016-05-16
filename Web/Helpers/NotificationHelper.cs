@@ -9,7 +9,7 @@ using Cats.Services.Security;
 using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
 using System.Text.RegularExpressions;
-
+using System.Web.Routing;
 namespace Cats.Helpers
 {
     public static class  NotificationHelper
@@ -114,7 +114,12 @@ namespace Cats.Helpers
                 str = str + "</ul>";
                 if (totallUnread.Count > 5)
                 {
-                    str = str + "<a href=/Home/GetUnreadNotificationDetail>" + "More...</a>";
+                    string local = System.Web.HttpContext.Current.Request.Url.ToString();
+                    if (local.Contains("/trunk"))
+                        str = str + "<a href=/trunk/Home/GetUnreadNotificationDetail>" + "More...</a>";
+                    else
+                     str = str + "<a href=/Home/GetUnreadNotificationDetail>" + "More...</a>";
+                    
                 }
                
                 return MvcHtmlString.Create(str);
@@ -129,6 +134,9 @@ namespace Cats.Helpers
         {
            var extractedUrl=  AbsURL.Substring(AbsURL.IndexOf("//", StringComparison.Ordinal) + 1);
             extractedUrl= extractedUrl.Substring(extractedUrl.IndexOf("//", StringComparison.Ordinal) + 1);
+            string local = System.Web.HttpContext.Current.Request.Url.ToString();
+            if (local.Contains( "/trunk"))
+                extractedUrl = "/trunk" + extractedUrl;
             return extractedUrl;
         }
 
@@ -172,7 +180,7 @@ namespace Cats.Helpers
                 for (int i = 0; i < max; i++)
                 {
                     str = str + "<li>";
-                    str = str + "<a href=" + totallUnread[i].Url + ">";
+                    str = str + "<a href=" + GetRelativeURL(totallUnread[i].Url) + ">";
                     str = str + totallUnread[i].Text;
                     str = str + "</li>";
                     str = str + "</a>";

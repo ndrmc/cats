@@ -22,7 +22,7 @@
         columns.Bound(e => e.Text).Width(100).Title("Notification");
         columns.Bound(e => e.TypeOfNotification).Width(100).Title("Type");
         columns.Bound(e => e.StrCreatedDate).Width(100).Title("Created Date");
-        columns.Command(p => p.Custom("Go to ").Click("DetailNotification")).Width(100);   
+        columns.Command(p => p.Custom("View").Click("DetailNotification")).Width(100);   
        
     })
     .DataSource(dataSource => dataSource

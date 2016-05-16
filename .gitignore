@@ -82,7 +82,7 @@ publish
 # packages
 
 # Windows Azure Build Output
-csx
+csxs
 *.build.csdef
 
 # Windows Store app package directory
