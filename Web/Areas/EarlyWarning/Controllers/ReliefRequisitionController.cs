@@ -605,8 +605,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                          "&recordId=" + requisition.RequisitionID;
                         return;
                     }
-                    destinationURl = "http://" + Request.Url.Authority +
-                                     Request.ApplicationPath +
+                    destinationURl = 
                                      "/Logistics/DispatchAllocation/IndexFromNotification?paramRegionId=" +
                                      requisition.RegionID +
                                      "&recordId=" + requisition.RequisitionID;

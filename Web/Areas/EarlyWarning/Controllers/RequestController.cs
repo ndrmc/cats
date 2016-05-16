@@ -425,8 +425,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                          "/EarlyWarning/Request/IndexFromNotification?recordId=" + regionalRequest.RegionalRequestID;
                         return;
                     }
-                    destinationURl = "http://" + Request.Url.Authority +
-                                     Request.ApplicationPath +
+                    destinationURl = 
                                      "/EarlyWarning/Request/IndexFromNotification?recordId=" + regionalRequest.RegionalRequestID;
 
                     _notificationService.AddNotificationForEarlyWaringFromRegions(destinationURl,
