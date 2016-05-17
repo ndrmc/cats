@@ -10,6 +10,7 @@ using Cats.Services.Security;
 using Cats.Models.Security;
 using System.Web.Security;
 using Cats.Security;
+using Cats.Services.EarlyWarning;
 using NetSqlAzMan.Cache;
 using NetSqlAzMan.Interfaces;
 
@@ -65,6 +66,19 @@ namespace Cats.Helpers
         {
             return GetUserInfo(HttpContext.Current.User.Identity.Name);
         }
+
+        public static string GetCurrentUserRegion()
+        {
+            var currentUser = GetUserInfo(HttpContext.Current.User.Identity.Name);
+            var regionName = "";
+            if (currentUser.RegionalUser && currentUser.RegionID!=null)
+            {
+                var _adminUnitService = (IAdminUnitService)DependencyResolver.Current.GetService(typeof(IAdminUnitService));
+                regionName = _adminUnitService.FindById((int) currentUser.RegionID).Name;
+            }
+            return regionName;
+        }
+
         private static UserInfo GetUserInfo(string userName)
         {
             // Try returning session stored values if available

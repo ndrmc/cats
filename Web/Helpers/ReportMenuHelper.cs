@@ -173,7 +173,8 @@ namespace Cats.Helpers
                             if(report.Name.EndsWith("AM")) continue;
                             html += "<li>";
                             var baseUrl = HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
-                            html += "<a class='reportLink'  data-toggle='tooltip' data-placement='bottom' rel='tooltip'  title='" + report.Description + "' data-reportpath='" + report.Path + "' href=' " + baseUrl + "ReportViewer.aspx?path=" + report.Path + "'>" + report.Name + "</a>";
+                            html += "<a class='reportLink'  data-toggle='tooltip' data-placement='bottom' rel='tooltip'  title='" + report.Description + "' data-reportpath='" + report.Path + "' href=' " + baseUrl + "ReportViewer.aspx?path=" + report.Path +
+                                "&region=" + (currentUser.RegionalUser? currentUser.RegionID: null) + "'>" + report.Name + "</a>";
                             //var desc = report.Description;
                             html += "</li>";
                         }
