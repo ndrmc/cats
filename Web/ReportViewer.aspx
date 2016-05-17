@@ -76,7 +76,7 @@
                 innerCell = innerRow.find("td").eq(4);
                 var textTo = innerCell.find("input[type=text]");
 
-                var calendar = "<%= GetCalendarPreference %>";
+                var calendar = "<%= GetCalendarPreference() %>";
                 var date = new Date();
 
                 $(textFrom).each(function () {
@@ -223,9 +223,9 @@
             });
             if (parentDiv.find("input[value='Print']").length == 0) {
                 innerRow.append('<table cellpadding="0" cellspacing="0" toolbarspacer="true" style="display:inline-block;width:6px;"><tbody><tr><td></td></tr></tbody></table>');
-                innerRow.append('<div id="customDiv" class=" " style="display:inline-block;font-family:Verdana;font-size:8pt;vertical-align:inherit;"><table cellpadding="0" cellspacing="0"><tbody><tr><td><span style="cursor:pointer;" class="HighlightDiv" onclick="javascript:printPDF(this);" ><img src="../Images/Buttons/printer_blue_small.png" alt="Print Report" title="Print Report" width="18px" height="18px" style="margin-top:4px"/></span></td></tr></tbody></table></div>');
+                innerRow.append('<div id="customDiv" class=" " style="display:inline-block;font-family:Verdana;font-size:8pt;vertical-align:inherit;"><table cellpadding="0" cellspacing="0"><tbody><tr><td><span style="cursor:pointer;" class="HighlightDiv" onclick="javascript:printPDF(this);" ><img src="Content/images/printer.jpg" alt="Print Report" title="Print Report" width="18px" height="18px" style="margin-top:4px"/></span></td></tr></tbody></table></div>');
                 innerRow.append('<table cellpadding="0" cellspacing="0" toolbarspacer="true" style="display:inline-block;width:10px;"><tbody><tr><td></td></tr></tbody></table>');
-                innerRow.append('<div id="customDiv" class=" " style="display:inline-block;font-family:Verdana;font-size:8pt;vertical-align:inherit;"><table cellpadding="0" cellspacing="0" style="display:inline;"><tbody><tr><td><span style="cursor:pointer;" class="HighlightDiv" onclick="javascript:window.close();"><img src="../Images/cross-circle-frame.png" alt="Close Report" title="Close Report" width="18px" height="18px" style="margin-top:4px"/></span></td></tr></tbody></table></div>');
+                innerRow.append('<div id="customDiv" class=" " style="display:inline-block;font-family:Verdana;font-size:8pt;vertical-align:inherit;"><table cellpadding="0" cellspacing="0" style="display:inline;"><tbody><tr><td><span style="cursor:pointer;" class="HighlightDiv" onclick="javascript:window.close();"><img src="Content/images/close.jpg" alt="Close Report" title="Close Report" width="18px" height="18px" style="margin-top:4px"/></span></td></tr></tbody></table></div>');
             }
         }
         function cfnReportsViewer_ViewReport(selectedTreeKeyGuidValue, ReportName, VenueExamCounter) {

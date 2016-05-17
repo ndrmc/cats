@@ -60,9 +60,9 @@ namespace SSRS_Portal
                 var currentUser = UserAccountHelper.GetCurrentUser();
                 if (currentUser.RegionalUser)
                 {
-                    currentUser.
                     string regionId = currentUser.RegionID.ToString();
-                    List<ReportParameter> parameters = new List<ReportParameter> { new ReportParameter("Region", regionId) };
+                    var regionName = UserAccountHelper.GetCurrentUserRegion();
+                    List<ReportParameter> parameters = new List<ReportParameter> { new ReportParameter("Region", regionName) };
                     rvREXReport.ServerReport.SetParameters(parameters);
                 }
                 rvREXReport.ShowPrintButton = true;
@@ -73,7 +73,11 @@ namespace SSRS_Portal
 
         }
 
-        protected string GetCalendarPreference { get { return CalendarPreference; } }
+        protected string GetCalendarPreference()
+        {
+            CalendarPreference = UserAccountHelper.UserCalendarPreference();
+            return CalendarPreference;
+        }
 
         protected void ShowPrintButton()
         {
