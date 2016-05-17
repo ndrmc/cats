@@ -8,8 +8,11 @@
 <head runat="server">
     <title>CATS: Commodity Allocation & Tracking System</title>
     <%--<script src="/Scripts/kendo/2013.1.319/jquery.min.js"></script>
-    <link href="/Content/themes/default/bootstrap.min.css" rel="stylesheet"/>--%>
-    <link href="Content/jquery-ui.min.css" rel="stylesheet"/>
+    <link href="/Content/themes/default/bootstrap.min.css" rel="stylesheet"/>
+    <link href="Content/jquery-ui.min.css" rel="stylesheet"/>--%>
+    <link href="Content/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link href="Scripts/Beka.EthDate/jquery-ui-1.9.2.custom.css" rel="stylesheet" type="text/css" />
+    <link href="Scripts/Beka.EthDate/calendar.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <form id="form1" runat="server">
@@ -44,9 +47,11 @@
     </script>--%>
     <script type="text/javascript" src="Scripts/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="Scripts/jquery-ui.min.js"></script>
-    
+    <script type="text/javascript" src="Scripts/Beka.EthDate/Beka.EthDate.js"> </script>
+    <script type="text/javascript" src="Scripts/Beka.EthDate/jquery.Beka.EthCalDatePicker.js"> </script>
+    <script type="text/javascript" src="Scripts/js/CatsUI.js"> </script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $("#spinner").bind("ajaxSend", function() {
                 $(this).show();
             }).bind("ajaxStop", function() {
@@ -71,31 +76,92 @@
                 innerCell = innerRow.find("td").eq(4);
                 var textTo = innerCell.find("input[type=text]");
 
-                $(textFrom).datepicker({
-                    defaultDate: "+1w",
-                    dateFormat: 'dd/mm/yy',
-                    changeMonth: true,
-                    numberOfMonths: 1,
-                    onClose: function(selectedDate) {
-                        $(textTo).datepicker("option", "minDate", selectedDate);
+                var calendar = "<%= GetCalendarPreference %>";
+                var date = new Date();
+
+                $(textFrom).each(function () {
+                    if ($(this).val()) {
+                        date = new Date(Date.parse($(this).val()));
                     }
-                });
-                $(textFrom).focus(function(e) {
-                    e.preventDefault();
-                    $(textFrom).datepicker("show");
-                });
-                $(textTo).datepicker({
-                    defaultDate: "+1w",
-                    dateFormat: 'dd/mm/yy',
-                    changeMonth: true,
-                    numberOfMonths: 1,
-                    onClose: function(selectedDate) {
-                        $(textFrom).datepicker("option", "maxDate", selectedDate);
+                    $(this).val(date.toLocaleDateString());
+                    $(this).change(function () {
+                        var date2 = new Date(Date.parse($(this).val()));
+                        if (date2.toLocaleDateString() != $(this).val()) {
+                            var today = new Date();
+                            $(this).val(today.toLocaleDateString());
+                            $(this).tooltip('show');
+                        }
+                        console.log("Date Changed", date2);
+                    });
+                }).tooltip({ trigger: "hover manual", title: "mm/dd/yyyy" }).attr("placeholder", "mm/dd/yyyy");
+                if (calendar == "EC") {
+                    $(textFrom).ethcal_datepicker();
+                }
+                else {
+                    if (typeof Metronic === 'undefined') {
+                        $(textFrom).datepicker();
+                    } else {
+                        $(textFrom).datepicker({
+                            rtl: Metronic.isRTL(),
+                            orientation: "left",
+                            autoclose: true
+                        });
                     }
-                });
-                $(textTo).focus(function() {
-                    $(textTo).datepicker("show");
-                });
+                }
+                $(textTo).each(function () {
+                    if ($(this).val()) {
+                        date = new Date(Date.parse($(this).val()));
+                    }
+                    $(this).val(date.toLocaleDateString());
+                    $(this).change(function () {
+                        var date2 = new Date(Date.parse($(this).val()));
+                        if (date2.toLocaleDateString() != $(this).val()) {
+                            var today = new Date();
+                            $(this).val(today.toLocaleDateString());
+                            $(this).tooltip('show');
+                        }
+                        console.log("Date Changed", date2);
+                    });
+                }).tooltip({ trigger: "hover manual", title: "mm/dd/yyyy" }).attr("placeholder", "mm/dd/yyyy");
+                if (calendar == "EC") {
+                    $(textTo).ethcal_datepicker();
+                }
+                else {
+                    if (typeof Metronic === 'undefined') {
+                        $(textTo).datepicker();
+                    } else {
+                        $(textTo).datepicker({
+                            rtl: Metronic.isRTL(),
+                            orientation: "left",
+                            autoclose: true
+                        });
+                    }
+                }
+                //$(textFrom).datepicker({
+                //    defaultDate: "+1w",
+                //    dateFormat: 'dd/mm/yy',
+                //    changeMonth: true,
+                //    numberOfMonths: 1,
+                //    onClose: function(selectedDate) {
+                //        $(textTo).datepicker("option", "minDate", selectedDate);
+                //    }
+                //});
+                //$(textFrom).focus(function(e) {
+                //    e.preventDefault();
+                //    $(textFrom).datepicker("show");
+                //});
+                //$(textTo).datepicker({
+                //    defaultDate: "+1w",
+                //    dateFormat: 'dd/mm/yy',
+                //    changeMonth: true,
+                //    numberOfMonths: 1,
+                //    onClose: function(selectedDate) {
+                //        $(textFrom).datepicker("option", "maxDate", selectedDate);
+                //    }
+                //});
+                //$(textTo).focus(function() {
+                //    $(textTo).datepicker("show");
+                //});
             }
         }
 
@@ -138,6 +204,12 @@
         }
 
         function showPrintButton() {
+
+            var parameterRow = $("#ParametersRowrvREXReport");
+            var innerTable = $(parameterRow).find("table").find("table");
+            var input = innerTable.find("input[value='View Report']");
+            var innerRow = $(input).parent().parent().parent().parent().parent();
+
             var table = $("table[title='Refresh']");
             var parentTable = $(table).parents('table');
             var parentDiv = $(parentTable).parents('div').parents('div').first();
@@ -150,10 +222,10 @@
                 window.close();
             });
             if (parentDiv.find("input[value='Print']").length == 0) {
-                parentDiv.append('<table cellpadding="0" cellspacing="0" toolbarspacer="true" style="display:inline-block;width:6px;"><tbody><tr><td></td></tr></tbody></table>');
-                parentDiv.append('<div id="customDiv" class=" " style="display:inline-block;font-family:Verdana;font-size:8pt;vertical-align:inherit;"><table cellpadding="0" cellspacing="0"><tbody><tr><td><span style="cursor:pointer;" class="HighlightDiv" onclick="javascript:printPDF(this);" ><img src="../Images/Buttons/printer_blue_small.png" alt="Print Report" title="Print Report" width="18px" height="18px" style="margin-top:4px"/></span></td></tr></tbody></table></div>');
-                parentDiv.append('<table cellpadding="0" cellspacing="0" toolbarspacer="true" style="display:inline-block;width:10px;"><tbody><tr><td></td></tr></tbody></table>');
-                parentDiv.append('<div id="customDiv" class=" " style="display:inline-block;font-family:Verdana;font-size:8pt;vertical-align:inherit;"><table cellpadding="0" cellspacing="0" style="display:inline;"><tbody><tr><td><span style="cursor:pointer;" class="HighlightDiv" onclick="javascript:window.close();"><img src="../Images/cross-circle-frame.png" alt="Close Report" title="Close Report" width="18px" height="18px" style="margin-top:4px"/></span></td></tr></tbody></table></div>');
+                innerRow.append('<table cellpadding="0" cellspacing="0" toolbarspacer="true" style="display:inline-block;width:6px;"><tbody><tr><td></td></tr></tbody></table>');
+                innerRow.append('<div id="customDiv" class=" " style="display:inline-block;font-family:Verdana;font-size:8pt;vertical-align:inherit;"><table cellpadding="0" cellspacing="0"><tbody><tr><td><span style="cursor:pointer;" class="HighlightDiv" onclick="javascript:printPDF(this);" ><img src="../Images/Buttons/printer_blue_small.png" alt="Print Report" title="Print Report" width="18px" height="18px" style="margin-top:4px"/></span></td></tr></tbody></table></div>');
+                innerRow.append('<table cellpadding="0" cellspacing="0" toolbarspacer="true" style="display:inline-block;width:10px;"><tbody><tr><td></td></tr></tbody></table>');
+                innerRow.append('<div id="customDiv" class=" " style="display:inline-block;font-family:Verdana;font-size:8pt;vertical-align:inherit;"><table cellpadding="0" cellspacing="0" style="display:inline;"><tbody><tr><td><span style="cursor:pointer;" class="HighlightDiv" onclick="javascript:window.close();"><img src="../Images/cross-circle-frame.png" alt="Close Report" title="Close Report" width="18px" height="18px" style="margin-top:4px"/></span></td></tr></tbody></table></div>');
             }
         }
         function cfnReportsViewer_ViewReport(selectedTreeKeyGuidValue, ReportName, VenueExamCounter) {

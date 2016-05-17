@@ -19,6 +19,7 @@ namespace SSRS_Portal
         private string _reportName;
         private string _sessionPDFFileName;
         protected string iFrameURL;
+        protected string CalendarPreference;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -59,6 +60,7 @@ namespace SSRS_Portal
                 var currentUser = UserAccountHelper.GetCurrentUser();
                 if (currentUser.RegionalUser)
                 {
+                    currentUser.
                     string regionId = currentUser.RegionID.ToString();
                     List<ReportParameter> parameters = new List<ReportParameter> { new ReportParameter("Region", regionId) };
                     rvREXReport.ServerReport.SetParameters(parameters);
@@ -70,6 +72,9 @@ namespace SSRS_Portal
             }
 
         }
+
+        protected string GetCalendarPreference { get { return CalendarPreference; } }
+
         protected void ShowPrintButton()
         {
 
