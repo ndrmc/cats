@@ -167,9 +167,10 @@ namespace Cats.Helpers
                         //html += "<div> <table class='table table-bordered'>  <thead>  <tr>  <th>Report</th>  <th>Description</th>  </tr>  </thead>  <tbody>";       
                         //html += "<div id='list8'><ul>";
                             html += "<div> <ul>";
+                       
                         foreach (var report in reports)
                         {
-                            
+                            if(report.Name.EndsWith("AM")) continue;
                             html += "<li>";
                             var baseUrl = HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
                             html += "<a class='reportLink'  data-toggle='tooltip' data-placement='bottom' rel='tooltip'  title='" + report.Description + "' data-reportpath='" + report.Path + "' href=' " + baseUrl + "ReportViewer.aspx?path=" + report.Path + "'>" + report.Name + "</a>";
