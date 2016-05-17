@@ -17,8 +17,6 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            
-            
             <asp:ScriptManager ID="ScriptManager1"  EnablePageMethods="true" 
                 EnablePartialRendering="true" runat="server">
             </asp:ScriptManager>
@@ -35,7 +33,6 @@
                     </tr>
                 </table>
             </div>
-            
         </div>
     </form>
     <%--<script >
@@ -52,6 +49,7 @@
     <script type="text/javascript" src="Scripts/js/CatsUI.js"> </script>
     <script>
         $(document).ready(function () {
+            
             $("#spinner").bind("ajaxSend", function() {
                 $(this).show();
             }).bind("ajaxStop", function() {
@@ -61,16 +59,64 @@
             });
             $(function() {
                 showDatePicker();
+                $("select").change(function () {
+                    setTimeout(showDatePicker, 1000);
+                    //alert();
+                });
+                $("input[type=checkbox]").blur(function () {
+                    setTimeout(showDatePicker, 1000);
+                });
             });
         });
 
-        function showDatePicker() {
 
+        function showDatePicker() {
+            
             var parameterRow = $("#ParametersRowrvREXReport");
             var innerTable = $(parameterRow).find("table").find("table");
             var span = innerTable.find("span:contains('Date')");
+
+            $("span:contains('Date')").each(function (index) {
+                var dateInputRow = $(this).parent().next();
+                var dateInput = dateInputRow.find("input[type=text]");
+                var calendar = "<%= GetCalendarPreference() %>";
+                var date = new Date();
+                
+                if (calendar == "EC") {
+                    $(dateInput).ethcal_datepicker();
+                }
+                else {
+                    if (typeof Metronic === 'undefined') {
+                        $(dateInput).datepicker();
+                    } else {
+                        $(dateInput).datepicker({
+                            rtl: Metronic.isRTL(),
+                            orientation: "left",
+                            autoclose: true
+                        });
+                    }
+                }
+                $(dateInput).each(function () {
+                    if ($(this).val()) {
+                        date = new Date(Date.parse($(this).val()));
+                    }
+                    $(this).val(date.toLocaleDateString());
+                    $(this).change(function () {
+                        var date2 = new Date(Date.parse($(this).val()));
+                        alert(date2.toLocaleDateString() +" * " + $(this).val());
+                        if (date2.toLocaleDateString() != $(this).val()) {
+                            var today = new Date();
+                            //$(this).val(today.toLocaleDateString());
+                            //$(this).tooltip('show');
+                        }
+                        console.log("Date Changed", date2);
+                    });
+                }).tooltip({ trigger: "hover manual", title: "mm/dd/yyyy" }).attr("placeholder", "mm/dd/yyyy");
+                
+            });
+
             if (span) {
-                var innerRow = $(span).parent().parent();
+                <%--var innerRow = $(span).parent().next();
                 var innerCell = innerRow.find("td").eq(1);
                 var textFrom = innerCell.find("input[type=text]");
                 innerCell = innerRow.find("td").eq(4);
@@ -136,7 +182,7 @@
                             autoclose: true
                         });
                     }
-                }
+                }--%>
                 //$(textFrom).datepicker({
                 //    defaultDate: "+1w",
                 //    dateFormat: 'dd/mm/yy',
