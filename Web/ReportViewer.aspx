@@ -13,6 +13,56 @@
     <link href="Content/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
     <link href="Scripts/Beka.EthDate/jquery-ui-1.9.2.custom.css" rel="stylesheet" type="text/css" />
     <link href="Scripts/Beka.EthDate/calendar.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .spinner {
+	        position: fixed;
+	        top: 50%;
+	        left: 50%;
+	        margin-left: -50px; /* half width of the spinner gif */
+	        margin-top: -50px; /* half height of the spinner gif */
+	        text-align:center;
+	        z-index:1234;
+	        overflow: auto;
+	        width: 150px; /* width of the spinner gif */
+	        height: 62px; /*height of the spinner gif +2px to fix IE8 issue */
+	        background-color:#E1E1D7; 
+	        border:1px solid black;
+        }
+
+        .HighlightDiv img{
+        background-color: transparent; 
+        border-top-width: 1px; 
+        border-right-width: 1px; 
+        border-bottom-width: 1px; 
+        border-left-width: 1px; 
+        border-top-color: transparent; 
+        border-right-color: transparent; 
+        border-bottom-color: transparent; 
+        border-left-color: transparent; 
+        border-top-style: solid; 
+        border-right-style: solid; 
+        border-bottom-style: solid; 
+        border-left-style: solid; 
+        cursor: default; 
+        }
+
+        .HighlightDiv:hover img{
+        background-color: #DDEEF7; 
+        border-top-width: 1px; 
+        border-right-width: 1px; 
+        border-bottom-width: 1px; 
+        border-left-width: 1px; 
+        border-top-color: #336699; 
+        border-right-color: #336699; 
+        border-bottom-color: #336699; 
+        border-left-color: #336699; 
+        border-top-style: solid; 
+        border-right-style: solid; 
+        border-bottom-style: solid; 
+        border-left-style: solid; 
+        cursor:pointer; 
+        }
+     </style>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -57,18 +107,47 @@
             }).bind("ajaxError", function() {
                 $(this).hide();
             });
+
+            
+
             $(function() {
                 showDatePicker();
-                $("select").change(function () {
-                    setTimeout(showDatePicker, 1000);
+                showPrintButton();
+                $("select").on("focusout", function () {
+                    showDatePicker();
+                    console.log("Show date picker: Select");
+                    //showPrintButton();
                     //alert();
                 });
-                $("input[type=checkbox]").blur(function () {
-                    setTimeout(showDatePicker, 1000);
+                $("input[type=checkbox]").on("focusout", function () {
+                    //setTimeout(showDatePicker, 1000);
+                    showDatePicker();
+                    console.log("Show date picker: Input");
+                    //showPrintButton();
                 });
+
+                var repeater;
+
+                function doWork() {
+                    $('#more').load('exp1.php');
+                    repeater = setTimeout(doWork, 1000);
+                }
+
+                doWork();
             });
         });
 
+        var messageElem = 'AlertMessage';
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+        function EndRequestHandler(sender, args) {
+            if (args.get_error() != undefined) {
+                var errorMessage = args.get_error().message;
+                args.set_errorHandled(true);
+                $get(messageElem).innerHTML = errorMessage;
+            }
+            showDatePicker();
+            console.log("Show date picker: Input");
+        }
 
         function showDatePicker() {
             
@@ -83,7 +162,15 @@
                 var date = new Date();
                 
                 if (calendar == "EC") {
-                    $(dateInput).ethcal_datepicker();
+                    if (typeof Metronic === 'undefined') {
+                        $(dateInput).ethcal_datepicker();
+                    } else {
+                        $(dateInput).ethcal_datepicker({
+                            rtl: Metronic.isRTL(),
+                            orientation: "left",
+                            autoclose: true
+                        });
+                    }
                 }
                 else {
                     if (typeof Metronic === 'undefined') {
@@ -103,7 +190,7 @@
                     $(this).val(date.toLocaleDateString());
                     $(this).change(function () {
                         var date2 = new Date(Date.parse($(this).val()));
-                        alert(date2.toLocaleDateString() +" * " + $(this).val());
+                        //alert(date2.toLocaleDateString() +" * " + $(this).val());
                         if (date2.toLocaleDateString() != $(this).val()) {
                             var today = new Date();
                             //$(this).val(today.toLocaleDateString());
@@ -253,8 +340,8 @@
 
             var parameterRow = $("#ParametersRowrvREXReport");
             var innerTable = $(parameterRow).find("table").find("table");
-            var input = innerTable.find("input[value='View Report']");
-            var innerRow = $(input).parent().parent().parent().parent().parent();
+            var input = innerTable.find("input[type=submit]");
+            var innerRow = $(input).parent();
 
             var table = $("table[title='Refresh']");
             var parentTable = $(table).parents('table');
