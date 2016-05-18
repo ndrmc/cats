@@ -72,7 +72,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public JsonResult GetRequisition()
         {
             var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
-            var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID).OrderByDescending(m=>m.RegionalRequestID);
+            var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID).OrderByDescending(m => m.RegionalRequestID);
             var requisitions = GetRequisisition(requests);
             return Json(requisitions, JsonRequestBehavior.AllowGet);
 
@@ -86,8 +86,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     //&& reliefRequisition.Status==(int)ReliefRequisitionStatus.Draft 
                     select new ReliefRequisitionInfoViewModel
                         {
-                            RequisitionID = reliefRequisition.RequisitionID,
+                            RequisitionID = reliefRequisition.RequisitionID ,
                             RequisitonNumber = reliefRequisition.RequisitionNo,
+                            Round = reliefRequisition.Round ?? 0,
                             Region = reliefRequisition.AdminUnit.Name,
                             Zone = reliefRequisition.AdminUnit1.Name,
                             Commodity = reliefRequisition.Commodity.Name,
@@ -97,7 +98,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                                                   reliefRequisition.Status.Value)
 
 
-                        }).Take(8);
+                        }); //Take(8) removed
         }
         public JsonResult GetRequestedInfo()
         {

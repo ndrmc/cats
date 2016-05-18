@@ -24,6 +24,7 @@ namespace Cats.Areas.EarlyWarning.Models
         public decimal Amount { get; set; }
         public string Status     { get; set; }
         public string Region { get; set; }
+        public int Round { get; set; }
     }
     public class RequestPercentageViewModel
     {
