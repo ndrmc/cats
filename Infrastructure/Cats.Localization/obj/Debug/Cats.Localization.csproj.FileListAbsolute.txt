@@ -26,3 +26,17 @@ E:\src\cats\Infrastructure\Cats.Localization\obj\Debug\Cats.Localization.pdb
 \\10.24.65.152\cats\Infrastructure\Cats.Localization\obj\Debug\Cats.Localization.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Infrastructure\Cats.Localization\obj\Debug\Cats.Localization.dll
 \\10.24.65.152\cats\Infrastructure\Cats.Localization\obj\Debug\Cats.Localization.pdb
+E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\Cats.Localization.dll.config
+E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\Cats.Localization.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\Cats.Localization.pdb
+E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\EntityFramework.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\System.Web.Mvc.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\System.Web.Razor.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\System.Web.WebPages.Razor.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\System.Web.WebPages.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\Microsoft.Web.Infrastructure.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\System.Web.WebPages.Deployment.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\EntityFramework.xml
+E:\code\cats\Infrastructure\Cats.Localization\obj\Debug\Cats.Localization.csprojResolveAssemblyReference.cache
+E:\code\cats\Infrastructure\Cats.Localization\obj\Debug\Cats.Localization.dll
+E:\code\cats\Infrastructure\Cats.Localization\obj\Debug\Cats.Localization.pdb

@@ -211,3 +211,5 @@ E:\code\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration
 \\10.24.65.152\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.dll
 \\10.24.65.152\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.pdb
+E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.xml
+E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.WebHost.xml
