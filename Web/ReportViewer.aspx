@@ -108,45 +108,49 @@
                 $(this).hide();
             });
 
+            var browser = get_browser_info();
             
-
-            $(function() {
-                showDatePicker();
-                showPrintButton();
-                $("select").on("focusout", function () {
-                    showDatePicker();
-                    console.log("Show date picker: Select");
-                    //showPrintButton();
-                    //alert();
-                });
-                $("input[type=checkbox]").on("focusout", function () {
-                    //setTimeout(showDatePicker, 1000);
-                    showDatePicker();
-                    console.log("Show date picker: Input");
-                    //showPrintButton();
-                });
-
-                var repeater;
-
-                function doWork() {
-                    $('#more').load('exp1.php');
-                    repeater = setTimeout(doWork, 1000);
+            $(function () {
+                if (browser.name.toLowerCase() === "ie") {
                 }
+                else{
+                    alert(browser.name.toLowerCase());
+                    showDatePicker();
+                    showPrintButton();
+                    $("select").on("focusout", function () {
+                        showDatePicker();
+                        console.log("Show date picker: Select");
+                        //showPrintButton();
+                        //alert();
+                    });
+                    $("input[type=checkbox]").on("focusout", function () {
+                        //setTimeout(showDatePicker, 1000);
+                        showDatePicker();
+                        console.log("Show date picker: Input");
+                        //showPrintButton();
+                    });
+                }
+                
 
-                doWork();
             });
         });
 
         var messageElem = 'AlertMessage';
+        //Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+
+        // Register a page load event on asynchronuous requests to bind the showDatePicker event to date fields 
+        Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(PageLoadHandler);
+        // Register an end request event on asynchronuous requests to enable the ASP Disabled date fields 
         Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
-        function EndRequestHandler(sender, args) {
-            if (args.get_error() != undefined) {
-                var errorMessage = args.get_error().message;
-                args.set_errorHandled(true);
-                $get(messageElem).innerHTML = errorMessage;
-            }
+        function PageLoadHandler(sender, args) {
             showDatePicker();
             console.log("Show date picker: Input");
+        }
+        function EndRequestHandler(sender, args) {
+            $("input[type=text]").css("background-color", "#fff");
+            $("input[type=text]").prop('disabled', true);
+            $("input[type=text]").removeAttr('disabled');
+            console.log("Enable date picker: Input");
         }
 
         function showDatePicker() {
@@ -162,15 +166,7 @@
                 var date = new Date();
                 
                 if (calendar == "EC") {
-                    if (typeof Metronic === 'undefined') {
-                        $(dateInput).ethcal_datepicker();
-                    } else {
-                        $(dateInput).ethcal_datepicker({
-                            rtl: Metronic.isRTL(),
-                            orientation: "left",
-                            autoclose: true
-                        });
-                    }
+                    $(dateInput).ethcal_datepicker();
                 }
                 else {
                     if (typeof Metronic === 'undefined') {
@@ -201,101 +197,6 @@
                 }).tooltip({ trigger: "hover manual", title: "mm/dd/yyyy" }).attr("placeholder", "mm/dd/yyyy");
                 
             });
-
-            if (span) {
-                <%--var innerRow = $(span).parent().next();
-                var innerCell = innerRow.find("td").eq(1);
-                var textFrom = innerCell.find("input[type=text]");
-                innerCell = innerRow.find("td").eq(4);
-                var textTo = innerCell.find("input[type=text]");
-
-                var calendar = "<%= GetCalendarPreference() %>";
-                var date = new Date();
-
-                $(textFrom).each(function () {
-                    if ($(this).val()) {
-                        date = new Date(Date.parse($(this).val()));
-                    }
-                    $(this).val(date.toLocaleDateString());
-                    $(this).change(function () {
-                        var date2 = new Date(Date.parse($(this).val()));
-                        if (date2.toLocaleDateString() != $(this).val()) {
-                            var today = new Date();
-                            $(this).val(today.toLocaleDateString());
-                            $(this).tooltip('show');
-                        }
-                        console.log("Date Changed", date2);
-                    });
-                }).tooltip({ trigger: "hover manual", title: "mm/dd/yyyy" }).attr("placeholder", "mm/dd/yyyy");
-                if (calendar == "EC") {
-                    $(textFrom).ethcal_datepicker();
-                }
-                else {
-                    if (typeof Metronic === 'undefined') {
-                        $(textFrom).datepicker();
-                    } else {
-                        $(textFrom).datepicker({
-                            rtl: Metronic.isRTL(),
-                            orientation: "left",
-                            autoclose: true
-                        });
-                    }
-                }
-                $(textTo).each(function () {
-                    if ($(this).val()) {
-                        date = new Date(Date.parse($(this).val()));
-                    }
-                    $(this).val(date.toLocaleDateString());
-                    $(this).change(function () {
-                        var date2 = new Date(Date.parse($(this).val()));
-                        if (date2.toLocaleDateString() != $(this).val()) {
-                            var today = new Date();
-                            $(this).val(today.toLocaleDateString());
-                            $(this).tooltip('show');
-                        }
-                        console.log("Date Changed", date2);
-                    });
-                }).tooltip({ trigger: "hover manual", title: "mm/dd/yyyy" }).attr("placeholder", "mm/dd/yyyy");
-                if (calendar == "EC") {
-                    $(textTo).ethcal_datepicker();
-                }
-                else {
-                    if (typeof Metronic === 'undefined') {
-                        $(textTo).datepicker();
-                    } else {
-                        $(textTo).datepicker({
-                            rtl: Metronic.isRTL(),
-                            orientation: "left",
-                            autoclose: true
-                        });
-                    }
-                }--%>
-                //$(textFrom).datepicker({
-                //    defaultDate: "+1w",
-                //    dateFormat: 'dd/mm/yy',
-                //    changeMonth: true,
-                //    numberOfMonths: 1,
-                //    onClose: function(selectedDate) {
-                //        $(textTo).datepicker("option", "minDate", selectedDate);
-                //    }
-                //});
-                //$(textFrom).focus(function(e) {
-                //    e.preventDefault();
-                //    $(textFrom).datepicker("show");
-                //});
-                //$(textTo).datepicker({
-                //    defaultDate: "+1w",
-                //    dateFormat: 'dd/mm/yy',
-                //    changeMonth: true,
-                //    numberOfMonths: 1,
-                //    onClose: function(selectedDate) {
-                //        $(textFrom).datepicker("option", "maxDate", selectedDate);
-                //    }
-                //});
-                //$(textTo).focus(function() {
-                //    $(textTo).datepicker("show");
-                //});
-            }
         }
 
         //Function that is called on Successful AJAX method call.  These are referenced in the "CallServerMethodBeforePrint" function that is created from code behind and will exist in the final rendering of the page.
@@ -376,6 +277,23 @@
             var thePopup = window.open("about:blank", "PopupReport", 'scrollbars=yes,status=yes,toolbar=yes,menubar=no,location=no,resizable=no,fullscreen=yes, width=' + windowWidth + ', height=' + windowHeight + ', top=' + top + ', left=' + left);
             window.setTimeout(document.getElementById("frmReportViewer").submit(), 500);
             return false;
+        }
+        function get_browser_info(){
+            var ua=navigator.userAgent,tem,M=ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []; 
+            if(/trident/i.test(M[1])){
+                tem=/\brv[ :]+(\d+)/g.exec(ua) || []; 
+                return {name:'IE ',version:(tem[1]||'')};
+            }   
+            if(M[1]==='Chrome'){
+                tem=ua.match(/\bOPR\/(\d+)/)
+                if(tem!=null)   {return {name:'Opera', version:tem[1]};}
+            }   
+            M=M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+            if((tem=ua.match(/version\/(\d+)/i))!=null) {M.splice(1,1,tem[1]);}
+            return {
+                name: M[0],
+                version: M[1]
+            };
         }
     </script>
 
