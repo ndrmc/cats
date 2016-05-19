@@ -1,0 +1,134 @@
+﻿@using Cats.Areas.Logistics.Models
+@using Cats.Areas.Procurement.Models
+@using Cats.Helpers
+@using Cats.Security
+@using Kendo.Mvc.UI
+@model TransportOrderViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+@section Toolbar
+{ 
+    <a href="@Url.Action("PaymentRequests", "TransporterPaymentRequest", new { Area = "Logistics", transporterID = Model.TransporterID })" class="btn" data-buttontype="btn_back_to_list" title="Back to List"><i class="icon-list"></i></a>
+}
+<div class="control-group form-horizontal well">
+    <div class="row">
+        <div class="span6">
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.TransportOrderNo, Html.Translate("Transport Order No"))
+
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.TransportOrderNo, new { Disabled = true })
+                </div>
+            </div>
+        </div>
+        <div class="span6">
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(m => m.Transporter, Html.Translate("Transporter"))
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Transporter, new { Disabled = true })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span6">
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.ContractNumber, Html.Translate("Transport Order No"))
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ContractNumber, new { Disabled = true })
+                </div>
+            </div>
+        </div>
+        <div class="span6">
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.OrderDateET, Html.Translate("Order Date"))
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.OrderDateET, new { Disabled = true })
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span6">
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.RequestedDispatchDateET, Html.Translate("Requested Dispatch Date"), new { @class = "cats-date-pref" })
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.RequestedDispatchDateET, new { Disabled = true })
+                </div>
+            </div>
+        </div>
+        <div class="span6">
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.OrderExpiryDateET, Html.Translate("Order Expiry Date"), new { @class = "cats-date-pref" })
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.OrderExpiryDateET, new { Disabled = true })
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span6">
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.StartDate, Html.Translate("Start Date"), new { @class = "cats-date-pref" })
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.StartDate, new { Disabled = true })
+                </div>
+            </div>
+        </div>
+        <div class="span6">
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.EndDate, Html.Translate("End Date"), new { @class = "cats-date-pref" })
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.EndDate, new { Disabled = true })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@(Html.Kendo().Grid((IEnumerable<TransportOrderDetailViewModel>)ViewData["Transport.order.detail.ViewModel"])
+.Name("Grid").Columns(columns =>
+                          {
+                              columns.Bound(trd => trd.Woreda).Title(Html.Translate("Woreda"));
+                              columns.Bound(trd => trd.RequisitionNo).Title(Html.Translate("Requesition No"));
+                              columns.Bound(trd => trd.FDP).Title(Html.Translate("FDP"));
+                              columns.Bound(trd => trd.OriginWarehouse).Title(Html.Translate("Origin Warehouse")).FooterTemplate(@<text><div align="right"><strong>@Html.Translate("Total")</strong></div></text>);
+                              columns.Bound(trd => trd.QuantityQtl).Title(Html.Translate("Quanitiy Qtl")).FooterTemplate(@<text><div align="right"><strong>@item.Sum.Format("{0:N2}")</strong></div></text>).HtmlAttributes(new { align = "Right" });
+                              columns.Bound(trd => trd.TariffPerQtl).Title(Html.Translate("Tarif Per Qtl")).FooterTemplate(@<text><div align="right"><strong>@item.Sum.Format("{0:N2}")</strong></div></text>).HtmlAttributes(new { align = "Right" });
+                              columns.Bound(trd => trd.TotalAmount).Title(Html.Translate("Total Amount")).FooterTemplate(@<text><div align="right"><strong>@item.Sum.Format("{0:N2}")</strong></div></text>).HtmlAttributes(new { align = "Right" });
+
+                          })
+                          //.Pageable()
+                          .DataSource(ds => ds.Ajax()
+                          .Aggregates(agg => agg.Add(t => t.QuantityQtl).Sum())
+                          .Aggregates(agg => agg.Add(t => t.TariffPerQtl).Sum())
+                          .Aggregates(agg => agg.Add(t => t.TotalAmount).Sum()))
+                          )
+<style type="text/css">
+    .k-footer-template td {
+        background: #DDD;
+        border-width: 0;
+    }
+</style>

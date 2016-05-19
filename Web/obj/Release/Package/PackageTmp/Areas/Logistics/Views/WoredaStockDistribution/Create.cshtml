@@ -1,0 +1,607 @@
+﻿@using Cats.Areas.Logistics.Models
+@using Kendo.Mvc.UI
+@using Cats.Helpers
+@using Cats.Security
+
+@model Cats.Areas.Logistics.Models.WoredaStockDistributionWithDetailViewModel
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";  
+}
+
+<h4>Woreda Distribution Information </h4>
+@section leftBar
+{
+    @Html.Partial("_LeftBar")
+}
+@section Toolbar
+{
+    @if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_woreda_distribution))
+    {
+        <button id="SubmitButton" data-buttontype="btn_save" class="btn btn-default" data-loading-text="Saving...">Save</button>
+    @*<a id="SaveButton" class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_create_utilization" title="Save"></a>
+    *@<a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("Index", "WoredaStockDistribution")" title="Cancel"></a>
+    }
+
+    
+    
+}
+
+ @using (Html.BeginForm("Create", "WoredaStockDistribution", FormMethod.Post, FormMethod.Post, new { id = "frm_create_utilization" }))
+ {
+@Html.HiddenFor(m => m.WoredaID)
+@Html.HiddenFor(m => m.PlanID)
+@Html.HiddenFor(m => m.Month)
+@Html.HiddenFor(m => m.ProgramID)
+@Html.HiddenFor(m => m.WoredaStockDistributionID)
+
+
+     
+     <style>
+    .summaryview
+    {
+        /*   width:90%;
+        border:solid 1px #888;
+        border-radius:4px;
+     */
+        padding: 4px;
+    }
+
+        .summaryview .fldlabel
+        {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .summaryview .fldvalue
+        {
+        }
+
+    .section-hilite
+    {
+        border-radius: 4px;
+        background-color: #F8F8F8;
+        margin: 5px;
+    }
+
+    .flat-input, .token-inputs input
+    {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+    }
+
+        .flat-input:active, .flat-input:focus, .token-inputs input:active, .token-inputs input:focus
+        {
+            color: #666;
+            border: none;
+            box-shadow: none;
+        }
+    .token-inputs .token-input-token-facebook
+    {
+        padding:0px;
+        padding-left:5px;
+        padding-right:5px;
+
+        border-radius:2px;
+        color:#666;
+    }
+    .token-inputs .token-input-list-facebook
+    {
+        border:solid 1px #ccc;
+        border-radius:2px;
+        width:500px;
+
+    }
+    .activity_indicator
+    {
+        position:fixed;
+        left:50%;
+        top:45px;
+        width:100px;
+        height:30px;
+        line-height:30px;
+        margin-left:-50px;
+        border-radius:2px;
+        background:rgba(0,0,0,0.5);
+        text-align:center;
+        color:#FFF;
+    }
+    .pending-requests0 .activity_indicator
+    {
+        display:none;
+        opacity:0.2;
+    }
+    .k-grid tbody tr:nth-child(2n)
+    {
+        background:#EEE;
+    }
+</style>
+     //@Html.HiddenFor(m=>m.WoredaDistributionDetailViewModels)
+    <div style="display: none" id="error" class='cats_error'>
+        
+    </div> 
+     
+      <div class="section-hilite summaryview" style="width:90%; background:#FFF">
+            <!--
+            <div class="loading"><i class="fa fa-book fa-fw fa-border"></i> loading</div>
+            -->
+                <table style="width:90%; background:#FFF">
+                <tr>
+                    <td class="fldlabel">@Html.Translate("Region"): </td><td class="fldvalue">@ViewBag.SelectedRegion</td>
+                    <td class="fldlabel">@Html.Translate("Zone"): </td><td class="fldvalue">@ViewBag.SelectedZone</td>
+                    <td class="fldlabel">@Html.Translate("Woreda") : </td><td class="fldvalue">@ViewBag.SelectedWoreda</td>
+                </tr>
+                <tr>
+                    <td class="fldlabel">@Html.Translate("HRD/Annual Plan") : </td><td class="fldvalue">@ViewBag.SelectedPlan</td>
+                    <td class="fldlabel">@Html.Translate("Month/Round") : </td><td class="fldvalue">@ViewBag.selectedmonth</td>
+                    <td class="fldlabel">@Html.Translate("Program") : </td><td class="fldvalue">@ViewBag.SelectedProgram </td>
+                </tr>
+            </table>
+        </div>
+    <div id="title">
+        
+    </div>
+    <div class="form-horizontal">
+        <table border="0">
+            <tr>
+                <td rowspan="5">
+                    <div id="div_Male" class="form-horizontal well" >
+                        <div class="control-group">
+                            <div class="control-label">
+                                @Html.LabelFor(m => m.PublicSupport, Html.Translate("Public support"))
+                            </div>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.PublicSupport)
+                                @Html.ValidationMessageFor(m => m.PublicSupport)
+                            </div>
+                        </div>
+                      
+                        <div class="control-group">
+                            <div class="control-label">
+                                @Html.LabelFor(m => m.DirectSupport, Html.Translate("Direct support"))
+                            </div>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.DirectSupport)
+                                @Html.ValidationMessageFor(m => m.DirectSupport)
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="control-label">
+                                @Html.LabelFor(m => m.MaleLessThan5Years, Html.Translate("Male <5 Years"))
+                            </div>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.MaleLessThan5Years)
+                                @Html.ValidationMessageFor(m => m.MaleLessThan5Years)
+                            </div>
+                        </div>
+    
+                        <div class="control-group">
+                            <div class="control-label">
+                                @Html.LabelFor(m => m.MaleBetween5And18Years, Html.Translate("Male 5-18 Years"))
+                            </div>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.MaleBetween5And18Years)
+                                @Html.ValidationMessageFor(m => m.MaleBetween5And18Years)
+                            </div>
+                        </div>
+    
+                        <div class="control-group">
+                            <div class="control-label">
+                                @Html.LabelFor(m => m.MaleAbove18Years, Html.Translate("Male >18 Years"))
+                            </div>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.MaleAbove18Years)
+                                @Html.ValidationMessageFor(m => m.MaleAbove18Years)
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td rowspan="5">
+                    <div id="div_Female1" class="form-horizontal well">
+                        <div class="control-group">
+                            <div class="control-label">
+                                @Html.LabelFor(m => m.FemaleLessThan5Years, Html.Translate("Female <5 Years"))
+                            </div>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.FemaleLessThan5Years)
+                                @Html.ValidationMessageFor(m => m.FemaleLessThan5Years)
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="control-label">
+                                @Html.LabelFor(m => m.FemaleBetween5And18Years, Html.Translate("Female 5-18 Years"))
+                            </div>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.FemaleBetween5And18Years)
+                                @Html.ValidationMessageFor(m => m.FemaleBetween5And18Years)
+                            </div>
+                        </div>
+    
+                        <div class="control-group">
+                            <div class="control-label">
+                                @Html.LabelFor(m => m.FemaleAbove18Years, Html.Translate("Female >18 Years"))
+                            </div>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.FemaleAbove18Years)
+                                @Html.ValidationMessageFor(m => m.FemaleAbove18Years)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                @Html.LabelFor(m => m.ActualBeneficairies, Html.Translate("Actual Beneficiary"))
+                            </div>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.ActualBeneficairies)
+                                @Html.ValidationMessageFor(m => m.ActualBeneficairies)
+                            </div>
+                        </div>
+                       
+                    </div>
+                </td>
+            </tr>
+           
+            
+        </table>
+    </div>
+    <div>
+        @(Html.Kendo().Grid(Model.WoredaDistributionDetailViewModels)
+                      .Name("RequisitionGridDetail")
+                      .Columns(columns =>
+                      {
+
+                          columns.Bound(p => p.WoredaStockDistributionDetailID).Hidden().ClientTemplate("#= WoredaStockDistributionDetailID #" +
+                          "<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].WoredaStockDistributionDetailID' value='#= WoredaStockDistributionDetailID #' />");
+                          columns.Bound(p => p.FdpId).Hidden().ClientTemplate("#= FdpId #" +
+                           "<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].FdpId' value='#= FdpId #' />");
+                          columns.Bound(p => p.FDP).Width(100).Title(Html.Translate("FDP")).HtmlAttributes(new { style = "background-color:lightgray" });
+                          columns.Bound(p => p.CommodityName).Width(100).Title(Html.Translate("Commodity")).HtmlAttributes(new { style = "background-color:lightgray" });
+                          columns.Bound(p => p.Round).Width(50).HtmlAttributes(new { style = "background-color:lightgray" });
+                          columns.Bound(p => p.Month).Width(60).HtmlAttributes(new { style = "background-color:lightgray" });
+                          columns.Bound(p => p.CommodityID).Hidden().ClientTemplate("#= CommodityID #" +
+                          "<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].CommodityID' value='#= CommodityID #' />");
+
+                          columns.Bound(p => p.AllocatedAmount).Width(80).HtmlAttributes(new { align = "right" }).HtmlAttributes(new { style = "background-color:lightgray" })
+                          .ClientTemplate("#= AllocatedAmount #" +
+                          "<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].AllocatedAmount' value='#= AllocatedAmount #' />");
+
+
+                          columns.Bound(p => p.dispatched).Title("Dispatched").Width(80).HtmlAttributes(new { align = "right" }).HtmlAttributes(new { style = "background-color:lightgray" })
+                          .ClientTemplate("#= dispatched #" +
+                          "<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].dispatched' value='#= dispatched #' />");
+
+
+                          columns.Bound(p => p.delivered).Title("Delivered").Width(80).HtmlAttributes(new { align = "right" }).HtmlAttributes(new { style = "background-color:lightgray" })
+                          .ClientTemplate("#= delivered #" +
+                          "<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].delivered' value='#= delivered #' />");
+
+                          columns.Bound(p => p.RequistionNo).Width(60).Width(100).HtmlAttributes(new { align = "right" }).HtmlAttributes(new { style = "background-color:lightgray" });
+                          columns.Bound(p => p.RequisitionId).Hidden(true)
+                              .ClientTemplate("<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].RequisitionId'  value='#= RequisitionId #' />");
+                          columns.Bound(p => p.BeginingBalance).Width(60)
+                                .ClientTemplate("<span class='rowCount' rowCount='#=rowCount#' nextRow='#=getRowNo(data)#'>  #= BeginingBalance #</span>" +
+                            "<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].BeginingBalance'  value='#= BeginingBalance #' />");
+                          columns.Bound(p => p.TotalIn).Width(60)
+                               .ClientTemplate("<span class='rowCount' rowCount='#=rowCount#' nextRow='#=getRowNo(data)#'>#= TotalIn #</span>" +
+                          "<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].TotalIn' value='#= TotalIn #' />");
+                          columns.Bound(p => p.TotalOut).Width(60)
+                               .ClientTemplate("<span class='rowCount' rowCount='#=rowCount#' nextRow='#=getRowNo(data)#'>#= TotalOut #</span>" +
+                          "<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].TotalOut' value='#= TotalOut #' />");
+
+                          columns.Bound(p => p.DistributedAmount).Width(70)
+                               .ClientTemplate("<span class='rowCount' rowCount='#=rowCount#' nextRow='#=getRowNo(data)#' > #=DistributedAmount#</span>" +
+                          "<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].DistributedAmount'  value='#= DistributedAmount #' />");
+
+                          columns.Bound(p => p.DistributionStartDate).Width(100).Format("{0:MM-dd-yy}");
+                          columns.Bound(p => p.DistributionStartDate).Format("{0:mm-dd-yy}").ClientTemplate("  <input type='hidden'  id='WoredaDistributionDetailViewModels[#= index(data)#].DistributionStartDate'  name='WoredaDistributionDetailViewModels[#= index(data)#].DistributionStartDate'  value='#= DistributionStartDate #' />");
+                          columns.Bound(p => p.DistributionEndDate).Width(100).Format("{0:MM-dd-yy}");
+                          columns.Bound(p => p.DistributionEndDate).Format("{0:mm-dd-yy}")
+                                                       .ClientTemplate("<input  type='hidden'  id='WoredaDistributionDetailViewModels[#= index(data)#].DistributionEndDate'  name='WoredaDistributionDetailViewModels[#= index(data)#].DistributionEndDate'  value='#= DistributionEndDate #' />");
+
+                          columns.Bound(p => p.LossAmount).Width(80)
+                               .ClientTemplate("<span class='rowCount' rowCount='#=rowCount#' nextRow='#=getRowNo(data)#'>#= LossAmount #</span>" +
+                          "<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].LossAmount' Id='LossAmount' value='#= LossAmount #' />");
+                          columns.ForeignKey(c => c.LossReasonId, (System.Collections.IEnumerable)ViewData["LossReasons"], "Id", "name").Title("Loss code - Reason").Width(200);
+
+
+                          columns.ForeignKey(c => c.LossReasonId, (System.Collections.IEnumerable)ViewData["LossReasons"], "Id", "name").Title("Loss code - Reason")
+                             .ClientTemplate("<span class='rowCount'>#= LossReasonId #</span>" +
+                          "<input  type='hidden'  name='WoredaDistributionDetailViewModels[#= index(data)#].LossReasonId' value='#= LossReasonId #' />");
+
+                          columns.Template(c => { }).Width(100).Title(Html.Translate("EndingBalance")).HtmlAttributes(new { @class = "calculated" }).ClientTemplate("<span class='rowCount EndingBalance' rowCount='#=rowCount#' nextRow='#=getRowNo(data)#'>#=TotalEndingBalance(data)# </span>" +
+                              " <input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].EndingBalance' value='#= EndingBalance #' />");
+
+                          //columns.Bound(p => p.EndingBalance).Width(80).HtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
+                          //.ClientTemplate("<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].EndingBalance' value='#= EndingBalance #' />");
+                          //// columns.Bound(p => p.DistributionStartDate);
+                          //// columns.Bound(p => p.DistributionEndDate);
+
+                      })
+                      //.ToolBar(toolBar=>toolBar.Save())
+                      .Editable(editable =>
+                      {
+                          if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_Distribution_Entry))
+                          {
+                              editable.Mode(GridEditMode.InCell);
+                          }
+                      })
+
+                      .Scrollable()
+                      //.Selectable(t => t.Mode(GridSelectionMode.Single))
+                      .Navigatable()
+                      .HtmlAttributes(new { style = "height:350px;" })
+                       .Events(events => events.Change("onDataBound"))
+                        .Events(events => events.DataBound("onDataBound"))
+                      .DataSource(dataSource => dataSource
+                                                    .Ajax()
+                                                    .Batch(true)
+                                                    .ServerOperation(false)
+                                                    .Events(error => error.Error("error_handler"))
+                                                    //.Group(m => m.Add(t => t.CommodityName))
+                                                    // .Events(e=>e.RequestEnd("onRequestEnd"))
+                                                    // .ServerOperation(false)
+                                                    .Model(model =>
+                                                    {
+                                                        model.Id(p => p.WoredaStockDistributionDetailID);
+                                                        model.Field(detail => detail.FDP).Editable(false);
+                                                        model.Field(detail => detail.RequestedAmount).Editable(false);
+                                                        model.Field(detail => detail.AllocatedAmount).Editable(false);
+                                                        model.Field(detail => detail.DispatchedToFDPAmount).Editable(false);
+                                                        model.Field(detail => detail.NumberOfBeneficiaries).Editable(false);
+                                                        model.Field(detail => detail.ReceivedAtFDPAmount).Editable(false);
+                                                        model.Field(detail => detail.Round).Editable(false);
+                                                        model.Field(detail => detail.Month).Editable(false);
+                                                        model.Field(detail => detail.RequistionNo).Editable(false);
+                                                        model.Field(detail => detail.CommodityName).Editable(false);
+                                                        model.Field(detail => detail.AllocatedAmount).Editable(false);
+                                                        model.Field(detail => detail.dispatched).Editable(false);
+                                                        model.Field(detail => detail.delivered).Editable(false);
+                                                        model.Field(detail => detail.TotalIn).Editable(true);
+
+                                                    })
+                                                    .ServerOperation(false)
+
+                      //.Read(read => read.Action("WoredaStockDetail_Read", "WoredaStockDistribution", new {woredaStockDistributionID =Model.WoredaStockDistributionID, woredaID=Model.WoredaID,planID=Model.PlanID,month=Model.Month}))
+                      //.Update(update => update.Action("UpdateWoredaDistribution", "WoredaStockDistribution"))
+
+
+                      )
+                      .Resizable(re => re.Columns(true))
+                      )
+
+    </div>
+ }
+<script type="text/javascript">
+
+    var save = false;
+    var rowCount = 0;
+    var gridData = [];
+   
+    function getRowNo(data) {
+        gridData[rowCount] = data;
+        return 1 + rowCount++;
+    }
+    
+
+    function onDataBound(e) {
+        var grid = $("#RequisitionGridDetail").data("kendoGrid");
+        $(grid.tbody).on("focus", "input", function (ex) {
+            var input = $(this);
+            setTimeout(function () { input.select(); }, 100);
+
+            $(this).change(function () {
+                var r = $(this).closest("tr");
+                var rIndex = $("tr", grid.tbody).index(r);
+               
+                var $rowCount = $(this).closest("tr").find(".rowCount");
+                var $EndingBalance = $(this).closest("tr").find(".EndingBalance");
+               var rowCount = $rowCount.attr("rowCount");
+               var data = gridData[rowCount];
+               var endingBalance = TotalEndingBalance(data);
+
+               
+               var distributionEndDate = document.getElementById("WoredaDistributionDetailViewModels[" + rIndex + "].DistributionEndDate");
+               var distributionStartDate = document.getElementById("WoredaDistributionDetailViewModels[" + rIndex + "].DistributionStartDate");
+               distributionStartDate.value = kendo.toString(kendo.parseDate(data.DistributionStartDate), "MM/dd/yy");
+               distributionEndDate.value = kendo.toString(kendo.parseDate(data.DistributionEndDate), "MM/dd/yy");
+                
+               if (validatEndingBalance(data)) {
+                   save = true;
+                   $EndingBalance.html(endingBalance);
+               } else {
+                   save = false;
+               }
+            });
+        });
+        
+
+    }
+
+    var elem = document.getElementById('error');
+    var name = "";
+    function getName(data) {
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: "@Url.Action("GetReasonName", "WoredaStockDistribution")",
+            data: { id: data.LossReasonId },
+
+
+            success: function (returnValue) {
+                name = returnValue;
+                alert(name);
+                return data.LossReasonId.get;
+            },
+            error: function (request, error) {
+
+                //return data.LossReasonId;
+                alert('An error occurred attempting to get new e-number');
+
+            }
+        });
+    }
+    function validatEndingBalance(data) {
+        var totalOut = data.TotalOut;
+        var lossamount = data.LossAmount;
+        var distributedamount = data.DistributedAmount;
+        var currentStock = parseInt(data.BeginingBalance) + parseInt(data.TotalIn);
+        var deliveredAmount = parseInt(data.delivered);
+        var totalIn = parseInt(data.TotalIn);
+        
+        if (parseInt(lossamount) > parseInt(distributedamount)) {
+            
+            elem.innerHTML = "Loss amount can not be greater than distributed amount:  " + lossamount;
+            elem.style.display = "block";
+            //alert("Loss amount can not be greater than distributed amount:  " + lossamount);
+            return false;
+        }
+        if (parseInt(distributedamount) > parseInt(totalOut)) {
+           
+            elem.innerHTML = "Distribution amount can not be greater than total out amount:   " + distributedamount;
+            elem.style.display = "block";
+            //alert("Distribution amount can not be greater than total out amount:   " + distributedamount);
+            return false;
+        }
+        if (parseInt(totalOut) > parseInt(currentStock)) {
+            
+            elem.innerHTML = "Total out can not be greater than available stock:  " + totalOut;
+            elem.style.display = "block";
+            // alert("Total out can not be greater than available stock:  " + totalOut);
+            return false;
+        }
+       
+        //if (deliveredAmount < totalIn) {
+            
+        //    elem.innerHTML = "The amount received " + totalIn + " is greater than the amount delivered.FDP " + data.FDP;
+        //    elem.style.display = "block";
+        //    return false;
+        //}
+        elem.style.display = "none";
+        return true;
+    }
+
+    function TotalEndingBalance(data) {
+        var result = 0;
+        if (data.DistributedAmount == 0 || data.DistributedAmount==null) {
+            return (data.BeginingBalance + data.TotalIn) - data.TotalOut  - data.LossAmount;
+        }
+        
+        return (data.BeginingBalance + data.TotalIn)  - data.DistributedAmount - data.LossAmount;
+    }
+
+    function validateDirectAndPublic() {
+        var publicSupport = $("#PublicSupport").val();
+        var directSupport = $("#DirectSupport").val();
+        var actualBeneficiaries = $("#ActualBeneficairies").val();
+
+
+        if ((parseInt(publicSupport) + parseInt(directSupport)) > parseInt(actualBeneficiaries)) {
+            elem.innerHTML = "The sum of direct and public support can not be greater than actual beneficiary number";
+            elem.style.display = "block";
+            //alert("The sum of direct and public support can not be greater than actual beneficiary number");
+            return false;
+        }
+        return true;
+    }
+    function validateNoOfBeneficiaries() {
+        var actualBeneficiaries = $("#ActualBeneficairies").val();
+        var maleLessThanfive = $("#MaleLessThan5Years").val();
+        var femaleLessThanFive = $("#FemaleLessThan5Years").val();
+        var maleBetween5and18 = $("#MaleBetween5And18Years").val();
+        var femaleBetween5and18 = $("#FemaleBetween5And18Years").val();
+        var maleAbove18 = $("#MaleAbove18Years").val();
+        var femaleAbove18 = $("#FemaleAbove18Years").val();
+
+
+
+        if ((parseInt(maleLessThanfive) + parseInt(maleBetween5and18) + parseInt(maleAbove18) + parseInt(femaleLessThanFive) + parseInt(femaleBetween5and18) + parseInt(femaleAbove18)) > parseInt(actualBeneficiaries)) {
+            elem.innerHTML = "Number of beneficiaries can not be greater than actual beneficiary";
+            elem.style.display = "block";
+            // alert("Number of beneficiaries can not be greater than actual beneficiary");
+            return false;
+        }
+        return true;
+    }
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+
+            alert(message);
+        }
+    }
+
+    function index(dataItem) {
+        var data = $("#RequisitionGridDetail").data("kendoGrid").dataSource.data();
+
+        return data.indexOf(dataItem);
+    }
+
+    function makeKendoDirty() {
+        var grid = $("#RequisitionGridDetail").data("kendoGrid");
+        var kdata = grid.dataSource.data();
+        for (var i = 0; i < kdata.length; i++) {
+            kdata[i].dirty = true;
+            var distributionStartDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionStartDate");
+            var distributionEndDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionEndDate");
+            var dsd = kendo.toString(kendo.parseDate(distributionStartDate.value), "MM/dd/yy");
+            var ded = kendo.toString(kendo.parseDate(distributionEndDate.value), "MM/dd/yy");
+            kdata[i].DistributionStartDate = dsd == null ? distributionStartDate.value : dsd;
+            kdata[i].DistributionEndDate = ded == null ? distributionEndDate.value : ded;
+            distributionStartDate.value = kdata[i].DistributionStartDate;
+            distributionEndDate.value = kdata[i].DistributionEndDate;
+        }
+        return true;
+    }
+    $(function () {
+        $("#SubmitButton").click(function () {
+           
+            if (validateNoOfBeneficiaries() == true && validateDirectAndPublic() == true && save == true) {
+                makeKendoDirty();
+                save = false;
+                $(this).button('loading');
+                $("#frm_create_utilization").submit();
+                
+            } else {
+                alert("You haven't make any change or  \n There is an error on the page. \n please correct the error and try again to save!");
+            }
+        });
+    });
+</script>
+
+
+@* @Html.Partial("_DistributionByBeneficiary", Model)*@
+
+@*<script>
+    
+    $(function () {
+
+
+
+        $("#ProgramID").change(function () {
+
+            $("#div_round").hide();
+            $("#div_month").hide();
+
+            $.getJSON('/WoredaStockDistribution/GetPlans/' + $("#ProgramID").val(), function (data) {
+                var plans = '<option> Select a Plan </option>';
+                $.each(data, function (i, plan) {
+                    plans += "<option value='" + plan.Value + "'>" + plan.Text + "</option>";
+                });
+                $("#PlanID").html(plans);
+            });
+
+
+
+        });
+    });
+</script>*@

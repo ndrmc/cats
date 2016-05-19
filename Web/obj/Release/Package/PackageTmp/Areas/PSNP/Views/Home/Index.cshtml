@@ -1,0 +1,744 @@
+﻿@using Cats.Helpers
+
+@{
+    ViewBag.Title = Html.Translate("Index");
+    //const string PAGE_NAME = "PSNP.Index";
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    //Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewBag.PageTitle = "PSNP Dashboard";
+    ViewBag.PageTitleDescription = "";
+}
+
+
+<style>
+    .chartWrap {
+        margin: 0 auto;
+        width: 100%;
+        height: 290px;
+    }
+</style>
+
+<div class="container ui-sortable" id="sortable_portlet" ng-app="myApp">
+    
+    <div ng-controller="AnnualPlan" class="well form-horizontal">
+        <div class="form-group">
+            <label class="col-md-3 control-label "><span class="label label-primary"> @Html.Translate("Select Annual Plan")</span></label>
+            <div class="col-md-5">
+                <select class="bs-select form-control input-medium" data-style="green" ng-change="onChange(PlanName.planId)" ng-model="PlanName" ng-options="r as r.planName for r in plans">
+                    @*<option> @Html.Translate("Choose a Plan") </option>*@
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    <div ng-controller="PSNPDashboardController">
+        <div class="portlet portlet-sortable light bordered ui-sortable-handle" id="RequestContent">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="fa fa-calendar font-green-sharp"></i>
+                    <span id="bar-title" class="caption-subject bold uppercase"> @Html.Translate("Monthly Requests")</span>
+                    <span class="caption-helper">  </span>
+                </div>
+                <div class="tools">
+                    <a href="#" class="collapse" data-original-title="" title=""></a>
+                    <a href="javascript:;" class="remove" data-original-title="" title=""></a>
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                </div>
+            </div>
+            <div class="portlet-body ">
+                
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="portlet light bg-inverse">
+                                <div class="portlet-title">
+                                    <div class="caption ">
+                                        <span class="caption-subject bold uppercase"> @Html.Translate("Recent Requests")</span>
+                                        <span class="caption-helper">  </span>
+                                    </div>
+                                    <div class="actions">
+                                        <a class="btn btn-circle btn-default btn-sm" href="@Url.Action("Index", "Request", new {Area = "EarlyWarning"})" data-original-title="" title=""><i class="fa fa-list-alt"></i> @Html.Translate("Show More")</a>
+                                    </div>
+                                </div>
+
+                                <div class="portlet-content">
+                                    <div class="table-responsive">
+                                        <table id="" class="table table-striped table-condensed">
+                                            <thead>
+                                                <tr>
+                                                    <th class="hidden-xs">Number</th>
+                                                    <th style="text-align: right">@Html.Translate("FDPS")</thstyle>
+                                                    <th style="text-align: right">@Html.Translate("Beneficiaries")</th>
+                                                    <th>@Html.Translate("Status")</th>
+                                                    <th>@Html.Translate("Detail")</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody ng-cloak>
+                                                <tr ng-repeat="request in Requests | filter:{PlanId:Id} | limitTo:5">
+                                                    <td class="hidden-xs">{{request.Number}}</td>
+                                                    <td style="text-align: right">{{request.fdps|number}}</td>
+                                                    <td style="text-align: right">{{request.beneficiaries|number}}</td>
+                                                    <td><span status-class="request.status">{{states[request.status-1]}}</span></td>
+                                                    <th>
+                                                        <a ng-click="viewRequest(request)" class="btn btn-xs green-stripe btn-default">
+                                                            View <i class="icon-chevron-right"></i>
+                                                        </a>
+                                                    </th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /.table-responsive -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="portlet light bg-inverse">
+                                <div class="portlet-title">
+                                    <div class="caption ">
+                                        <span class="caption-subject bold uppercase"> @Html.Translate("Requests Per Region")</span>
+                                        <span class="caption-helper">  </span>
+                                    </div>
+                                </div>
+
+                                <div class="portlet-content">
+                                    <div class="portlet-content">
+                                        <div class="chartWrap" id="container" draw-request-pie=""></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.portlet -->
+                    </div>
+                
+            </div>
+        </div>
+
+        <div class="portlet portlet-sortable light bordered ui-sortable-handle" id="RequisitionContent">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="fa fa-calendar font-green-sharp"></i>
+                    <span id="bar-title" class="caption-subject bold uppercase"> @Html.Translate("Monthly Requisitions")</span>
+                    <span class="caption-helper">  </span>
+                </div>
+                <div class="tools">
+                    <a href="#" class="collapse" data-original-title="" title=""></a>
+                    <a href="javascript:;" class="remove" data-original-title="" title=""></a>
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="portlet light bg-inverse">
+                                <div class="portlet-title">
+                                    <div class="caption ">
+                                        <span class="caption-subject bold uppercase"> @Html.Translate("Requisitions Percentage by Status")</span>
+                                        <span class="caption-helper">  </span>
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="portlet-content">
+                                    <div id="containerRequisition" class="chartWrap" draw-request-pie-status=""></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="portlet light bg-inverse">
+                                <div class="portlet-title">
+                                    <div class="caption ">
+                                        <span class="caption-subject bold uppercase"> @Html.Translate("Recent Requisitions")</span>
+                                        <span class="caption-helper">  </span>
+                                    </div>
+                                </div>
+                                <div class="actions">
+                                    @*<a class="btn btn-circle btn-default btn-sm" href="" data-original-title="" title=""><i class="fa fa-list-alt"></i> @Html.Translate("Show More")</a>*@
+                                </div>
+                                <div class="portlet-content">
+                                    <div class="table-responsive">
+                                        <table id="" class="table table-striped table-condensed ">
+                                            <thead style="text-align: right">
+                                            <tr>
+                                                <th class="hidden-xs">Number</th>
+                                                <th>@Html.Translate("Commodity")</th>
+                                                <th style="text-align: right">@Html.Translate("Beneficiaries")</th>
+                                                <th style="text-align: right">@Html.Translate("Amount(QT)")</th>
+                                                <th>@Html.Translate("Status")</th>
+                                                <th class="align-center">@Html.Translate("Action")</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="" ng-repeat="requisition in Requisitions | filter:{PlanId:Id} | limitTo:5 ">
+
+
+                                                <td>{{requisition.Number}}</td>
+                                                <th>{{requisition.Commodity}}</th>
+                                                <td style="text-align: right">{{requisition.Beneficicaries|number}}</td>
+                                                <th style="text-align: right">{{requisition.Amount|number}} QT</th>
+                                                <td><span status-class="requisition.Status">{{states[requisition.Status-1]}}</span></td>
+                                                @*<td><span class="label label-danger">{{requisition.Status}}</span></td>*@
+                                                <td>
+                                                    <a ng-click="viewRequisition(requisition)" class="btn btn-xs green-stripe btn-default">
+                                                        View <i class="icon-chevron-right"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="portlet portlet-sortable light bordered ui-sortable-handle" id="RequisitionContent">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="fa fa-gear font-green-sharp"></i>
+                    <span id="bar-title" class="caption-subject bold uppercase"> @Html.Translate("Utilization")</span>
+                    <span class="caption-helper">  </span>
+                </div>
+                <div class="tools">
+                    <a href="#" class="collapse" data-original-title="" title=""></a>
+                    <a href="javascript:;" class="remove" data-original-title="" title=""></a>
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="portlet light bg-inverse">
+                                <div class="portlet-title">
+                                    <div class="caption ">
+                                        <span class="caption-subject bold uppercase"> @Html.Translate("Utilization by Age")</span>
+                                        <span class="caption-helper">  </span>
+                                    </div>
+                                </div>
+
+                                <div class="portlet-content">
+                                    <div class="chartWrap" id="containerutil" draw-utilization-pie=""></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="portlet light bg-inverse">
+                                <div class="portlet-title">
+                                    <div class="caption ">
+                                        <span class="caption-subject bold uppercase"> @Html.Translate("Utilization by Region")</span>
+                                        <span class="caption-helper">  </span>
+                                    </div>
+                                </div>
+                                <div class="actions">
+                                    @*<a class="btn btn-circle btn-default btn-sm" href="" data-original-title="" title=""><i class="fa fa-list-alt"></i> @Html.Translate("Show More")</a>*@
+                                </div>
+                                <div class="portlet-content">
+                                    <div class="table-responsive">
+                                        <table id="" class="table table-striped table-condensed">
+                                            <thead>
+                                                <tr>
+                                                    <th>Region</th>
+                                                    <th>Amount</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="" ng-repeat="util in utilizations">
+
+                                                    <td>{{util.Region}}</td>
+                                                    <th>{{util.total|number}} QT</th>
+
+
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+   </div>
+
+</div>
+
+<script>
+    $("#RequestHeader").click(function () {
+        $("#RequestContent").slideToggle("slow", "linear");
+    });
+    $("#RequisitionHeader").click(function () {
+        $("#RequisitionContent").slideToggle("slow", "linear");
+    });
+</script>
+
+@*<script>
+    function PSNPDashboardController($scope, $http) {
+        
+        $scope.Requests = [];
+        $scope.Requisitions = [];
+        $scope.Data = [];
+
+        var onRequestsSuccess = function (data) {
+            $scope.Requests = data;
+        };
+
+        var onRequisitionsSuccess = function (data) {
+            $scope.Requisitions = data;
+        };
+
+        var onDashboardDataSuccess = function (data) {
+            $scope.Data = data;
+        };
+
+        $scope.getRequests = function () {
+            $http.post("@Url.Action("GetPsnpRequests", "Dashboard", new { Area = "PSNP" })", null).success(onRequestsSuccess);
+        };
+
+        $scope.getRequisitions = function () {
+            $http.post("@Url.Action("GetPsnpRequisitions", "Dashboard", new { Area = "PSNP" })", null).success(onRequisitionsSuccess);
+        };
+
+        $scope.getUtilization = function () {
+            $http.post("@Url.Action("GetUtilizationReport", "Dashboard", new { Area = "PSNP" })", null).success(onDispatchesSuccess);
+        };
+
+        $scope.viewRequest = function () {
+            window.location = "@Url.Action("Details","Request",new {Area="EarlyWarning"})" + "?id=" + item.RequestId;
+        };
+        
+        $scope.getRequests();
+        $scope.getRequisitions();
+    }
+</script>*@
+
+@*<script>
+    $(function () {
+        $('#container').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+
+            //tooltip: {
+            //    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            //},
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: ''
+            },
+            exporting: {
+                enabled: false
+            },
+            series: [{
+                type: 'pie',
+                name: 'Requests Percentage',
+                data: [
+                    ['Afar', 25.0],
+                    ['Oromiya', 20.0],
+                    ['Amhara', 40.0],
+                    ['Somali', 5.0],
+                    ['Benishangul',10.0 ]
+                ]
+            }]
+        });
+    });
+</script>*@
+
+<script>
+    //$(function () {
+    //    $('#containerRequisition').highcharts({
+    //        chart: {
+    //            plotBackgroundColor: null,
+    //            plotBorderWidth: null,
+    //            plotShadow: false
+    //        },
+
+    //        //tooltip: {
+    //        //    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    //        //},
+    //        plotOptions: {
+    //            pie: {
+    //                allowPointSelect: true,
+    //                cursor: 'pointer',
+    //                dataLabels: {
+    //                    enabled: false
+    //                },
+    //                showInLegend: true
+    //            }
+    //        },
+    //        credits: {
+    //            enabled: false
+    //        },
+    //        title: {
+    //            text: ''
+    //        },
+    //        exporting: {
+    //            enabled: false
+    //        },
+    //        series: [{
+    //            type: 'pie',
+    //            name: 'Requests Percentage',
+    //            data: [
+    //                ['Afar', 45.0],
+    //                ['Oromiya', 26.8],
+    //                ['Amhara', 8.5],
+    //                ['Somali', 6.2],
+    //                ['Benihsangul', 0.7]
+    //            ]
+    //        }]
+    //    });
+    //});
+</script>
+
+<style>
+    #containerPIE {
+        margin: 0 auto;
+        width: 150px;
+        height: 150px;
+    }
+</style>
+
+<script>
+    var app = angular.module('myApp', []);
+    
+    app.controller('PSNPDashboardController',  ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+        
+        $scope.Requests = [];
+        $scope.Requisitions = [];
+        $scope.utilizations = [];
+        $scope.Data2 = [];
+        $scope.states = ["Draft", "Approved", "Closed"];
+
+        var id = $rootScope.Id;
+        var onRequestsSuccess = function (data) {
+            $scope.Requests = data;
+        };
+        $scope.Data2 = [];
+        $scope.states = ["Draft", "Approved", "Closed"];
+
+        var onRequisitionsSuccess = function (data) {
+            $scope.Requisitions = data;
+        };
+
+       
+        var onregionutilizationSuccess = function (data) {
+            $scope.utilizations = data;
+            
+        };
+
+        $scope.getRequests = function () {
+            $http.post("@Url.Action("GetPsnpRequests", "Dashboard", new { Area = "PSNP" })", null).success(onRequestsSuccess);
+        };
+
+       
+        $scope.getRequisitions = function () {
+            $http.post("@Url.Action("GetPsnpRequisitions", "Dashboard", new { Area = "PSNP" })", null).success(onRequisitionsSuccess);
+        };
+
+        $scope.getRegionUtilization = function () {
+            
+            
+            $http.post("@Url.Action("GetUtilizationByRegion", "Dashboard", new { Area = "PSNP" })" + "?planId=0", null).success(onregionutilizationSuccess);
+        };
+
+        $scope.viewRequest = function (item) {
+            window.location = "@Url.Action("Details","Request",new {Area="EarlyWarning"})" + "?id=" + item.RequestId;
+        };
+        
+        $scope.viewRequisition = function (item) {
+            window.location = "@Url.Action("Allocation","ReliefRequisition",new {Area="EarlyWarning"})" + "?id=" + item.RequisitionId;
+        };
+        
+        $scope.getRequests();
+        $scope.getRequisitions();
+        $scope.getRegionUtilization();
+        
+    }]);
+    
+
+
+    app.controller('AnnualPlan', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+
+        $scope.plans = [];
+        $http({ method: 'GET', url: '@Url.Action("GetPlans", "Dashboard", new { Area = "PSNP" })' }).success(function (data, status, headers, config) { $scope.plans = data; })
+        .error(function (data, status, headers, config) {
+
+        });
+
+        var planId;
+
+        $scope.onChange = function (id) {
+            
+            $rootScope.RequestPie = [];
+            $rootScope.RequestByStatus = [];
+            $rootScope.utilpie = [];
+            $rootScope.Id = id;
+            planId = id;
+          
+            $scope.getRequestPie();
+            $scope.getRequestPieByStatus();
+            $scope.getUtilization();
+            };
+
+        $scope.getRequestPie = function () {
+            $http.post("@Url.Action("RequestPie", "Dashboard", new { Area = "PSNP"})" + "?planId=" + planId, null).success(onRequestPieSuccess);
+         };
+
+        $scope.getRequestPieByStatus = function() {
+            $http.post("@Url.Action("RequestPieByStatus", "Dashboard", new { Area = "PSNP" })" + "?planId=" + planId, null).success(onRequestPieByStatusSuccess);
+        };
+        
+        $scope.getUtilization = function () {
+            //alert('jas');
+            $http.post("@Url.Action("GetUtilizationReport", "Dashboard", new { Area = "PSNP" })" + "?planId=" + planId, null).success(onDispatchesSuccess);
+        };
+
+        var onDispatchesSuccess = function (data) {
+            $scope.utilpie.push(["Above 18", data[0].Above18]);
+            $scope.utilpie.push(["Between 5 and 18", data[0].Bet5and18]);
+            $scope.utilpie.push(["Below 5", data[0].Below5]);
+
+        };
+
+
+
+
+        var onRequestPieSuccess = function (data) {
+            for (var i in data) {
+                $scope.RequestPie.push([data[i].Region, data[i].Count]);
+                console.log([data[i].Region, data[i].Count]);
+            }
+        };
+
+        var onRequestPieByStatusSuccess = function(data) {
+
+            for (var key in data) {
+                $scope.RequestByStatus.push([key, data[key]]);
+                console.log([key, data[key]]);
+            }
+        };
+        
+
+       }]);
+
+
+
+    app.directive('statusClass', function () {
+        return function (scope, elem, attrs) {
+            scope.$watch(attrs.statusClass, function (value) {
+                elem.addClass("label");
+                if (value == '1') {
+                    elem.removeClass('label-success');
+                    elem.removeClass('label-important');
+                    elem.addClass('label-warning');
+                } else if (value == '2') {
+                    elem.removeClass('label-warning');
+                    elem.removeClass('label-important');
+                    elem.addClass('label-success');
+                } else if (value == '3') {
+                    elem.removeClass('label-success');
+                    elem.removeClass('label-important');
+                    elem.addClass('label-danger');
+                } else {
+                    elem.removeClass('label-success');
+                    elem.removeClass('label-warning');
+                    elem.removeClass('label-important');
+                }
+            });
+        };
+    });
+
+
+    /* Directives */
+    app.directive('drawUtilizationPie', function () {
+        // return the directive link function. (compile function not needed)
+        return function (scope, element, attrs) {
+            var container = $(element).attr("id");
+            // watch the expression, and update the UI on change.
+            scope.$watch('utilpie', function () {
+                drawPlot();
+            }, true);
+            var drawPlot = function () {
+                var chart;
+                chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: container
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    //tooltip: {
+                    //    pointFormat: '{series.name}: <b>{point.percentage}</b>% <b>({point.y})</b> Requests',
+                    //    percentageDecimals: 1
+                    //},
+
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b> ({point.y}) Utilizations',
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: false
+                            },
+                            showInLegend: true
+                        }
+                    },
+                    series: [{
+                        type: 'pie',
+                        name: 'Percentage',
+                        data: scope.utilpie,
+                    }]
+                });
+            }
+        }
+    });
+
+
+
+
+    /* Directives */
+    app.directive('drawRequestPie', function () {
+        // return the directive link function. (compile function not needed)
+        
+        return function (scope, element, attrs) {
+            
+               var container = $(element).attr("id");
+               // watch the expression, and update the UI on change.
+               scope.$watch('RequestPie', function () {
+                   drawPlot();
+               }, true);
+               var drawPlot = function () {
+                   var chart;
+                   chart = new Highcharts.Chart({
+                       chart: {
+                           renderTo: container
+                       },
+                       credits: {
+                           enabled: false
+                       },
+                       title: {
+                           text: ''
+                       },
+                       exporting: {
+                           enabled: false
+                       },
+                       //tooltip: {
+                       //    pointFormat: '{series.name}: <b>{point.percentage}</b>% <b>({point.y})</b> Requests',
+                       //    percentageDecimals: 1
+                       //},
+                       
+                       tooltip: {
+                           pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b> ({point.y}) Requests',
+                       },
+                       plotOptions: {
+                           pie: {
+                               allowPointSelect: true,
+                               cursor: 'pointer',
+                               dataLabels: {
+                                   enabled: false
+                               },
+                               showInLegend: true
+                           }
+                       },
+                       series: [{
+                           type: 'pie',
+                           name: 'Percentage',
+                           data: scope.RequestPie
+                       }]
+                   });
+               }
+           }
+       });
+
+    /* Directives */
+    app.directive('drawRequestPieStatus', function () {
+        // return the directive link function. (compile function not needed)
+        return function(scope, element, attrs) {
+            var container = $(element).attr("id");
+            // watch the expression, and update the UI on change.
+            scope.$watch('RequestByStatus', function () {
+                drawPlot();
+            }, true);
+            var drawPlot = function() {
+                var chart;
+                chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: container
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    //tooltip: {
+                    //    pointFormat: '{series.name}: <b>{point.percentage}</b>% <b>({point.y})</b> Requests',
+                    //    percentageDecimals: 1
+                    //},
+
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b> ({point.y}) Requests',
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: false
+                            },
+                            showInLegend: true
+                        }
+                    },
+                    series: [{
+                        type: 'pie',
+                        name: 'Percentage',
+                        data: scope.RequestByStatus
+                    }]
+                });
+            };
+        };
+    });
+
+</script>
+
+

@@ -1,0 +1,46 @@
+﻿@using Cats.Helpers
+@using Cats.Security
+@{
+    ViewBag.Title = "WoredasWithOutBidOffer";
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    //Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewBag.PageTitle = "Woredas Bid Status";
+    ViewBag.PageTitleDescription = "";
+}
+<div class="well">
+    @using (Html.BeginForm())
+    {
+        <div class="form-horizontal row">
+            <div class="col-md-12" @*style="border:solid 1px #CCC; border-radius:6px; padding:6px; margin-bottom:6px;"*@>
+                @*<div><h5>Please specify the BID number, Region and Transporter to continue</h5></div>*@
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="">BID Reference Number</label>
+                        @Html.DropDownList("BidID", null, new { @class = "form-control input-medium" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="">Region</label>
+                        @Html.DropDownList("RegionID", null, new { @class = "form-control input-medium" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="">Warehouse</label>
+                        @Html.DropDownList("HubID", (SelectList)ViewBag.HubID, "--- ALL ---", new { @class = "form-control input-medium" })
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="" style="margin: 25px 0;">
+                        @if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Woreda_Bid_Status))
+                        {
+                            <input type="submit" value="Get Data" class="btn btn-default" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

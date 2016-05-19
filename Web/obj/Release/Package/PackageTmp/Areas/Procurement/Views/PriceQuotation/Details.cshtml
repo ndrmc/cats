@@ -1,0 +1,297 @@
+﻿@using Cats.Areas.Procurement.Models
+@using Cats.Helpers
+@using Cats.Security
+@using Cats.Services.Security
+@using Kendo.Mvc.UI
+@using LanguageHelpers.Localization
+@model TransportBidQuotationHeaderViewModel
+
+@{
+    ViewBag.Title = "OrderDetail";
+    var headerID = Model.TransportBidQuotationHeaderID;
+    //Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewBag.PageTitle = "Edit Bid Proposal Detail";
+    ViewBag.PageTitleDescription = "";
+
+
+}
+
+@{
+    var user = (UserIdentity)System.Web.HttpContext.Current.User.Identity;
+    var IsTariffEntry = user.Profile.TariffEntry;
+}
+
+@section Toolbar{
+    @* <a class="btn toolbar-btn " data-buttontype="btn_save" href="javascript:saverecords()"></a>*@
+<a id="btnAddWoreda" class="btn toolbar-btn " href="@Url.Action("AddWoreda", "PriceQuotation", new { id = Model.TransportBidQuotationHeaderID })">@Html.Translate("Add Woreda")</a>
+    <a id="btnAddProposal" data-buttontype="btn_back_to_list" class="btn grey-salt" href="@Url.Action("BidProposalHeader", "PriceQuotation")"><i class="fa fa-list"></i> @Html.Translate("Back to list")</a>
+}
+ 
+@*<h4>Bid Proposal Data Entry</h4>*@
+
+<div class="well form-horizontal span12" id="ContractHeader">
+    <div class="row span12">
+        <div class="span6">
+            <div class="form-group">
+                <div class="span3 control-label">
+                    @Html.LabelFor(m => m.BidNumber)
+                </div>
+                <div class="span7">
+                    @Html.TextBoxFor(m => m.BidNumber, new { Disabled = true, @class="form-control" })
+                </div>
+            </div>
+        </div>
+
+        <div class="span6">
+            <div class="form-group">
+                <div class="span3 control-label">
+                    @Html.LabelFor(m => m.Region)
+                </div>
+                <div class="span7">
+                    @Html.TextBoxFor(m => m.Region, new { Disabled = true, @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row span12">
+        <div class="span6">
+            <div class="form-group">
+                <div class="span3 control-label">
+                    @Html.LabelFor(m => m.Transporter)
+                </div>
+                <div class="span7">
+                    @Html.TextBoxFor(m => m.Transporter, new { Disabled = true, @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="span6">
+            <div class="form-group">
+                <div class="span3 control-label">
+                    @Html.LabelFor(m => m.OffersCount)
+                </div>
+                <div class="span7">
+                    @Html.TextBoxFor(m => m.OffersCount, new { Disabled = true, @class = "form-control" })
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row span12">
+        <div class="span6">
+            <div class="form-group">
+                <div class="span3 control-label">
+                    @Html.LabelFor(m => m.EnteredBy)
+                </div>
+                <div class="span7">
+                    @Html.TextBoxFor(m => m.EnteredBy, new { Disabled = true, @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="span6">
+            <div class="form-group">
+                <div class="span3 control-label">
+                    @Html.LabelFor(m => m.BidBondAmount)
+                </div>
+                <div class="span7">
+                    @Html.TextBoxFor(m => m.BidBondAmount, new { Disabled = true, @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row span12">
+        <div class="span6">
+            <div class="form-group">
+                <div class="span3 control-label">
+                    @Html.LabelFor(m => m.Status)
+                </div>
+                <div class="span7">
+                    @Html.TextBoxFor(m => m.Status, new { Disabled = true, @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+        <div class="span6">
+            <div class="form-group">
+                <div class="span3 control-label">
+                    @Html.Label("BID Proposal ID")
+                </div>
+                <div class="span7">
+                    @Html.TextBoxFor(m => m.TransportBidQuotationHeaderID, new { Disabled = true, @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="fa fa-list font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("Edit Details")</span>
+            <span class="caption-helper">  </span>
+        </div>
+        <div class="tools">
+            <a href="#" class="collapse" data-original-title="" title=""></a>
+            @*<a href="javascript:;" class="remove" data-original-title="" title=""></a>*@
+        </div>
+        <div class="actions">
+            @*<a class="btn btn-circle btn-default btn-sm green-stripe" id="btnAddProposal" data-buttontype="btn_new_record" href="@Url.Action("Create", "PriceQuotation")"><i class="fa fa-plus-circle"></i> @Html.Translate("Create New Bid")</a>*@
+            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="table-responsive">
+            @(Html.Kendo().Grid<PriceQuotationDetail>()
+                  .Name("grid")
+                  .Columns(columns =>
+                  {
+                      columns.Bound(p => p.SourceWarehouse);
+                      columns.Bound(p => p.Zone);
+                      columns.Bound(p => p.Woreda);
+                      columns.Bound(p => p.Tariff).Title("Tariff").HtmlAttributes(new {align = "Right"}).Format("{0:N}");
+                      ;
+                      columns.Bound(p => p.Remark);
+                  })
+                  .Scrollable()
+                  .Filterable()
+                  .Navigatable()
+                  .Events(events => events.Change("onDataBound"))
+                  .Events(events => events.Edit("onEdit"))
+                  //.ToolBar(toolBar => toolBar.Save())
+                  .Groupable()
+                  .Editable(editable =>
+                  {
+                      if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Edit_Tariff))
+                      {
+                          editable.Mode(GridEditMode.InCell);
+                      }
+                  })
+                  .Events(events => events.DataBound("onDataBound"))
+                  .HtmlAttributes(new {style = "height:430px;"})
+                  .Events(ev => ev.Save(@"function(e){
+                    setTimeout(function(){
+                        $('#grid').data('kendoGrid').dataSource.sync()
+                    }
+            )}"))
+
+                  .DataSource(dataSource => dataSource
+                      .Ajax()
+                      .Batch(true)
+                      .Group(group => group.Add(m => m.SourceWarehouse))
+                      //.PageSize(8)
+                      .Model(model =>
+                      {
+                          model.Id(p => p.TransportBidQuotationID);
+                          model.Field(r => r.Tariff).Editable(true);
+                          model.Field(r => r.Remark).Editable(true);
+                          model.Field(r => r.Woreda).Editable(false);
+                          model.Field(r => r.Zone).Editable(false);
+                          model.Field(r => r.SourceWarehouse).Editable(false);
+                      })
+                      .Read(read => read.Action("Read_Proposals", "PriceQuotation", new {bidProposalId = @headerID}))
+                      .Update(update => update.Action("SaveBidProposals", "PriceQuotation"))
+                  ))
+        </div>
+    </div>
+</div>
+
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <p style="font-weight: bold">@Html.Translate("You don't have a previlage to edit Price Quotation")</p>
+                <p style="font-weight: bold" class="text-warning"><small>@Html.Translate("Please contact the system administrator.")</small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Html.Translate("Close")</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="dialogDiv" class="modal hide fade in">
+    <div id="dialogContent"></div>
+</div>
+
+            <script type="text/javascript">
+                $(function () {
+
+                    //Optional: turn the chache off
+                    $.ajaxSetup({ cache: false });
+
+                    $('#btnAddWoreda').click(function () {
+
+                         
+                        $('#dialogContent').load(this.href, function () {
+                            $('#dialogDiv').modal({
+                                backdrop: 'static',
+                                keyboard: true
+                            }, 'show');
+                            //alert("");
+                        });
+                        return false;
+                    });
+                });
+
+                function onDataBound(e) {
+                    var grid = $("#grid").data("kendoGrid");
+                    $(grid.tbody).on("focus", "input", function (e) {
+                        var input = $(this);
+                        setTimeout(function () { input.select(); }, 100);
+                    });
+                }
+                function saverecords() {
+                    $("#grid").data("kendoGrid").saveChanges();
+                }
+
+
+                function onEdit(e) {
+                    var fieldName = e.container.find("input").attr("name");
+                    if (CheckFeildName(fieldName)) {
+
+                        if ('@IsTariffEntry' === 'False') {
+                            //$("#myModal").modal('show');
+                            //this.closeCell();//Prevent editing
+                        }
+
+                    }
+                }
+
+                function CheckFeildName(fieldName) {
+                    if (fieldName === "Tariff") {
+                        return true;
+                    }
+                    return false; // default to not editable
+                }
+
+
+
+
+                //function onGridKeydown(e) {
+                //    if (e.keyCode === kendo.keys.TAB) {
+                //        var grid = $(this).closest("[data-role=grid]").data("kendoGrid");
+                //        var current = grid.current();
+                //        if (!current.hasClass("editable-cell")) {
+                //            var nextCell = current.nextAll(".editable-cell");
+                //            if (!nextCell[0]) {
+                //                //search the next row
+                //                var nextRow = current.parent().next();
+                //                var nextCell = current.parent().next().children(".editable-cell:first");
+                //            }
+                //            grid.current(nextCell);
+                //            grid.editCell(nextCell[0])
+                //        }
+                //    }
+                //};
+
+            </script>
+

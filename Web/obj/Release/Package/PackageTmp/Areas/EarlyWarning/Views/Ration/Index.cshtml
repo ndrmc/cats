@@ -1,0 +1,125 @@
+﻿@using Cats.Areas.EarlyWarning.Models
+@using Kendo.Mvc.UI
+@using Cats.Helpers
+@using Cats.Security
+@using LanguageHelpers.Localization
+
+@{
+    //Layout = "~/Views/Shared/_CATSLayout.cshtml";
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = "Rations";
+    ViewBag.PageTitleDescription = "";
+
+}
+
+@*@section Title
+{
+Ration
+}
+
+@section PageTitle
+{
+    <h1 class="hdr-blck big col-md-6">@Html.Translate("List of Ration")</h1>
+}*@
+
+    <div class="portlet light bordered">
+        <div class="portlet-title">
+            <div class="caption font-green-sharp">
+                <i class="fa fa-list font-green-sharp"></i>
+                <span class="caption-subject bold uppercase"> @Html.Translate("List of Rations")</span>
+                <span class="caption-helper">  </span>
+            </div>
+            @*<div class="tools">
+                    <a href="#" class="collapse" data-original-title="" title=""></a>
+                    <a href="javascript:;" class="remove" data-original-title="" title=""></a>
+                </div>*@
+            <div class="actions">
+                @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_ration)
+                    || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Add_new_Ration))
+                {
+                    <a data-buttontype="btn_new_record" id="btnCreate" class="btn btn-circle btn-default btn-sm green-stripe " href="@Url.Action("Create", "Ration")"><span class="fa fa-plus"> </span> @Html.Translate("New Ration")</a>
+                }
+                
+                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+            </div>
+        </div>
+
+        <div class="portlet-body">
+        <div class="table-responsive">
+
+            @(Html.Kendo().Grid<RationViewModel>()
+                  .Name("grid")
+                  .Columns(columns =>
+                  {
+                      //columns.Template(t => { }).Title("No").ClientTemplate("#= renderNumber(data) #").Width(10);
+                      columns.Bound(p => p.ReferenceNumber).Title(Html.Translate("Reference No.")).ClientTemplate("<a class='default_#=IsDefaultRation#' href='" + Url.Action("Details", "Ration", new {id = "#=RationID#"}) + " '>#=ReferenceNumber#</a>  ");
+
+                      columns.Bound(p => p.DateCreated).Title(Html.Translate("Created Date")).ClientTemplate("<span class='default_#=IsDefaultRation#'>#=DateCreated#</span>").HeaderHtmlAttributes(new {@class = "cats-date-pref-grid"}).Width(160);
+
+                      columns.Bound(p => p.RationID).Title(Html.Translate("Ration Id")).ClientTemplate("<a class='set_default_#=IsDefaultRation#' href='javascript:SetDefault(#=RationID#)'>Set Default</a>  ");
+
+
+
+                  }).Events(ev =>
+                  {
+                      if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_ration)
+                      || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_ration))
+                      {
+                          ev.DataBound("resetRowNumber");
+                      }
+                  })
+                  .DataSource(datasource => datasource.Ajax().Read("Ration_Read", "Ration"))
+                  .HtmlAttributes(new {style = "height:430px;"})
+
+                  )
+        </div>
+        </div>
+    </div>
+
+
+@*<div id="cats-modal-container"></div>*@
+<div id='dialogDiv' class='modal fade bs-modal-md' tabindex="-1" aria-hidden="true">
+    <div id='dialogContent'></div>
+</div>
+
+<script type="text/javascript">
+    $('#btnCreate').on('click',
+             function (e) {
+                 //$('#cats-modal').remove();
+                 e.preventDefault();
+                 var $remote = $(this).attr('href');
+                 //var $modal = $('<div class="modal fade" id="cats-modal"  tabindex="-1" role="basic" aria-hidden="true"><div class="modal-body"></div></div>');
+                 //$('#cats-modal-container').append($modal);
+                 //$modal.modal({ backdrop: 'static', keyboard: false });
+                 //$modal.load($remote);
+
+                 $('#dialogContent').load($remote, function () {
+                     $('#dialogDiv').modal({
+                         backdrop: 'static',
+                         keyboard: false
+                     }, 'show');
+                     //bindForm(this);
+                     $(".modal-dialog").removeClass("modal-sm").addClass("modal-md");
+                 });
+                 return false;
+             }
+           );
+
+
+    function SetDefault(rationId) {
+
+
+        window.location = "@Url.Action("SetDefault", "Ration")" + "/" + rationId;
+
+    }
+</script>
+
+<style>
+    .default_true {
+        font-weight: bold;
+    }
+
+    .set_default_true {
+        display: none;
+    }
+</style>

@@ -1,0 +1,356 @@
+﻿@using Cats.Areas.Logistics.Models
+@using Kendo.Mvc.UI
+@using Cats.Helpers
+@using Cats.Security
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    const string pageName = "Logistics.ReciptPlanForLoanAndOthers.Index";
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("List of Receipt Plan From Loan");
+    ViewBag.PageTitleDescription = "";
+}
+
+<script type="text/javascript">
+    $(function () {
+
+        //Optional: turn the chache off
+        //$.ajaxSetup({ cache: false });
+
+        $("#btnAddReciptPlan").click(function () {
+
+            // alert("");
+            $('#dialogContent').load(this.href, function () {
+                $('#dialogDiv').modal({
+                    backdrop: 'static',
+                    keyboard: true
+                }, 'show');
+                //bindForm(this);
+                $(".modal-dialog").removeClass("modal-sm").addClass("modal-lg");
+            });
+            return false;
+        });
+
+    });
+</script>
+
+<div id='dialogDiv' class='modal fade in'>
+    <div id='dialogContent'></div>
+</div>
+
+<div class="well">
+    <div class="row">
+        <div class="form-group form-md-line-input col-md-3">
+            <label class="col-md-4 control-label">@Html.Translate("SI Number")</label>
+            <div class="col-md-8">
+                <input type="text" class="form-control" id="SI_Number" name="SI_Number" placeholder="@Html.Translate("SI Number")" />
+            </div>
+        </div>
+        <div class="form-group form-md-line-input col-md-2">
+            <label class="col-md-4 control-label">@Html.Translate("Program")</label>
+            <div class="col-md-8">
+                <select class="form-control" id="ProgramID" name="ProgramID">
+                    <option value="All">All</option>
+                    <option value="Relief">Relief</option>
+                    <option value="PSNP">PSNP</option>
+                    <option value="IDPs">IDPs</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group form-md-line-input col-md-2">
+            <label class="col-md-4 control-label">@Html.Translate("Status")</label>
+            <div class="col-md-8">
+                <select class="form-control" id="StatusID" name="StatusID">
+                    <option value="All">All</option>
+                    <option value="Draft">Draft</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Signed">Signed</option>
+                    <option value="Closed">Closed</option>
+                    <option value="Failed">Failed</option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="fa fa-list font-green-sharp"></i>
+                    <span class="caption-subject bold uppercase"> @Html.Translate("List of Receipt Plan From Loan")</span>
+                    <span class="caption-helper">  </span>
+                </div>
+                @*<div class="tools">
+                        <a href="#" class="collapse" data-original-title="" title=""></a>
+                        <a href="javascript:;" class="remove" data-original-title="" title=""></a>
+                    </div>*@
+                <div class="actions">
+                    @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Recive_Plan_For_Loan_Create).ToString() == "Recive_Plan_For_Loan_Create")
+                    {
+                        <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn green" href="@Url.Action("Create", "ReciptPlanForLoan")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
+                    }
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-responsive">
+                    @(Html.Kendo().Grid<LoanReciptPlanViewModel>()
+                  .Name("grid")
+
+                  .Sortable()
+                  .Scrollable()
+                  //.HtmlAttributes(new { style = "height:430px;" })
+                  //.TableHtmlAttributes(new {@class = "table table-condensed"})
+                  .Columns(columns =>
+                  {
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Recive_Plan_For_Loan_SI_View).ToString() == "Recive_Plan_For_Loan_SI_View")
+                      {
+                          columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "ReciptPlanForLoan", new {id = "#=LoanReciptPlanID#"}) + " '>#=SiNumber#</a>  ").Width(100);
+                      }
+                      columns.Bound(m => m.Donor).Width(200).Title(@Html.Translate("Donor")).Width(100);
+                      columns.Bound(m => m.ProgramName).Title(@Html.Translate("Program")).Width(100);
+                      columns.Bound(m => m.CommodityName).Width(200).Title(@Html.Translate("Commodity")).Width(100);
+                      //columns.Bound(m => m.CommoditySourceName).Width(200).Title(@Html.Translate("Commodity Source")).Width(100);
+                      columns.Bound(m => m.Quantity).HtmlAttributes(new { align = "right" }).Title(@Html.Translate("Quantity in MT")).Width(100);
+                      columns.Bound(m => m.CreatedDate).Title(Html.Translate("Created Date")).Width(100);
+                      columns.Bound(m => m.IsFalseGRN).Title(Html.Translate("Receivable")).Width(100).ClientTemplate("# if (IsFalseGRN) { # Receivable # }else {#  #} #").HtmlAttributes(new { @style = "text-align:center" });
+                      ;
+                      columns.Bound(m => m.Status).Title(Html.Translate("Status")).Width(100);
+                      columns.Command(p =>
+                      {
+                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() == "Revert_Donation")
+                      {
+                          p.Custom("Revert").Click("OnRevert");
+                      }
+                          if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() == "Delete_Donation")
+                          {
+                              p.Custom("Delete").Click("OnDelete");
+                          }
+                      }).Width(250);
+
+
+                  }
+
+                  )
+
+
+
+                  .Filterable()
+                   .ClientDetailTemplateId("template")
+                  .Events(e => e.DataBound("onDataBound"))
+                  .HtmlAttributes(new { style = "height:430px;" })
+                  .DataSource(dataSource => dataSource
+                                                .Ajax()
+                                                .Model(model => model.Id(m => m.LoanReciptPlanID))
+                                                .Read(read => read.Action("LoanReciptPlan_Read", "ReciptPlanForLoan"))
+                  //.Update(update => update.Action("Commodity_Update", "Request"))
+
+                  )
+                  .Resizable(resize => resize.Columns(true))
+                    )
+                </div>
+            </div>
+        </div>
+
+        <script id="template" type="text/kendo-tmpl">
+
+            @(Html.Kendo().Grid<LoanReciptPlanWithDetailViewModel>()
+              .Name("grid_#=LoanReciptPlanID#")
+              .Columns(columns =>
+                  {
+                      columns.Bound(m => m.MemoRefrenceNumber).Title(@Html.Translate("Memo Reference number"));
+                      columns.Bound(m => m.HubName).Title(@Html.Translate("Hub"));
+                      columns.Bound(m => m.CreatedDate).Title(Html.Translate("Recieved Date"));
+                      columns.Bound(m => m.Amount).Width(200).Title(@Html.Translate("Recieving Amount")).HtmlAttributes(new { align = "right" });
+                      columns.Bound(m => m.Remaining).Width(200).Title(@Html.Translate("Remaining")).HtmlAttributes(new { align = "right" });
+                      // columns.Bound(m => m.Remaining).ClientFooterTemplate("Total in Birr <b>:#=kendo.format('{0:N}', sum)#</b>").Format("{0:N}");
+
+                  }
+
+              )
+
+
+            .Pageable()
+                    ////.TableHtmlAttributes(new { @class = "table table-condensed" })
+              .HtmlAttributes(new { style = "height 60px;" })
+              .DataSource(dataSource => dataSource
+                                            .Ajax()
+                                            .Group(t => t.Add(m => m.HubName))
+                                            .Model(model => model.Id(m => m.LoanReciptPlanDetailID))
+                                            .Read(read => read.Action("LoanReciptPlanDetail_Read", "ReciptPlanForLoan", new { loanReciptPlanID = "#=LoanReciptPlanID#" }))
+                    //.Update(update => update.Action("Commodity_Update", "Request"))
+              )
+                .ToClientTemplate()
+            )
+        </script>
+        <div id='dialogDivSmall' class='modal fade in'>
+            <div id='dialogContentSmall'></div>
+        </div>
+        @*<script>
+                function Edit(e) {
+                    e.preventDefault();
+
+                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                    var url = "@Url.Action("Edit", "ReciptPlanForLoan")" + "/" + dataItem.LoanReciptPlanID;
+                    $('#dialogContent').load(url, function () {
+                        $('#dialogDiv').modal({
+                            backdrop: 'static',
+                            keyboard: true
+                        }, 'show');
+
+                    });
+                    return false;
+
+                }
+
+                function Recieve(e) {
+                    e.preventDefault();
+
+                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                    var url = "@Url.Action("ReciptPlan", "ReciptPlanForLoan")" + "/" + dataItem.LoanReciptPlanID;
+                    $('#dialogContentSmall').load(url, function () {
+                        $('#dialogDivSmall').modal({
+                            backdrop: 'static',
+                            keyboard: true
+                        }, 'show');
+
+                    });
+                    return false;
+                }
+            </script>*@
+
+
+        <script>
+
+            function onDataBound(e) {
+                //alert("show");
+                var grid = $("#grid").data("kendoGrid");
+                var gridData = grid.dataSource.view();
+                //alert(gridData.length);
+                for (var i = 0; i < gridData.length; i++) {
+                    var currentUid = gridData[i].uid;
+                    //alert(gridData[i].Status);
+                    if (gridData[i].Status == "Draft") {
+                        var currentRow = grid.table.find("tr[data-uid='" + currentUid + "']");
+                        var revertButton = $(currentRow).find(".k-grid-Revert");
+                        revertButton.hide();
+
+                    }
+                }
+            }
+
+
+            function OnDelete(e) {
+                e.preventDefault();
+
+                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                wnd.center().open();
+
+                $("#yes").click(function () {
+
+                    window.location = "@Url.Action("Delete", "ReciptPlanForLoan")" + "/" + dataItem.LoanReciptPlanID;
+                    wnd.close();
+                });
+
+                $("#no").click(function () {
+                    window.wnd.close();
+                });
+            }
+
+            function OnRevert(e) {
+                e.preventDefault();
+
+                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                wndRevert.center().open();
+
+                $("#yesRevert").click(function () {
+
+                    window.location = "@Url.Action("Revert", "ReciptPlanForLoan")" + "/" + dataItem.LoanReciptPlanID;
+                    wndRevert.close();
+                });
+
+                $("#noRevert").click(function () {
+                    wndRevert.close();
+                });
+            }
+
+        </script>
+
+        <div id="modalWindow">
+            <div class="alert-warning">
+                <strong>Warning! </strong>Are You Sure You Want to Delete this Loan?
+            </div><hr />
+            <div class="pull-right">
+                <button id="yes" class="btn green">Yes</button>
+                <button id="no" class="btn red">No</button>
+            </div>
+        </div>
+        <script>
+            var wnd;
+            $(document).ready(function () {
+                wnd = $("#modalWindow").kendoWindow({
+                    title: "Delete confirmation",
+                    modal: true,
+                    visible: false,
+                    resizable: false
+                    //width: 300
+                }).data("kendoWindow");
+            });
+        </script>
+
+        <div id="modalWindowRevert">
+            <div>
+                <strong>Warning! </strong>Are You Sure You Want to Revert this Loan ?
+            </div><hr />
+            <div class="pull-right">
+                <button id="yesRevert" class="k-button">Yes</button>
+                <button id="noRevert" class="k-button">No</button>
+            </div>
+        </div>
+        <script>
+            var wndRevert;
+            $(document).ready(function () {
+                wndRevert = $("#modalWindowRevert").kendoWindow({
+                    title: "Revert confirmation",
+                    modal: true,
+                    visible: false,
+                    resizable: false
+                    // width: 300
+                }).data("kendoWindow");
+            });
+        </script>
+        <style>
+            .k-window-titlebar {
+                margin-top: -30px;
+                height: 30px;
+            }
+
+            hr {
+                margin: 5px 0;
+            }
+        </style>
+<script type="text/javascript">
+    function searchGrid() {
+        var gridListFilter = { filters: [] };
+        var gridDataSource = $("#grid").data("kendoGrid").dataSource;
+        var siNo = $("#SI_Number").val();
+        var progName = $("#ProgramID").val();
+        var status = $("#StatusID").val();
+        gridListFilter.logic = "and";   // a different logic 'or' can be selected
+        if ($.trim(grid).length > 0) {
+            gridListFilter.filters.push({ field: "SiNumber", operator: "contains", value: siNo });
+            if (progName !== "All") gridListFilter.filters.push({ field: "ProgramName", operator: "eq", value: progName });
+            if (status !== "All") gridListFilter.filters.push({ field: "Status", operator: "eq", value: status });
+        }
+
+        gridDataSource.filter(gridListFilter);
+        gridDataSource.read();
+    }
+    $("#SI_Number, #ProgramID, #StatusID").change(function () {
+        searchGrid();
+    });
+    
+</script>

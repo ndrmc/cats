@@ -1,0 +1,500 @@
+﻿@model Cats.Models.Hubs.DispatchViewModel
+
+@using Cats.Web.Hub.Helpers
+@using Kendo.Mvc.UI
+@using Telerik.Web.Mvc.UI
+@using GridEditMode = Kendo.Mvc.UI.GridEditMode
+@using System.Web.Helpers;
+@{
+    ViewBag.Title = Html.Translate("New/Edit Dispatch");
+    Layout = "~/Views/Shared/_MainLayoutWide.cshtml";
+}
+@section Toolbar
+{
+    <a class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frmCreate"></a>
+      <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("Index","Dispatch")"></a>
+}
+@using (Html.BeginForm("CreateDispatch","Dispatch",FormMethod.Post,new {id="frmCreate"}))
+{
+    @Html.HiddenFor(model=>model.DispatchAllocationID)
+    @Html.HiddenFor(model=>model.ProgramID)
+    @Html.HiddenFor(model=>model.HubID)
+    @Html.HiddenFor(model=>model.FDPID)
+    @Html.HiddenFor(model=>model.TransporterID)
+   // @Html.HiddenFor(model=>model.UnitID)
+   @Html.HiddenFor(model=>model.DispatchID) 
+   @Html.HiddenFor(model=>model.UserProfileID)
+    @Html.HiddenFor(model => model.SINumber)
+     @Html.HiddenFor(model => model.Region)
+    @Html.HiddenFor(model => model.Woreda)
+     @Html.HiddenFor(model => model.ProjectNumber)
+     @Html.HiddenFor(model => model.Zone)
+     @Html.HiddenFor(model => model.FDP)
+     @Html.HiddenFor(model => model.Commodity)
+     @Html.HiddenFor(model => model.RequisitionNo)
+     @Html.HiddenFor(model => model.RequisitionId)
+     @Html.HiddenFor(model => model.Year)
+     @Html.HiddenFor(model => model.Month)
+    @Html.HiddenFor(model => model.Round)
+     @Html.HiddenFor(model => model.Transporter)
+      @Html.HiddenFor(model => model.BidNumber)
+    @Html.HiddenFor(model=>model.CommodityID)
+    <h6 class="page-header">Dispatch Header</h6>
+    <div class="row-fluid panel-body form-horizontal">
+
+        <div class="span4">
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.GIN)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.GIN)
+                    @Html.ValidationMessageFor(model=>model.GIN)
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.DispatchDate)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.DispatchDate, new { @class = "cats-datepicker2" })
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.DispatchedByStoreMan)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.DispatchedByStoreMan)
+                </div>
+            </div>
+
+        </div>
+        <div class="span4">
+            <div class="control-group">
+                <div class="control-label"> 
+                    @Html.LabelFor(model => model.SINumber)
+                </div>
+                <div class="controls">
+                    @(Html.Kendo().ComboBoxFor(m => m.ShippingInstructionID)
+                          .Placeholder("Select SI Number")
+                          .DataTextField("SIcode")
+                          .DataValueField("siCodeId")
+                          .Filter(FilterType.Contains)
+                          .DataSource(source => source.Read(read => read.Action("AvailableSI", "Dispatch", new {@reqId = Model.RequisitionId, @ComID = Model.CommodityID}))))
+
+
+
+
+                    @Html.ValidationMessageFor(model => model.ShippingInstructionID)
+
+                </div>
+                <div class="control-label">
+                    <label for="a" id="AvailableAmount"></label>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Region)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.Region, new { Disabled = true })
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Woreda)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.Woreda, new { Disabled = true })
+                </div>
+            </div>
+        </div>
+        <div class="span4">
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.ProjectNumber)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.ProjectNumber, new { Disabled = true })
+                </div>
+            </div>
+
+
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Zone)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.Zone, new { Disabled = true })
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.FDP)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.FDP, new { Disabled = true })
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <h6 class="page-header">Dispatch Quantity</h6>
+    <div class="row form-horizontal">
+
+        <div class="span4">
+            <div class="control-group ">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Commodity)
+                </div>
+                <div class="controls">
+                    
+                    
+                    @Html.TextBoxFor(model => model.Commodity, new { Disabled = true })
+                </div>
+            </div>
+        
+
+        <div class="control-group ">
+            <div class="control-label">
+                @Html.LabelFor(model => model.CommodityChildID)
+            </div>
+            <div class="controls">
+                         @(Html.Kendo().ComboBoxFor(m => m.CommodityChildID)
+                              .Placeholder("Select Commodity")
+                              .DataTextField("CommodityName")
+                              .DataValueField("CommodityId")
+                              .Filter(FilterType.Contains)
+                              .DataSource(source => source.Read(read => read.Action("GetCommodities", "Dispatch", new { @dispatchAllocationId = Model.DispatchAllocationID }))))
+                
+                
+                @Html.ValidationMessageFor(model => model.CommodityChildID)
+                    
+            </div>
+        </div>       
+            
+
+            <div class="control-group ">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.UnitID)
+                </div>
+                <div class="controls">
+                    
+                    @(Html.Kendo().ComboBoxFor(m => m.UnitID)
+                              .Placeholder("Select Unit")
+                              .DataTextField("Name")
+                              .DataValueField("UnitId")
+                              .Filter(FilterType.Contains)
+                              .DataSource(source => source.Read(read => read.Action("GetUnities", "Dispatch")))
+                        )
+                        @Html.ValidationMessageFor(model => model.UnitID)
+                    
+                    
+
+                    
+                </div>
+            </div>
+            <div class="control-group ">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.QuantityInUnit)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.QuantityInUnit)
+                </div>
+            </div>
+            <div class="control-group ">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.QuantityPerUnit,"Quantity in Qtl")
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.QuantityPerUnit,new { @id="txtQtl",@onchange = "onchangeevent();" })
+                </div>
+            </div>
+              <div class="control-group ">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Quantity,"Quantity in MT")
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.Quantity,new { @readonly = "readonly" })
+                </div>
+            </div>
+        </div>
+        <div class="span4">
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.RequisitionNo)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.RequisitionNo, new { Disabled = true })
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Year)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.Year, new { Disabled = true })
+                </div>
+            </div>
+        </div>
+        <div class="span4">
+
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Month)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.Month, new { Disabled = true })
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Round)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.Round, new { Disabled = true })
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <h6 class="page-header">Transporter Details</h6>
+    <div class="row form-horizontal ">
+
+        <div class="span4">
+
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Transporter)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.Transporter, new { Disabled = true })
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.DriverName)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.DriverName)
+                </div>
+            </div>
+
+
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.PlateNo_Prime)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.PlateNo_Prime)
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Remark)
+                </div>
+                <div class="controls">
+                    @Html.TextAreaFor(model => model.Remark)
+                </div>
+            </div>
+
+        </div>
+        <div class="span4">
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.BidNumber)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.BidNumber, new { Disabled = true })
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.WeighBridgeTicketNumber)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.WeighBridgeTicketNumber)
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.PlateNo_Trailer)
+                </div>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.PlateNo_Trailer)
+                </div>
+               
+            </div>
+
+        </div>
+        <div class="span4">
+        </div>
+    </div>
+   
+
+
+}
+<script>
+
+    jQuery('#txtQtl').on('input', function () {
+        var amountEntered = $('#txtQtl').val();
+        var changedSi = $('#ShippingInstructionID').val();
+
+        var availableSIList = "@ViewBag.AvailableSIList";
+        var amountPlanned = "@ViewBag.plannedAmount";
+
+        var array = @Html.Raw(Json.Encode(@ViewBag.AvailableSIList));
+        for(var i = 0; i < array.length; i++) {
+            var str= array[i].siCodeId;
+            if(str ===parseInt(changedSi, 10) ) {
+                
+                if ((amountEntered / 10) > array[i].amount)
+                    {
+                    alert("Dispatch amount must be less than the Available amount [ " + (array[i].amount * 10) + " Qtl ]!");
+                $('#txtQtl').val(0);
+
+                $('#Quantity').val(0);
+                    }
+            }
+        }
+        //for(j = 0; j <availableSIList.length; j++)
+        //{
+        //    alert(availableSIList[j].amount);
+        //}
+        if ((amountEntered / 10) > amountPlanned) {
+            alert("Dispatch amount must be less than the planned amount [ " + (amountPlanned * 10) + " Qtl ]!");
+            $('#txtQtl').val(0);
+
+            $('#Quantity').val(0);
+        }
+
+        if ($('#txtQtl').val() > 410) {
+
+
+            var response = window.confirm('Quintal value can not be greater than 410! : Continue?');
+
+            if (response) {
+                $('#Quantity').val($('#txtQtl').val() / 10);
+            }
+            else {
+
+                $('#txtQtl').val(0);
+                $('#Quantity').val(0);
+            }
+
+        }
+        $('#Quantity').val($('#txtQtl').val() / 10);
+
+    });
+    $("#ShippingInstructionID").change(function () {
+        var changedSi = $('#ShippingInstructionID').val();
+        var array = @Html.Raw(Json.Encode(@ViewBag.AvailableSIList));
+        for(var i = 0; i < array.length; i++) {
+            var str= array[i].siCodeId;
+            if(str ===parseInt(changedSi, 10) ) {
+                var hi =$('#AvailableAmount').text();
+                $('#AvailableAmount').text("Available Amount "+ array[i].amount);
+            }
+        }
+    });
+    $('.change_si_no').on('click',
+                function (e) {
+                    $('#cats-modal').remove();
+                    e.preventDefault();
+                    var $this = $(this)
+                      , $remote = $this.data('remote') || $this.attr('href')
+                      , $modal = $('<div class="modal" id="cats-modal"><div class="modal-body"></div></div>');
+                    console.log($remote);
+                    $('body').append($modal);
+                    $modal.modal({ backdrop: 'static', keyboard: false });
+                    $modal.load($remote);
+                }
+              );
+    function OnComOpen(e) {
+        var combo = $('#CommodityID').data('tComboBox');
+        var comboType = $('#CommodityTypeID').data('tComboBox').value();
+        if (combo) {
+            var siText = $('#SINumber');
+            if (siText) { // && $(siText).val() != '') {
+
+                var params = {};
+                params["SINumber"] = $(siText).val();
+                params["commodityTypeId"] = comboType;
+                params["dispatchAllocationID"] = $('#dispatchAllocationID').val();
+                params["CommoditySourceID"] = $('#CommoditySourceID').val();
+                $.getJSON('@Url.Action("AvailbaleCommodities", "Dispatch")', params, function (comodities) {
+                    combo.dataBind(comodities);
+                });
+            }
+        }
+    }
+
+</script>
+@*<script type="text/javascript">
+   
+    function CalculateQuantityMT() {
+       
+        var unit = $('#UnitID').val();
+        var quantityInUnit = $('#QuantityInUnit').val();
+        if (unit == 8) {
+            var quantity = quantityInUnit / 1000;
+            $('#Quantity').val(quantity);
+        }
+        if (unit == 9) {
+            var total = quantityInUnit / 100;
+            $('#Quantity').val(total);
+        }
+        
+    };
+
+    function CalculateQuantityQTL() {
+
+        var unit = $('#UnitID').val();
+        var quantityInUnit = $('#QuantityInUnit').val();
+        if (unit == 8) {
+            var quantity = quantityInUnit / 100;
+            $('#Quantity').val(quantity);
+        }
+        if (unit == 9) {
+            var total = quantityInUnit;
+            $('#Quantity').val(total);
+        }
+
+    };
+
+   
+    $(document).ready(function() {
+        var unitPreference = '@ViewBag.UnitPreference';
+        $('#UnitID').change(function () {
+            if (unitPreference = 'MT') {
+                CalculateQuantityMT();
+            }
+            if (unitPreference = 'QTL') {
+                alert("here");
+                CalculateQuantityQTL();
+            }
+            
+
+        });
+    });
+    $(document).ready(function () {
+        var unitPreference = '@ViewBag.UnitPreference';
+        alert(unitPreference);
+        $('#QuantityInUnit').change(function () {
+            if (unitPreference ='MT') {
+                
+                    CalculateQuantityMT();
+                }
+            if (unitPreference = 'QTL') {
+                alert("here");
+                CalculateQuantityQTL();
+                }
+
+        });
+    });
+</script>*@

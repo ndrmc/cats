@@ -1,0 +1,91 @@
+﻿@using Cats.Web.Hub.Helpers
+@using Kendo.Mvc.UI
+@*@model Cats.Models.Hubs.DispatchAllocation*@
+@model Cats.Models.Hubs.ViewModels.DispatchAllocationViewModel
+
+@{
+    ViewBag.Title = Html.Translate("Close Allocation");
+}
+
+<h3>@Html.Translate("Are you sure you want to Close this Dispatch Allocation?")</h3>
+
+<style type="text/css">
+    .closingDispatchAllocation {
+        margin-left: 40px;
+    }
+    .closingDispatchAllocation tr>td:first-child {
+        /*text-align: right;*/
+        padding-right: 10px;
+    }
+</style>
+<div style="/*max-height:150px; overflow:scroll;*/">
+    
+    <table class="closingDispatchAllocation">
+        <tbody>
+            <tr>
+                <td>Year: </td>
+                <td>@Html.Kendo().AutoCompleteFor(model => model.Year).Enable(false)</td>
+            </tr>
+            <tr>
+                <td>Month: </td>
+                <td>@Html.Kendo().AutoCompleteFor(model => model.MonthName).Enable(false)</td>
+            </tr>
+            <tr>
+                <td>Round: </td>
+                <td>@Html.Kendo().AutoCompleteFor(model => model.Round).Enable(false)</td>
+            </tr>
+            <tr>
+                <td>Commodity: </td>
+                <td>@Html.Kendo().AutoCompleteFor(model => model.CommodityName).Enable(false)</td>
+            </tr>
+            <tr>
+                <td>Allocated Amount in Quintals: </td>
+                <td>@Html.Kendo().AutoCompleteFor(model => model.Amount).Enable(false)</td>
+            </tr>
+            <tr>
+                <td>Remaining Quantity in Quintals: </td>
+                <td>@Html.Kendo().AutoCompleteFor(model => model.RemainingQuantityInQuintals).Enable(false)</td>
+            </tr>
+            <tr>
+                <td>Program: </td>
+                <td>@Html.Kendo().AutoCompleteFor(model => model.ProgramName).Enable(false)</td>
+            </tr>
+            <tr>
+                <td>Requisition No.: </td>
+                <td>@Html.Kendo().AutoCompleteFor(model => model.RequisitionNo).Enable(false)</td>
+            </tr>
+            <tr>
+                <td>BidRefNo: </td>
+                <td>@Html.Kendo().AutoCompleteFor(model => model.BidRefNo).Enable(false)</td>
+            </tr>
+            <tr>
+                <td>FDP: </td>
+                <td>@Html.Kendo().AutoCompleteFor(model => model.FDPName).Enable(false)</td>
+            </tr>
+            <tr>
+                <td>Shipping Instruction: </td>
+                <td>@Html.Kendo().AutoCompleteFor(model => model.ShippingInstruction.Value).Enable(false)</td>
+            </tr>
+            <tr>
+                <td>ProjectCode: </td>
+                <td>@Html.Kendo().AutoCompleteFor(model => model.ProjectCodeValue).Enable(false)</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+</div>
+
+@using (Html.BeginForm("Close", "DispatchAllocation", FormMethod.Post, new { @id = "frm_edit_inline" }))
+    {
+           @Html.HiddenFor(model => model.DispatchAllocationID)
+    <!--
+    <p style="clear: both">
+        <input type="submit" style="width: 80px; height: 25px; horiz-align: center" class="t-button" value="@Html.Translate("Close")"
+            onclick="return CloseDispatchAllocationForm(this)" />
+        <input type="reset" style="width: 80px; height: 25px; horiz-align: center" class="t-button t-close" 
+        value="@Html.Translate("Cancel")"
+            onclick="cancel()" />
+    </p>
+        -->
+}

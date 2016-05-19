@@ -1,0 +1,5 @@
+E:\code\cats\Models\Cats.Exceptions\bin\Release\Cats.Exceptions.dll
+E:\code\cats\Models\Cats.Exceptions\bin\Release\Cats.Exceptions.pdb
+E:\code\cats\Models\Cats.Exceptions\obj\Release\Cats.Exceptions.csprojResolveAssemblyReference.cache
+E:\code\cats\Models\Cats.Exceptions\obj\Release\Cats.Exceptions.dll
+E:\code\cats\Models\Cats.Exceptions\obj\Release\Cats.Exceptions.pdb

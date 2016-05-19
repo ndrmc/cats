@@ -1,0 +1,185 @@
+﻿@using Cats.Helpers
+@using Cats.Security
+@{
+    ViewBag.Title = "ReportListing";
+    //Layout = "~/Views/Shared/_CATSLayout.cshtml";
+    //Layout = "~/Views/Shared/_MainLayoutWide.cshtml";
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = "Reports";
+    ViewBag.PageTitleDescription = "";
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        // Hide the breadcrumb
+        $(".span5").hide();
+        $("#ReportViewer1_fixedTable").css("width", "100%");
+    });
+</script>
+
+
+<div class="row">
+    <div class="col-sm-3">
+        <div class="portlet light bordered bg-inverse">
+            <div class="portlet-title tabbable-line">
+                <div class="caption">
+                    <i class="icon-list font-green-sharp"></i>
+                    <span class="caption-subject bold font-green-sharp uppercase">
+                        Report Lists
+                    </span>
+                    @*<span class="caption-helper">choose the calender format</span>*@
+                </div>
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#GC_tab" data-toggle="tab">
+                            GC
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#EC_tab" data-toggle="tab" aria-expanded="true">
+                            አማ[EC]
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="GC_tab">
+                        @Html.ReportList()
+                    </div>
+                    <div class="tab-pane" id="EC_tab">
+                        @Html.AmharicReportList()
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div class="portlet light bordered bg-inverse" style="display: block;">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="fa fa-credit-card font-green-sharp"></i>
+                    <span id="report_title" class="caption-subject bold uppercase"> Select a report from left bar to view</span>
+                    <span class="caption-helper">  </span>
+                </div>
+                <div class="tools">
+                    <a href="#" class="collapse" data-original-title="" title=""></a>
+                    @*<a href="javascript:;" class="remove" data-original-title="" title=""></a>*@
+                </div>
+                <div class="actions">
+                    <a id="newtab_report" target="_blank" href="javascript:;" class="btn green btn-sm"><i class="icon-file"></i> View on new Tab</a>
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                </div>
+            </div>
+            <div class="portlet-body" id="Report_Detail">
+                <iframe id="reportsPanel" style="width: 100%; min-height: 1000px; border: 0;" src=""></iframe>
+                @*<iframe style="width: 100%; min-height: 500px; border: 0;" src="http://localhost:1786/ReportViewer.aspx?path=/Logistics/ITSH"></iframe>*@
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    $(function() {
+        $("[rel='tooltip']").tooltip();
+        $(".reportLink").each(function (i) {
+            $(this).css("font-weight", "normal");
+            $(this).css("font-size", "12px");
+        });
+    });
+    $(".reportLink").click(function (event) {
+        event.preventDefault();
+        $(".reportLink").each(function (i) {
+            $(this).css("font-weight", "normal");
+            $(this).css("font-size", "12px");
+        });
+        $(this).css("font-weight", "bold");
+        $(this).css("font-size", "14px");
+        var path = $(this).data("reportpath").split("/");
+        $.ajax({
+            url: '@Url.Action("GetReport","Home")',// + '?caseTeam=' + path[1] + '&report=' + path[2],
+            type: 'GET',
+            data: {'caseTeam' : path[1] , 'report': path[2] },
+            beforeSend: function () {
+                $("#report_title").html("Loading...");
+            }, success: function (data) {
+                $("#reportsPanel").attr("src", data);
+                $("#newtab_report").attr("href", data);
+                //$("#reportsPanel2").load(data);
+            }
+        }).done(function() {
+            $("#report_title").html(path[1] + " - " + path[2]);
+        }).fail(function () {
+            alert("error");
+        });
+
+        @*$("#reportsPanel").attr("src", "@Html.GetReport(" + path[1] + "," + path[2] +")");*@
+        //$("#reportsPanel").load();
+    });
+
+    $(".AMreportLink").click(function (event) {
+        event.preventDefault();
+        $(".AMreportLink").each(function (i) {
+            $(this).css("font-weight", "normal");
+            $(this).css("font-size", "12px");
+        });
+        $(this).css("font-weight", "bold");
+        $(this).css("font-size", "14px");
+        var path = $(this).data("reportpath").split("/");
+        $.ajax({
+            url: '@Url.Action("GetAmharicReport","Home")',// + '?caseTeam=' + path[1] + '&report=' + path[2],
+            type: 'GET',
+            data: { 'caseTeam': path[1], 'report': path[3] },
+            beforeSend: function () {
+                $("#report_title").html("Loading...");
+            }, success: function (data) {
+                $("#reportsPanel").attr("src", data);
+                $("#newtab_report").attr("href", data);
+                //$("#reportsPanel2").load(data);
+            }
+        }).done(function () {
+            $("#report_title").html(path[1] + " - " + path[3]);
+        }).fail(function () {
+            alert("error");
+        });
+
+        @*$("#reportsPanel").attr("src", "@Html.GetReport(" + path[1] + "," + path[2] +")");*@
+        //$("#reportsPanel").load();
+    });
+
+    $("#maximize_report").click(function() {
+        $("#maximize_report").hide();
+        $("#Report_List").hide();
+        $("#Report_Detail").attr('class', 'span12');
+        $("#minimize_report").show();
+    });
+    $("#minimize_report").click(function () {
+        $("#minimize_report").hide();
+        $("#Report_List").show();
+        $("#Report_Detail").attr('class', 'span9');
+        $("#maximize_report").show();
+    });
+    $('#reportsPanel').load(function () {
+        //alert("Loading...");
+        $("#reportsPanel").contents().find("#ParameterTable_ReportViewer1_ctl04").css("background", "none");
+        //alert($("#reportsPanel").contents().find("body").outerHeight());
+    });
+    $("#print_report").click(function () {
+        printReport();
+    });
+    function printReport() {
+        var frm1 = $("#reportsPanel").contents().find("#ReportViewer1");
+        var frm = frm1.find("table");
+        frm.focus();// focus on contentWindow is needed on some ie versions
+        //alert(frm.tos);
+        frm.print();
+        return false;
+    }
+</script>
+
+

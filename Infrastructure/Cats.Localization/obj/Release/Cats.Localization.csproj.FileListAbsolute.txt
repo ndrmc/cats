@@ -1,0 +1,14 @@
+E:\code\cats\Infrastructure\Cats.Localization\bin\Release\Cats.Localization.dll.config
+E:\code\cats\Infrastructure\Cats.Localization\bin\Release\Cats.Localization.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Release\Cats.Localization.pdb
+E:\code\cats\Infrastructure\Cats.Localization\bin\Release\EntityFramework.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Release\System.Web.Mvc.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Release\System.Web.Razor.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Release\System.Web.WebPages.Razor.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Release\System.Web.WebPages.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Release\Microsoft.Web.Infrastructure.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Release\System.Web.WebPages.Deployment.dll
+E:\code\cats\Infrastructure\Cats.Localization\bin\Release\EntityFramework.xml
+E:\code\cats\Infrastructure\Cats.Localization\obj\Release\Cats.Localization.csprojResolveAssemblyReference.cache
+E:\code\cats\Infrastructure\Cats.Localization\obj\Release\Cats.Localization.dll
+E:\code\cats\Infrastructure\Cats.Localization\obj\Release\Cats.Localization.pdb
