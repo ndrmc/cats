@@ -6,6 +6,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
+    
     <title>CATS: Commodity Allocation & Tracking System</title>
     <%--<script src="/Scripts/kendo/2013.1.319/jquery.min.js"></script>
     <link href="/Content/themes/default/bootstrap.min.css" rel="stylesheet"/>--%>
