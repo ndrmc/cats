@@ -80,6 +80,7 @@ publish
 
 # NuGet Packages Directory
 # packages
+
 # Windows Azure Build Output
 csxs
 *.build.csdef
