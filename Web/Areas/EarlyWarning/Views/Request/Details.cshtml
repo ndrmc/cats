@@ -454,28 +454,30 @@
                   .Scrollable()
                           .Groupable()
                            .DataSource(dataSource => dataSource
-        .Ajax()
-         .Model(model =>
-         {
-             foreach (System.Data.DataColumn column in Model.Columns)
-             {
-
-                 model.Field(column.ColumnName, column.DataType);
-             }
-         }).Read(read =>
-
-    read.Action("StatusGeneric", "Configuration")
-    )
-        .Aggregates(a =>
-        {
-            a.Add("Beneficiaries", typeof(int)).Sum();
-            a.Add("PlannedBeneficiaries", typeof(int)).Sum();
-        }).Group(a =>
+        .Ajax().Group(a =>
         {
             a.Add("Zone", typeof(string));
             //a.Add("Beneficiaries", typeof(int));
             //a.Add("PlannedBeneficiaries", typeof(int));
         })
+        //     .Model(model =>
+        //     {
+        //         foreach (System.Data.DataColumn column in Model.Columns)
+        //         {
+
+        //             model.Field(column.ColumnName, column.DataType);
+        //         }
+        //     }).Read(read =>
+
+        //read.Action("StatusGeneric", "Configuration")
+        //)
+        //    .Aggregates(a =>
+        //    {
+        //        a.Add("Beneficiaries", typeof(int)).Sum();
+        //        a.Add("PlannedBeneficiaries", typeof(int)).Sum();
+        //    })
+
+
         )
 
                           )
