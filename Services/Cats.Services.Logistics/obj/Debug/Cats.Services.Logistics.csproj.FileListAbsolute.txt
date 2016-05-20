@@ -145,3 +145,8 @@ E:\code\cats\Services\Cats.Services.Logistics\obj\Debug\Cats.Services.Logistics.
 \\10.24.65.152\cats\Services\Cats.Services.Logistics\obj\Debug\Cats.Services.Logistics.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Services\Cats.Services.Logistics\obj\Debug\Cats.Services.Logistics.dll
 \\10.24.65.152\cats\Services\Cats.Services.Logistics\obj\Debug\Cats.Services.Logistics.pdb
+E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\System.Web.Mvc.xml
+E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\System.Web.Razor.xml
+E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\System.Web.WebPages.Razor.xml
+E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\System.Web.WebPages.xml
+E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\System.Web.WebPages.Deployment.xml

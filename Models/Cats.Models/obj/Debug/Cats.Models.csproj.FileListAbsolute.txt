@@ -58,3 +58,8 @@ E:\code\cats\Models\Cats.Models\obj\Debug\Cats.Models.pdb
 \\10.24.65.152\cats\Models\Cats.Models\obj\Debug\Cats.Models.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Models\Cats.Models\obj\Debug\Cats.Models.dll
 \\10.24.65.152\cats\Models\Cats.Models\obj\Debug\Cats.Models.pdb
+E:\code\cats\Models\Cats.Models\bin\Debug\System.Web.Mvc.xml
+E:\code\cats\Models\Cats.Models\bin\Debug\System.Web.Razor.xml
+E:\code\cats\Models\Cats.Models\bin\Debug\System.Web.WebPages.Razor.xml
+E:\code\cats\Models\Cats.Models\bin\Debug\System.Web.WebPages.xml
+E:\code\cats\Models\Cats.Models\bin\Debug\System.Web.WebPages.Deployment.xml

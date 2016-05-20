@@ -70,3 +70,8 @@ E:\code\cats\Services\Cats.Services.Administration\obj\Debug\Cats.Services.Admin
 \\10.24.65.152\cats\Services\Cats.Services.Administration\obj\Debug\Cats.Services.Administration.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Services\Cats.Services.Administration\obj\Debug\Cats.Services.Administration.dll
 \\10.24.65.152\cats\Services\Cats.Services.Administration\obj\Debug\Cats.Services.Administration.pdb
+E:\code\cats\Services\Cats.Services.Administration\bin\Debug\System.Web.Mvc.xml
+E:\code\cats\Services\Cats.Services.Administration\bin\Debug\System.Web.Razor.xml
+E:\code\cats\Services\Cats.Services.Administration\bin\Debug\System.Web.WebPages.Razor.xml
+E:\code\cats\Services\Cats.Services.Administration\bin\Debug\System.Web.WebPages.xml
+E:\code\cats\Services\Cats.Services.Administration\bin\Debug\System.Web.WebPages.Deployment.xml

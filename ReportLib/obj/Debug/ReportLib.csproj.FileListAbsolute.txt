@@ -76,3 +76,8 @@ E:\code\cats\ReportLib\obj\Debug\ReportLib.pdb
 \\10.24.65.152\cats\ReportLib\obj\Debug\ReportLib.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\ReportLib\obj\Debug\ReportLib.dll
 \\10.24.65.152\cats\ReportLib\obj\Debug\ReportLib.pdb
+E:\code\cats\ReportLib\bin\Debug\System.Web.Mvc.xml
+E:\code\cats\ReportLib\bin\Debug\System.Web.Razor.xml
+E:\code\cats\ReportLib\bin\Debug\System.Web.WebPages.Razor.xml
+E:\code\cats\ReportLib\bin\Debug\System.Web.WebPages.xml
+E:\code\cats\ReportLib\bin\Debug\System.Web.WebPages.Deployment.xml

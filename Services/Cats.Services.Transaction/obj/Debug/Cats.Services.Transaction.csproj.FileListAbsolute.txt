@@ -118,3 +118,8 @@ E:\code\cats\Services\Cats.Services.Transaction\obj\Debug\Cats.Services.Transact
 \\10.24.65.152\cats\Services\Cats.Services.Transaction\obj\Debug\Cats.Services.Transaction.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Services\Cats.Services.Transaction\obj\Debug\Cats.Services.Transaction.dll
 \\10.24.65.152\cats\Services\Cats.Services.Transaction\obj\Debug\Cats.Services.Transaction.pdb
+E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\System.Web.Mvc.xml
+E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\System.Web.Razor.xml
+E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\System.Web.WebPages.Razor.xml
+E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\System.Web.WebPages.xml
+E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\System.Web.WebPages.Deployment.xml
