@@ -252,31 +252,48 @@
                         </div>
                     </div>
                     <div class="box-body table-responsive" style="display: block;">
-                        <table id="" class="table table-striped table-checkable">
-                            <thead>
-                                <tr>
-                                    <th class="hidden-xs">Requisition N<u>o</u></th>
-                                    <th>Region</th>
-                                    <th>Zone</th>
-                                    <th>Commodity</th>
-                                    <th class="number">Beneficiaries</th>
-                                    <th class="number">Amount (MT)</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="requisition in Requisitions" class="">
-                                    <td class="hidden-xs"><a ng-href= "@Url.Content("~/EarlyWarning/ReliefRequisition/Allocation/{{requisition.RequisitionID}}")">{{requisition.RequisitonNumber}} </a></td>
-                                    <td>{{requisition.Region}}</td>
-                                    <td>{{requisition.Zone}}</td>
-                                    <td>{{requisition.Commodity}}</td>
-                                    <td class="number">{{requisition.Beneficiary|number}}</td>
-                                    <td class="number">{{requisition.Amount|number}} </td>
-                                    <td><span class="label" ng-class="{'label-warning':requisition.Status == 'Draft', 'label-success':requisition.Status == 'Approved', 'label-danger':requisition.Status == 'Closed'}">{{requisition.Status}}</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                        <!---Filter by round-->
+                        <form class="form-inline" role="form">
+                            <div class="form-group">
+                                <label for="selround">Filter By Round:</label>
+                                <select class="form-control" id="selround" ng-model="search.Round">
+                                    @{
+                                        var rounds = ViewBag.Rounds;
+                                        foreach (var round in rounds)
+                                        {
+                                            <option>@round</option>
+                                        }
+                                    }                                  
+                                </select>
+                            </div>
+                            </form>
+                            <table id="" class="table table-striped table-checkable">
+                                <thead>
+                                    <tr>
+                                        <th class="hidden-xs">Requisition N<u>o</u></th>
+                                        <th>Region</th>
+                                        <th>Zone</th>
+                                        <th>Commodity</th>
+                                        <th class="number">Beneficiaries</th>
+                                        <th class="number">Amount (MT)</th>
+                                        <th>Round</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="requisition in Requisitions | filter: search" class="">
+                                        <td class="hidden-xs"><a ng-href="@Url.Content("~/EarlyWarning/ReliefRequisition/Allocation/{{requisition.RequisitionID}}")">{{requisition.RequisitonNumber}} </a></td>
+                                        <td>{{requisition.Region}}</td>
+                                        <td>{{requisition.Zone}}</td>
+                                        <td>{{requisition.Commodity}}</td>
+                                        <td class="number">{{requisition.Beneficiary|number}}</td>
+                                        <td class="number">{{requisition.Amount|number}} </td>
+                                        <td>{{requisition.Round}}</td>
+                                        <td><span class="label" ng-class="{'label-warning':requisition.Status == 'Draft', 'label-success':requisition.Status == 'Approved', 'label-danger':requisition.Status == 'Closed'}">{{requisition.Status}}</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+</div>
                     <!-- /.box-body -->
                 </div>
                 <div class="box box-solid box-primary">
