@@ -347,7 +347,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!ReferenceNo.Value</Value>
+                              <Value>="RfNo: " + Fields!ReferenceNo.Value</Value>
                               <Style>
                                 <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
