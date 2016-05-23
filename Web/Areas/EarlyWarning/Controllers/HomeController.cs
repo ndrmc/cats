@@ -104,8 +104,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public List<int?> GetRecentRequestRounds()
         {
             var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
-            //var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID && m.ProgramId == 1).OrderByDescending(m => m.RegionalRequestID);
-            var requests = _eWDashboardService.FindByRequest(m => m.ProgramId == 1).OrderByDescending(m => m.RegionalRequestID);
+            var requests =
+                _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID && m.ProgramId == 1)
+                    .OrderByDescending(m => m.RegionalRequestID);
             var rounds = (from regionalRequest in requests
                 where regionalRequest.ProgramId == 1
                 select regionalRequest.Round).Distinct().ToList();
