@@ -85,7 +85,7 @@ namespace SSRS_Portal
             string script = "<SCRIPT LANGUAGE='JavaScript'> ";
             script += "showPrintButton()";
             script += "</SCRIPT>";
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowStatus", "javascript:showPrintButton();showDatePicker();", true);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowStatus", "javascript:showPrintButton();if (browser.name.includes('IE')){showDatePicker();}", true);
 
         }
 
