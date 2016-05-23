@@ -45,7 +45,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
 
             var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
-            var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID && m.ProgramId==1).OrderByDescending(m=>m.RegionalRequestID);
+            var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID && m.ProgramId == 1).OrderByDescending(m => m.RegionalRequestID);        
             var requestDetail = GetRecentRegionalRequests(requests);
 
             return Json(requestDetail, JsonRequestBehavior.AllowGet);
@@ -54,20 +54,21 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private IEnumerable<RegionalRequestViewModel> GetRecentRegionalRequests(IEnumerable<RegionalRequest> regionalRequests)
         {
             return (from regionalRequest in regionalRequests
-                    where  regionalRequest.ProgramId==1// only for relief program
-                   // from requestDetail in regionalRequest.RegionalRequestDetails
-                    select new RegionalRequestViewModel()
-                        {
-                            RegionalRequestID =regionalRequest.RegionalRequestID, 
-                            Region = regionalRequest.AdminUnit.Name,
-                            Round = regionalRequest.Round,
-                            MonthName = RequestHelper.MonthName(regionalRequest.Month),
-                            StatusID = regionalRequest.Status,
-                            Beneficiary = regionalRequest.RegionalRequestDetails.Sum(m=>m.Beneficiaries),
-                            NumberOfFDPS = regionalRequest.RegionalRequestDetails.Count(),
-                            Status = _eWDashboardService.GetStatusName(WORKFLOW.REGIONAL_REQUEST, regionalRequest.Status)
+                where regionalRequest.ProgramId == 1
+                // only for relief program
+                // from requestDetail in regionalRequest.RegionalRequestDetails
+                select new RegionalRequestViewModel()
+                {
+                    RegionalRequestID = regionalRequest.RegionalRequestID,
+                    Region = regionalRequest.AdminUnit.Name,
+                    Round = regionalRequest.Round,
+                    MonthName = RequestHelper.MonthName(regionalRequest.Month),
+                    StatusID = regionalRequest.Status,
+                    Beneficiary = regionalRequest.RegionalRequestDetails.Sum(m => m.Beneficiaries),
+                    NumberOfFDPS = regionalRequest.RegionalRequestDetails.Count(),
+                    Status = _eWDashboardService.GetStatusName(WORKFLOW.REGIONAL_REQUEST, regionalRequest.Status)
 
-                        }).Take(10);
+                }); //.Take(10);
         }
         public JsonResult GetRequisition()
         {
