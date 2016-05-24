@@ -69,8 +69,26 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewData["zones"] = _adminUnitService.FindBy(t => t.AdminUnitTypeID == 3);
             ViewData["woredas"] = _adminUnitService.FindBy(t => t.AdminUnitTypeID == 4);
             ViewBag.userRegionID = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).RegionID;
+
+            var needAssessment = _needAssessmentService.GetAllNeedAssessment().Select(m => m.PlanID).Distinct();
+            List<Plan> plans;
+            if (id == 0)
+                plans =
+                    _planService.FindBy(
+                        m => m.Program.Name == "Relief" && (m.Status == (int)PlanStatus.Draft || m.Status == (int)PlanStatus.AssessmentCreated))
+                        .OrderByDescending(m => m.PlanID)
+                        .ToList();
+            else
+                plans =
+                    _planService.FindBy(
+                        m => needAssessment.Contains(m.PlanID) && m.Program.Name == "Relief" && m.Status == id)
+                        .OrderByDescending(m => m.PlanID)
+                        .ToList();
+            var statuses = _commonService.GetStatus(WORKFLOW.Plan);
+            var needAssesmentsViewModel = NeedAssessmentViewModelBinder.GetNeedAssessmentPlanInfo(plans, statuses);
+
             //ModelState.AddModelError("Success", "Sample Error Message. Use in Your Controller: ModelState.AddModelError('Errors', 'Your Error Message.')");
-            return View();
+            return View(needAssesmentsViewModel);
         }
 
         public ActionResult Promote(BusinessProcessState st, int statusId)

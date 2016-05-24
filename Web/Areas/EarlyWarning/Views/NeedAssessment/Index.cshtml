@@ -1,4 +1,6 @@
-﻿@using Cats.Helpers
+﻿@using Cats.Areas.EarlyWarning.Models
+@using Cats.Helpers
+@using Cats.Models
 @using Cats.Security
 @using Cats.Services.Security
 @using Kendo.Mvc.UI
@@ -7,6 +9,7 @@
 @{
     ViewBag.Title = "NeedAssessmentPlan";
     Layout = "~/Views/Shared/_CATSLayout.cshtml";
+    int index = 0;
 }
 
 @section Title
@@ -37,23 +40,100 @@ Plans
                 </div>
                 <div class="col-md-12">
                     <div class="table-responsive">
-                        @(Html.Kendo().Grid<Cats.Areas.EarlyWarning.Models.NeedAssessmentPlanViewModel>()
+                        <table class="table table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Assessment Name</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (NeedAssessmentPlanViewModel item in Model)
+                                {
+                                    index++;
+                                    var state = item.BusinessProcess.CurrentState.BaseStateTemplate;
+                                    //if (state.Name == "Approved by finance" || state.Name == "Cheque Issued" || state.Name == "Cheque Cashed")
+                                    //{
+                                    <tr>
+                                        <td>
+                                            @item.CheckNo
+                                        </td>
+                                        <td>
+                                            @item.PaymentVoucherNo
+                                        </td>
+                                        <td>
+                                            @item.BankName
+                                        </td>
+                                        <td>
+                                            @item.Amount
+                                        </td>
+                                        <td>
+                                            @item.UserProfile.FirstName &nbsp; @item.UserProfile.LastName
+                                        </td>
+                                        <td>
+                                            @state.Name
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="btn btn-default btn-xs yellow-crusta-stripe" data-ng-click="loadChequeEditPage(@item.TransporterChequeId, @state.StateNo)">Edit</button>
+                                                <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
+                                                    <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
+                                                </button>
+                                                <ul class="dropdown-menu pull-right">
+                                                    @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                                                    {
+                                                        if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Approve_cheque) && actions.Name == "Approve Cheque")
+                                                        {
+                                                            <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterChequeId)" title="@actions.Name">@actions.Name</a></li>
+                                                        }
+                                                        if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Collect_cheque) && actions.Name == "Collect Cheque")
+                                                        {
+                                                            <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterChequeId)" title="@actions.Name">@actions.Name</a></li>
+                                                        }
+                                                    }
+                                                    <li class="divider"></li>
+                                                    @if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.View_history))
+                                                    {
+                                                        <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
+                                                    }
+                                                </ul>
+                                                @{
+                                                    if (state.StateNo >= 1)
+                                                    {
+                                                        if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Print_Check_Payment))
+                                                        {
+                                                            <a class="btn btn-default btn-xs blue-steel-stripe" style="margin-left: 5px;" href="@Url.Action("PrintCheckPayment", "Cheque", new {transporterID = ViewBag.TransporterID, checkno = item.CheckNo, pvn = item.PaymentVoucherNo})">Print</a>
+                                                        }
+                                                    }
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                                        //}
+
+                                                    }
+                            </tbody>
+                        </table>
+                            @(Html.Kendo().Grid<Cats.Areas.EarlyWarning.Models.NeedAssessmentPlanViewModel>()
                               .Name("grid")
                               .Columns(columns =>
                               {
                                   columns.Bound(p => p.AssessmentName).Title(Html.Translate("Assessment Name")).ClientTemplate(
                                       "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail) + "' == 'True'" +
-                                        " || '" + UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.View_Need_Assessment_Detail) + "' == 'True') { #" +
-                                            "<a href='" + Url.Action("Detail", "NeedAssessment", new { id = "#=PlanID#" }) + " '> " + "#=AssessmentName#" + "</a>  " +
-                                         "# } #"
-                                          );
+                                      " || '" + UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.View_Need_Assessment_Detail) + "' == 'True') { #" +
+                                      "<a href='" + Url.Action("Detail", "NeedAssessment", new { id = "#=PlanID#" }) + " '> " + "#=AssessmentName#" + "</a>  " +
+                                      "# } #"
+                                      );
                                   columns.Bound(p => p.StartDate).Title(Html.Translate("Start Date"));
                                   columns.Bound(p => p.EndDate).Title(Html.Translate("End Date"));
                                   columns.Bound(p => p.Status).Title(Html.Translate("Status"));
                                   columns.Command(p =>
                                   {
                                       if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment)
-                                      || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Approve__need_assesment))
+                                          || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Approve__need_assesment))
                                       {
                                           p.Custom("Approve").Click("approveNeedAssessment").Text("<span class=\"fa fa-check\"></span> Approve ");
                                       }
@@ -80,14 +160,14 @@ Plans
                               .Scrollable()
                               .Events(e => e.DataBound("onDataBound"))
                               .DataSource(dataSource => dataSource
-                                                            .Ajax()
-                                                            .PageSize(30)
-                                                            .ServerOperation(false)
-                                                            .Model(model => model.Id(p => p.PlanID))
-                                                            .Read(read => read.Action("NeedAssessment_Plan", "NeedAssessment", new { id = ViewBag.AssessmentStatus }))
+                                  .Ajax()
+                                  .PageSize(30)
+                                  .ServerOperation(false)
+                                  .Model(model => model.Id(p => p.PlanID))
+                                  .Read(read => read.Action("NeedAssessment_Plan", "NeedAssessment", new { id = ViewBag.AssessmentStatus }))
                               )
-)
-                    </div>
+                            )
+</div>
                 </div>
             </div>
 
