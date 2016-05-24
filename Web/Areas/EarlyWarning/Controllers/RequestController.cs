@@ -466,11 +466,18 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [HttpPost]
         public ActionResult NewIdps(HRDPSNPPlan hrdpsnpPlan, FormCollection collection)
         {
-
             Plan plan = null;
             int id;
-            if (!int.TryParse(collection["RegionId"].ToString(CultureInfo.InvariantCulture), out id)) return RedirectToAction("NewIdps");  // if region id has null value
-            if (id == 0) RedirectToAction("NewIdps"); // region not selected
+            if (!int.TryParse(collection["RegionId"].ToString(CultureInfo.InvariantCulture), out id))
+            {               
+                ModelState.AddModelError("Errors", @"The data is invalid.");
+                return RedirectToAction("NewIdps"); // if region id has null value
+            }
+            if (id == 0 || (hrdpsnpPlan.RationID == null))
+            {
+                ModelState.AddModelError("Errors", @"The data is invalid.");
+                return RedirectToAction("NewIdps"); // region not selected
+            }
 
             var reasonTypeID = int.Parse(collection["ReasonType"].ToString(CultureInfo.InvariantCulture));
 
