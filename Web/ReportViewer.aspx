@@ -112,7 +112,7 @@
             
             $(function () {
                 if (browser.name.includes("IE")) {
-                    alert(browser.name);
+                    //alert(browser.name);
                 }
                 else{
                     //alert(window.navigator.userAgent);
@@ -137,7 +137,7 @@
         });
         var messageElem = 'AlertMessage';
         if (browser.name.includes("IE")) {
-            alert(browser.name);
+            //alert(browser.name);
         } else {
             // Register a page load event on asynchronuous requests to bind the showDatePicker event to date fields 
             Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(PageLoadHandler);
