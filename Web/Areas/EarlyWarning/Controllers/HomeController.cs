@@ -5,6 +5,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Cats.Areas.EarlyWarning.Models;
+using Cats.Helpers;
+using Cats.Models.Constant;
 using Cats.Services.Dashboard;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Security;
@@ -50,7 +52,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var rounds = GetRounds();
             if (rounds != null) ViewBag.Rounds = rounds;
             else ViewBag.Rounds = new List<int>();
-
+            ViewBag.RecentRequestRounds = GetRecentRequestRounds();
             return View(summary);
         }
 
@@ -97,6 +99,18 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 where reliefRequisition.RegionalRequestID == request.RegionalRequestID
                       && reliefRequisition.Round.HasValue
                 select reliefRequisition.Round).Distinct().ToList();
+        }
+
+        public List<int?> GetRecentRequestRounds()
+        {
+            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
+            var requests =
+                _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID && m.ProgramId == 1)
+                    .OrderByDescending(m => m.RegionalRequestID);
+            var rounds = (from regionalRequest in requests
+                where regionalRequest.ProgramId == 1
+                select regionalRequest.Round).Distinct().ToList();
+            return rounds;
         }
     }
 }

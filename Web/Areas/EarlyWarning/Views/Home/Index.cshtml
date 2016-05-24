@@ -215,28 +215,43 @@
                         </div>
                     </div>
                     <div class="box-body table-responsive" style="display: block;">
+                        <!---Filter by round-->
+                        <form class="form-inline" role="form">
+                            <div class="form-group">
+                                <label for="selround">Filter By Round:</label>
+                                <select class="form-control" id="selround" ng-model="search.Round">
+                                    @{
+                                        var recentRequestRounds = ViewBag.RecentRequestRounds;
+                                        foreach (var round in recentRequestRounds)
+                                        {
+                                            <option>@round</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </form>
                         <table class="table table-striped table-checkable">
                             <thead>
-                                <tr>
-                                    <th class="hidden-xs">Region</th>
-                                    <th class="number">N<u>o</u> of Beneficaries</th>
-                                    <th class="number">Total N<u>o</u> of FDPS</th>
-                                    <th class="number">Round</th>
-                                    <th>Month</th>
-                                    <th>Status</th>
-                                </tr>
+                            <tr>
+                                <th class="hidden-xs">Region</th>
+                                <th class="number">N<u>o</u> of Beneficaries</th>
+                                <th class="number">Total N<u>o</u> of FDPS</th>
+                                <th class="number">Round</th>
+                                <th>Month</th>
+                                <th>Status</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="request in Requests | orderBy:['Region','Round']" class="">
-                                    @*<td class="hidden-xs"><a ng-href="@Url.Action("Allocation", "Request", new { Area = "EarlyWarning", id = "{{request.Region}}"})"> {{request.Region}} </a> </td>*@
-                                    <td class="hidden-xs"><a ng-href="@Url.Content("~/EarlyWarning/Request/Allocation/{{request.RegionalRequestID}}")">{{request.Region}}  </a></td>
-                                    <td class="number">{{request.Beneficiary|number}}</td>
-                                    <td class="number">{{request.NumberOfFDPS|number}}</td>
-                                    <th class="number">{{request.Round}}</th>
-                                    <th>{{request.MonthName}}</th>
-                                    <td><span class="label" ng-class="{'label-warning':request.Status == 'Draft', 'label-success':request.Status == 'Approved', 'label-danger':request.Status == 'Closed'}">{{request.Status}}</span></td>
-                                   
-                                </tr>
+                            <tr ng-repeat="request in Requests | filter:search" class="">
+                                @*<td class="hidden-xs"><a ng-href="@Url.Action("Allocation", "Request", new { Area = "EarlyWarning", id = "{{request.Region}}"})"> {{request.Region}} </a> </td>*@
+                                <td class="hidden-xs"><a ng-href="@Url.Content("~/EarlyWarning/Request/Allocation/{{request.RegionalRequestID}}")">{{request.Region}} </a></td>
+                                <td class="number">{{request.Beneficiary|number}}</td>
+                                <td class="number">{{request.NumberOfFDPS|number}}</td>
+                                <th class="number">{{request.Round}}</th>
+                                <th>{{request.MonthName}}</th>
+                                <td><span class="label" ng-class="{'label-warning':request.Status == 'Draft', 'label-success':request.Status == 'Approved', 'label-danger':request.Status == 'Closed'}">{{request.Status}}</span></td>
+
+                            </tr>
 
                             </tbody>
                         </table>
