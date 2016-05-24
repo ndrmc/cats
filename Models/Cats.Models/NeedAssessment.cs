@@ -17,7 +17,8 @@ namespace Cats.Models
         [System.ComponentModel.DataAnnotations.Key]
         public int NeedAID { get; set; }
 
-       
+        public int BusinessProcessID { get; set; }
+
         public int Region { get; set; }
       
         public Nullable <int> Season { get; set; }
@@ -35,6 +36,7 @@ namespace Cats.Models
         public int? TypeOfNeedAssessment { get; set; }
         [DataType(DataType.MultilineText)]
         public string Remark { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
         public virtual AdminUnit AdminUnit { get; set; }
         public virtual UserProfile UserProfile { get; set; }
         public virtual UserProfile UserProfile1 { get; set; }

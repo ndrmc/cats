@@ -20,6 +20,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 {
     public class NeedAssessmentController : Controller
     {
+        private readonly IBusinessProcessService _businessProcessService;
         private readonly INeedAssessmentService _needAssessmentService;
         private readonly IAdminUnitService _adminUnitService;
         private readonly INeedAssessmentHeaderService _needAssessmentHeaderService;
@@ -41,7 +42,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                         ILog log, 
                                         IPlanService planService,
                                         ICommonService commonService,IUserAccountService userAccountService,
-                                        INotificationService notificationService)
+                                        INotificationService notificationService,
+                                        IBusinessProcessService businessProcessService)
         {
             _needAssessmentService = needAssessmentService;
             _adminUnitService = adminUnitService;
@@ -54,6 +56,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _commonService = commonService;
             _userAccountService = userAccountService;
             _notificationService = notificationService;
+            _businessProcessService = businessProcessService;
         }
 
       
@@ -68,6 +71,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewBag.userRegionID = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).RegionID;
             //ModelState.AddModelError("Success", "Sample Error Message. Use in Your Controller: ModelState.AddModelError('Errors', 'Your Error Message.')");
             return View();
+        }
+
+        public ActionResult Promote(BusinessProcessState st, int statusId)
+        {
+            _businessProcessService.PromotWorkflow(st);
+            return RedirectToAction("Index", "NeedAssessment", new { Area = "EarlyWarning", statusId });
         }
 
         public ActionResult Edit(int id, int typeOfNeed)
