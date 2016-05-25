@@ -7,7 +7,7 @@ namespace Cats.Models
     public class BusinessProcess
     {
         
-        public int BusinessProcessID { get; set; } 
+        public int BusinessProcessID { get; set; }
         //Fields
 
         [Display(Name = "Document")]
@@ -36,11 +36,12 @@ namespace Cats.Models
         public virtual ICollection<PaymentRequest> PaymentRequests { get; set; }
 
         public virtual ICollection<BidWinner> BidWinners { get; set; }
-        public virtual ICollection<NeedAssessment> NeedAssessments { get; set; }
         public virtual ICollection<TransporterCheque> TransporterCheques { get; set; }
 
         public virtual ICollection<BusinessProcessState> BusinessProcessStates { get; set; }
         public virtual ICollection<TransporterPaymentRequest> TransporterPaymentRequests { get; set; }
+        public virtual ICollection<NeedAssessment> NeedAssessments { get; set; }
+        public virtual ICollection<Plan> Plans { get; set; }
     }
     public class BusinessProcessPOCO
     {

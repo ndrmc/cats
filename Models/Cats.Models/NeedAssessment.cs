@@ -36,7 +36,6 @@ namespace Cats.Models
         public int? TypeOfNeedAssessment { get; set; }
         [DataType(DataType.MultilineText)]
         public string Remark { get; set; }
-        public virtual BusinessProcess BusinessProcess { get; set; }
         public virtual AdminUnit AdminUnit { get; set; }
         public virtual UserProfile UserProfile { get; set; }
         public virtual UserProfile UserProfile1 { get; set; }
@@ -44,5 +43,6 @@ namespace Cats.Models
         public virtual TypeOfNeedAssessment TypeOfNeedAssessment1 { get; set; }
         public virtual ICollection<NeedAssessmentHeader> NeedAssessmentHeaders { get; set; }
         public virtual Plan Plan { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }

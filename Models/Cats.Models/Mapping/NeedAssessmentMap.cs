@@ -51,6 +51,7 @@ namespace Cats.Models.Mapping
             this.HasRequired(t => t.BusinessProcess)
                 .WithMany(t => t.NeedAssessments)
                 .HasForeignKey(d => d.BusinessProcessID);
+
         }
     }
 }
