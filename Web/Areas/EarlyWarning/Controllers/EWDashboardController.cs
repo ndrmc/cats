@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Cats.Areas.EarlyWarning.Models;
@@ -7,6 +8,7 @@ using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Services.Dashboard;
 using Cats.Services.Security;
+using Plan = Cats.Models.Partial.Plan;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -391,6 +393,25 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 return 0;
             }
             return 0;
+        }
+
+        public JsonResult GetHRDDataEntryStatus(int year, int planId)
+        {
+            var expected = _eWDashboardService.GetExpectedHrdDataEntry(year, planId);
+            var actual = _eWDashboardService.GetActualHrdDataEntry(year, planId);
+            return Json(new {Actual = actual, Expcted = expected}, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetGiftCerteficateDataEntryStatus(DateTime startDate, DateTime endDate)
+        {
+            var expected = _eWDashboardService.GetExpectedGiftCerteficateDataEntry(startDate, endDate);
+            var actual = _eWDashboardService.GetActualGiftCerteficateDataEntry(startDate, endDate);
+            return Json(new { Actual = actual, Expcted = expected }, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetRequestAllocationDataEntryStatus(int round)
+        {
+            var expected = _eWDashboardService.GetExpectedRequestAllocationDataEntry(round);
+            var actual = _eWDashboardService.GetActualRequestAllocationDataEntry(round);
+            return Json(new { Actual = actual, Expcted = expected }, JsonRequestBehavior.AllowGet);
         }
     }
 }

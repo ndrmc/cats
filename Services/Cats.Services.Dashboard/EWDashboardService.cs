@@ -11,7 +11,7 @@ namespace Cats.Services.Dashboard
   public  class EWDashboardService:IEWDashboardService
   {
       private IUnitOfWork _unitOfWork;
-      public EWDashboardService(IUnitOfWork unitOfWork )
+        public EWDashboardService(IUnitOfWork unitOfWork )
       {
           _unitOfWork = unitOfWork;
 
@@ -78,7 +78,68 @@ namespace Cats.Services.Dashboard
      {
          return _unitOfWork.DeliveryRepository.Get(m => dispatchIds.Contains(m.DispatchID.Value)).ToList();
      }
-       public void Dispose()
+
+      public int GetExpectedHrdDataEntry(int year, int planId)
+      {
+          var hrdIds =
+              _unitOfWork.HRDRepository.Get(h => h.Year == year && h.PlanID == planId).Select(h => h.HRDID).ToList();
+          return
+              _unitOfWork.HRDDetailRepository.Get(h => hrdIds.Contains(h.HRDID))
+                  .Select(s => s.WoredaID)
+                  .Distinct()
+                  .Count();
+      }
+
+      public int GetActualHrdDataEntry(int year, int planId)
+      {
+          var hrdIds =
+              _unitOfWork.HRDRepository.Get(h => h.Year == year && h.PlanID == planId).Select(h => h.HRDID).ToList();
+            var actualEntry = 
+                _unitOfWork.HRDDetailRepository.Get(h => hrdIds.Contains(h.HRDID))
+                    .Select(s => s.AdminUnit.AdminUnitID)
+                    .Distinct()
+                    .Count();
+          return actualEntry;
+      }
+
+      public int GetExpectedGiftCerteficateDataEntry(DateTime startDate, DateTime endDate)
+      {
+          return (from g in _unitOfWork.GiftCertificateRepository.Get()
+              where DateTime.Compare(g.GiftDate, startDate) >= 0 &&
+                    DateTime.Compare(g.GiftDate, endDate) <= 0
+              select g.DonorID).Count();
+      }
+
+      public int GetActualGiftCerteficateDataEntry(DateTime startDate, DateTime endDate)
+      {
+            return (from g in _unitOfWork.GiftCertificateRepository.Get()
+                    where DateTime.Compare(g.GiftDate, startDate) >= 0 &&
+                          DateTime.Compare(g.GiftDate, endDate) <= 0
+                    select g.DonorID).Count();
+        }
+
+      public int GetExpectedRequestAllocationDataEntry(int round)
+      {
+         
+            // Expected request per round : for every round each region should have a request (the expected one)
+            //for each region : expected request should be one
+            //Table: 
+            // use published hrd
+            var latestDate = _unitOfWork.HRDRepository.Get(h => h.Status == 3).Max(h => h.PublishedDate);
+            var hrds = _unitOfWork.HRDRepository.FindBy(m => m.Status == 3 && m.PublishedDate == latestDate);
+            var planIds = hrds.Select(p => p.PlanID).Distinct().ToList();
+            //get all regions
+            var regions = _unitOfWork.AdminUnitRepository.Get(a => a.AdminUnitTypeID == 2).ToList();
+            return 23 + 36;//todo: change to the real code/
+        }  
+
+      public int GetActualRequestAllocationDataEntry(int round) //
+      {
+          return 1;
+          //for each region: actual number regional request might be zero, one or more than one 
+      }
+
+      public void Dispose()
         {
             _unitOfWork.Dispose();
         }
