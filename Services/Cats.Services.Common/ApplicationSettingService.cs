@@ -109,6 +109,15 @@ namespace Cats.Services.Common
             return getIntValue("DefaultRation");
         }
 
+        public int getNeedAssessmentPlanWorkflow()
+        {
+            return getIntValue("NeedAssessmentPlanWorkflow");
+        }
+        public int getNeedAssessmentWorkflow()
+        {
+            return getIntValue("NeedAssessmentWorkflow");
+        }
+
     }
 
 

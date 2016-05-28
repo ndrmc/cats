@@ -9,6 +9,5 @@ E:\src\cats\Models\Cats.Exceptions\obj\Debug\Cats.Exceptions.pdb
 \\10.24.65.152\cats\Models\Cats.Exceptions\obj\Debug\Cats.Exceptions.pdb
 E:\code\cats\Models\Cats.Exceptions\bin\Debug\Cats.Exceptions.dll
 E:\code\cats\Models\Cats.Exceptions\bin\Debug\Cats.Exceptions.pdb
-E:\code\cats\Models\Cats.Exceptions\obj\Debug\Cats.Exceptions.csprojResolveAssemblyReference.cache
 E:\code\cats\Models\Cats.Exceptions\obj\Debug\Cats.Exceptions.dll
 E:\code\cats\Models\Cats.Exceptions\obj\Debug\Cats.Exceptions.pdb

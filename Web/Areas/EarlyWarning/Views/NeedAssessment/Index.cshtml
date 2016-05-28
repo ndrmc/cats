@@ -6,6 +6,7 @@
 @using Kendo.Mvc.UI
 @using LanguageHelpers.Localization
 @using Cats.Models.Constant
+@model ICollection<Cats.Models.Plan>
 @{
     ViewBag.Title = "NeedAssessmentPlan";
     Layout = "~/Views/Shared/_CATSLayout.cshtml";
@@ -51,7 +52,7 @@ Plans
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (NeedAssessmentPlanViewModel item in Model)
+                                @foreach (Plan item in Model)
                                 {
                                     index++;
                                     var state = item.BusinessProcess.CurrentState.BaseStateTemplate;
@@ -59,65 +60,53 @@ Plans
                                     //{
                                     <tr>
                                         <td>
-                                            @item.CheckNo
+                                            @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail)
+                                                 || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.View_Need_Assessment_Detail))
+                                            {
+                                                <a href='@Url.Action("Detail", "NeedAssessment", new {id = item.PlanID})'> @item.PlanName </a>
+                                            }
+                                            else
+                                            {
+                                                @item.PlanName
+                                            }
                                         </td>
                                         <td>
-                                            @item.PaymentVoucherNo
+                                            @item.StartDate
                                         </td>
                                         <td>
-                                            @item.BankName
-                                        </td>
-                                        <td>
-                                            @item.Amount
-                                        </td>
-                                        <td>
-                                            @item.UserProfile.FirstName &nbsp; @item.UserProfile.LastName
+                                            @item.EndDate
                                         </td>
                                         <td>
                                             @state.Name
                                         </td>
                                         <td>
                                             <div class="btn-group">
-                                                <button class="btn btn-default btn-xs yellow-crusta-stripe" data-ng-click="loadChequeEditPage(@item.TransporterChequeId, @state.StateNo)">Edit</button>
                                                 <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
                                                     <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
                                                 </button>
                                                 <ul class="dropdown-menu pull-right">
                                                     @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
                                                     {
-                                                        if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Approve_cheque) && actions.Name == "Approve Cheque")
+                                                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "Approve")
                                                         {
-                                                            <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterChequeId)" title="@actions.Name">@actions.Name</a></li>
-                                                        }
-                                                        if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Collect_cheque) && actions.Name == "Collect Cheque")
-                                                        {
-                                                            <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterChequeId)" title="@actions.Name">@actions.Name</a></li>
+                                                            <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
                                                         }
                                                     }
                                                     <li class="divider"></li>
-                                                    @if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.View_history))
+                                                    @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
                                                     {
                                                         <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
                                                     }
                                                 </ul>
-                                                @{
-                                                    if (state.StateNo >= 1)
-                                                    {
-                                                        if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Print_Check_Payment))
-                                                        {
-                                                            <a class="btn btn-default btn-xs blue-steel-stripe" style="margin-left: 5px;" href="@Url.Action("PrintCheckPayment", "Cheque", new {transporterID = ViewBag.TransporterID, checkno = item.CheckNo, pvn = item.PaymentVoucherNo})">Print</a>
-                                                        }
-                                                    }
-                                                }
                                             </div>
                                         </td>
                                     </tr>
                                                         //}
 
-                                                    }
+                                }
                             </tbody>
                         </table>
-                            @(Html.Kendo().Grid<Cats.Areas.EarlyWarning.Models.NeedAssessmentPlanViewModel>()
+                            @*@(Html.Kendo().Grid<Cats.Areas.EarlyWarning.Models.NeedAssessmentPlanViewModel>()
                               .Name("grid")
                               .Columns(columns =>
                               {
@@ -166,7 +155,7 @@ Plans
                                   .Model(model => model.Id(p => p.PlanID))
                                   .Read(read => read.Action("NeedAssessment_Plan", "NeedAssessment", new { id = ViewBag.AssessmentStatus }))
                               )
-                            )
+                            )*@
 </div>
                 </div>
             </div>
@@ -177,19 +166,19 @@ Plans
 </div>
 
 <div class="modal" id="cats-modal">
-<div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      
-        <div class="modal-header">
-          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-          <h4 id="myModalLabel" class="modal-title">@Html.Translate("Approve Gift Certificate")</h4>
-        </div>
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="myModalLabel" class="modal-title">@Html.Translate("Approve Need Assesssment")</h4>
+            </div>
 
 
             <div class="modal-body">
-              
+
                 <p>
-                  @Html.Translate("Are you sure do you want to approve Need Assesssment?") 
+                    @Html.Translate("Are you sure do you want to approve Need Assesssment?")
                 </p>
 
             </div>
@@ -197,14 +186,53 @@ Plans
                 <button id="yes" class="btn btn-primary" type="submit">@Html.Translate("Yes") </button>
                 <button id="no"class="btn" data-dismiss="modal" aria-hidden="true">@Html.Translate("No") </button>
             </div>
-   
-       
+
+
+        </div>
     </div>
 </div>
-    </div>
 
+<div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id="modalHistoryLabel">Activity History</h4>
+            </div>
+            <div class="modal-body" id="modalHistoryBody">History</div>
+
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
 
 <script>
+    var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
+
+    function promot_workflow(BusinessProcessID, nextstate, actionname, PlanID) {
+        //alert(PaymentRequestID);
+        $('#ParentBusinessProcessID').val(BusinessProcessID);
+        $('#stateID').val(nextstate);
+        $('#modalPromotionLabel').html(actionname);
+        $('#TransporterChequeID').val(TransporterChequeID);
+        $('#modalPromotion').modal();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ApproveNeedAssessment", "NeedAssessment")",
+            data: "{id:" + PlanID + "}",
+            dataType: json
+        });
+    }
+    function workflow_history(BusinessProcessID) {
+        $('#modalHistory').modal();
+        $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+        $.post(history_link + BusinessProcessID, {},
+            function (data) {
+                $("#modalHistoryBody").html(data);
+            }
+        );
+    }
+
     function onDataBound(e) {
        
         $(".table-responsive .k-button").removeClass("k-button").addClass("btn btn-xs mrgn3-b col-md-11");
@@ -218,7 +246,7 @@ Plans
 
 <script>
     function approveNeedAssessment(e) {
-         e.preventDefault();
+        e.preventDefault();
         var grid = this;
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var row = $(e.currentTarget).closest("tr");

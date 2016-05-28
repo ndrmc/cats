@@ -32,7 +32,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly ICommonService _commonService;
         private readonly IUserAccountService _userAccountService;
         private readonly INotificationService _notificationService;
-
+        private readonly IApplicationSettingService _applicationSettingService;
 
         public NeedAssessmentController(INeedAssessmentService needAssessmentService,
                                         IAdminUnitService adminUnitService,
@@ -43,7 +43,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                         IPlanService planService,
                                         ICommonService commonService,IUserAccountService userAccountService,
                                         INotificationService notificationService,
-                                        IBusinessProcessService businessProcessService)
+                                        IBusinessProcessService businessProcessService, 
+                                        IApplicationSettingService applicationSettingService)
         {
             _needAssessmentService = needAssessmentService;
             _adminUnitService = adminUnitService;
@@ -57,44 +58,61 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _userAccountService = userAccountService;
             _notificationService = notificationService;
             _businessProcessService = businessProcessService;
+            _applicationSettingService = applicationSettingService;
         }
 
       
         // GET: /EarlyWarning/NeedAssessment/
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_Draft_Needs_Assessment)]
-        public ActionResult Index(int id=0)
+        public ActionResult Index(string id="")
         {
 
             ViewBag.AssessmentStatus = id;
             ViewData["zones"] = _adminUnitService.FindBy(t => t.AdminUnitTypeID == 3);
             ViewData["woredas"] = _adminUnitService.FindBy(t => t.AdminUnitTypeID == 4);
             ViewBag.userRegionID = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).RegionID;
+            ViewBag.TargetController = "NeedAssessment";
 
             var needAssessment = _needAssessmentService.GetAllNeedAssessment().Select(m => m.PlanID).Distinct();
             List<Plan> plans;
-            if (id == 0)
+            if (id == "")
                 plans =
-                    _planService.FindBy(
-                        m => m.Program.Name == "Relief" && (m.Status == (int)PlanStatus.Draft || m.Status == (int)PlanStatus.AssessmentCreated))
+                    _planService.Get(
+                        m => m.Program.Name == "Relief" && m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft"
+                        && m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "AssessmentCreated",
+                        null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
                         .OrderByDescending(m => m.PlanID)
                         .ToList();
+                    //_planService.Get(
+                    //    m => m.Program.Name == "Relief" && (m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft" 
+                    //    || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "AssessmentCreated"),
+                    //    null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                    //    .OrderByDescending(m => m.PlanID)
+                    //    .ToList();
             else
                 plans =
-                    _planService.FindBy(
-                        m => needAssessment.Contains(m.PlanID) && m.Program.Name == "Relief" && m.Status == id)
+                    _planService.Get(
+                        m => needAssessment.Contains(m.PlanID) && m.Program.Name == "Relief" && 
+                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name.ToLower() == id, null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
                         .OrderByDescending(m => m.PlanID)
                         .ToList();
-            var statuses = _commonService.GetStatus(WORKFLOW.Plan);
-            var needAssesmentsViewModel = NeedAssessmentViewModelBinder.GetNeedAssessmentPlanInfo(plans, statuses);
 
+            //Commented out as there is no need of model binding for the needs assessment plan
+            //var statuses = _commonService.GetStatus(WORKFLOW.Plan);
+            //var needAssesmentsViewModel = NeedAssessmentViewModelBinder.GetNeedAssessmentPlanInfo(plans, statuses);
             //ModelState.AddModelError("Success", "Sample Error Message. Use in Your Controller: ModelState.AddModelError('Errors', 'Your Error Message.')");
-            return View(needAssesmentsViewModel);
+            //return View(needAssesmentsViewModel);
+
+            return View(plans);
         }
 
-        public ActionResult Promote(BusinessProcessState st, int statusId)
+        public ActionResult Promote(BusinessProcessState st, int? statusId)
         {
             _businessProcessService.PromotWorkflow(st);
-            return RedirectToAction("Index", "NeedAssessment", new { Area = "EarlyWarning", statusId });
+            if(statusId!=null)
+                return RedirectToAction("Detail", "NeedAssessment", new { Area = "EarlyWarning", statusId });
+            return RedirectToAction("Index", "NeedAssessment", new { Area = "EarlyWarning" });
         }
 
         public ActionResult Edit(int id, int typeOfNeed)
@@ -175,14 +193,30 @@ namespace Cats.Areas.EarlyWarning.Controllers
                  else
                  {
 
-                     try
-                     {
-                         _planService.AddPlan(planName, firstDayOfTheMonth, endDate);
-                         //var plan = _planService.Get(p => p.PlanName == planName).Single();
-                         //var userID = _needAssessmentHeaderService.GetUserProfileId(HttpContext.User.Identity.Name);
-                         //_needAssessmentService.AddNeedAssessment(plan.PlanID, regionID, season, userID, typeOfNeedID);
-                         return RedirectToAction("Index");
-                     }
+                    try
+                    {
+                        int BP_PR = _applicationSettingService.getNeedAssessmentPlanWorkflow();
+                        if (BP_PR != 0)
+                        {
+                            BusinessProcessState createdstate = new BusinessProcessState
+                            {
+                                DatePerformed = DateTime.Now,
+                                PerformedBy = User.Identity.Name,
+                                Comment = "Needs Assessment Plan Created"
+
+                            };
+                            //_PaymentRequestservice.Create(request);
+
+                            BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                                                                                            "NeedAssessmentPlan", createdstate);
+                            if (bp != null)
+                                _planService.AddNeedAssessmentPlan(planName, firstDayOfTheMonth, endDate, bp.BusinessProcessID);
+                            //var plan = _planService.Get(p => p.PlanName == planName).Single();
+                            //var userID = _needAssessmentHeaderService.GetUserProfileId(HttpContext.User.Identity.Name);
+                            //_needAssessmentService.AddNeedAssessment(plan.PlanID, regionID, season, userID, typeOfNeedID);
+                            return RedirectToAction("Index");
+                        }
+                    }
 
                      catch (Exception exception)
                      {
@@ -396,13 +430,26 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult Detail(int id=0)
         {
             var plan = _planService.FindBy(m => m.PlanID == id).OrderByDescending(m=>m.PlanID).FirstOrDefault();
+            ViewBag.plan = plan;
             ViewBag.userRegionID = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).RegionID;
-            ViewBag.Status = plan.Status;
-            if (plan == null)
+            if (plan != null)
             {
-                return null;
+                ViewBag.Status = plan.BusinessProcess.CurrentState.BaseStateTemplate.Name;
+                ViewBag.TargetController = "NeedAssessment";
+                var regionID = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).RegionID;
+                var needAssessment = regionID == null ? 
+                    _needAssessmentService.Get(m => m.PlanID == id && 
+                                                    (m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Submitted to EW" ||
+                                                     m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved"), null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").OrderByDescending(m => m.NeedAID).ToList() :
+                    _needAssessmentService.Get(m => m.PlanID == id && m.Region == regionID &&
+                                                    (m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft" ||
+                                                     m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Reversed"), null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").OrderByDescending(m => m.NeedAID).ToList();
+                
+                return View(needAssessment);
             }
-            return View(plan);
+            return null;
         }
       public ActionResult PlannedNeedAssessmentInfo_Read([DataSourceRequest] DataSourceRequest request,int id=0)
       {
@@ -445,7 +492,28 @@ namespace Cats.Areas.EarlyWarning.Controllers
         var userID = _needAssessmentHeaderService.GetUserProfileId(HttpContext.User.Identity.Name);
         try
         {
-            _needAssessmentService.AddNeedAssessment(needAssessment.PlanID, regionID, season, userID, typeOfNeedID);
+            int BP_PR = _applicationSettingService.getNeedAssessmentWorkflow();
+            if (BP_PR != 0)
+            {
+                BusinessProcessState createdstate = new BusinessProcessState
+                {
+                    DatePerformed = DateTime.Now,
+                    PerformedBy = User.Identity.Name,
+                    Comment = "Needs Assessment Created"
+
+                };
+                //_PaymentRequestservice.Create(request);
+
+                BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                                                                                "NeedAssessment", createdstate);
+                if (bp != null)
+                    _needAssessmentService.AddNeedAssessment(needAssessment.PlanID, regionID, season, userID, typeOfNeedID, bp.BusinessProcessID);
+                //var plan = _planService.Get(p => p.PlanName == planName).Single();
+                //var userID = _needAssessmentHeaderService.GetUserProfileId(HttpContext.User.Identity.Name);
+                //_needAssessmentService.AddNeedAssessment(plan.PlanID, regionID, season, userID, typeOfNeedID);
+                return RedirectToAction("Index");
+            }
+            
             return RedirectToAction("Detail", "NeedAssessment", new { id = needAssessment.PlanID });
         }
         catch (Exception exception)
