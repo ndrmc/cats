@@ -27,6 +27,8 @@ namespace Cats.Models
         [Display(Name = "Comment")]
         public string Comment { get; set; }
 
+        [Display(Name = "Attachment File")]
+        public byte[] AttachmentFile { get; set; }
 
         //Relationships
 

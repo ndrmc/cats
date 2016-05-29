@@ -17,6 +17,7 @@ namespace Cats.Models.Mapping
          this.Property(t => t.PerformedBy).HasColumnName("PerformedBy");  
          this.Property(t => t.DatePerformed).HasColumnName("DatePerformed");  
          this.Property(t => t.Comment).HasColumnName("Comment");
+         this.Property(t => t.AttachmentFile).HasColumnName("AttachmentFile");
 
          this.HasRequired(t => t.BaseStateTemplate)
                 .WithMany(t => t.DerivedBusinessProcessStates)

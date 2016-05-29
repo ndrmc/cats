@@ -32,11 +32,10 @@ Plans
         <div class=" box box-primary ">
             <div class="box-body row">
                 <div class="text-right col-md-12">
-                    @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Create_new_needs_assessment)
-                    || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment))
+                    @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Create_new_needs_assessment))
                     {
                         <a href="@Url.Action("CreateNeedAssessment", "NeedAssessment", new {Area = "EarlyWarning"})" class="btn" btn-success=""
-                           data-buttontype="btn_new_record"><button type="button" class="btn btn-success"><span class="fa fa-plus"></span> New Need Assessment</button></a>
+                           data-buttontype="btn_new_record"><button type="button" class="btn btn-success"><span class="fa fa-plus"></span> New Need Assessment Plan</button></a>
                     }
                 </div>
                 <div class="col-md-12">
