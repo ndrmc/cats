@@ -104,7 +104,27 @@ namespace Cats.Services.EarlyWarning
         {
             _unitOfWork.Dispose();
         }
+        public void AddNeedAssessmentPlan(string planName, DateTime startDate, DateTime endDate, int businessProcessID)
+        {
+            var oldPlan = _unitOfWork.PlanRepository.FindBy(m => m.PlanName == planName).SingleOrDefault();
+            if (oldPlan == null)
+            {
+                var reliefProgram = _unitOfWork.ProgramRepository.FindBy(m => m.Name == "Relief").SingleOrDefault();
+                var plan = new Plan
+                {
+                    PlanName = planName,
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    Program = reliefProgram,
+                    Status = (int)PlanStatus.Draft,
+                    BusinessProcessID = businessProcessID
 
+                };
+                _unitOfWork.PlanRepository.Add(plan);
+                _unitOfWork.Save();
+            }
+            AssessmentPlanStatus(oldPlan);
+        }
 
         public void AddPlan(string planName, DateTime startDate, DateTime endDate)
         {

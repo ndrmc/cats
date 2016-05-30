@@ -272,7 +272,7 @@ NeedAssessmentHeader=new NeedAssessmentHeader(){AdminUnit=new AdminUnit(){Name="
                 seasonService.Object,
                 typeOfNeedAssessmentService.Object,
                 log.Object, planService.Object, commonService.Object, userAccountService.Object,
-                notificationService.Object);
+                notificationService.Object,null,null);
 
 
             _needAssessmentController=new NeedAssessmentController(needAssessmentService.Object,
@@ -281,7 +281,7 @@ NeedAssessmentHeader=new NeedAssessmentHeader(){AdminUnit=new AdminUnit(){Name="
                                                                     needAssessmentDetailService.Object,
                                                                     seasonService.Object,
                                                                     typeOfNeedAssessmentService.Object,
-                                                                    log.Object, planService.Object, commonService.Object,userAccountService.Object,null);
+                                                                    log.Object, planService.Object, commonService.Object,userAccountService.Object,null,null,null);
 
         }
         [TearDown]

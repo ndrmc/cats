@@ -17,6 +17,7 @@ namespace Cats.Models.Mapping
 
             this.ToTable("Plan","dbo");
             this.Property(t => t.PlanID).HasColumnName("PlanID");
+            this.Property(t => t.BusinessProcessID).HasColumnName("BusinessProcessID");
             this.Property(t => t.PlanName).HasColumnName("PlanName");
             this.Property(t => t.StartDate).HasColumnName("StartDate");
             this.Property(t => t.EndDate).HasColumnName("EndDate");
@@ -25,10 +26,13 @@ namespace Cats.Models.Mapping
            this.Property(t => t.Status).HasColumnName("Status");
            this.Property(t => t.Duration).HasColumnName("Duration");
            this.Property(t => t.PartitionId).HasColumnName("PartitionId");
-           //this.HasRequired(t => t.Program)
-           //   .WithMany(t => t.Plans)
-           //   .HasForeignKey(d => d.ProgramID);
-       }
+            //this.HasRequired(t => t.Program)
+            //   .WithMany(t => t.Plans)
+            //   .HasForeignKey(d => d.ProgramID);
+            this.HasRequired(t => t.BusinessProcess)
+                 .WithMany(t => t.Plans)
+                 .HasForeignKey(d => d.BusinessProcessID);
+        }
        
 
     }

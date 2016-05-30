@@ -25,6 +25,10 @@ namespace Cats.Services.Common
         List<ApplicationSetting> FindBy(Expression<Func<ApplicationSetting, bool>> predicate);
         void SetValue(string name, string value);
         string FindValue(string name);
-        
+
+        int getNeedAssessmentPlanWorkflow();
+        int getNeedAssessmentWorkflow();
+
+
     }
 }

@@ -61,6 +61,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -131,6 +132,7 @@
     <Compile Include="TransporterChequeDetail.cs" />
     <Compile Include="TransporterPaymentRequest.cs" />
     <Compile Include="ViewModels\Bid\BidAddWoredaViewModel.cs" />
+    <Compile Include="ViewModels\BusinessProcessStateViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\RecentRequests.cs" />
     <Compile Include="ViewModels\DistributionByAgeViewModel.cs" />
     <Compile Include="DistibtionStatus.cs" />
