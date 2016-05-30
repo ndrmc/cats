@@ -1297,6 +1297,13 @@ namespace Cats.Data.UnitWork
         public IGenericRepository<VWRegionalRequest> VWRegionalRequestRepository
         {
             get { return this._vwRegionalRequestRepository ?? (this._vwRegionalRequestRepository = new GenericRepository<VWRegionalRequest>(_context)); }
+       
+ }
+        private IGenericRepository<Reason> _reasonRepository;
+        public IGenericRepository<Reason> ReasonRepository
+        {
+            get { return this._reasonRepository ?? (this._reasonRepository = new GenericRepository<Reason>(_context)); }
+
         }
     }
 }

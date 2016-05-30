@@ -27,7 +27,7 @@ using Cats.Services.Administration;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using IFDPService = Cats.Services.EarlyWarning.IFDPService;
 using Workflow = Cats.Models.Constant.WORKFLOW;
-
+using System.IO;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -333,7 +333,30 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public void Upload()
+        {
+            for (int i = 0; i < Request.Files.Count; i++)
+            {
+                var file = Request.Files[i];
 
+                var reasonDetail = Request.Form[i];// reasonDetail;
+                if (file == null) continue;
+                var fileName = Path.GetFileName(file.FileName);
+                
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                file.SaveAs(path);
+            }
+
+        }
+        public ActionResult RejectRequestWithComment(ReasonViewModel reasonDetail)
+        {
+            var user = _userAccountService.GetUserInfo(User.Identity.Name);
+           // HttpContext.Request("comment");
+            _regionalRequestService.RejectRequest(reasonDetail.RegionalRequestID, user);
+
+            return RedirectToAction("Index");
+        }
         [HttpPost]
         public ActionResult New(HRDPSNPPlan hrdpsnpPlan, FormCollection formCollection)
         {
