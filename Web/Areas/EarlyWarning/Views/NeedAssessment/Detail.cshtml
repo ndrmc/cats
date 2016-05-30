@@ -176,21 +176,21 @@ Plans
                                                             }
                                                         }
                                                         <li class="divider"></li>
-                                                        @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
-                                                        {
+                                                        @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
+                                                        {*@
                                                             <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
-                                                        }
+                                                        @*}*@
                                                     </ul>
                                                 </div>
                                             </td>
                                         </tr>
                                         //}
 
-                                    }
-                                </tbody>
-                            </table>
+            }
+        </tbody>
+    </table>
 
-                            @*@(Html.Kendo().Grid<Cats.Models.NeedAssessmentHeaderViewModel>()
+    @*@(Html.Kendo().Grid<Cats.Models.NeedAssessmentHeaderViewModel>()
                                 .Name("grid")
                                 .Columns(columns =>
                                 {

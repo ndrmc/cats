@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Web.Mvc;
 using Cats.Models;
 using Cats.Models.Constant;
@@ -13,6 +15,7 @@ using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
 using log4net;
 using Cats.Helpers;
+using Cats.Models.ViewModels;
 using Cats.ViewModelBinder;
 using Cats.Security;
 
@@ -79,7 +82,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 plans =
                     _planService.Get(
                         m => m.Program.Name == "Relief" && m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft"
-                        && m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "AssessmentCreated",
+                        || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "AssessmentCreated",
                         null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
                         .OrderByDescending(m => m.PlanID)
                         .ToList();
@@ -93,7 +96,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 plans =
                     _planService.Get(
                         m => needAssessment.Contains(m.PlanID) && m.Program.Name == "Relief" && 
-                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name.ToLower() == id, null,
+                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == id, null,
                         "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
                         .OrderByDescending(m => m.PlanID)
                         .ToList();
@@ -107,12 +110,48 @@ namespace Cats.Areas.EarlyWarning.Controllers
             return View(plans);
         }
 
-        public ActionResult Promote(BusinessProcessState st, int? statusId)
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
         {
-            _businessProcessService.PromotWorkflow(st);
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachments/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot-1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachments/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+            _businessProcessService.PromotWorkflow(businessProcessState);
             if(statusId!=null)
                 return RedirectToAction("Detail", "NeedAssessment", new { Area = "EarlyWarning", statusId });
             return RedirectToAction("Index", "NeedAssessment", new { Area = "EarlyWarning" });
+        }
+
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
         }
 
         public ActionResult Edit(int id, int typeOfNeed)
@@ -508,13 +547,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                                                                 "NeedAssessment", createdstate);
                 if (bp != null)
                     _needAssessmentService.AddNeedAssessment(needAssessment.PlanID, regionID, season, userID, typeOfNeedID, bp.BusinessProcessID);
-                //var plan = _planService.Get(p => p.PlanName == planName).Single();
-                //var userID = _needAssessmentHeaderService.GetUserProfileId(HttpContext.User.Identity.Name);
-                //_needAssessmentService.AddNeedAssessment(plan.PlanID, regionID, season, userID, typeOfNeedID);
-                return RedirectToAction("Index");
+                    //var plan = _planService.Get(p => p.PlanName == planName).Single();
+                    //var userID = _needAssessmentHeaderService.GetUserProfileId(HttpContext.User.Identity.Name);
+                    //_needAssessmentService.AddNeedAssessment(plan.PlanID, regionID, season, userID, typeOfNeedID);
+                return RedirectToAction("Detail", "NeedAssessment", new { id = needAssessment.PlanID });
             }
-            
-            return RedirectToAction("Detail", "NeedAssessment", new { id = needAssessment.PlanID });
+            return RedirectToAction("Index");
         }
         catch (Exception exception)
         {

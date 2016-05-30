@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 
 namespace Cats.Models
 {
@@ -28,7 +29,7 @@ namespace Cats.Models
         public string Comment { get; set; }
 
         [Display(Name = "Attachment File")]
-        public byte[] AttachmentFile { get; set; }
+        public string AttachmentFile { get; set; }
 
         //Relationships
 

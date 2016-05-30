@@ -26,3 +26,4 @@ E:\code\cats\Models\Cats.Models.Security\bin\Debug\EntityFramework.xml
 E:\code\cats\Models\Cats.Models.Security\bin\Debug\log4net.xml
 E:\code\cats\Models\Cats.Models.Security\obj\Debug\Cats.Models.Security.dll
 E:\code\cats\Models\Cats.Models.Security\obj\Debug\Cats.Models.Security.pdb
+E:\code\cats\Models\Cats.Models.Security\obj\Debug\Cats.Models.Security.csprojResolveAssemblyReference.cache
