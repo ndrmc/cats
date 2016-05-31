@@ -605,6 +605,7 @@
             var comment = $('#Comment').val();
             var reasonDetail = { RegionalRequestID: regionalRequestId, Comment: comment, Attachment: '1' };
             var formData = new FormData();
+            $('#cats-modal-reject').modal('hide');
             var totalFiles = document.getElementById("Attachment").files.length;
             for (var i = 0; i < totalFiles; i++)
             {
@@ -613,6 +614,8 @@
                 formData.append("Attachment", file);
                 formData.append("ReasonDetail", reasonDetail);
             }
+            formData.append("RegionalRequestId", regionalRequestId);
+            formData.append("Comment", comment);
             $.ajax({
                 type: "POST",
                 url: '/Request/Upload',
@@ -621,10 +624,10 @@
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    alert('succes!!');
+                    //alert('succes!!');
                 },
                 error: function (error) {
-                    alert("errror");
+                    //alert("errror");
                 }
             });
            @*window.location = "@Url.Action("RejectRequestWithComment", "Request")" + "/" + reasonDetail;*@
