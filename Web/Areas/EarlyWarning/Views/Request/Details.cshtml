@@ -1,4 +1,4 @@
-﻿@using System.Collections
+﻿ @using System.Collections
 @using System.Diagnostics
 @using Cats.Areas.EarlyWarning.Models
 @model System.Data.DataTable
@@ -100,15 +100,15 @@
 
 }
 <script type="text/javascript">
-    $(function () {
+    $(function() {
 
         //Optional: turn the chache off
         $.ajaxSetup({ cache: false });
 
-        $('#btnEditPlan').click(function () {
+        $('#btnEditPlan').click(function() {
 
             // alert("");
-            $('#dialogContent').load(this.href, function () {
+            $('#dialogContent').load(this.href, function() {
                 $('#dialogDiv').modal({
                     backdrop: 'static',
                     keyboard: true
@@ -117,7 +117,19 @@
             });
             return false;
         });
+        $('#btnAddFDP').click(function() {
+            e.preventDefault();
+            var grid = this;
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var row = $(e.currentTarget).closest("tr");
+            $('#cats-modal-reject').modal('show');
 
+            $("#yes").click(function() {
+
+                window.location = "@Url.Action("ApproveHRD", "HRD")" + "/" + dataItem.HRDID;
+
+            });
+        });
         $('#btnAddFDP').click(function () {
 
             // alert("");
@@ -179,6 +191,7 @@
                             <li>
                                 <a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
                                                                      EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))</a>
+                                
                                 <a class="btn green-haze-stripe">@Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
                                                                      @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)</a>
                             </li>
@@ -198,6 +211,7 @@
                     @if (modelRequest.StatusID == (int) Cats.Models.Constant.RegionalRequestStatus.Approved && modelRequest.ProgramId == (int) Cats.Models.Constant.Programs.IDPS)
                     {
                         <li><a class="btn green-haze-stripe" id="btnEditPlan" href="@Url.Action("CreateRequisitionForIDPS", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID, programId = modelRequest.ProgramId})"><i class="icon-plus"></i>IDPS Requisiton</a></li>
+                        
                         <li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li>
                     }
                     else if (modelRequest.StatusID == (int) Cats.Models.Constant.RegionalRequestStatus.Approved)
@@ -206,7 +220,7 @@
                         {
                             <li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("CreateRequisiton", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID}),
                                                                      EarlyWarningConstants.Operation.New_requisition, @Html.Translate("Requisiton"))</a></li>
-
+                                                                    <li> <a class="btn green-haze-stripe" href="javascript:rejectRequest('@modelRequest.RegionalRequestID')">Reject</a> </li>
                             <li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID}),
                                                                      EarlyWarningConstants.Operation.Reject_Request, @Html.Translate("Reject"))</a></li>
                         }
@@ -214,7 +228,7 @@
                         {
                             <li><a class="btn green-haze-stripe">@Html.PSNPOperationMenuItem(@Html.Translate("Requisiton"), @Url.Action("CreateRequisiton", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID}),
                                                                      PsnpConstants.Operation.New_requisition)</a></li>
-
+                            
                             <li><a class="btn green-haze-stripe">@Html.PSNPOperationMenuItem(@Html.Translate("Reject"), @Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID}),
                                                                      PsnpConstants.Operation.Reject_Request)</a></li>
                         } @*
@@ -484,7 +498,45 @@
         </div>
     </div>
 </div>
+<div class="modal" id="cats-modal-reject">
+    <div class="modal-dialog ">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="myModalLabel" class="modal-title">Reject Detail</h4>
+            </div>
+
+
+            <div class="modal-body">
+
+                <div class="row-fluid">
+                    <div class="controls span6">
+                     
+
+                        <textarea class="input-xlarge" id="Comment"
+                                  name="Summary" rows="5" cols="0"
+                                  placeholder="Comment"></textarea>
+                        <div class="controls span6">
+                            <label> Attachment</label>
+                        </div>
+                        <input type="file"
+                               class="input-xlarge" id="Attachment" name="Attachment"
+                               placeholder="Attachment" />
+                    </div>
+                    
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button id="yes" class="btn btn-danger" type="submit">Reject</button>
+                <button id="no" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            </div>
+
+
+        </div>
+    </div>
+</div>
 <script>
 
     var tblbody;
@@ -541,7 +593,49 @@
             //alert(message);
         }
     }
+    function rejectRequest(regionalRequestId) {
+        //e.preventDefault();
+        //var grid = this;
+        //var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        //var row = $(e.currentTarget).closest("tr");
 
+        $('#cats-modal-reject').modal('show');
+
+        $("#yes").click(function() {
+            var comment = $('#Comment').val();
+            var reasonDetail = { RegionalRequestID: regionalRequestId, Comment: comment, Attachment: '1' };
+            var formData = new FormData();
+            $('#cats-modal-reject').modal('hide');
+            var totalFiles = document.getElementById("Attachment").files.length;
+            for (var i = 0; i < totalFiles; i++)
+            {
+                var file = document.getElementById("Attachment").files[i];
+
+                formData.append("Attachment", file);
+                formData.append("ReasonDetail", reasonDetail);
+            }
+            formData.append("RegionalRequestId", regionalRequestId);
+            formData.append("Comment", comment);
+            $.ajax({
+                type: "POST",
+                url: '/Request/Upload',
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    //alert('succes!!');
+                },
+                error: function (error) {
+                    //alert("errror");
+                }
+            });
+           @*window.location = "@Url.Action("RejectRequestWithComment", "Request")" + "/" + reasonDetail;*@
+
+        });
+
+
+    }
 
     function onDataBound(e) {
 

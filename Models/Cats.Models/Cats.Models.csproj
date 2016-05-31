@@ -111,6 +111,7 @@
     <Compile Include="Mapping\LocalPurchaseDetailMap.cs" />
     <Compile Include="Mapping\LocalPurchaseMap.cs" />
     <Compile Include="Mapping\LossReasonMap.cs" />
+    <Compile Include="Mapping\ReasonMap.cs" />
     <Compile Include="Mapping\ReceiptPlanDetailMap.cs" />
     <Compile Include="Mapping\ReceiptPlanMap.cs" />
     <Compile Include="Mapping\LoanReciptPlanMap.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="Mapping\TransporterPaymentRequestMap.cs" />
     <Compile Include="Mapping\DistibtionStatusMap.cs" />
     <Compile Include="Mapping\VWRegionalRequestMap.cs" />
+    <Compile Include="Reason.cs" />
     <Compile Include="ReceiptPlan.cs" />
     <Compile Include="ReceiptPlanDetal.cs" />
     <Compile Include="Mapping\OtherDispatchAllocationMap.cs" />

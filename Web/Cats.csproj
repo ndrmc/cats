@@ -218,6 +218,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\EarlyWarning\Controllers\ContributionController.cs" />
+    <Compile Include="Areas\EarlyWarning\Models\ReasonViewModel.cs" />
     <Compile Include="Areas\Finance\Controllers\ChequeController.cs" />
     <Compile Include="Areas\Finance\Models\TransporterPaymentRequestViewModel.cs" />
     <Compile Include="Areas\Hub\Controllers\AdminUnitController.cs" />
@@ -3782,6 +3783,7 @@
     <Folder Include="Content\assetss\global\plugins\jqvmap\jqvmap\data\" />
     <Folder Include="Content\assetss\global\plugins\jqvmap\jqvmap\maps\" />
     <Folder Include="Content\assetss\global\plugins\jstree\dist\themes\" />
+    <Folder Include="Content\Attachment\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
