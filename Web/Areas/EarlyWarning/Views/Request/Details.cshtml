@@ -221,8 +221,8 @@
                             <li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("CreateRequisiton", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID}),
                                                                      EarlyWarningConstants.Operation.New_requisition, @Html.Translate("Requisiton"))</a></li>
                                                                     <li> <a class="btn green-haze-stripe" href="javascript:rejectRequest('@modelRequest.RegionalRequestID')">Reject</a> </li>
-                            <li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID}),
-                                                                     EarlyWarningConstants.Operation.Reject_Request, @Html.Translate("Reject"))</a></li>
+                            @*<li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem( "javascript:rejectRequest('@modelRequest.RegionalRequestID')" ,
+                                                                     EarlyWarningConstants.Operation.Reject_Request, @Html.Translate("Reject"))</a></li>*@
                         }
                         else if (modelRequest.Program == "PSNP")
                         {
@@ -618,7 +618,7 @@
             formData.append("Comment", comment);
             $.ajax({
                 type: "POST",
-                url: '/Request/Upload',
+                url: '../Upload',
                 data: formData,
                 dataType: 'json',
                 contentType: false,
