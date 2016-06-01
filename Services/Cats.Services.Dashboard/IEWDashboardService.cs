@@ -23,7 +23,7 @@ namespace Cats.Services.Dashboard
       List<WoredaStockDistribution> GetDistributions(int planID);
       List<Delivery> GetDeliveries(List<Guid> dispatchIds);
       int GetTotalRegionalRequest(int regionId, int planId);
-      int GetRegionalRequestSubmittedToFinance(int regionId, int planId);
+      int GetRegionalRequestSubmittedToLogistics(int regionId, int planId);
      
 
     }

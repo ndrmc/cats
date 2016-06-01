@@ -409,7 +409,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 var numberOfZones = _commonService.GetAminUnits(p => p.ParentID == region.AdminUnitID).Count();
                 var completed =
-                    _eWDashboardService.GetRegionalRequestSubmittedToFinance(region.AdminUnitID, currentHrd.PlanID);
+                    _eWDashboardService.GetRegionalRequestSubmittedToLogistics(region.AdminUnitID, currentHrd.PlanID);
                 var allocated = _eWDashboardService.GetRemainingRequest(region.AdminUnitID, currentHrd.PlanID);
                 int expected = numberOfCommodities*numberOfZones;
                 var ratio = expected != 0 ? completed/Convert.ToDouble(expected):0;

@@ -85,11 +85,11 @@ namespace Cats.Services.Dashboard
           return requested;
       }
 
-      public int GetRegionalRequestSubmittedToFinance(int regionId, int planId)
+      public int GetRegionalRequestSubmittedToLogistics(int regionId, int planId)
       {
           var requested =
               _unitOfWork.RegionalRequestRepository.FindBy(
-                  m => m.RegionID == regionId && m.PlanID == planId && m.Status == 3).Count; //status = 2 submitted to finance
+                  m => m.RegionID == regionId && m.PlanID == planId && m.Status == 2).Count; //status = 2 submitted to finance
             return requested;
         }
 
