@@ -22,12 +22,9 @@ namespace Cats.Services.Dashboard
       List<Dispatch> GetDispatches(List<string> requisitionNos);
       List<WoredaStockDistribution> GetDistributions(int planID);
       List<Delivery> GetDeliveries(List<Guid> dispatchIds);
-      int GetExpectedHrdDataEntry(int yearId, int planId);
-      int GetActualHrdDataEntry(int yearId, int planId);
-      int GetExpectedGiftCerteficateDataEntry(DateTime startDate, DateTime endDate);
-      int GetActualGiftCerteficateDataEntry(DateTime startDate, DateTime endDate);
-      int GetExpectedRequestAllocationDataEntry(int round);
-      int GetActualRequestAllocationDataEntry(int round);
+      int GetTotalRegionalRequest(int regionId, int planId);
+      int GetRegionalRequestSubmittedToFinance(int regionId, int planId);
+     
 
     }
 }

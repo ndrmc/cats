@@ -6,6 +6,7 @@ using Cats.Areas.EarlyWarning.Models;
 using Cats.Helpers;
 using Cats.Models;
 using Cats.Models.Constant;
+using Cats.Services.Common;
 using Cats.Services.Dashboard;
 using Cats.Services.Security;
 using Plan = Cats.Models.Partial.Plan;
@@ -17,11 +18,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
         private readonly IEWDashboardService _eWDashboardService;
         private readonly IUserAccountService _userAccountService;
-        public EWDashboardController(IEWDashboardService ewDashboardService,IUserAccountService userAccountService)
+        private ICommonService _commonService;
+        public EWDashboardController(IEWDashboardService ewDashboardService,IUserAccountService userAccountService,ICommonService commonService)
         {
             _eWDashboardService = ewDashboardService;
             _userAccountService = userAccountService;
-
+            _commonService = commonService;
         }
 
         public JsonResult GetRation()
@@ -395,23 +397,34 @@ namespace Cats.Areas.EarlyWarning.Controllers
             return 0;
         }
 
-        public JsonResult GetHRDDataEntryStatus(int year, int planId)
+      
+        public JsonResult GetRegionalRequestDataEntryStatus()
         {
-            var expected = _eWDashboardService.GetExpectedHrdDataEntry(year, planId);
-            var actual = _eWDashboardService.GetActualHrdDataEntry(year, planId);
-            return Json(new {Actual = actual, Expcted = expected}, JsonRequestBehavior.AllowGet);
-        }
-        public JsonResult GetGiftCerteficateDataEntryStatus(DateTime startDate, DateTime endDate)
-        {
-            var expected = _eWDashboardService.GetExpectedGiftCerteficateDataEntry(startDate, endDate);
-            var actual = _eWDashboardService.GetActualGiftCerteficateDataEntry(startDate, endDate);
-            return Json(new { Actual = actual, Expcted = expected }, JsonRequestBehavior.AllowGet);
-        }
-        public JsonResult GetRequestAllocationDataEntryStatus(int round)
-        {
-            var expected = _eWDashboardService.GetExpectedRequestAllocationDataEntry(round);
-            var actual = _eWDashboardService.GetActualRequestAllocationDataEntry(round);
-            return Json(new { Actual = actual, Expcted = expected }, JsonRequestBehavior.AllowGet);
+            var currentHrd = GetCurrentHrd();
+            var rationDetail = _eWDashboardService.FindByRationDetail(m => m.RationID == currentHrd.RationID);
+            var numberOfCommodities = rationDetail.Count();
+            var regions = _commonService.GetAminUnits(t => t.AdminUnitTypeID == 2).OrderBy(t=>t.Name).ToList();
+            var regionalRequestDataEntryStatus = new List<RegionalRequestDataEntryStatusViewModel>();
+            foreach (var region in regions)
+            {
+                var numberOfZones = _commonService.GetAminUnits(p => p.ParentID == region.AdminUnitID).Count();
+                var completed =
+                    _eWDashboardService.GetRegionalRequestSubmittedToFinance(region.AdminUnitID, currentHrd.PlanID);
+                var allocated = _eWDashboardService.GetRemainingRequest(region.AdminUnitID, currentHrd.PlanID);
+                int expected = numberOfCommodities*numberOfZones;
+                var ratio = expected != 0 ? completed/Convert.ToDouble(expected):0;
+                var progress = ratio*100.0;
+                var regionalDataEntryStatus = new RegionalRequestDataEntryStatusViewModel
+                {
+                    Region = region.Name,
+                    TotalRequested = expected,
+                    Allocated = allocated,
+                    AllocationProgress =Convert.ToDecimal(Math.Round(progress,2)),
+                    Completed = completed,
+                };
+                regionalRequestDataEntryStatus.Add(regionalDataEntryStatus);
+            }
+            return Json(regionalRequestDataEntryStatus, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -215,6 +215,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\EarlyWarning\Controllers\ContributionController.cs" />
+    <Compile Include="Areas\EarlyWarning\Models\RegionalRequestDataEntryStatusViewModel.cs" />
     <Compile Include="Areas\Finance\Controllers\ChequeController.cs" />
     <Compile Include="Areas\Finance\Models\TransporterPaymentRequestViewModel.cs" />
     <Compile Include="Areas\Hub\Controllers\AdminUnitController.cs" />
