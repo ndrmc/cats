@@ -118,12 +118,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 //save the file
                 fileName = st.AttachmentFile.FileName;
-                var path = Path.Combine(Server.MapPath("~/Content/Attachments/"), fileName);
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
                 if (System.IO.File.Exists(path))
                 {
                     var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
                     fileName = fileName.Insert(indexOfDot-1, GetRandomAlphaNumeric(6));
-                    path = Path.Combine(Server.MapPath("~/Content/Attachments/"), fileName);
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
                 }
                 st.AttachmentFile.SaveAs(path);
             }
