@@ -11,7 +11,7 @@ namespace Cats.Services.Dashboard
   public  class EWDashboardService:IEWDashboardService
   {
       private IUnitOfWork _unitOfWork;
-      public EWDashboardService(IUnitOfWork unitOfWork )
+        public EWDashboardService(IUnitOfWork unitOfWork )
       {
           _unitOfWork = unitOfWork;
 
@@ -78,7 +78,23 @@ namespace Cats.Services.Dashboard
      {
          return _unitOfWork.DeliveryRepository.Get(m => dispatchIds.Contains(m.DispatchID.Value)).ToList();
      }
-       public void Dispose()
+
+      public int GetTotalRegionalRequest(int regionId, int planId)
+      {
+            var requested = _unitOfWork.RegionalRequestRepository.FindBy(m => m.RegionID == regionId && m.PlanID == planId).Count;
+          return requested;
+      }
+
+      public int GetRegionalRequestSubmittedToLogistics(int regionId, int planId)
+      {
+          var requested =
+              _unitOfWork.RegionalRequestRepository.FindBy(
+                  m => m.RegionID == regionId && m.PlanID == planId && m.Status == 2).Count; //status = 2 submitted to finance
+            return requested;
+        }
+
+    
+      public void Dispose()
         {
             _unitOfWork.Dispose();
         }
