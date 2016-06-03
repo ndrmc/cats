@@ -50,7 +50,6 @@ E:\code\cats\Services\Cats.Services.Common\bin\Debug\Cats.Core.dll
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\Cats.Models.dll
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\EntityFramework.dll
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\log4net.dll
-E:\code\cats\Services\Cats.Services.Common\bin\Debug\Microsoft.Web.Infrastructure.dll
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\Helpers.Localization.dll
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\Cats.Models.Security.dll
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\System.Web.Mvc.dll
