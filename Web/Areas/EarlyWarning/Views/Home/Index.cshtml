@@ -401,6 +401,21 @@
 
                 <div class="box box-solid">
                     <div class="box-header">
+                        <h3 class="box-title"> Data Entry Status </h3>
+                        <div class="box-tools pull-right">
+                            <button data-widget="collapse" class="btn btn-default btn-sm"><i class="fa fa-minus"></i></button>
+                            <button data-widget="remove" class="btn btn-default btn-sm"><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        {{drawPieChart()}}
+                        <div id="chart"></div>
+                    </div>
+                </div>
+             
+
+                <div class="box box-solid">
+                    <div class="box-header">
                         <h3 class="box-title">Requisitions Percentage </h3>
                         <div class="box-tools pull-right">
                             <button data-widget="collapse" class="btn btn-default btn-sm"><i class="fa fa-minus"></i></button>
@@ -597,6 +612,61 @@
                 }
                 return (completed / requested) * 100;
             }
+            $scope.drawPieChart = function () {
+                var completed = 0;
+                var requested = 0;
+                var completedInPercent = 0;
+                var remaining = 0;
+                for (var i = 0; i < $scope.RegionalRequestStatus.length; i++) {
+                    var request = $scope.RegionalRequestStatus[i];
+                    requested += request.TotalRequested;
+                    completed += request.Completed;
+                }
+                completedInPercent = (completed / requested) * 100;
+                remaining = 100 - completedInPercent;
+                $("#chart").kendoChart({
+                    title: {
+                        position: "bottom",
+                        text: ""
+                    },
+                    legend: {
+                        visible: true,
+                        position:"bottom"
+                    },
+                    chartArea: {
+                        background: ""
+                    },
+                    seriesDefaults: {
+                        labels: {
+                            visible: true,
+                            background: "transparent",
+                            template: "#= category #: \n #= value#%"
+                        }
+                    },
+                    series: [
+                        {
+                            type: "pie",
+                            startAngle: 150,
+                            data: [
+                                {
+                                    category: "Completed",
+                                    value: completedInPercent,
+                                    color: "#0033ff"
+                                }, {
+                                    category: "Remaining",
+                                    value: remaining,
+                                    color: "#90cc38"
+                                }
+                            ]
+                        }
+                    ],
+                    tooltip: {
+                        visible: true,
+                        format: "{0}%"
+                    }
+                });
+            }
+
 
             $scope.getRequests = function () {
                 $http.post("@Url.Action("GetRegionalRequests", "EWDashboard", new { Area = "EarlyWarning" })").success(onRequestsSuccess);
@@ -888,5 +958,6 @@
                 };
             };
         });
-
+        //$(document).ready(drawPieChart);
+        //$(document).bind("kendo:skinChange", drawPieChart);
     </script>
