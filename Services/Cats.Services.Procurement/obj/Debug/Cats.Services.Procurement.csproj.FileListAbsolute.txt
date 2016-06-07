@@ -67,3 +67,11 @@ E:\code\cats\services\Cats.Services.Procurement\bin\Debug\Cats.Models.Security.p
 E:\code\cats\services\Cats.Services.Procurement\obj\Debug\Cats.Services.Procurement.csprojResolveAssemblyReference.cache
 E:\code\cats\services\Cats.Services.Procurement\obj\Debug\Cats.Services.Procurement.dll
 E:\code\cats\services\Cats.Services.Procurement\obj\Debug\Cats.Services.Procurement.pdb
+E:\code\cats\services\Cats.Services.Procurement\bin\Debug\System.Web.Razor.dll
+E:\code\cats\services\Cats.Services.Procurement\bin\Debug\System.Web.WebPages.Razor.dll
+E:\code\cats\services\Cats.Services.Procurement\bin\Debug\System.Web.WebPages.dll
+E:\code\cats\services\Cats.Services.Procurement\bin\Debug\System.Web.WebPages.Deployment.dll
+E:\code\cats\services\Cats.Services.Procurement\bin\Debug\System.Web.Razor.xml
+E:\code\cats\services\Cats.Services.Procurement\bin\Debug\System.Web.WebPages.Razor.xml
+E:\code\cats\services\Cats.Services.Procurement\bin\Debug\System.Web.WebPages.xml
+E:\code\cats\services\Cats.Services.Procurement\bin\Debug\System.Web.WebPages.Deployment.xml
