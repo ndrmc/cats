@@ -136,7 +136,13 @@ namespace Cats.Areas.Procurement.Controllers
             var recentBidViewModels = BindBidViewModels(recentBids);
             return Json(recentBidViewModels, JsonRequestBehavior.AllowGet);
         }
-
+        public JsonResult DataEntryStatus([DataSourceRequest]DataSourceRequest request)
+        {
+            var recentBids =
+                _bidService.FindBy(t => t.StatusID == 5).OrderByDescending(t => t.OpeningDate).Take(10).ToList();
+            var recentBidViewModels = BindBidViewModels(recentBids);
+            return Json(recentBidViewModels, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult PriceQoutation(int bidID)
         {
             var proposals = _bidQuotationHeader.FindBy(e=>e.BidId==bidID).OrderByDescending(t => t.TransportBidQuotationHeaderID);

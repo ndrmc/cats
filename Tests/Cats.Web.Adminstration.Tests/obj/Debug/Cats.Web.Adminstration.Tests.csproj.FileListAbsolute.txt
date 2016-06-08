@@ -211,7 +211,3 @@ E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\zh-CN\Kendo.Mvc.resour
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.csprojResolveAssemblyReference.cache
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.pdb
-E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.dll
-E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.WebHost.dll
-E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.xml
-E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.WebHost.xml
