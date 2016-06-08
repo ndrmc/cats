@@ -1,0 +1,5 @@
+E:\code\cats\Data\Cats.Data.Micro\bin\Release\Cats.Data.Micro.dll
+E:\code\cats\Data\Cats.Data.Micro\bin\Release\Cats.Data.Micro.pdb
+E:\code\cats\Data\Cats.Data.Micro\obj\Release\Cats.Data.Micro.csprojResolveAssemblyReference.cache
+E:\code\cats\Data\Cats.Data.Micro\obj\Release\Cats.Data.Micro.dll
+E:\code\cats\Data\Cats.Data.Micro\obj\Release\Cats.Data.Micro.pdb

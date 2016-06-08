@@ -24,6 +24,7 @@ namespace Cats.Services.EarlyWarning
        List<Program> GetPrograms();
        List<Program> GetNonReliefProgram();
        void AddNeedAssessmentPlan(NeedAssessment needAssessment);
+       void AddNeedAssessmentPlan(string planName, DateTime startDate, DateTime endDate, int businessProcessID);
        void AddPlan(string planName, DateTime startDate, DateTime endDate);
        void AddHRDPlan(string planName, DateTime startDate, DateTime endDate);
        List<NeedAssessment> PlannedNeedAssessment(int planID);

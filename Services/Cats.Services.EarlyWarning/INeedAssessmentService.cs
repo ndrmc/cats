@@ -27,12 +27,17 @@ namespace Cats.Services.EarlyWarning
         List<NeedAssessmentDao> GetListOfZones();
         List<NeedAssessmentWoredaDao> GetListOfWoredas(int zoneId);
          bool GenerateDefefaultData(NeedAssessment needAssessment);
-        void AddNeedAssessment(int planID, int regionID, int seasonID, int userID, int needAssessmentTypeID);
+        void AddNeedAssessment(int planID, int regionID, int seasonID, int userID, int needAssessmentTypeID, int businessProcessID);
         
         IOrderedEnumerable<RegionsViewModel> GetRegions();
         IOrderedEnumerable<RegionsViewModel> GetZoness(int region);
         //IEnumerable<NeedAssessmentHeaderViewModel> ReturnViewModelApproved();
         bool IsNeedAssessmentUsedInHrd(int planId);
+
+        IEnumerable<NeedAssessment> Get(
+            Expression<Func<NeedAssessment, bool>> filter = null,
+            Func<IQueryable<NeedAssessment>, IOrderedQueryable<NeedAssessment>> orderBy = null,
+            string includeProperties = "");
     }
 }
 

@@ -27,7 +27,7 @@ using Cats.Services.Administration;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using IFDPService = Cats.Services.EarlyWarning.IFDPService;
 using Workflow = Cats.Models.Constant.WORKFLOW;
-
+using System.IO;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -53,6 +53,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly Cats.Services.Transaction.ITransactionService _transactionService;
         private readonly INotificationService _notificationService;
         private readonly IUserProfileService _userProfileService;
+        private IReasonService _reasonService;
         public RequestController(IRegionalRequestService reliefRequistionService,
                                 IFDPService fdpService,
                                 IRegionalRequestDetailService reliefRequisitionDetailService,
@@ -66,7 +67,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                 IRegionalPSNPPlanService RegionalPSNPPlanService,
             IAdminUnitService adminUnitService,
             IPlanService planService,
-            IIDPSReasonTypeServices idpsReasonTypeServices, ITransactionService transactionService, INotificationService notificationService, IUserProfileService userProfileService)
+            IIDPSReasonTypeServices idpsReasonTypeServices, ITransactionService transactionService, INotificationService notificationService, IUserProfileService userProfileService, IReasonService reasonService)
         {
             _regionalRequestService = reliefRequistionService;
             _fdpService = fdpService;
@@ -85,6 +86,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _transactionService = transactionService;
             _notificationService = notificationService;
             _userProfileService = userProfileService;
+            _reasonService = reasonService;
         }
         public ActionResult RegionalRequestsPieChart()
         {
@@ -333,7 +335,38 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             return RedirectToAction("Index");
         }
-
+        [HttpPost]
+        public ActionResult Upload()
+        {
+            var user = _userAccountService.GetUserInfo(User.Identity.Name);
+            var attachment = "";
+            for (int i = 0; i < Request.Files.Count; i++)
+            {
+                var file = Request.Files[i];
+                var reasonDetail = Request.Form[i];
+               
+                // reasonDetail;
+                
+                if (file == null) continue;
+                var fileName = Path.GetFileName(file.FileName);
+                
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                file.SaveAs(path);
+                attachment = path;
+            }
+            Reason saveReason = new Reason();
+            saveReason.RegionalRequestID = Convert.ToInt32(Request.Form["RegionalRequestID"]);
+            saveReason.Comment = Request.Form["Comment"];
+            saveReason.CommentedBy = user.UserProfileID;
+            saveReason.CommentedDate = DateTime.Now;
+            saveReason.EditedDate = DateTime.Now;
+            saveReason.Status= "Reject";
+            saveReason.Attachment = attachment; 
+            _reasonService.AddReason(saveReason);
+            _regionalRequestService.RejectRequest(Convert.ToInt32(Request.Form["RegionalRequestID"]), user);
+            return RedirectToAction("Index");
+        }
+       
         [HttpPost]
         public ActionResult New(HRDPSNPPlan hrdpsnpPlan, FormCollection formCollection)
         {

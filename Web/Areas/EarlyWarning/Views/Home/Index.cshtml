@@ -128,9 +128,51 @@
             
         </div>
 
-        <div class="row" ng-controller="EWDashboardController">
-            <div class="col-md-8">
 
+
+
+  
+
+    <div class="row" ng-controller="EWDashboardController">
+            <div class="col-md-8">
+                <div class="box box-solid box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">Data Entry Status</h3>
+                        <div class="box-tools pull-right">
+                            <button data-widget="collapse" class="btn btn-primary btn-sm"><i class="fa fa-minus"></i></button>
+                            <button data-widget="remove" class="btn btn-primary btn-sm"><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-striped table-checkable">
+                            <thead>
+                                <tr>
+                                    <th class="hidden-xs">Region</th>
+                                    <th class="number">Total Requested</th>
+                                    <th class="number">Allocated</th>
+                                    <th class="number">Completed</th>
+                                    <th class="number">Allocation Progress</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="requested in RegionalRequestStatus">
+                                    <td>{{requested.Region}}</td>
+                                    <td class="number">{{requested.TotalRequested|number}}</td>
+                                    <td class="number">{{requested.Allocated|number}}</td>
+                                    <td class="number">{{requested.Completed|number}}</td>
+                                    <td class="number">{{requested.AllocationProgress|number}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total:</td>
+                                    <td class="number">{{getTotalRegionalRequest()}}</td>
+                                    <td class="number">{{getTotalRegionalRequestAllocated()}}</td>
+                                    <td class="number">{{getTotalRegionalRequestCompleted()}}</td>
+                                    <td class="number">{{getTotalRegionalRequestProgress()}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div class="box box-solid box-primary ">
                     <div class="box-header">
                         <h3 class="box-title">@ViewBag.HRDName</h3>
@@ -359,6 +401,21 @@
 
                 <div class="box box-solid">
                     <div class="box-header">
+                        <h3 class="box-title"> Data Entry Status </h3>
+                        <div class="box-tools pull-right">
+                            <button data-widget="collapse" class="btn btn-default btn-sm"><i class="fa fa-minus"></i></button>
+                            <button data-widget="remove" class="btn btn-default btn-sm"><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        {{drawPieChart()}}
+                        <div id="chart"></div>
+                    </div>
+                </div>
+             
+
+                <div class="box box-solid">
+                    <div class="box-header">
                         <h3 class="box-title">Requisitions Percentage </h3>
                         <div class="box-tools pull-right">
                             <button data-widget="collapse" class="btn btn-default btn-sm"><i class="fa fa-minus"></i></button>
@@ -482,6 +539,9 @@
             $scope.GiftCertificates = [];
             $scope.DispatchTillDistributions = [];
 
+            $scope.RegionalRequestStatus = [];
+           
+
             var onRequestsSuccess = function (data) {
                 $scope.Requests = data;
             };
@@ -515,6 +575,98 @@
             var onDispatchTillDistributionSuccess = function (data) {
                 $scope.DispatchTillDistributions = data;
             };
+            var onRegionalRequestDataEntryStatus = function (data) {
+                $scope.RegionalRequestStatus = data;
+            }
+            $scope.getTotalRegionalRequest = function () {
+                var total = 0;
+                for (var i = 0; i < $scope.RegionalRequestStatus.length; i++) {
+                    var request = $scope.RegionalRequestStatus[i];
+                    total += request.TotalRequested;
+                }
+                return total;
+            }
+            $scope.getTotalRegionalRequestAllocated = function () {
+                var total = 0;
+                for (var i = 0; i < $scope.RegionalRequestStatus.length; i++) {
+                    var request = $scope.RegionalRequestStatus[i];
+                    total += request.Allocated;
+                }
+                return total;
+            }
+            $scope.getTotalRegionalRequestCompleted = function () {
+                var total = 0;
+                for (var i = 0; i < $scope.RegionalRequestStatus.length; i++) {
+                    var request = $scope.RegionalRequestStatus[i];
+                    total += request.Completed;
+                }
+                return total;
+            }
+            $scope.getTotalRegionalRequestProgress = function () {
+                var completed = 0;
+                var requested = 0;
+                for (var i = 0; i < $scope.RegionalRequestStatus.length; i++) {
+                    var request = $scope.RegionalRequestStatus[i];
+                    requested += request.TotalRequested;
+                    completed += request.Completed;
+                }
+                return (completed / requested) * 100;
+            }
+            $scope.drawPieChart = function () {
+                var completed = 0;
+                var requested = 0;
+                var completedInPercent = 0;
+                var remaining = 0;
+                for (var i = 0; i < $scope.RegionalRequestStatus.length; i++) {
+                    var request = $scope.RegionalRequestStatus[i];
+                    requested += request.TotalRequested;
+                    completed += request.Completed;
+                }
+                completedInPercent = (completed / requested) * 100;
+                remaining = 100 - completedInPercent;
+                $("#chart").kendoChart({
+                    title: {
+                        position: "bottom",
+                        text: ""
+                    },
+                    legend: {
+                        visible: true,
+                        position:"bottom"
+                    },
+                    chartArea: {
+                        background: ""
+                    },
+                    seriesDefaults: {
+                        labels: {
+                            visible: true,
+                            background: "transparent",
+                            template: "#= category #: \n #= value#%"
+                        }
+                    },
+                    series: [
+                        {
+                            type: "pie",
+                            startAngle: 150,
+                            data: [
+                                {
+                                    category: "Completed",
+                                    value: completedInPercent,
+                                    color: "#0033ff"
+                                }, {
+                                    category: "Remaining",
+                                    value: remaining,
+                                    color: "#90cc38"
+                                }
+                            ]
+                        }
+                    ],
+                    tooltip: {
+                        visible: true,
+                        format: "{0}%"
+                    }
+                });
+            }
+
 
             $scope.getRequests = function () {
                 $http.post("@Url.Action("GetRegionalRequests", "EWDashboard", new { Area = "EarlyWarning" })").success(onRequestsSuccess);
@@ -532,6 +684,10 @@
                 $http.post("@Url.Action("GetRequestedInfo", "EWDashboard", new { Area = "EarlyWarning" })").success(onRequestedAmoutSuccess);
 
         };
+
+            $scope.getRegionalRequestDataEntryStatus = function() {
+                $http.post("@Url.Action("GetRegionalRequestDataEntryStatus", "EWDashboard", new { Area = "EarlyWarning" })").success(onRegionalRequestDataEntryStatus);
+            };
             @*$scope.getStatusInPercentage = function () {
             $http.post("@Url.Action("GetStatusInPercentage", "EWDashboard", new { Area = "EarlyWarning" })").success(onRequestStatusSuccess);
 
@@ -558,6 +714,7 @@
             $scope.getRequests();
             $scope.getRequisitions();
             $scope.getRequestedInfo();
+            $scope.getRegionalRequestDataEntryStatus();
             //$scope.getStatusInPercentage();
             //$scope.getRequisitionStatusInPercentage();
             //$scope.getHrdRegionPercentage();
@@ -801,5 +958,6 @@
                 };
             };
         });
-
+        //$(document).ready(drawPieChart);
+        //$(document).bind("kendo:skinChange", drawPieChart);
     </script>

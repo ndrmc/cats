@@ -74,6 +74,8 @@
     <Compile Include="AllocationByRegionService.cs" />
     <Compile Include="BusinessProcessService.cs" />
     <Compile Include="BusinessProcessStateService.cs" />
+    <Compile Include="IReasonService.cs" />
+    <Compile Include="ReasonService.cs" />
     <Compile Include="CommodityService.cs" />
     <Compile Include="CommodityTypeService.cs" />
     <Compile Include="CurrencyService.cs" />
@@ -188,7 +190,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

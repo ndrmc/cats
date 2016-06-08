@@ -208,7 +208,7 @@ namespace Cats.Services.EarlyWarning
 
 
 
-        public void AddNeedAssessment(int planID, int regionID, int seasonID, int userID, int needAssessmentTypeID)
+        public void AddNeedAssessment(int planID, int regionID, int seasonID, int userID, int needAssessmentTypeID, int businessProcessID)
         {
             List<AdminUnit> zones = _unitOfWork.AdminUnitRepository.Get(t => t.ParentID == regionID).ToList();
             NeedAssessmentDetail detail = null;
@@ -222,7 +222,8 @@ namespace Cats.Services.EarlyWarning
                     TypeOfNeedAssessment = needAssessmentTypeID,
                     NeedAApproved = false,
                     NeedADate = DateTime.Now,
-                };
+                    BusinessProcessID = businessProcessID
+            };
             _unitOfWork.NeedAssessmentRepository.Add(needAssessment);
             foreach (var adminUnit in zones)
             {
@@ -260,6 +261,14 @@ namespace Cats.Services.EarlyWarning
                 }
             }
             _unitOfWork.Save();
+        }
+
+        public IEnumerable<NeedAssessment> Get(
+           Expression<Func<NeedAssessment, bool>> filter = null,
+           Func<IQueryable<NeedAssessment>, IOrderedQueryable<NeedAssessment>> orderBy = null,
+           string includeProperties = "")
+        {
+            return _unitOfWork.NeedAssessmentRepository.Get(filter, orderBy, includeProperties);
         }
     }
 }

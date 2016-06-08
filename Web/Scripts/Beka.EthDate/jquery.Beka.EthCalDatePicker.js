@@ -396,7 +396,7 @@
         //					'<th class="ui-datepicker-week-end"><span title="Sunday">Su</span></th>'
         $datepicker.ui.container.addClass("calendar_" + $datepicker.displayStyle)
         $datepicker.ui.body.html(dtpicker_htm);
-        $datepicker.ui.body.find("td >a")
+        $datepicker.ui.body.find("td > a")
 				//.data("year", selected_date.year)
                 .hover(function () { $(this).addClass("ui-state-hover"); }, function () { $(this).removeClass("ui-state-hover"); })
 				.parent()
