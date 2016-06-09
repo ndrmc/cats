@@ -78,9 +78,6 @@
     <Compile Include="UserAccountControllerTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app.config">
-      <SubType>Designer</SubType>
-    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
