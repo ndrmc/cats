@@ -74,7 +74,6 @@ E:\src\cats\Services\Cats.Services.EarlyWarning\bin\Debug\System.Web.WebPages.De
 \\10.24.65.152\cats\Services\Cats.Services.EarlyWarning\obj\Debug\Cats.Services.EarlyWarning.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Services\Cats.Services.EarlyWarning\obj\Debug\Cats.Services.EarlyWarning.dll
 \\10.24.65.152\cats\Services\Cats.Services.EarlyWarning\obj\Debug\Cats.Services.EarlyWarning.pdb
-E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Services.EarlyWarning.dll.config
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Services.EarlyWarning.dll
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Services.EarlyWarning.pdb
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Core.dll

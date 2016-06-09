@@ -91,3 +91,7 @@ E:\code\cats\Data\Cats.Data.Hub\bin\Debug\zh-CN\Cats.Models.Hubs.resources.dll
 E:\code\cats\Data\Cats.Data.Hub\obj\Debug\Cats.Data.Hub.csprojResolveAssemblyReference.cache
 E:\code\cats\Data\Cats.Data.Hub\obj\Debug\Cats.Data.Hub.dll
 E:\code\cats\Data\Cats.Data.Hub\obj\Debug\Cats.Data.Hub.pdb
+E:\code\cats\Data\Cats.Data.Hub\bin\Debug\System.Web.Razor.xml
+E:\code\cats\Data\Cats.Data.Hub\bin\Debug\System.Web.WebPages.Razor.xml
+E:\code\cats\Data\Cats.Data.Hub\bin\Debug\System.Web.WebPages.xml
+E:\code\cats\Data\Cats.Data.Hub\bin\Debug\System.Web.WebPages.Deployment.xml

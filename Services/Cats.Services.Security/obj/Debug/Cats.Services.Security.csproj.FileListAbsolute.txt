@@ -118,3 +118,7 @@ E:\code\cats\Services\Cats.Services.Security\bin\Debug\zh-CN\Cats.Models.Hubs.re
 E:\code\cats\Services\Cats.Services.Security\obj\Debug\Cats.Services.Security.csprojResolveAssemblyReference.cache
 E:\code\cats\Services\Cats.Services.Security\obj\Debug\Cats.Services.Security.dll
 E:\code\cats\Services\Cats.Services.Security\obj\Debug\Cats.Services.Security.pdb
+E:\code\cats\Services\Cats.Services.Security\bin\Debug\System.Web.Razor.xml
+E:\code\cats\Services\Cats.Services.Security\bin\Debug\System.Web.WebPages.Razor.xml
+E:\code\cats\Services\Cats.Services.Security\bin\Debug\System.Web.WebPages.xml
+E:\code\cats\Services\Cats.Services.Security\bin\Debug\System.Web.WebPages.Deployment.xml
