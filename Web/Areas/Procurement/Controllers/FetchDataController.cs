@@ -258,7 +258,7 @@ namespace Cats.Areas.Procurement.Controllers
                 StartDate = bid.Bid.StartDate,
                // TransportBidQuotationHeaders = bid.TransportBidQuotationHeaders.FirstOrDefault().Transporter.Name,
                 Time = bid.Bid.OpeningDate.ToShortTimeString(),
-                NoOfExpectedWoreda = bid.Bid.TransportBidQuotationHeaders.Count(),
+                NoOfExpectedWoreda = numberOfWoredas,
                 TransporterName = bid.Transporter.Name,
                 NoOfWoredaWithRFQ = bid.Transporter.TransportBidQuotations.Count(e => e.BidID == curBid),
                 StatusID = bid.Bid.StatusID
