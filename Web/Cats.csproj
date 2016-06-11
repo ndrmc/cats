@@ -89,11 +89,12 @@
       <HintPath>..\packages\NetSqlAzMan-x64.3.6.0.15\lib\net40\NetSqlAzMan.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Ninject">
+    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
@@ -1463,6 +1464,7 @@
     <Content Include="Content\images\CatsLogo.ico" />
     <Content Include="Content\images\CATS_Blue.ico" />
     <Content Include="Content\images\info.png" />
+    <Content Include="Content\images\loading.gif" />
     <Content Include="Content\images\success.png" />
     <Content Include="Content\images\warning.png" />
     <Content Include="Content\jquery-ui.min.css" />
@@ -2216,7 +2218,9 @@
     <Content Include="Scripts\angular\angular-dragdrop.min.js" />
     <Content Include="Scripts\angular\angular-kendo.js" />
     <Content Include="Scripts\angular\angular-resource.js" />
+    <Content Include="Scripts\angular\angular-route.js" />
     <Content Include="Scripts\angular\angular.js" />
+    <Content Include="Scripts\angular\angular2.min.js" />
     <Content Include="Scripts\angular\css\bootstrap.min.css" />
     <Content Include="Scripts\angular\css\jquery-ui.css" />
     <Content Include="Scripts\angular\allocation-angular.js" />

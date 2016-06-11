@@ -20,6 +20,7 @@ using hub = Cats.Services.Hub;
 using Cats.Models;
 using Cats.Helpers;
 using System.Data;
+using Cats.Services.Dashboard;
 using TransporterViewModel = Cats.Models.ViewModels.TransporterViewModel;
 
 namespace Cats.Areas.Logistics.Controllers
@@ -51,6 +52,7 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IGiftCertificateDetailService _giftCertificateDetailService;
         private readonly hub.IReceiptAllocationService _receiptAllocationService;
         private readonly ITransporterPaymentRequestService _transporterPaymentRequestService;
+        private readonly ILgDashboardService _lgDashboardService;
         public HomeController(IReliefRequisitionService reliefRequisitionService,
             hub.IDispatchAllocationService dispatchAllocationService,
             IUserAccountService userAccountService,
@@ -66,7 +68,13 @@ namespace Cats.Areas.Logistics.Controllers
             IHRDDetailService hrdDetailService,
             IRationDetailService rationDetailService,
             IProgramService programService,
-            IStockStatusService stockStatusService, IReceiptPlanDetailService receiptPlanDetailService, IDeliveryService deliveryService, IGiftCertificateDetailService giftCertificateDetailService, hub.IReceiptAllocationService receiptAllocationService,ITransporterPaymentRequestService transporterPaymentRequestService)
+            IStockStatusService stockStatusService, 
+            IReceiptPlanDetailService receiptPlanDetailService, 
+            IDeliveryService deliveryService, 
+            IGiftCertificateDetailService giftCertificateDetailService, 
+            hub.IReceiptAllocationService receiptAllocationService,
+            ITransporterPaymentRequestService transporterPaymentRequestService, 
+            ILgDashboardService lgDashboardService)
         {
             this._reliefRequisitionService = reliefRequisitionService;
             _dispatchAllocationService = dispatchAllocationService;
@@ -89,6 +97,7 @@ namespace Cats.Areas.Logistics.Controllers
             _giftCertificateDetailService = giftCertificateDetailService;
             _receiptAllocationService = receiptAllocationService;
             _transporterPaymentRequestService = transporterPaymentRequestService;
+            _lgDashboardService = lgDashboardService;
         }
 
         public ActionResult Index()
@@ -446,8 +455,8 @@ namespace Cats.Areas.Logistics.Controllers
                 _transportOrderService.FindBy(s => s.StatusID < (int)(Cats.Models.Constant.TransportOrderStatus.Closed)).Select(p => new
                 {
                     name = p.Transporter.Name,
-                    region = p.Transporter.Region!=null ? _adminUnitService.FindById(p.Transporter.Region).Name : "",
-                    zone = p.Transporter.Zone!=null ? _adminUnitService.FindById(p.Transporter.Zone).Name : "",
+                    region = (p.Transporter.Region!=0) ? _adminUnitService.FindById(p.Transporter.Region).Name : "",
+                    zone = (p.Transporter.Zone != 0) ? _adminUnitService.FindById(p.Transporter.Zone).Name : "",
                     transportOrderNo = p.TransportOrderNo,
                     mobileNo = p.Transporter.MobileNo ?? ""
                 });
@@ -571,6 +580,22 @@ namespace Cats.Areas.Logistics.Controllers
                      });
             return Json(q, JsonRequestBehavior.AllowGet);
         }
+        #endregion
+
+        #region Data entry indicator: Dispatch Allocation
+        
+        public JsonResult DispatchAllocationIndicator(int id = 0)
+        {
+            var dispatchAllocatedRequisitions = _lgDashboardService.DispatchAllocatedRequisitions(id);
+            return Json(dispatchAllocatedRequisitions, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetRounds()
+        {
+            var rounds = _lgDashboardService.GetRounds();
+            return Json(rounds, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
     }
 }
