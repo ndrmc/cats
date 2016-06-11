@@ -1336,8 +1336,8 @@
 
                 $http({
                     method: 'GET',
+                    params: { id: $scope.round },
                     url: '@Url.Action("DispatchAllocationIndicator", "Home", new { Area = "Logistics" })',
-                    id: $scope.round,
                     beforeSend: function () {
                         $(".da-data-indicator-ldng").show();
                         console.log("DispatchAllocationIndicator: Before Send triggered");
@@ -1382,7 +1382,7 @@
                 }
             }).success(function (data, status, headers, config) {
                 $scope.rounds = data;
-                $scope.onGetRoundsSuccess(data[0]);
+                //$scope.onGetRoundsSuccess(data[0]);
 
             }).error(function (data, status, headers, config) { });;
 
@@ -1394,8 +1394,8 @@
                 });
                 $http({
                     method: 'GET',
+                    params: { id: $scope.round },
                     url: '@Url.Action("DispatchAllocationIndicator", "Home", new { Area = "Logistics" })',
-                    id: $scope.round,
                     beforeSend: function () {
                         $(".da-data-indicator-ldng").show();
                         console.log("DispatchAllocationIndicator: Before Send triggered");
