@@ -132,8 +132,12 @@ Web/Web.config
 *.datasource
 *.config
 Web/Areas/EarlyWarning/Views/Request/Allocation.cshtml.rej
+<<<<<<< HEAD
 
 bin
 obj
 
 .vs
+=======
+/packages
+>>>>>>> e586ffe406b724539a00bb323f7dcbf66255c1b0

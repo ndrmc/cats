@@ -8,8 +8,7 @@ E:\src\cats\Data\Cats.Data.Micro\obj\Debug\Cats.Data.Micro.pdb
 \\10.24.65.152\cats\Data\Cats.Data.Micro\obj\Debug\Cats.Data.Micro.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Data\Cats.Data.Micro\obj\Debug\Cats.Data.Micro.dll
 \\10.24.65.152\cats\Data\Cats.Data.Micro\obj\Debug\Cats.Data.Micro.pdb
-E:\code\cats\Data\Cats.Data.Micro\bin\Debug\Cats.Data.Micro.dll
-E:\code\cats\Data\Cats.Data.Micro\bin\Debug\Cats.Data.Micro.pdb
-E:\code\cats\Data\Cats.Data.Micro\obj\Debug\Cats.Data.Micro.csprojResolveAssemblyReference.cache
-E:\code\cats\Data\Cats.Data.Micro\obj\Debug\Cats.Data.Micro.dll
-E:\code\cats\Data\Cats.Data.Micro\obj\Debug\Cats.Data.Micro.pdb
+E:\Code\cats\Data\Cats.Data.Micro\bin\Debug\Cats.Data.Micro.dll
+E:\Code\cats\Data\Cats.Data.Micro\bin\Debug\Cats.Data.Micro.pdb
+E:\Code\cats\Data\Cats.Data.Micro\obj\Debug\Cats.Data.Micro.dll
+E:\Code\cats\Data\Cats.Data.Micro\obj\Debug\Cats.Data.Micro.pdb
