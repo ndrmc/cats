@@ -126,8 +126,92 @@
                         </div>
                     </div>
                 </div>
+            
+                <div class="portlet portlet-sortable light bordered ui-sortable-handle" style="display: block;">
+                    <div id="DataEntryStatusHeader" class="portlet-title">
+                        <div class="caption font-green-sharp">
+                            <i class="fa fa-credit-card font-green-sharp"></i>
+                            <span id="bar-title1" class="caption-subject bold uppercase"> Data Entry Status</span>
+                            <span class="caption-helper">  </span>
+                        </div>
+                        <div class="tools">
+                            <a href="#" class="collapse" data-original-title="" title=""></a>
+                            <a href="javascript:;" class="remove" data-original-title="" title=""></a>
+                        </div>
+                        <div class="actions">
+                            <a id="back1" style="display: none" href="" class="btn btn-circle btn-default btn-sm"><i class="icon-undo"></i> Back</a>
+                            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body" style="height: auto; display: block;">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input">
+                                    <select class="form-control" id="bid4bidwinner" ng-change="onBidChange(bid)" ng-model="bid" ng-options="bid.BidID as bid.BidNumber for bid in BidList">
+                                        <option> Choose a Bid </option>
+                                    </select>
+                                    <label for="bid4bidwinner">BID: </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="BidContent1" class="portlet-content" style="padding-top: 2px">
+                            <div ng-show="(DataEntryStatus).length==0" class="align-center">
+                                <br/>
+                                <p style="font-size: 15px">Select bid to view data entry for RFQ</p>
+                            </div>
+                            <div class="table-responsive">
+                                <table ng-show="(DataEntryStatus).length" class="table table-striped table-condensed" style="margin-bottom: 2px">
+                                    <thead>
+                                    <tr>
+                                        <th># No.</th>
+                                        <th>Bid Number</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Transporter Name</th>
+                                        <th>Expected Woreda</th>
+                                        <th>Woreda With offer</th>
+                                        <th>Percent</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody ng-cloak>
+                                    <tr data-ng-repeat="item in DataEntryStatus">
+                                        <td>{{$index + 1}}</td>
+                                        <td>{{item.BidNumber}}</td>
+                                        <td>{{item.OpeningDate}}</td>
+                                        <td>{{item.OpeningDate}}</td>
+                                        <td>{{item.TransporterName}}</td>
+                                        <td>{{item.NoOfExpectedWoreda}}</td>
+                                        <td>{{item.NoOfWoredaWithRFQ}}</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-info"
+                                                     role="progressbar" aria-valuenow="{{getPercentage($index)}}" aria-valuemin="0"
+                                                     aria-valuemax="100"  style="width:{{getPercentage($index)}}%;">
+                                                    <span>{{getPercentage($index) | number:2}}% </span>
+                                                </div>
+                                            </div>
 
-                <div class="" id="biddetailContent" style="display: none">
+</td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th><b>Total</b></th>
+                                            <th>{{total("Exp")}}</th>
+                                            <th>{{total("RFQ")}}</th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <div class="" id="biddetailContent" style="display: none">
 
                     <div class="row" >
                         <div class="col-md-12">
@@ -373,30 +457,63 @@
 </div>
 
 <script>
-    
+
 
     // Declare app level module which depends on filters, and services
     angular.module('myApp', ['myApp.directives']);
 
     /* Controllers */
-    function RecentBidsController($scope, $http) {
+    function RecentBidsController($scope, $http, $filter) {
         $scope.RecentBids = [];
+        $scope.DataEntryStatus = [];
+        $scope.BidList = [];
         $scope.PriceQuotatitons = [];
         $scope.Firstwinners = [];
         $scope.SecondWinners = [];
         $scope.WoredasWithoutoffer = [];
         $scope.reqParam = { bidId: 14, rank: 1 };
 
+        $scope.items2 = $scope.DataEntryStatus;
         $scope.states = ["Draft", "Approved", "Closed", "Closed1", "Active", "Closed3"];
 
         var onSuccessRecentBids = function (data) {
             $scope.RecentBids = data;
         };
-
+        var onSuccessDataEntryStatus = function (data) {
+            $scope.BidList = data;
+        };
+        $scope.onBidChange = function (bid) {
+           
+            $http({
+                method: 'GET',
+                params: { bidID: bid },
+                url: '@Url.Action("SelectDataEntryStatus", "FetchData", new { Area = "Procurement" })'
+            })
+               .success(function (data, status, hstatus, headers, configeaders, config) {
+                   $scope.DataEntryStatus  = data;
+               }).error(function () { });
+           
+        }
+        $scope.getPercentage = function(index) {
+            var percentage = 0;
+            percentage = ($scope.DataEntryStatus[index].NoOfWoredaWithRFQ / $scope.DataEntryStatus[index].NoOfExpectedWoreda) * 100;
+            return percentage;
+        };
+       
+        $scope.total = function (type) {
+            var total = 0;
+            for (var i = 0; i < $scope.DataEntryStatus.length; i++) {
+                if (type === "Exp")
+                    total += $scope.DataEntryStatus[i].NoOfExpectedWoreda;
+                else
+                    total += $scope.DataEntryStatus[i].NoOfWoredaWithRFQ;
+            }
+            return total;
+        };
         var onSuccesspqs = function (data) {
             $scope.PriceQuotatitons = data;
             $scope.QuotationPIE = [];
-            
+
             for (var i in $scope.PriceQuotatitons) {
                 var key = $scope.PriceQuotatitons[i].Transporter;
                 //var value = $scope.PriceQuotatitons[i].OffersCount;
@@ -412,7 +529,10 @@
         var secondwinners = function (data) {
             $scope.SecondWinners = data;
         };
-
+        
+        $scope.getDataEntryStatus = function () {
+            $http.post("@Url.Action("DataEntryStatus", "FetchData", new { Area = "Procurement" })").success(onSuccessDataEntryStatus);
+        };
         $scope.getRecentBids = function () {
             $http.post("@Url.Action("RecentBids", "FetchData", new { Area = "Procurement" })").success(onSuccessRecentBids);
         };
@@ -435,7 +555,8 @@
             window.open("@Url.Action("Details","PriceQuotation")"+"/"+id, "_blank");
         };
 
-       $scope.getRecentBids();
+        $scope.getRecentBids();
+        $scope.getDataEntryStatus();
     }
 
     /* Directives */
@@ -486,9 +607,9 @@
                }
            }
        });
-    
 
-   
+
+
 
 </script>
 

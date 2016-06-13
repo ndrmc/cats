@@ -22,18 +22,20 @@ namespace Cats.Areas.Procurement.Controllers
         private readonly IBidWinnerService _bidWinnerService;
         private readonly ITransportBidQuotationService _priceQuotataion;
         private readonly ITransportBidQuotationHeaderService _bidQuotationHeader;
-        
+        private readonly ITransportBidPlanService _transportBidPlanService;
+
         //
         // GET: /Procurement/FetchData/
 
         public FetchDataController(IPaymentRequestService paymentRequestService,
-            ITransportBidQuotationHeaderService bidQuotationHeader,IBidService bidService, IUserAccountService userAccountService, IBidWinnerService bidWinnerService)
+            ITransportBidQuotationHeaderService bidQuotationHeader,IBidService bidService, IUserAccountService userAccountService, IBidWinnerService bidWinnerService, ITransportBidPlanService transportBidPlanService)
         {
             _paymentRequestService = paymentRequestService;
             _bidService = bidService;
             _userAccountService = userAccountService;
             _bidWinnerService = bidWinnerService;
             _bidQuotationHeader = bidQuotationHeader;
+            _transportBidPlanService = transportBidPlanService;
         }
 
         public JsonResult ReadSummarizedNumbers([DataSourceRequest]DataSourceRequest request)
@@ -136,7 +138,25 @@ namespace Cats.Areas.Procurement.Controllers
             var recentBidViewModels = BindBidViewModels(recentBids);
             return Json(recentBidViewModels, JsonRequestBehavior.AllowGet);
         }
-
+        public JsonResult DataEntryStatus([DataSourceRequest]DataSourceRequest request)
+        {
+            var recentBids =
+                _bidService.Get(t => t.StatusID == 5, null,  "TransportBidQuotationHeaders");
+                //FindBy(t => t.StatusID == 5).OrderByDescending(t => t.OpeningDate).Take(10).ToList();
+            
+            var recentBidViewModels = BindBidViewModels(recentBids);
+            return Json(recentBidViewModels, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult SelectDataEntryStatus(int bidId)
+        {
+            var recentBids =
+                _bidService.Get(t => t.StatusID == 5 && t.BidID == bidId, null, "TransportBidQuotationHeaders");
+            //FindBy(t => t.StatusID == 5).OrderByDescending(t => t.OpeningDate).Take(10).ToList();
+            var dataEntryViewModel = BinddataEntryViewModels(recentBids.FirstOrDefault().TransportBidQuotationHeaders);
+  
+           // var recentBidViewModels = BindBidViewModels(recentBids);
+            return Json(dataEntryViewModel, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult PriceQoutation(int bidID)
         {
             var proposals = _bidQuotationHeader.FindBy(e=>e.BidId==bidID).OrderByDescending(t => t.TransportBidQuotationHeaderID);
@@ -218,7 +238,32 @@ namespace Cats.Areas.Procurement.Controllers
                                                                     TransporterName = paymentRequest.TransportOrder.Transporter.Name
                                                                 }).ToList();
         }
+        
+            public List<DataEntryViewModel> BinddataEntryViewModels(IEnumerable<TransportBidQuotationHeader> bids)
+            {
+                var transportBidQuotationHeaders = bids as TransportBidQuotationHeader[] ?? bids.ToArray();
+           
+            
+            int  curBid = transportBidQuotationHeaders.FirstOrDefault().Bid.BidID;
+            TransportBidPlan bidPlan = _transportBidPlanService.FindById(transportBidQuotationHeaders.FirstOrDefault().Bid.TransportBidPlanID);
+             int numberOfWoredas=    bidPlan.TransportBidPlanDetails.Count();
+            var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
 
+            return transportBidQuotationHeaders.Select(bid => new DataEntryViewModel()
+            {
+                BidID = bid.Bid.BidID,
+                BidNumber = bid.Bid.BidNumber,
+                EndDate = bid.Bid.EndDate,
+                OpeningDate = bid.Bid.OpeningDate.ToCTSPreferedDateFormat(datePref),
+                StartDate = bid.Bid.StartDate,
+               // TransportBidQuotationHeaders = bid.TransportBidQuotationHeaders.FirstOrDefault().Transporter.Name,
+                Time = bid.Bid.OpeningDate.ToShortTimeString(),
+                NoOfExpectedWoreda = numberOfWoredas,
+                TransporterName = bid.Transporter.Name,
+                NoOfWoredaWithRFQ = bid.Transporter.TransportBidQuotations.Count(e => e.BidID == curBid),
+                StatusID = bid.Bid.StatusID
+            }).ToList();
+        }
         public List<BidsViewModel> BindBidViewModels(IEnumerable<Bid> bids)
         {
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
