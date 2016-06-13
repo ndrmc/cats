@@ -164,7 +164,6 @@ E:\src\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.pdb
 \\10.24.65.152\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.dll
 \\10.24.65.152\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.pdb
-E:\Code\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.csprojResolveAssemblyReference.cache
 E:\code\cats\Cats.Web.Adminstration\bin\Cats.Web.Adminstration.dll.config
 E:\code\cats\Cats.Web.Adminstration\bin\Cats.Web.Adminstration.dll
 E:\code\cats\Cats.Web.Adminstration\bin\Cats.Web.Adminstration.pdb
@@ -243,5 +242,6 @@ E:\code\cats\Cats.Web.Adminstration\bin\ru-RU\Kendo.Mvc.resources.dll
 E:\code\cats\Cats.Web.Adminstration\bin\sv-SE\Kendo.Mvc.resources.dll
 E:\code\cats\Cats.Web.Adminstration\bin\uk-UA\Kendo.Mvc.resources.dll
 E:\code\cats\Cats.Web.Adminstration\bin\zh-CN\Kendo.Mvc.resources.dll
+E:\code\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.csprojResolveAssemblyReference.cache
 E:\code\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.dll
 E:\code\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.pdb

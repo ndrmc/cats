@@ -141,7 +141,6 @@ E:\src\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.
 \\10.24.65.152\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.dll
 \\10.24.65.152\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.pdb
-E:\Code\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.csprojResolveAssemblyReference.cache
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\Cats.Web.Adminstration.Tests.dll.config
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\Cats.Web.Adminstration.Tests.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\Cats.Web.Adminstration.Tests.pdb
@@ -213,5 +212,6 @@ E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\ru-RU\Kendo.Mvc.resour
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\sv-SE\Kendo.Mvc.resources.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\uk-UA\Kendo.Mvc.resources.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\zh-CN\Kendo.Mvc.resources.dll
+E:\code\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.csprojResolveAssemblyReference.cache
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.pdb
