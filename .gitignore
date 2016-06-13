@@ -144,6 +144,7 @@ obj
 
 .vs
 <<<<<<< HEAD
+<<<<<<< HEAD
 /.vs/Cats/v14/.suo
 =======
 =======
@@ -151,3 +152,6 @@ obj
 >>>>>>> e586ffe406b724539a00bb323f7dcbf66255c1b0
 >>>>>>> 3008573ae5c0b7fc2fe95b34b32009fcff60eefb
 /.vs/Cats/v14/.suo
+=======
+/Services/Cats.Services.PSNP/obj/Debug/*.dll
+>>>>>>> CATS-1302
