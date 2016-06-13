@@ -69,6 +69,6 @@ E:\code\cats\Services\Cats.Services.Finance\bin\Debug\System.Web.Razor.xml
 E:\code\cats\Services\Cats.Services.Finance\bin\Debug\System.Web.WebPages.Razor.xml
 E:\code\cats\Services\Cats.Services.Finance\bin\Debug\System.Web.WebPages.xml
 E:\code\cats\Services\Cats.Services.Finance\bin\Debug\System.Web.WebPages.Deployment.xml
+E:\code\cats\Services\Cats.Services.Finance\obj\Debug\Cats.Services.Finance.csprojResolveAssemblyReference.cache
 E:\code\cats\Services\Cats.Services.Finance\obj\Debug\Cats.Services.Finance.dll
 E:\code\cats\Services\Cats.Services.Finance\obj\Debug\Cats.Services.Finance.pdb
-E:\code\cats\Services\Cats.Services.Finance\obj\Debug\Cats.Services.Finance.csprojResolveAssemblyReference.cache

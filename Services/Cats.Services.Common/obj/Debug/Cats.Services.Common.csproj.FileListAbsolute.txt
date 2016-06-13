@@ -50,6 +50,7 @@ E:\code\cats\Services\Cats.Services.Common\bin\Debug\Cats.Core.dll
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\Cats.Models.dll
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\EntityFramework.dll
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\log4net.dll
+E:\code\cats\Services\Cats.Services.Common\bin\Debug\Microsoft.Web.Infrastructure.dll
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\Helpers.Localization.dll
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\Cats.Models.Security.dll
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\System.Web.Mvc.dll
@@ -61,6 +62,7 @@ E:\code\cats\Services\Cats.Services.Common\bin\Debug\Cats.Core.pdb
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\Cats.Models.pdb
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\EntityFramework.xml
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\log4net.xml
+E:\code\cats\Services\Cats.Services.Common\bin\Debug\Microsoft.Web.Infrastructure.xml
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\Helpers.Localization.pdb
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\Cats.Models.Security.pdb
 E:\code\cats\Services\Cats.Services.Common\bin\Debug\System.Web.Mvc.xml

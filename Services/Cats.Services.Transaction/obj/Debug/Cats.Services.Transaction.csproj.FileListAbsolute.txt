@@ -106,6 +106,7 @@ E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\System.Web.Mvc.xml
 E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\System.Web.Razor.xml
 E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\System.Web.WebPages.Razor.xml
 E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\System.Web.WebPages.xml
+E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\Microsoft.Web.Infrastructure.xml
 E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\System.Web.WebPages.Deployment.xml
 E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\bg-BG\Cats.Models.Hubs.resources.dll
 E:\code\cats\Services\Cats.Services.Transaction\bin\Debug\da-DK\Cats.Models.Hubs.resources.dll

@@ -133,6 +133,7 @@ E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\Cats.Models.Security.pdb
 E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\System.Web.Razor.xml
 E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\System.Web.WebPages.Razor.xml
 E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\System.Web.WebPages.xml
+E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\Microsoft.Web.Infrastructure.xml
 E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\System.Web.WebPages.Deployment.xml
 E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\bg-BG\Cats.Models.Hubs.resources.dll
 E:\code\cats\Services\Cats.Services.Logistics\bin\Debug\da-DK\Cats.Models.Hubs.resources.dll

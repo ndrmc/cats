@@ -74,7 +74,6 @@ E:\src\cats\Services\Cats.Services.EarlyWarning\bin\Debug\System.Web.WebPages.De
 \\10.24.65.152\cats\Services\Cats.Services.EarlyWarning\obj\Debug\Cats.Services.EarlyWarning.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Services\Cats.Services.EarlyWarning\obj\Debug\Cats.Services.EarlyWarning.dll
 \\10.24.65.152\cats\Services\Cats.Services.EarlyWarning\obj\Debug\Cats.Services.EarlyWarning.pdb
-E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Services.EarlyWarning.dll.config
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Services.EarlyWarning.dll
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Services.EarlyWarning.pdb
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Core.dll
@@ -83,6 +82,7 @@ E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Models.Security.
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Services.Common.dll
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Services.Security.dll
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\log4net.dll
+E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\System.Web.Mvc.dll
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\EntityFramework.dll
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Helpers.Localization.dll
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\NetSqlAzMan.dll
@@ -99,6 +99,7 @@ E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Models.pdb
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Services.Common.pdb
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Services.Security.pdb
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\log4net.xml
+E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\System.Web.Mvc.xml
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\EntityFramework.xml
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Helpers.Localization.pdb
 E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\NetSqlAzMan.xml
@@ -111,5 +112,3 @@ E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\System.Web.WebPages.D
 E:\code\cats\Services\Cats.Services.EarlyWarning\obj\Debug\Cats.Services.EarlyWarning.csprojResolveAssemblyReference.cache
 E:\code\cats\Services\Cats.Services.EarlyWarning\obj\Debug\Cats.Services.EarlyWarning.dll
 E:\code\cats\Services\Cats.Services.EarlyWarning\obj\Debug\Cats.Services.EarlyWarning.pdb
-E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\System.Web.Mvc.dll
-E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\System.Web.Mvc.xml
