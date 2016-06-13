@@ -132,8 +132,4 @@ Web/Web.config
 *.datasource
 *.config
 Web/Areas/EarlyWarning/Views/Request/Allocation.cshtml.rej
-
-Web/bin
-Web/obj
-
-.vs
+/packages

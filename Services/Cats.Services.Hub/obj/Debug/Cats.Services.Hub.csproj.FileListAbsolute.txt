@@ -172,6 +172,7 @@ E:\src\cats\Services\Cats.Services.Hub\obj\Debug\Cats.Services.Hub.pdb
 \\10.24.65.152\cats\Services\Cats.Services.Hub\obj\Debug\Cats.Services.Hub.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Services\Cats.Services.Hub\obj\Debug\Cats.Services.Hub.dll
 \\10.24.65.152\cats\Services\Cats.Services.Hub\obj\Debug\Cats.Services.Hub.pdb
+E:\Code\cats\Services\Cats.Services.Hub\obj\Debug\Cats.Services.Hub.csprojResolveAssemblyReference.cache
 E:\code\cats\Services\Cats.Services.Hub\bin\Debug\Cats.Services.Hub.dll.config
 E:\code\cats\Services\Cats.Services.Hub\bin\Debug\Cats.Services.Hub.dll
 E:\code\cats\Services\Cats.Services.Hub\bin\Debug\Cats.Services.Hub.pdb
@@ -256,6 +257,5 @@ E:\code\cats\Services\Cats.Services.Hub\bin\Debug\ru-RU\Kendo.Mvc.resources.dll
 E:\code\cats\Services\Cats.Services.Hub\bin\Debug\sv-SE\Kendo.Mvc.resources.dll
 E:\code\cats\Services\Cats.Services.Hub\bin\Debug\uk-UA\Kendo.Mvc.resources.dll
 E:\code\cats\Services\Cats.Services.Hub\bin\Debug\zh-CN\Kendo.Mvc.resources.dll
-E:\code\cats\Services\Cats.Services.Hub\obj\Debug\Cats.Services.Hub.csprojResolveAssemblyReference.cache
 E:\code\cats\Services\Cats.Services.Hub\obj\Debug\Cats.Services.Hub.dll
 E:\code\cats\Services\Cats.Services.Hub\obj\Debug\Cats.Services.Hub.pdb

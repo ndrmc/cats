@@ -164,6 +164,7 @@ E:\src\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.pdb
 \\10.24.65.152\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.dll
 \\10.24.65.152\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.pdb
+E:\Code\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.csprojResolveAssemblyReference.cache
 E:\code\cats\Cats.Web.Adminstration\bin\Cats.Web.Adminstration.dll.config
 E:\code\cats\Cats.Web.Adminstration\bin\Cats.Web.Adminstration.dll
 E:\code\cats\Cats.Web.Adminstration\bin\Cats.Web.Adminstration.pdb
@@ -180,7 +181,6 @@ E:\code\cats\Cats.Web.Adminstration\bin\Kendo.Mvc.dll
 E:\code\cats\Cats.Web.Adminstration\bin\log4net.dll
 E:\code\cats\Cats.Web.Adminstration\bin\Microsoft.Web.Infrastructure.dll
 E:\code\cats\Cats.Web.Adminstration\bin\NetSqlAzMan.dll
-E:\code\cats\Cats.Web.Adminstration\bin\Newtonsoft.Json.dll
 E:\code\cats\Cats.Web.Adminstration\bin\Ninject.dll
 E:\code\cats\Cats.Web.Adminstration\bin\System.Net.Http.Formatting.dll
 E:\code\cats\Cats.Web.Adminstration\bin\System.Web.Helpers.dll
@@ -204,7 +204,6 @@ E:\code\cats\Cats.Web.Adminstration\bin\Cats.Services.Security.pdb
 E:\code\cats\Cats.Web.Adminstration\bin\Kendo.Mvc.xml
 E:\code\cats\Cats.Web.Adminstration\bin\log4net.xml
 E:\code\cats\Cats.Web.Adminstration\bin\NetSqlAzMan.xml
-E:\code\cats\Cats.Web.Adminstration\bin\Newtonsoft.Json.xml
 E:\code\cats\Cats.Web.Adminstration\bin\Ninject.pdb
 E:\code\cats\Cats.Web.Adminstration\bin\Ninject.xml
 E:\code\cats\Cats.Web.Adminstration\bin\System.Net.Http.Formatting.xml
@@ -244,6 +243,5 @@ E:\code\cats\Cats.Web.Adminstration\bin\ru-RU\Kendo.Mvc.resources.dll
 E:\code\cats\Cats.Web.Adminstration\bin\sv-SE\Kendo.Mvc.resources.dll
 E:\code\cats\Cats.Web.Adminstration\bin\uk-UA\Kendo.Mvc.resources.dll
 E:\code\cats\Cats.Web.Adminstration\bin\zh-CN\Kendo.Mvc.resources.dll
-E:\code\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.csprojResolveAssemblyReference.cache
 E:\code\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.dll
 E:\code\cats\Cats.Web.Adminstration\obj\Debug\Cats.Web.Adminstration.pdb

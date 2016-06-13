@@ -141,6 +141,7 @@ E:\src\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.
 \\10.24.65.152\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.csprojResolveAssemblyReference.cache
 \\10.24.65.152\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.dll
 \\10.24.65.152\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.pdb
+E:\Code\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.csprojResolveAssemblyReference.cache
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\Cats.Web.Adminstration.Tests.dll.config
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\Cats.Web.Adminstration.Tests.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\Cats.Web.Adminstration.Tests.pdb
@@ -154,6 +155,8 @@ E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\Moq.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\Newtonsoft.Json.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\nunit.framework.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Helpers.dll
+E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.dll
+E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.WebHost.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Mvc.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Mvc.Extensions.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Razor.dll
@@ -185,6 +188,8 @@ E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Razor.xml
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.WebPages.xml
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.WebPages.Deployment.xml
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.WebPages.Razor.xml
+E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.xml
+E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.WebHost.xml
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\Helpers.Localization.pdb
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\Cats.Services.Security.pdb
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\log4net.xml
@@ -208,10 +213,5 @@ E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\ru-RU\Kendo.Mvc.resour
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\sv-SE\Kendo.Mvc.resources.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\uk-UA\Kendo.Mvc.resources.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\zh-CN\Kendo.Mvc.resources.dll
-E:\code\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.csprojResolveAssemblyReference.cache
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.dll
 E:\code\cats\Tests\Cats.Web.Adminstration.Tests\obj\Debug\Cats.Web.Adminstration.Tests.pdb
-E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.dll
-E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.WebHost.dll
-E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.xml
-E:\code\cats\Tests\Cats.Web.Adminstration.Tests\bin\Debug\System.Web.Http.WebHost.xml
