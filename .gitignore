@@ -10,6 +10,7 @@ TestResults
 
 # User-specific files
 *.suo
+.suo
 *.user
 *.sln.docstates
 
@@ -138,3 +139,4 @@ bin
 obj
 
 .vs
+/.vs/Cats/v14/.suo
