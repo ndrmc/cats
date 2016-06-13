@@ -584,9 +584,9 @@ namespace Cats.Areas.Logistics.Controllers
 
         #region Data entry indicator: Dispatch Allocation
         
-        public JsonResult DispatchAllocationIndicator(int id = 0)
+        public JsonResult DispatchAllocationIndicator(DateTime? startDate, DateTime? endDate, int round = 0)
         {
-            var dispatchAllocatedRequisitions = _lgDashboardService.DispatchAllocatedRequisitions(id);
+            var dispatchAllocatedRequisitions = _lgDashboardService.DispatchAllocatedRequisitions(startDate, endDate, round);
             return Json(dispatchAllocatedRequisitions, JsonRequestBehavior.AllowGet);
         }
 

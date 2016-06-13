@@ -21,23 +21,29 @@ namespace Cats.Services.Dashboard
             _unitOfWork = unitOfWork;
         }
 
-        public List<DashboardDispAlloRequisition> DispatchAllocatedRequisitions(int id = 0)
+        public List<DashboardDispAlloRequisition> DispatchAllocatedRequisitions(DateTime? startDate, DateTime? endDate, int round = 0)
         {
             var currentHrd = _unitOfWork.HRDRepository.Get(m => m.Status == (int)HRDStatus.Published, null,
                     "HRDDetails, HRDDetails.AdminUnit, HRDDetails.AdminUnit.AdminUnit2, HRDDetails.AdminUnit.AdminUnit2.AdminUnit2," +
                     "Ration, Ration.RationDetails")
                                 .OrderByDescending(t => t.PublishedDate).FirstOrDefault();
             
+            
             if (currentHrd != null)
             {
+                if (startDate == null || endDate == null)
+                {
+                    startDate = new DateTime(currentHrd.Year, 1, 1);
+                    endDate = new DateTime(currentHrd.Year, 12, 31);
+                }
                 var dashboardDispAlloRequisitions = new List<DashboardDispAlloRequisition>();
                 var regions =
                     _unitOfWork.AdminUnitRepository.Get(
                         t => t.AdminUnitTypeID == (int) Models.Constant.AdminUnitType.Region);
-                if (id == 0)
+                if (round == 0)
                 {
                     var firstOrDefault = GetRounds().FirstOrDefault();
-                    if (firstOrDefault != null) id = firstOrDefault.Value;
+                    if (firstOrDefault != null) round = firstOrDefault.Value;
                 }
                 var approvedReliefRequisitions = new List<ReliefRequisition>();
                 var hubAlloReliefRequisitions = new List<ReliefRequisition>();
@@ -51,64 +57,82 @@ namespace Cats.Services.Dashboard
                                 select hrdDetail.AdminUnit.AdminUnit2.AdminUnitID).Distinct().ToList();
                     var commodities = currentHrd.Ration.RationDetails.Distinct().ToList();
 
-                    if (id != 0)
+                    if (round != 0)
                     {
                         approvedReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
-                                     && t.AdminUnit.AdminUnit2.AdminUnitID == region.AdminUnitID
-                                     && t.RegionalRequest.Round == id
-                                     && t.Status == (int) ReliefRequisitionStatus.Approved).ToList();
+                                     && t.RegionID == region.AdminUnitID
+                                     && t.RegionalRequest.Round == round
+                                     && t.Status == (int) ReliefRequisitionStatus.Approved
+                                     && t.RequestedDate >= startDate
+                                     && t.RequestedDate <= endDate).ToList();
 
                         hubAlloReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
-                                     && t.AdminUnit.AdminUnit2.AdminUnitID == region.AdminUnitID
-                                     && t.RegionalRequest.Round == id
-                                     && t.Status == (int) ReliefRequisitionStatus.HubAssigned).ToList();
+                                     && t.RegionID == region.AdminUnitID
+                                     && t.RegionalRequest.Round == round
+                                     && t.Status == (int) ReliefRequisitionStatus.HubAssigned
+                                     && t.RequestedDate >= startDate
+                                     && t.RequestedDate <= endDate).ToList();
 
                         pcAlloReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
-                                     && t.AdminUnit.AdminUnit2.AdminUnitID == region.AdminUnitID
-                                     && t.RegionalRequest.Round == id
-                                     && t.Status == (int) ReliefRequisitionStatus.ProjectCodeAssigned).ToList();
+                                     && t.RegionID == region.AdminUnitID
+                                     && t.RegionalRequest.Round == round
+                                     && t.Status == (int) ReliefRequisitionStatus.ProjectCodeAssigned
+                                     && t.RequestedDate >= startDate
+                                     && t.RequestedDate <= endDate).ToList();
 
                         committedReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
-                                     && t.AdminUnit.AdminUnit2.AdminUnitID == region.AdminUnitID
-                                     && t.RegionalRequest.Round == id
-                                     && t.Status == (int) ReliefRequisitionStatus.SiPcAllocationApproved).ToList();
+                                     && t.RegionID == region.AdminUnitID
+                                     && t.RegionalRequest.Round == round
+                                     && t.Status == (int) ReliefRequisitionStatus.SiPcAllocationApproved
+                                     && t.RequestedDate >= startDate
+                                     && t.RequestedDate <= endDate).ToList();
                     }
                     else
                     {
                         approvedReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
-                                     && t.AdminUnit.AdminUnit2.AdminUnitID == region.AdminUnitID
-                                     && t.Status == (int)ReliefRequisitionStatus.Approved).ToList();
+                                     && t.RegionID == region.AdminUnitID
+                                     && t.Status == (int)ReliefRequisitionStatus.Approved
+                                     && t.RequestedDate >= startDate
+                                     && t.RequestedDate <= endDate).ToList();
 
                         hubAlloReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
-                                     && t.AdminUnit.AdminUnit2.AdminUnitID == region.AdminUnitID
-                                     && t.Status == (int)ReliefRequisitionStatus.HubAssigned).ToList();
+                                     && t.RegionID == region.AdminUnitID
+                                     && t.Status == (int)ReliefRequisitionStatus.HubAssigned
+                                     && t.RequestedDate >= startDate
+                                     && t.RequestedDate <= endDate).ToList();
 
                         pcAlloReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
-                                     && t.AdminUnit.AdminUnit2.AdminUnitID == region.AdminUnitID
-                                     && t.Status == (int)ReliefRequisitionStatus.ProjectCodeAssigned).ToList();
+                                     && t.RegionID == region.AdminUnitID
+                                     && t.Status == (int)ReliefRequisitionStatus.ProjectCodeAssigned
+                                     && t.RequestedDate >= startDate
+                                     && t.RequestedDate <= endDate).ToList();
 
                         committedReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
-                                     && t.AdminUnit.AdminUnit2.AdminUnitID == region.AdminUnitID
-                                     && t.Status == (int)ReliefRequisitionStatus.SiPcAllocationApproved).ToList();
+                                     && t.RegionID == region.AdminUnitID
+                                     && t.Status == (int)ReliefRequisitionStatus.SiPcAllocationApproved
+                                     && t.RequestedDate >= startDate
+                                     && t.RequestedDate <= endDate).ToList();
                     }
+
                     dashboardDispAlloRequisition.RegionId = region.AdminUnitID;
                     dashboardDispAlloRequisition.RegionName = region.Name;
+                    dashboardDispAlloRequisition.HrdName = currentHrd.SeasonID == 1 ? "Belg" + currentHrd.Year : "Meher" + currentHrd.Year;
                     dashboardDispAlloRequisition.NumberOfEstimatedRequisitions = zones.Count()*commodities.Count();
                     dashboardDispAlloRequisition.NumberOfApprovedRequisitions = approvedReliefRequisitions.Count();
                     dashboardDispAlloRequisition.NumberOfHubAllocatedRequisitions = hubAlloReliefRequisitions.Count();

@@ -12,6 +12,8 @@ namespace Cats.Models.ViewModels
 
         public string RegionName { get; set; }
 
+        public string HrdName { get; set; }
+
         public int NumberOfEstimatedRequisitions { get; set; }
 
         public int NumberOfApprovedRequisitions { get; set; }

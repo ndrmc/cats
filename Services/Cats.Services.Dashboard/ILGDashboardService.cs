@@ -12,7 +12,7 @@ namespace Cats.Services.Dashboard
 {
     public interface ILgDashboardService: IDisposable
     {
-        List<DashboardDispAlloRequisition> DispatchAllocatedRequisitions(int id);
+        List<DashboardDispAlloRequisition> DispatchAllocatedRequisitions(DateTime? startDate, DateTime? endDate, int round);
         List<int?> GetRounds();
     }
 }
