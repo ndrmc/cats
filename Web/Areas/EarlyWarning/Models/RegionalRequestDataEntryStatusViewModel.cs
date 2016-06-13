@@ -7,5 +7,6 @@
         public int Allocated { get; set; }
         public int Completed { get; set; }
         public decimal AllocationProgress { get; set; }
+        public int Round { get; set; }
     }
 }

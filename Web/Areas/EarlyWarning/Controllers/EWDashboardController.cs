@@ -8,6 +8,7 @@ using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Services.Common;
 using Cats.Services.Dashboard;
+using Cats.Services.EarlyWarning;
 using Cats.Services.Security;
 using Plan = Cats.Models.Partial.Plan;
 
@@ -19,11 +20,15 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly IEWDashboardService _eWDashboardService;
         private readonly IUserAccountService _userAccountService;
         private ICommonService _commonService;
-        public EWDashboardController(IEWDashboardService ewDashboardService,IUserAccountService userAccountService,ICommonService commonService)
+        private IHRDDetailService _hrdDetailService;
+        public EWDashboardController(IEWDashboardService ewDashboardService,
+            IUserAccountService userAccountService,ICommonService commonService,
+            IHRDDetailService hrdDetailService)
         {
             _eWDashboardService = ewDashboardService;
             _userAccountService = userAccountService;
             _commonService = commonService;
+            _hrdDetailService = hrdDetailService;
         }
 
         public JsonResult GetRation()
@@ -241,9 +246,16 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             return _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
         }
-        public JsonResult GetRecentGiftCertificates()
+        public JsonResult GetRecentGiftCertificates(DateTime startDate,DateTime endDate )
         {
-            var draftGiftCertificate = _eWDashboardService.GetAllGiftCertificate().Where(m => m.StatusID == 1).OrderByDescending(m=>m.GiftCertificateID);
+            var draftGiftCertificate =
+                from gs in
+                    _eWDashboardService.GetAllGiftCertificate()
+                        .Where(m => m.StatusID == 1)
+                        .OrderByDescending(m => m.GiftCertificateID)
+                where DateTime.Compare(gs.GiftDate, startDate) >= 0
+                      && DateTime.Compare(gs.GiftDate, endDate) <= 0
+                select gs;
 
             var giftCertificate = GetGiftCertificate(draftGiftCertificate);
 
@@ -266,7 +278,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                             TotalEstimatedTax = giftCertificate.GiftCertificateDetails.Sum(m=>m.EstimatedTax)
 
                             // Commodity = giftCertificate.GiftCertificateDetails.FirstOrDefault().Commodity.Name
-                        }).Take(5);
+                        }).OrderByDescending(o=>o.GiftDate); //take(5) Removed
 
 
         }
@@ -405,26 +417,64 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var numberOfCommodities = rationDetail.Count();
             var regions = _commonService.GetAminUnits(t => t.AdminUnitTypeID == 2).OrderBy(t=>t.Name).ToList();
             var regionalRequestDataEntryStatus = new List<RegionalRequestDataEntryStatusViewModel>();
+            var rounds = _eWDashboardService.GetDistinctRounds(currentHrd.PlanID);
             foreach (var region in regions)
             {
-                var numberOfZones = _commonService.GetAminUnits(p => p.ParentID == region.AdminUnitID).Count();
-                var completed =
-                    _eWDashboardService.GetRegionalRequestSubmittedToLogistics(region.AdminUnitID, currentHrd.PlanID);
-                var allocated = _eWDashboardService.GetRemainingRequest(region.AdminUnitID, currentHrd.PlanID);
-                int expected = numberOfCommodities*numberOfZones;
-                var ratio = expected != 0 ? completed/Convert.ToDouble(expected):0;
-                var progress = ratio*100.0;
-                var regionalDataEntryStatus = new RegionalRequestDataEntryStatusViewModel
+                foreach (int round in rounds)
                 {
-                    Region = region.Name,
-                    TotalRequested = expected,
-                    Allocated = allocated,
-                    AllocationProgress =Convert.ToDecimal(Math.Round(progress,2)),
-                    Completed = completed,
-                };
-                regionalRequestDataEntryStatus.Add(regionalDataEntryStatus);
+                    var numberOfZones = _commonService.GetAminUnits(p => p.ParentID == region.AdminUnitID).Count();
+                    var completed =
+                        _eWDashboardService.GetRegionalRequestSubmittedToLogistics(region.AdminUnitID, currentHrd.PlanID,
+                            round);
+                    var allocated = _eWDashboardService.GetRemainingRequest(region.AdminUnitID, currentHrd.PlanID,round);
+                    int expected = numberOfCommodities*numberOfZones;
+                    var ratio = expected != 0 ? completed/Convert.ToDouble(expected) : 0;
+                    var progress = ratio*100.0;
+                    var regionalDataEntryStatus = new RegionalRequestDataEntryStatusViewModel
+                    {
+                        Region = region.Name,
+                        TotalRequested = expected,
+                        Allocated = allocated,
+                        AllocationProgress = Convert.ToDecimal(Math.Round(progress, 2)),
+                        Completed = completed,
+                        Round = (int) round,
+                    };
+                    regionalRequestDataEntryStatus.Add(regionalDataEntryStatus);
+                }
             }
             return Json(regionalRequestDataEntryStatus, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetHRDDataEntryStatus()
+        {
+            var currentHrd = GetCurrentHrd();
+            var regions = _commonService.GetAminUnits(t => t.AdminUnitTypeID == 2).OrderBy(t => t.Name).ToList();
+            var hrdDataEntryStatus = new List<RegionalRequestDataEntryStatusViewModel>();
+
+            foreach (var region in regions)
+            {
+                var zonesId =
+                    _commonService.GetAminUnits(p => p.ParentID == region.AdminUnitID)
+                        .Select(z => z.AdminUnitID)
+                        .ToList();
+                var woredaIds = _commonService.GetAminUnits(p => zonesId.Contains((int) p.ParentID))
+                    .Select(z => z.AdminUnitID)
+                    .ToList();
+                var hrdDetails =
+                    _hrdDetailService.FindBy(h => h.HRDID == currentHrd.HRDID && woredaIds.Contains(h.WoredaID));
+                var woredaCounts = hrdDetails.Count;
+                var woredasWithBeneficiary = hrdDetails.Count(w => w.NumberOfBeneficiaries > 0);
+                var progress = woredaCounts != 0 ? (woredasWithBeneficiary/woredaCounts)*100.0 : 0;
+                var dataEntryStatus = new RegionalRequestDataEntryStatusViewModel
+                {
+                    Region = region.Name,
+                    TotalRequested = hrdDetails.Count,
+                    AllocationProgress = Convert.ToDecimal(Math.Round(progress, 2)),
+                    Completed = woredasWithBeneficiary,
+                };
+                hrdDataEntryStatus.Add(dataEntryStatus);
+            }
+            return Json(hrdDataEntryStatus, JsonRequestBehavior.AllowGet);
         }
     }
 }
