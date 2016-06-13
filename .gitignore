@@ -138,3 +138,5 @@ bin
 obj
 
 .vs
+/Services/Cats.Services.PSNP/obj/Debug/*.dll
+/Services/Cats.Services.PSNP/obj/Debug/*.dll
