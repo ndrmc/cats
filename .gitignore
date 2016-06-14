@@ -10,6 +10,7 @@ TestResults
 
 # User-specific files
 *.suo
+.suo
 *.user
 *.sln.docstates
 
@@ -79,7 +80,7 @@ publish
 *.Publish.xml
 
 # NuGet Packages Directory
-# packages
+packages
 
 # Windows Azure Build Output
 csxs
@@ -94,7 +95,7 @@ AppPackages/
 sql
 TestResults
 [Tt]est[Rr]esult*
-*.Cache
+*.cache
 ClientBin
 [Ss]tyle[Cc]op.*
 ~$*
@@ -132,12 +133,10 @@ Web/Web.config
 *.datasource
 *.config
 Web/Areas/EarlyWarning/Views/Request/Allocation.cshtml.rej
-<<<<<<< HEAD
 
 bin
 obj
 
 .vs
-=======
+/.vs/Cats/v14/.suo
 /packages
->>>>>>> e586ffe406b724539a00bb323f7dcbf66255c1b0

@@ -171,4 +171,12 @@ namespace Cats.Models.Constant
         Draft = 1,
         Approved = 2
     }
+
+    public enum AdminUnitType
+    {
+        Federal = 1,
+        Region = 2,
+        Zone = 3,
+        Woreda = 4
+    }
 }
