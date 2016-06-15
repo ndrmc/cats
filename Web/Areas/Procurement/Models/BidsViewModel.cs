@@ -17,6 +17,20 @@ namespace Cats.Areas.Procurement.Models
         public List<BidDetail> BidDetails { get; set; }
         public string Time { get; set; }
     }
+
+    public class StatusViewmodel
+    {
+        // BidStatus
+        public int StatusId { get; set; }
+        public string Status { get; set; }
+
+    }
+    
+    public class BidWinnerRank
+    {
+      public  int Id { get; set; }
+      public  string Name { get; set; }
+    }
     public class DataEntryViewModel
     {
         public int BidID { get; set; }
