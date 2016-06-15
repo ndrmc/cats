@@ -222,7 +222,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [HttpGet]
         public ActionResult CreateRequisiton(int id)
         {
-            var input = _reliefRequisitionService.CreateRequisition(id, User);
+            var input = _reliefRequisitionService.CreateRequisition(id, User.Identity.Name);
             //if (input == null)
             //{
                 //TempData["error"] = "You haven't selected any commodity. Please add at least one commodity and try again!";
