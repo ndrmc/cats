@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Web.Mvc;
 using Cats.Data.UnitWork;
 using Cats.Models;
 using Cats.Models.Constant;
@@ -123,15 +124,46 @@ namespace Cats.Services.EarlyWarning
                         }).ToList();
         }
 
-        public void AddReliefRequisions(List<ReliefRequisition> reliefRequisitions)
+        public void AddReliefRequisions(List<ReliefRequisition> reliefRequisitions, System.Security.Principal.IPrincipal user)
         {
             foreach (var reliefRequisition in reliefRequisitions)
             {
-                this._unitOfWork.ReliefRequisitionRepository.Add(reliefRequisition);
+                int BP_PR = 0;
+                List<ApplicationSetting> ret = _unitOfWork.ApplicationSettingRepository.FindBy(t => t.SettingName == "ReliefRequisitionWorkflow");
+                if (ret.Count == 1)
+                {
+                    BP_PR = Int32.Parse(ret[0].SettingValue);
+                }
+                if (BP_PR != 0)
+                {
+                    BusinessProcessState createdstate = new BusinessProcessState
+                    {
+                        DatePerformed = DateTime.Now,
+                        PerformedBy = user.Identity.Name,
+                        Comment = "Needs Assessment Plan Created"
+
+                    };
+                    //_PaymentRequestservice.Create(request);
+
+                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                        "NeedAssessmentPlan", createdstate);
+                    if (bp != null)
+                        _reliefRequisitionService.CreateRequisition(id, bp);
+                        this._unitOfWork.ReliefRequisitionRepository.Add(reliefRequisition);
+                    else
+                    {
+                        ModelState.AddModelError("Error", errorMessage: @"Could not create a business process object");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("Error", errorMessage: @"Could not find the application setting for this document process template");
+                }
+                
             }
         }
 
-        public IEnumerable<ReliefRequisitionNew> CreateRequisition(int requestId, BusinessProcess bp)
+        public IEnumerable<ReliefRequisitionNew> CreateRequisition(int requestId, System.Security.Principal.IPrincipal user)
         {
             //Check if Requisition is created from this request
             //
@@ -141,8 +173,8 @@ namespace Cats.Services.EarlyWarning
             var reliefRequistions = CreateRequistionFromRequest(regionalRequest);
             //if (reliefRequistions.Count < 1)
             //    return GetRequisitionByRequestId(requestId);
-            AddReliefRequisions(reliefRequistions, bp);
-            regionalRequest.Status = (int)RegionalRequestStatus.Closed;
+            AddReliefRequisions(reliefRequistions, user);
+            regionalRequest.Status = (int)Regiona, lRequestStatus.Closed;
             _unitOfWork.Save();
             
             foreach (var item in reliefRequistions)
@@ -155,6 +187,8 @@ namespace Cats.Services.EarlyWarning
        
         public ReliefRequisition GenerateRequisition(RegionalRequest regionalRequest, List<RegionalRequestDetail> regionalRequestDetails, int commodityId, int zoneId)
         {
+
+            
 
             var relifRequisition = new ReliefRequisition()
             {

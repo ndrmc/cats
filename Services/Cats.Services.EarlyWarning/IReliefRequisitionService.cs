@@ -28,7 +28,7 @@ namespace Cats.Services.EarlyWarning
           Func<IQueryable<ReliefRequisition>, IOrderedQueryable<ReliefRequisition>> orderBy = null,
           string includeProperties = "");
 
-        IEnumerable<ReliefRequisitionNew> CreateRequisition(int requestId, BusinessProcess bp);
+        IEnumerable<ReliefRequisitionNew> CreateRequisition(int requestId);
         bool AssignRequisitonNo(Dictionary< int,string> requisitionNumbers );
         //bool Save();
 
