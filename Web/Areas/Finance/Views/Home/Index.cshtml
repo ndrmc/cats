@@ -13,7 +13,61 @@
 <!-- BEGIN COMPONENTS INDENTATION-->
 <div class="container">
     <div class="row ui-sortable" id="sortable_portlets" ng-app="myApp">
-        <!-- BEGIN 1ST PORTLET-->
+     
+        <!-- Begin Data entry status portlet-->
+        <div class="col-md-12 column sortable">
+            <div class="portlet portlet-sortable light bordered ui-sortable-handle" style="display: block;">
+                <div class="portlet-title">
+                    <div class="caption font-green-sharp">
+                        <i class="fa fa-credit-card font-green-sharp"></i>
+                        <span class="caption-subject bold uppercase"> Data Entry Status</span>
+                        <span class="caption-helper">  </span>
+                    </div>
+                    <div class="tools">
+                        <a href="#" class="collapse" data-original-title="" title=""></a>
+                        <a href="javascript:;" class="remove" data-original-title="" title=""></a>
+                    </div>
+                    <div class="actions">
+                        @*<a href="javascript:;" class="btn btn-circle btn-default btn-sm"><i class="icon-layers"></i> Detail</a>*@
+                        <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                    </div>
+                </div>
+                <div class="portlet-body" style="height: auto;">
+                    <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto;">
+                        <div class="scroller" style="overflow: hidden; width: auto;" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd" data-initialized="1">
+                           
+                            <div class="table-responsive" ng-controller="FinanceHomeController">
+                                <table class="table table-striped ">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: right">Region</th>
+                                            <th style="text-align: right">Round</th>
+                                            @*<th style="text-align: right">Requested Payments</th>*@
+                                            <th style="text-align: right">Allocated</th>
+                                            <th style="text-align: right">Collected</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-cloak>
+                                        <tr ng-repeat="req in RegionalRequestStatus">
+                                            <td style="text-align: right; margin-right: 0px">{{req.Region}} </td>
+                                            @*<td style="text-align: right; margin-right: 0px">{{req.Name}} </td>*@
+                                            <td style="text-align: right; margin-right: 0px">{{req.Round}} </td>
+                                            <td style="text-align: right; margin-right: 0px">{{req.Allocated}} </td>
+                                            <td style="text-align: right; margin-right: 0px">{{req.Collected}} </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="slimScrollBar" style="width: 7px; position: absolute; top: 111px; opacity: 0.4; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; height: 73.52941176470588px; background: rgb(161, 178, 189);"></div>
+                        <div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; display: none; background: yellow;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- End data entry status portlet-->
+
         <div class="col-md-12 column sortable">
             <div class="portlet portlet-sortable light bordered ui-sortable-handle" style="display: block;">
                 <div class="portlet-title">
@@ -216,41 +270,60 @@
 
     myApp = angular.module('myApp', []);
 
-    myApp.controller('paymentRequestController', ['$scope', '$http', '$rootScope', function ($scope, $http) {
+    myApp.controller('paymentRequestController', [
+        '$scope', '$http', '$rootScope', function ($scope, $http) {
 
+            $scope.paymentRequestForDashboard = {};
+            $scope.paymentRequestBeingProcessed = {};
+            $http({ method: 'GET', url: '@Url.Action("PaymentRequestForDashboard", "Home")' }).success(function (data, status, headers, config) {
+                console.log(data);
+                $scope.paymentRequestForDashboard = data;
+                $scope.viewPaymentDetail = function (item) {
+                    // alert("Show Detail");
+                    var id = item.TransporterId;
+                    window.open("@Url.Action("PaymentRequests", "ValidatedPaymentRequest")" + "?transporterID=" + id, "_blank");
+                };
+            });
+            $http({ method: 'GET', url: '@Url.Action("PaymentRequestBeingProcessed", "Home")' }).success(function (data, status, headers, config) {
+                console.log(data);
+                $scope.paymentRequestBeingProcessed = data;
 
-        $scope.paymentRequestForDashboard = {};
-        $scope.paymentRequestBeingProcessed = {};
-        $http({ method: 'GET', url: '@Url.Action("PaymentRequestForDashboard", "Home")' }).success(function (data, status, headers, config) {
-            console.log(data);
-            $scope.paymentRequestForDashboard = data;
-            $scope.viewPaymentDetail = function (item) {
-                // alert("Show Detail");
-                var id = item.TransporterId;
-                window.open("@Url.Action("PaymentRequests","ValidatedPaymentRequest")" + "?transporterID=" + id, "_blank");
+            });
+        }
+    ]);
+
+    myApp.controller('ChequeController', [
+        '$scope', '$http', '$rootScope', function ($scope, $http) {
+
+            $scope.cheques = {};
+            $http({ method: 'GET', url: '@Url.Action("ReadCheques", "Home")' }).success(function (data, status, headers, config) {
+                $scope.cheques = data;
+                console.log(data);
+            });
+
+            $scope.ShowURl = function (url) {
+                var state = url.State;
+                window.location = "@Url.Action("UpdateChequeStatus", "Home")" + "?transporterChequeId=" + url.transporterChequeId + "&status=" + (state + 1);
             };
-        });
-        $http({ method: 'GET', url: '@Url.Action("PaymentRequestBeingProcessed", "Home")' }).success(function (data, status, headers, config) {
-            console.log(data);
-            $scope.paymentRequestBeingProcessed = data;
 
-        });
-    }]);
-
-    myApp.controller('ChequeController', ['$scope', '$http', '$rootScope', function ($scope, $http) {
+        }
+    ]);
 
 
-        $scope.cheques = {};
-        $http({ method: 'GET', url: '@Url.Action("ReadCheques", "Home")' }).success(function (data, status, headers, config) {
-            $scope.cheques = data;
-            console.log(data);
-        });
+</script>
 
-        $scope.ShowURl = function (url) {
-            var state = url.State;
-            window.location = "@Url.Action("UpdateChequeStatus", "Home")" + "?transporterChequeId=" + url.transporterChequeId + "&status=" + (state + 1);
+<script>
+    function FinanceHomeController($scope, $http) {
+        $scope.RegionalRequestStatus = [];
+
+        var onRegionalRequestDataEntryStatus = function (data) {
+            $scope.RegionalRequestStatus = data;
+        }
+
+        $scope.getRegionalRequestDataEntryStatus = function () {
+            $http.post("@Url.Action("GetRegionalRequestDataEntryStatus", "Home", new { Area = "Finance" })").success(onRegionalRequestDataEntryStatus);
         };
 
-    }]);
-
+        $scope.getRegionalRequestDataEntryStatus();
+    }
 </script>
