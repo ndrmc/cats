@@ -45,6 +45,7 @@ namespace Cats.Models.Mapping
             this.HasRequired(t => t.TransactionGroup)
                 .WithMany(t => t.Hrds)
                 .HasForeignKey(d => d.TransactionGroupID);
+            this.HasOptional(t => t.BusinessProcess).WithMany(t => t.Hrds).HasForeignKey(t => t.BusinessProcessId);
         }
     }
 }

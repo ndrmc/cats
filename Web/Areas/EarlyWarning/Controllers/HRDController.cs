@@ -17,6 +17,7 @@ using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using log4net;
 using Cats.Security;
+using Cats.Services.Common;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -39,14 +40,17 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private IPlanService _planService;
         private IHubService _hubService;
         private readonly Cats.Services.Transaction.ITransactionService _transactionService;
-
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IBusinessProcessService _businessProcessService;
         public HRDController(IAdminUnitService adminUnitService, IHRDService hrdService,
                              IRationService rationservice, IRationDetailService rationDetailService,
                              IHRDDetailService hrdDetailService, ICommodityService commodityService,
                              INeedAssessmentDetailService needAssessmentDetailService, INeedAssessmentHeaderService needAssessmentService,
                              IWorkflowStatusService workflowStatusService, ISeasonService seasonService, 
                              IUserAccountService userAccountService, ILog log,IPlanService planService, IHubService hubService, 
-                             ITransactionService transactionService)
+                             ITransactionService transactionService,
+                             IApplicationSettingService applicationSettingService,
+                             IBusinessProcessService businessProcessService)
         {
             _adminUnitService = adminUnitService;
             _hrdService = hrdService;
@@ -63,6 +67,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _planService = planService;
             _hubService = hubService;
             _transactionService = transactionService;
+            _applicationSettingService = applicationSettingService;
+            _businessProcessService = businessProcessService;
         }
 
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_HRD_list)]
@@ -520,8 +526,22 @@ namespace Cats.Areas.EarlyWarning.Controllers
                         _planService.AddHRDPlan(planName, firstDayOfTheMonth, endDate);
                         var plan = _planService.FindBy(m => m.PlanName == planName).FirstOrDefault();
                         var planID = plan.PlanID;
-                        _hrdService.AddHRD(year, userID, seasonID, rationID, planID);
-                        return RedirectToAction("Index");
+                        // Workflow Implementation
+                        int BP_PR = _applicationSettingService.getNeedAssessmentPlanWorkflow();
+                        if (BP_PR != 0)
+                        {
+                            var createdstate = new BusinessProcessState
+                            {
+                                DatePerformed = DateTime.Now,
+                                PerformedBy = User.Identity.Name,
+                                Comment = "HRD Created"
+                            };                           
+                            var bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                                "NeedAssessmentPlan", createdstate);
+                            if (bp != null)
+                                _hrdService.AddHRD(year, userID, seasonID, rationID, planID);
+                            return RedirectToAction("Index");
+                        }
                     }
                     catch (Exception exception)
                     {
@@ -562,6 +582,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             hrd.CreatedBY = userid;
             if (ModelState.IsValid)
             {
+
                 _hrdService.EditHRD(hrd);
                 return RedirectToAction("Index");
             }

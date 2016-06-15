@@ -32,6 +32,7 @@ namespace Cats.Models
         public virtual ICollection<Contribution> Contributions { get; set; }
         public virtual Plan Plan { get; set;}
         public virtual ICollection<HrdDonorCoverage> HrdDonorCovarages { get; set; } 
-
+        public int BusinessProcessId { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }
