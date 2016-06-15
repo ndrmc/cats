@@ -95,6 +95,10 @@ namespace Cats.Services.Common
         {
             return getIntValue("TransporterPaymentRequestWorkflow");
         }
+        public int getRegionalRequestWorkflow()
+        {
+            return getIntValue("RegionalRequestWorkflow");
+        }
         public int getTransporterChequeWorkflow()
         {
             return getIntValue("TransporterChequeWorkflow");

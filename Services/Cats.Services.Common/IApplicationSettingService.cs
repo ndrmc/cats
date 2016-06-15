@@ -20,6 +20,7 @@ namespace Cats.Services.Common
         int getTransporterChequeWorkflow();
         int getDefaultRation();
         int getBidWinnerWorkflow();
+        int getRegionalRequestWorkflow();
         ApplicationSetting FindById(int id);
         List<ApplicationSetting> GetAllApplicationSetting();
         List<ApplicationSetting> FindBy(Expression<Func<ApplicationSetting, bool>> predicate);

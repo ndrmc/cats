@@ -35,7 +35,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
     {
         //
         // GET: /EarlyWarning/RegionalRequest/
-
+        private readonly IBusinessProcessService _businessProcessService;
         private IRegionalRequestService _regionalRequestService;
         private IFDPService _fdpService;
         private IUserAccountService _userAccountService;
@@ -67,7 +67,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                 IRegionalPSNPPlanService RegionalPSNPPlanService,
             IAdminUnitService adminUnitService,
             IPlanService planService,
-            IIDPSReasonTypeServices idpsReasonTypeServices, ITransactionService transactionService, INotificationService notificationService, IUserProfileService userProfileService, IReasonService reasonService)
+            IIDPSReasonTypeServices idpsReasonTypeServices, ITransactionService transactionService, INotificationService notificationService, 
+            IUserProfileService userProfileService, IReasonService reasonService, IBusinessProcessService businessProcessService )
         {
             _regionalRequestService = reliefRequistionService;
             _fdpService = fdpService;
@@ -87,6 +88,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _notificationService = notificationService;
             _userProfileService = userProfileService;
             _reasonService = reasonService;
+            _businessProcessService = businessProcessService;
         }
         public ActionResult RegionalRequestsPieChart()
         {
@@ -186,6 +188,18 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                                                                    Fdpid = item.FDPID
                                                                                }).ToList()
                                       };
+            // Add an application ssetting in database and service for the document workflow
+            int BP_PR = _applicationSettingService.getRegionalRequestWorkflow();
+           
+            // Check if BP_PR is not null
+            BusinessProcessState createdstate = new BusinessProcessState
+            {
+                DatePerformed = DateTime.Now,
+                PerformedBy = User.Identity.Name,
+                Comment = "A [DOCUMENT_NAME] is Created"
+            };
+
+            BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "[DOCUMENT_NAME]", createdstate);
 
             _regionalRequestService.AddRegionalRequest(regionalRequest);
 
