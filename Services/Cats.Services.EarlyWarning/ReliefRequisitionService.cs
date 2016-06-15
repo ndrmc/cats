@@ -131,7 +131,7 @@ namespace Cats.Services.EarlyWarning
             }
         }
 
-        public IEnumerable<ReliefRequisitionNew> CreateRequisition(int requestId)
+        public IEnumerable<ReliefRequisitionNew> CreateRequisition(int requestId, BusinessProcess bp)
         {
             //Check if Requisition is created from this request
             //
@@ -141,7 +141,7 @@ namespace Cats.Services.EarlyWarning
             var reliefRequistions = CreateRequistionFromRequest(regionalRequest);
             //if (reliefRequistions.Count < 1)
             //    return GetRequisitionByRequestId(requestId);
-            AddReliefRequisions(reliefRequistions);
+            AddReliefRequisions(reliefRequistions, bp);
             regionalRequest.Status = (int)RegionalRequestStatus.Closed;
             _unitOfWork.Save();
             

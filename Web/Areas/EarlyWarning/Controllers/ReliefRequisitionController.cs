@@ -37,6 +37,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly IPlanService _planService;
         private readonly ICommonService _commonService;
         private readonly Cats.Services.Transaction.ITransactionService _transactionService;
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IBusinessProcessService _businessProcessService;
         public ReliefRequisitionController(
             IReliefRequisitionService reliefRequisitionService, 
             IWorkflowStatusService workflowStatusService, 
@@ -48,7 +50,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
             INotificationService notificationService, 
             IPlanService planService,
             ITransactionService transactionService,
-            ICommonService commonService, IRationDetailService rationDetailService)
+            ICommonService commonService, IRationDetailService rationDetailService,
+            IApplicationSettingService applicationSettingService,
+            IBusinessProcessService businessProcessService)
         {
             this._reliefRequisitionService = reliefRequisitionService;
             this._workflowStatusService = workflowStatusService;
@@ -62,6 +66,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _commonService = commonService;
             _rationDetailService = rationDetailService;
             _regionalRequestService = regionalRequestService;
+            _applicationSettingService = applicationSettingService;
+            _businessProcessService = businessProcessService;
         }
 
         public ViewResult Index()
@@ -222,7 +228,31 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [HttpGet]
         public ActionResult CreateRequisiton(int id)
         {
-            var input = _reliefRequisitionService.CreateRequisition(id);
+            int BP_PR = _applicationSettingService.getNeedAssessmentPlanWorkflow();
+            if (BP_PR != 0)
+            {
+                BusinessProcessState createdstate = new BusinessProcessState
+                {
+                    DatePerformed = DateTime.Now,
+                    PerformedBy = User.Identity.Name,
+                    Comment = "Needs Assessment Plan Created"
+
+                };
+                //_PaymentRequestservice.Create(request);
+
+                BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                    "NeedAssessmentPlan", createdstate);
+                if (bp != null)
+                    _reliefRequisitionService.CreateRequisition(id, bp);
+                else
+                {
+                    ModelState.AddModelError("Error", errorMessage: @"Could not create a business process object");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("Error", errorMessage: @"Could not find the application setting for this document process template");
+            }
             //if (input == null)
             //{
                 //TempData["error"] = "You haven't selected any commodity. Please add at least one commodity and try again!";
