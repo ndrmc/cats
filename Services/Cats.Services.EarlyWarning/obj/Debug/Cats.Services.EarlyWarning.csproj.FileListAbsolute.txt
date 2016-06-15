@@ -31,3 +31,8 @@ E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\Cats.Exceptions.pdb
 E:\code\cats\Services\Cats.Services.EarlyWarning\obj\Debug\Cats.Services.EarlyWarning.csprojResolveAssemblyReference.cache
 E:\code\cats\Services\Cats.Services.EarlyWarning\obj\Debug\Cats.Services.EarlyWarning.dll
 E:\code\cats\Services\Cats.Services.EarlyWarning\obj\Debug\Cats.Services.EarlyWarning.pdb
+E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\System.Web.Mvc.xml
+E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\System.Web.Razor.xml
+E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\System.Web.WebPages.Razor.xml
+E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\System.Web.WebPages.xml
+E:\code\cats\Services\Cats.Services.EarlyWarning\bin\Debug\System.Web.WebPages.Deployment.xml

@@ -35,7 +35,8 @@ namespace Cats.Models
         public int? RequestedBy { get; set; }
         public int? ApprovedBy { get; set; }
         public bool Contingency { get; set; }
-
+        public int? BusinessProcessID { get; set; }
+        
         public virtual ICollection<RegionalRequestDetail> RegionalRequestDetails { get; set; }
         public virtual ICollection<ReliefRequisition> ReliefRequisitions { get; set; }
         public virtual UserProfile UserProfile { get; set; }
