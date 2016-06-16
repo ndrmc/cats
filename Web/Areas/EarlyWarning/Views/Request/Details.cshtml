@@ -467,22 +467,23 @@
         <div class="table-responsive">
             @(Html.Kendo().Grid(Model)
                   .Name("Grid")
-                  .Columns(columns  =>
+                  .Columns(columns =>
                   {
 
                       foreach (System.Data.DataColumn column in Model.Columns)
                       {
-                          if (column.DataType == typeof(decimal))
+                          if (column.DataType == typeof (decimal))
                           {
-                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N2}").ClientGroupFooterTemplate("sum:#:sum#");
+                              columns.Bound(column.ColumnName).HtmlAttributes(new {align = "right"}).Format("{0:N2}").ClientGroupFooterTemplate("sum:#:sum#");
                               //.HeaderHtmlAttributes(new { @class = "cats-unit-pref-grid" })
                           }
-                          else if (column.DataType == typeof(int))
+                          else if (column.DataType == typeof (int))
                           {
-                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).ClientGroupFooterTemplate("<div style='float: right'>#= kendo.toString(sum, 'N2') #</div>").ClientFooterTemplate("Sum: #=sum#"); ;
+                              columns.Bound(column.ColumnName).HtmlAttributes(new {align = "right"}).ClientGroupFooterTemplate("<div style='float: right'>#= kendo.toString(sum, 'N2') #</div>").ClientFooterTemplate("Sum: #=sum#");
+                              ;
 
                           }
-                          else if(column.ColumnName == "Zone")
+                          else if (column.ColumnName == "Zone")
                           {
                               //columns.Bound(column.ColumnName);
                           }
@@ -495,38 +496,39 @@
                   })
                   .Sortable()
                   .Scrollable()
-                          .Groupable()
-                           .DataSource(dataSource => dataSource
-        .Ajax().Group(a =>
-        {
-            a.Add("Zone", typeof(string));
-            //a.Add("Beneficiaries", typeof(int));
-            //a.Add("PlannedBeneficiaries", typeof(int));
-        })
-        //     .Model(model =>
-        //     {
-        //         foreach (System.Data.DataColumn column in Model.Columns)
-        //         {
+                  .Groupable()
+                  .DataSource(dataSource => dataSource
+                      .Ajax().Group(a =>
+                      {
+                          a.Add("Zone", typeof (string));
+                          //a.Add("Beneficiaries", typeof(int));
+                          //a.Add("PlannedBeneficiaries", typeof(int));
+                      })
+                  //     .Model(model =>
+                  //     {
+                  //         foreach (System.Data.DataColumn column in Model.Columns)
+                  //         {
 
-        //             model.Field(column.ColumnName, column.DataType);
-        //         }
-        //     }).Read(read =>
+                  //             model.Field(column.ColumnName, column.DataType);
+                  //         }
+                  //     }).Read(read =>
 
-        //read.Action("StatusGeneric", "Configuration")
-        //)
-        //    .Aggregates(a =>
-        //    {
-        //        a.Add("Beneficiaries", typeof(int)).Sum();
-        //        a.Add("PlannedBeneficiaries", typeof(int)).Sum();
-        //    })
+                  //read.Action("StatusGeneric", "Configuration")
+                  //)
+                  //    .Aggregates(a =>
+                  //    {
+                  //        a.Add("Beneficiaries", typeof(int)).Sum();
+                  //        a.Add("PlannedBeneficiaries", typeof(int)).Sum();
+                  //    })
 
 
-        )
+                  )
 
-                          )
+                  )
         </div>
     </div>
 </div>
+@Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
 <div class="modal" id="cats-modal-reject">
     <div class="modal-dialog ">
         <div class="modal-content">

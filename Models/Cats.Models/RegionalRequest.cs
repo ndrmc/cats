@@ -35,7 +35,7 @@ namespace Cats.Models
         public int? RequestedBy { get; set; }
         public int? ApprovedBy { get; set; }
         public bool Contingency { get; set; }
-        public int? BusinessProcessID { get; set; }
+        public int BusinessProcessID { get; set; }
         
         public virtual ICollection<RegionalRequestDetail> RegionalRequestDetails { get; set; }
         public virtual ICollection<ReliefRequisition> ReliefRequisitions { get; set; }
@@ -46,6 +46,7 @@ namespace Cats.Models
         public virtual Ration Ration { get; set; }
         public virtual  Donor Donor { get; set; }
         public virtual Plan Plan { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
 
         public string MonthName { get { return System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Month); } }
         //public string MonthName { get { return System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Month); } }

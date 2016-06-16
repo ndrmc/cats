@@ -53,6 +53,9 @@ namespace Cats.Models.Mapping
             this.HasOptional(t => t.UserProfile1)
                 .WithMany(t => t.RegionalRequests1)
                 .HasForeignKey(d => d.ApprovedBy);
+            this.HasOptional(t => t.BusinessProcess)
+                .WithMany(t => t.RegionalRequests)
+                .HasForeignKey(d => d.BusinessProcessID);
 
         }
     }
