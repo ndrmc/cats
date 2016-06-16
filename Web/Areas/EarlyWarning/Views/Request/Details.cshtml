@@ -14,6 +14,8 @@
     Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
     ViewBag.PageTitle = "Regional Request Detail";
     ViewBag.PageTitleDescription = "";
+    int index = 0;
+
 }
 @{
     var modelRequest = (RegionalRequestViewModel)ViewData["Request_main_data"];
@@ -194,6 +196,13 @@
                                 <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
                             </button>
                             <ul class="dropdown-menu pull-right">
+
+                                @{
+                                    
+                                    var state= modelRequest.BusinessProcess.CurrentState.BaseStateTemplate;
+                                }
+                                
+                                  
                                 @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
                                 {
                                     if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request) && actions.Name == "Approve")
@@ -208,7 +217,7 @@
                                     {
                                         <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
                                     }
-                                    
+
                                 }
                                 <li class="divider"></li>
                                 @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))

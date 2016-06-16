@@ -127,67 +127,68 @@ Plans
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @foreach (NeedAssessment item in Model)
-                                    {
-                                        index++;
-                                        var state = item.BusinessProcess.CurrentState.BaseStateTemplate;
-                                        //if (state.Name == "Approved by finance" || state.Name == "Cheque Issued" || state.Name == "Cheque Cashed")
-                                        //{
-                                        <tr>
-                                            <td>
-                                                @item.AdminUnit.Name
-                                            </td>
-                                            <td>
-                                                @item.Season
-                                            </td>
-                                            <td>
-                                                @state.Name
-                                            </td>
-                                            <td>
-                                                <a class="k-button-icontext k-grid-Edit btn btn-xs mrgn3 btn-warning" href="#" onclick="NeedAssessmentEdit(@item.NeedAID)">
-                                                    <span class=""></span><span class="fa fa-pencil-square-o"></span> Edit
-                                                </a>
-                                                <a class="k-button-icontext k-grid-Delete btn btn-xs mrgn3 btn-danger" href="#" onclick="DeleteNeedAssessment(@item.NeedAID)">
-                                                    <span class=""></span><span class="fa fa-times"></span> Delete
-                                                </a>
-                                                <div class="btn-group">
-                                                    <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
-                                                        <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu pull-right">
-                                                        @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                                <tbody>{}
+                                
+                                @foreach (NeedAssessment item in Model)
+                                {
+                                    index++;
+                                    var state = item.BusinessProcess.CurrentState.BaseStateTemplate;
+                                    //if (state.Name == "Approved by finance" || state.Name == "Cheque Issued" || state.Name == "Cheque Cashed")
+                                    //{
+                                    <tr>
+                                        <td>
+                                            @item.AdminUnit.Name
+                                        </td>
+                                        <td>
+                                            @item.Season
+                                        </td>
+                                        <td>
+                                            @state.Name
+                                        </td>
+                                        <td>
+                                            <a class="k-button-icontext k-grid-Edit btn btn-xs mrgn3 btn-warning" href="#" onclick="NeedAssessmentEdit(@item.NeedAID)">
+                                                <span class=""></span><span class="fa fa-pencil-square-o"></span> Edit
+                                            </a>
+                                            <a class="k-button-icontext k-grid-Delete btn btn-xs mrgn3 btn-danger" href="#" onclick="DeleteNeedAssessment(@item.NeedAID)">
+                                                <span class=""></span><span class="fa fa-times"></span> Delete
+                                            </a>
+                                            <div class="btn-group">
+                                                <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
+                                                    <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
+                                                </button>
+                                                <ul class="dropdown-menu pull-right">
+                                                    @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                                                    {
+                                                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "Approve")
                                                         {
-                                                            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "Approve")
-                                                            {
-                                                                <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
-                                                            }
-                                                            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "Reverse")
-                                                            {
-                                                                <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
-                                                            }
-                                                            if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Submit to EW")
-                                                            {
-                                                                <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
-                                                            }
-                                                            if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Re-Submit to EW")
-                                                            {
-                                                                <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
-                                                            }
+                                                            <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
                                                         }
-                                                        <li class="divider"></li>
-                                                        @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
+                                                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "Reverse")
+                                                        {
+                                                            <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
+                                                        }
+                                                        if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Submit to EW")
+                                                        {
+                                                            <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
+                                                        }
+                                                        if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Re-Submit to EW")
+                                                        {
+                                                            <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
+                                                        }
+                                                    }
+                                                    <li class="divider"></li>
+                                                    @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
                                                         {*@
-                                                            <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
-                                                        @*}*@
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        //}
+                                                    <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
+                                                    @*}*@
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    //}
 
-            }
-        </tbody>
+                                }
+                                </tbody>
     </table>
 
     @*@(Html.Kendo().Grid<Cats.Models.NeedAssessmentHeaderViewModel>()
