@@ -2,9 +2,13 @@
 @using Cats.Services.Security
 @using Kendo.Mvc.UI
 @using Cats.Helpers
+@using Cats.Models
+@using Cats.Models.ViewModels.HRD
+@using DocumentFormat.OpenXml.Drawing
+@using DocumentFormat.OpenXml.Spreadsheet
 @using LanguageHelpers.Localization
 
-@model List<Cats.Models.HRD>
+@model List<Cats.Models.ViewModels.HRD.HRDViewModel>
 
 @{
     ViewBag.Title = "Create";
@@ -29,59 +33,62 @@ Plans
             <div class="box-body row">
                 <div class="text-right col-md-12">
                     @Html.EarlyWarningOperationButton(
-                        @Url.Action("Create", "HRD", new { Area = "EarlyWarning" }),
+                        @Url.Action("Create", "HRD", new {Area = "EarlyWarning"}),
                         EarlyWarningConstants.Operation.New_HRD, "<button type=\"button\" class=\"btn btn-success\"><span class=\"fa fa-plus\"></span> New HRD</button>", "btn", "btn_new_record")
                 </div>
                 <div class="col-md-12">
                     <div class="table-responsive">
                         @(Html.Kendo().Grid<Cats.Models.ViewModels.HRD.HRDViewModel>()
-    .Name("grid")
-    .Columns(columns =>
-    {
-        //columns.Bound(p => p.HRDName);
-        columns.Bound(p => p.Plan).Title(Html.Translate("HRD Name")).ClientTemplate(
-                        @Html.EarlyWarningOperationButton(
-                            @Url.Action("Detail", "HRD", new { id = "#=HRDID#" })+"?Grid-group=Region-asc",
-                            EarlyWarningConstants.Operation.View_HRD_Detail, "#=Plan#").ToString());
-        columns.Bound(p => p.Ration).Title("Ration No");
-        columns.Bound(p => p.StartDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
-        columns.Bound(p => p.EndDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
-        columns.Bound(p => p.CreatedBy);
-        columns.Bound(p => p.CreatedDatePref).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
-        columns.Bound(p => p.Status);
-        columns.Command(p =>
-        {
-            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Modify_HRD))
-            {
-                p.Custom("Edit").Click("hrdEdit").Text("<span class=\"fa fa-pencil-square-o\"></span> Edit ");
-            }
-            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_HRD))
-            {
-                p.Custom("Approve").Click("approveHRD").Text("<span class=\"fa fa-check\"></span> Approve ");
-            }
-            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.HRD_Summary))
-            {
-                p.Custom("Summary").Click("showSummary").Text("<span class=\"fa fa-list\"></span> Summary ");
-            }
-            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Delete_HRD))
-            {
-                p.Custom("Delete").Click("deleteHRD").Text("<span class=\"fa fa-times fa-fw\"></span> Delete ");
-            }
-        });
-                    
-    })
-            .Sortable()
-            .Scrollable()
-             .Pageable()
-              .Events(e => e.DataBound("onDataBound"))
-            .DataSource(dataSource => dataSource
-                  .Ajax()
-                    .Model(model => model.Id(p => p.HRDID))
-                    .Read(read => read.Action("HRD_Read", "HRD"))
+                              .Name("grid")
+                              .Columns(columns =>
+                              {
+                                  //columns.Bound(p => p.HRDName);
+                                  columns.Bound(p => p.Plan).Title(Html.Translate("HRD Name")).ClientTemplate(
+                                      @Html.EarlyWarningOperationButton(
+                                          @Url.Action("Detail", "HRD", new {id = "#=HRDID#"}) + "?Grid-group=Region-asc",
+                                          EarlyWarningConstants.Operation.View_HRD_Detail, "#=Plan#").ToString());
+                                  columns.Bound(p => p.Ration).Title("Ration No");
+                                  columns.Bound(p => p.StartDate).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid"});
+                                  columns.Bound(p => p.EndDate).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid"});
+                                  columns.Bound(p => p.CreatedBy);
+                                  columns.Bound(p => p.CreatedDatePref).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid"});
+                                  columns.Bound(p => p.Status);
+                                  columns.Command(p =>
+                                  {
+                                      if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Modify_HRD))
+                                      {
+                                          p.Custom("Edit").Click("hrdEdit").Text("<span class=\"fa fa-pencil-square-o\"></span> Edit ");
+                                      }
 
-             )
+                                      //work flow Imlementation
 
-      )
+                                      if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_HRD))
+                                      {
+                                          p.Custom("Approve").Click("approveHRD").Text("<span class=\"fa fa-check\"></span> Approve ");
+                                      }
+                                      if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.HRD_Summary))
+                                      {
+                                          p.Custom("Summary").Click("showSummary").Text("<span class=\"fa fa-list\"></span> Summary ");
+                                      }
+                                      if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Delete_HRD))
+                                      {
+                                          p.Custom("Delete").Click("deleteHRD").Text("<span class=\"fa fa-times fa-fw\"></span> Delete ");
+                                      }
+                                  });
+
+                              })
+                              .Sortable()
+                              .Scrollable()
+                              .Pageable()
+                              .Events(e => e.DataBound("onDataBound"))
+                              .DataSource(dataSource => dataSource
+                                  .Ajax()
+                                  .Model(model => model.Id(p => p.HRDID))
+                                  .Read(read => read.Action("HRD_Read", "HRD"))
+
+                              )
+
+                              )
                     </div>
                 </div>
             </div>
@@ -90,6 +97,56 @@ Plans
         </div>
     </div>
 </div>
+
+               <br />
+               <div class="col-md-12" ng-app="hrdApp">
+                   <div class="table-responsive" ng-controller="HrdController">
+                       <table class="table table-striped table-condensed">
+                           <thead>
+                               <tr>
+                                   <th>HRD Name</th>
+                                   <th>Ration No</th>
+                                   <th>Start Date</th>
+                                   <th>End Date</th>
+                                   <th>Created By</th>
+                                   <th>Date Created</th>
+                                   <th>Status</th>
+                               </tr>
+                           </thead>
+                           <tbody>                              
+                                 @foreach (HRDViewModel item in Model)
+                                 {
+                                     //index++;
+                                     //var state = item.BusinessProcess.CurrentState.BaseStateTemplate;
+                                     <tr>
+                                         <td>
+                                             <a href='@Url.Action("Detail", "HRD", new {id = item})'> @item.Plan </a>
+                                         </td>
+                                         <td>
+                                             @item.StartDate
+                                         </td>
+                                         <td>
+                                             @item.EndDate
+                                         </td>
+                                         <td>
+                                             @item.CreatedBy
+                                         </td>
+                                         <td>
+                                             @item.CreatedDatePref
+                                         </td>
+                                         <td>
+                                             @item.Status
+                                         </td>
+                                     </tr>
+                                 }
+                           </tbody>
+                       </table>
+                   </div>
+               </div>
+
+
+
+
 <div class="modal" id="cats-modal">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -116,99 +173,151 @@ Plans
         </div>
     </div>
 </div>
-    <!-- Added by Nigus-->
-               <div class="modal" id="cats-modal-delete">
-                   <div class="modal-dialog modal-sm">
-                       <div class="modal-content">
 
-                           <div class="modal-header">
-                               <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                               <h4 id="myModalLabel" class="modal-title">@Html.Translate("Delete HRD")</h4>
+
+
+
+
+
+                   <!-- Added by Nigus-->
+                   <div class="modal" id="cats-modal-delete">
+                       <div class="modal-dialog modal-sm">
+                           <div class="modal-content">
+
+                               <div class="modal-header">
+                                   <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                   <h4 id="myModalLabel" class="modal-title">@Html.Translate("Delete HRD")</h4>
+                               </div>
+
+
+                               <div class="modal-body">
+
+                                   <p>
+                                       Are you sure do you want to delete the HRD?
+                                   </p>
+
+                               </div>
+                               <div class="modal-footer">
+                                   <button id="yes-delete" class="btn btn-primary" type="submit">Yes</button>
+                                   <button id="no" class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+                               </div>
+
+
                            </div>
-
-
-                           <div class="modal-body">
-
-                               <p>
-                                   Are you sure do you want to delete the HRD?
-                               </p>
-
-                           </div>
-                           <div class="modal-footer">
-                               <button id="yes-delete" class="btn btn-primary" type="submit">Yes</button>
-                               <button id="no" class="btn" data-dismiss="modal" aria-hidden="true">No</button>
-                           </div>
-
-
                        </div>
                    </div>
-               </div>
-<script>
-    function onDataBound(e) {
+                   @*@Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")*@
+                   <script>
+                       function onDataBound(e) {
 
-        $(".table-responsive .k-button").removeClass("k-button").addClass("btn btn-xs mrgn3-b col-md-11");
-        $(".k-grid-Edit").addClass("btn-warning");
-        $(".k-grid-Approve").addClass("btn-success");
-        $(".k-grid-Summary").addClass("btn-primary");
-        $(".k-grid-Delete").addClass("btn-danger");
-    }
+                           $(".table-responsive .k-button").removeClass("k-button").addClass("btn btn-xs mrgn3-b col-md-11");
+                           $(".k-grid-Edit").addClass("btn-warning");
+                           $(".k-grid-Approve").addClass("btn-success");
+                           $(".k-grid-Summary").addClass("btn-primary");
+                           $(".k-grid-Delete").addClass("btn-danger");
+                       }
 
-    function approveHRD(e) {
-        e.preventDefault();
-        var grid = this;
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var row = $(e.currentTarget).closest("tr");
-        $('#cats-modal').modal('show');
+                       function approveHRD(e) {
+                           e.preventDefault();
+                           var grid = this;
+                           var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                           var row = $(e.currentTarget).closest("tr");
+                           $('#cats-modal').modal('show');
 
-        $("#yes").click(function () {
+                           $("#yes").click(function () {
 
-            window.location = "@Url.Action("ApproveHRD", "HRD")" + "/" + dataItem.HRDID;
+                               window.location = "@Url.Action("ApproveHRD", "HRD")" + "/" + dataItem.HRDID;
 
-        });
-    }
+                           });
+                       }
 
-    //Added by Nigus
-    function deleteHRD(e) {
-        e.preventDefault();
-        var grid = this;
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var row = $(e.currentTarget).closest("tr");
-        $('#cats-modal-delete').modal('show');
+                       //Added by Nigus
+                       function deleteHRD(e) {
+                           e.preventDefault();
+                           var grid = this;
+                           var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                           var row = $(e.currentTarget).closest("tr");
+                           $('#cats-modal-delete').modal('show');
 
-        $("#yes-delete").click(function() {
+                           $("#yes-delete").click(function () {
 
-            window.location = "@Url.Action("DeleteHRD", "HRD")" + "/" + dataItem.HRDID;
+                               window.location = "@Url.Action("DeleteHRD", "HRD")" + "/" + dataItem.HRDID;
 
-        });
-    }
+                           });
+                       }
 
-    function showSummary(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        window.location = "@Url.Action("RegionalSummary", "HRD")" + "/" + dataItem.HRDID;
-    }
+                       function showSummary(e) {
+                           e.preventDefault();
+                           var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                           window.location = "@Url.Action("RegionalSummary", "HRD")" + "/" + dataItem.HRDID;
+                       }
 
-    function hrdEdit(e) {
-        e.preventDefault();
+                       function hrdEdit(e) {
+                           e.preventDefault();
 
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        window.location = "@Url.Action("Edit", "HRD")" + "/" + dataItem.HRDID;
+                           var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                           window.location = "@Url.Action("Edit", "HRD")" + "/" + dataItem.HRDID;
 
-    }
-</script>
+                       }
 
-<script type="text/javascript">
-    function error_handler(e) {
-        if (e.errors) {
-            var message = "Errors:\n";
-            $.each(e.errors, function (key, value) {
-                if ('errors' in value) {
-                    $.each(value.errors, function () {
-                        message += this + "\n";
-                    });
-                }
-            });
-            alert(message);
-        }
-    }
-</script>
+                       // Workflow Implementation
+                       var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
+
+                       function promot_workflow(BusinessProcessID, nextstate, actionname, PlanID) {
+                           //alert(PaymentRequestID);
+                           $('#ParentBusinessProcessID').val(BusinessProcessID);
+                           $('#stateID').val(nextstate);
+                           $('#modalPromotionLabel').html(actionname);
+                           $('#TransporterChequeID').val(TransporterChequeID);
+                           $('#modalPromotion').modal();
+                           $.ajax({
+                               type: "POST",
+                               url: "@Url.Action("ApproveNeedAssessment", "NeedAssessment")",
+                               data: "{id:" + PlanID + "}",
+                               dataType: json
+                           });
+                       }
+
+                       function workflow_history(BusinessProcessID) {
+                           $('#modalHistory').modal();
+                           $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+                           $.post(history_link + BusinessProcessID, {},
+                               function(data) {
+                                   $("#modalHistoryBody").html(data);
+                               }
+                           );
+                       }
+
+                       var myApp = angular.module('hrdApp', []);
+
+                       myApp.controller('HrdController', function($scope, $http) {
+                           $scope.hrds = [];
+                           $scope.onRequestsSuccess = function(data) {
+                               $scope.hrds = data;
+                               
+                           };
+
+
+                           $scope.getHrd = function() {
+                               $http.post("@Url.Action("HRD_Read", "HRD", new {Area = "EarlyWarning"})").success(onRequestsSuccess);
+                           };
+
+                           //$scope.getHrd();
+                       });
+                   </script>
+
+                   <script type="text/javascript">
+                       function error_handler(e) {
+                           if (e.errors) {
+                               var message = "Errors:\n";
+                               $.each(e.errors, function (key, value) {
+                                   if ('errors' in value) {
+                                       $.each(value.errors, function () {
+                                           message += this + "\n";
+                                       });
+                                   }
+                               });
+                               alert(message);
+                           }
+                       }
+                   </script>
