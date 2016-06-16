@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using Cats.Helpers;
@@ -39,14 +40,15 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private IPlanService _planService;
         private IHubService _hubService;
         private readonly Cats.Services.Transaction.ITransactionService _transactionService;
-
+        private readonly IBusinessProcessService _businessProcessService;
         public HRDController(IAdminUnitService adminUnitService, IHRDService hrdService,
                              IRationService rationservice, IRationDetailService rationDetailService,
                              IHRDDetailService hrdDetailService, ICommodityService commodityService,
                              INeedAssessmentDetailService needAssessmentDetailService, INeedAssessmentHeaderService needAssessmentService,
                              IWorkflowStatusService workflowStatusService, ISeasonService seasonService, 
                              IUserAccountService userAccountService, ILog log,IPlanService planService, IHubService hubService, 
-                             ITransactionService transactionService)
+                             ITransactionService transactionService,
+                             IBusinessProcessService businessProcessService)
         {
             _adminUnitService = adminUnitService;
             _hrdService = hrdService;
@@ -63,6 +65,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _planService = planService;
             _hubService = hubService;
             _transactionService = transactionService;
+            _businessProcessService = businessProcessService;
         }
 
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_HRD_list)]
@@ -70,7 +73,11 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             var hrd = _hrdService.GetAllHRD();
             //ViewBag.Status = _workflowStatusService.GetStatusName();
-            return View(hrd);
+
+            var hrds = _hrdService.Get(m => m.Status == 1).OrderByDescending(m => m.HRDID);
+            var hrdsToDisplay = GetHrds(hrds).ToList();
+
+            return View(hrdsToDisplay);
         }
 
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Print_HRD)]
@@ -272,9 +279,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
                             PublishedDatePref = hrd.PublishedDate.ToCTSPreferedDateFormat(datePref),
                             Plan = hrd.Plan.PlanName,
                             StartDate = hrd.Plan.StartDate.ToCTSPreferedDateFormat(datePref),
-                            EndDate = hrd.Plan.EndDate.ToCTSPreferedDateFormat(datePref)
-
-                        });
+                            EndDate = hrd.Plan.EndDate.ToCTSPreferedDateFormat(datePref),
+                            BusinessProcess = hrd.BusinessProcess
+                    });
         }
 
         //public ActionResult RegionalSummary_Read([DataSourceRequest] DataSourceRequest request, int id = 0)
@@ -648,8 +655,6 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             return View();
         }
-
-
         [HttpPost]
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Compare_HRD)]
         public ActionResult Compare_HRD([DataSourceRequest] DataSourceRequest request, int? firstHrd, int? secondHrd, int? regionId)
@@ -889,6 +894,49 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 );
         return Json(r, JsonRequestBehavior.AllowGet);
     }
-        
+
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+            _businessProcessService.PromotWorkflow(businessProcessState);
+            if (statusId != null)
+                return RedirectToAction("Index", "HRD", new {Area = "EarlyWarning", statusId});
+            return RedirectToAction("Index", "HRD", new {Area = "EarlyWarning"});
+        }
+
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                    .Select(s => s[random.Next(s.Length)])
+                    .ToArray());
+
+            return result;
+        }
     }
 }
