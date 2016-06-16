@@ -207,22 +207,22 @@
                                 {
                                     if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request) && actions.Name == "Approve")
                                     {
-                                        <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
+                                        <li class="edit_button"><a href="javascript:promot_workflow(modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                                     }
                                     if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "FederalApproved")
                                     {
-                                        <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
+                                        <li class="edit_button"><a href="javascript:promot_workflow(modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                                     }
                                     if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Rejected")
                                     {
-                                        <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
+                                        <li class="edit_button"><a href="javascript:promot_workflow(modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                                     }
 
                                 }
                                 <li class="divider"></li>
                                 @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
                                     {*@
-                                <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
+                                <li class="edit_button"><a href="javascript:workflow_history(modelRequest.BusinessProcessID)"> History </a></li>
                                 @*}*@
                             </ul>
                         </div>
