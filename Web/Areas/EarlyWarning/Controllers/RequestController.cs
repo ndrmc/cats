@@ -196,14 +196,57 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 DatePerformed = DateTime.Now,
                 PerformedBy = User.Identity.Name,
-                Comment = "A [DOCUMENT_NAME] is Created"
+                Comment = "A RegionalRequest is Created"
             };
 
-            BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "[DOCUMENT_NAME]", createdstate);
+            BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "RegionalRequest", createdstate);
 
             _regionalRequestService.AddRegionalRequest(regionalRequest);
 
             return regionalRequest;
+        }
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+            _businessProcessService.PromotWorkflow(businessProcessState);
+            if (statusId != null)
+                return RedirectToAction("Details", "Request", new { Area = "EarlyWarning", statusId });
+           
+            return   RedirectToAction("Index");
+        }
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
         }
         private void PopulateLookup()
         {

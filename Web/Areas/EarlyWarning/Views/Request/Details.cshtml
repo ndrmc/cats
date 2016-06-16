@@ -4,6 +4,7 @@
 @model System.Data.DataTable
 @using Cats.Helpers
 @using Cats.Security
+@using Cats.Models
 @using Cats.Services.Security
 @using Kendo.Mvc.UI
 
@@ -186,8 +187,36 @@
                         <li><a class="btn green-haze-stripe" href="@Url.Action("Edit", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Edit</a></li>
                         <li><a class="btn green-haze-stripe" href="@Url.Action("Allocation", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Allocation</a></li>
                         @*<li><a class="btn green-haze-stripe" href="@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID })">Approve</a></li>*@
-                        if (modelRequest.Program == "Relief")
-                        {
+                    if (modelRequest.Program == "Relief")
+                    {
+                        <div class="btn-group">
+                            <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
+                                <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
+                            </button>
+                            <ul class="dropdown-menu pull-right">
+                                @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                                {
+                                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request) && actions.Name == "Approve")
+                                    {
+                                        <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
+                                    }
+                                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "FederalApproved")
+                                    {
+                                        <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
+                                    }
+                                    if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Rejected")
+                                    {
+                                        <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
+                                    }
+                                    
+                                }
+                                <li class="divider"></li>
+                                @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
+                                    {*@
+                                <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
+                                @*}*@
+                            </ul>
+                        </div>
                             <li>
                                 <a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
                                                                      EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))</a>
