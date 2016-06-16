@@ -703,6 +703,25 @@
             rowIdx++;
         });
     }
+   
+    var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
+    function promot_workflow(BusinessProcessID, nextstate, actionname, RegionalRequestID) {
+        $('#ParentBusinessProcessID').val(BusinessProcessID);
+        $('#stateID').val(nextstate);
+        $('#modalPromotionLabel').html(actionname);
+        $('#RegionalRequestID').val(RegionalRequestID);
+        $('#modalPromotion').modal();
+    }
+    function workflow_history(BusinessProcessID) {
+        $('#modalHistory').modal();
+        $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+        $.post(history_link + BusinessProcessID, {},
+        function (data) {
+            $("#modalHistoryBody").html(data);
+        }
+        );
+    }
+
 </script>
 
 <style>
