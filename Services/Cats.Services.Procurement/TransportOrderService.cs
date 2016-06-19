@@ -8,6 +8,7 @@ using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Models.ViewModels;
 using Cats.Services.Common;
+using Cats.Services.EarlyWarning;
 
 namespace Cats.Services.Procurement
 {
@@ -17,13 +18,15 @@ namespace Cats.Services.Procurement
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITransporterService _transporterService;
         private readonly INotificationService _notificationService;
+        private readonly IBusinessProcessService _businessProcessService;
+        
 
-
-        public TransportOrderService(IUnitOfWork unitOfWork, ITransporterService transporterService, INotificationService notificationService)
+        public TransportOrderService(IUnitOfWork unitOfWork, ITransporterService transporterService, INotificationService notificationService, IBusinessProcessService businessProcessService)
         {
             this._unitOfWork = unitOfWork;
             this._transporterService = transporterService;
             _notificationService = notificationService;
+            _businessProcessService = businessProcessService;
         }
 
         #region Default Service Implementation
@@ -266,7 +269,7 @@ namespace Cats.Services.Procurement
         //TODO:Factor Out  to single responiblity Principle 
        
 
-        public bool CreateTransportOrder(int transportRequisitionId, int bidId)
+        public bool CreateTransportOrder(int transportRequisitionId, int bidId, string requesterName)
         {
             //var requId=_unitOfWork.TransportRequisitionDetailRepository.FindBy(t=>t.TransportRequisitionID==)
             var transporterAssignedRequisionDetails = AssignTransporterForEachWoreda(transportRequisitionId,bidId);
@@ -371,10 +374,28 @@ namespace Cats.Services.Procurement
                 _unitOfWork.TransportRequisitionDetailRepository.Get(t => t.TransportRequisitionID == transportRequisitionId).ToList();
             foreach (var transportRequisitionDetail in transportRequisitionDetails)
             {
-                var reliefRequisition =
-                    _unitOfWork.ReliefRequisitionRepository.Get(
-                        t => t.RequisitionID == transportRequisitionDetail.RequisitionID).FirstOrDefault();
-                reliefRequisition.Status = (int)ReliefRequisitionStatus.TransportOrderCreated;
+                //var reliefRequisition =
+                //    _unitOfWork.ReliefRequisitionRepository.Get(
+                //        t => t.RequisitionID == transportRequisitionDetail.RequisitionID).FirstOrDefault();
+                //reliefRequisition.Status = (int)ReliefRequisitionStatus.TransportOrderCreated;
+
+                var reliefRequisition = _unitOfWork.ReliefRequisitionRepository.Get(t => t.RequisitionID == transportRequisitionDetail.RequisitionID, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+                var approveFlowTemplate = reliefRequisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Order");
+                if (approveFlowTemplate != null)
+                {
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = approveFlowTemplate.FinalStateID,
+                        PerformedBy = requesterName,
+                        DatePerformed = DateTime.Now,
+                        Comment = "Transport order has been created for the requisition.",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = reliefRequisition.BusinessProcessID
+                    };
+                    //return 
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
             }
 
             _unitOfWork.Save();

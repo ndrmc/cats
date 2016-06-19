@@ -32,14 +32,33 @@
         //columns.Bound(e => e.StrRequisitionDate).Title("Requested On").Width(140);
         columns.Bound(e => e.BenficiaryNo).Title(@Html.Translate("Beneficiaries")).Width(90).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title = "Benficiary No" }).Format("{0:n0}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).Filterable(false);
         columns.Bound(e => e.Status).Title(@Html.Translate("Status"));//.Width(120).ClientTemplate("<a class='action-link assign-code#=Status#' href='" + @Url.Action("Index", "FDPSIAllocation", new { Area = "Logistics", regionid = ViewBag.regionId }) + "&RequisitionID=#=RequisitionId#'>PC/SI Allocate</a>  ").Filterable(false);
-        columns.Command(e =>
-        {
-            if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.UnCommit_Allocation).ToString() == "UnCommit_Allocation")
-                e.Custom(@Html.Translate("Uncommmit")).Click("onUnCommit");
-            if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_Allocation).ToString() == "Approve_Allocation")
-                e.Custom(@Html.Translate("Approve")).Click("onApprove");
+        //columns.Command(e =>
+        //{
+        //    if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.UnCommit_Allocation).ToString() == "UnCommit_Allocation")
+        //        e.Custom(@Html.Translate("Uncommmit")).Click("onUnCommit");
+        //    if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_Allocation).ToString() == "Approve_Allocation")
+        //        e.Custom(@Html.Translate("Approve")).Click("onApprove");
 
-        }).Width(200);
+        //}).Width(200);
+        columns.Bound(requisition => requisition.Status).Title("Actions")
+                .ClientTemplate(
+                @"<div class='btn-group'>
+                <button type='button' id='workflow-#=RequisitionId#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
+                    <i class='fa fa-ellipsis-horizontal'></i>Workflow<i class='fa fa-angle-down'></i>
+                </button>
+                <ul class='dropdown-menu pull-right' style='overflow: visible;'>" +
+                    "# if ('data.Status' == 'Project Code Assigned') { #" +
+                        "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.UnCommit_Allocation).ToString() + "' == 'UnCommit_Allocation') { #" +
+                            "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=UncommitStateID#','Uncommit','#=RequisitionId#')\" title='Reject Requisition'>Uncommit</a></li>" +
+                        " # } #" +
+                        "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_Allocation).ToString() + "' == 'Approve_Allocation') { #" +
+                            "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=ApproveStateID#','Approve','#=RequisitionId#')\" title='Reject Requisition'>Approve</a></li>" +
+                        " # } #" +
+                    " # } #" +
+                    " # if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.View_dispatch_allocation_menu_item).ToString() + "' == 'View_dispatch_allocation_menu_item') { #" +
+                        "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
+                    " # } #" +
+                "</ul></div>");
 
 
         //columns.Bound(e => e.Round).Width(120).Title("Round");

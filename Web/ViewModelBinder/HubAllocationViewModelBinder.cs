@@ -34,7 +34,8 @@ namespace Cats.ViewModelBinder
                                         Month = req.Month,
                                         MonthName = RequestHelper.GetMonthList().Find(t => t.Id == req.Month).Name,
                                         AmountAllocated = req.ReliefRequisitionDetails.Sum(a=>a.Amount),
-                                        StrRequisitionDate = req.RequestedDate.Value.ToCTSPreferedDateFormat(UserAccountHelper.UserCalendarPreference())
+                                        StrRequisitionDate = req.RequestedDate.Value.ToCTSPreferedDateFormat(UserAccountHelper.UserCalendarPreference()),
+                                        RejectStateID = req.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(t=>t.Name == "Reject").Select(t=>t.FinalStateID).FirstOrDefault()
                                       });
 
              var r = new List<RequisitionViewModel>();
@@ -60,6 +61,16 @@ namespace Cats.ViewModelBinder
                  n.MonthName = RequestHelper.GetMonthList().Find(t => t.Id == req.Month).Name;
                  n.AmountAllocated = req.ReliefRequisitionDetails.Sum(a => a.Amount);
                  n.StrRequisitionDate = req.RequestedDate.Value.ToCTSPreferedDateFormat(UserAccountHelper.UserCalendarPreference());
+                 n.RejectStateID =
+                     req.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(
+                         t => t.Name == "Reject").Select(t => t.FinalStateID).FirstOrDefault();
+                n.UncommitStateID =
+                     req.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(
+                         t => t.Name == "Uncommit").Select(t => t.FinalStateID).FirstOrDefault();
+                n.ApproveStateID =
+                     req.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(
+                         t => t.Name == "Approve SI/PC Allocation").Select(t => t.FinalStateID).FirstOrDefault();
+                n.BusinessProcessID = req.BusinessProcessID;
 
                  r.Add(n);
              }

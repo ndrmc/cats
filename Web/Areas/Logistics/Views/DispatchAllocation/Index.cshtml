@@ -38,12 +38,12 @@
 
                     <li>@Html.LogisticsOperationButton(
                                                 @Url.Action("Hub", "DispatchAllocation", new { regionid = ViewBag.regionId }),
-                                               LogisticsConstants.Operation.Hub_allocation, @Html.Translate("Hub allocation"));</li>
+                                               LogisticsConstants.Operation.Hub_allocation, @Html.Translate("Hub allocation"))</li>
                     @*<li><a class="btn green-haze-stripe" href="@Url.Action("Hub", "DispatchAllocation", new {regionid = ViewBag.regionId})">@Html.Translate("Hub allocation")</a></li>*@
                     <!--<li><a class="btn green-haze-stripe" href="@Url.Action("Index", "SIAllocation", new {Area = "Logistics", regionid = ViewBag.regionId})">PC/SI code allocation</a></li>-->
                      <li>@Html.LogisticsOperationButton(
                                                 @Url.Action("CreateTransportRequisition", "TransportRequisition", new { regionId = ViewBag.regionId }),
-                                               LogisticsConstants.Operation.Generate_transport_requisition, @Html.Translate("Generate Transport Requisition"));</li>
+                                               LogisticsConstants.Operation.Generate_transport_requisition, @Html.Translate("Generate Transport Requisition"))</li>
                    @* <li><a class="btn green-haze-stripe" href="@Url.Action("CreateTransportRequisition", "TransportRequisition", new {regionId = ViewBag.regionId})">@Html.Translate("Generate Transport Requisition"),</a></li>*@
                 </ul>
             </div>
@@ -106,8 +106,43 @@
     </div>
 </div>
 
+<div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id="modalHistoryLabel">Activity History</h4>
+            </div>
+            <div class="modal-body" id="modalHistoryBody">History</div>
+
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
 
 <script>
+    var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
+
+    function promot_workflow(BusinessProcessID, nextstate, actionname, PlanID) {
+        //alert(PaymentRequestID);
+        console.log("BusinessProcessID: " + BusinessProcessID);
+        console.log("nextstate: " + nextstate);
+        console.log("actionname: " + actionname);
+        $('#ParentBusinessProcessID').val(BusinessProcessID);
+        $('#stateID').val(nextstate);
+        $('#modalPromotionLabel').html(actionname);
+        $('#modalPromotion').modal();
+    }
+    function workflow_history(BusinessProcessID) {
+        console.log("BusinessProcessID: " + BusinessProcessID);
+        $('#modalHistory').modal();
+        $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+        $.post(history_link + BusinessProcessID, {},
+            function (data) {
+                $("#modalHistoryBody").html(data);
+            }
+        );
+    }
 
     $(document).ready(function () {
         var regionId = '@ViewBag.regionId';

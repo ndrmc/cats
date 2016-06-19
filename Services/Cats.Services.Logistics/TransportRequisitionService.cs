@@ -11,6 +11,7 @@ using Cats.Models.Constant;
 using Cats.Models.ViewModels;
 using Cats.Services.Logistics;
 using Cats.Services.Common;
+using Cats.Services.EarlyWarning;
 
 namespace Cats.Services.Logistics
 {
@@ -18,12 +19,15 @@ namespace Cats.Services.Logistics
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly INotificationService _notificationService;
-     
+        private readonly IBusinessProcessService _businessProcessService;
+        private readonly IReliefRequisitionService _reliefRequisitionService;
 
-        public TransportRequisitionService(IUnitOfWork unitOfWork, INotificationService notificationService)
+        public TransportRequisitionService(IUnitOfWork unitOfWork, INotificationService notificationService, IBusinessProcessService businessProcessService, IReliefRequisitionService reliefRequisitionService)
         {
             this._unitOfWork = unitOfWork;
             _notificationService = notificationService;
+            _businessProcessService = businessProcessService;
+            _reliefRequisitionService = reliefRequisitionService;
         }
 
         #region Default Service Implementation
@@ -78,7 +82,7 @@ namespace Cats.Services.Logistics
         }
         #endregion
 
-        public bool CreateTransportRequisition(List<List<int>> programRequisitons,int requestedBy)
+        public bool CreateTransportRequisition(List<List<int>> programRequisitons,int requestedBy, string requesterName)
         {
             if(programRequisitons.Count < 1) return false;
             foreach (var reliefRequisitions in programRequisitons)
@@ -116,10 +120,28 @@ namespace Cats.Services.Logistics
                 {
                     transportRequisition.TransportRequisitionDetails.Add(new TransportRequisitionDetail
                                                                              {RequisitionID = reliefRequisition});
-                    var orignal =
-                        _unitOfWork.ReliefRequisitionRepository.Get(t => t.RequisitionID == reliefRequisition).
-                            FirstOrDefault();
-                    orignal.Status = (int) ReliefRequisitionStatus.TransportRequisitionCreated;
+                    //var orignal =
+                    //    _unitOfWork.ReliefRequisitionRepository.Get(t => t.RequisitionID == reliefRequisition).
+                    //        FirstOrDefault();
+                    //orignal.Status = (int) ReliefRequisitionStatus.TransportRequisitionCreated;
+
+                    var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == reliefRequisition, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+                    var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Requisition");
+                    if (approveFlowTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = approveFlowTemplate.FinalStateID,
+                            PerformedBy = requesterName,
+                            DatePerformed = DateTime.Now,
+                            Comment = "Transport requisition has been created for the requisition.",
+                            //AttachmentFile = fileName,
+                            ParentBusinessProcessID = requisition.BusinessProcessID
+                        };
+                        //return 
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                    }
                 }
 
                 AddTransportRequisition(transportRequisition);

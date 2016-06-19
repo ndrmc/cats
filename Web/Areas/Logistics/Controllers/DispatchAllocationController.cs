@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -15,6 +16,7 @@ using Cats.ViewModelBinder;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Cats.Helpers;
+using Cats.Models.ViewModels;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using IHubService = Cats.Services.EarlyWarning.IHubService;
 
@@ -62,7 +64,7 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult Index(int regionId = -1)
         {
 
-
+            ViewBag.TargetController = "DispatchAllocation";
             //var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificationHub>();
             //hubContext.Clients.All.receiveNotification("this is a sample data");
 
@@ -231,6 +233,23 @@ namespace Cats.Areas.Logistics.Controllers
                         hubAllocated.SatelliteWarehouseID = all.SatelliteWarehouseID;
 
                         _hubAllocationService.EditHubAllocation(hubAllocated);
+                        var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == all.ReqId, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+                        var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Assign Hub");
+                        if (approveFlowTemplate != null)
+                        {
+                            var businessProcessState = new BusinessProcessState()
+                            {
+                                StateID = approveFlowTemplate.FinalStateID,
+                                PerformedBy = HttpContext.User.Identity.Name,
+                                DatePerformed = DateTime.Now,
+                                Comment = "Requisition has been re-assigned a hub",
+                                //AttachmentFile = fileName,
+                                ParentBusinessProcessID = requisition.BusinessProcessID
+                            };
+                            //return 
+                            _businessProcessService.PromotWorkflow(businessProcessState);
+                        }
                     }
                     else
                     {
@@ -320,7 +339,7 @@ namespace Cats.Areas.Logistics.Controllers
         
         public ActionResult RejectRequsition(int id)
         {
-            var requistion = _reliefRequisitionService.FindById(id);
+            //var requistion = _reliefRequisitionService.FindById(id);
             var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == id, null,
                             "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
             var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Reject");
@@ -331,39 +350,109 @@ namespace Cats.Areas.Logistics.Controllers
                     StateID = approveFlowTemplate.FinalStateID,
                     PerformedBy = HttpContext.User.Identity.Name,
                     DatePerformed = DateTime.Now,
-                    Comment = "Requisition has been assigned a hub",
+                    Comment = "Requisition has been rejected",
                     //AttachmentFile = fileName,
                     ParentBusinessProcessID = requisition.BusinessProcessID
                 };
                 //return 
                 _businessProcessService.PromotWorkflow(businessProcessState);
 
-                return RedirectToAction("Index", new { regionId = requistion.RegionID });
+                return RedirectToAction("Index", new { regionId = requisition.RegionID });
             }
             return RedirectToAction("Index");
         }
 
         public ActionResult UncommitRequsition(int id)
         {
-            var requistion = _reliefRequisitionService.FindById(id);
-            if (requistion != null)
+            var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == id, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+            var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Uncommit");
+            if (approveFlowTemplate != null)
             {
-
-
+                var businessProcessState = new BusinessProcessState()
+                {
+                    StateID = approveFlowTemplate.FinalStateID,
+                    PerformedBy = HttpContext.User.Identity.Name,
+                    DatePerformed = DateTime.Now,
+                    Comment = "Requisition has been uncommitted",
+                    //AttachmentFile = fileName,
+                    ParentBusinessProcessID = requisition.BusinessProcessID
+                };
+                //return 
                 _transactionService.PostSIAllocationUncommit(id);
-                return RedirectToAction("Index", new { regionId = requistion.RegionID });
+                _businessProcessService.PromotWorkflow(businessProcessState);
+
+                return RedirectToAction("Index", new { regionId = requisition.RegionID });
             }
             return RedirectToAction("Index");
         }
         public ActionResult ApproveSiPcAllocation(int id)
         {
-             var requistion = _reliefRequisitionService.FindById(id);
-             if (requistion != null)
-             {
-                 requistion.Status = (int)ReliefRequisitionStatus.SiPcAllocationApproved;
-                 _reliefRequisitionService.EditReliefRequisition(requistion);
-             }
-             return RedirectToAction("Index");
+            var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == id, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+            var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Approve SI/PC Allocation");
+            if (approveFlowTemplate != null)
+            {
+                var businessProcessState = new BusinessProcessState()
+                {
+                    StateID = approveFlowTemplate.FinalStateID,
+                    PerformedBy = HttpContext.User.Identity.Name,
+                    DatePerformed = DateTime.Now,
+                    Comment = "SI/PC Allocation of requisition has been approved",
+                    //AttachmentFile = fileName,
+                    ParentBusinessProcessID = requisition.BusinessProcessID
+                };
+                //return 
+                _reliefRequisitionService.EditReliefRequisition(requisition);
+                _businessProcessService.PromotWorkflow(businessProcessState);
+
+                return RedirectToAction("Index", new { regionId = requisition.RegionID });
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+            _businessProcessService.PromotWorkflow(businessProcessState);
+            if (statusId != null)
+                return RedirectToAction("Index", "DispatchAllocation", new { Area = "Logistics", statusId });
+            return RedirectToAction("Index", "DispatchAllocation", new { Area = "Logistics" });
+        }
+
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
         }
 
     }

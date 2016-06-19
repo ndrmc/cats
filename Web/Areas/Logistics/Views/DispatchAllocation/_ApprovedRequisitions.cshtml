@@ -15,6 +15,10 @@
     .assign-code3 {
         display: block;
     }
+
+    .k-grid td {
+        overflow: visible;
+    }
 </style>
 
 
@@ -38,27 +42,24 @@
         //columns.Bound(e => e.Status).Width(90).Title("Status");
         //@Url.Action("Create", "GiftCertificate", new { Area = "EarlyWarning" }),
         //            EarlyWarningConstants.Operation.New_Gift_Certificate, "<button type=\"button\" class=\"btn btn-success\"><span class=\"fa fa-plus\"></span> " + @Html.Translate("New Gift Certificate") + " </button>", "btn btn-success", "btn_new_record")
-        if(LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Reject_Approved_Requisition).ToString() == "Reject_Approved_Requisition")
-            columns.Command(p =>  p.Custom(@Html.Translate("Reject")).Click("onReject")).Width(100);
-
-        columns.Bound(requisition => requisition.Status).Title("Actions")
-            .ClientTemplate(
-            @"<div class='btn-group'>
-            <button type='button' id='workflow-#=RequisitionID#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
-                <i class='fa fa-ellipsis-horizontal'></i> @Html.Translate('Workflow') <i class='fa fa-angle-down'></i>
-            </button>
-            <ul class='dropdown-menu pull-right'>
-                " +
-                    "# if (('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Reject_Approved_Requisition).ToString() + "' == 'Reject_Approved_Requisition') { #" +
-                            "<li><a href='" + Url.Action("Edit", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "' title='Edit'><i class='fa fa-pencil'></i></a>" +
-
-                            "<li class='edit_button'><a href = 'javascript:promot_workflow('#=BusinessProcessID#', @actions.FinalStateID,'@actions.Name',@item.PlanID)' title='@actions.Name'>@actions.Name</a></li>" +
-                " # } #" +
-                " # if (('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Requistion_Detail_Edit) + "' == 'True'" +
-                " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Requistion_Detail_Edit) + "' == 'True') && data.IsDraft ) { #" +
-                        "<li><a href='" + Url.Action("Details", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "' title='Edit detail'><i class='fa fa-edit'></i></a>" +
-                " # } #" +
-            "</ul></div>");
+        if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Reject_Approved_Requisition).ToString() == "Reject_Approved_Requisition")
+        {
+            //columns.Command(p =>  p.Custom(@Html.Translate("Reject")).Click("onReject")).Width(100);
+            columns.Bound(requisition => requisition.Status).Title("Actions")
+                .ClientTemplate(
+                @"<div class='btn-group'>
+                <button type='button' id='workflow-#=RequisitionId#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
+                    <i class='fa fa-ellipsis-horizontal'></i>Workflow<i class='fa fa-angle-down'></i>
+                </button>
+                <ul class='dropdown-menu pull-right' style='overflow: visible;'>" +
+                    "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Reject_Approved_Requisition).ToString() + "' == 'Reject_Approved_Requisition') { #" +
+                        "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=RejectStateID#','Reject','#=RequisitionId#')\" title='Reject Requisition'>Reject</a></li>" +
+                    " # } #" +
+                    " # if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Reject_Approved_Requisition).ToString() + "' == 'Reject_Approved_Requisition') { #" +
+                        "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
+                    " # } #" +
+                "</ul></div>");
+        }
 
     })
 
@@ -87,7 +88,8 @@
     )
 
 
-    <script>
+<script>
+
         function roundChange(e) {
             e.preventDefault();
             var value = this.value();
@@ -106,4 +108,4 @@
             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
             window.location = "@Url.Action("RejectRequsition", "DispatchAllocation")" + "/" + dataItem.RequisitionId;
         }
-    </script>
+</script>

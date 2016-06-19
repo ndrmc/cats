@@ -31,6 +31,8 @@ namespace Cats.Models
         public string StrRequisitionDate { get; set; }
         public int ProgramID { get; set; }
         public string MonthName { get; set; }
-        
+        public int RejectStateID { get; set; }
+        public int UncommitStateID { get; set; }
+        public int ApproveStateID { get; set; }
     }
 }
