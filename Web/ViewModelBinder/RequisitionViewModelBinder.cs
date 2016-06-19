@@ -37,7 +37,8 @@ namespace Cats.ViewModelBinder
             requisition.RequestRefNo = reliefRequisition.RegionalRequest != null ? reliefRequisition.RegionalRequest.ReferenceNumber : "Transfer/Swap Requisition";
             requisition.StateName = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name;
             requisition.InitialStateFlowTemplates = BindFlowTemplateViewModel(reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates).ToList();
-
+            requisition.IsDraft = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft";
+            requisition.BusinessProcessID = reliefRequisition.BusinessProcessID;
 
             if (reliefRequisition.RationID != null && reliefRequisition.RationID > 0)
             {

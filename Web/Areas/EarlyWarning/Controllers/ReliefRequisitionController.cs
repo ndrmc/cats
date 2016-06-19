@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -40,6 +41,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly Cats.Services.Transaction.ITransactionService _transactionService;
         private readonly IApplicationSettingService _applicationSettingService;
         private readonly IStateTemplateService _stateTemplateService;
+        private readonly IBusinessProcessService _businessProcessService;
         public ReliefRequisitionController(
             IReliefRequisitionService reliefRequisitionService, 
             IWorkflowStatusService workflowStatusService, 
@@ -51,7 +53,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             INotificationService notificationService, 
             IPlanService planService,
             ITransactionService transactionService,
-            ICommonService commonService, IRationDetailService rationDetailService, IApplicationSettingService applicationSettingService, IStateTemplateService stateTemplateService)
+            ICommonService commonService, IRationDetailService rationDetailService, IApplicationSettingService applicationSettingService, IStateTemplateService stateTemplateService, IBusinessProcessService businessProcessService)
         {
             this._reliefRequisitionService = reliefRequisitionService;
             this._workflowStatusService = workflowStatusService;
@@ -66,6 +68,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _rationDetailService = rationDetailService;
             _applicationSettingService = applicationSettingService;
             _stateTemplateService = stateTemplateService;
+            _businessProcessService = businessProcessService;
             _regionalRequestService = regionalRequestService;
         }
 
@@ -381,7 +384,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 return Redirect(Url.Action("Index", "ReliefRequisition"));
             }
-
+            ViewBag.TargetController = "ReliefRequisition";
             var requisition =
                 _reliefRequisitionService.Get(t => t.RequisitionID == id, null, "ReliefRequisitionDetails").
                     FirstOrDefault();
@@ -617,11 +620,26 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult ConfirmSendToLogistics(int requisitionid)
         {
             var requisition = _reliefRequisitionService.FindById(requisitionid);
-            requisition.Status = (int)ReliefRequisitionStatus.Approved;
-            _reliefRequisitionService.EditReliefRequisition(requisition);
+            var approveFlowTemplate = requisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name=="Approve");
+            if (approveFlowTemplate != null)
+            {
+                var businessProcessState = new BusinessProcessState()
+                {
+                    StateID = approveFlowTemplate.FinalStateID,
+                    PerformedBy = HttpContext.User.Identity.Name,
+                    DatePerformed = DateTime.Now,
+                    Comment = "Requisition approved and sent to logistics",
+                    //AttachmentFile = fileName,
+                    ParentBusinessProcessID = requisition.BusinessProcessID
+                };
+                //return 
+                _businessProcessService.PromotWorkflow(businessProcessState);
+                SendNotification(requisition);
+                _transactionService.PostRequestAllocation(requisitionid);
+            }
+            //requisition.Status = (int)ReliefRequisitionStatus.Approved;
+            //_reliefRequisitionService.EditReliefRequisition(requisition);
             //send notification
-            SendNotification(requisition);
-            _transactionService.PostRequestAllocation(requisitionid);
             return RedirectToAction("Index", "ReliefRequisition");
         }
 
@@ -732,6 +750,79 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
         }
 
+        private bool Promote(BusinessProcessStateViewModel st)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+            return _businessProcessService.PromotWorkflow(businessProcessState);
+        }
+
+
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+            _businessProcessService.PromotWorkflow(businessProcessState);
+            if (statusId != null)
+                return RedirectToAction("Allocation", "ReliefRequisition", new { Area = "EarlyWarning", statusId });
+            return RedirectToAction("Index", "ReliefRequisition", new { Area = "EarlyWarning" });
+        }
+
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
+        }
+
 
         //public  JsonResult CancelChanges(List<DataFromGrid> input)
         //{
@@ -740,9 +831,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         //    {
         //        foreach (var id in ids)
         //        {
-                   
+
         //        }
-                
+
         //    }
         //    return Json(ids, JsonRequestBehavior.AllowGet);
         //}

@@ -18,7 +18,8 @@
 </style>
 
 
-@(Html.Kendo().Grid<Cats.Models.RequisitionViewModel>()
+@(Html.Kendo().Grid<Cats.Models.RequisitionViewModel>
+    ()
     .Name("ApprovedRequsitions")
     .Columns(columns =>
     {
@@ -38,52 +39,71 @@
         //@Url.Action("Create", "GiftCertificate", new { Area = "EarlyWarning" }),
         //            EarlyWarningConstants.Operation.New_Gift_Certificate, "<button type=\"button\" class=\"btn btn-success\"><span class=\"fa fa-plus\"></span> " + @Html.Translate("New Gift Certificate") + " </button>", "btn btn-success", "btn_new_record")
         if(LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Reject_Approved_Requisition).ToString() == "Reject_Approved_Requisition")
-        columns.Command(p =>  p.Custom(@Html.Translate("Reject")).Click("onReject")).Width(100);
+            columns.Command(p =>  p.Custom(@Html.Translate("Reject")).Click("onReject")).Width(100);
+
+        columns.Bound(requisition => requisition.Status).Title("Actions")
+            .ClientTemplate(
+            @"<div class='btn-group'>
+            <button type='button' id='workflow-#=RequisitionID#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
+                <i class='fa fa-ellipsis-horizontal'></i> @Html.Translate('Workflow') <i class='fa fa-angle-down'></i>
+            </button>
+            <ul class='dropdown-menu pull-right'>
+                " +
+                    "# if (('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Reject_Approved_Requisition).ToString() + "' == 'Reject_Approved_Requisition') { #" +
+                            "<li><a href='" + Url.Action("Edit", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "' title='Edit'><i class='fa fa-pencil'></i></a>" +
+
+                            "<li class='edit_button'><a href = 'javascript:promot_workflow('#=BusinessProcessID#', @actions.FinalStateID,'@actions.Name',@item.PlanID)' title='@actions.Name'>@actions.Name</a></li>" +
+                " # } #" +
+                " # if (('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Requistion_Detail_Edit) + "' == 'True'" +
+                " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Requistion_Detail_Edit) + "' == 'True') && data.IsDraft ) { #" +
+                        "<li><a href='" + Url.Action("Details", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "' title='Edit detail'><i class='fa fa-edit'></i></a>" +
+                " # } #" +
+            "</ul></div>");
 
     })
-   
-                        .DataSource(dataSource => dataSource
-                            .Ajax()
-                             .Model(model => model.Id(p => p.RequisitionId))
-                            .Read(read => read.Action("AllocateProjectCode", "DispatchAllocation", new { regionId = Model[0], status = Model[1] }))
 
-                           // .PageSize(5)
-                         )
-                         .Scrollable(scroll => scroll.Height(350))
-                         .Selectable(select => select.Mode(GridSelectionMode.Single))
-                         .Navigatable()
-                             .Filterable(filterable => filterable
-                                 .Extra(false)
-                                 .Operators(operators => operators
-                                     .ForString(str => str.Clear()
-                                         .StartsWith(@Html.Translate("Starts with"))
-                                         .IsEqualTo(@Html.Translate("Is equal to"))
-                                         .IsNotEqualTo(@Html.Translate("Is not equal to"))
-                              )))
-        //.Filterable()
-                         .Sortable()
-                         .HtmlAttributes(new { style = "height:450px;" })
-        //.Pageable()
-)
+    .DataSource(dataSource => dataSource
+    .Ajax()
+    .Model(model => model.Id(p => p.RequisitionId))
+    .Read(read => read.Action("AllocateProjectCode", "DispatchAllocation", new { regionId = Model[0], status = "Approved" }))
+
+    // .PageSize(5)
+    )
+    .Scrollable(scroll => scroll.Height(350))
+    .Selectable(select => select.Mode(GridSelectionMode.Single))
+    .Navigatable()
+    .Filterable(filterable => filterable
+    .Extra(false)
+    .Operators(operators => operators
+    .ForString(str => str.Clear()
+    .StartsWith(@Html.Translate("Starts with"))
+    .IsEqualTo(@Html.Translate("Is equal to"))
+    .IsNotEqualTo(@Html.Translate("Is not equal to"))
+    )))
+    //.Filterable()
+    .Sortable()
+    .HtmlAttributes(new { style = "height:450px;" })
+    //.Pageable()
+    )
 
 
-<script>
-    function roundChange(e) {
-        e.preventDefault();
-        var value = this.value();
-        var grid = $("#ProjectCodegrid" + '@gridid').data("kendoGrid");
-        if (value) {
-            grid.dataSource.filter({ field: "Round", operator: "eq", value: parseInt(value) });
+    <script>
+        function roundChange(e) {
+            e.preventDefault();
+            var value = this.value();
+            var grid = $("#ProjectCodegrid" + '@gridid').data("kendoGrid");
+            if (value) {
+                grid.dataSource.filter({ field: "Round", operator: "eq", value: parseInt(value) });
 
-        } else {
-            grid.dataSource.filter({});
+            } else {
+                grid.dataSource.filter({});
+            }
         }
-    }
-    
-    function onReject(e) {
-        e.preventDefault();
 
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        window.location = "@Url.Action("RejectRequsition", "DispatchAllocation")" + "/" + dataItem.RequisitionId;
-    }
-</script>
+        function onReject(e) {
+            e.preventDefault();
+
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            window.location = "@Url.Action("RejectRequsition", "DispatchAllocation")" + "/" + dataItem.RequisitionId;
+        }
+    </script>

@@ -44,7 +44,7 @@
 
                         .DataSource(dataSource => dataSource
                             .Ajax()
-                            .Read(read => read.Action("AllocateProjectCode", "DispatchAllocation", new { regionId = Model[0], status = Model[1] }))
+                            .Read(read => read.Action("AllocateProjectCode", "DispatchAllocation", new { regionId = Model[0], status = "Hub Assigned" }))
 
                          // .PageSize(5)
                          )

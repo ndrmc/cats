@@ -11,6 +11,7 @@ namespace Cats.Areas.EarlyWarning.Models
     public class ReliefRequisitionViewModel
     {
         public int RequisitionID { get; set; }
+        public int BusinessProcessID { get; set; }
         public string RequestRefNo { get; set; }
         public Nullable<int> CommodityID { get; set; }
         public string Commodity { get; set; }
@@ -40,7 +41,7 @@ namespace Cats.Areas.EarlyWarning.Models
         public int RationName { get; set; }
         public string StateName { get; set; }
         public List<FlowTemplateViewModel> InitialStateFlowTemplates { get; set; }
-
+        public bool IsDraft { get; set; }
 
 
 

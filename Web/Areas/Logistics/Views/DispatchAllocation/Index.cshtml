@@ -86,17 +86,17 @@
                     <div class="tab-content">
                         <div id="tab1" class="tab-pane active">
                             <div id="ApprovedRequisitionPartial">
-                                @Html.Partial("_ApprovedRequisitions", new List<int?>() { { ViewBag.regionId }, { (int)Cats.Models.Constant.ReliefRequisitionStatus.Approved } })
+                                @Html.Partial("_ApprovedRequisitions", new List<int?>() { { ViewBag.regionId } })
                             </div>
                         </div>
                         <div id="tab2" class="tab-pane">
                             <div id="HubAllocatedPartial">
-                                @Html.Partial("AllocateProjectCode", new List<int?>() { { ViewBag.regionId }, { (int)Cats.Models.Constant.ReliefRequisitionStatus.HubAssigned } })
+                                @Html.Partial("AllocateProjectCode", new List<int?>() { { ViewBag.regionId } })
                             </div>
                         </div>
                         <div id="tab3" class="tab-pane">
                             <div id="ProjectCodeAllocatedPartial">
-                                @Html.Partial("_AllocateProjectCode", new List<int?>() { { ViewBag.regionId }, { (int)Cats.Models.Constant.ReliefRequisitionStatus.ProjectCodeAssigned } })
+                                @Html.Partial("_AllocateProjectCode", new List<int?>() { { ViewBag.regionId } })
                             </div>
                         </div>
                     </div>

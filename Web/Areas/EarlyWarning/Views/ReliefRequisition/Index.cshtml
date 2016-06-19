@@ -65,25 +65,21 @@ Requistions
                 columns.Bound(requisiton => requisiton.Program);
                 columns.Bound(t => t.RequestedDateEt).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).Width(160);
                 columns.Bound((t => t.RequestRefNo)).Title("Request No");
-                columns.Bound(requisition => requisition.StateName).Title("Status")
-                    .ClientTemplate(
-                    "# if ('#=StateName#' == 'Draft') {" +
-                        "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition) + "' == 'True'" +
-                        " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_requisition) + "' == 'True') { #" +
-                            "<a href='" + Url.Action("Edit", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "'><i class='fa fa-edit'></i></a>" +
-                        "# } #" +
-                        "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Send_To_Logistics) + "' == 'True'" +
-                        " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Send_To_Logistics) + "' == 'True') { #" +
-                            "<a href='" + Url.Action("SendToLogistics", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "'><i class='fa fa-ok'></i></a>" +
-                        "# } #" +
-                        "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Requistion_Detail_Edit) + "' == 'True'" +
-                        " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Requistion_Detail_Edit) + "' == 'True') { #" +
-                            "<a href='" + Url.Action("RequistionDetailEdit", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "'><i class='fa fa-pencil'></i></a>" +
-                        "# } #" +
-                    "# } #" +
-                    "# else {" +
-                        "'#=StateName#'" +
-                    "# } #");
+                columns.Bound(requisition => requisition.Status).Title("Status");
+                //columns.Bound(requisition => requisition.Status).Title("Actions")
+                //    .ClientTemplate(
+                //        "# if (('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition) + "' == 'True'" +
+                //        " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_requisition) + "' == 'True') && data.IsDraft ) { #" +
+                //            "<a href='" + Url.Action("Edit", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "' title='Edit'><i class='fa fa-pencil'></i></a>" +
+                //        " # } #" +
+                //        " # if (('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Send_To_Logistics) + "' == 'True'" +
+                //        " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Send_To_Logistics) + "' == 'True') && data.IsDraft ) { #" +
+                //            "<a href='" + Url.Action("SendToLogistics", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "' title='Send to logistics'><i class='fa fa-paper-plane'></i></a>" +
+                //        " # } #" +
+                //        " # if (('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Requistion_Detail_Edit) + "' == 'True'" +
+                //        " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Requistion_Detail_Edit) + "' == 'True') && data.IsDraft ) { #" +
+                //            "<a href='" + Url.Action("Details", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "' title='Edit detail'><i class='fa fa-edit'></i></a>" +
+                //        " # } #");
                 @*columns.Bound(requisition => requisition.StateName).Template(
 
             @<text>

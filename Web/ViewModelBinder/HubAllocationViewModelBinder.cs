@@ -24,7 +24,7 @@ namespace Cats.ViewModelBinder
                                         Commodity = req.Commodity.Name,
                                         BenficiaryNo = req.ReliefRequisitionDetails.Sum(a=>a.BenficiaryNo),
                                         Amount = req.ReliefRequisitionDetails.Sum(a => a.Amount).ToPreferedWeightUnit(),
-                                        Status = int.Parse( req.Status.ToString()),
+                                        Status = req.BusinessProcess.CurrentState.BaseStateTemplate.Name,
                                         Region = req.AdminUnit.Name,
                                         RegionId = (int) req.RegionID,
                                         Zone = req.AdminUnit1.Name,
@@ -50,7 +50,7 @@ namespace Cats.ViewModelBinder
                  n.BenficiaryNo = req.ReliefRequisitionDetails.Sum(a => a.BenficiaryNo);
                  var m = req.ReliefRequisitionDetails.Sum(a => a.Amount);
                  n.Amount = m.ToPreferedWeightUnit(); 
-                 n.Status = int.Parse(req.Status.ToString());
+                 n.Status = req.BusinessProcess.CurrentState.BaseStateTemplate.Name;
                  n.Region = req.AdminUnit.Name;
                  n.RegionId = (int)req.RegionID;
                  n.Zone = req.AdminUnit1.Name;

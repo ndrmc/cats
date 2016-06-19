@@ -25,8 +25,8 @@ namespace Cats.Services.EarlyWarning
         {
             _unitOfWork.HubAllocationRepository.Add(hubAllocation);
 
-            var requisition = _unitOfWork.ReliefRequisitionRepository.FindBy(r => r.RequisitionID == hubAllocation.RequisitionID).Single();
-            requisition.Status = 3;
+            //var requisition = _unitOfWork.ReliefRequisitionRepository.FindBy(r => r.RequisitionID == hubAllocation.RequisitionID).Single();
+            //requisition.Status = 3;
 
             _unitOfWork.Save();
             return true;
@@ -56,8 +56,8 @@ namespace Cats.Services.EarlyWarning
         public bool EditHubAllocation(HubAllocation hubAllocation)
         {
             _unitOfWork.HubAllocationRepository.Edit(hubAllocation);
-            var requisition = _unitOfWork.ReliefRequisitionRepository.FindBy(r => r.RequisitionID == hubAllocation.RequisitionID).Single();
-            requisition.Status = 3;
+            //var requisition = _unitOfWork.ReliefRequisitionRepository.FindBy(r => r.RequisitionID == hubAllocation.RequisitionID).Single();
+            //requisition.Status = 3;
             _unitOfWork.Save();
             return true;
 

@@ -35,6 +35,7 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IAllocationByRegionService _allocationByRegionService;
         private readonly IUserAccountService _userAccountService;
         private readonly ITransactionService _transactionService;
+        private readonly IBusinessProcessService _businessProcessService;
         //private readonly IStoreService _storeService;
 
         public DispatchAllocationController(IReliefRequisitionService reliefRequisitionService,
@@ -42,7 +43,7 @@ namespace Cats.Areas.Logistics.Controllers
             INeedAssessmentService needAssessmentService,
             IHubAllocationService hubAllocationService,
             IUserAccountService userAccountService,
-            IAllocationByRegionService allocationByRegionService, ITransactionService transactionService)
+            IAllocationByRegionService allocationByRegionService, ITransactionService transactionService, IBusinessProcessService businessProcessService)
         {
             _reliefRequisitionService = reliefRequisitionService;
             _hubService = hubService;
@@ -52,7 +53,7 @@ namespace Cats.Areas.Logistics.Controllers
             _userAccountService = userAccountService;
             _allocationByRegionService = allocationByRegionService;
             _transactionService = transactionService;
-            
+            _businessProcessService = businessProcessService;
         }
 
 
@@ -127,20 +128,24 @@ namespace Cats.Areas.Logistics.Controllers
             return Json(requisitionViewModel.ToDataSourceResult(request));
         }
 
-        public ActionResult AllocateProjectCode([DataSourceRequest]DataSourceRequest request, int regionId, int status)
+        public ActionResult AllocateProjectCode([DataSourceRequest]DataSourceRequest request, int regionId, string status)
         {
             ViewBag.requestStatus = status;
             List<ReliefRequisition> requisititions = null;
-            if (regionId == -1 || status == -1) return Json((new List<RequisitionViewModel>()).ToDataSourceResult(request));
-            if (status==(int)ReliefRequisitionStatus.ProjectCodeAssigned)
+            if (regionId == -1 || status == "") return Json((new List<RequisitionViewModel>()).ToDataSourceResult(request));
+            if (status=="Project Code Assigned")
             {
-                requisititions = _reliefRequisitionService.FindBy(r => r.Status == status || r.Status == (int)ReliefRequisitionStatus.SiPcAllocationApproved && r.RegionID == regionId).OrderByDescending(t => t.RequisitionID).ToList();
+                requisititions = _reliefRequisitionService.Get(r => r.BusinessProcess.CurrentState.BaseStateTemplate.Name == status 
+                        || r.BusinessProcess.CurrentState.BaseStateTemplate.Name == "SiPc Allocation Approved" && r.RegionID == regionId, 
+                        null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                        .OrderByDescending(t => t.RequisitionID).ToList();
             }
             else
             {
-                requisititions = _reliefRequisitionService.FindBy(
-                r =>
-                r.Status == status && r.RegionID == regionId).OrderByDescending(t => t.RequisitionID).ToList();
+                requisititions = _reliefRequisitionService.Get(
+                r => r.BusinessProcess.CurrentState.BaseStateTemplate.Name == status && r.RegionID == regionId,
+                        null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                .OrderByDescending(t => t.RequisitionID).ToList();
             }
             
             var requisitionViewModel = HubAllocationViewModelBinder.ReturnRequisitionGroupByReuisitionNo(requisititions);
@@ -191,7 +196,8 @@ namespace Cats.Areas.Logistics.Controllers
         [HttpGet]
         public JsonResult ReadRequisitions(int regionId)
         {
-            var requisititions = _reliefRequisitionService.FindBy(r => r.Status == (int)ReliefRequisitionStatus.Approved && r.RegionID == regionId);
+            var requisititions = _reliefRequisitionService.Get(r => r.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved" && r.RegionID == regionId,
+                                 null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
             var requisitionViewModel = HubAllocationViewModelBinder.ReturnRequisitionGroupByReuisitionNo(requisititions);
             return Json(requisitionViewModel, JsonRequestBehavior.AllowGet);
         }
@@ -209,7 +215,10 @@ namespace Cats.Areas.Logistics.Controllers
                 {
                     
                     var hubAllocated = _hubAllocationService.FindBy(h => h.RequisitionID == all.ReqId).FirstOrDefault();
-                    if(hubAllocated!=null)
+
+                    
+
+                    if (hubAllocated!=null)
                     {
                         
 
@@ -221,12 +230,28 @@ namespace Cats.Areas.Logistics.Controllers
 
                         hubAllocated.SatelliteWarehouseID = all.SatelliteWarehouseID;
 
-
                         _hubAllocationService.EditHubAllocation(hubAllocated);
                     }
                     else
                     {
                         _hubAllocationService.AddHubAllocations(allocation, user.UserProfileID);
+                        var requisition = _reliefRequisitionService.Get(t=>t.RequisitionID == all.ReqId, null, 
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+                        var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Assign Hub");
+                        if (approveFlowTemplate != null)
+                        {
+                            var businessProcessState = new BusinessProcessState()
+                            {
+                                StateID = approveFlowTemplate.FinalStateID,
+                                PerformedBy = HttpContext.User.Identity.Name,
+                                DatePerformed = DateTime.Now,
+                                Comment = "Requisition has been assigned a hub",
+                                //AttachmentFile = fileName,
+                                ParentBusinessProcessID = requisition.BusinessProcessID
+                            };
+                            //return 
+                            _businessProcessService.PromotWorkflow(businessProcessState);
+                        }
                     }
                
 
@@ -296,10 +321,22 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult RejectRequsition(int id)
         {
             var requistion = _reliefRequisitionService.FindById(id);
-            if (requistion != null)
+            var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == id, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+            var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Reject");
+            if (approveFlowTemplate != null)
             {
-                requistion.Status = (int)ReliefRequisitionStatus.Rejected;
-                _reliefRequisitionService.EditReliefRequisition(requistion);
+                var businessProcessState = new BusinessProcessState()
+                {
+                    StateID = approveFlowTemplate.FinalStateID,
+                    PerformedBy = HttpContext.User.Identity.Name,
+                    DatePerformed = DateTime.Now,
+                    Comment = "Requisition has been assigned a hub",
+                    //AttachmentFile = fileName,
+                    ParentBusinessProcessID = requisition.BusinessProcessID
+                };
+                //return 
+                _businessProcessService.PromotWorkflow(businessProcessState);
 
                 return RedirectToAction("Index", new { regionId = requistion.RegionID });
             }
