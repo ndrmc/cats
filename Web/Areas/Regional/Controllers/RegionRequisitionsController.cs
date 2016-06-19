@@ -48,11 +48,7 @@ namespace Cats.Areas.Regional.Controllers
             var userRegionID= _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).RegionID;
             var requests = _reliefRequisitionService.Get(t => t.Status == (int)Cats.Models.Constant.ReliefRequisitionStatus.Approved && t.RegionID==userRegionID);
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var requestViewModels = RequisitionViewModelBinder.BindReliefRequisitionListViewModel(requests,
-                                                                                                  _workflowStatusService
-                                                                                                      .GetStatus(
-                                                                                                          WORKFLOW.
-                                                                                                          RELIEF_REQUISITION), datePref).OrderByDescending(m => m.RequisitionID).Where(p => (reqNoFilter.Length == 0 || p.RequisitionNo.Contains(reqNoFilter)) && (programFilter == null || p.ProgramID == programFilter) && (roundFilter == null || p.Round == roundFilter));
+            var requestViewModels = RequisitionViewModelBinder.BindReliefRequisitionListViewModel(requests, datePref).OrderByDescending(m => m.RequisitionID).Where(p => (reqNoFilter.Length == 0 || p.RequisitionNo.Contains(reqNoFilter)) && (programFilter == null || p.ProgramID == programFilter) && (roundFilter == null || p.Round == roundFilter));
             return Json(requestViewModels.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -80,7 +76,7 @@ namespace Cats.Areas.Regional.Controllers
                 HttpNotFound();
             }
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var requisitionViewModel = RequisitionViewModelBinder.BindReliefRequisitionViewModel(requisition, _workflowStatusService.GetStatus(WORKFLOW.RELIEF_REQUISITION), datePref);
+            var requisitionViewModel = RequisitionViewModelBinder.BindReliefRequisitionViewModel(requisition, datePref);
 
             return View(requisitionViewModel);
         }

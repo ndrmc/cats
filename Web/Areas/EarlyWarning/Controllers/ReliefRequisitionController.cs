@@ -17,6 +17,7 @@ using Cats.ViewModelBinder;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using System.Web.UI;
+using StateTemplate = Cats.Models.StateTemplate;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -37,6 +38,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly IPlanService _planService;
         private readonly ICommonService _commonService;
         private readonly Cats.Services.Transaction.ITransactionService _transactionService;
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IStateTemplateService _stateTemplateService;
         public ReliefRequisitionController(
             IReliefRequisitionService reliefRequisitionService, 
             IWorkflowStatusService workflowStatusService, 
@@ -48,7 +51,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             INotificationService notificationService, 
             IPlanService planService,
             ITransactionService transactionService,
-            ICommonService commonService, IRationDetailService rationDetailService)
+            ICommonService commonService, IRationDetailService rationDetailService, IApplicationSettingService applicationSettingService, IStateTemplateService stateTemplateService)
         {
             this._reliefRequisitionService = reliefRequisitionService;
             this._workflowStatusService = workflowStatusService;
@@ -61,13 +64,33 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _transactionService = transactionService;
             _commonService = commonService;
             _rationDetailService = rationDetailService;
+            _applicationSettingService = applicationSettingService;
+            _stateTemplateService = stateTemplateService;
             _regionalRequestService = regionalRequestService;
         }
 
         public ViewResult Index()
         {
-            ViewBag.Status = 1;
+            
             var filter = new SearchRequistionViewModel();
+            var processTemplate = _applicationSettingService.FindBy(t => t.SettingName == "ReliefRequisitionWorkflow").FirstOrDefault();
+            var processTemplateId = 0;
+            var processStates = new List<Cats.Models.StateTemplate>();
+            if (processTemplate != null)
+            {
+                processTemplateId = int.Parse(processTemplate.SettingValue);
+
+                processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
+
+                ViewBag.StatusID = new SelectList(processStates, "StateTemplateID", "Name");
+            }
+            var stateTemplate = processStates.FirstOrDefault();
+            if (stateTemplate != null)
+            {
+                ViewBag.Status = stateTemplate.StateTemplateID;
+                filter.StatusID = stateTemplate.StateTemplateID;
+            }
+                
             var user = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name);
             var firstOrDefault = _commonService.GetAminUnits(t => t.AdminUnitTypeID == 2 && t.AdminUnitID == user.RegionID).FirstOrDefault();
             if (firstOrDefault != null)
@@ -88,7 +111,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     ViewBag.program = "PSNP";
                     break;
             }
-            filter.StatusID = 1;
+            
+            
             ViewBag.Filter = filter;
             Populatelookup();
             //ViewBag.Status = id;
@@ -152,7 +176,18 @@ namespace Cats.Areas.EarlyWarning.Controllers
             statuslist.Add(new RequestStatus { StatusID = 5, StatusName = "Transport Requisition Created" });
             statuslist.Add(new RequestStatus { StatusID = 6, StatusName = "Transport Order Created" });
             statuslist.Add(new RequestStatus { StatusID = 7, StatusName = "Rejected" });
-            ViewBag.StatusID = new SelectList(statuslist, "StatusID", "StatusName");
+
+            var firstOrDefault = _applicationSettingService.FindBy(t => t.SettingName == "ReliefRequisitionWorkflow").FirstOrDefault();
+            var processTemplateId = 0;
+            if (firstOrDefault != null)
+            {
+                processTemplateId = int.Parse(firstOrDefault.SettingValue);
+
+                var processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
+
+                ViewBag.StatusID = new SelectList(processStates, "StateTemplateID", "Name");
+            }
+            
         }
 
         [HttpGet]
@@ -362,7 +397,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 ViewBag.program = "PSNP";
             }
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var requisitionViewModel = RequisitionViewModelBinder.BindReliefRequisitionViewModel(requisition, _workflowStatusService.GetStatus(WORKFLOW.RELIEF_REQUISITION),datePref);
+            var requisitionViewModel = RequisitionViewModelBinder.BindReliefRequisitionViewModel(requisition, datePref);
             if (requisition != null && (requisition.RationID != null && requisition.RationID > 0))
                 requisitionViewModel.Ration = _rationService.FindById((int) requisition.RationID).RefrenceNumber;
             return View(requisitionViewModel);
@@ -568,7 +603,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 HttpNotFound();
             }
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var requisitionViewModel = RequisitionViewModelBinder.BindReliefRequisitionViewModel(requisition, _workflowStatusService.GetStatus(WORKFLOW.RELIEF_REQUISITION), datePref);
+            var requisitionViewModel = RequisitionViewModelBinder.BindReliefRequisitionViewModel(requisition, datePref);
 
           
 
@@ -627,22 +662,15 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             var requests = _reliefRequisitionService.Get(t => t.Status == id);
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var requestViewModels = RequisitionViewModelBinder.BindReliefRequisitionListViewModel(requests,
-                                                                                                  _workflowStatusService
-                                                                                                      .GetStatus(
-                                                                                                          WORKFLOW.
-                                                                                                              RELIEF_REQUISITION),datePref).OrderByDescending(m=>m.RequisitionID);
+            var requestViewModels = RequisitionViewModelBinder.BindReliefRequisitionListViewModel(requests, datePref).OrderByDescending(m=>m.RequisitionID);
             return Json(requestViewModels.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Requisition_Search([DataSourceRequest] DataSourceRequest request, int regionID, int programID, int id)// SearchRequsetViewModel filter)
         {
-            var requests = _reliefRequisitionService.Get(t => t.Status == id && t.RegionID==regionID && t.ProgramID==programID);
+            var requests = _reliefRequisitionService.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateTemplateID == id && t.RegionID==regionID && t.ProgramID==programID);
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var requestViewModels = RequisitionViewModelBinder.BindReliefRequisitionListViewModel(requests,_workflowStatusService
-                                                                                                      .GetStatus(
-                                                                                                          WORKFLOW.
-                                                                                                              RELIEF_REQUISITION), datePref).OrderByDescending(m => m.RequisitionID);
+            var requestViewModels = RequisitionViewModelBinder.BindReliefRequisitionListViewModel(requests, datePref).OrderByDescending(m => m.RequisitionID);
             return Json(requestViewModels.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -684,7 +712,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 return HttpNotFound();
             }
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var requisitionViewModel = RequisitionViewModelBinder.BindReliefRequisitionViewModel(requisition, _workflowStatusService.GetStatus(WORKFLOW.RELIEF_REQUISITION), datePref);
+            var requisitionViewModel = RequisitionViewModelBinder.BindReliefRequisitionViewModel(requisition, datePref);
             return View(requisitionViewModel);
         }
 

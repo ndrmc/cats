@@ -202,7 +202,7 @@ namespace Cats.Tests.ControllersTests
                 userAccountService.Object,
                 regionalRequestService.Object,
                 rationService.Object,
-                donorService.Object, notificationService.Object, null, transactionSerivce.Object, commonService.Object, rationDetailService.Object);
+                donorService.Object, notificationService.Object, null, transactionSerivce.Object, commonService.Object, rationDetailService.Object, null, null);
 
             _reliefRequisitionController.ControllerContext = controllerContext.Object; 
             //_input = input;
