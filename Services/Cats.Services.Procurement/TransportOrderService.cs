@@ -381,7 +381,7 @@ namespace Cats.Services.Procurement
 
                 var reliefRequisition = _unitOfWork.ReliefRequisitionRepository.Get(t => t.RequisitionID == transportRequisitionDetail.RequisitionID, null,
                             "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
-                var approveFlowTemplate = reliefRequisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Order");
+                var approveFlowTemplate = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Order");
                 if (approveFlowTemplate != null)
                 {
                     var businessProcessState = new BusinessProcessState()
@@ -1209,16 +1209,32 @@ namespace Cats.Services.Procurement
         }
         public void UpdateRequsitionStatus(IEnumerable<int> requisitionIDs)
         {
-            var requsitions = _unitOfWork.ReliefRequisitionRepository.FindBy(m => requisitionIDs.Contains(m.RequisitionID));
+            var requsitions = _unitOfWork.ReliefRequisitionRepository.Get(m => requisitionIDs.Contains(m.RequisitionID), null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
             if (requsitions.Count!=0)
             {
-                foreach (var requsition in requsitions)
+                foreach (var requisition in requsitions)
                 {
-                    if (requsition != null)
+                    if (requisition != null)
                     {
-                        requsition.Status = (int) ReliefRequisitionStatus.Approved;
-                        _unitOfWork.ReliefRequisitionRepository.Edit(requsition);
-                        _unitOfWork.Save();
+                        var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Requisition");
+                        if (approveFlowTemplate != null)
+                        {
+                            var businessProcessState = new BusinessProcessState()
+                            {
+                                StateID = approveFlowTemplate.FinalStateID,
+                                PerformedBy = "Performed by the system",
+                                DatePerformed = DateTime.Now,
+                                Comment = "Requisition has been reverted from 'transport order created' state to 'Approved' state.",
+                                //AttachmentFile = fileName,
+                                ParentBusinessProcessID = requisition.BusinessProcessID
+                            };
+                            //return 
+                            _businessProcessService.PromotWorkflow(businessProcessState);
+                        }
+                        //requisition.Status = (int) ReliefRequisitionStatus.Approved;
+                        //_unitOfWork.ReliefRequisitionRepository.Edit(requisition);
+                        //_unitOfWork.Save();
                     }
                 }
             }
@@ -1226,13 +1242,29 @@ namespace Cats.Services.Procurement
         }
         public void UpdateRequsitionStatus(int requisitionID)
         {
-            var requsition = _unitOfWork.ReliefRequisitionRepository.FindById(requisitionID);
-            if (requsition!= null)
+            var requisition = _unitOfWork.ReliefRequisitionRepository.Get(t => t.RequisitionID == requisitionID, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+            if (requisition != null)
             {
                
-                requsition.Status = (int)ReliefRequisitionStatus.Approved;
-               _unitOfWork.ReliefRequisitionRepository.Edit(requsition);
-              _unitOfWork.Save();
+                    var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Requisition");
+                    if (approveFlowTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = approveFlowTemplate.FinalStateID,
+                            PerformedBy = "Performed by the system",
+                            DatePerformed = DateTime.Now,
+                            Comment = "Requisition has been reverted from 'transport order created' state to 'Approved' state.",
+                            //AttachmentFile = fileName,
+                            ParentBusinessProcessID = requisition.BusinessProcessID
+                        };
+                        //return 
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                    }
+               // requisition.Status = (int)ReliefRequisitionStatus.Approved;
+               //_unitOfWork.ReliefRequisitionRepository.Edit(requisition);
+              //_unitOfWork.Save();
                     
             }
 
