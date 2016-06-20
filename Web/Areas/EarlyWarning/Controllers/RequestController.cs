@@ -153,6 +153,19 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     Beneficiaries = item.Beneficiaries,
                     Fdpid = item.FDPID
                 }).ToList();
+            // Add an application ssetting in database and service for the document workflow
+            int BP_PR = _applicationSettingService.getRegionalRequestWorkflow();
+
+            // Check if BP_PR is not null
+            BusinessProcessState createdstate = new BusinessProcessState
+            {
+                DatePerformed = DateTime.Now,
+                PerformedBy = User.Identity.Name,
+                Comment = "A RegionalRequest is Created"
+            };
+
+            BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "RegionalRequest", createdstate);
+
             _regionalRequestService.AddRegionalRequest(regionalRequest);
             return regionalRequest;
         }
