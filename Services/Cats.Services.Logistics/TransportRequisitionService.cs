@@ -21,13 +21,15 @@ namespace Cats.Services.Logistics
         private readonly INotificationService _notificationService;
         private readonly IBusinessProcessService _businessProcessService;
         private readonly IReliefRequisitionService _reliefRequisitionService;
+        private readonly IApplicationSettingService _applicationSettingService;
 
-        public TransportRequisitionService(IUnitOfWork unitOfWork, INotificationService notificationService, IBusinessProcessService businessProcessService, IReliefRequisitionService reliefRequisitionService)
+        public TransportRequisitionService(IUnitOfWork unitOfWork, INotificationService notificationService, IBusinessProcessService businessProcessService, IReliefRequisitionService reliefRequisitionService, IApplicationSettingService applicationSettingService)
         {
             this._unitOfWork = unitOfWork;
             _notificationService = notificationService;
             _businessProcessService = businessProcessService;
             _reliefRequisitionService = reliefRequisitionService;
+            _applicationSettingService = applicationSettingService;
         }
 
         #region Default Service Implementation
@@ -115,6 +117,35 @@ namespace Cats.Services.Logistics
                                                    RegionID = region.AdminUnitID,
                                                    ProgramID = program.ProgramID
                                                };
+
+                int BP_PR = 0;
+                List<ApplicationSetting> ret = _applicationSettingService.FindBy(t => t.SettingName == "TransportRequisitionWorkflow");
+                if (ret.Count == 1)
+                {
+                    BP_PR = Int32.Parse(ret[0].SettingValue);
+                }
+                if (BP_PR != 0)
+                {
+                    BusinessProcessState createdstate = new BusinessProcessState
+                    {
+                        DatePerformed = DateTime.Now,
+                        PerformedBy = requesterName,
+                        Comment = "New Requisition Created"
+
+                    };
+                    //_PaymentRequestservice.Create(request);
+
+                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                        "ReliefRequisition", createdstate);
+                    if (bp != null)
+                    {
+                        transportRequisition.BusinessProcessID = bp.BusinessProcessID;
+                    }
+                    else
+                    {
+                        //ModelState.AddModelError("Error", errorMessage: @"Could not create a business process object");
+                    }
+                }
 
                 foreach (var reliefRequisition in reliefRequisitions)
                 {

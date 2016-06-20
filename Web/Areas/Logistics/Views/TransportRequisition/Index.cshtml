@@ -22,8 +22,9 @@
 <div class="well">
     <div class="row">
         <div class="col-md-2">
-            <div class="form-group form-md-line-input has-info" >
-                <select class="form-control" id="statusList">
+            <div class="form-group form-md-line-input has-info">
+                @Html.DropDownList("StatusID", null, new { @class = "form-control", id = "statusList" })
+                @*<select class="form-control" id="statusList">
                     @{
                         const int draftStatus = (int) TransportRequisitionStatus.Draft;
                         const int approvedStatus = (int) TransportRequisitionStatus.Approved;
@@ -34,7 +35,7 @@
                     <option value="@approvedStatus">Approved</option>
                     <option value="@closedStatus">Closed</option>
                 </select>
-                <label for="statusList">@Html.Translate("Status")</label>
+                <label for="statusList">@Html.Translate("Status")</label>*@
             </div>
         </div>
         <div class="col-md-4 ">

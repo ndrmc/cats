@@ -381,7 +381,7 @@ namespace Cats.Services.Procurement
 
                 var reliefRequisition = _unitOfWork.ReliefRequisitionRepository.Get(t => t.RequisitionID == transportRequisitionDetail.RequisitionID, null,
                             "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
-                var approveFlowTemplate = reliefRequisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Order");
+                var approveFlowTemplate = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Order");
                 if (approveFlowTemplate != null)
                 {
                     var businessProcessState = new BusinessProcessState()

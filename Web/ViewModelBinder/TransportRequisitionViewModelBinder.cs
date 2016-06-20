@@ -23,6 +23,7 @@ namespace Cats.ViewModelBinder
             if (transportRequisition != null)
             {
                 transportRequisitionViewModel = new TransportRequisitionViewModel();
+                transportRequisitionViewModel.BusinessProcessID = transportRequisition.BusinessProcessID;
                 transportRequisitionViewModel.CertifiedBy =users.First(t=>t.UserProfileID==transportRequisition.CertifiedBy).FullName;
                 transportRequisitionViewModel.CertifiedDate = transportRequisition.CertifiedDate;
                 transportRequisitionViewModel.DateCertified = transportRequisition.CertifiedDate.ToCTSPreferedDateFormat(datePrefrence);
@@ -32,8 +33,8 @@ namespace Cats.ViewModelBinder
                 transportRequisitionViewModel.RequestedDate = transportRequisition.RequestedDate;
                 transportRequisitionViewModel.DateRequested = transportRequisition.RequestedDate.ToCTSPreferedDateFormat(datePrefrence);
                 //EthiopianDate.GregorianToEthiopian( transportRequisition.RequestedDate);
-                transportRequisitionViewModel.Status = statuses.First(t=>t.StatusID==transportRequisition.Status).Description;
-                transportRequisitionViewModel.StatusID = transportRequisition.Status;
+                transportRequisitionViewModel.Status = transportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name;
+                transportRequisitionViewModel.StatusID = transportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.StateTemplateID;
                 transportRequisitionViewModel.TransportRequisitionID = transportRequisition.TransportRequisitionID;
                 transportRequisitionViewModel.TransportRequisitionNo = transportRequisition.TransportRequisitionNo;
                 transportRequisitionViewModel.Program = transportRequisition.Program.Name;
