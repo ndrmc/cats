@@ -3,6 +3,5 @@ E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\Cats.Localization.dll
 E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\Cats.Localization.pdb
 E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\EntityFramework.dll
 E:\code\cats\Infrastructure\Cats.Localization\bin\Debug\EntityFramework.xml
-E:\code\cats\Infrastructure\Cats.Localization\obj\Debug\Cats.Localization.csprojResolveAssemblyReference.cache
 E:\code\cats\Infrastructure\Cats.Localization\obj\Debug\Cats.Localization.dll
 E:\code\cats\Infrastructure\Cats.Localization\obj\Debug\Cats.Localization.pdb
