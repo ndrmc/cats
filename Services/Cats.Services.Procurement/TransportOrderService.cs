@@ -1149,7 +1149,8 @@ namespace Cats.Services.Procurement
 
             var requsitions = new List<ReliefRequisition>();
                 var dispatchAllocations = _unitOfWork.DispatchAllocationRepository.GetAll().Select(m=>m.RequisitionId).Distinct().ToList();
-                    var allRequsitions = _unitOfWork.ReliefRequisitionRepository.FindBy( m=> m.Status == (int) ReliefRequisitionStatus.TransportOrderCreated).ToList();
+                    var allRequsitions = _unitOfWork.ReliefRequisitionRepository.Get( m=> m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Transport Order Created", null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
                     if (allRequsitions.Count!=0)
                     {
                         //var disReq =

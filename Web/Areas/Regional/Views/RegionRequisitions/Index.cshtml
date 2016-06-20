@@ -74,7 +74,7 @@
             columns.Bound(requisition => requisition.Status).Template(
 
             @<text>
-                @if (item.StatusID == (int)ReliefRequisitionStatus.Draft)
+                @if (item.StateName == "Draft")
                 {
                     <a href="@Url.Action("Edit", "ReliefRequisition", new {Area = "EarlyWarning", id = item.RequisitionID})"><i class="icon-edit"></i></a>
                     <a href="@Url.Action("SendToLogistics", "ReliefRequisition", new {Area = "EarlyWarning", id = item.RequisitionID})"><i class="icon-ok"></i></a>

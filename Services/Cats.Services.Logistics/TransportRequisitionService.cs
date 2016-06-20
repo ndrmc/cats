@@ -312,8 +312,8 @@ namespace Cats.Services.Logistics
 
         public IEnumerable<ReliefRequisition> GetProjectCodeAssignedRequisitions()
         {
-            return _unitOfWork.ReliefRequisitionRepository.Get(t => t.Status == (int)ReliefRequisitionStatus.ProjectCodeAssigned, null,
-                                                          "ReliefRequisitionDetails,Program,AdminUnit1,AdminUnit,Commodity");
+            return _unitOfWork.ReliefRequisitionRepository.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Project Code Assigned", null,
+                    "ReliefRequisitionDetails,Program,AdminUnit1,AdminUnit,Commodity,BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate");
         }
 
 

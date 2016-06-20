@@ -127,6 +127,10 @@
       <Project>{083d007c-dd3b-42c0-b11c-a7015a909085}</Project>
       <Name>Cats.Services.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Cats.Services.EarlyWarning\Cats.Services.EarlyWarning.csproj">
+      <Project>{A08CF415-6299-41AB-9D69-C3CE9B49CCD6}</Project>
+      <Name>Cats.Services.EarlyWarning</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

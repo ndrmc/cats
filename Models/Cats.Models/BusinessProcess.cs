@@ -43,6 +43,7 @@ namespace Cats.Models
         public virtual ICollection<NeedAssessment> NeedAssessments { get; set; }
         public virtual ICollection<Plan> Plans { get; set; }
         public virtual ICollection<ReliefRequisition> ReliefRequisitions { get; set; }
+        public virtual ICollection<TransportRequisition> TransportRequisitions { get; set; }
     }
     public class BusinessProcessPOCO
     {

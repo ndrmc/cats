@@ -99,7 +99,8 @@ namespace Cats.Areas.Logistics.Controllers
                         ModelState.Add(kvp.Key, kvp.Value);
             }
 
-            var requisititions = _requisitionService.FindBy(r => r.Status == (int)ReliefRequisitionStatus.HubAssigned);
+            var requisititions = _requisitionService.Get(r => r.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Hub Assigned", null,
+                "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
             var requisitionViewModel = HubAllocationViewModelBinder.ReturnRequisitionGroupByReuisitionNo(requisititions);
 
 
