@@ -64,36 +64,40 @@ namespace Cats.Services.Dashboard
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
                                      && t.RegionID == region.AdminUnitID
                                      && t.RegionalRequest.Round == round
-                                     && t.Status == (int) ReliefRequisitionStatus.Approved
+                                     && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved"
                                      && t.RequestedDate >= startDate
-                                     && t.RequestedDate <= endDate).ToList();
+                                     && t.RequestedDate <= endDate, null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
 
                         hubAlloReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
                                      && t.RegionID == region.AdminUnitID
                                      && t.RegionalRequest.Round == round
-                                     && t.Status == (int) ReliefRequisitionStatus.HubAssigned
+                                     && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Hub Assigned"
                                      && t.RequestedDate >= startDate
-                                     && t.RequestedDate <= endDate).ToList();
+                                     && t.RequestedDate <= endDate, null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
 
                         pcAlloReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
                                      && t.RegionID == region.AdminUnitID
                                      && t.RegionalRequest.Round == round
-                                     && t.Status == (int) ReliefRequisitionStatus.ProjectCodeAssigned
+                                     && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Project Code Assigned"
                                      && t.RequestedDate >= startDate
-                                     && t.RequestedDate <= endDate).ToList();
+                                     && t.RequestedDate <= endDate, null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
 
                         committedReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
                                      && t.RegionID == region.AdminUnitID
                                      && t.RegionalRequest.Round == round
-                                     && t.Status == (int) ReliefRequisitionStatus.SiPcAllocationApproved
+                                     && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "SiPc Allocation Approved"
                                      && t.RequestedDate >= startDate
-                                     && t.RequestedDate <= endDate).ToList();
+                                     && t.RequestedDate <= endDate, null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
                     }
                     else
                     {
@@ -101,33 +105,37 @@ namespace Cats.Services.Dashboard
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
                                      && t.RegionID == region.AdminUnitID
-                                     && t.Status == (int)ReliefRequisitionStatus.Approved
+                                     && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved"
                                      && t.RequestedDate >= startDate
-                                     && t.RequestedDate <= endDate).ToList();
+                                     && t.RequestedDate <= endDate, null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
 
                         hubAlloReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
                                      && t.RegionID == region.AdminUnitID
-                                     && t.Status == (int)ReliefRequisitionStatus.HubAssigned
+                                     && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Hub Assigned"
                                      && t.RequestedDate >= startDate
-                                     && t.RequestedDate <= endDate).ToList();
+                                     && t.RequestedDate <= endDate, null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
 
                         pcAlloReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
                                      && t.RegionID == region.AdminUnitID
-                                     && t.Status == (int)ReliefRequisitionStatus.ProjectCodeAssigned
+                                     && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Project Code Assigned"
                                      && t.RequestedDate >= startDate
-                                     && t.RequestedDate <= endDate).ToList();
+                                     && t.RequestedDate <= endDate, null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
 
                         committedReliefRequisitions =
                             _unitOfWork.ReliefRequisitionRepository.Get(
                                 t => t.RegionalRequest.PlanID == currentHrd.PlanID
                                      && t.RegionID == region.AdminUnitID
-                                     && t.Status == (int)ReliefRequisitionStatus.SiPcAllocationApproved
+                                     && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "SiPc Allocation Approved"
                                      && t.RequestedDate >= startDate
-                                     && t.RequestedDate <= endDate).ToList();
+                                     && t.RequestedDate <= endDate, null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
                     }
 
                     dashboardDispAlloRequisition.RegionId = region.AdminUnitID;

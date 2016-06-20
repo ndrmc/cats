@@ -99,8 +99,8 @@ namespace Cats.Areas.Procurement.Controllers
                 if (saveButton != null)
                 {
 
-
-                    _transportOrderService.CreateTransportOrder(id,BidId);
+                    var userName = UserAccountHelper.GetUser(User.Identity.Name).UserName;
+                    _transportOrderService.CreateTransportOrder(id, BidId, userName);
                     return RedirectToAction("Index", "TransportOrder");
                 }
                 return RedirectToAction("TransportRequisitions");

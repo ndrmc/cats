@@ -289,10 +289,11 @@ namespace Cats.Areas.Logistics.Controllers
             try
 
             {
-                var requisitions = _reliefRequisitionService.FindBy(t => t.RegionID == regionId && t.Status == (int)ReliefRequisitionStatus.SiPcAllocationApproved);
+                var requisitions = _reliefRequisitionService.Get(t => t.RegionID == regionId && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "SiPc Allocation Approved", null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate");
                 var programs = (from item in requisitions select item.ProgramID).Distinct().ToList();
                 var requisitionToDispatches = new List<List<int>>();
-                var currentUser = UserAccountHelper.GetUser(User.Identity.Name).UserProfileID;
+                var currentUser = UserAccountHelper.GetUser(User.Identity.Name);
                 foreach (var program in programs)
                 {
                     var requisitionToDispatche =
@@ -300,7 +301,7 @@ namespace Cats.Areas.Logistics.Controllers
                     requisitionToDispatches.Add(requisitionToDispatche);
 
                 }
-                _transportRequisitionService.CreateTransportRequisition(requisitionToDispatches, currentUser);
+                _transportRequisitionService.CreateTransportRequisition(requisitionToDispatches, currentUser.UserProfileID, currentUser.UserName);
 
                 return RedirectToAction("Index", "TransportRequisition");//,new {id=(int)TransportRequisitionStatus.Draft});
             }

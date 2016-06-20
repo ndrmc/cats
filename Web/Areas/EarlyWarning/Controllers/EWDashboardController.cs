@@ -8,6 +8,7 @@ using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Services.Common;
 using Cats.Services.Dashboard;
+using Cats.Services.EarlyWarning;
 using Cats.Services.Security;
 using Plan = Cats.Models.Partial.Plan;
 
@@ -18,12 +19,14 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
         private readonly IEWDashboardService _eWDashboardService;
         private readonly IUserAccountService _userAccountService;
-        private ICommonService _commonService;
-        public EWDashboardController(IEWDashboardService ewDashboardService,IUserAccountService userAccountService,ICommonService commonService)
+        private readonly ICommonService _commonService;
+        private readonly IReliefRequisitionService _reliefRequisitionService;
+        public EWDashboardController(IEWDashboardService ewDashboardService,IUserAccountService userAccountService,ICommonService commonService, IReliefRequisitionService reliefRequisitionService)
         {
             _eWDashboardService = ewDashboardService;
             _userAccountService = userAccountService;
             _commonService = commonService;
+            _reliefRequisitionService = reliefRequisitionService;
         }
 
         public JsonResult GetRation()
@@ -84,10 +87,15 @@ namespace Cats.Areas.EarlyWarning.Controllers
         }
         private IEnumerable<ReliefRequisitionInfoViewModel> GetRequisisition(IEnumerable<RegionalRequest> requests)
         {
-            var reliefRequisitions = _eWDashboardService.GetAllReliefRequisition();
+            
+            var regionalRequests = requests as IList<RegionalRequest> ?? requests.ToList();
+            var regionalRequestIds = regionalRequests.Select(t=>t.RegionalRequestID).ToList();
+            var reliefRequisitions = _reliefRequisitionService.Get(
+                t => t.RegionalRequestID != null && regionalRequestIds.Contains((int) t.RegionalRequestID), null,
+                "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate");
+
+            //var reliefRequisitions = _eWDashboardService.GetAllReliefRequisition();
             return (from reliefRequisition in reliefRequisitions
-                    from request in requests
-                    where reliefRequisition.RegionalRequestID == request.RegionalRequestID 
                     //&& reliefRequisition.Status==(int)ReliefRequisitionStatus.Draft 
                     select new ReliefRequisitionInfoViewModel
                         {
@@ -99,11 +107,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
                             Commodity = reliefRequisition.Commodity.Name,
                             Beneficiary = reliefRequisition.ReliefRequisitionDetails.Sum(m=>m.BenficiaryNo),
                             Amount = reliefRequisition.ReliefRequisitionDetails.Sum(m=>m.Amount),
-                            Status =_eWDashboardService.GetStatusName(WORKFLOW.RELIEF_REQUISITION,
-                                                                  reliefRequisition.Status.Value)
+                            Status = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name
 
 
-                        }); //Take(8) removed
+                    }); //Take(8) removed
         }
         public JsonResult GetRequestedInfo()
         {

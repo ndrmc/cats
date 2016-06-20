@@ -52,23 +52,38 @@ Requistions
 
                     @(Html.Kendo().Grid<Cats.Areas.EarlyWarning.Models.ReliefRequisitionViewModel>().Name("Grid").Columns(columns =>
                 {
-                    columns.Template(t => { }).Title("N<u>o</u>").ClientTemplate("#= renderNumber(data) #").Width(50);
-                    columns.Bound(requisition => requisition.RequisitionNo).Title("Requisition N<u>o</u>")
-                        .ClientTemplate("# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Requisition_Allocation) + "' == 'True'" +
-                                " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Requisition_Allocation) + "' == 'True') { #" +
-                                    "<a href='" + Url.Action("Allocation", "ReliefRequisition", new { id = "#=RequisitionID#" }) + " '>#=RequisitionNo#</a>  " +
-                                "# } #");
-                    columns.Bound(requisition => requisition.Commodity);
-                    columns.Bound(requisition => requisition.Region);
-                    columns.Bound(requisition => requisition.Zone);
-                    columns.Bound(requisition => requisition.MonthRound).Title("Round/Month").HeaderHtmlAttributes(new { @class = "number" });
-                    columns.Bound(requisiton => requisiton.Program);
-                    columns.Bound(t => t.RequestedDateEt).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).Width(160);
-                    columns.Bound((t => t.RequestRefNo)).Title("Request No");
-                    columns.Bound(requisition => requisition.Status).Template(
+                columns.Template(t => { }).Title("N<u>o</u>").ClientTemplate("#= renderNumber(data) #").Width(50);
+                columns.Bound(requisition => requisition.RequisitionNo).Title("Requisition N<u>o</u>")
+                    .ClientTemplate("# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Requisition_Allocation) + "' == 'True'" +
+                            " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Requisition_Allocation) + "' == 'True') { #" +
+                                "<a href='" + Url.Action("Allocation", "ReliefRequisition", new { id = "#=RequisitionID#" }) + " '>#=RequisitionNo#</a>  " +
+                            "# } #");
+                columns.Bound(requisition => requisition.Commodity);
+                columns.Bound(requisition => requisition.Region);
+                columns.Bound(requisition => requisition.Zone);
+                columns.Bound(requisition => requisition.MonthRound).Title("Round/Month").HeaderHtmlAttributes(new { @class = "number" });
+                columns.Bound(requisiton => requisiton.Program);
+                columns.Bound(t => t.RequestedDateEt).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).Width(160);
+                columns.Bound((t => t.RequestRefNo)).Title("Request No");
+                columns.Bound(requisition => requisition.Status).Title("Status");
+                //columns.Bound(requisition => requisition.Status).Title("Actions")
+                //    .ClientTemplate(
+                //        "# if (('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition) + "' == 'True'" +
+                //        " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_requisition) + "' == 'True') && data.IsDraft ) { #" +
+                //            "<a href='" + Url.Action("Edit", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "' title='Edit'><i class='fa fa-pencil'></i></a>" +
+                //        " # } #" +
+                //        " # if (('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Send_To_Logistics) + "' == 'True'" +
+                //        " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Send_To_Logistics) + "' == 'True') && data.IsDraft ) { #" +
+                //            "<a href='" + Url.Action("SendToLogistics", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "' title='Send to logistics'><i class='fa fa-paper-plane'></i></a>" +
+                //        " # } #" +
+                //        " # if (('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Requistion_Detail_Edit) + "' == 'True'" +
+                //        " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Requistion_Detail_Edit) + "' == 'True') && data.IsDraft ) { #" +
+                //            "<a href='" + Url.Action("Details", "ReliefRequisition", new { Area = "EarlyWarning", id = "#=RequisitionID#" }) + "' title='Edit detail'><i class='fa fa-edit'></i></a>" +
+                //        " # } #");
+                @*columns.Bound(requisition => requisition.StateName).Template(
 
             @<text>
-                @if (item.StatusID == (int)ReliefRequisitionStatus.Draft)
+                @if (item.StateName == "Draft")
                 {
                     if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_requisition)
                         || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_requisition))
@@ -86,11 +101,11 @@ Requistions
                         <a href="@Url.Action("RequistionDetailEdit", "ReliefRequisition", new {Area = "EarlyWarning", id = item.RequisitionID})"><i class="fa fa-pencil"></i></a>
                     }
                 }
-            else
-            {
-            @item.Status
-}
-            </text>);
+                else
+                {
+                    @item.Status
+                }
+            </text>);*@
 
 
 })
