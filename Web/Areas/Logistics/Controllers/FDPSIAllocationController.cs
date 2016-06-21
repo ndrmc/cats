@@ -183,20 +183,23 @@ namespace Cats.Areas.Logistics.Controllers
             {
                 var requisition = _requisitionService.Get(t => t.RequisitionID == RequisitionId, null,
                         "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
-                var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Assign Project Code");
-                if (approveFlowTemplate != null)
+                if (requisition != null)
                 {
-                    var businessProcessState = new BusinessProcessState()
+                    var approveFlowTemplate = requisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Assign Project Code");
+                    if (approveFlowTemplate != null)
                     {
-                        StateID = approveFlowTemplate.FinalStateID,
-                        PerformedBy = HttpContext.User.Identity.Name,
-                        DatePerformed = DateTime.Now,
-                        Comment = "Requisition has been assigned SI/PC",
-                        //AttachmentFile = fileName,
-                        ParentBusinessProcessID = requisition.BusinessProcessID
-                    };
-                    //return 
-                    _businessProcessService.PromotWorkflow(businessProcessState);
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = approveFlowTemplate.FinalStateID,
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment = "Requisition has been assigned SI/PC",
+                            //AttachmentFile = fileName,
+                            ParentBusinessProcessID = requisition.BusinessProcessID
+                        };
+                        //return 
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                    }
                 }
             }
             List<RequestAllocationViewModel> list = getIndexList((int)req.RegionID, RequisitionId);

@@ -47,7 +47,7 @@
                     <i class='fa fa-ellipsis-horizontal'></i>Workflow<i class='fa fa-angle-down'></i>
                 </button>
                 <ul class='dropdown-menu pull-right' style='overflow: visible;'>" +
-                    "# if ('data.Status' == 'Project Code Assigned') { #" +
+                    "# if (Status == 'Project Code Assigned') { #" +
                         "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.UnCommit_Allocation).ToString() + "' == 'UnCommit_Allocation') { #" +
                             "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=UncommitStateID#','Uncommit','#=RequisitionId#')\" title='Reject Requisition'>Uncommit</a></li>" +
                         " # } #" +
