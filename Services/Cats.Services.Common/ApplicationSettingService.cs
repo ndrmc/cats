@@ -117,6 +117,10 @@ namespace Cats.Services.Common
         {
             return getIntValue("NeedAssessmentWorkflow");
         }
+        public int getReliefRequisitionWorkflow()
+        {
+            return getIntValue("ReliefRequisitionWorkflow");
+        }
 
     }
 

@@ -62,7 +62,8 @@ namespace Cats.Areas.Logistics.Controllers
             var user = (UserIdentity)System.Web.HttpContext.Current.User.Identity;
             var unitPreference = user.Profile.PreferedWeightMeasurment.ToString();
 
-            var reliefRequisitions = _reliefRequisitionService.Get(r=>r.Status==(int)ReliefRequisitionStatus.Approved, null);
+            var reliefRequisitions = _reliefRequisitionService.Get(r=>r.BusinessProcess.CurrentState.BaseStateTemplate.Name=="Approved", null,
+                "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate");
             var result = reliefRequisitions.ToList().Select(item => new AssignHubViewModel
                                                                         {
                                                                             Commodity = item.Commodity.Name,
@@ -107,7 +108,8 @@ namespace Cats.Areas.Logistics.Controllers
             }
 
            
-            var requisititions = _reliefRequisitionService.FindBy(r => r.Status == (int)ReliefRequisitionStatus.Approved);
+            var requisititions = _reliefRequisitionService.Get(r => r.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved", null, 
+                "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
             var requisitionViewModel = HubAllocationViewModelBinder.ReturnRequisitionGroupByReuisitionNo(requisititions);
           
             if (requisitionViewModel != null)

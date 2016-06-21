@@ -20,6 +20,7 @@ namespace Cats.Models
         }
         
         public int RequisitionID { get; set; }
+        public int BusinessProcessID { get; set; }
         public Nullable<int> CommodityID { get; set; }
         public Nullable<int> RegionID { get; set; }
         public Nullable<int> ZoneID { get; set; }
@@ -40,7 +41,8 @@ namespace Cats.Models
         public virtual AdminUnit AdminUnit1 { get; set; }
         public virtual Commodity Commodity { get; set; }
         public virtual Program Program { get; set; }
-       
+        public virtual BusinessProcess BusinessProcess { get; set; }
+
         public virtual RegionalRequest RegionalRequest { get; set; }
         public virtual ICollection<HubAllocation> HubAllocations { get; set; }
         public virtual ICollection<ReliefRequisitionDetail> ReliefRequisitionDetails { get; set; }

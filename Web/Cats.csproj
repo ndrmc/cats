@@ -732,6 +732,7 @@
     <Content Include="Areas\Finance\Views\ValidatedPaymentRequest\PaymentRequests.cshtml" />
     <Content Include="Areas\Finance\Views\Cheque\Cheques.cshtml" />
     <Content Include="Areas\Finance\Views\Cheque\Index.cshtml" />
+    <Content Include="Areas\Logistics\Views\FDPSIAllocation\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\TransportOrder\reverseTOFromClosedtoDraft.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\NeedAssessment\AddRegion.cshtml" />
     <Content Include="Areas\Finance\Views\Home\Index.cshtml" />
@@ -2809,7 +2810,6 @@
     <Content Include="Areas\Logistics\Views\LogisticsStockStatus\AngularGrid.cshtml" />
     <Content Include="Areas\Logistics\Views\LogisticsStockStatus\angu.cshtml" />
     <Content Include="Areas\Logistics\Views\TransportRequisition\ConfirmGenerateTransportOrder.cshtml" />
-    <Content Include="Areas\Logistics\Views\FDPSIAllocation\Index.cshtml" />
     <Content Include="Areas\Logistics\Views\FDPSIAllocation\DragDrop.cshtml" />
     <Content Include="Areas\Logistics\Views\LogisticsStockStatus\Copy of Index.cshtml" />
     <Content Include="Areas\Logistics\Views\FDPSIAllocation\Copy of DragDrop.cshtml" />

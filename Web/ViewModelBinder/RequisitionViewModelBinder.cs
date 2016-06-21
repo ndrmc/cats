@@ -5,13 +5,14 @@ using Cats.Areas.EarlyWarning.Models;
 using Cats.Helpers;
 using Cats.Models;
 using Cats.Models.Constant;
+using Cats.Models.ViewModels;
 using Cats.Services.EarlyWarning;
 
 namespace Cats.ViewModelBinder
 {
     public class RequisitionViewModelBinder
     {
-        public static ReliefRequisitionViewModel BindReliefRequisitionViewModel(ReliefRequisition reliefRequisition, List<WorkflowStatus> statuses, string datePref)
+        public static ReliefRequisitionViewModel BindReliefRequisitionViewModel(ReliefRequisition reliefRequisition, string datePref)
         {
             var requisition = new ReliefRequisitionViewModel();
             requisition.ProgramID = reliefRequisition.ProgramID;
@@ -24,7 +25,7 @@ namespace Cats.ViewModelBinder
                 requisition.RequestedDateEt = reliefRequisition.RequestedDate.Value.ToCTSPreferedDateFormat(datePref);
             //);
             requisition.Round = reliefRequisition.Round;
-            requisition.Status = statuses.Find(t => t.WorkflowID == (int)WORKFLOW.RELIEF_REQUISITION && t.StatusID == reliefRequisition.Status.Value).Description;
+            requisition.Status = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name;
             requisition.RequestedDate = reliefRequisition.RequestedDate.Value;
             requisition.StatusID = reliefRequisition.Status;
             requisition.RequisitionID = reliefRequisition.RequisitionID;
@@ -34,17 +35,20 @@ namespace Cats.ViewModelBinder
             requisition.Commodity = reliefRequisition.Commodity.Name;
             requisition.Month = RequestHelper.MonthName(reliefRequisition.Month);
             requisition.RequestRefNo = reliefRequisition.RegionalRequest != null ? reliefRequisition.RegionalRequest.ReferenceNumber : "Transfer/Swap Requisition";
+            requisition.StateName = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name;
+            requisition.InitialStateFlowTemplates = BindFlowTemplateViewModel(reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates).ToList();
+            requisition.IsDraft = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft";
+            requisition.BusinessProcessID = reliefRequisition.BusinessProcessID;
 
-
-                if (reliefRequisition.RationID != null && reliefRequisition.RationID > 0)
-                {
-                    requisition.RationID = (int) reliefRequisition.RationID;
-                }
-                else if (reliefRequisition.RegionalRequest != null && reliefRequisition.RegionalRequest.Ration != null)
-                {
-                    requisition.Ration = reliefRequisition.RegionalRequest.Ration.RefrenceNumber;
-                    requisition.RationID = reliefRequisition.RegionalRequest.RationID;
-                }
+            if (reliefRequisition.RationID != null && reliefRequisition.RationID > 0)
+            {
+                requisition.RationID = (int) reliefRequisition.RationID;
+            }
+            else if (reliefRequisition.RegionalRequest != null && reliefRequisition.RegionalRequest.Ration != null)
+            {
+                requisition.Ration = reliefRequisition.RegionalRequest.Ration.RefrenceNumber;
+                requisition.RationID = reliefRequisition.RegionalRequest.RationID;
+            }
             
             return requisition;
         }
@@ -112,15 +116,35 @@ namespace Cats.ViewModelBinder
             };
 
         }
-        public static IEnumerable<ReliefRequisitionViewModel> BindReliefRequisitionListViewModel(IEnumerable<ReliefRequisition> reliefRequisitions, List<WorkflowStatus> statuses, string datePref)
+        public static IEnumerable<ReliefRequisitionViewModel> BindReliefRequisitionListViewModel(IEnumerable<ReliefRequisition> reliefRequisitions, string datePref)
         {
             return (from requisition in reliefRequisitions
-                    select BindReliefRequisitionViewModel(requisition, statuses, datePref));
+                    select BindReliefRequisitionViewModel(requisition, datePref));
         }
         public static IEnumerable<ReliefRequisitionDetailViewModel> BindReliefRequisitionDetailListViewModel(IEnumerable<ReliefRequisitionDetail> reliefRequisitionDetails, decimal RationAmount)
         {
             return (from requisitionDetail in reliefRequisitionDetails
                     select BindReliefRequisitionDetailViewModel(requisitionDetail, RationAmount));
+        }
+
+        public static IEnumerable<FlowTemplateViewModel> BindFlowTemplateViewModel(IEnumerable<FlowTemplate> flowTemplates)
+        {
+            var flowTemplateViewModels = new List<FlowTemplateViewModel>();
+
+            foreach (var flowTemplate in flowTemplates)
+            {
+                var flowTemplateViewModel = new FlowTemplateViewModel();
+                flowTemplateViewModel.Name = flowTemplate.Name;
+                flowTemplateViewModel.FinalState = flowTemplate.FinalState.Name;
+                flowTemplateViewModel.FinalStateID = flowTemplate.FinalStateID;
+                flowTemplateViewModel.FlowTemplateID = flowTemplate.FlowTemplateID;
+                flowTemplateViewModel.InitialState = flowTemplate.InitialState.Name;
+                flowTemplateViewModel.InitialStateID = flowTemplate.InitialStateID;
+                flowTemplateViewModel.ParentProcessTemplate = flowTemplate.ParentProcessTemplate.Name;
+                flowTemplateViewModel.ParentProcessTemplateID = flowTemplate.ParentProcessTemplateID;
+                flowTemplateViewModels.Add(flowTemplateViewModel);
+            }
+            return flowTemplateViewModels;
         }
 
     }

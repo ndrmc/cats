@@ -137,7 +137,7 @@ namespace Cats.Tests.ControllersTests
 
             mockReliefRequistionService.Setup(t => t.GetAllReliefRequisition()).Returns(reliefRequisitions);
             mockReliefRequistionService.Setup(t => t.Get(It.IsAny<Expression<Func<ReliefRequisition, bool>>>(), null, It.IsAny<string>())).Returns(reliefRequisitions.AsQueryable());
-            mockReliefRequistionService.Setup(t => t.CreateRequisition(1)).Returns(input);
+            mockReliefRequistionService.Setup(t => t.CreateRequisition(1,"")).Returns(input);
             mockReliefRequistionService.Setup(t => t.GetRequisitionByRequestId(It.IsAny<int>())).Returns((int requestId) => input.FindAll(t => t.RegionalRequestId == requestId));
             var workflowStatusService = new Mock<IWorkflowStatusService>();
             workflowStatusService.Setup(t => t.GetStatusName(It.IsAny<WORKFLOW>(), It.IsAny<int>())).Returns("Draft");
@@ -202,7 +202,7 @@ namespace Cats.Tests.ControllersTests
                 userAccountService.Object,
                 regionalRequestService.Object,
                 rationService.Object,
-                donorService.Object, notificationService.Object, null, transactionSerivce.Object, commonService.Object, rationDetailService.Object);
+                donorService.Object, notificationService.Object, null, transactionSerivce.Object, commonService.Object, rationDetailService.Object, null, null,null);
 
             _reliefRequisitionController.ControllerContext = controllerContext.Object; 
             //_input = input;
