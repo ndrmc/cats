@@ -35,7 +35,7 @@
         </div>
         <div class="actions">
             <a class="btn green toolbar-btn" href="#" style="display:none;" target="_blank" id="toolbar_button_print" title="Print"><i class="fa fa-print"></i> @Html.Translate("Print")</a>
-            @if (Model.StatusID == (int)Cats.Models.Constant.TransportRequisitionStatus.Draft)
+            @if (Model.Status == "Draft")
             {
                 <a class="btn green toolbar-btn " href="@Url.Action("Edit", "TransportRequisition", new { Area = "Logistics", id = Model.TransportRequisitionID })" data-buttontype="btn_edit"><i class="fa fa-edit"></i> @Html.Translate("Edit")</a>
                 <a class="btn green toolbar-btn btn-approve-transportrequisition" href="@Url.Action("Approve", "TransportRequisition", new {id = Model.TransportRequisitionID})" data-buttontype=""><i class="fa fa-check"></i> @Html.Translate("Approve")</a>

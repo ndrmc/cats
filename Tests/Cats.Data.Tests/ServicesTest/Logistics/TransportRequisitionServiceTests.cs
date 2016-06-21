@@ -363,7 +363,7 @@ namespace Cats.Data.Tests.ServicesTest.Logistics
         {
             //Act
 
-            var result = _transportRequisitionService.ApproveTransportRequisition(1,1);
+            var result = _transportRequisitionService.ApproveTransportRequisition(1,1,"");
 
             //Assert
             var status = _transportRequisition.Status;
