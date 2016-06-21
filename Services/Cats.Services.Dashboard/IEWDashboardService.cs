@@ -18,13 +18,14 @@ namespace Cats.Services.Dashboard
       List<ReliefRequisition> FindByRequisition(Expression<Func<ReliefRequisition, bool>> predicate);
       List<ReliefRequisition> GetAllReliefRequisition();
       int GetRemainingRequest(int regionID, int planID);
+      int GetRemainingRequest(int regionID, int planID, int roundId);
       List<GiftCertificate> GetAllGiftCertificate();
       List<Dispatch> GetDispatches(List<string> requisitionNos);
       List<WoredaStockDistribution> GetDistributions(int planID);
       List<Delivery> GetDeliveries(List<Guid> dispatchIds);
       int GetTotalRegionalRequest(int regionId, int planId);
       int GetRegionalRequestSubmittedToLogistics(int regionId, int planId);
-     
-
+      int GetRegionalRequestSubmittedToLogistics(int regionId, int planId, int round);
+      List<int?> GetDistinctRounds(int planId);
     }
 }
