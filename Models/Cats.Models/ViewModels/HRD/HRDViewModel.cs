@@ -26,6 +26,7 @@ namespace Cats.Models.ViewModels.HRD
         public string Status { get; set; }
         public Nullable<int> StatusID { get; set; }
         public List<HRDDetailViewModel> HRDDetails { get; set; }
+        public int BusinessProcessID { get; set; }
         public BusinessProcess BusinessProcess { get; set; }
         public string HRDName
         {
