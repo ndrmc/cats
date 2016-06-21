@@ -1217,7 +1217,7 @@ namespace Cats.Services.Procurement
                 {
                     if (requisition != null)
                     {
-                        var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Requisition");
+                        var approveFlowTemplate = requisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Requisition");
                         if (approveFlowTemplate != null)
                         {
                             var businessProcessState = new BusinessProcessState()
@@ -1247,7 +1247,7 @@ namespace Cats.Services.Procurement
             if (requisition != null)
             {
                
-                    var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Requisition");
+                    var approveFlowTemplate = requisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Requisition");
                     if (approveFlowTemplate != null)
                     {
                         var businessProcessState = new BusinessProcessState()

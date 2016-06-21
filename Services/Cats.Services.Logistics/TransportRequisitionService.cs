@@ -158,20 +158,23 @@ namespace Cats.Services.Logistics
 
                     var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == reliefRequisition, null,
                             "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
-                    var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Requisition");
-                    if (approveFlowTemplate != null)
+                    if (requisition != null)
                     {
-                        var businessProcessState = new BusinessProcessState()
+                        var approveFlowTemplate = requisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Requisition");
+                        if (approveFlowTemplate != null)
                         {
-                            StateID = approveFlowTemplate.FinalStateID,
-                            PerformedBy = requesterName,
-                            DatePerformed = DateTime.Now,
-                            Comment = "Transport requisition has been created for the requisition.",
-                            //AttachmentFile = fileName,
-                            ParentBusinessProcessID = requisition.BusinessProcessID
-                        };
-                        //return 
-                        _businessProcessService.PromotWorkflow(businessProcessState);
+                            var businessProcessState = new BusinessProcessState()
+                            {
+                                StateID = approveFlowTemplate.FinalStateID,
+                                PerformedBy = requesterName,
+                                DatePerformed = DateTime.Now,
+                                Comment = "Transport requisition has been created for the requisition.",
+                                //AttachmentFile = fileName,
+                                ParentBusinessProcessID = requisition.BusinessProcessID
+                            };
+                            //return 
+                            _businessProcessService.PromotWorkflow(businessProcessState);
+                        }
                     }
                 }
 
