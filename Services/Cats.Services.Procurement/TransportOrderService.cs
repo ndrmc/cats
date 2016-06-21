@@ -366,9 +366,31 @@ namespace Cats.Services.Procurement
 
 
 
-            var requisition = _unitOfWork.TransportRequisitionRepository.Get(t => t.TransportRequisitionID == transportRequisitionId).FirstOrDefault();
+            //var requisition = _unitOfWork.TransportRequisitionRepository.Get(t => t.TransportRequisitionID == transportRequisitionId).FirstOrDefault();
 
-            requisition.Status = (int)TransportRequisitionStatus.Closed;
+            var transportRequisition = _unitOfWork.TransportRequisitionRepository.Get(t => t.TransportRequisitionID == transportRequisitionId, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+            if (transportRequisition != null)
+            {
+                var closeFlowTemplate = transportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Close");
+                if (closeFlowTemplate != null)
+                {
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = closeFlowTemplate.FinalStateID,
+                        PerformedBy = requesterName,
+                        DatePerformed = DateTime.Now,
+                        Comment = "Transport requisition has been closed.",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = transportRequisition.BusinessProcessID
+                    };
+                    //return 
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+            }
+            
+
+            //requisition.Status = (int)TransportRequisitionStatus.Closed;
 
             var transportRequisitionDetails =
                 _unitOfWork.TransportRequisitionDetailRepository.Get(t => t.TransportRequisitionID == transportRequisitionId).ToList();
@@ -405,7 +427,7 @@ namespace Cats.Services.Procurement
             {
                 var transporterName = _unitOfWork.TransporterRepository.FindById(transportOrder.TransporterID).Name;
                 transportOrder.TransportOrderNo = string.Format("TRN-ORD-{0}", transportOrder.TransportOrderID);
-                transportOrder.ContractNumber = string.Format("{0}/{1}/{2}/{3}/{4}", "LTCD", requisition.RegionID, DateTime.Today.Year, transporterName.Substring(0, 2),requisition.TransportRequisitionNo);
+                transportOrder.ContractNumber = string.Format("{0}/{1}/{2}/{3}/{4}", "LTCD", transportRequisition.RegionID, DateTime.Today.Year, transporterName.Substring(0, 2), transportRequisition.TransportRequisitionNo);
             }
 
             _unitOfWork.Save();

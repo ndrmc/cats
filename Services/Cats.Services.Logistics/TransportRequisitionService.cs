@@ -351,19 +351,38 @@ namespace Cats.Services.Logistics
         }
 
 
-        public bool ApproveTransportRequisition(int id,int approvedBy)
+        public bool ApproveTransportRequisition(int id,int approvedBy, string approvedByName)
         {
-            var transportRequisition =
-                _unitOfWork.TransportRequisitionRepository.FindById(id);
-            if(transportRequisition==null) return false;
+            var transportRequisition = _unitOfWork.TransportRequisitionRepository.Get(t => t.TransportRequisitionID == id, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+            if (transportRequisition==null) return false;
+
+            var approveFlowTemplate = transportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Approve");
+            if (approveFlowTemplate != null)
+            {
+                var businessProcessState = new BusinessProcessState()
+                {
+                    StateID = approveFlowTemplate.FinalStateID,
+                    PerformedBy = approvedByName,
+                    DatePerformed = DateTime.Now,
+                    Comment = "Transport requisition has been approved",
+                    //AttachmentFile = fileName,
+                    ParentBusinessProcessID = transportRequisition.BusinessProcessID
+                };
+                //return 
+               _businessProcessService.PromotWorkflow(businessProcessState);
+                AddToNotification(transportRequisition);
+                return true;
+
+            }
+
+            //transportRequisition.Status = (int) TransportRequisitionStatus.Approved;
+            //transportRequisition.CertifiedBy = approvedBy;
+            //transportRequisition.CertifiedDate = DateTime.Today;
             
-            transportRequisition.Status = (int) TransportRequisitionStatus.Approved;
-            transportRequisition.CertifiedBy = approvedBy;
-            transportRequisition.CertifiedDate = DateTime.Today;
-            _unitOfWork.Save();
             //calling the notification 
-            AddToNotification(transportRequisition);
-            return true;
+            //AddToNotification(transportRequisition);
+            return false;
         }
 
         //public string GetStoreName(int hubId, int requisitionId)

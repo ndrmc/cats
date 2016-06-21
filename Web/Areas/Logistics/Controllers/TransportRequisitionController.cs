@@ -94,15 +94,15 @@ namespace Cats.Areas.Logistics.Controllers
 
                 var processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
 
-                ViewBag.StatusID = new SelectList(processStates, "StateTemplateID", "Name");
+                ViewBag.StatusID = new SelectList(processStates, "Name", "Name");
             }
             return View();
 
         }
-        public ActionResult TransportRequisition_Read([DataSourceRequest] DataSourceRequest request, string searchIndex,int status)
+        public ActionResult TransportRequisition_Read([DataSourceRequest] DataSourceRequest request, string searchIndex,string status)
         {
-            var transportRequisitions = status ==-1 ? _transportRequisitionService.Get(t => t.TransportRequisitionNo.Contains(searchIndex)):
-                _transportRequisitionService.Get(t=>t.TransportRequisitionNo.Contains(searchIndex) && t.BusinessProcess.CurrentState.BaseStateTemplate.StateTemplateID==(int)status)
+            var transportRequisitions = status =="" ? _transportRequisitionService.Get(t => t.TransportRequisitionNo.Contains(searchIndex)):
+                _transportRequisitionService.Get(t=>t.TransportRequisitionNo.Contains(searchIndex) && t.BusinessProcess.CurrentState.BaseStateTemplate.Name==status)
                 .OrderByDescending(t=>t.TransportRequisitionID);
             var statuses = _workflowStatusService.GetStatus(WORKFLOW.TRANSPORT_REQUISITION);
             var users = _userAccountService.GetUsers();
@@ -420,8 +420,8 @@ namespace Cats.Areas.Logistics.Controllers
         [HttpPost]
         public ActionResult ApproveConfirmed(int TransportRequisitionID)
         {
-            var currentUser = UserAccountHelper.GetUser(User.Identity.Name).UserProfileID;
-            _transportRequisitionService.ApproveTransportRequisition(TransportRequisitionID, currentUser);
+            var currentUser = UserAccountHelper.GetUser(User.Identity.Name);
+            _transportRequisitionService.ApproveTransportRequisition(TransportRequisitionID, currentUser.UserProfileID, currentUser.UserName);
            
             return RedirectToAction("Index", "TransportRequisition");
         }
