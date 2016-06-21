@@ -642,9 +642,9 @@ namespace Cats.Services.Transaction
                 _unitOfWork.SIPCAllocationRepository.Delete(allocationDetail);
                 //result.Add(transaction);
             }
-            var requisition = _unitOfWork.ReliefRequisitionRepository.FindById(requisitionID);
-            requisition.Status = (int) Cats.Models.Constant.ReliefRequisitionStatus.Approved;
-            _unitOfWork.ReliefRequisitionRepository.Edit(requisition);
+            //var requisition = _unitOfWork.ReliefRequisitionRepository.FindById(requisitionID);
+            //requisition.Status = (int) Cats.Models.Constant.ReliefRequisitionStatus.Approved;
+            //_unitOfWork.ReliefRequisitionRepository.Edit(requisition);
             _unitOfWork.Save();
             //return result;
             return true;

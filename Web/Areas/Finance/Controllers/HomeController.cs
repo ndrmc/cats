@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Cats.Areas.EarlyWarning.Models;
 using Cats.Areas.Finance.Models;
 using Cats.Infrastructure;
 using Cats.Models;
@@ -13,6 +14,7 @@ using Cats.Services.Logistics;
 using Cats.Services.Procurement;
 using Cats.Helpers;
 using IUserProfileService = Cats.Services.Administration.IUserProfileService;
+using Transporter = Cats.Models.Hubs.Transporter;
 
 namespace Cats.Areas.Finance.Controllers
 {
@@ -25,8 +27,26 @@ namespace Cats.Areas.Finance.Controllers
         private readonly IDispatchService _dispatchService;
         private readonly ITransportOrderDetailService _transportOrderDetailService;
         private readonly IBusinessProcessService _businessProcessService;
+        private readonly ITransportOrderService _transportOrderService;
+        private readonly IDeliveryService _deliveryService;
+        private readonly Services.Hub.IFDPService _ifdpService;
+        private readonly Services.Hub.IAdminUnitService _iadminUnitService;
+        private readonly Services.Hub.ITransporterService _transporterService;
+        private readonly IReliefRequisitionService _reliefRequisitionService;
 
-        public HomeController(ITransporterChequeService transporterChequeService, IUserProfileService userProfileService, ITransporterPaymentRequestService transporterPaymentRequestService, IDispatchService dispatchService, ITransportOrderDetailService transportOrderDetailService, IBusinessProcessService businessProcessService)
+
+        public HomeController(ITransporterChequeService transporterChequeService,
+            IUserProfileService userProfileService,
+            ITransporterPaymentRequestService transporterPaymentRequestService,
+            IDispatchService dispatchService,
+            ITransportOrderDetailService transportOrderDetailService,
+            IBusinessProcessService businessProcessService,
+            ITransportOrderService transportOrderService,
+            IDeliveryService deliveryService,
+            Services.Hub.IFDPService ifdpService,
+            Services.Hub.IAdminUnitService adminUnitService,
+            Services.Hub.ITransporterService transporterService,
+            IReliefRequisitionService reliefRequisitionService)
         {
             _transporterChequeService = transporterChequeService;
             _userProfileService = userProfileService;
@@ -34,6 +54,12 @@ namespace Cats.Areas.Finance.Controllers
             _dispatchService = dispatchService;
             _transportOrderDetailService = transportOrderDetailService;
             _businessProcessService = businessProcessService;
+            _transportOrderService = transportOrderService;
+            _deliveryService = deliveryService;
+            _ifdpService = ifdpService;
+            _iadminUnitService = adminUnitService;
+            _transporterService = transporterService;
+            _reliefRequisitionService = reliefRequisitionService;
         }
 
         //
@@ -47,8 +73,8 @@ namespace Cats.Areas.Finance.Controllers
         public JsonResult ReadPaymentRequest()
         {
 
-            var paymentRequests= _transporterPaymentRequestService.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo == 2, null, "BusinessProcess");
-           
+            var paymentRequests = _transporterPaymentRequestService.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo == 2, null, "BusinessProcess");
+
             var requests = _transporterPaymentRequestService.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2, null, "BusinessProcess").Select(p =>
             {
                 var firstOrDefault = p.Delivery.DeliveryDetails.FirstOrDefault();
@@ -57,8 +83,8 @@ namespace Cats.Areas.Finance.Controllers
                     Transporter = p.TransportOrder.Transporter.Name,
                     TransporterId = p.TransportOrder.TransporterID,
                     RequestedAmount = firstOrDefault.SentQuantity,
-                   
-                           
+
+
                     AditionalLabourCost = p.LabourCost,
                     RejectedAmount = p.RejectedAmount,
                     // Date  = _transporterChequeService.FindBy(t=>t.PaymentRequestID == p.PaymentRequestID).Select(d=>d.AppovedDate).FirstOrDefault().ToCTSPreferedDateFormat(UserAccountHelper.UserCalendarPreference()),
@@ -68,16 +94,16 @@ namespace Cats.Areas.Finance.Controllers
                     //        Performer = p.BusinessProcess.CurrentState.PerformedBy
                 } : null) : null;
             }).GroupBy(ac => new
-                   {
-                       ac.Transporter,
-                   }).Select(ac=> new
-                       {
-                           Transporter = ac.Key.Transporter,
-                           TransporterId = ac.FirstOrDefault().TransporterId,
-                            RequestedAmount = ac.Sum(m=>m.RequestedAmount),
-                            AditionalLabourCost =ac.Sum(m=>m.AditionalLabourCost),
-                            RejectedAmount = ac.Sum(m=>m.RejectedAmount),
-                       });
+            {
+                ac.Transporter,
+            }).Select(ac => new
+            {
+                Transporter = ac.Key.Transporter,
+                TransporterId = ac.FirstOrDefault().TransporterId,
+                RequestedAmount = ac.Sum(m => m.RequestedAmount),
+                AditionalLabourCost = ac.Sum(m => m.AditionalLabourCost),
+                RejectedAmount = ac.Sum(m => m.RejectedAmount),
+            });
 
             return Json(requests.Take(10), JsonRequestBehavior.AllowGet);
         }
@@ -85,25 +111,31 @@ namespace Cats.Areas.Finance.Controllers
         public JsonResult ReadCheques()
         {
             var cheques = _transporterChequeService.GetAllTransporterCheque().Where(t => t.Status < 4).Select(c =>
-                                                                                                                  {
-                                                                                                                      var transporterChequeDetail = c.TransporterChequeDetails.FirstOrDefault();
-                                                                                                                      return transporterChequeDetail != null ? new
-                                                                                                                                                                    {
-                                                                                                                                                                        chequeNo = c.CheckNo,
-                                                                                                                                                                        Transporter = transporterChequeDetail.TransporterPaymentRequest.TransportOrder.Transporter.Name,
-                                                                                                                                                                        c.Amount,
-                                                                                                                                                                        PreparedBy = c.UserProfile.FirstName + " " + c.UserProfile.LastName,
+            {
+                var transporterChequeDetail = c.TransporterChequeDetails.FirstOrDefault();
+                return transporterChequeDetail != null
+                    ? new
+                    {
+                        chequeNo = c.CheckNo,
+                        Transporter = transporterChequeDetail.TransporterPaymentRequest.TransportOrder.Transporter.Name,
+                        c.Amount,
+                        PreparedBy = c.UserProfile.FirstName + " " + c.UserProfile.LastName,
 
-                                                                                                                                                                        ApprovedBy = c.AppovedBy != null ? _userProfileService.FindById((int)c.AppovedBy).FirstName + " " +
-                                                                                                                                                                                                           _userProfileService.FindById((int)c.AppovedBy).LastName : "",
-                                                                                                                                                                        DateApproved = c.AppovedDate.Date.ToCTSPreferedDateFormat(UserAccountHelper.UserCalendarPreference()),
-                                                                                                                                                                        transporterChequeId = c.TransporterChequeId,
-                                                                                                                                                                        State = c.Status,
-                                                                                                                                                                        Status = c.BusinessProcess.CurrentState.BaseStateTemplate.Name,
-                                                                                                                                                                        ButtonStatus = c.BusinessProcess.CurrentState.BaseStateTemplate.Name,
-                                                                                                                                                                        c.BankName
-                                                                                                                                                                    } : null;
-                                                                                                                  });
+                        ApprovedBy =
+                            c.AppovedBy != null
+                                ? _userProfileService.FindById((int)c.AppovedBy).FirstName + " " +
+                                  _userProfileService.FindById((int)c.AppovedBy).LastName
+                                : "",
+                        DateApproved =
+                            c.AppovedDate.Date.ToCTSPreferedDateFormat(UserAccountHelper.UserCalendarPreference()),
+                        transporterChequeId = c.TransporterChequeId,
+                        State = c.Status,
+                        Status = c.BusinessProcess.CurrentState.BaseStateTemplate.Name,
+                        ButtonStatus = c.BusinessProcess.CurrentState.BaseStateTemplate.Name,
+                        c.BankName
+                    }
+                    : null;
+            });
             return Json(cheques, JsonRequestBehavior.AllowGet);
         }
 
@@ -124,7 +156,7 @@ namespace Cats.Areas.Finance.Controllers
         public JsonResult PaymentRequestBeingProcessed()
         {
 
-            var requests = _transporterPaymentRequestService.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo ==1, null, "BusinessProcess").Select(p =>
+            var requests = _transporterPaymentRequestService.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo == 1, null, "BusinessProcess").Select(p =>
             {
                 var firstOrDefault = p.Delivery.DeliveryDetails.FirstOrDefault();
                 return firstOrDefault != null ? (_transporterChequeService != null ? new
@@ -134,7 +166,7 @@ namespace Cats.Areas.Finance.Controllers
                     RequestedAmount = firstOrDefault.SentQuantity,
                     AditionalLabourCost = p.LabourCost,
                     RejectedAmount = p.RejectedAmount,// Date  = _transporterChequeService.FindBy(t=>t.PaymentRequestID == p.PaymentRequestID).Select(d=>d.AppovedDate).FirstOrDefault().ToCTSPreferedDateFormat(UserAccountHelper.UserCalendarPreference()),
-                    
+
                 } : null) : null;
             }).GroupBy(ac => new
             {
@@ -146,7 +178,7 @@ namespace Cats.Areas.Finance.Controllers
                 RequestedAmount = ac.Sum(m => m.RequestedAmount),
                 AditionalLabourCost = ac.Sum(m => m.AditionalLabourCost),
                 RejectedAmount = ac.Sum(m => m.RejectedAmount),
-            }); 
+            });
             return Json(requests.Take(10), JsonRequestBehavior.AllowGet);
         }
 
@@ -183,22 +215,22 @@ namespace Cats.Areas.Finance.Controllers
             return "";
         }
 
-        public JsonResult PaymentRequestForDashboard ()
+        public JsonResult PaymentRequestForDashboard()
         {
             var list = (IEnumerable<Cats.Models.TransporterPaymentRequest>)_transporterPaymentRequestService
                         .Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2, null, "BusinessProcess")
                         .OrderByDescending(t => t.TransporterPaymentRequestID);
-            var transporterPaymentRequests =  TransporterPaymentRequestViewModelBinder(list.ToList());
+            var transporterPaymentRequests = TransporterPaymentRequestViewModelBinder(list.ToList());
 
-            var requests = transporterPaymentRequests.GroupBy(ac => new {ac.Transporter.Name}).Select(ac => new
-                                                                                                                                                  {
-                                                                                                                                                      TransporterName = ac.Key.Name,
-                                                                                                                                                      TransporterId = ac.FirstOrDefault().Transporter.TransporterID,
-                                                                                                                                                      ReceivedQuantity = ac.Sum(s => s.ReceivedQty),
-                                                                                                                                                      ShortageQuantity = ac.Sum(s => s.ShortageQty),
-                                                                                                                                                      ShortageBirr = ac.Sum(s => s.ShortageBirr),
-                                                                                                                                                      FreightCharge = ac.Sum(s => s.FreightCharge),
-                                                                                                                                                  });
+            var requests = transporterPaymentRequests.GroupBy(ac => new { ac.Transporter.Name }).Select(ac => new
+            {
+                TransporterName = ac.Key.Name,
+                TransporterId = ac.FirstOrDefault().Transporter.TransporterID,
+                ReceivedQuantity = ac.Sum(s => s.ReceivedQty),
+                ShortageQuantity = ac.Sum(s => s.ShortageQty),
+                ShortageBirr = ac.Sum(s => s.ShortageBirr),
+                FreightCharge = ac.Sum(s => s.FreightCharge),
+            });
             return Json(requests.Take(10), JsonRequestBehavior.AllowGet);
         }
 
@@ -269,8 +301,10 @@ namespace Cats.Areas.Finance.Controllers
                         .Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2, null, "BusinessProcess")
                         .OrderByDescending(t => t.TransporterPaymentRequestID);
             var transporterPaymentRequests = TransporterPaymentRequestViewModelBinder(list.ToList());
-
-            var requests = transporterPaymentRequests.GroupBy(ac => new { ac.Transporter.Name, ac.Commodity, ac.Source }).Select(ac => new
+            var requests = transporterPaymentRequests.GroupBy(ac => new {
+                ac.Transporter.Name,
+                ac.Commodity,
+                ac.Source }).Select(ac => new
             {
                 TransporterName = ac.Key.Name,
                 TransporterId = ac.FirstOrDefault().Transporter.TransporterID,
@@ -291,6 +325,76 @@ namespace Cats.Areas.Finance.Controllers
             var dataSourceName = "TPRL";
             var result = ReportHelper.PrintReport(reportPath, reportData, dataSourceName);
             return File(result.RenderBytes, result.MimeType);
+        }
+
+        public JsonResult GetRegionalRequestDataEntryStatus()
+        {
+            List<ReliefRequisition> reliefRequisitions = _reliefRequisitionService.GetAllReliefRequisition();
+            List<TransportOrder> transportOrders = _transportOrderService.GetAllTransportOrder();
+            List<TransportOrderDetail> transportOrderDetails = _transportOrderDetailService.GetAllTransportOrderDetail();
+            List<TransporterPaymentRequest> transporterPaymentRequests =
+                _transporterPaymentRequestService.GetAllTransporterPaymentRequest();
+            List<Transporter> transporters = _transporterService.GetAllTransporter();
+            List<Cats.Models.Hubs.AdminUnit> adminUnits = _iadminUnitService.GetAllAdminUnit();
+
+            var paymentRequest = (from rr in reliefRequisitions
+                join tod in transportOrderDetails
+                    on rr.RequisitionID equals tod.RequisitionID
+                join to in transportOrders
+                    on tod.TransportOrderID equals to.TransportOrderID
+                join t in transporters
+                    on to.TransportOrderID equals t.TransporterID
+                join tpr in transporterPaymentRequests
+                    on to.TransportOrderID equals tpr.TransportOrderID
+                join au in adminUnits
+                    on t.Region equals au.AdminUnitID
+                where tpr.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2
+                select new
+                {
+                    rr.RequisitionNo,
+                    rr.Round,
+                    to.TransportOrderNo,
+                    t.Name,
+                    Region = au.Name,
+                    RegionId = t.Region,
+                    StateNumber = tpr.BusinessProcess.CurrentState.BaseStateTemplate.StateNo
+                }).ToList();
+
+            var groupedTransportRequest = (from pR in paymentRequest
+                group pR by new
+                {
+                    pR.Region,
+                    pR.Name,
+                    pR.RegionId,
+                    pR.RequisitionNo,
+                    pR.Round,
+                    pR.StateNumber
+                }
+                into gTrnsRqst
+                select new
+                {
+                    gTrnsRqst.Key.Region,
+                    gTrnsRqst.Key.Name, // transporter name
+                    //gTrnsRqst.Key.RegionId,
+                    //gTrnsRqst.Key.RequisitionNo,
+                    gTrnsRqst.Key.Round,
+                    //gTrnsRqst.Key.StateNumber,
+                    Allocated = gTrnsRqst.Count(x => x.StateNumber != 2),
+                    Collected = gTrnsRqst.Count(x => x.StateNumber == 2)
+                }).ToList();
+
+            //List<RegionalRequestDataEntryStatusViewModel> regionalRequestDataEntryStatus =
+            //    transportOrders.Select(transportOrder => new RegionalRequestDataEntryStatusViewModel
+            //    {
+            //        Region = transportOrder.ContractNumber
+            //    }).ToList();
+
+            //foreach (var tr in groupedTransportRequest)
+            //{
+
+            //}
+
+            return Json(groupedTransportRequest, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -35,8 +35,21 @@
         //columns.Bound(e => e.Status).Title(@Html.LogisticsOperationButton(
         //    @Url.Action("Index", "FDPSIAllocation", new { Area = "Logistics", regionid = ViewBag.regionId }),
         //    LogisticsConstants.Operation.SI_PC_allocation, "<a class='action-link assign-code#=Status#' href='" + "&RequisitionID=#=RequisitionId#'>" + Html.Translate("PC/SI Allocate") + "</a>", "", @Html.Translate("Status")));
+        columns.Bound(e => e.Status).Width(120).Title(@Html.Translate("Status"));
         if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.SI_PC_allocation).ToString()== "SI_PC_allocation")
-            columns.Bound(e => e.Status).Title(@Html.Translate("Status")).Width(120).ClientTemplate("<a class='action-link assign-code#=Status#' href='" + @Url.Action("Index", "FDPSIAllocation", new { Area = "Logistics", regionid = ViewBag.regionId }) + "&RequisitionID=#=RequisitionId#'>"+ Html.Translate("PC/SI Allocate")+"</a>").Filterable(false);
+            columns.Bound(e => e.Status).Title(@Html.Translate("Actions")).Width(120).ClientTemplate(
+                "<a class='action-link assign-code3' href='" + @Url.Action("Index", "FDPSIAllocation", new { Area = "Logistics", regionid = ViewBag.regionId }) + "&RequisitionID=#=RequisitionId#'>"
+                + Html.Translate("PC/SI Allocate")+"</a>" +
+                @"<div class='btn-group'>
+                <button type='button' id='workflow-#=RequisitionId#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
+                    <i class='fa fa-ellipsis-horizontal'></i>Workflow<i class='fa fa-angle-down'></i>
+                </button>
+                <ul class='dropdown-menu pull-right' style='overflow: visible;'>" +
+                        " # if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Reject_Approved_Requisition).ToString() + "' == 'Reject_Approved_Requisition') { #" +
+                            "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
+                " # } #" +
+                "</ul></div>"
+                ).Filterable(false);
 
 
         //columns.Bound(e => e.Round).Width(120).Title("Round");
@@ -44,13 +57,13 @@
 
                         .DataSource(dataSource => dataSource
                             .Ajax()
-                            .Read(read => read.Action("AllocateProjectCode", "DispatchAllocation", new { regionId = Model[0], status = Model[1] }))
+                            .Read(read => read.Action("AllocateProjectCode", "DispatchAllocation", new { regionId = Model[0], status = "Hub Assigned" }))
 
                          // .PageSize(5)
                          )
                          .Scrollable(scroll => scroll.Height(350))
 
-                         .Selectable(select => select.Mode(GridSelectionMode.Single))
+                         //.Selectable(select => select.Mode(GridSelectionMode.Single))
                          .Navigatable()
                          .Filterable(filterable => filterable
                              .Extra(false)
@@ -68,7 +81,6 @@
 
 
 <script>
-   
 
     function roundChange(e) {
         e.preventDefault();
@@ -81,31 +93,31 @@
             grid.dataSource.filter({});
         }
     }
-    
+
     function onUnCommit(e) {
         e.preventDefault();
 
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         window.location = "@Url.Action("UncommitRequsition","DispatchAllocation")" + "/" + dataItem.RequisitionId;
     }
-    
+
     function onDataBound(e) {
-       
+
         var grid = $("#ProjectCodegrid" + '@gridid').data("kendoGrid");
         var gridData = grid.dataSource.view();
 
-        
+
         for (var i = 0; i < gridData.length; i++) {
             var currentUid = gridData[i].uid;
-            
+
             if (gridData[i].Status == 3) {
                 var currentRow = grid.table.find("tr[data-uid='" + currentUid + "']");
                 var uncommitButton = $(currentRow).find(".k-grid-Uncommmit");
                 uncommitButton.hide();
-               
+
             }
 
-            
+
         }
     }
 </script>

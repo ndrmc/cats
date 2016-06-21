@@ -269,6 +269,7 @@ namespace Cats.Infrastructure
             kernel.Bind<ILossReasonService>().To<LossReasonService>();
             kernel.Bind<ITransporterChequeDetailService>().To<TransporterChequeDetailService>();
             kernel.Bind<Cats.Services.Administration.IStoreService>().To<Cats.Services.Administration.StoreService>();
+            kernel.Bind<ILgDashboardService>().To<LgDashboardService>();
         }
         private void AddBindingsHub()
         {

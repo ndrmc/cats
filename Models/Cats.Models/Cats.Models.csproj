@@ -138,6 +138,8 @@
     <Compile Include="ViewModels\Dashboard\RecentRequests.cs" />
     <Compile Include="ViewModels\DistributionByAgeViewModel.cs" />
     <Compile Include="DistibtionStatus.cs" />
+    <Compile Include="ViewModels\DashboardDispAlloRequisition.cs" />
+    <Compile Include="ViewModels\FlowTemplateViewModel.cs" />
     <Compile Include="VWRegionalRequest.cs" />
     <Compile Include="WoredaStockDistributionDetail.cs" />
     <Compile Include="Delivery.cs" />

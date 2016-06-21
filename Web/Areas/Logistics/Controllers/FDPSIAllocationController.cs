@@ -25,6 +25,7 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly ISIPCAllocationService _allocationService;
         private readonly ITransactionService _transactionService;
         private readonly ICommonService _commonService;
+        private readonly IBusinessProcessService _businessProcessService;
 
         public FDPSIAllocationController
             (
@@ -32,7 +33,7 @@ namespace Cats.Areas.Logistics.Controllers
             , ILedgerService ledgerService
             , IHubAllocationService hubAllocationService, IHubService hubService
             ,ISIPCAllocationService allocationService
-            ,ITransactionService transactionService, ICommonService commonService)
+            ,ITransactionService transactionService, ICommonService commonService, IBusinessProcessService businessProcessService)
             {
                 this._requisitionService = requisitionService;
                 this._ledgerService = ledgerService;
@@ -41,6 +42,7 @@ namespace Cats.Areas.Logistics.Controllers
                 this._allocationService = allocationService;
                 this._transactionService = transactionService;
             _commonService = commonService;
+            _businessProcessService = businessProcessService;
             }
 
         public List<RequestAllocationViewModel> getIndexList(int regionId = 0,int RequisitionID=0)
@@ -49,11 +51,13 @@ namespace Cats.Areas.Logistics.Controllers
             
             if(RequisitionID>0)
             {
-                req = _requisitionService.FindBy(r => r.RequisitionID==RequisitionID && r.RegionID == regionId && r.Status == (int)ReliefRequisitionStatus.HubAssigned);
+                req = _requisitionService.Get(r => r.RequisitionID==RequisitionID && r.RegionID == regionId && r.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Hub Assigned", null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
             }
             else
             {
-               req = _requisitionService.FindBy(r => r.RegionID == regionId && r.Status == (int)ReliefRequisitionStatus.HubAssigned);
+               req = _requisitionService.Get(r => r.RegionID == regionId && r.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Hub Assigned", null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
 
             }
             var result = req.ToList().Select(item => new RequestAllocationViewModel
@@ -174,9 +178,26 @@ namespace Cats.Areas.Logistics.Controllers
         {
 
             ReliefRequisition req = _requisitionService.FindById(RequisitionId);
-            if (req.Status == 3)
+            var tnx = _transactionService.PostSIAllocation(RequisitionId);
+            if (tnx)
             {
-                var tnx = _transactionService.PostSIAllocation(RequisitionId);
+                var requisition = _requisitionService.Get(t => t.RequisitionID == RequisitionId, null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+                var approveFlowTemplate = requisition?.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Assign Project Code");
+                if (approveFlowTemplate != null)
+                {
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = approveFlowTemplate.FinalStateID,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "Requisition has been assigned SI/PC",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = requisition.BusinessProcessID
+                    };
+                    //return 
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
             }
             List<RequestAllocationViewModel> list = getIndexList((int)req.RegionID, RequisitionId);
             /*

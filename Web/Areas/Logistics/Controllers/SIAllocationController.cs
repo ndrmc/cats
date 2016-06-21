@@ -37,7 +37,8 @@ namespace Cats.Areas.Logistics.Controllers
 
         public List<RequestAllocationViewModel> getIndexList(int regionId = 0)
         {
-            List<ReliefRequisition> req = _requisitionService.FindBy(r => r.RegionID==regionId && r.Status == (int)ReliefRequisitionStatus.HubAssigned);
+            List<ReliefRequisition> req = _requisitionService.Get(r => r.RegionID==regionId && r.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Hub Assigned", 
+                null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
             var result = req.ToList().Select(item => new RequestAllocationViewModel
             {
                 Commodity = item.Commodity.Name,

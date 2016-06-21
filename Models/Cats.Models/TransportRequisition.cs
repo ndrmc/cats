@@ -16,6 +16,7 @@ namespace Cats.Models
         }
 
         public int TransportRequisitionID { get; set; }
+        public int BusinessProcessID { get; set; }
         [Display(Name="Transport Requisition No")]
         public string TransportRequisitionNo { get; set; }
         public int RegionID { get; set; }
@@ -32,6 +33,7 @@ namespace Cats.Models
         public int? PartitionId { get; set; }
         public virtual AdminUnit AdminUnit { get; set; }
         public virtual Program Program { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
         public virtual ICollection<TransportRequisitionDetail> TransportRequisitionDetails { get; set; }
         //public virtual ICollection<TransReqWithoutTransporter> TransReqWithoutTransporters { get; set; } 
     }

@@ -131,7 +131,7 @@ namespace Cats.Services.EarlyWarning
         }
 
 
-        public bool AddHRD(int year, int userID, int seasonID, int rationID, int planID)
+        public bool AddHRD(int year, int userID, int seasonID, int rationID, int planID, int businessProcessId)
         {
             var plan = _unitOfWork.PlanRepository.FindById(planID);
             var woredas = _unitOfWork.AdminUnitRepository.FindBy(m => m.AdminUnitTypeID == 4);
@@ -144,7 +144,8 @@ namespace Cats.Services.EarlyWarning
                     PlanID = planID,
                     CreatedDate = DateTime.Now,
                     PublishedDate = DateTime.Now,
-                    Status = (int?) HRDStatus.Draft
+                    Status = (int?) HRDStatus.Draft,
+                    BusinessProcessId = businessProcessId
                 };
             var hrdDetails = (from detail in woredas
                               select new HRDDetail

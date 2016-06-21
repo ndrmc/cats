@@ -443,13 +443,16 @@ namespace Cats.Services.EarlyWarning
             var request = _unitOfWork.RegionalRequestRepository.FindById(id);
             if (request != null)
             {
-                var requisitions = _unitOfWork.ReliefRequisitionRepository.FindBy(m => m.RegionalRequestID == request.RegionalRequestID);
+                var requisitions = _unitOfWork.ReliefRequisitionRepository.Get(m => m.RegionalRequestID == request.RegionalRequestID, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
                 if (requisitions != null)
                 {
 
                     foreach (var reliefRequisition in requisitions)
                     {
-                        if (reliefRequisition.Status > (int)ReliefRequisitionStatus.Approved && reliefRequisition.Status!=(int)ReliefRequisitionStatus.Rejected)
+                        if (!(reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft" ||
+                            reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved" ||
+                            reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Rejected"))
                         {
                             return false;
                         }

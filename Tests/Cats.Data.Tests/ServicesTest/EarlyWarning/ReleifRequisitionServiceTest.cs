@@ -105,7 +105,7 @@ namespace Cats.Data.Tests.ServicesTest.EarlyWarning
 
             //Now our UnitOfWork is ready to be injected to the service
             //Here we inject UnitOfWork to constractor of our service
-            var relifRequistionService = new ReliefRequisitionService(mockUnitOfWork.Object);
+            var relifRequistionService = new ReliefRequisitionService(mockUnitOfWork.Object, null, null);
 
 
             //Act
@@ -199,7 +199,7 @@ namespace Cats.Data.Tests.ServicesTest.EarlyWarning
 
             //Now our UnitOfWork is ready to be injected to the service
             //Here we inject UnitOfWork to constractor of our service
-            var relifRequistionService = new ReliefRequisitionService(mockUnitOfWork.Object);
+            var relifRequistionService = new ReliefRequisitionService(mockUnitOfWork.Object,null,null);
 
 
             //Act
