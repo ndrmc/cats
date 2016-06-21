@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Cats.Areas.EarlyWarning.Models;
 using Cats.Helpers;
+using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Services.Dashboard;
 using Cats.Services.EarlyWarning;
@@ -89,7 +90,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
         public List<int?> GetRounds()
         {
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
+            var currentHrd = GetCurrentHrd();
             var requests =
                 _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID)
                     .OrderByDescending(m => m.RegionalRequestID);
@@ -103,7 +104,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
         public List<int?> GetRecentRequestRounds()
         {
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
+            var currentHrd = GetCurrentHrd();
             var requests =
                 _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID && m.ProgramId == 1)
                     .OrderByDescending(m => m.RegionalRequestID);
@@ -111,6 +112,15 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 where regionalRequest.ProgramId == 1
                 select regionalRequest.Round).Distinct().ToList();
             return rounds;
+        }
+
+        public HRD GetCurrentHrd()
+        {
+            var currentHrd =
+                _eWDashboardService.FindByHrd(
+                    m => m.Status == 3 || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                    .FirstOrDefault();
+            return currentHrd;
         }
     }
 }
