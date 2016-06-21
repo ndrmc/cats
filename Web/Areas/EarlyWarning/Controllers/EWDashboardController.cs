@@ -39,7 +39,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
         public JsonResult GetRation()
         {
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
+            var currentHrd = GetCurrentHrd();
+                //_eWDashboardService.FindByHrd(
+                //    m => m.Status == 3 || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                    //.FirstOrDefault();
 
             var rationDetail = _eWDashboardService.FindByRationDetail(m => m.RationID == currentHrd.RationID);
             var rationDetailInfo = GetRationDetailInfo(rationDetail);
@@ -59,8 +62,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public JsonResult GetRegionalRequests()
         {
 
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
-            var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID && m.ProgramId == 1).OrderByDescending(m => m.RegionalRequestID);        
+            var currentHrd = GetCurrentHrd();           
+            var requests =
+                _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID && m.ProgramId == 1)
+                    .OrderByDescending(m => m.RegionalRequestID);       
             var requestDetail = GetRecentRegionalRequests(requests);
 
             return Json(requestDetail, JsonRequestBehavior.AllowGet);
@@ -87,8 +92,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
         }
         public JsonResult GetRequisition()
         {
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
-            var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID).OrderByDescending(m => m.RegionalRequestID);
+            var currentHrd = GetCurrentHrd();         
+            var requests =
+                _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID)
+                    .OrderByDescending(m => m.RegionalRequestID);
             var requisitions = GetRequisisition(requests);
             return Json(requisitions, JsonRequestBehavior.AllowGet);
 
@@ -122,8 +129,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
         }
         public JsonResult GetRequestedInfo()
         {
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
-            var request = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID).OrderByDescending(m=>m.RegionalRequestID);
+            var currentHrd = GetCurrentHrd();
+            var request =
+                _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID)
+                    .OrderByDescending(m => m.RegionalRequestID);
             var requestDetail = GetRquestDetailViewModel(request);
             return Json(requestDetail, JsonRequestBehavior.AllowGet);
         }
@@ -172,7 +181,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public JsonResult GetRequisitionStatusPercentage()
         {
             RequisitionStatusPercentage requisitionStatusPercentage = null;
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
+            var currentHrd = GetCurrentHrd();
             var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID).OrderByDescending(m => m.RegionalRequestID);
             var allRequisitions = _eWDashboardService.GetAllReliefRequisition();
 
@@ -217,7 +226,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         }
         public JsonResult GetHrdRegionPercentage()
         {
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
+            var currentHrd = GetCurrentHrd();
             IEnumerable<RegionalTotalViewModel> regionalSummery = new List<RegionalTotalViewModel>(); 
             if (currentHrd != null)
             {
@@ -254,7 +263,17 @@ namespace Cats.Areas.EarlyWarning.Controllers
         }
         private HRD GetCurrentHrd()
         {
-            return _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
+            try
+            {
+                return
+                    _eWDashboardService.FindByHrd(
+                        m => m.Status == 3 || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                        .FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
         public JsonResult GetRecentGiftCertificates(DateTime startDate,DateTime endDate )
         {
