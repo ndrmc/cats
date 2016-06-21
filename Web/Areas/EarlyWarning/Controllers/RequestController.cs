@@ -165,7 +165,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
             };
 
             BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "RegionalRequest", createdstate);
-
+            if (bp != null)
+                regionalRequest.BusinessProcessID = bp.BusinessProcessID;
             _regionalRequestService.AddRegionalRequest(regionalRequest);
             return regionalRequest;
         }
@@ -213,8 +214,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
             };
 
             BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "RegionalRequest", createdstate);
-
-            _regionalRequestService.AddRegionalRequest(regionalRequest);
+            if (bp != null)
+                regionalRequest.BusinessProcessID = bp.BusinessProcessID;
+                _regionalRequestService.AddRegionalRequest(regionalRequest);
 
             return regionalRequest;
         }
@@ -850,7 +852,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var result = GetRequestWithPlan(request);
             //var dt = RequestViewModelBinder.TransposeData(requestDetails);
             var dt = RequestViewModelBinder.TransposeDataNew(result, request.ProgramId, preferedweight);
-
+            ViewBag.TargetController = "Request";
             ViewData["Request_main_data"] = requestModelView;
             return View(dt);
         }
@@ -1174,9 +1176,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-           
-            
 
+
+            ViewBag.TargetController = "Request";
             var filter = new SearchRequsetViewModel();
             ViewBag.Filter = filter;
             PopulateLookup();

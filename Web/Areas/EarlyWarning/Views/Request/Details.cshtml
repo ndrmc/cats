@@ -181,6 +181,42 @@
         </div>
         <div class="actions">
             <div class="btn-group">
+                <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
+                    <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right">
+
+                    @{
+
+                        var state = modelRequest.BusinessProcess.CurrentState.BaseStateTemplate;
+                    }
+
+
+                    @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                    {
+                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request) && actions.Name == "Approved")
+                        {
+                            <li class="edit_button"><a href="javascript:promot_workflow(modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                        }
+                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "FederalApproved")
+                        {
+                            <li class="edit_button"><a href="javascript:promot_workflow(modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                        }
+                        if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Rejected")
+                        {
+                            <li class="edit_button"><a href="javascript:promot_workflow(modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                        }
+
+                    }
+                    <li class="divider"></li>
+                    @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
+                {*@
+                    <li class="edit_button"><a href="javascript:workflow_history(modelRequest.BusinessProcessID)"> History </a></li>
+                    @*}*@
+                </ul>
+            </div>
+
+            <div class="btn-group">
                 <button class="btn green dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis"></i> Action <i class="fa fa-angle-down"></i></button>
                 <ul class="dropdown-menu pull-right" style="-moz-min-width: 120px; -ms-min-width: 120px; -o-min-width: 120px; -webkit-min-width: 120px; min-width: 120px;">
                     @*<li><a id="btnAddFDP"  href="@Url.Action("AddBeneficary", "Request", new { id = modelRequest.RegionalRequestID })" >ADD FDP </a></li>*@
@@ -189,47 +225,13 @@
                         <li><a class="btn green-haze-stripe" href="@Url.Action("Edit", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Edit</a></li>
                         <li><a class="btn green-haze-stripe" href="@Url.Action("Allocation", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Allocation</a></li>
                         @*<li><a class="btn green-haze-stripe" href="@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID })">Approve</a></li>*@
-                    if (modelRequest.Program == "Relief")
-                    {
-                        <div class="btn-group">
-                            <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
-                                <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
-                            </button>
-                            <ul class="dropdown-menu pull-right">
+                        if (modelRequest.Program == "Relief")
+                        {
 
-                                @{
-                                    
-                                    var state= modelRequest.BusinessProcess.CurrentState.BaseStateTemplate;
-                                }
-                                
-                                  
-                                @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
-                                {
-                                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request) && actions.Name == "Approve")
-                                    {
-                                        <li class="edit_button"><a href="javascript:promot_workflow(modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
-                                    }
-                                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "FederalApproved")
-                                    {
-                                        <li class="edit_button"><a href="javascript:promot_workflow(modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
-                                    }
-                                    if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Rejected")
-                                    {
-                                        <li class="edit_button"><a href="javascript:promot_workflow(modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
-                                    }
-
-                                }
-                                <li class="divider"></li>
-                                @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
-                                    {*@
-                                <li class="edit_button"><a href="javascript:workflow_history(modelRequest.BusinessProcessID)"> History </a></li>
-                                @*}*@
-                            </ul>
-                        </div>
                             <li>
                                 <a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
                                                                      EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))</a>
-                                
+
                                 <a class="btn green-haze-stripe">@Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
                                                                      @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)</a>
                             </li>
@@ -249,7 +251,7 @@
                     @if (modelRequest.StatusID == (int) Cats.Models.Constant.RegionalRequestStatus.Approved && modelRequest.ProgramId == (int) Cats.Models.Constant.Programs.IDPS)
                     {
                         <li><a class="btn green-haze-stripe" id="btnEditPlan" href="@Url.Action("CreateRequisitionForIDPS", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID, programId = modelRequest.ProgramId})"><i class="icon-plus"></i>IDPS Requisiton</a></li>
-                        
+
                         <li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li>
                     }
                     else if (modelRequest.StatusID == (int) Cats.Models.Constant.RegionalRequestStatus.Approved)
@@ -258,7 +260,7 @@
                         {
                             <li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("CreateRequisiton", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID}),
                                                                      EarlyWarningConstants.Operation.New_requisition, @Html.Translate("Requisiton"))</a></li>
-                                                                    <li> <a class="btn green-haze-stripe" href="javascript:rejectRequest('@modelRequest.RegionalRequestID')">Reject</a> </li>
+                            <li> <a class="btn green-haze-stripe" href="javascript:rejectRequest('@modelRequest.RegionalRequestID')">Reject</a> </li>
                             @*<li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem( "javascript:rejectRequest('@modelRequest.RegionalRequestID')" ,
                                                                      EarlyWarningConstants.Operation.Reject_Request, @Html.Translate("Reject"))</a></li>*@
                         }
@@ -266,7 +268,7 @@
                         {
                             <li><a class="btn green-haze-stripe">@Html.PSNPOperationMenuItem(@Html.Translate("Requisiton"), @Url.Action("CreateRequisiton", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID}),
                                                                      PsnpConstants.Operation.New_requisition)</a></li>
-                            
+
                             <li><a class="btn green-haze-stripe">@Html.PSNPOperationMenuItem(@Html.Translate("Reject"), @Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID}),
                                                                      PsnpConstants.Operation.Reject_Request)</a></li>
                         } @*
@@ -326,10 +328,10 @@
                 </ul>
             </div>
             @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Print_request)
-            || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Print_request)
-            || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Print_requests))
+                 || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Print_request)
+                 || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Print_requests))
             {
-                <a class="btn green dropdown-toggle toolbar-btn" href="@Url.Action("Print", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })" target="_blank" id="toolbar_button_print" title="Print"><i class="fa fa-print"></i> @Html.Translate("Print")</a>
+                <a class="btn green dropdown-toggle toolbar-btn" href="@Url.Action("Print", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})" target="_blank" id="toolbar_button_print" title="Print"><i class="fa fa-print"></i> @Html.Translate("Print")</a>
             }
             @*<a class="btn btn-circle btn-default btn-sm green-stripe" data-buttontype="btn_new_record" href="@Url.Action("New", "Request")"><i class="fa fa-plus-circle"></i> @Html.Translate("New Request")</a>*@
             @*<a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
