@@ -28,8 +28,8 @@ namespace Cats.Models
        public int StatusID { get; set; }
        public string Remark { get; set; }
 
-
-
+       public int BusinessProcessID { get; set; }
+       public virtual BusinessProcess BusinessProcess { get; set; }
        public virtual GiftCertificate GiftCertificate { get; set; }
        public virtual ICollection<LocalPurchaseDetail> LocalPurchaseDetails  { get; set; }
        public virtual ShippingInstruction ShippingInstruction { get; set; }
