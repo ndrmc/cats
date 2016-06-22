@@ -132,7 +132,6 @@ Web/Web.config
 *.docx
 *.datasource
 *.config
-Web/Areas/EarlyWarning/Views/Request/Allocation.cshtml.rej
 
 bin
 obj
@@ -140,4 +139,3 @@ obj
 .vs
 /.vs/Cats/v14/.suo
 /packages
-/.swp

@@ -308,7 +308,7 @@ namespace Cats.Areas.Logistics.Controllers
         public JsonResult GetTransporters2()
         {
             var paymentRequests = _transporterPaymentRequestService
-                .Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo < 2
+                .Get(t => t.BusinessProcess != null && t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo < 2
                 ).Select(t => t.TransportOrder.TransporterID).Distinct().ToList();
             var transporters =
                 _transportOrderService.FindBy(
