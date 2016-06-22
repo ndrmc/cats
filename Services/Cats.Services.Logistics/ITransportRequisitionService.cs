@@ -25,7 +25,7 @@ namespace Cats.Services.Logistics
         bool CreateTransportRequisition(List<List<int>> reliefRequisitions,int requestedBy, string requesterName);
         bool CheckIfBidIsCreatedForAnOrder(int transportRequisitionId);
         IEnumerable<RequisitionToDispatch> GetRequisitionToDispatch();
-        bool ApproveTransportRequisition(int id,int approvedBy);
+        bool ApproveTransportRequisition(int id,int approvedBy, string approvedByName);
         List<RequisitionToDispatch> GetTransportRequisitionDetail(List<int> requIds);
         List<TransportRequisitionDetail> GetTransportRequsitionDetails(int programId);
         List<TransportRequisitionDetail> GetTransportRequsitionDetails();
