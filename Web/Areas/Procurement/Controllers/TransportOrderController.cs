@@ -22,7 +22,8 @@ using Cats.Areas.Logistics.Models;
 using log4net;
 using Cats.ViewModelBinder;
 using Cats.Helpers;
-
+using Cats.Services.Common;
+using System.IO;
 
 namespace Cats.Areas.Procurement.Controllers
 {
@@ -39,13 +40,15 @@ namespace Cats.Areas.Procurement.Controllers
         private readonly ITransporterService _transporterService;
         private readonly IHubService _hubService;
         private readonly ITransportBidQuotationService _bidQuotationService;
-
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IBusinessProcessService _businessProcessService;
         public TransportOrderController(ITransportOrderService transportOrderService,
             ITransportRequisitionService transportRequisitionService,
             IWorkflowStatusService workflowStatusService, ILog log,
             ITransReqWithoutTransporterService transReqWithoutTransporterService, ITransportOrderDetailService transportOrderDetailService,
             IAdminUnitService adminUnitService, ITransporterService transporterService, ITransportBidQuotationService bidQuotationService,
-            IHubService hubService)
+            IHubService hubService, IApplicationSettingService applicationSettingService,
+            IBusinessProcessService businessProcessService)
         {
             this._transportOrderService = transportOrderService;
             this._transportRequisitionService = transportRequisitionService;
@@ -57,6 +60,8 @@ namespace Cats.Areas.Procurement.Controllers
             _transportOrderDetailService = transportOrderDetailService;
             _bidQuotationService = bidQuotationService;
             _hubService = hubService;
+            _applicationSettingService = applicationSettingService;
+            _businessProcessService = businessProcessService;
         }
 
 
@@ -96,11 +101,33 @@ namespace Cats.Areas.Procurement.Controllers
                     TempData["Error"] = "Transport order not created. Please select Bid and try again";
                     return RedirectToAction("TransportRequisitions");
                 }
+                int businessProcessID = 0;
                 if (saveButton != null)
                 {
+                    
+                        int BP_PR = _applicationSettingService.getTransportOrderWorkflow();
+                        if (BP_PR != 0)
+                        {
+                            BusinessProcessState createdstate = new BusinessProcessState
+                            {
+                                DatePerformed = DateTime.Now,
+                                PerformedBy = User.Identity.Name,
+                                Comment = "Transport Order  Added"
+
+                            };
+                            //_PaymentRequestservice.Create(request);
+
+                            BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                                                                                            "TransportOrder", createdstate);
+                            if (bp != null)
+                                 businessProcessID = bp.BusinessProcessID;
+
+
+                        }
+                    
 
                     var userName = UserAccountHelper.GetUser(User.Identity.Name).UserName;
-                    _transportOrderService.CreateTransportOrder(id, BidId, userName);
+                    _transportOrderService.CreateTransportOrder(id, BidId, userName, businessProcessID);
                     return RedirectToAction("Index", "TransportOrder");
                 }
                 return RedirectToAction("TransportRequisitions");
@@ -112,6 +139,48 @@ namespace Cats.Areas.Procurement.Controllers
                 return RedirectToAction("ConfirmGenerateTransportOrder", "TransportRequisition",
                                         new { Area="Logistics", id = id });
             }
+        }
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+            _businessProcessService.PromotWorkflow(businessProcessState);
+            if (statusId != null)
+                return RedirectToAction("Detail", "NeedAssessment", new { Area = "Procurement", statusId });
+            return RedirectToAction("Index", "NeedAssessment", new { Area = "Procurement" });
+        }
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
         }
 
         public ActionResult NotificationIndex(int recordId)
@@ -175,6 +244,7 @@ namespace Cats.Areas.Procurement.Controllers
                      new RequestStatus() {StatusID = 5, StatusName = "Failed"}
                 };
             ViewBag.StatusID = new SelectList(transportOrderStatus, "StatusID", "StatusName");
+            ViewBag.TargetController = "TransportOrder";
             return View(viewModel);
         }
 
@@ -287,6 +357,7 @@ namespace Cats.Areas.Procurement.Controllers
             var transportOrderViewModel = TransportOrderViewModelBinder.BindTransportOrderViewModel(transportOrder, datePref, statuses);
             ViewData["Transport.order.detail.ViewModel"] = transportOrder == null ? null :
                 GetDetail(transportOrder.TransportOrderDetails);
+            ViewBag.TargetController = "TransportOrder";
             return View(transportOrderViewModel);
         }
         private IEnumerable<TransportOrderDetailViewModel> GetDetail(IEnumerable<TransportOrderDetail> transportOrderDetails)
