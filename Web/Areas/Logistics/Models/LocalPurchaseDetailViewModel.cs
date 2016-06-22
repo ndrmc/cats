@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Cats.Models;
 
 namespace Cats.Areas.Logistics.Models
 {
@@ -69,6 +70,8 @@ namespace Cats.Areas.Logistics.Models
         public int CommodityTypeID { get; set; }
         public string ReferenceNumber { get; set; }
         public int StatusID { get; set; }
-        public IEnumerable<LocalPurchaseDetailViewModel> LocalPurchaseDetailViewModels { get; set; } 
+        public IEnumerable<LocalPurchaseDetailViewModel> LocalPurchaseDetailViewModels { get; set; }
+        public int BusinessProcessID { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }

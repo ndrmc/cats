@@ -45,6 +45,7 @@ namespace Cats.Models
         public virtual ICollection<ReliefRequisition> ReliefRequisitions { get; set; }
         public virtual ICollection<TransportRequisition> TransportRequisitions { get; set; }
         public virtual ICollection<HRD> Hrds { get; set; } 
+        public virtual ICollection<LocalPurchase> LocalPurchases { get; set; } 
     }
     public class BusinessProcessPOCO
     {
