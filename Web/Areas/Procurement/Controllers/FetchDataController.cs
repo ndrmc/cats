@@ -11,6 +11,7 @@ using Cats.Services.Procurement;
 using Cats.Services.Security;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Cats.Models.Constant;
 
 namespace Cats.Areas.Procurement.Controllers
 {
@@ -138,6 +139,53 @@ namespace Cats.Areas.Procurement.Controllers
             var recentBidViewModels = BindBidViewModels(recentBids);
             return Json(recentBidViewModels, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult RecentBidsByStatus  (int statusId)
+        {
+            var recentBids =
+                _bidService.FindBy(t => t.StatusID == statusId).OrderByDescending(t => t.OpeningDate).Take(10).ToList();
+            var recentBidViewModels = BindBidViewModels(recentBids);
+            return Json(recentBidViewModels, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult DataBidStatus([DataSourceRequest]DataSourceRequest request)
+        {
+            var bidStatus = _bidService.Get(null,null,"Status");
+            var recentBids = (from item in bidStatus select item.Status).Distinct();
+            //FindBy(t => t.StatusID == 5).OrderByDescending(t => t.OpeningDate).Take(10).ToList();
+
+            var statusViewModels = BindStatusViewModels(recentBids);
+            return Json(statusViewModels, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult WinnerRanks([DataSourceRequest]DataSourceRequest request)
+        {
+            var winners = _bidWinnerService.GetAllBidWinner().Select(x => x.Position).Distinct();
+
+            
+
+            var BidWinnerStatusViewModels = BindBidWinnerStatusViewModels(winners);
+            return Json(BidWinnerStatusViewModels, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult WinnerList([DataSourceRequest]DataSourceRequest request)
+        {
+            var winners = _bidWinnerService.GetAllBidWinner().Distinct().ToList();
+
+            var result = winners.GroupBy(t => t.BidID)
+                    .Select(grp => grp.First())
+                    .ToList();
+
+            var BidWinnerStatusViewModels = BindBidWinnerListViewModels(result);
+            return Json(BidWinnerStatusViewModels, JsonRequestBehavior.AllowGet);
+        }
+        public List<BidsViewModel> BindBidWinnerListViewModels(IEnumerable<BidWinner> bids)
+        {
+            var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
+            return bids.Select(bid => new BidsViewModel()
+            {
+                BidID = bid.BidID,
+                BidNumber = bid.Bid.BidNumber
+            }).Distinct().ToList();
+        }
+
+
         public JsonResult DataEntryStatus([DataSourceRequest]DataSourceRequest request)
         {
             var recentBids =
@@ -150,11 +198,13 @@ namespace Cats.Areas.Procurement.Controllers
         public JsonResult SelectDataEntryStatus(int bidId)
         {
             var recentBids =
-                _bidService.Get(t => t.StatusID == 5 && t.BidID == bidId, null, "TransportBidQuotationHeaders");
+                _bidService.Get(t => t.BidID == bidId, null, "TransportBidQuotationHeaders");
             //FindBy(t => t.StatusID == 5).OrderByDescending(t => t.OpeningDate).Take(10).ToList();
-            var dataEntryViewModel = BinddataEntryViewModels(recentBids.FirstOrDefault().TransportBidQuotationHeaders);
+            var firstOrDefault = recentBids.FirstOrDefault();
+            if (firstOrDefault == null) return null;
+            var dataEntryViewModel = BinddataEntryViewModels(firstOrDefault.TransportBidQuotationHeaders);
   
-           // var recentBidViewModels = BindBidViewModels(recentBids);
+            // var recentBidViewModels = BindBidViewModels(recentBids);
             return Json(dataEntryViewModel, JsonRequestBehavior.AllowGet);
         }
         public JsonResult PriceQoutation(int bidID)
@@ -278,7 +328,26 @@ namespace Cats.Areas.Procurement.Controllers
                                             StatusID = bid.StatusID
                                         }).ToList();
         }
+        private List<BidWinnerRank>  BindBidWinnerStatusViewModels(IEnumerable<int?> winners)
+        {
+            return winners.Select(winner => winner != null ? new BidWinnerRank()
+            {
+                Id = winner.Value,
+                Name = winner.Value == 1 ? "First" : "Second",
 
-       
+            } : null).ToList();
+          
+        }
+        public List<StatusViewmodel> BindStatusViewModels(IEnumerable<Status> bids)
+        {
+          
+            return bids.Select(bid => new StatusViewmodel()
+            {
+                StatusId = bid.StatusID,
+                Status =    bid.Name
+
+            }).ToList();
+        }
+
     }
 }
