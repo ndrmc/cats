@@ -150,27 +150,49 @@
         ;
         columns.Bound(to => to.Status).Title(Html.Translate("Status")).Width(45).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
         ;
-        columns.Command(p =>
-        {
+        //columns.Command(p =>
+        //{
 
-        if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transport_order))
-        {
-            p.Custom("Approve").Click("onApprove");
-        }
-        if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Sign_transport_order))
-        {
-            p.Custom("Signed").Click("onSigned");
-        }
-        if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Edit_transport_order))
-        {
-            p.Custom("Edit").Click("onEdit");
-        }
-        if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Revert_transport_order))
-        {
-            p.Custom("Revert TO").Click("onRevert");
-        }
-        }).Width(100);
+        //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transport_order))
+        //{
+        //    p.Custom("Approve").Click("onApprove");
+        //}
+        //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Sign_transport_order))
+        //{
+        //    p.Custom("Signed").Click("onSigned");
+        //}
+        //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Edit_transport_order))
+        //{
+        //    p.Custom("Edit").Click("onEdit");
+        //}
+        //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Revert_transport_order))
+        //{
+        //    p.Custom("Revert TO").Click("onRevert");
+        //}
+        //}).Width(100);
+        columns.Bound(trasportOrder => trasportOrder.Status).Title("Actions")
+             .ClientTemplate(
+             @"<div class='btn-group'>
+                <button type='button' id='workflow-#=RequisitionId#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
+                    <i class='fa fa-ellipsis-horizontal'></i>Workflow<i class='fa fa-angle-down'></i>
+                </button>
+                <ul class='dropdown-menu pull-right' style='overflow: visible;'>" +
+                 "# if ('data.Status' == 'Project Code Assigned') { #" +
+                     "# if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transport_order) + "' == 'true') { #" +
+                         "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=UncommitStateID#','Uncommit','#=RequisitionId#')\" title='Reject Requisition'>Uncommit</a></li>" +
+                     " # } #" +
+                     "# if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Sign_transport_order) + "' == 'true') { #" +
+                         "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=ApproveStateID#','Approve','#=RequisitionId#')\" title='Reject Requisition'>Approve</a></li>" +
+                     " # } #" +
+                 " # } #" +
+                  " # if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Edit_transport_order) + "' == 'true') { #" +
+                     "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
+                 " # } #" +
+                 " # if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Revert_transport_order) + "' == 'true') { #" +
+                     "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
+                 " # } #" +
 
+             "</ul></div>");
 
 
     })
@@ -188,7 +210,8 @@
     </div>
 </div>
     <div>
-        <hr />
+        <hr/>
+        @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
     </div>
     @if (@ViewBag.TransportOrderTitle == "Draft")
     {

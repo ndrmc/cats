@@ -269,7 +269,7 @@ namespace Cats.Services.Procurement
         //TODO:Factor Out  to single responiblity Principle 
        
 
-        public bool CreateTransportOrder(int transportRequisitionId, int bidId, string requesterName)
+        public bool CreateTransportOrder(int transportRequisitionId, int bidId, string requesterName, int businessProcessID)
         {
             //var requId=_unitOfWork.TransportRequisitionDetailRepository.FindBy(t=>t.TransportRequisitionID==)
             var transporterAssignedRequisionDetails = AssignTransporterForEachWoreda(transportRequisitionId,bidId);
@@ -302,7 +302,7 @@ namespace Cats.Services.Procurement
                 transportOrder.EndDate = DateTime.Today.AddDays(13);
                 transportOrder.StatusID = (int)TransportOrderStatus.Draft;
                 transportOrder.TransportRequiqsitionId = transportRequisitionId;
-               
+                transportOrder.BusinessProcessID = businessProcessID;
                 var transportLocations = transporterAssignedRequisionDetails.FindAll(t => t.TransporterID == transporter).Distinct();
                
                 
