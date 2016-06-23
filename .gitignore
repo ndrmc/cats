@@ -133,9 +133,12 @@ Web/Web.config
 *.datasource
 *.config
 
+
+
 bin
 obj
 
+src/*/bin/*
+src/*/obj/*
 .vs
 /.vs/Cats/v14/.suo
-/packages

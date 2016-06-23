@@ -29,6 +29,7 @@ namespace Cats.Models.Mapping
             this.Property(t => t.RationID).HasColumnName("RationID");
             this.Property(t => t.Round).HasColumnName("Round");
             this.Property(t => t.PlanID).HasColumnName("PlanID");
+            this.Property(t => t.BusinessProcessID).HasColumnName("BusinessProcessID");
             this.Property(t => t.PartitionId).HasColumnName("PartitionId");
             this.Property(t => t.Contingency).HasColumnName("Contingency");
             // Relationships
@@ -52,6 +53,10 @@ namespace Cats.Models.Mapping
             this.HasOptional(t => t.UserProfile1)
                 .WithMany(t => t.RegionalRequests1)
                 .HasForeignKey(d => d.ApprovedBy);
+            this.HasRequired(t => t.BusinessProcess)
+               .WithMany(t => t.RegionalRequests)
+               .HasForeignKey(d => d.BusinessProcessID);
+           
 
         }
     }

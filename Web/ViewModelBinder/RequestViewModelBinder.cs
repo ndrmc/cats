@@ -57,6 +57,7 @@ namespace Cats.ViewModelBinder
             if (regionalRequest.UserProfile1 != null && regionalRequest.Status == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
                 regionalRequestViewModel.ApprovedBy = regionalRequest.UserProfile1.FirstName + " " +
                                                       regionalRequest.UserProfile1.LastName;
+                regionalRequestViewModel.BusinessProcess = regionalRequest.BusinessProcess;
             return regionalRequestViewModel;
         }
 

@@ -35,7 +35,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
     {
         //
         // GET: /EarlyWarning/RegionalRequest/
-
+        private readonly IBusinessProcessService _businessProcessService;
         private IRegionalRequestService _regionalRequestService;
         private IFDPService _fdpService;
         private IUserAccountService _userAccountService;
@@ -67,7 +67,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                 IRegionalPSNPPlanService RegionalPSNPPlanService,
             IAdminUnitService adminUnitService,
             IPlanService planService,
-            IIDPSReasonTypeServices idpsReasonTypeServices, ITransactionService transactionService, INotificationService notificationService, IUserProfileService userProfileService, IReasonService reasonService)
+            IIDPSReasonTypeServices idpsReasonTypeServices, ITransactionService transactionService, INotificationService notificationService, 
+            IUserProfileService userProfileService, IReasonService reasonService, IBusinessProcessService businessProcessService )
         {
             _regionalRequestService = reliefRequistionService;
             _fdpService = fdpService;
@@ -87,6 +88,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _notificationService = notificationService;
             _userProfileService = userProfileService;
             _reasonService = reasonService;
+            _businessProcessService = businessProcessService;
         }
         public ActionResult RegionalRequestsPieChart()
         {
@@ -151,6 +153,20 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     Beneficiaries = item.Beneficiaries,
                     Fdpid = item.FDPID
                 }).ToList();
+            // Add an application ssetting in database and service for the document workflow
+            int BP_PR = _applicationSettingService.getRegionalRequestWorkflow();
+
+            // Check if BP_PR is not null
+            BusinessProcessState createdstate = new BusinessProcessState
+            {
+                DatePerformed = DateTime.Now,
+                PerformedBy = User.Identity.Name,
+                Comment = "A RegionalRequest is Created"
+            };
+
+            BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "RegionalRequest", createdstate);
+            if (bp != null)
+                regionalRequest.BusinessProcessID = bp.BusinessProcessID;
             _regionalRequestService.AddRegionalRequest(regionalRequest);
             return regionalRequest;
         }
@@ -186,10 +202,66 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                                                                    Fdpid = item.FDPID
                                                                                }).ToList()
                                       };
+            // Add an application ssetting in database and service for the document workflow
+            int BP_PR = _applicationSettingService.getRegionalRequestWorkflow();
+           
+            // Check if BP_PR is not null
+            BusinessProcessState createdstate = new BusinessProcessState
+            {
+                DatePerformed = DateTime.Now,
+                PerformedBy = User.Identity.Name,
+                Comment = "A RegionalRequest is Created"
+            };
 
-            _regionalRequestService.AddRegionalRequest(regionalRequest);
+            BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "RegionalRequest", createdstate);
+            if (bp != null)
+                regionalRequest.BusinessProcessID = bp.BusinessProcessID;
+                _regionalRequestService.AddRegionalRequest(regionalRequest);
 
             return regionalRequest;
+        }
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+            _businessProcessService.PromotWorkflow(businessProcessState);
+            if (statusId != null)
+                return RedirectToAction("Details", "Request", new { Area = "EarlyWarning", statusId });
+           
+            return   RedirectToAction("Index");
+        }
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
         }
         private void PopulateLookup()
         {
@@ -780,7 +852,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var result = GetRequestWithPlan(request);
             //var dt = RequestViewModelBinder.TransposeData(requestDetails);
             var dt = RequestViewModelBinder.TransposeDataNew(result, request.ProgramId, preferedweight);
-
+            ViewBag.TargetController = "Request";
             ViewData["Request_main_data"] = requestModelView;
             return View(dt);
         }
@@ -1104,9 +1176,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-           
-            
 
+
+            ViewBag.TargetController = "Request";
             var filter = new SearchRequsetViewModel();
             ViewBag.Filter = filter;
             PopulateLookup();

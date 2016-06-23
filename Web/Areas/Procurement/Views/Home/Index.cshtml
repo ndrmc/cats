@@ -126,12 +126,109 @@
                         </div>
                     </div>
                 </div>
-            
+
+            <div class="portlet portlet-sortable light bordered ui-sortable-handle" style="display: block;">
+                <div id="DataEntryStatusHeader" class="portlet-title">
+                    <div class="caption font-green-sharp">
+                        <i class="fa fa-credit-card font-green-sharp"></i>
+<<<<<<< HEAD
+                        <span id="bar-title1" class="caption-subject bold uppercase"> RFQ Data Entry Status</span>
+=======
+                        <span id="bar-title1" class="caption-subject bold uppercase"> Data Entry Status</span>
+>>>>>>> 761443e... Committed build files
+                        <span class="caption-helper">  </span>
+                    </div>
+                    <div class="tools">
+                        <a href="#" class="collapse" data-original-title="" title=""></a>
+                        <a href="javascript:;" class="remove" data-original-title="" title=""></a>
+                    </div>
+                    <div class="actions">
+                        <a id="back1" style="display: none" href="" class="btn btn-circle btn-default btn-sm"><i class="icon-undo"></i> Back</a>
+                        <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                    </div>
+                </div>
+                <div class="portlet-body" style="height: auto; display: block;">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group form-md-line-input">
+                                <select class="form-control" id="bidStatus" ng-change="onBidStatusChange(status)" ng-model="status" ng-options="bid.StatusId as bid.Status for bid in BidStatusList">
+                                    <option> Choose a Status </option>
+                                </select>
+                                <label for="bidStatus">Status: </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group form-md-line-input">
+                                <select class="form-control" id="bid4bidwinner" ng-change="onBidChange(bid)" ng-model="bid" ng-options="bid.BidID as bid.BidNumber for bid in BidList">
+                                    <option> Choose a Bid </option>
+                                </select>
+                                <label for="bid4bidwinner">BID: </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="BidContent1" class="portlet-content" style="padding-top: 2px">
+                        <div ng-show="(DataEntryStatus).length==0" class="align-center">
+                            <br/>
+                            <p style="font-size: 15px">Select bid to view data entry for RFQ</p>
+                        </div>
+                        <div class="table-responsive">
+                            <table ng-show="(DataEntryStatus).length" class="table table-striped table-condensed" style="margin-bottom: 2px">
+                                <thead>
+                                <tr>
+                                    <th># No.</th>
+                                    <th>Bid Number</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Transporter Name</th>
+                                    <th>Expected Woreda</th>
+                                    <th>Woreda With offer</th>
+                                    <th>Percent</th>
+                                </tr>
+                                </thead>
+                                <tbody ng-cloak>
+                                <tr data-ng-repeat="item in DataEntryStatus">
+                                    <td>{{$index + 1}}</td>
+                                    <td>{{item.BidNumber}}</td>
+                                    <td>{{item.OpeningDate}}</td>
+                                    <td>{{item.OpeningDate}}</td>
+                                    <td>{{item.TransporterName}}</td>
+                                    <td>{{item.NoOfExpectedWoreda}}</td>
+                                    <td>{{item.NoOfWoredaWithRFQ}}</td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-info"
+                                                 role="progressbar" aria-valuenow="{{getPercentage($index)}}" aria-valuemin="0"
+                                                 aria-valuemax="100" style="width: { {getPercentage($index)}}% ; ">
+                                                <span>{{getPercentage($index) | number:2}}% </span>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th><b>Total</b></th>
+                                    <th>{{total("Exp")}}</th>
+                                    <th>{{total("RFQ")}}</th>
+                                    <th></th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
                 <div class="portlet portlet-sortable light bordered ui-sortable-handle" style="display: block;">
-                    <div id="DataEntryStatusHeader" class="portlet-title">
+                    <div id="DataEntryBidWinnerHeader" class="portlet-title">
                         <div class="caption font-green-sharp">
                             <i class="fa fa-credit-card font-green-sharp"></i>
-                            <span id="bar-title1" class="caption-subject bold uppercase"> Data Entry Status</span>
+                            <span id="bar-titleBidWinner" class="caption-subject bold uppercase">Bid Winner Data Entry Status</span>
                             <span class="caption-helper">  </span>
                         </div>
                         <div class="tools">
@@ -147,65 +244,48 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
-                                    <select class="form-control" id="bid4bidwinner" ng-change="onBidChange(bid)" ng-model="bid" ng-options="bid.BidID as bid.BidNumber for bid in BidList">
+                                    <select class="form-control" id="bidrank"  ng-model="bidRank" ng-options="rank.Id as rank.Name for rank in RankList">
+                                        <option> Choose a Rank </option>
+                                    </select>
+                                    <label for="bidStatus">Rank: </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input">
+                                    <select class="form-control" id="bidbidwinner" ng-change="onBidWinnerChange(bid)" ng-model="bid" ng-options="bid.BidID as bid.BidNumber for bid in BidWinnerList">
                                         <option> Choose a Bid </option>
                                     </select>
-                                    <label for="bid4bidwinner">BID: </label>
+                                    <label for="bidbidwinner">BID: </label>
                                 </div>
                             </div>
                         </div>
                         <div id="BidContent1" class="portlet-content" style="padding-top: 2px">
+<<<<<<< HEAD
+                            <div ng-show="(DataEntryBidWinner).length==0" class="align-center">
+=======
                             <div ng-show="(DataEntryStatus).length==0" class="align-center">
-                                <br/>
-                                <p style="font-size: 15px">Select bid to view data entry for RFQ</p>
+>>>>>>> 761443e... Committed build files
+                                <br />
+                                <p style="font-size: 15px">Select bid to view Bid winner data entry for RFQ</p>
                             </div>
                             <div class="table-responsive">
-                                <table ng-show="(DataEntryStatus).length" class="table table-striped table-condensed" style="margin-bottom: 2px">
+                                <table ng-show="(DataEntryBidWinner).length" class="table table-striped table-condensed">
                                     <thead>
-                                    <tr>
-                                        <th># No.</th>
-                                        <th>Bid Number</th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
-                                        <th>Transporter Name</th>
-                                        <th>Expected Woreda</th>
-                                        <th>Woreda With offer</th>
-                                        <th>Percent</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody ng-cloak>
-                                    <tr data-ng-repeat="item in DataEntryStatus">
-                                        <td>{{$index + 1}}</td>
-                                        <td>{{item.BidNumber}}</td>
-                                        <td>{{item.OpeningDate}}</td>
-                                        <td>{{item.OpeningDate}}</td>
-                                        <td>{{item.TransporterName}}</td>
-                                        <td>{{item.NoOfExpectedWoreda}}</td>
-                                        <td>{{item.NoOfWoredaWithRFQ}}</td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-info"
-                                                     role="progressbar" aria-valuenow="{{getPercentage($index)}}" aria-valuemin="0"
-                                                     aria-valuemax="100"  style="width:{{getPercentage($index)}}%;">
-                                                    <span>{{getPercentage($index) | number:2}}% </span>
-                                                </div>
-                                            </div>
-
-</td>
-                                    </tr>
-                                    </tbody>
-                                    <tfoot>
                                         <tr>
-                                            <td></td>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th><b>Total</b></th>
-                                            <th>{{total("Exp")}}</th>
-                                            <th>{{total("RFQ")}}</th>
-                                            <th></th>
+                                            <th class="hidden-xs">Transporter</th>
+                                            <th>Woredas</th>
+                                            <th>Min offer (ETB)</th>
+                                            <th>Max offer (ETB)</th>
                                         </tr>
-                                    </tfoot>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="item in DataEntryBidWinner">
+                                            <td>{{item.Name}}</td>
+                                            <td>{{item.Count}}</td>
+                                            <td>{{item.minoffer | number:2}}</td>
+                                            <td>{{item.maxoffer | number:2}}</td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -467,9 +547,14 @@
         $scope.RecentBids = [];
         $scope.DataEntryStatus = [];
         $scope.BidList = [];
+        $scope.BidWinnerList = [];
+        $scope.RankList = [];
+        $scope.BidStatusList = [];
         $scope.PriceQuotatitons = [];
         $scope.Firstwinners = [];
         $scope.SecondWinners = [];
+        $scope.DataEntryBidWinner = [];
+        $scope.bidRank = "";
         $scope.WoredasWithoutoffer = [];
         $scope.reqParam = { bidId: 14, rank: 1 };
 
@@ -482,17 +567,58 @@
         var onSuccessDataEntryStatus = function (data) {
             $scope.BidList = data;
         };
-        $scope.onBidChange = function (bid) {
+        var onSuccessBidStatus = function (data) {
+
+            $scope.BidStatusList = data;
            
+        };
+        var onSuccessWinnerRanks = function (data) {
+
+            $scope.RankList = data;
+
+        };
+        var onSuccessWinnerList = function (data) {
+
+            $scope.BidWinnerList = data;
+
+        };
+        
+        $scope.onBidStatusChange = function (status) {
+
+            $http({
+                method: 'GET',
+                params: { statusId: status },
+                url: '@Url.Action("RecentBidsByStatus", "FetchData", new { Area = "Procurement" })'
+            })
+               .success(function (data, status, hstatus, headers, configeaders, config) {
+                   $scope.BidList = data;
+               }).error(function () { });
+
+        }
+        
+        $scope.onBidWinnerChange = function (bid) {
+           
+            $http({
+                method: 'GET',
+                params: { bidID: bid, Rank: $scope.bidRank },
+                url: '@Url.Action("GroupedWinners", "FetchData", new { Area = "Procurement" })'
+            })
+               .success(function (data, status, hstatus, headers, configeaders, config) {
+                   $scope.DataEntryBidWinner  = data;
+               }).error(function () { });
+           
+        }
+        $scope.onBidChange = function (bid) {
+
             $http({
                 method: 'GET',
                 params: { bidID: bid },
                 url: '@Url.Action("SelectDataEntryStatus", "FetchData", new { Area = "Procurement" })'
             })
                .success(function (data, status, hstatus, headers, configeaders, config) {
-                   $scope.DataEntryStatus  = data;
+                   $scope.DataEntryStatus = data;
                }).error(function () { });
-           
+
         }
         $scope.getPercentage = function(index) {
             var percentage = 0;
@@ -533,10 +659,18 @@
         $scope.getDataEntryStatus = function () {
             $http.post("@Url.Action("DataEntryStatus", "FetchData", new { Area = "Procurement" })").success(onSuccessDataEntryStatus);
         };
+        $scope.getBidStatus = function () {
+            $http.post("@Url.Action("DataBidStatus", "FetchData", new { Area = "Procurement" })").success(onSuccessBidStatus);
+        };
         $scope.getRecentBids = function () {
             $http.post("@Url.Action("RecentBids", "FetchData", new { Area = "Procurement" })").success(onSuccessRecentBids);
         };
-
+        $scope.getBidRankList = function () {
+            $http.post("@Url.Action("WinnerRanks", "FetchData", new { Area = "Procurement" })").success(onSuccessWinnerRanks);
+        };
+        $scope.getBidWinnerList = function () {
+            $http.post("@Url.Action("WinnerList", "FetchData", new { Area = "Procurement" })").success(onSuccessWinnerList);
+        };
         $scope.viewBidDetail = function (item) {
             $("#BidContent").hide("fast", "linear");
             $("#bar-title").text(item.BidNumber + " Detail");
@@ -556,7 +690,10 @@
         };
 
         $scope.getRecentBids();
+        $scope.getBidStatus();
         $scope.getDataEntryStatus();
+        $scope.getBidRankList();
+        $scope.getBidWinnerList();
     }
 
     /* Directives */
