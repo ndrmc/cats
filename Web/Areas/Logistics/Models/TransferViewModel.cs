@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Cats.Models;
 
 namespace Cats.Areas.Logistics.Models
 {
@@ -35,6 +36,7 @@ namespace Cats.Areas.Logistics.Models
         public string SourceSwapName { get; set; }
         public int DestinationSwap { get; set; }
         public string DestinationSwapName { get; set; }
-
+        public int BusinessProcessID { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }

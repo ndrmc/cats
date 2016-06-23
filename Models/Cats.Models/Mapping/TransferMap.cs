@@ -70,7 +70,7 @@ namespace Cats.Models.Mapping
             this.HasRequired(t => t.ShippingInstruction)
                 .WithMany(t => t.Transfers)
                 .HasForeignKey(d => d.ShippingInstructionID);
-
+            this.HasRequired(t => t.BusinessProcess).WithMany(t => t.Transfers).HasForeignKey(t => t.BusinessProcessID);
         }
     }
 }
