@@ -32,5 +32,6 @@ namespace Cats.Services.Common
         int getReliefRequisitionWorkflow();
         int getHRDWorkflow();
         int GetLocalPurchaseReceiptPlanWorkflow();
+        int GetSwapWrokflow();
     }
 }

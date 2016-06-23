@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -7,6 +8,7 @@ using Cats.Areas.Logistics.Models;
 using Cats.Helpers;
 using Cats.Models;
 using Cats.Models.Constant;
+using Cats.Models.ViewModels;
 using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Logistics;
@@ -26,16 +28,20 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly ICommonService _commonService;
         private readonly IUserAccountService _userAccountService;
         private readonly ICommodityService _commodityService;
+        private readonly IBusinessProcessService _businessProcessService;
+        private readonly IApplicationSettingService _applicationSettingService;
         private ILog _log;
         
         public SwapController(ITransferService transferService,ICommonService commonService,IUserAccountService userAccountService,
-                                  ICommodityService commodityService,ILog log)
+                                  ICommodityService commodityService,ILog log,IBusinessProcessService businessProcessService,IApplicationSettingService applicationSettingService)
         {
             _transferService = transferService;
             _commonService = commonService;
             _userAccountService = userAccountService;
             _commodityService = commodityService;
-            _log = log;
+            _log = log;;
+            _businessProcessService = businessProcessService;
+            _applicationSettingService = applicationSettingService;
         }
 
         public ActionResult Index()
@@ -67,8 +73,25 @@ namespace Cats.Areas.Logistics.Controllers
             if (ModelState.IsValid && transferViewModel != null)
             {
                 var transfer = GetTransfer(transferViewModel);
-                _transferService.AddTransfer(transfer);
-                return RedirectToAction("Index");
+                // Workflow Implementation
+                int BP_PR = _applicationSettingService.GetSwapWrokflow();
+                if (BP_PR != 0)
+                {
+                    var createdstate = new BusinessProcessState
+                    {
+                        DatePerformed = DateTime.Now,
+                        PerformedBy = User.Identity.Name,
+                        Comment = "Transfer Created"
+                    };
+                    var bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                        "Transfer", createdstate);
+                    if (bp != null)
+                    {
+                        transfer.BusinessProcessID = bp.BusinessProcessID;
+                        _transferService.AddTransfer(transfer);
+                    }
+                    return RedirectToAction("Index");
+                }
             }
             return View(transferViewModel);
         }
@@ -140,6 +163,7 @@ namespace Cats.Areas.Logistics.Controllers
             {
                 ModelState.AddModelError("Errors", TempData["CustomError"].ToString());
             }
+            ViewBag.TargetController = "Swap";
             return View(transfer);
         }
         public ActionResult Transfer_Read([DataSourceRequest] DataSourceRequest request)
@@ -241,6 +265,51 @@ namespace Cats.Areas.Logistics.Controllers
                 return Json(commoditiesSelectList, JsonRequestBehavior.AllowGet);
             }
             return Json(null, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+
+            _businessProcessService.PromotWorkflow(businessProcessState);
+            if (statusId != null)
+                return RedirectToAction("Index", "Swap", new { Area = "Logistics", statusId });
+            return RedirectToAction("Index", "Swap", new { Area = "Logistics" });
+        }
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                    .Select(s => s[random.Next(s.Length)])
+                    .ToArray());
+
+            return result;
         }
     }
 }

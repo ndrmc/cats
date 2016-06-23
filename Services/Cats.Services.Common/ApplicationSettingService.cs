@@ -138,5 +138,10 @@ namespace Cats.Services.Common
         {
             return getIntValue("LocalPurchaseReceiptPlanWorkflow");
         }
+
+        public int GetSwapWrokflow()
+        {
+            return getIntValue("SwapWorkflow");
+        }
     }  
 }

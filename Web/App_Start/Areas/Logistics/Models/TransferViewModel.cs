@@ -30,5 +30,7 @@ namespace Cats.Areas.Logistics.Models
         public int StatusID { get; set; }
         public string StatusName { get; set; }
         public string Remark { get; set; }
+        public int BusinessProcessID { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }
