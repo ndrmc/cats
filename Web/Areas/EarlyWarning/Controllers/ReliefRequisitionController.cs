@@ -619,24 +619,29 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [HttpPost]
         public ActionResult ConfirmSendToLogistics(int requisitionid)
         {
-            var requisition = _reliefRequisitionService.FindById(requisitionid);
-            var approveFlowTemplate = requisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name=="Approve");
-            if (approveFlowTemplate != null)
+            var requisition = _reliefRequisitionService.Get(t=>t.RequisitionID == requisitionid, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+            if (requisition != null)
             {
-                var businessProcessState = new BusinessProcessState()
+                var approveFlowTemplate = requisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Approve");
+                if (approveFlowTemplate != null)
                 {
-                    StateID = approveFlowTemplate.FinalStateID,
-                    PerformedBy = HttpContext.User.Identity.Name,
-                    DatePerformed = DateTime.Now,
-                    Comment = "Requisition approved and sent to logistics",
-                    //AttachmentFile = fileName,
-                    ParentBusinessProcessID = requisition.BusinessProcessID
-                };
-                //return 
-                _businessProcessService.PromotWorkflow(businessProcessState);
-                SendNotification(requisition);
-                _transactionService.PostRequestAllocation(requisitionid);
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = approveFlowTemplate.FinalStateID,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "Requisition approved and sent to logistics",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = requisition.BusinessProcessID
+                    };
+                    //return 
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                    SendNotification(requisition);
+                    _transactionService.PostRequestAllocation(requisitionid);
+                }
             }
+            
             //requisition.Status = (int)ReliefRequisitionStatus.Approved;
             //_reliefRequisitionService.EditReliefRequisition(requisition);
             //send notification

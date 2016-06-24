@@ -63,6 +63,9 @@ namespace Cats.Models.Mapping
             this.HasOptional(t => t.UserProfile)
                 .WithMany(t => t.DonationPlanHeaders)
                 .HasForeignKey(d => d.EnteredBy);
+            this.HasOptional(t => t.BusinessProcess)
+                .WithMany(t => t.DonationPlanHeaders)
+                .HasForeignKey(d => d.BusinessProcessID);
 
         }
     }

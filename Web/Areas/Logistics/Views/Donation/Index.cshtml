@@ -33,22 +33,32 @@
         columns.Bound(p => p.CommodityName).Title(Html.Translate("Commodity")).Width(150);
         columns.Bound(p => p.StrETA).Title(Html.Translate("ETA")).Width(100);
         columns.Bound(p => p.DonationHeaderPlanID).Visible(false);
-
-        columns.Command(p =>
-        {
-        if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_donation).ToString() == "Edit_donation")
-        {
-            p.Custom("Edit").Click("Edit");
-        }
-        if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() == "Revert_Donation")
-        {
-            p.Custom("Revert").Click("OnRevert");
-        }
-            if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() == "Delete_Donation")
-            {
-                p.Custom("Delete").Click("OnDelete");
-            }
-        });
+        columns.Bound(p => p.Status).ClientTemplate(
+                @"<div class='btn-group'># if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_donation).ToString() + "' == 'Edit_donation' && Status == 'Draft') { #" +
+                    "<a href='' onclick='Edit()' title='Edit Donation'>Edit</a></li>" +
+                " # } #" +
+                "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() + "' == 'Revert_Donation' && Status == 'Send to hub') { #" +
+                    "<a href='' onclick='OnRevert()' title='Revert Donation'>Revert</a></li>" +
+                " # } #" +
+                "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() + "' == 'Delete_Donation' && Status == 'Draft') { #" +
+                    "<a href='' onclick='OnDelete()' title='Delete Donation'>Delete</a></li>" +
+                " # } #" +
+                "</div>");
+        //columns.Command(p =>
+        //{
+        //    if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_donation).ToString() == "Edit_donation")
+        //    {
+        //        p.Custom("Edit").Click("Edit");
+        //    }
+        //    if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() == "Revert_Donation")
+        //    {
+        //        p.Custom("Revert").Click("OnRevert");
+        //    }
+        //    if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() == "Delete_Donation")
+        //    {
+        //        p.Custom("Delete").Click("OnDelete");
+        //    }
+        //});
     })
 
     //.Editable(editable => editable.Mode(GridEditMode.InCell))

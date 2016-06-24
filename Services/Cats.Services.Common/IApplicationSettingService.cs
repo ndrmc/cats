@@ -30,6 +30,7 @@ namespace Cats.Services.Common
         int getNeedAssessmentWorkflow();
         int getReliefRequisitionWorkflow();
         int getHRDWorkflow();
-
+        int getTransportRequisitionWorkflow();
+        int getDonationPlanHeaderWorkflow();
     }
 }

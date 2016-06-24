@@ -6,6 +6,8 @@ using Cats.Areas.Logistics.Models;
 using Cats.Helpers;
 using Cats.Models;
 using Cats.Models.Constant;
+using Cats.Services.Common;
+using Cats.Services.EarlyWarning;
 using Cats.Services.Hub;
 using Cats.Services.Logistics;
 using Cats.ViewModelBinder;
@@ -40,6 +42,8 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IDonationPlanDetailService _donationPlanDetailService;
         private readonly ITransactionService _transactionService;
         private ILog _log;
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IBusinessProcessService _businessProcessService;
         public DonationController(
             IReceiptAllocationService receiptAllocationService,
             ICommodityService commodityService,
@@ -49,7 +53,7 @@ namespace Cats.Areas.Logistics.Controllers
             ICommodityTypeService commodityTypeService, 
             IHubService hubService, 
             IDonationPlanDetailService donationPlanDetailService, 
-            IDonationPlanHeaderService donationPlanHeaderService, ITransactionService transactionService, ILog log)
+            IDonationPlanHeaderService donationPlanHeaderService, ITransactionService transactionService, ILog log, IApplicationSettingService applicationSettingService, IBusinessProcessService businessProcessService)
         {
             _receiptAllocationService = receiptAllocationService;
             _commodityService = commodityService;
@@ -62,6 +66,8 @@ namespace Cats.Areas.Logistics.Controllers
             _donationPlanHeaderService = donationPlanHeaderService;
             _transactionService = transactionService;
             _log = log;
+            _applicationSettingService = applicationSettingService;
+            _businessProcessService = businessProcessService;
         }
 
         public ActionResult Index()
@@ -430,36 +436,70 @@ namespace Cats.Areas.Logistics.Controllers
         {
             try
             {
+                var userName = HttpContext.User.Identity.Name;
+                int BP_PR = 0;
+                List<ApplicationSetting> ret = _applicationSettingService.FindBy(t => t.SettingName == "DonationPlanHeaderWorkflow");
+                if (ret.Count == 1)
+                {
+                    BP_PR = Int32.Parse(ret[0].SettingValue);
+                }
+                if (BP_PR != 0)
+                {
+                    BusinessProcessState createdstate = new BusinessProcessState
+                    {
+                        DatePerformed = DateTime.Now,
+                        PerformedBy = userName,
+                        Comment = "New Requisition Created"
 
-           
-            var donationHeader = new DonationPlanHeader
-            {
-                AllocationDate = DateTime.Now,
-                CommodityID = donationViewModel.CommodityID,
-                DonorID = donationViewModel.DonorID,
-                ETA = donationViewModel.ETA,
-                IsCommited = false,
-                ProgramID = donationViewModel.ProgramID,
-                ShippingInstructionId = siId,
-                DonatedAmount = donationViewModel.WieghtInMT,
-                CommodityTypeID = donationViewModel.CommodityTypeID
+                    };
+                    //_PaymentRequestservice.Create(request);
 
-            };
+                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                        "ReliefRequisition", createdstate);
+                    if (bp != null)
+                    {
+                        var donationHeader = new DonationPlanHeader
+                        {
+                            AllocationDate = DateTime.Now,
+                            CommodityID = donationViewModel.CommodityID,
+                            DonorID = donationViewModel.DonorID,
+                            ETA = donationViewModel.ETA,
+                            IsCommited = false,
+                            ProgramID = donationViewModel.ProgramID,
+                            ShippingInstructionId = siId,
+                            DonatedAmount = donationViewModel.WieghtInMT,
+                            CommodityTypeID = donationViewModel.CommodityTypeID,
+                            BusinessProcessID = bp.BusinessProcessID
+                        };
 
-            foreach (var donationDetail in donationViewModel.DonationPlanDetails.Select(donationPlanDetail => new DonationPlanDetail
-                                                                                                                  {
-                                                                                                                      HubID = donationPlanDetail.HubID,
-                                                                                                                      AllocatedAmount = donationPlanDetail.AllocatedAmount,
-                                                                                                                      ReceivedAmount = donationPlanDetail.ReceivedAmount,
-                                                                                                                      Balance = donationPlanDetail.Balance,
-                                                                                                                      DonationPlanHeader = donationHeader
-                                                                                                                  }))
-            {
-                _donationPlanDetailService.AddDonationPlanDetail(donationDetail);
-            }
+                        foreach (var donationDetail in donationViewModel.DonationPlanDetails.Select(donationPlanDetail => new DonationPlanDetail
+                        {
+                            HubID = donationPlanDetail.HubID,
+                            AllocatedAmount = donationPlanDetail.AllocatedAmount,
+                            ReceivedAmount = donationPlanDetail.ReceivedAmount,
+                            Balance = donationPlanDetail.Balance,
+                            DonationPlanHeader = donationHeader
+                        }))
+                        {
+                            _donationPlanDetailService.AddDonationPlanDetail(donationDetail);
+                        }
 
-                _transactionService.PostDonationPlan(donationHeader);
-            return true;
+                        _transactionService.PostDonationPlan(donationHeader);
+                        return true;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Error", errorMessage: @"Could not create a business process object");
+                        return false;
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("Error", errorMessage: @"Could not find the application setting for this document process template");
+                    return false;
+                }
+
+                
             }
             catch (Exception)
             {
@@ -616,12 +656,26 @@ namespace Cats.Areas.Logistics.Controllers
             if (TriggerReceive(donationPlanHeaderId))
             {
                 var donationHeader =
-                    _donationPlanHeaderService.FindBy(d => d.DonationHeaderPlanID == donationPlanHeaderId).
+                    _donationPlanHeaderService.Get(d => d.DonationHeaderPlanID == donationPlanHeaderId, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").
                         SingleOrDefault();
                 if (donationHeader != null)
                 {
-                    donationHeader.IsCommited = true;
-                    _donationPlanHeaderService.EditDonationPlanHeader(donationHeader);
+                    var approveFlowTemplate = donationHeader.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Send to hub");
+                    if (approveFlowTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = approveFlowTemplate.FinalStateID,
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment = "Donation Plan Header sent to hub.",
+                            //AttachmentFile = fileName,
+                            ParentBusinessProcessID = donationHeader.BusinessProcessID
+                        };
+                        //return 
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                    }
                     return RedirectToAction("Index", "Donation");
                 }
             }
