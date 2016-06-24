@@ -33,7 +33,7 @@
         columns.Bound(p => p.CommodityName).Title(Html.Translate("Commodity")).Width(150);
         columns.Bound(p => p.StrETA).Title(Html.Translate("ETA")).Width(100);
         columns.Bound(p => p.DonationHeaderPlanID).Visible(false);
-        columns.Bound(p => p.Status).ClientTemplate(
+        columns.Bound(p => p.SINumber).ClientTemplate(
                 @"<div class='btn-group'># if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_donation).ToString() + "' == 'Edit_donation' && Status == 'Draft') { #" +
                     "<a href='' onclick='Edit()' title='Edit Donation'>Edit</a></li>" +
                 " # } #" +
