@@ -30,8 +30,9 @@ namespace Cats.Models.Mapping
            this.Property(t => t.Quantity).HasColumnName("Quantity");
            this.Property(t => t.StatusID).HasColumnName("StatusID");
            this.Property(t => t.IsFalseGRN).HasColumnName("IsFalseGRN");
-           // Relationships
-           this.HasRequired(t => t.ShippingInstruction)
+           this.Property(t => t.BusinessProcessID).HasColumnName("BusinessProcessID");
+            // Relationships
+            this.HasRequired(t => t.ShippingInstruction)
                .WithMany(t => t.LoanReciptPlans)
                .HasForeignKey(d => d.ShippingInstructionID);
 
@@ -51,10 +52,13 @@ namespace Cats.Models.Mapping
            .WithMany(t => t.LoanReciptPlans)
            .HasForeignKey(d => d.CommodityID);
 
-           //this.HasRequired(t => t.Hub)
-           //.WithMany(t => t.LoanReciptPlans)
-           //.HasForeignKey(d => d.SourceHubID);
-       }
+            this.HasRequired(t => t.BusinessProcess)
+        .WithMany(t => t.LoanReciptPlans)
+        .HasForeignKey(d => d.BusinessProcessID);
+            //this.HasRequired(t => t.Hub)
+            //.WithMany(t => t.LoanReciptPlans)
+            //.HasForeignKey(d => d.SourceHubID);
+        }
 
     }
 }

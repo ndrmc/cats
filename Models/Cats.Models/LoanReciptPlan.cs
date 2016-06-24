@@ -26,12 +26,14 @@ namespace Cats.Models
        public decimal Quantity { get; set; }
        public int StatusID { get; set; }
        public bool IsFalseGRN { get; set; }
-      // public virtual Hub Hub  { get; set; }
-       //public virtual Hub Hub { get; set; }
-       public virtual Program Program { get; set; }
+       public int BusinessProcessID { get; set; }
+        // public virtual Hub Hub  { get; set; }
+        //public virtual Hub Hub { get; set; }
+        public virtual Program Program { get; set; }
        public virtual CommoditySource CommoditySource { get; set; }
        public virtual Commodity Commodity { get; set; }
        public virtual ShippingInstruction ShippingInstruction { get; set; }
-       public ICollection<LoanReciptPlanDetail> LoanReciptPlanDetails { get; set; }
+       public virtual BusinessProcess BusinessProcess { get; set; }
+        public ICollection<LoanReciptPlanDetail> LoanReciptPlanDetails { get; set; }
     }
 }

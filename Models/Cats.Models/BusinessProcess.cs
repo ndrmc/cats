@@ -49,7 +49,37 @@ namespace Cats.Models
         public virtual ICollection<LocalPurchase> LocalPurchases { get; set; } 
         public ICollection<TransportOrder> TransportOrders { get; set; }
         public ICollection<Transfer> Transfers { get; set; }
+        public ICollection<LoanReciptPlan> LoanReciptPlans { get; set; }
     }
+
+    public class BusinessProcessClean
+    {
+
+        public int BusinessProcessID { get; set; }
+        //Fields
+
+        [Display(Name = "Document")]
+        public int DocumentID { get; set; }
+
+        [Display(Name = "DocumentType")]
+        public string DocumentType { get; set; }
+
+
+        //Relationships
+
+        [Display(Name = "Process Template")]
+        public virtual ProcessTemplate ProcessType { get; set; }
+
+        [Display(Name = "Process Template ID")]
+        public int ProcessTypeID { get; set; }
+
+        [Display(Name = "CurrentState")]
+        public virtual BusinessProcessState CurrentState { get; set; }
+
+        [Display(Name = "CurrentState ID")]
+        public int CurrentStateID { get; set; }
+    }
+
     public class BusinessProcessPOCO
     {
         public int BusinessProcessID { get; set; }
