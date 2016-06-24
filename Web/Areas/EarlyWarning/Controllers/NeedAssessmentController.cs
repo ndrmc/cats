@@ -331,7 +331,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult NeedAssessmentReadApproved([DataSourceRequest] DataSourceRequest request)
         {
 
-            var needAssessment = _needAssessmentService.FindBy(g => g.NeedAApproved == true); //featch unapproved need assessments
+            var needAssessment =
+                _needAssessmentService.FindBy(
+                    g => g.NeedAApproved == true); //featch unapproved need assessments
             var needAssesmentsViewModel = NeedAssessmentViewModelBinder.ReturnViewModelApproved(needAssessment);
             return Json(needAssesmentsViewModel.ToDataSourceResult(request));
 

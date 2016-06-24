@@ -757,7 +757,25 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                           }).ToList();
 
                     hrd.HRDDetails = hrdDetails;
-                    _hrdService.AddHRDFromAssessment(hrd);
+                    // Workflow Implementation
+                    int BP_PR = _applicationSettingService.getHRDWorkflow();
+                    if (BP_PR != 0)
+                    {
+                        var createdstate = new BusinessProcessState
+                        {
+                            DatePerformed = DateTime.Now,
+                            PerformedBy = User.Identity.Name,
+                            Comment = "HRD Created"
+                        };
+                        var bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                            "HRD", createdstate);
+
+                        if (bp != null)
+                        {
+                            hrd.BusinessProcessId = bp.BusinessProcessID;
+                            _hrdService.AddHRDFromAssessment(hrd);
+                        }
+                    }
                     return RedirectToAction("Index");
                 }
                 catch (Exception exception)
