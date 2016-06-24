@@ -27,6 +27,7 @@ namespace Cats.Services.Common
         void SetValue(string name, string value);
         string FindValue(string name);
         int getTransportOrderWorkflow();
+        int getReciptPlanForLoanWorkflow();
         int getNeedAssessmentPlanWorkflow();
         int getNeedAssessmentWorkflow();
         int getReliefRequisitionWorkflow();

@@ -133,7 +133,10 @@ namespace Cats.Services.Common
         {
             return getIntValue("HRDWorkflow");
         }
-
+        public int getReciptPlanForLoanWorkflow()
+        {
+            return getIntValue("ReciptPlanForLoanWorkflow");
+        }
         public int GetLocalPurchaseReceiptPlanWorkflow()
         {
             return getIntValue("LocalPurchaseReceiptPlanWorkflow");

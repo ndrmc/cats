@@ -179,10 +179,10 @@
                 <ul class='dropdown-menu pull-right' style='overflow: visible;'>" +
                  "# if ('data.Status' == 'Project Code Assigned') { #" +
                      "# if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transport_order) + "' == 'true') { #" +
-                         "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=UncommitStateID#','Uncommit','#=RequisitionId#')\" title='Reject Requisition'>Uncommit</a></li>" +
+                         "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=UncommitStateID#','Uncommit','#=TransportOrderID#')\" title='Reject Requisition'>Uncommit</a></li>" +
                      " # } #" +
                      "# if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Sign_transport_order) + "' == 'true') { #" +
-                         "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=ApproveStateID#','Approve','#=RequisitionId#')\" title='Reject Requisition'>Approve</a></li>" +
+                         "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=ApproveStateID#','Approve','#=TransportOrderID#')\" title='Reject Requisition'>Approve</a></li>" +
                      " # } #" +
                  " # } #" +
                   " # if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Edit_transport_order) + "' == 'true') { #" +
@@ -268,7 +268,24 @@
             };
         }
 
-
+        var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
+        function promot_workflow(BusinessProcessID, nextstate, actionname, TransportOrderID) {
+            $('#ParentBusinessProcessID').val(BusinessProcessID);
+            $('#stateID').val(nextstate);
+            $('#modalPromotionLabel').html(actionname);
+            $('#TransportOrderID').val(TransportOrderID);
+            $('#modalPromotion').modal();
+           
+        }
+        function workflow_history(BusinessProcessID) {
+            $('#modalHistory').modal();
+            $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+            $.post(history_link + BusinessProcessID, {},
+            function (data) {
+                $("#modalHistoryBody").html(data);
+            }
+            );
+        }
 
 
         $(document).ready(function () {

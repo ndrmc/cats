@@ -168,8 +168,8 @@ namespace Cats.Areas.Procurement.Controllers
             };
             _businessProcessService.PromotWorkflow(businessProcessState);
             if (statusId != null)
-                return RedirectToAction("Detail", "NeedAssessment", new { Area = "Procurement", statusId });
-            return RedirectToAction("Index", "NeedAssessment", new { Area = "Procurement" });
+                return RedirectToAction("Details", "TransportOrder", new { Area = "Procurement", statusId });
+            return RedirectToAction("Index", "TransportOrder", new { Area = "Procurement" });
         }
         public static string GetRandomAlphaNumeric(int length)
         {

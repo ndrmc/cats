@@ -16,6 +16,10 @@ using Cats.Services.Security;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using ICommonService = Cats.Services.Common.ICommonService;
+using Cats.Models.ViewModels;
+using System.IO;
+using Cats.Services.Common;
+using Cats.Services.EarlyWarning;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -28,16 +32,22 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly ICommonService _commonService;
         private readonly ILoanReciptPlanDetailService _loanReciptPlanDetailService;
         private readonly IUserAccountService _userAccountService;
-        private readonly ICommodityService _commodityService;
+        private readonly Services.Hub.ICommodityService _commodityService;
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IBusinessProcessService _businessProcessService;
         public ReciptPlanForLoanController(ILoanReciptPlanService loanReciptPlanService,ICommonService commonService,
                                            ILoanReciptPlanDetailService loanReciptPlanDetailService,IUserAccountService userAccountService,
-                                           ICommodityService commodityService)
+                                           Services.Hub.ICommodityService commodityService
+            , IApplicationSettingService applicationSettingService,
+            IBusinessProcessService businessProcessService)
         {
             _loanReciptPlanService = loanReciptPlanService;
             _commonService = commonService;
             _loanReciptPlanDetailService = loanReciptPlanDetailService;
             _userAccountService = userAccountService;
             _commodityService = commodityService;
+            _applicationSettingService = applicationSettingService;
+            _businessProcessService = businessProcessService;
 
         }
 
@@ -65,6 +75,25 @@ namespace Cats.Areas.Logistics.Controllers
             if (ModelState.IsValid && loanReciptPlanViewModel!=null)
             {
                 var loanReciptPlan = GetLoanReciptPlan(loanReciptPlanViewModel);
+                int BP_PR = _applicationSettingService.getReciptPlanForLoanWorkflow();
+                if (BP_PR != 0)
+                {
+                    BusinessProcessState createdstate = new BusinessProcessState
+                    {
+                        DatePerformed = DateTime.Now,
+                        PerformedBy = User.Identity.Name,
+                        Comment = "loan Recipt Plan  Added"
+
+                    };
+                    //_PaymentRequestservice.Create(request);
+
+                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                                                                                    "ReciptPlanForLoan", createdstate);
+                    if (bp != null)
+                        loanReciptPlan.BusinessProcessID = bp.BusinessProcessID;
+
+
+                }
                 _loanReciptPlanService.AddLoanReciptPlan(loanReciptPlan);
                 ModelState.AddModelError("Sucess",@"Sucessfully Saved");
                 return RedirectToAction("Index");
@@ -100,8 +129,52 @@ namespace Cats.Areas.Logistics.Controllers
             ViewBag.CommodityID = new SelectList(_commonService.GetCommodities(), "CommodityID", "Name", loanReciptPlan.CommodityID);
             ViewBag.CommodityTypeID = new SelectList(_commonService.GetCommodityTypes(), "CommodityTypeID", "Name");
             ViewBag.CommoditySourceID = new SelectList(_commonService.GetCommoditySource(), "CommoditySourceID", "Name", loanReciptPlan.CommoditySourceID);
+            ViewBag.TargetController = "ReciptPlanForLoan";
             return View(loanReciptPlan);
         }
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+            _businessProcessService.PromotWorkflow(businessProcessState);
+            if (statusId != null)
+                return RedirectToAction("Details", "TransportOrder", new { Area = "Procurement", statusId });
+            return RedirectToAction("Index", "TransportOrder", new { Area = "Procurement" });
+        }
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
+        }
+
         private LoanReciptPlan GetLoanReciptPlan(LoanReciptPlanViewModel loanReciptPlanViewModel)
         {
           
@@ -147,9 +220,21 @@ namespace Cats.Areas.Logistics.Controllers
                                    ProgramName = loanReciptPlan.Program.Name,
                                    CommodityName = loanReciptPlan.Commodity.Name,
                                    CommoditySourceName = loanReciptPlan.CommoditySource.Name,
-                                   LoanSource = intLoanSource
+                                   BusinessProcessID = loanReciptPlan.BusinessProcessID,
+                    
+                LoanSource = intLoanSource
                                };
 
+                loan.BusinessProcess =  new BusinessProcessClean
+                {
+                    BusinessProcessID = loanReciptPlan.BusinessProcessID,
+                    DocumentID = loanReciptPlan.BusinessProcess.DocumentID,
+                    DocumentType = loanReciptPlan.BusinessProcess.DocumentType,
+                    ProcessType = loanReciptPlan.BusinessProcess.ProcessType,
+                    ProcessTypeID = loanReciptPlan.BusinessProcess.ProcessTypeID,
+                    CurrentState = loanReciptPlan.BusinessProcess.CurrentState,
+                    CurrentStateID = loanReciptPlan.BusinessProcess.CurrentStateID
+                };
                 if (firstOrDefault != null) loan.Donor = firstOrDefault.Name;
                 //SourceHubName = loanReciptPlan.Hub.Name,
                 loan.RefeenceNumber = loanReciptPlan.ReferenceNumber;
@@ -157,6 +242,8 @@ namespace Cats.Areas.Logistics.Controllers
                 loan.ProjectCode = loanReciptPlan.ProjectCode;
                 loan.Quantity = loanReciptPlan.Quantity;
                 loan.StatusID = loanReciptPlan.StatusID;
+                //loan.BusinessProcessID = loanReciptPlan.BusinessProcessID;
+                //loan.BusinessProcess = loanReciptPlan.BusinessProcess;
                 loan.CreatedDate = loanReciptPlan.CreatedDate.ToCTSPreferedDateFormat(datePref);
                 loan.Status = _commonService.GetStatusName(WORKFLOW.LocalPUrchase, loanReciptPlan.StatusID);
                 loan.IsFalseGRN = loanReciptPlan.IsFalseGRN;
@@ -224,10 +311,22 @@ namespace Cats.Areas.Logistics.Controllers
                 ProgramName = loanReciptPlan.Program.Name,
                 CommodityName = loanReciptPlan.Commodity.Name,
                 CommoditySourceName = loanReciptPlan.CommoditySource.Name,
-                LoanReciptPlanID = loanReciptPlan.LoanReciptPlanID
-            };
+                LoanReciptPlanID = loanReciptPlan.LoanReciptPlanID,
+                BusinessProcessID = loanReciptPlan.BusinessProcessID,
+                BusinessProcess = new BusinessProcessClean
+                {
+                    BusinessProcessID = loanReciptPlan.BusinessProcessID,
+                    DocumentID = loanReciptPlan.BusinessProcess.DocumentID,
+                    DocumentType = loanReciptPlan.BusinessProcess.DocumentType,
+                    ProcessType = loanReciptPlan.BusinessProcess.ProcessType,
+                    ProcessTypeID = loanReciptPlan.BusinessProcess.ProcessTypeID,
+                    CurrentState = loanReciptPlan.BusinessProcess.CurrentState,
+                    CurrentStateID = loanReciptPlan.BusinessProcess.CurrentStateID
+                }
+        };
 
             var loanSource = loanReciptPlan.LoanSource;
+            ViewBag.TargetController = "ReciptPlanForLoan";
             var intLoanSource = Convert.ToInt32(loanSource);
             var firstOrDefault =
                 _commonService.GetDonors(d => d.DonorID == intLoanSource).FirstOrDefault();
