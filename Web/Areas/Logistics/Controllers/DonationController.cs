@@ -86,9 +86,9 @@ namespace Cats.Areas.Logistics.Controllers
                 return Json(receiptViewModel.ToList().ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                return Json(e);
 
 
             }
