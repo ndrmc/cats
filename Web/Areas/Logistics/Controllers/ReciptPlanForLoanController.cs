@@ -160,8 +160,8 @@ namespace Cats.Areas.Logistics.Controllers
             };
             _businessProcessService.PromotWorkflow(businessProcessState);
             if (statusId != null)
-                return RedirectToAction("Details", "TransportOrder", new { Area = "Procurement", statusId });
-            return RedirectToAction("Index", "TransportOrder", new { Area = "Procurement" });
+                return RedirectToAction("Detail", "ReciptPlanForLoan", new { Area = "Logistics", statusId });
+            return RedirectToAction("Index", "ReciptPlanForLoan", new { Area = "Logistics" });
         }
         public static string GetRandomAlphaNumeric(int length)
         {
