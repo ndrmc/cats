@@ -765,7 +765,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                         {
                             DatePerformed = DateTime.Now,
                             PerformedBy = User.Identity.Name,
-                            Comment = "HRD Created"
+                            Comment = "HRD Created from need assessment"
                         };
                         var bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
                             "HRD", createdstate);
