@@ -144,3 +144,4 @@ src/*/obj/*
 /.vs/Cats/v14/.suo
 /.vs/Cats/v14/.suo
 /.vs/Cats/v14/.suo
+/packages
