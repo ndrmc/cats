@@ -72,7 +72,7 @@ namespace Cats.Areas.Logistics.Controllers
 
         public ActionResult Index()
         {
-
+            ViewBag.TargetController = "Donation";
             return View();
         }
 
@@ -81,7 +81,7 @@ namespace Cats.Areas.Logistics.Controllers
             try
             {
                 List<DonationPlanHeader> donationHeader = null;
-                donationHeader = _donationPlanHeaderService.GetAllDonationPlanHeader().ToList();
+                donationHeader = _donationPlanHeaderService.Get(null, null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
                 var receiptViewModel = ReceiptPlanViewModelBinder.GetReceiptHeaderPlanViewModel(donationHeader);
                 return Json(receiptViewModel.ToList().ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
 
@@ -458,6 +458,7 @@ namespace Cats.Areas.Logistics.Controllers
                         "ReliefRequisition", createdstate);
                     if (bp != null)
                     {
+                        var commodity = _commodityService.FindById(donationViewModel.CommodityID);
                         var donationHeader = new DonationPlanHeader
                         {
                             AllocationDate = DateTime.Now,
@@ -501,9 +502,9 @@ namespace Cats.Areas.Logistics.Controllers
 
                 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                ModelState.AddModelError("Error", e.Message);
                 return false;
             }
         }
@@ -697,20 +698,29 @@ namespace Cats.Areas.Logistics.Controllers
         }
         public ActionResult Revert(int id)
         {
-            var donation = _donationPlanHeaderService.FindById(id);
-            if (donation!=null)
+            var donationHeader =
+                    _donationPlanHeaderService.Get(d => d.DonationHeaderPlanID == id, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").
+                        SingleOrDefault();
+            if (donationHeader != null)
             {
-                if (donation.IsCommited==true)
+                var approveFlowTemplate = donationHeader.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Revert");
+                if (approveFlowTemplate != null)
                 {
-                    if (_donationPlanHeaderService.DeleteReceiptAllocation(donation))
+                    var businessProcessState = new BusinessProcessState()
                     {
-                        donation.IsCommited = false;
-                        _donationPlanHeaderService.EditDonationPlanHeader(donation);
-                        RedirectToAction("Index", "Donation");
-                    }
-                    return RedirectToAction("Index", "Donation");
+                        StateID = approveFlowTemplate.FinalStateID,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "Donation Plan Header reverted to draft.",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = donationHeader.BusinessProcessID
+                    };
+                    //return 
+                    _businessProcessService.PromotWorkflow(businessProcessState);
                 }
             }
+
             return RedirectToAction("Index", "Donation");
         }
 
