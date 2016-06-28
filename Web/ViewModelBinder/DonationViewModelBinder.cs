@@ -15,6 +15,7 @@ namespace Cats.ViewModelBinder
             return donationPlanHeaders.Select(plan => new DonationHeaderViewModel()
                                                           {
                                                               DonationHeaderPlanID = plan.DonationHeaderPlanID,
+                                                              BusinessProcessID = plan.BusinessProcessID,
                                                               SINumber = plan.ShippingInstruction.Value,
                                                               ProgramName = plan.Program.Name,
                                                               ProgramID = plan.ProgramID,
@@ -24,6 +25,8 @@ namespace Cats.ViewModelBinder
                                                               CommodityName = plan.Commodity.Name,
                                                               CommodityID = plan.CommodityID,
                                                               IsCommited = plan.IsCommited,
+                                                              StateTemplateID = plan.BusinessProcess.CurrentState.BaseStateTemplate.StateTemplateID,
+                                                              Status = plan.BusinessProcess.CurrentState.BaseStateTemplate.Name,
                                                              // Vessel = plan.Vessel,
                                                               StrETA = plan.ETA.ToCTSPreferedDateFormat(UserAccountHelper.UserCalendarPreference()),
                                                              // ReferenceNo = plan.ReferenceNo,

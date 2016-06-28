@@ -667,6 +667,7 @@ namespace Cats.Services.Transaction
 
             foreach (var donationPlanDetail in donationPlanHeader.DonationPlanDetails)
             {
+                var commodityParentId =_unitOfWork.CommodityRepository.FindById(donationPlanHeader.CommodityID).ParentID;
                 var transaction = new Models.Transaction
                                       {
                                           TransactionID = Guid.NewGuid(),
@@ -677,7 +678,7 @@ namespace Cats.Services.Transaction
                                           TransactionGroupID = transactionGroup,
                                           TransactionDate = transactionDate,
                                           CommodityID = donationPlanHeader.CommodityID,
-                                          ParentCommodityID = donationPlanHeader.Commodity.ParentID,
+                                          ParentCommodityID = commodityParentId,
                                           ShippingInstructionID = donationPlanHeader.ShippingInstructionId,
                                           HubID = donationPlanDetail.HubID,
                                           LedgerID = Ledger.Constants.GOODS_RECIEVABLE
@@ -696,7 +697,7 @@ namespace Cats.Services.Transaction
                                      TransactionGroupID = transactionGroup,
                                      TransactionDate = transactionDate,
                                      CommodityID = donationPlanHeader.CommodityID,
-                                     ParentCommodityID = donationPlanHeader.Commodity.ParentID,
+                                     ParentCommodityID = commodityParentId,
                                      ShippingInstructionID = donationPlanHeader.ShippingInstructionId,
                                      HubID = donationPlanDetail.HubID,
                                      LedgerID = Ledger.Constants.GIFT_CERTIFICATE //good promissed - pledged is not in ledger list // Former LedgerID = 4

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Cats.Models;
 
@@ -18,6 +19,10 @@ namespace Cats.Services.Logistics
         List<DonationPlanHeader> FindBy(Expression<Func<DonationPlanHeader, bool>> predicate);
         bool DeleteDonation(DonationPlanHeader donationPlanHeader);
         bool DeleteReceiptAllocation(DonationPlanHeader donationPlanHeader);
+
+        IEnumerable<DonationPlanHeader> Get(Expression<Func<DonationPlanHeader, bool>> filter = null,
+            Func<IQueryable<DonationPlanHeader>, IOrderedQueryable<DonationPlanHeader>> orderBy = null,
+            string includeProperties = "");
         void Dispose();
 
     }
