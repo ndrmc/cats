@@ -50,6 +50,8 @@ namespace Cats.Models
         public virtual ICollection<LocalPurchase> LocalPurchases { get; set; } 
         public ICollection<TransportOrder> TransportOrders { get; set; }
         public ICollection<Transfer> Transfers { get; set; }
+
+        public ICollection<HRD> Hrds { get; set; }
     }
     public class BusinessProcessPOCO
     {
