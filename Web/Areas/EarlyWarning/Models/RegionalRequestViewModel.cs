@@ -7,6 +7,7 @@ using System.Web;
 
 namespace Cats.Areas.EarlyWarning.Models
 {
+    [Serializable]
     public class RegionalRequestViewModel
     { 
         [ScaffoldColumn(false)]

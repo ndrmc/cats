@@ -32,7 +32,7 @@ namespace Cats.Areas.Logistics.Models
         public string Status { get; set; }
         public bool IsFalseGRN { get; set; }
         public int BusinessProcessID { get; set; }
-        public virtual BusinessProcessClean BusinessProcess { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
 
        
     }

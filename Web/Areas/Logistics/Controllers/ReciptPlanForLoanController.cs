@@ -20,6 +20,8 @@ using Cats.Models.ViewModels;
 using System.IO;
 using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -199,6 +201,7 @@ namespace Cats.Areas.Logistics.Controllers
         {
             var reciptPlan = _loanReciptPlanService.GetAllLoanReciptPlan().OrderByDescending(m => m.LoanReciptPlanID);
             var reciptPlanToDisplay = BindToViewModel(reciptPlan);
+
            return Json(reciptPlanToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -224,17 +227,20 @@ namespace Cats.Areas.Logistics.Controllers
                     
                 LoanSource = intLoanSource
                                };
+           
+                loan.BusinessProcess = loanReciptPlan.BusinessProcess;
+               
+                //    new BusinessProcessClean
+                //{
+                //    BusinessProcessID = loanReciptPlan.BusinessProcessID,
+                //    DocumentID = loanReciptPlan.BusinessProcess.DocumentID,
+                //    DocumentType = loanReciptPlan.BusinessProcess.DocumentType,
+                //    ProcessType = loanReciptPlan.BusinessProcess.ProcessType,
+                //    ProcessTypeID = loanReciptPlan.BusinessProcess.ProcessTypeID,
+                //    CurrentState =   loanReciptPlan.BusinessProcess.CurrentState,
+                //    CurrentStateID = loanReciptPlan.BusinessProcess.CurrentStateID
 
-                loan.BusinessProcess =  new BusinessProcessClean
-                {
-                    BusinessProcessID = loanReciptPlan.BusinessProcessID,
-                    DocumentID = loanReciptPlan.BusinessProcess.DocumentID,
-                    DocumentType = loanReciptPlan.BusinessProcess.DocumentType,
-                    ProcessType = loanReciptPlan.BusinessProcess.ProcessType,
-                    ProcessTypeID = loanReciptPlan.BusinessProcess.ProcessTypeID,
-                    CurrentState = loanReciptPlan.BusinessProcess.CurrentState,
-                    CurrentStateID = loanReciptPlan.BusinessProcess.CurrentStateID
-                };
+                //};
                 if (firstOrDefault != null) loan.Donor = firstOrDefault.Name;
                 //SourceHubName = loanReciptPlan.Hub.Name,
                 loan.RefeenceNumber = loanReciptPlan.ReferenceNumber;
@@ -313,16 +319,17 @@ namespace Cats.Areas.Logistics.Controllers
                 CommoditySourceName = loanReciptPlan.CommoditySource.Name,
                 LoanReciptPlanID = loanReciptPlan.LoanReciptPlanID,
                 BusinessProcessID = loanReciptPlan.BusinessProcessID,
-                BusinessProcess = new BusinessProcessClean
-                {
-                    BusinessProcessID = loanReciptPlan.BusinessProcessID,
-                    DocumentID = loanReciptPlan.BusinessProcess.DocumentID,
-                    DocumentType = loanReciptPlan.BusinessProcess.DocumentType,
-                    ProcessType = loanReciptPlan.BusinessProcess.ProcessType,
-                    ProcessTypeID = loanReciptPlan.BusinessProcess.ProcessTypeID,
-                    CurrentState = loanReciptPlan.BusinessProcess.CurrentState,
-                    CurrentStateID = loanReciptPlan.BusinessProcess.CurrentStateID
-                }
+                BusinessProcess = loanReciptPlan.BusinessProcess,
+                //new BusinessProcessClean
+                //{
+                //    BusinessProcessID = loanReciptPlan.BusinessProcessID,
+                //    DocumentID = loanReciptPlan.BusinessProcess.DocumentID,
+                //    DocumentType = loanReciptPlan.BusinessProcess.DocumentType,
+                //    ProcessType = loanReciptPlan.BusinessProcess.ProcessType,
+                //    ProcessTypeID = loanReciptPlan.BusinessProcess.ProcessTypeID,
+                //    CurrentState = loanReciptPlan.BusinessProcess.CurrentState,
+                //    CurrentStateID = loanReciptPlan.BusinessProcess.CurrentStateID
+                //}
         };
 
             var loanSource = loanReciptPlan.LoanSource;

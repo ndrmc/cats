@@ -112,12 +112,12 @@
                 <ul class="dropdown-menu pull-right">
 
                    
-                        if (Model.StatusID == (int) LocalPurchaseStatus.Draft)
+                        @if (Model.StatusID == (int) LocalPurchaseStatus.Draft)
                         {
                             <li><a id="btnRecive" class="btn green-sharp-stripe" href="@Url.Action("ReciptPlan", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Recieve Plan")</a></li>
                             <li><a id="btnEdit" class="btn green-sharp-stripe" href="@Url.Action("Edit", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Edit")</a></li>
                             
-                            <li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Approve")</a></li>
+                           // <li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Approve")</a></li>
                         }
                     
                 </ul>
