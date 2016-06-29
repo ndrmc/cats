@@ -142,3 +142,6 @@ src/*/bin/*
 src/*/obj/*
 .vs
 /.vs/Cats/v14/.suo
+/.vs/Cats/v14/.suo
+/.vs/Cats/v14/.suo
+/packages

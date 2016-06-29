@@ -121,6 +121,13 @@ namespace Cats.Services.Logistics
              
          }
 
+        public IEnumerable<DonationPlanHeader> Get(Expression<Func<DonationPlanHeader, bool>> filter = null,
+                                    Func<IQueryable<DonationPlanHeader>, IOrderedQueryable<DonationPlanHeader>> orderBy = null,
+                                    string includeProperties = "")
+        {
+            return _unitOfWork.DonationPlanHeaderRepository.Get(filter, orderBy, includeProperties);
+        }
+
         public void Dispose()
         {
             _unitOfWork.Dispose();

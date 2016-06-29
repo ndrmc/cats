@@ -16,6 +16,7 @@ namespace Cats.Models.Mapping
             // Table & Column Mappings
             this.ToTable("ReliefRequisition", "EarlyWarning");
             this.Property(t => t.RequisitionID).HasColumnName("RequisitionID");
+            this.Property(t => t.BusinessProcessID).HasColumnName("BusinessProcessID");
             this.Property(t => t.CommodityID).HasColumnName("CommodityID");
             this.Property(t => t.RegionID).HasColumnName("RegionID");
             this.Property(t => t.ZoneID).HasColumnName("ZoneID");

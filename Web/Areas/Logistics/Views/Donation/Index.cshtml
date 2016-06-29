@@ -14,6 +14,11 @@
 }
 @section LeftBar
 {}
+<style>
+    .k-grid td {
+        overflow: visible;
+    }
+</style>
 <fieldset>
     
         <legend>
@@ -33,22 +38,40 @@
         columns.Bound(p => p.CommodityName).Title(Html.Translate("Commodity")).Width(150);
         columns.Bound(p => p.StrETA).Title(Html.Translate("ETA")).Width(100);
         columns.Bound(p => p.DonationHeaderPlanID).Visible(false);
-
-        columns.Command(p =>
-        {
-        if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_donation).ToString() == "Edit_donation")
-        {
-            p.Custom("Edit").Click("Edit");
-        }
-        if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() == "Revert_Donation")
-        {
-            p.Custom("Revert").Click("OnRevert");
-        }
-            if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() == "Delete_Donation")
-            {
-                p.Custom("Delete").Click("OnDelete");
-            }
-        });
+        columns.Bound(p => p.Status).Title(Html.Translate("Status"));
+        columns.Bound(p => p.Status).Title(Html.Translate("Actions")).ClientTemplate(
+                @"<div class='btn-group'># if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_donation).ToString() + "' == 'Edit_donation' && Status == 'Draft') { #" +
+                    "<span href='' onclick='Edit(\"#=SINumber#\")' title='Edit Donation' class='btn btn-xs btn-warning edit_btn'>Edit</span></li>" +
+                " # } #" +
+                "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() + "' == 'Revert_Donation' && Status == 'Sent to hub') { #" +
+                    "<span href='' onclick='OnRevert(#=DonationHeaderPlanID#)' title='Revert Donation' class='btn btn-xs btn-error revert_btn'>Revert</span></li>" +
+                " # } #" +
+                "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() + "' == 'Delete_Donation' && Status == 'Draft') { #" +
+                    "<span href='' onclick='OnDelete(#=DonationHeaderPlanID#)' title='Delete Donation' class='btn btn-xs btn-error delete_btn'>Delete</span></li>" +
+                " # } #" +
+                "</div>" +
+                @"<div class='btn-group'>
+                <button type='button' id='workflow-#=DonationHeaderPlanID#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
+                    <i class='fa fa-ellipsis-horizontal'></i>Workflow<i class='fa fa-angle-down'></i>
+                </button>
+                <ul class='dropdown-menu pull-right' style='overflow: visible;'>" +                    
+                    " <li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
+                "</ul></div>");
+        //columns.Command(p =>
+        //{
+        //    if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_donation).ToString() == "Edit_donation")
+        //    {
+        //        p.Custom("Edit").Click("Edit");
+        //    }
+        //    if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() == "Revert_Donation")
+        //    {
+        //        p.Custom("Revert").Click("OnRevert");
+        //    }
+        //    if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() == "Delete_Donation")
+        //    {
+        //        p.Custom("Delete").Click("OnDelete");
+        //    }
+        //});
     })
 
     //.Editable(editable => editable.Mode(GridEditMode.InCell))
@@ -67,8 +90,36 @@
         .Update(update => update.Action("EditingInline_Update", "Grid"))
         .Destroy(update => update.Action("EditingInline_Destroy", "Grid"))
     )
-)
+      )
+
+<div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id="modalHistoryLabel">Activity History</h4>
+            </div>
+            <div class="modal-body" id="modalHistoryBody">History</div>
+
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
+
 <script type="text/javascript">
+    var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
+
+    function workflow_history(BusinessProcessID) {
+        console.log("BusinessProcessID: " + BusinessProcessID);
+        $('#modalHistory').modal();
+        $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+        $.post(history_link + BusinessProcessID, {},
+            function (data) {
+                $("#modalHistoryBody").html(data);
+            }
+        );
+    }
+
     function error_handler(e) {
         if (e.errors) {
             var message = "Errors:\n";
@@ -112,24 +163,24 @@
         }
     }
 
-    function Edit(e) {
-        e.preventDefault();
+    function Edit(siNumber) {
+        //e.preventDefault();
 
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var siNumber = dataItem["SINumber"];
+       // var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        //var siNumber = dataItem["SINumber"];
         window.location = null;
         window.location = "@Url.Action("AddNewDonationPlan", "Donation")" + "?siNumber=" + siNumber + "&typeOfLoad=0";
     }
     
-    function OnDelete(e) {
-        e.preventDefault();
+    function OnDelete(donationHeaderPlanId) {
+        //e.preventDefault();
 
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        //var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         wnd.center().open();
 
         $("#yes").click(function () {
 
-            window.location = "@Url.Action("Remove", "Donation")" + "/" + dataItem.DonationHeaderPlanID;
+            window.location = "@Url.Action("Remove", "Donation")" + "/" + donationHeaderPlanId;
             wnd.close();
         });
 
@@ -138,15 +189,15 @@
         });
     }
 
-    function OnRevert(e) {
-        e.preventDefault();
+    function OnRevert(donationHeaderPlanId) {
+        //e.preventDefault();
 
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        //var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         wndRevert.center().open();
 
         $("#yesRevert").click(function () {
 
-            window.location = "@Url.Action("Revert", "Donation")" + "/" + dataItem.DonationHeaderPlanID;
+            window.location = "@Url.Action("Revert", "Donation")" + "/" + donationHeaderPlanId;
             wndRevert.close();
         });
 

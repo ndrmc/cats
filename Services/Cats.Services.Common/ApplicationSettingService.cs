@@ -146,5 +146,15 @@ namespace Cats.Services.Common
         {
             return getIntValue("SwapWorkflow");
         }
+
+        public int getTransportRequisitionWorkflow()
+        {
+            return getIntValue("TransportRequisitionWorkflow");
+        }
+
+        public int getDonationPlanHeaderWorkflow()
+        {
+            return getIntValue("DonationPlanHeaderWorkflow");
+        }
     }  
 }
