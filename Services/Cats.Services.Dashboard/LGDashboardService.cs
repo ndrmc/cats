@@ -21,6 +21,35 @@ namespace Cats.Services.Dashboard
             _unitOfWork = unitOfWork;
         }
 
+        public List<DashboardBidPlan> BidPlanEntryStatus(DateTime? startDate, DateTime? endDate, int lguser = 0)
+        {
+            var regions =
+                    _unitOfWork.AdminUnitRepository.Get(t => t.AdminUnitTypeID == (int)Models.Constant.AdminUnitType.Region);
+
+            var regionsHubAssignment = new List<DashboardBidPlan>();
+            foreach (var region in regions)
+            {
+                var currentBidPlan = _unitOfWork.TransportBidPlanRepository.GetAll().OrderByDescending(t => t.TransportBidPlanID).First();
+                var regionHubAssignment = new DashboardBidPlan
+                {
+                    RegionId = region.AdminUnitID,
+                    Region = region.Name,
+                    NumberOfWoredas =
+                        _unitOfWork.AdminUnitRepository.Get(
+                            t => t.AdminUnitTypeID == (int) Models.Constant.AdminUnitType.Woreda
+                                 && t.AdminUnit2.AdminUnit2.AdminUnitID == region.AdminUnitID).Count(),
+                    NumberOfHubAssignedWoredas = _unitOfWork.TransportBidPlanDetailRepository.Get(
+                        t => t.Destination.AdminUnit2.AdminUnit2.AdminUnitID == region.AdminUnitID
+                             && t.BidPlanID == currentBidPlan.TransportBidPlanID, null,
+                        "Destination,Destination.AdminUnit2,Destination.AdminUnit2.AdminUnit2").Count()
+                };
+
+                regionsHubAssignment.Add(regionHubAssignment);
+            }
+
+            return regionsHubAssignment;
+        }
+
         public List<DashboardDispAlloRequisition> DispatchAllocatedRequisitions(DateTime? startDate, DateTime? endDate, int round = 0)
         {
             var currentHrd = _unitOfWork.HRDRepository.Get(m => m.Status == (int)HRDStatus.Published, null,
