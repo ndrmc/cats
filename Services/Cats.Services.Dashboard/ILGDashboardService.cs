@@ -15,6 +15,6 @@ namespace Cats.Services.Dashboard
         List<DashboardDispAlloRequisition> DispatchAllocatedRequisitions(DateTime? startDate, DateTime? endDate, int round);
         List<int?> GetRounds();
 
-        List<DashboardBidPlan> BidPlanEntryStatus(DateTime? startDate, DateTime? endDate);
+        List<DashboardBidPlan> BidPlanEntryStatus(DateTime? startDate, DateTime? endDate, int lguser);
     }
 }
