@@ -135,6 +135,8 @@
     <Compile Include="TransporterPaymentRequest.cs" />
     <Compile Include="ViewModels\Bid\BidAddWoredaViewModel.cs" />
     <Compile Include="ViewModels\BusinessProcessStateViewModel.cs" />
+    <Compile Include="ViewModels\DashboardBidPlan.cs" />
+    <Compile Include="ViewModels\Dashboard\DashboardUserViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\RecentRequests.cs" />
     <Compile Include="ViewModels\DistributionByAgeViewModel.cs" />
     <Compile Include="DistibtionStatus.cs" />
