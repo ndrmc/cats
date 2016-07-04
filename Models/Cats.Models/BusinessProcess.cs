@@ -46,12 +46,18 @@ namespace Cats.Models
         public virtual ICollection<ReliefRequisition> ReliefRequisitions { get; set; }
         public virtual ICollection<TransportRequisition> TransportRequisitions { get; set; }
         public virtual ICollection<HRD> Hrds { get; set; } 
+<<<<<<< HEAD
  
         
         public virtual ICollection<DonationPlanHeader> DonationPlanHeaders { get; set; }
        
        
         public ICollection<LoanReciptPlan> LoanReciptPlans { get; set; }
+=======
+        public virtual ICollection<LocalPurchase> LocalPurchases { get; set; } 
+        public ICollection<TransportOrder> TransportOrders { get; set; }
+        public virtual ICollection<LoanReciptPlan> LoanReciptPlans { get; set; }
+>>>>>>> CATS-1331
     }
 
     public class BusinessProcessClean
@@ -80,6 +86,8 @@ namespace Cats.Models
 
         [Display(Name = "CurrentState ID")]
         public int CurrentStateID { get; set; }
+
+       
     }
 
     public class BusinessProcessPOCO

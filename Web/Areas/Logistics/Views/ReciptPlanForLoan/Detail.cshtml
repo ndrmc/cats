@@ -4,6 +4,7 @@
 @using Cats.Models
 @using Cats.Security
 @using Cats.Models.Constant
+@using Cats.Models.ViewModels
 @using Kendo.Mvc.UI
 @{
     ViewBag.Title = "Detail";
@@ -82,13 +83,10 @@
                 </button>
                 <ul class="dropdown-menu pull-right">
 
-                  @{
-
-                      var state = Model.BusinessProcess.CurrentState.BaseStateTemplate;
-                }
+                 
 
 
-                @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                @foreach (FlowTemplateViewModel actions in Model.InitialStateFlowTemplates)
                 {
                     if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transfer_plan) && actions.Name == "Approve")
                     {
@@ -112,12 +110,12 @@
                 <ul class="dropdown-menu pull-right">
 
                    
-                        if (Model.StatusID == (int) LocalPurchaseStatus.Draft)
+                        @if (Model.StatusID == (int) LocalPurchaseStatus.Draft)
                         {
                             <li><a id="btnRecive" class="btn green-sharp-stripe" href="@Url.Action("ReciptPlan", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Recieve Plan")</a></li>
                             <li><a id="btnEdit" class="btn green-sharp-stripe" href="@Url.Action("Edit", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Edit")</a></li>
                             
-                            <li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Approve")</a></li>
+                           // <li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Approve")</a></li>
                         }
                     
                 </ul>
