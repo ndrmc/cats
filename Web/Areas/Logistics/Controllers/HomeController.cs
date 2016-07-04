@@ -20,6 +20,7 @@ using hub = Cats.Services.Hub;
 using Cats.Models;
 using Cats.Helpers;
 using System.Data;
+using Cats.Models.ViewModels.Dashboard;
 using Cats.Services.Dashboard;
 using TransporterViewModel = Cats.Models.ViewModels.TransporterViewModel;
 
@@ -594,6 +595,29 @@ namespace Cats.Areas.Logistics.Controllers
         {
             var rounds = _lgDashboardService.GetRounds();
             return Json(rounds, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult BidPlanningIndicator(DateTime? startDate, DateTime? endDate, int lguser = 0)
+        {
+            var bidPlanEntry = _lgDashboardService.BidPlanEntryStatus(startDate, endDate, lguser);
+            return Json(bidPlanEntry, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetLogisticsUsers()
+        {
+            var lgUsers = _userAccountService.FindBy(t=>t.CaseTeam.Value == (int)UserType.CASETEAM.LOGISTICS);
+            var dashboardUserViewModels = new List<DashboardUserViewModel>();
+            foreach (var lgUser in lgUsers)
+            {
+                var dashboardUserViewModel = new DashboardUserViewModel()
+                {
+                    UserProfileId = lgUser.UserProfileID,
+                    UserName = lgUser.UserName
+                };
+                dashboardUserViewModels.Add(dashboardUserViewModel);
+            }
+            
+            return Json(dashboardUserViewModels, JsonRequestBehavior.AllowGet);
         }
 
         #endregion
