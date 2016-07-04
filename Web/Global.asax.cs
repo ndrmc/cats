@@ -28,6 +28,7 @@ namespace Cats
         protected void Application_Start()
         {
             // Clear all ViewEngines except Razor
+            GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             ViewEngines.Engines.Clear(); 
             ViewEngines.Engines.Add(new RazorViewEngine());
            
@@ -40,7 +41,7 @@ namespace Cats
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             ModelMetadataProviders.Current = new LocalizedDataAnnotationsModelMetadataProvider();
-
+           
             log4net.Config.XmlConfigurator.Configure();
             DependencyResolver.Current.GetService<ILogger>();
 

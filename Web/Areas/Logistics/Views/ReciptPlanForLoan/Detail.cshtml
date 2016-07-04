@@ -4,6 +4,7 @@
 @using Cats.Models
 @using Cats.Security
 @using Cats.Models.Constant
+@using Cats.Models.ViewModels
 @using Kendo.Mvc.UI
 @{
     ViewBag.Title = "Detail";
@@ -82,13 +83,10 @@
                 </button>
                 <ul class="dropdown-menu pull-right">
 
-                  @{
-
-                      var state = Model.BusinessProcess.CurrentState.BaseStateTemplate;
-                }
+                 
 
 
-                @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                @foreach (FlowTemplateViewModel actions in Model.InitialStateFlowTemplates)
                 {
                     if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transfer_plan) && actions.Name == "Approve")
                     {

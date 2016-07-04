@@ -77,6 +77,8 @@ namespace Cats.Models
 
         [Display(Name = "CurrentState ID")]
         public int CurrentStateID { get; set; }
+
+       
     }
 
     public class BusinessProcessPOCO

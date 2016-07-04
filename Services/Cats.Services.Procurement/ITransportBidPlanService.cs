@@ -19,5 +19,9 @@ namespace Cats.Services.Procurement
         TransportBidPlan FindById(int id);
         List<TransportBidPlan> GetAllTransportBidPlan();
         List<TransportBidPlan> FindBy(Expression<Func<TransportBidPlan, bool>> predicate);
+        IEnumerable<TransportBidPlan> Get(
+           Expression<Func<TransportBidPlan, bool>> filter = null,
+           Func<IQueryable<TransportBidPlan>, IOrderedQueryable<TransportBidPlan>> orderBy = null,
+           string includeProperties = "");
     }
 }

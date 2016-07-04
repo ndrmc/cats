@@ -34,11 +34,11 @@ namespace Cats.Models
         //ProgramID
         [Display(Name = "Program")]
         public int ProgramID { get; set; }
-
+        public int BusinessProcessID { get; set; }
         //Region
-      /*  [Display(Name = "Region")]
-       // public AdminUnit Region { get; set; }
-        public virtual AdminUnit Region { get; set; }*/
+        /*  [Display(Name = "Region")]
+         // public AdminUnit Region { get; set; }
+          public virtual AdminUnit Region { get; set; }*/
 
         //Program
         [Display(Name = "Program")]
@@ -46,7 +46,7 @@ namespace Cats.Models
 
         public virtual ICollection<TransportBidPlanDetail> TransportBidPlanDetails { get; set; }
         public virtual ICollection<Bid> Bids { get; set; }
-
+        public virtual BusinessProcess BusinessProcess { get; set; }
         public string ShortName
         {
             get { return this.Year + "-" + this.YearHalf; }

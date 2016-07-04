@@ -23,7 +23,7 @@ namespace Cats.Models
         //Relationships
 
         [Display(Name = "Process")]
-        public virtual ProcessTemplate ParentProcessTemplate { get; set; }
+        public  ProcessTemplate ParentProcessTemplate { get; set; }
 
         [Display(Name = "Process ID")]
         public int ParentProcessTemplateID { get; set; }
