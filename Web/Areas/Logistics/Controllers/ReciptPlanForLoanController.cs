@@ -320,7 +320,6 @@ namespace Cats.Areas.Logistics.Controllers
                 flowTemplateViewModel.FlowTemplateID = flowTemplate.FlowTemplateID;
                 flowTemplateViewModel.InitialState = flowTemplate.InitialState.Name;
                 flowTemplateViewModel.InitialStateID = flowTemplate.InitialStateID;
-                if(flowTemplate.ParentProcessTemplate!= null)
                 flowTemplateViewModel.ParentProcessTemplate = flowTemplate.ParentProcessTemplate.Name;
                 flowTemplateViewModel.ParentProcessTemplateID = flowTemplate.ParentProcessTemplateID;
                 flowTemplateViewModels.Add(flowTemplateViewModel);
