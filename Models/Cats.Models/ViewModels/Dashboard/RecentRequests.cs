@@ -22,7 +22,6 @@ namespace Cats.Models.ViewModels.Dashboard
         public string Woreda { get; set; }
         public int Fdps { get; set; }
         public bool status { get; set; }
-
     }
     public class RecentRequisitions
     {
@@ -47,5 +46,6 @@ namespace Cats.Models.ViewModels.Dashboard
         public decimal RequestedAmount { get; set; }
         public decimal AllocatedAmount { get; set; }
     }
+
 
 }
