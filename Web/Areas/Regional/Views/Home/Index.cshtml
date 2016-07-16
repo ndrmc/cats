@@ -115,10 +115,10 @@
                             </h3>
                             <ul class="portlet-tools pull-right">
                                 <li>
-                                    <button class="btn btn-sm btn-default">
+                                    <button class="btn btn-sm btn-default" onclick="window.location.href='../EarlyWarning/Request';">
                                         Show more
                                     </button>
-                                    <button class="btn btn-sm btn-default">
+                                    <button class="btn btn-sm btn-default" onclick="window.location.href='../EarlyWarning/Request/New';">
                                         New Request
                                     </button>
                                 </li>
@@ -219,7 +219,7 @@
                             </h3>
                             <ul class="portlet-tools pull-right">
                                 <li>
-                                    <button class="btn btn-sm btn-default">
+                                    <button class="btn btn-sm btn-default" ONCLICK="window.location.href='RegionRequisitions'">
                                         Show more
                                     </button>
 
@@ -238,7 +238,7 @@
                                             <th class="number">Beneficiaries</th>
                                             <th class="number">Amount(QT)</th>
                                             <th>Status</th>
-                                            <th class="align-center">Action</th>
+                                            @*<th class="align-center">Action</th>*@
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -250,12 +250,12 @@
                                             <th class="number">{{requisition.Amount|number}} QT</th>
 
                                             <td><span class="label label-danger">{{requisition.Status}}</span></td>
-                                            <td>
-                                                @* <a ng-href="@Url.Action("Allocation", "ReliefRequisition", new { Area = "EarlyWarning", id = 2 })" class="btn btn-sm btn-default">
+                                            @*<td>
+                                                 <a ng-href="@Url.Action("Allocation", "ReliefRequisition", new { Area = "EarlyWarning", id = 2 })" class="btn btn-sm btn-default">
                                                     View <i class="icon-chevron-right"></i>
-                                                </a>*@
+                                                </a>
                                                 <a ng-click="viewRequistion(requisition)" class="btn btn-sm btn-default"> View <i class="icon-chevron-right"></i></a>
-                                            </td>
+                                            </td>*@
                                         </tr>
 
                                     </tbody>
@@ -318,9 +318,7 @@
                             </h3>
                             <ul class="portlet-tools pull-right">
                                 <li>
-                                    <button class="btn btn-sm btn-default">
-                                        Show more
-                                    </button>
+                                    <a class="btn btn-sm btn-default" href="@Url.Action("Index", "Dispatch", new { Area = "Regional", regionID = ViewBag.RegionID })">Show More</a>   
                                     <a class="btn btn-sm btn-default" href="@Url.Action("Index", "DeliveryReconcile", new { Area = "Logistics", regionID = ViewBag.RegionID })">FDP Commodity Receipt</a>
                                 </li>
                             </ul>
@@ -421,10 +419,7 @@
                             </h3>
                             <ul class=" pull-right portlet-tools ">
                                 <li>
-                                    <button class="btn btn-sm btn-default">
-                                        Show more
-                                    </button>
-
+                                    <a class="btn btn-sm btn-default" href="@Url.Action("Index", "WoredaStockDistribution", new { Area = "Logistics", regionID = ViewBag.RegionID })"> Show more</a>
                                 </li>
                             </ul>
                         </div>
