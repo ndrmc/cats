@@ -6,6 +6,8 @@ using Cats.Areas.Logistics.Models;
 using Cats.Helpers;
 using Cats.Models;
 using Cats.Models.Constant;
+using Cats.Services.Common;
+using Cats.Services.EarlyWarning;
 using Cats.Services.Hub;
 using Cats.Services.Logistics;
 using Cats.ViewModelBinder;
@@ -28,7 +30,7 @@ namespace Cats.Areas.Logistics.Controllers
     {
         //
         // GET: /Logistics/Donation/
-        
+
         private readonly IReceiptAllocationService _receiptAllocationService;
         private readonly GiftCertificateService _giftCertificateService;
         private readonly ICommodityService _commodityService;
@@ -40,33 +42,37 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IDonationPlanDetailService _donationPlanDetailService;
         private readonly ITransactionService _transactionService;
         private ILog _log;
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IBusinessProcessService _businessProcessService;
         public DonationController(
             IReceiptAllocationService receiptAllocationService,
             ICommodityService commodityService,
             ICommonService commonService,
-            IShippingInstructionService shippingInstructionService, 
-            GiftCertificateService giftCertificateService, 
-            ICommodityTypeService commodityTypeService, 
-            IHubService hubService, 
-            IDonationPlanDetailService donationPlanDetailService, 
-            IDonationPlanHeaderService donationPlanHeaderService, ITransactionService transactionService, ILog log)
+            IShippingInstructionService shippingInstructionService,
+            GiftCertificateService giftCertificateService,
+            ICommodityTypeService commodityTypeService,
+            IHubService hubService,
+            IDonationPlanDetailService donationPlanDetailService,
+            IDonationPlanHeaderService donationPlanHeaderService, ITransactionService transactionService, ILog log, IApplicationSettingService applicationSettingService, IBusinessProcessService businessProcessService)
         {
             _receiptAllocationService = receiptAllocationService;
             _commodityService = commodityService;
             _commonService = commonService;
             _shippingInstructionService = shippingInstructionService;
-           _giftCertificateService = giftCertificateService;
+            _giftCertificateService = giftCertificateService;
             _commodityTypeService = commodityTypeService;
             _hubService = hubService;
             _donationPlanDetailService = donationPlanDetailService;
             _donationPlanHeaderService = donationPlanHeaderService;
             _transactionService = transactionService;
             _log = log;
+            _applicationSettingService = applicationSettingService;
+            _businessProcessService = businessProcessService;
         }
 
         public ActionResult Index()
         {
-
+            ViewBag.TargetController = "Donation";
             return View();
         }
 
@@ -75,46 +81,46 @@ namespace Cats.Areas.Logistics.Controllers
             try
             {
                 List<DonationPlanHeader> donationHeader = null;
-                donationHeader = _donationPlanHeaderService.GetAllDonationPlanHeader().ToList();
+                donationHeader = _donationPlanHeaderService.Get(null, null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
                 var receiptViewModel = ReceiptPlanViewModelBinder.GetReceiptHeaderPlanViewModel(donationHeader);
                 return Json(receiptViewModel.ToList().ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                return Json(e);
 
 
             }
         }
 
-       
+
         public ActionResult AddNewDonation()
         {
             var model = InitDonationViewModel();
-           return View("addNewDonation", model);
+            return View("addNewDonation", model);
         }
-       
 
-        public ActionResult AddNewDonationPlan(string siNumber = null,int typeOfLoad =1)
+
+        public ActionResult AddNewDonationPlan(string siNumber = null, int typeOfLoad = 1)
         {
             try
             {
 
-           if (siNumber!=null)
-            {
-
-                if (typeOfLoad == 1)
+                if (siNumber != null)
                 {
-                    return View(LoadFromGiftCertificiate(siNumber));
+
+                    if (typeOfLoad == 1)
+                    {
+                        return View(LoadFromGiftCertificiate(siNumber));
+                    }
+
+                    var siId = _shippingInstructionService.GetShipingInstructionId(siNumber);
+                    return View(LoadFromDonation(siId));
                 }
 
-                var siId = _shippingInstructionService.GetShipingInstructionId(siNumber);
-                return View(LoadFromDonation(siId));
-            }
-
-            var model = InitDonationViewModel();
-            return View(model);
+                var model = InitDonationViewModel();
+                return View(model);
             }
             catch (Exception)
             {
@@ -151,7 +157,7 @@ namespace Cats.Areas.Logistics.Controllers
                 donationViewModel.Programs.Add(giftCertificate.Program);
                 donationViewModel.ProgramID = giftCertificate.ProgramID;
                 donationViewModel.GiftCertificateID = giftCertificate.GiftCertificateID;
-              
+
                 donationViewModel.SINumber = siNumber;
                 donationViewModel.ETA = giftCertificate.ETA;
                 donationViewModel.CommodityTypeID = giftCertificate.GiftCertificateDetails[0].Commodity.CommodityTypeID;
@@ -175,7 +181,7 @@ namespace Cats.Areas.Logistics.Controllers
             if (donation != null)
             {
                 int index = 0;
-               var detailList = new List<DonationViewModel>();
+                var detailList = new List<DonationViewModel>();
                 var donationViewModel = InitDonationViewModel();
 
 
@@ -191,26 +197,26 @@ namespace Cats.Areas.Logistics.Controllers
                 donationViewModel.WieghtInMT = donation.DonatedAmount;
                 donationViewModel.ShippingInstructionId = donation.ShippingInstructionId;
                 donationViewModel.SINumber = donation.ShippingInstruction.Value;
-                donationViewModel.CommodityTypeID = (int) donation.CommodityTypeID;
+                donationViewModel.CommodityTypeID = (int)donation.CommodityTypeID;
                 donationViewModel.CommodityName = donation.Commodity.Name;
                 donationViewModel.DonorName = donation.Donor.Name;
                 donationViewModel.ProgramName = donation.Program.Name;
                 donationViewModel.CommomdityTypeName = donation.CommodityType.Name;
 
                 var list = donation.DonationPlanDetails.Select(detail => new DonationDetail
-                                                                             {
-                                                                                 HubID = detail.HubID, 
-                                                                                 Hub = detail.Hub.Name,
-                                                                                 AllocatedAmount = detail.AllocatedAmount,
-                                                                                 ReceivedAmount = detail.ReceivedAmount, 
-                                                                                 Balance = detail.Balance
-                                                                             }).ToList();
+                {
+                    HubID = detail.HubID,
+                    Hub = detail.Hub.Name,
+                    AllocatedAmount = detail.AllocatedAmount,
+                    ReceivedAmount = detail.ReceivedAmount,
+                    Balance = detail.Balance
+                }).ToList();
 
 
-                donationViewModel.DonationPlanDetails =  list;
-                
-                   
-                
+                donationViewModel.DonationPlanDetails = list;
+
+
+
                 return donationViewModel;
             }
             return null;
@@ -280,39 +286,42 @@ namespace Cats.Areas.Logistics.Controllers
             var commodity = _commodityService.GetAllCommodity();
 
             var donationViewModel = new DonationViewModel(commodity, donor, hub, program, commodityType)
-                                        {
-                                            DonationPlanDetails = GetNewDonationDetail(),
-                                            ETA = DateTime.Now
-                                            
-                                        };
+            {
+                DonationPlanDetails = GetNewDonationDetail(),
+                ETA = DateTime.Now
+
+            };
             return donationViewModel;
         }
 
 
         public ActionResult LoadBySi(string id)
-            {
+        {
 
-                var redirectUrl = new UrlHelper(Request.RequestContext).Action("AddNewDonationPlan", "Donation",new { Area = "Logistics", siNumber = id });
-                return Json(new {Url = redirectUrl});
+            var redirectUrl = new UrlHelper(Request.RequestContext).Action("AddNewDonationPlan", "Donation", new { Area = "Logistics", siNumber = id });
+            return Json(new { Url = redirectUrl });
 
-            }
+        }
 
         public JsonResult Load(string id)
         {
             try
             {
 
-           
-            Cats.Models.GiftCertificate giftCertificate = null;
-            giftCertificate = _giftCertificateService.GetAllGiftCertificate().FirstOrDefault(d => d.ShippingInstruction.Value == id);
-            
-            return giftCertificate != null ? Json(new {donorId = giftCertificate.Donor.Name,
-                programId = giftCertificate.Program.Name,
-                eta=giftCertificate.ETA,
-                quantity = giftCertificate.GiftCertificateDetails[0].WeightInMT, 
-                comodity = giftCertificate.GiftCertificateDetails[0].Commodity.Name,
-                commodityType = giftCertificate.GiftCertificateDetails[0].Commodity.CommodityType.Name
-            }, JsonRequestBehavior.AllowGet) : null;
+
+                Cats.Models.GiftCertificate giftCertificate = null;
+                giftCertificate = _giftCertificateService.GetAllGiftCertificate().FirstOrDefault(d => d.ShippingInstruction.Value == id);
+
+                return giftCertificate != null ? Json(new
+                {
+                    donorId = giftCertificate.Donor.Name,
+                    programId = giftCertificate.Program.Name,
+                    eta = giftCertificate.ETA,
+                    quantity = giftCertificate.GiftCertificateDetails[0].WeightInMT,
+                    comodity = giftCertificate.GiftCertificateDetails[0].Commodity.Name,
+                    parentCommodityType = giftCertificate.GiftCertificateDetails[0].Commodity.Commodity2 != null ? giftCertificate.GiftCertificateDetails[0].Commodity.Commodity2.Name : "",
+                    commodityType = giftCertificate.GiftCertificateDetails[0].Commodity.CommodityType.Name
+                }, JsonRequestBehavior.AllowGet) : null;
 
             }
             catch (Exception exception)
@@ -325,33 +334,33 @@ namespace Cats.Areas.Logistics.Controllers
             }
         }
 
-    
-        
+
+
         private IEnumerable<DonationDetail> GetNewDonationDetail()
         {
             var hubs = _hubService.GetAllHub().Where(h => h.HubOwnerID == 1);
             return hubs.Select(hub => new DonationDetail
-                                          {
-                                              HubID = hub.HubID, 
-                                              Hub = hub.Name, 
-                                              AllocatedAmount = 0, 
-                                              ReceivedAmount = 0, 
-                                              Balance = 0
-                                          }).ToList();
+            {
+                HubID = hub.HubID,
+                Hub = hub.Name,
+                AllocatedAmount = 0,
+                ReceivedAmount = 0,
+                Balance = 0
+            }).ToList();
         }
-        public ActionResult SaveHeader(string  id)
+        public ActionResult SaveHeader(string id)
         {
             try
             {
                 var donationModel = LoadFromGiftCertificiate(id);
-                SaveNewDonationPlan(donationModel,DoesSIExistInShippingInstruction(id));
+                SaveNewDonationPlan(donationModel, DoesSIExistInShippingInstruction(id));
                 return RedirectToAction("AddNewDonationPlan", "Donation", new { Area = "Logistics", siNumber = id, typeOfLoad = 0 });
 
             }
             catch (Exception)
             {
 
-               return null;
+                return null;
             }
         }
 
@@ -359,12 +368,12 @@ namespace Cats.Areas.Logistics.Controllers
         {
 
 
-           // var giftCertificate = _giftCertificateService.GetAllGiftCertificate();
+            // var giftCertificate = _giftCertificateService.GetAllGiftCertificate();
             var giftCertificate = (from gift in _giftCertificateService.GetAllGiftCertificate()
                                    select gift.ShippingInstruction.Value).Except(
                                        from allocated in _donationPlanHeaderService.GetAllDonationPlanHeader()
                                        select allocated.ShippingInstruction.Value).ToList();
-                        
+
             return Json(giftCertificate, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Save(DonationViewModel donationViewModel)
@@ -376,7 +385,7 @@ namespace Cats.Areas.Logistics.Controllers
             var commodityType = _commodityTypeService.GetAllCommodityType();
             var commodity = _commodityService.GetAllCommodity();
 
-            if (ModelState.IsValid && donationViewModel != null && donationViewModel.WieghtInMT >=donationViewModel.DonationPlanDetails.Sum(m=>m.AllocatedAmount))
+            if (ModelState.IsValid && donationViewModel != null && donationViewModel.WieghtInMT >= donationViewModel.DonationPlanDetails.Sum(m => m.AllocatedAmount))
             {
 
 
@@ -404,7 +413,7 @@ namespace Cats.Areas.Logistics.Controllers
                 }
 
 
-            
+
 
                 donationViewModel.Donors = donor;
                 donationViewModel.Commodities = commodity;
@@ -415,55 +424,90 @@ namespace Cats.Areas.Logistics.Controllers
                 return View("AddNewDonationPlan", donationViewModel);
 
             }
-          
+
             ModelState.AddModelError("Errors", @"Total Allocated Amount Can't Exceed Gift Certificate Amount");
             donationViewModel.Donors = donor;
             donationViewModel.Commodities = commodity;
             donationViewModel.Programs = program;
             donationViewModel.CommodityTypes = commodityType;
-           return View("AddNewDonationPlan",donationViewModel);
-           
-           
+            return View("AddNewDonationPlan", donationViewModel);
+
+
         }
 
-        private bool SaveNewDonationPlan(DonationViewModel donationViewModel,int siId)
+        private bool SaveNewDonationPlan(DonationViewModel donationViewModel, int siId)
         {
             try
             {
+                var userName = HttpContext.User.Identity.Name;
+                int BP_PR = 0;
+                List<ApplicationSetting> ret = _applicationSettingService.FindBy(t => t.SettingName == "DonationPlanHeaderWorkflow");
+                if (ret.Count == 1)
+                {
+                    BP_PR = Int32.Parse(ret[0].SettingValue);
+                }
+                if (BP_PR != 0)
+                {
+                    BusinessProcessState createdstate = new BusinessProcessState
+                    {
+                        DatePerformed = DateTime.Now,
+                        PerformedBy = userName,
+                        Comment = "New Requisition Created"
 
-           
-            var donationHeader = new DonationPlanHeader
-            {
-                AllocationDate = DateTime.Now,
-                CommodityID = donationViewModel.CommodityID,
-                DonorID = donationViewModel.DonorID,
-                ETA = donationViewModel.ETA,
-                IsCommited = false,
-                ProgramID = donationViewModel.ProgramID,
-                ShippingInstructionId = siId,
-                DonatedAmount = donationViewModel.WieghtInMT,
-                CommodityTypeID = donationViewModel.CommodityTypeID
+                    };
+                    //_PaymentRequestservice.Create(request);
 
-            };
+                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                        "ReliefRequisition", createdstate);
+                    if (bp != null)
+                    {
+                        var commodity = _commodityService.FindById(donationViewModel.CommodityID);
+                        var donationHeader = new DonationPlanHeader
+                        {
+                            AllocationDate = DateTime.Now,
+                            CommodityID = donationViewModel.CommodityID,
+                            DonorID = donationViewModel.DonorID,
+                            ETA = donationViewModel.ETA,
+                            IsCommited = false,
+                            ProgramID = donationViewModel.ProgramID,
+                            ShippingInstructionId = siId,
+                            DonatedAmount = donationViewModel.WieghtInMT,
+                            CommodityTypeID = donationViewModel.CommodityTypeID,
+                            BusinessProcessID = bp.BusinessProcessID
+                        };
 
-            foreach (var donationDetail in donationViewModel.DonationPlanDetails.Select(donationPlanDetail => new DonationPlanDetail
-                                                                                                                  {
-                                                                                                                      HubID = donationPlanDetail.HubID,
-                                                                                                                      AllocatedAmount = donationPlanDetail.AllocatedAmount,
-                                                                                                                      ReceivedAmount = donationPlanDetail.ReceivedAmount,
-                                                                                                                      Balance = donationPlanDetail.Balance,
-                                                                                                                      DonationPlanHeader = donationHeader
-                                                                                                                  }))
-            {
-                _donationPlanDetailService.AddDonationPlanDetail(donationDetail);
+                        foreach (var donationDetail in donationViewModel.DonationPlanDetails.Select(donationPlanDetail => new DonationPlanDetail
+                        {
+                            HubID = donationPlanDetail.HubID,
+                            AllocatedAmount = donationPlanDetail.AllocatedAmount,
+                            ReceivedAmount = donationPlanDetail.ReceivedAmount,
+                            Balance = donationPlanDetail.Balance,
+                            DonationPlanHeader = donationHeader
+                        }))
+                        {
+                            _donationPlanDetailService.AddDonationPlanDetail(donationDetail);
+                        }
+
+                        _transactionService.PostDonationPlan(donationHeader);
+                        return true;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Error", errorMessage: @"Could not create a business process object");
+                        return false;
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("Error", errorMessage: @"Could not find the application setting for this document process template");
+                    return false;
+                }
+
+
             }
-
-                _transactionService.PostDonationPlan(donationHeader);
-            return true;
-            }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                ModelState.AddModelError("Error", e.Message);
                 return false;
             }
         }
@@ -474,10 +518,10 @@ namespace Cats.Areas.Logistics.Controllers
             {
                 var index = 0;
                 var donation = _donationPlanDetailService.FindBy(s => s.DonationPlanHeader.ShippingInstructionId == shippinInstructionId).ToList();
-                
+
                 if (donation.Count > 0)
                 {
-                    
+
 
 
                     var detailArray = donationViewModel.DonationPlanDetails.ToArray();
@@ -497,7 +541,7 @@ namespace Cats.Areas.Logistics.Controllers
                         donationPlanDetail.ReceivedAmount = detailArray[index].ReceivedAmount;
                         donationPlanDetail.Balance = detailArray[index].Balance;
                         donationPlanDetail.HubID = detailArray[index].HubID;
-                       // donationPlanDetail.DonationPlanHeader = donation;
+                        // donationPlanDetail.DonationPlanHeader = donation;
                         _donationPlanDetailService.EditDonationPlanDetail(donationPlanDetail);
                         index++;
                     }
@@ -566,29 +610,29 @@ namespace Cats.Areas.Logistics.Controllers
             try
             {
                 var donationDetail =
-                    _donationPlanDetailService.FindBy(r => r.DonationHeaderPlanID == donationPlanId).Where(m=>m.AllocatedAmount>0).ToList();
-                    
+                    _donationPlanDetailService.FindBy(r => r.DonationHeaderPlanID == donationPlanId).Where(m => m.AllocatedAmount > 0).ToList();
+
                 foreach (var detail in donationDetail)
                 {
                     var receiptAllocation = new Cats.Models.Hubs.ReceiptAllocation
-                                                {
-                                                    ReceiptAllocationID = Guid.NewGuid(),
-                                                    CommodityID =detail.DonationPlanHeader.CommodityID,
-                                                    IsCommited = false,
-                                                    ETA =detail.DonationPlanHeader.ETA,
-                                                    ProjectNumber = "PC",
-                                                    SINumber =detail.DonationPlanHeader.ShippingInstruction.Value,
-                                                    QuantityInMT = detail.AllocatedAmount,
-                                                    HubID = detail.HubID,
-                                                    ProgramID =detail.DonationPlanHeader.ProgramID,
-                                                    GiftCertificateDetailID = detail.DonationPlanHeader.GiftCertificateID,
-                                                    CommoditySourceID = 1,
-                                                    IsClosed = false,
-                                                    PartitionId = 0,
-                                                    DonorID = detail.DonationPlanHeader.DonorID,
-                                                    ReceiptPlanID = detail.DonationDetailPlanID
-                                                    
-                                                };
+                    {
+                        ReceiptAllocationID = Guid.NewGuid(),
+                        CommodityID = detail.DonationPlanHeader.CommodityID,
+                        IsCommited = false,
+                        ETA = detail.DonationPlanHeader.ETA,
+                        ProjectNumber = "PC",
+                        SINumber = detail.DonationPlanHeader.ShippingInstruction.Value,
+                        QuantityInMT = detail.AllocatedAmount,
+                        HubID = detail.HubID,
+                        ProgramID = detail.DonationPlanHeader.ProgramID,
+                        GiftCertificateDetailID = detail.DonationPlanHeader.GiftCertificateID,
+                        CommoditySourceID = 1,
+                        IsClosed = false,
+                        PartitionId = 0,
+                        DonorID = detail.DonationPlanHeader.DonorID,
+                        ReceiptPlanID = detail.DonationDetailPlanID
+
+                    };
 
                     _receiptAllocationService.AddReceiptAllocation(receiptAllocation);
                 }
@@ -616,47 +660,70 @@ namespace Cats.Areas.Logistics.Controllers
             if (TriggerReceive(donationPlanHeaderId))
             {
                 var donationHeader =
-                    _donationPlanHeaderService.FindBy(d => d.DonationHeaderPlanID == donationPlanHeaderId).
+                    _donationPlanHeaderService.Get(d => d.DonationHeaderPlanID == donationPlanHeaderId, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").
                         SingleOrDefault();
                 if (donationHeader != null)
                 {
-                    donationHeader.IsCommited = true;
-                    _donationPlanHeaderService.EditDonationPlanHeader(donationHeader);
+                    var approveFlowTemplate = donationHeader.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Send to hub");
+                    if (approveFlowTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = approveFlowTemplate.FinalStateID,
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment = "Donation Plan Header sent to hub.",
+                            //AttachmentFile = fileName,
+                            ParentBusinessProcessID = donationHeader.BusinessProcessID
+                        };
+                        //return 
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                    }
                     return RedirectToAction("Index", "Donation");
                 }
             }
             return null;
         }
-        public  ActionResult Remove(int id)
+        public ActionResult Remove(int id)
         {
             var donation = _donationPlanHeaderService.FindById(id);
-            if(donation!=null)
+            if (donation != null)
             {
-                if (donation.IsCommited==false)
+                if (donation.IsCommited == false)
                 {
                     _donationPlanHeaderService.DeleteDonationPlanHeader(donation);
                     return RedirectToAction("Index", "Donation");
                 }
-               
+
             }
             return RedirectToAction("Index", "Donation");
         }
         public ActionResult Revert(int id)
         {
-            var donation = _donationPlanHeaderService.FindById(id);
-            if (donation!=null)
+            var donationHeader =
+                    _donationPlanHeaderService.Get(d => d.DonationHeaderPlanID == id, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").
+                        SingleOrDefault();
+            if (donationHeader != null)
             {
-                if (donation.IsCommited==true)
+                var approveFlowTemplate = donationHeader.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Revert");
+                if (approveFlowTemplate != null)
                 {
-                    if (_donationPlanHeaderService.DeleteReceiptAllocation(donation))
+                    var businessProcessState = new BusinessProcessState()
                     {
-                        donation.IsCommited = false;
-                        _donationPlanHeaderService.EditDonationPlanHeader(donation);
-                        RedirectToAction("Index", "Donation");
-                    }
-                    return RedirectToAction("Index", "Donation");
+                        StateID = approveFlowTemplate.FinalStateID,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "Donation Plan Header reverted to draft.",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = donationHeader.BusinessProcessID
+                    };
+                    //return 
+                    _businessProcessService.PromotWorkflow(businessProcessState);
                 }
             }
+
             return RedirectToAction("Index", "Donation");
         }
 
