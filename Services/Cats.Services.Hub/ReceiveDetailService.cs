@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Linq;
 using Cats.Data.Hub;
@@ -124,6 +125,16 @@ namespace Cats.Services.Hub
                 }
                 receiveDetailViewModelDto.ReceivedQuantityInUnit =
                     Math.Abs(receiveDetailViewModelDto.ReceivedQuantityInUnit);
+
+                receiveDetailViewModelDto.ReceivedQuantityInMTFormatted =
+                    receiveDetailViewModelDto.ReceivedQuantityInMT.ToString("N", new CultureInfo("en-US"));
+                receiveDetailViewModelDto.ReceivedQuantityInUnitFormatted =
+                    receiveDetailViewModelDto.ReceivedQuantityInUnit.ToString("N", new CultureInfo("en-US"));
+                receiveDetailViewModelDto.SentQuantityInMTFormatted =
+                    receiveDetailViewModelDto.SentQuantityInMT.ToString("N", new CultureInfo("en-US"));
+                receiveDetailViewModelDto.SentQuantityInUnitFormatted =
+                    receiveDetailViewModelDto.SentQuantityInUnit.ToString("N", new CultureInfo("en-US"));
+
                 receiveDetails.Add(receiveDetailViewModelDto);
             }
             return receiveDetails;
