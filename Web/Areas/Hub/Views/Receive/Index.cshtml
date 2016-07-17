@@ -273,11 +273,12 @@
     function getFilterAttributes() {
         var closed = "false";
         var receivable = "false";
-        if (document.getElementById("chk_closed").checked) {
+        console.log("chk_closed: " + $("#chk_closed").val());
+        if ($("#chk_closed").val() === "on") {
             closed = "true";
         }
         
-        if (document.getElementById("chk_receivable").checked)
+        if ($("#chk_receivable").val() === "on")
         {
             receivable = "true";
         }
