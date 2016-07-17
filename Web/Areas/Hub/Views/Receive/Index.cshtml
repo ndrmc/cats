@@ -15,138 +15,136 @@
 {
     <a class="btn" href="@Url.Action("Log")">@Html.Translate("Receipt Log")</a>
     @*<div class="btn-group">
-        
-        <button class="btn toolbar-btn" title="Make a new Plan" onclick="CreateNewPlan()">New Plan</button>
-            <button class="btn dropdown-toggle " data-toggle="dropdown">
-                <span class="caret"></span>
-            </button>
-        <ul class="dropdown-menu">
-            <li><a href="javascript:CreateNewPlan(@Cats.Models.Hubs.CommoditySource.Constants.DONATION)">@Html.Translate("From Donation")</a></li>
-            <li><a href="javascript:CreateNewPlan(@Cats.Models.Hubs.CommoditySource.Constants.LOAN)">@Html.Translate("From Loan")</a></li>
-            <li><a href="javascript:CreateNewPlan(@Cats.Models.Hubs.CommoditySource.Constants.LOCALPURCHASE)">@Html.Translate("From Local Purchase")</a></li>
 
-        </ul>
-   </div>*@  
+             <button class="btn toolbar-btn" title="Make a new Plan" onclick="CreateNewPlan()">New Plan</button>
+                 <button class="btn dropdown-toggle " data-toggle="dropdown">
+                     <span class="caret"></span>
+                 </button>
+             <ul class="dropdown-menu">
+                 <li><a href="javascript:CreateNewPlan(@Cats.Models.Hubs.CommoditySource.Constants.DONATION)">@Html.Translate("From Donation")</a></li>
+                 <li><a href="javascript:CreateNewPlan(@Cats.Models.Hubs.CommoditySource.Constants.LOAN)">@Html.Translate("From Loan")</a></li>
+                 <li><a href="javascript:CreateNewPlan(@Cats.Models.Hubs.CommoditySource.Constants.LOCALPURCHASE)">@Html.Translate("From Local Purchase")</a></li>
+
+             </ul>
+        </div>*@
 
     @*<div class="btn-group">
-        <button class="btn toolbar-btn" title="Record a new receipt">Receipt</button>
-            <button class="btn dropdown-toggle " data-toggle="dropdown">
-                <span class="caret"></span>
-            </button>
-        <ul class="dropdown-menu">
-            <li>@Html.ActionLink("From Loan", "Create", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.LOAN }, null)</li>
-            <li> @Html.ActionLink("From Repayment", "Create", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.REPAYMENT }, null)</li>
-            <li>@Html.ActionLink("From Swap", "Create", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.SWAP }, null)</li>
-            <li>@Html.ActionLink("From Transfer", "Create", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.TRANSFER }, null)</li>
-        </ul>
-    </div>*@
+            <button class="btn toolbar-btn" title="Record a new receipt">Receipt</button>
+                <button class="btn dropdown-toggle " data-toggle="dropdown">
+                    <span class="caret"></span>
+                </button>
+            <ul class="dropdown-menu">
+                <li>@Html.ActionLink("From Loan", "Create", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.LOAN }, null)</li>
+                <li> @Html.ActionLink("From Repayment", "Create", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.REPAYMENT }, null)</li>
+                <li>@Html.ActionLink("From Swap", "Create", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.SWAP }, null)</li>
+                <li>@Html.ActionLink("From Transfer", "Create", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.TRANSFER }, null)</li>
+            </ul>
+        </div>*@
 }
 <style>
-    .filter
-    {
-        background:#FFF;
-        border-radius:4px;
-        border:solid 4px #FFF;
+    .filter {
+        background: #FFF;
+        border-radius: 4px;
+        border: solid 4px #FFF;
         box-shadow: rgba(0,0,0,0.3) 0px 0px 2px;
     }
-    .close_false
-    {
-        color:#f00;
-    }
-    .close_false
-        {
-        }
 
-        .close_true
-        {
-            display: none;
-        }
-                .two-col-form .control-group
-        {
-            float: left;
-            width: 49%;
-        }
+    .close_false {
+        color: #f00;
+    }
+
+    .close_false {
+    }
+
+    .close_true {
+        display: none;
+    }
+
+    .two-col-form .control-group {
+        float: left;
+        width: 49%;
+    }
 </style>
 <h3>Reciept Allocation</h3>
 <div class="filter">
-    
-<form class="form-inline" style="margin:0;padding:0;">
-    <i class="icon-filter" style="margin-left:10px;"></i>
-    <div class="input-prepend" style="margin-left:20px;">
-        <label for="cmb_hub" class="add-on">Hub</label>
-        @Html.DropDownList("HubsID", null, new { @class = "inputs-large", @disabled ="disabled" })
 
-    </div>
-    <div class="input-prepend" style="margin-left: 50px;">
-        <label for="cmb_commodity_type" class="add-on">Commodity</label>
-        @Html.DropDownList("FilterCommodityTypeID", null, new {@class = "inputs-large"})
-    </div>
-    
-    <div class="input-prepend" style="margin-left:50px;">
-        <label for="FilterGRN" class="add-on">GRN</label>
-        @Html.TextBox("FilterGRN", null, new { @class = "inputs-medium" })
-    </div>
+    <form class="form-inline" style="margin:0;padding:0;">
+        <i class="icon-filter" style="margin-left:10px;"></i>
+        <div class="input-prepend" style="margin-left:20px;">
+            <label for="cmb_hub" class="add-on">Hub</label>
+            @Html.DropDownList("HubsID", null, new { @class = "inputs-large", @disabled = "disabled" })
 
-    <label class="checkbox" style="margin-left:50px;">
-    <input type="checkbox" id="chk_closed"> Show closed Plans
-@*  </label>
-    
-     <label class="checkbox" style="margin-left:50px;">
-    <input type="checkbox" id="chk_receivable"> Show Receivable Plans
-  </label>*@
-</form>
+        </div>
+        <div class="input-prepend" style="margin-left: 50px;">
+            <label for="cmb_commodity_type" class="add-on">Commodity</label>
+            @Html.DropDownList("FilterCommodityTypeID", null, new { @class = "inputs-large" })
+        </div>
+
+        <div class="input-prepend" style="margin-left:50px;">
+            <label for="FilterGRN" class="add-on">GRN</label>
+            @Html.TextBox("FilterGRN", null, new { @class = "inputs-medium" })
+        </div>
+
+        <label class="checkbox" style="margin-left:50px;">
+            <input type="checkbox" id="chk_closed"> Show closed Plans
+            @*  </label>
+
+                   <label class="checkbox" style="margin-left:50px;">
+                  <input type="checkbox" id="chk_receivable"> Show Receivable Plans
+                </label>*@
+    </form>
 </div>
 
 
 
-     <!--Modal Editor-->
-    <div id="modal_edit_window" class="modal hide fade" style="width: 900px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!--Modal Editor-->
+<div id="modal_edit_window" class="modal hide fade" style="width: 900px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="modal_label">Create Plan</h3>
-        </div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="modal_label">Create Plan</h3>
+    </div>
 
-        <div class="modal-body" >
-            <div id="modal_body"></div>
-            <div id="modal_message"></div>
-        </div>
+    <div class="modal-body">
+        <div id="modal_body"></div>
+        <div id="modal_message"></div>
+    </div>
 
-        <div class="modal-footer">
-            <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><i class="icon-white icon-remove"></i> @Html.Translate("Cancel")</button>
-            <!--<button class="btn btn-primary" onclick="initValidation('frm_edit_inline')">Validate</button>-->
-            <button class="btn btn-primary" onclick="submitInlineForm('#modal_body form')"><i class="icon-white icon-ok"></i> @Html.Translate("Ok")</button>
-
-        </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><i class="icon-white icon-remove"></i> @Html.Translate("Cancel")</button>
+        <!--<button class="btn btn-primary" onclick="initValidation('frm_edit_inline')">Validate</button>-->
+        <button class="btn btn-primary" onclick="submitInlineForm('#modal_body form')"><i class="icon-white icon-ok"></i> @Html.Translate("Ok")</button>
 
     </div>
+
+</div>
 <br />
 
-        <ul id="myTab" class="nav nav-tabs">
-            <li class="active"><a href="#from_donation" data-toggle="tab" onclick="onSourceTypeChange(@Cats.Models.Hubs.CommoditySource.Constants.DONATION)">From Donation</a></li>
-            <li><a href="#from_loan" data-toggle="tab" onclick="onSourceTypeChange(@Cats.Models.Hubs.CommoditySource.Constants.LOAN)">@Html.Translate("From Loan, Swap,  Repayment Or Transfer")</a></li>
-            <li><a href="#local_purchase" data-toggle="tab" onclick="onSourceTypeChange(@Cats.Models.Hubs.CommoditySource.Constants.LOCALPURCHASE)">Local purchase</a></li>
-        </ul>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active"><a href="#from_donation" data-toggle="tab" onclick="onSourceTypeChange(@Cats.Models.Hubs.CommoditySource.Constants.DONATION)">From Donation</a></li>
+    <li><a href="#from_loan" data-toggle="tab" onclick="onSourceTypeChange(@Cats.Models.Hubs.CommoditySource.Constants.LOAN)">@Html.Translate("From Loan, Swap,  Repayment Or Transfer")</a></li>
+    <li><a href="#local_purchase" data-toggle="tab" onclick="onSourceTypeChange(@Cats.Models.Hubs.CommoditySource.Constants.LOCALPURCHASE)">Local purchase</a></li>
+</ul>
 
-        <div id="myTabContent" class="tab-content">
-            <div class="tab-pane fade active in" id="from_donation">
-                <div class="field-set">
-                    @Html.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.DONATION })
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="from_loan">
-                <div class="field-set">
-                       @Html.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.LOAN })
-                 </div>
-            </div>
-
-            <div class="tab-pane fade" id="local_purchase">
-                <div class="field-set">
-                    @Html.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.LOCALPURCHASE })
-                </div>
-            </div>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade active in" id="from_donation">
+        <div class="field-set">
+            @Html.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.DONATION })
         </div>
+    </div>
+
+    <div class="tab-pane fade" id="from_loan">
+        <div class="field-set">
+            @Html.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.LOAN })
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="local_purchase">
+        <div class="field-set">
+            @Html.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.LOCALPURCHASE })
+        </div>
+    </div>
+</div>
 
 
 
@@ -217,9 +215,9 @@
         $frm.hide();
         $("#modal_message").html("...Saving");
         attribs = $frm.serialize();
-        
+
         $.post(url, attribs, function (data) {
-            
+
             console.log("Submit Result", data);
             var submitResult = data;
             if (typeof (data) == "string") {
@@ -258,7 +256,7 @@
         console.log("validating");
     }
     $(function () {
-        
+
 
         $("#FilterCommodityTypeID").change(dataRefresh);
         $("#HubsID").change(dataRefresh);
@@ -273,12 +271,12 @@
     function getFilterAttributes() {
         var closed = "false";
         var receivable = "false";
-        console.log("chk_closed: " + $("#chk_closed").val());
-        if ($("#chk_closed").val() === "on") {
+        console.log("chk_closed: " + $("#chk_closed").is(':checked'));
+        if ($("#chk_closed").is(':checked')) {
             closed = "true";
         }
-        
-        if ($("#chk_receivable").val() === "on")
+
+        if ($("#chk_receivable").is(':checked'))
         {
             receivable = "true";
         }
@@ -290,7 +288,7 @@
     function dataRefresh(refreshGrids) {
         //alert();
         //return;
-        
+
         var gridUrl = '@Url.Action("AllocationListJson", "Receive")';
         var gridTypes= [@Cats.Models.Hubs.CommoditySource.Constants.DONATION
            , @Cats.Models.Hubs.CommoditySource.Constants.LOAN
@@ -305,7 +303,7 @@
                     sep = "&";
                 }
             }
-           
+
             for (var i in gridTypes) {
                 var loadUrl = gridUrl + "?type=" + gridTypes[i] +  urlParams;
                 var gridName="ReceiveAllocationGrid" + gridTypes[i];
