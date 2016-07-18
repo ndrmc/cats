@@ -26,7 +26,7 @@
                 
                 var eth_date_input = $($(that).clone()).insertAfter($(this));
                 
-                    eth_date_input.removeClass("cats-datepicker2").attr("name","")
+                eth_date_input.removeClass("cats-datepicker2").attr("name", "")
                     .val(geezStr)
                     .click(function () { _ethdatepicker_show(this); })
                     .change(function(){
@@ -433,7 +433,10 @@
 															    $(target.data("greg_input")).val(greg_date.toLocaleDateString());
 															    cal.removeClass("hover");
 															 //   datepicker.displayed = 0;
-                                                            // console.log(selected_date.toString());
+															    
+															    var inputid = date_picker.input.attr("id");
+															    $("#"+inputid+".cats-datepicker2").val(greg_date.toLocaleDateString());
+															    console.log("Selected Date: " + $("#"+inputid+".cats-datepicker2").val());
                                                              cal.find(".ui-state-active").removeClass("ui-state-active");
                                                              _this.find("a").addClass("ui-state-active")
                                                                 if(date_picker.displayStyle!="inline")

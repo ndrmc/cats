@@ -16,7 +16,10 @@ namespace Cats.Models
         public int RegionID { get; set; }
         public string RegionName { get; set; }
         public int WoredaID { get; set; }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 77672912668454082f0c99d50769dabb4b5fbf32
 
     }
 }

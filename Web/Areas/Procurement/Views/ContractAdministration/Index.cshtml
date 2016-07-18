@@ -21,7 +21,7 @@
         <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Action") <i class="fa fa-angle-down"></i>
     </button>
     <ul class="dropdown-menu pull-right">
-        <li><a class="btn green-sharp-stripe" href="@Url.Action("Create", "PaymentRequest", new {transporterID = ViewBag.TransporterID})">@Html.Translate("Request Paymen")t</a></li>
+        <li><a class="btn green-sharp-stripe" href="@Url.Action("Create", "PaymentRequest", new {Area = "Logistics", transporterID = ViewBag.TransporterID})">@Html.Translate("Request Paymen")t</a></li>
         <li><a class="btn green-sharp-stripe" href="@Url.Action("ViewCurrentAgreement", "BidWinner",new { transporterID = ViewBag.TransporterID })">@Html.Translate("Print Contract")</a></li>
     </ul>
 
