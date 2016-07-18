@@ -47,6 +47,13 @@ namespace Cats.Models.ViewModels.Dashboard
         public decimal RequestedAmount { get; set; }
         public decimal AllocatedAmount { get; set; }
     }
+    public class DistibtionStatusView
+    {
+        public string plan { get; set; }
+        public string Woreda { get; set; }
+        public int Fdps { get; set; }
+        public bool status { get; set; }
 
-    
+    }
+
 }
