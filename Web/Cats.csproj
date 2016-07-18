@@ -724,6 +724,8 @@
     <Content Include="Areas\Logistics\Views\Swap\Edit.cshtml" />
     <Content Include="Areas\Logistics\Views\Swap\Index.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\Request\DetailNonFoodItems.cshtml" />
+    <Content Include="Areas\EarlyWarning\Views\GiftCertificate\_Reject.cshtml" />
+    <Content Include="Areas\EarlyWarning\Views\GiftCertificate\_NotReject.cshtml" />
     <None Include="Areas\Logistics\Views\DispatchAllocation\_AllocateProjectCode.cshtml" />
     <Content Include="Content\2013.1.219\Black\editor.png" />
     <Content Include="Content\2013.1.219\Black\imagebrowser.png" />
@@ -3699,7 +3701,6 @@
     <Content Include="Views\Shared\NewTheme _MainLayout.cshtml" />
     <Content Include="Views\Shared\NewTheme_BreadCrumb.cshtml" />
     <Content Include="Views\Shared\NewTheme_MainMenu.cshtml" />
-
     <Content Include="Web References\ReportPortal\CacheRefreshPlan2.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
