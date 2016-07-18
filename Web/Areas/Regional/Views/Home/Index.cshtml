@@ -672,9 +672,9 @@
             $http.post("@Url.Action("Distributions", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDistributionSuccess);
         };
         
-        $scope.getRegionalData = function () {
+        @*$scope.getRegionalData = function () {
             $http.post("@Url.Action("RegionalData", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDashboardDataSuccess);
-        };
+        };*@
         $scope.getRegionalData = function () {
             $http.post("@Url.Action("RegionalData", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDashboardDataSuccess);
         };
