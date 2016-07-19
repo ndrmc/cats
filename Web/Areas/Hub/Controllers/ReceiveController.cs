@@ -9,6 +9,7 @@ using Cats.Services.Hub;
 using Newtonsoft.Json;
 using Telerik.Web.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Cats.Helpers;
 using Cats.Web.Hub;
 using Kendo.Mvc.Extensions;
@@ -181,6 +182,7 @@ namespace Cats.Areas.Hub.Controllers
 
             }
         }
+        
         public ActionResult AllocationListAjax([DataSourceRequest] DataSourceRequest request, int? commodityType, int type = 1, bool closed = false, int HubID = 0, bool? receivable=false, string grn = "")
         {
             var listViewModel = new List<ReceiptAllocationViewModel>();
@@ -248,8 +250,10 @@ namespace Cats.Areas.Hub.Controllers
                         UnitID = receiptAllocation.UnitID,
                         QuantityInUnit = receiptAllocation.QuantityInUnit ?? 0,
                         QuantityInMT = receiptAllocation.QuantityInMT,
+                        QuantityInMTFormatted = receiptAllocation.QuantityInMT.ToString("N", new CultureInfo("en-US")),
                         RemainingBalanceInMT = receiptAllocation.RemainingBalanceInMT,
                         ReceivedQuantityInMT = receiptAllocation.ReceivedQuantityInMT,
+                        ReceivedQuantityInMTFormatted = receiptAllocation.ReceivedQuantityInMT.ToString("N", new CultureInfo("en-US")),
                         DonorID = receiptAllocation.DonorID,
                         ProgramID = receiptAllocation.ProgramID,
                         CommoditySourceID = receiptAllocation.CommoditySourceID,

@@ -16,14 +16,14 @@ namespace Cats.Models.ViewModels.Dashboard
         public int Beneficiaries { get; set; }
         public decimal Amount { get; set; }
     }
-    public class DistibtionStatusView
-    {
-        public string plan { get; set; }
-        public string Woreda { get; set; }
-        public int Fdps { get; set; }
-        public bool status { get; set; }
+    //public class DistibtionStatusView
+    //{
+    //    public string plan { get; set; }
+    //    public string Woreda { get; set; }
+    //    public int Fdps { get; set; }
+    //    public bool status { get; set; }
 
-    }
+    //}
     public class RecentRequisitions
     {
         public int RequisitionID { get; set; }
@@ -46,6 +46,15 @@ namespace Cats.Models.ViewModels.Dashboard
         public int Beneficiaries { get; set; }
         public decimal RequestedAmount { get; set; }
         public decimal AllocatedAmount { get; set; }
+    }
+
+    public class DistibtionStatusView
+    {
+        public string plan { get; set; }
+        public string Woreda { get; set; }
+        public int Fdps { get; set; }
+        public bool status { get; set; }
+
     }
 
 }

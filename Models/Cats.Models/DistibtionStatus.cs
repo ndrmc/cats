@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cats.Models
 {
+
    public class DistibtionStatus
     {
        
