@@ -238,7 +238,7 @@
                                             <th class="number">Beneficiaries</th>
                                             <th class="number">Amount(QT)</th>
                                             <th>Status</th>
-                                            <th class="align-center">Action</th>
+                                            @*<th class="align-center">Action</th>*@
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -250,12 +250,12 @@
                                             <th class="number">{{requisition.Amount|number}} QT</th>
 
                                             <td><span class="label label-danger">{{requisition.Status}}</span></td>
-                                            <td>
-                                                @* <a ng-href="@Url.Action("Allocation", "ReliefRequisition", new { Area = "EarlyWarning", id = 2 })" class="btn btn-sm btn-default">
+                                            @*<td>
+                                                 <a ng-href="@Url.Action("Allocation", "ReliefRequisition", new { Area = "EarlyWarning", id = 2 })" class="btn btn-sm btn-default">
                                                     View <i class="icon-chevron-right"></i>
-                                                </a>*@
+                                                </a>
                                                 <a ng-click="viewRequistion(requisition)" class="btn btn-sm btn-default"> View <i class="icon-chevron-right"></i></a>
-                                            </td>
+                                            </td>*@
                                         </tr>
 
                                     </tbody>
