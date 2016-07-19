@@ -115,10 +115,10 @@
                             </h3>
                             <ul class="portlet-tools pull-right">
                                 <li>
-                                    <button class="btn btn-sm btn-default">
+                                    <button class="btn btn-sm btn-default" onclick="window.location.href='../EarlyWarning/Request';">
                                         Show more
                                     </button>
-                                    <button class="btn btn-sm btn-default">
+                                    <button class="btn btn-sm btn-default" onclick="window.location.href='../EarlyWarning/Request/New';">
                                         New Request
                                     </button>
                                 </li>
@@ -219,7 +219,7 @@
                             </h3>
                             <ul class="portlet-tools pull-right">
                                 <li>
-                                    <button class="btn btn-sm btn-default">
+                                    <button class="btn btn-sm btn-default" ONCLICK="window.location.href='RegionRequisitions'">
                                         Show more
                                     </button>
 
@@ -319,9 +319,7 @@
                             </h3>
                             <ul class="portlet-tools pull-right">
                                 <li>
-                                    <button class="btn btn-sm btn-default">
-                                        Show more
-                                    </button>
+                                    <a class="btn btn-sm btn-default" href="@Url.Action("Index", "Dispatch", new { Area = "Regional", regionID = ViewBag.RegionID })">Show More</a>   
                                     <a class="btn btn-sm btn-default" href="@Url.Action("Index", "DeliveryReconcile", new { Area = "Logistics", regionID = ViewBag.RegionID })">FDP Commodity Receipt</a>
                                 </li>
                             </ul>
@@ -422,10 +420,7 @@
                             </h3>
                             <ul class=" pull-right portlet-tools ">
                                 <li>
-                                    <button class="btn btn-sm btn-default">
-                                        Show more
-                                    </button>
-
+                                    <a class="btn btn-sm btn-default" href="@Url.Action("Index", "WoredaStockDistribution", new { Area = "Logistics", regionID = ViewBag.RegionID })"> Show more</a>
                                 </li>
                             </ul>
                         </div>
