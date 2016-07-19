@@ -250,6 +250,7 @@
                                             <th class="number">{{requisition.Amount|number}} QT</th>
 
                                             <td><span class="label label-danger">{{requisition.Status}}</span></td>
+                                            @*Remove the view button*@
                                             @*<td>
                                                  <a ng-href="@Url.Action("Allocation", "ReliefRequisition", new { Area = "EarlyWarning", id = 2 })" class="btn btn-sm btn-default">
                                                     View <i class="icon-chevron-right"></i>
