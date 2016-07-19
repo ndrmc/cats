@@ -174,7 +174,7 @@ namespace Cats.Areas.Logistics.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("Errors", @"Error: FDP not registered. All fields need to be filled.");
+                   // ModelState.AddModelError("Errors", @"Error: FDP not registered. All fields need to be filled.");
                 }
             }
             return Json(new[] { dispatchViewModelForReconcile }.ToDataSourceResult(request, ModelState));
