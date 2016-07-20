@@ -151,7 +151,7 @@ namespace Cats.Services.Dashboard
                     plan = distiribution.PlanName,
                     Woreda = distiribution.WoredaName,
                     Fdps = distiribution.FDPID,
-                    status = Convert.ToInt16(distiribution.Status)
+                    status = distiribution.Status
                    
                 };
 
