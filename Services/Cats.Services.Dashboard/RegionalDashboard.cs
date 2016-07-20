@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Cats.Cats.Data.Micro;
 using Cats.Data.Micro;
 using Cats.Data.Micro.Models;
 using Cats.Data.UnitWork;
@@ -53,6 +54,20 @@ namespace Cats.Services.Dashboard
             }
 
             return r;
+        }
+
+        public List<object> GetAllRecentDispatches(int regionID)
+        {
+            var requisitions = new RecentDispatches();
+            var limResult =
+                requisitions.Query(
+                    "SELECT * FROM Dashboard_Regional_Dispatches WHERE RegionID=@0 ORDER BY DispatchDate DESC",
+                    args: regionID);
+            foreach (var result in limResult)
+            {
+             
+            }
+            return limResult.ToList();
         }
 
         public List<RegionalRequestAllocationChange> GetAllocationChange(int regionID)

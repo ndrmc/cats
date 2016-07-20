@@ -226,6 +226,7 @@
     <Compile Include="Areas\Logistics\Models\UnContractedTransportersListViewModel.cs" />
     <Compile Include="Areas\Procurement\Controllers\DuplicatedController.cs" />
     <Compile Include="Areas\Procurement\Models\DelayedTransportOrderViewModel.cs" />
+    <Compile Include="Areas\Regional\Controllers\DispatchController.cs" />
     <Compile Include="Areas\Settings\Controllers\AccountController.cs" />
     <Compile Include="Areas\Settings\Controllers\CurrencyController.cs" />
     <Compile Include="Areas\EarlyWarning\Controllers\DonorCoverageController.cs" />
@@ -2980,6 +2981,7 @@
     <Content Include="Areas\Logistics\Views\TransportRequisition\Destinations.cshtml" />
     <Content Include="Areas\Logistics\Views\LogisticsStockStatus\FalseAndTrueGRNStockStatus.cshtml" />
     <Content Include="Areas\Procurement\Views\PriceQuotation\RevertWinners.cshtml" />
+    <Content Include="Areas\Regional\Views\Dispatch\Index.cshtml" />
     <None Include="dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>dataset.Designer.cs</LastGenOutput>
