@@ -52,7 +52,7 @@ namespace Cats.Models.ViewModels.Dashboard
         public string plan { get; set; }
         public string Woreda { get; set; }
         public int Fdps { get; set; }
-        public bool status { get; set; }
+        public int status { get; set; }
 
     }
 
