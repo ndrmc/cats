@@ -279,6 +279,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult Rejected(int id)
         {
             var giftCertificate = _giftCertificateService.FindById(id);
+            if (giftCertificate.IsPrinted)
+                return PartialView("_NotReject", null);
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             var giftCertificateViewModel = GiftCertificateViewModelBinder.BindGiftCertificateViewModel(giftCertificate, datePref);
             return PartialView("_Reject", giftCertificateViewModel);
@@ -289,7 +291,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult Reject(int GiftCertificateID)
         {
             var result = _transactionService.RevertGiftCertificate(GiftCertificateID);
-            return RedirectToAction("Index",2);
+            return RedirectToAction("Index", new { id = 2 });
         }
         [HttpGet]
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]

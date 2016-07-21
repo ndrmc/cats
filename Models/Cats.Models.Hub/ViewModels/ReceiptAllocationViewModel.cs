@@ -31,6 +31,7 @@ namespace Cats.Models.Hubs
         public Nullable<int> UnitID { get; set; }
         public bool IsClosed { get; set; }
         public Decimal ReceivedQuantityInMT { get; set; }
+        public string ReceivedQuantityInMTFormatted { get; set; }
         //public string GRN { get; set; }
         public Decimal RemainingBalanceInMT { get; set; }
         public decimal ReceivedQuantityInUnit { get; set; }
@@ -199,10 +200,12 @@ namespace Cats.Models.Hubs
         [Range(0, 999999999.99)]
         [UIHint("PreferedWeightMeasurment")]
         public Decimal QuantityInMT { get; set; }
+        public string QuantityInMTFormatted { get; set; }
 
         [Required(ErrorMessage = "Quantity In Unit is required")]
         [Range(0, 999999999.99)]
         public Decimal QuantityInUnit { get; set; }
+        public string QuantityInUnitFormatted { get; set; }
 
         [Required(ErrorMessage = "Hub is required")]
         public Int32 HubID { get; set; }

@@ -226,6 +226,7 @@
     <Compile Include="Areas\Logistics\Models\UnContractedTransportersListViewModel.cs" />
     <Compile Include="Areas\Procurement\Controllers\DuplicatedController.cs" />
     <Compile Include="Areas\Procurement\Models\DelayedTransportOrderViewModel.cs" />
+    <Compile Include="Areas\Regional\Controllers\DispatchController.cs" />
     <Compile Include="Areas\Settings\Controllers\AccountController.cs" />
     <Compile Include="Areas\Settings\Controllers\CurrencyController.cs" />
     <Compile Include="Areas\EarlyWarning\Controllers\DonorCoverageController.cs" />
@@ -724,6 +725,8 @@
     <Content Include="Areas\Logistics\Views\Swap\Edit.cshtml" />
     <Content Include="Areas\Logistics\Views\Swap\Index.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\Request\DetailNonFoodItems.cshtml" />
+    <Content Include="Areas\EarlyWarning\Views\GiftCertificate\_Reject.cshtml" />
+    <Content Include="Areas\EarlyWarning\Views\GiftCertificate\_NotReject.cshtml" />
     <None Include="Areas\Logistics\Views\DispatchAllocation\_AllocateProjectCode.cshtml" />
     <Content Include="Content\2013.1.219\Black\editor.png" />
     <Content Include="Content\2013.1.219\Black\imagebrowser.png" />
@@ -2978,6 +2981,7 @@
     <Content Include="Areas\Logistics\Views\TransportRequisition\Destinations.cshtml" />
     <Content Include="Areas\Logistics\Views\LogisticsStockStatus\FalseAndTrueGRNStockStatus.cshtml" />
     <Content Include="Areas\Procurement\Views\PriceQuotation\RevertWinners.cshtml" />
+    <Content Include="Areas\Regional\Views\Dispatch\Index.cshtml" />
     <None Include="dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>dataset.Designer.cs</LastGenOutput>
@@ -3699,7 +3703,6 @@
     <Content Include="Views\Shared\NewTheme _MainLayout.cshtml" />
     <Content Include="Views\Shared\NewTheme_BreadCrumb.cshtml" />
     <Content Include="Views\Shared\NewTheme_MainMenu.cshtml" />
-
     <Content Include="Web References\ReportPortal\CacheRefreshPlan2.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
