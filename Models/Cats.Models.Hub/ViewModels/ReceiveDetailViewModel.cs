@@ -19,9 +19,13 @@ namespace Cats.Models.Hubs
         public string CommodityGradeName { get; set; }
         public string CommodityName { get; set; }
         public decimal ReceivedQuantityInUnit { get; set; }
+        public string ReceivedQuantityInUnitFormatted { get; set; }
         public decimal ReceivedQuantityInMT { get; set; }
+        public string ReceivedQuantityInMTFormatted { get; set; }
         public decimal SentQuantityInMT { get; set; }
+        public string SentQuantityInMTFormatted { get; set; }
         public decimal SentQuantityInUnit { get; set; }
+        public string SentQuantityInUnitFormatted { get; set; }
     }
     public class ReceiveDetailViewModel 
     {

@@ -14,57 +14,59 @@
 
 <div ng-app="myApp">
 
-<div ng-controller="DispatchController" class="container">
-    <div>
-        <div class="pull-left {{Flag}}"></div>
+    <div ng-controller="DispatchController" class="container">
         <div>
-            <h3>Incomming Dispatches for @ViewBag.RegionName</h3>
+            <div class="pull-left {{Flag}}"></div>
+            <div>
+                <h3>Incomming Dispatches for @ViewBag.RegionName</h3>
+            </div>
+        </div>
+
+        <div class="span8" style="width: 100%;">
+            <div class="portlet">
+                <div class="portlet-header">
+                    <ul class="portlet-tools pull-right">
+                        <li>
+                            @*<a class="btn btn-sm btn-default" href="@Url.Action("Index", "DeliveryReconcile", new {Area = "Logistics", regionID = ViewBag.RegionID})">FDP Commodity Receipt</a>*@
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="portlet-content">
+                    <th class="table-responsive">
+                        <table id="" class="table table-striped table-checkable">
+                            <thead>
+                                <tr>
+                                    <th>FDP</th>
+                                    <th>Woreda</th>
+                                    <th>Commodity</th>
+                                    <th>GIN</th>
+                                    <th class="number">Quantity(QT)</th>
+                                    <th>Source Hub</th>
+                                    <th>Transporter</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+                                <tr class="" ng-repeat="dispatch in Dispatches">
+                                    <td>{{dispatch[0].Value}}</td>
+                                    <th>{{dispatch[1].Value}}</th>
+                                    <td>{{dispatch[2].Value}}</td>
+                                    <td>{{dispatch[6].Value}}</td>
+                                    <th class="number">{{dispatch[5].Value|number:2}} QT</th>
+                                    <td>{{dispatch[3].Value}}</td>
+                                    <th>{{dispatch[4].Value}}</th>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.portlet-content -->
         </div>
     </div>
-
-    <div class="span8" style="width: 100%;">
-        <div class="portlet">
-            <div class="portlet-header">
-                <ul class="portlet-tools pull-right">
-                    <li>
-                        @*<a class="btn btn-sm btn-default" href="@Url.Action("Index", "DeliveryReconcile", new {Area = "Logistics", regionID = ViewBag.RegionID})">FDP Commodity Receipt</a>*@
-                    </li>
-                </ul>
-            </div>
-
-            <div class="portlet-content">
-                <th class="table-responsive">
-                <table id="" class="table table-striped table-checkable">
-                    <thead>
-                    <tr>
-                        <th>FDP</th>
-                        <th>Woreda</th>
-                        <th>Commodity</th>
-                        <th class="number">Quantity(QT)</th>
-                        <th>Source Hub</th>
-                        <th>Transporter</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-
-
-                    <tr class="" ng-repeat="dispatch in Dispatches">
-                        <td>{{dispatch[0].Value}}</td>
-                        <th>{{dispatch[1].Value}}</th>
-                        <td>{{dispatch[2].Value}}</td>
-                        <th class="number">{{dispatch[5].Value|number:2}} QT</th>
-                        <td>{{dispatch[3].Value}}</td>
-                        <th>{{dispatch[4].Value}}</th>
-                    </tr>
-
-                    </tbody>
-                </table>
-            </div>
-            <!-- /.table-responsive -->
-        </div>
-        <!-- /.portlet-content -->
-    </div>
-</div>
 </div>
 <script>
     $("#RequestHeader").click(function () {
@@ -88,7 +90,7 @@
     });
 </script>
 
-    <script>
+<script>
         angular.module('myApp', ['myApp.directives']);
         function DispatchController($scope, $http) {
 
@@ -98,16 +100,16 @@
             var onDispatchesSuccess = function (data) {
                 $scope.Dispatches = data;
             };
-       
-     
+
+
             $scope.getDispatches = function () {
                 $http.post("@Url.Action("Dispatches", "Dispatch", new { Area = "Regional" })", $scope.reqParam).success(onDispatchesSuccess);
             };
 
             $scope.getDispatches();
-     
+
         }
-    </script>
+</script>
 
 <script>
     'use strict';
@@ -252,6 +254,6 @@
             }
         });
 
-   
-   
+
+
 </script>

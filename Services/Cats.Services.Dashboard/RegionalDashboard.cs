@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Cats.Cats.Data.Micro;
 using Cats.Data.Micro;
 using Cats.Data.Micro.Models;
 using Cats.Data.UnitWork;
@@ -63,6 +64,7 @@ namespace Cats.Services.Dashboard
             return r;
         }
 
+        
         public List<RegionalRequestAllocationChange> GetAllocationChange(int regionID)
         {
             var r = new List<RegionalRequestAllocationChange>();
@@ -167,7 +169,7 @@ namespace Cats.Services.Dashboard
                     plan = distiribution.PlanName,
                     Woreda = distiribution.WoredaName,
                     Fdps = distiribution.FDPID,
-                    status = distiribution.Status
+                    status = Convert.ToInt16(distiribution.Status) 
                    
                 };
 

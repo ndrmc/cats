@@ -93,12 +93,12 @@
 
         })
                                 .Editable(editable => editable.Mode(GridEditMode.PopUp))
-                //.Pageable(t=>t.PageSizes(new int[]{10,30,50}))
+                                //.Pageable(t=>t.PageSizes(new int[]{10,30,50}))
                                 .Groupable()
                                 .Sortable()
                                 .Scrollable()
                                 .HtmlAttributes(new { style = "height:430px;" })
-                                .Events(ev => ev.DataBound("resetRowNumber"))
+                                .Events(ev => ev.DataBound("gridDataBound"))
                                 .DataSource(dataSource => dataSource
                                     .Ajax()
                                     //.PageSize(10)
@@ -143,5 +143,17 @@
         var grid = $("#Grid").data("kendoGrid");
         grid.dataSource.read();
     }
+
+    function gridDataBound(e) {
+        rowNumber = 0;
+        var grid = e.sender;
+        if (grid.dataSource.total() == 0) {
+            var colCount = grid.columns.length;
+            $(e.sender.wrapper)
+                .find('tbody')
+                .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data"><div class="cats_info">Sorry, no data found. Try changing your filter parameters.</div></td></tr>');
+        }
+    };
+
 </script>
 
