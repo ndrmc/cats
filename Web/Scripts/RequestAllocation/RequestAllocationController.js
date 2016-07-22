@@ -1,8 +1,8 @@
 ﻿var $$scope;
 var requestMockdata = {
-    request : { ReferenceNumber: "ref-00234", Region: "Afar", Program: "Relief" }
-    ,allocations:[]
-    ,commoditiesList:[]
+    request: { ReferenceNumber: "ref-00234", Region: "Afar", Program: "Relief" }
+    , allocations: []
+    , commoditiesList: []
 };
 function RequestAllocationController($scope, $http, $timeout, $filter) {
     $scope.pendingRequests = 0;
@@ -13,8 +13,8 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
     $scope.ServerUrls = ServerUrls;
     $scope.RegionalRequestID = RegionalRequestID;
     $scope.RationID = RequestRation;
-   var indexedAllocations = [];
-     
+    var indexedAllocations = [];
+
     $scope.allocationsToFilter = function () {
         indexedAllocations = [];
         return $scope.allocations;
@@ -44,12 +44,22 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
         else
             return true;
     }
+
+    $scope.isUniqueWoreda = function (index) {
+        if (index === 0)
+            return true;
+        else if ($scope.allocations[index].Woreda === $scope.allocations[index - 1].Woreda)
+            return false;
+        else
+            return true;
+    }
+
     $scope.onFetchCommodityListDataSuccess = function (data, requestedItems) {
         $scope.commoditiesList = data;
         $("#txt_requested_commodities").tokenInput(data,
                 {
                     theme: "facebook", prePopulate: requestedItems, hintText: "Type in commodity", preventDuplicates: false
-                    , onAdd:$scope.onCommodityAdd, onDelete: $scope.onCommodityDelete
+                    , onAdd: $scope.onCommodityAdd, onDelete: $scope.onCommodityDelete
                 }
                 );
     };
@@ -85,8 +95,7 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
         $scope.pendingRequests++;
         document.getElementById("activity_indicator").className = "pending-requests1";
     }
-    $scope.onRequestDone=function()
-    {
+    $scope.onRequestDone = function () {
         $timeout(function () {
             $scope.pendingRequests--;
             document.getElementById("activity_indicator").className = "pending-requests" + $scope.pendingRequests;
@@ -96,7 +105,7 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
         $scope.onRequestStart();
         $http.get($scope.ServerUrls.Allocation_Read, { params: { id: id } })
                 .success(function (response, status, headers, config) {
-                //console.log("Data filtering is successful.");
+                    //console.log("Data filtering is successful.");
                     $scope.onRequestDone();
                     $scope.onFetchRequestAllocationDataSuccess(response.Data);
                 })
@@ -116,8 +125,7 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
         console.log("fetchCommodityListData", RationID);
         $scope.onRequestStart();
         $http.get($scope.ServerUrls.getAllCommodities, { params: { RationID: RationID } })
-                .success(function (response, status, headers, config)
-                {
+                .success(function (response, status, headers, config) {
                     $scope.onRequestDone();
                     var tokenData = [];
                     var requestedItems = [];
@@ -125,9 +133,8 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
                         tokenData.push({ id: response.Data[i].Value, name: response.Data[i].Text });
                     }
                     $http.get($scope.ServerUrls.getRequestedCommodities, { params: { id: $scope.RegionalRequestID } })
-                    .success(function (response2, status, headers, config)
-                    {
-                        var msg="";
+                    .success(function (response2, status, headers, config) {
+                        var msg = "";
                         for (var i in response2.Data) {
                             msg += response2.Data[i].CommodityID + "\n";
                             requestedItems.push({ id: response2.Data[i].CommodityID, name: response2.Data[i].Commodity });
@@ -138,21 +145,21 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
                         $scope.onFetchCommodityListDataSuccess(tokenData, requestedItems);
                         alert("Error " + data);
                     });
-                   
+
                 })
                 .error(function (data, status, headers, config) {
                     $scope.onRequestDone();
                 });
 
-        
+
     }
     $scope.onCreateNewAllocation = function () {
-        $scope.newAllocation = { RegionalRequestID: $scope.RegionalRequestID, Fdpid: 0, Beneficiaries: "",FDP:"Select FPD" };
+        $scope.newAllocation = { RegionalRequestID: $scope.RegionalRequestID, Fdpid: 0, Beneficiaries: "", FDP: "Select FPD" };
         // $('#divNewAllocation').modal("show");
         $('#newAllocationEdit').show();
         $("#cmdAddAllocation").hide();
-        setTimeout(function (){$scope.onFdpListShow('new');}, 1000);
-        
+        setTimeout(function () { $scope.onFdpListShow('new'); }, 1000);
+
     }
     $scope.onCreateAllocationCancel = function () {
         hidePopover();
@@ -175,7 +182,7 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
         //alert(reqFDP.RegionalRequestDetailID);
         // Allocation_Destroy
     };
-    $scope.saveAllocation = function (allocation,isNew) {
+    $scope.saveAllocation = function (allocation, isNew) {
         $scope.onRequestStart();
         var url = $scope.ServerUrls.Allocation_Update;
         if (isNew) {
@@ -183,8 +190,8 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
         }
         $http.get(url, { params: allocation })
             .success(function (response, status, headers, config) {
-                
-                console.log("saveAllocation Success",response);
+
+                console.log("saveAllocation Success", response);
                 $scope.onRequestDone();
 
                 if (isNew) {
@@ -210,17 +217,16 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
                 $scope.onRequestDone();
                 //console.log("Failled!" + data2.success);
                 //alert("Error " + data2);
-                
+
             });
 
         //alert(reqFDP.RegionalRequestDetailID);
         // Allocation_Destroy
     };
-    $scope.onFdpListShow=function(index )
-    {
+    $scope.onFdpListShow = function (index) {
         //document.getElementById("tbl_allocation").style.marginTop=(index*-50)+"px";
         //console.log("Table Top",$("#tbl_allocation").css("top"),document.getElementById("tbl_allocation"));
-        var element=document.getElementById("fdp_selector_button" + index);
+        var element = document.getElementById("fdp_selector_button" + index);
         $scope.selectedAllocationIndex = index;
         var selectedAlloc = $scope.allocations[$scope.selectedAllocationIndex];
 
@@ -230,48 +236,60 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
     $scope.showFDPSelector = function (element, selectedAlloc) {
         selectedAlloc = selectedAlloc ? selectedAlloc : {};
 
-        console.log("$scope.showFDPSelector",selectedAlloc);
+        console.log("$scope.showFDPSelector", selectedAlloc);
         var selectedFDP = { RegionID: selectedAlloc.RegionId, ZoneID: selectedAlloc.ZoneId, WoredaID: selectedAlloc.WoredaId, FDPID: selectedAlloc.Fdpid };
         showFDPSelector({ target: element, callback: "onAllocationFDPChange", adminUnit: selectedFDP });
         //{RegionID:@Model.RegionID , ZoneID: @Model.ZoneID ,WoredaID: @Model.WoredaID ,FDPID: @Model.FDPID }
     };
     $scope.selectVisible = function () {
-        $scope.allocations = $filter('orderBy')($scope.allocations, "Zone");
+       // $scope.allocations = $filter('orderBy')($scope.allocations, "Zone");
+      
         for (var z in $scope.allocations) {
             if ($scope.allocations[z].Zone === "Zone 1")
                 $scope.allocations[z].showA = true;
             else
                 $scope.allocations[z].showA = false;
-
         }
     }
+
+    $scope.selectVisibleWoreda = function () {
+        $scope.allocations = $filter('orderBy')($scope.allocations, "Woreda");
+    }
+    
     $scope.ChangeVisible = function (zone) {
 
         for (var z in $scope.allocations) {
             if ($scope.allocations[z].Zone === zone)
                 $scope.allocations[z].showA = !$scope.allocations[z].showA;
-
-
         }
     }
-    $scope.onAllocatoinChange=function(index)
-    {
+
+    $scope.ChangeVisibleWoreda = function (woreda) {
+
+        for (var w in $scope.allocations) {
+            if ($scope.allocations[w].Woreda === woreda)
+                $scope.allocations[w].showA = !$scope.allocations[w].showA;
+        }
+    }
+
+    $scope.onAllocatoinChange = function (index) {
         var selectedAlloc = $scope.allocations[index];
         $scope.saveAllocation(selectedAlloc);
     }
+
     $scope.onFdpChange = function (fdpData) {
         var selectedAlloc = "";
-        
+
         if ($scope.selectedAllocationIndex == "new") {
             selectedAlloc = $scope.newAllocation;
         }
         else {
             selectedAlloc = $scope.allocations[$scope.selectedAllocationIndex];
         }
-      //  var selection = { FDPID: $element.data("fdpid"), fdpName: $element.data("fdpname"), WoredaID: $element.data("woredaid"), woredaName: $element.data("woredaname"), ZoneID: $element.data("zoneid"), zoneName: $element.data("zonename"), RegionID: $element.data("regionid") };
+        //  var selection = { FDPID: $element.data("fdpid"), fdpName: $element.data("fdpname"), WoredaID: $element.data("woredaid"), woredaName: $element.data("woredaname"), ZoneID: $element.data("zoneid"), zoneName: $element.data("zonename"), RegionID: $element.data("regionid") };
 
         if (selectedAlloc) {
-            
+
             selectedAlloc.FDP = fdpData.fdpName;
             selectedAlloc.Woreda = fdpData.woredaName;
             selectedAlloc.Zone = fdpData.zoneName;
@@ -287,13 +305,13 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
                 $("#txtNewAllocationBeneficiaries").focus();
                 $scope.$apply();
             }
-           
+
         }
     };
     $scope.fetchAppData = function (id) {
         $scope.fetchRequestSummaryData(id);
         $scope.fetchRequestAllocationData(id);
-        
+
     };
     $$scope = $scope;
     $scope.fetchAppData($scope.RegionalRequestID);
