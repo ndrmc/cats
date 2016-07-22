@@ -1,0 +1,8 @@
+USE [CatsMaster]  
+GO  
+  
+  
+GO 
+DROP VIEW   WoredaDistributionDashboardView
+
+GO 
