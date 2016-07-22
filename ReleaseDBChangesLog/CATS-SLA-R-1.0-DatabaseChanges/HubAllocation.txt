@@ -1,3 +1,0 @@
-USE [CatsMaster]
-GO
-ALTER TABLE[Logistics].[HubAllocation] ADD [SatelliteWarehouseID] [int] NULL ;

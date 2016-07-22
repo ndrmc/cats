@@ -1,9 +1,12 @@
-USE CatsDRMFSS
+/****** Object:  [SatelliteWarehouseID]  
 
-DROP PROCEDURE AddParentHubIDToHub 
-GO  
-CREATE PROCEDURE AddParentHubIDToHub       
-AS 
+CATS-1249-Create
+  Script Date: 3/28/2016 9:39:27 AM ******/
+
+USE [CatsMaster]
+GO
+ALTER TABLE[Logistics].[HubAllocation] ADD [SatelliteWarehouseID] [int] NULL ;
+
 
 ALTER TABLE [dbo].[Hub]
 ADD HubParentID int 
@@ -93,16 +96,3 @@ UPDATE [dbo].[Hub]
 
 
 Go
-
-
-DROP PROCEDURE DropColumnParentHubIDToHub 
-GO  
-CREATE PROCEDURE DropColumnParentHubIDToHub       
-AS 
-
-ALTER TABLE [dbo].[Hub]
-DROP COLUMN HubParentID
-
-GO
-
-
