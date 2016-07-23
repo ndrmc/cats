@@ -76,13 +76,13 @@ namespace Cats.Services.Procurement
             return _unitOfWork.TransporterRepository.FindBy(t => t.OwnedByDRMFSS);
             
         }
-        public List<TransportBidQuotation> GetSecondWinner(int transporterId, int woredaId)// BidId should also be used to filter the data
+        public List<TransportBidQuotation> GetSecondWinner(int transporterId, int woredaId, string bidDocumentNo)// BidId should also be used to filter the data
         {
             var secondTransporter = 2;
             const int firstTransporter = 1;
             var bidQoutation =
                 _unitOfWork.TransportBidQuotationRepository.FindBy(
-                    t => t.DestinationID == woredaId && t.TransporterID != transporterId);
+                    t => t.DestinationID == woredaId && t.TransporterID != transporterId && t.Bid.BidNumber == bidDocumentNo);
             var secondWinner = new List<TransportBidQuotation>();
             var winnerTransporter = new List<TransportBidQuotation>();
             var selectedTransportersId = new List<int>();
