@@ -26,5 +26,6 @@ namespace Cats.Models
         public virtual AdminUnit AdminUnit { get; set; }
         public virtual Hub Hub { get; set; }
         public virtual TransportBidQuotationHeader TransportBidQuotationHeader { get; set; }
+        public virtual Bid Bid { get; set; }
     }
 }

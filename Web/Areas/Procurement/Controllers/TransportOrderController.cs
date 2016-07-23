@@ -355,7 +355,7 @@ namespace Cats.Areas.Procurement.Controllers
             var substituteTransportersStanding = (from uniqueWoreda in uniqueWoredas
                                                   let woreda = uniqueWoreda
                                                   let changedTransporterPostition =_bidQuotationService.Get(t =>t.TransporterID == changedTransportOrderObj.TransporterID && t.DestinationID == woreda).Select(t => t.Position).FirstOrDefault()
-                                                  let woredaWinnersList = _bidQuotationService.GetSecondWinner(changedTransportOrderObj.TransporterID, woreda)// _bidQuotationService.Get(t => t.DestinationID == woreda && t.Position >= changedTransporterPostition && t.TransporterID != changedTransportOrderObj.TransporterID).ToList().OrderBy(t => t.Position)
+                                                  let woredaWinnersList = _bidQuotationService.GetSecondWinner(changedTransportOrderObj.TransporterID, woreda, changedTransportOrderObj.BidDocumentNo)// _bidQuotationService.Get(t => t.DestinationID == woreda && t.Position >= changedTransporterPostition && t.TransporterID != changedTransportOrderObj.TransporterID).ToList().OrderBy(t => t.Position)
                                                   let substituteTransportersStandingList = woredaWinnersList.ToList()
                                                  
                                                  select new SubstituteTransporterOrder
