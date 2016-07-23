@@ -97,11 +97,32 @@ namespace Cats.Areas.Settings.Controllers
                 return true;
             }
         }
-        public ActionResult FDP_Update(int fdpId)
+        public ActionResult FDP_Update([DataSourceRequest] DataSourceRequest request, FDPViewModel fdpViewModel, int? adminUnitID)
         {
-            var fdp = _fdpService.FindById(fdpId);
-            var fvm = FDPViewModelBinder.BindFDPViewModel(fdp);
-            return View(fvm);
+            if (fdpViewModel != null && ModelState.IsValid && adminUnitID.HasValue)
+            {
+
+                try
+                {
+                    if (!CheckIfFdpExists((int)adminUnitID, fdpViewModel.Name))
+                    {
+                        var fdp = FDPViewModelBinder.BindFDP(fdpViewModel);
+                        _fdpService.EditFDP(fdp);
+                        ModelState.AddModelError("Success", @"Success: FDP Updated.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Errors",
+                            @"The FDP name is duplicated. The new FDP is not saved.Please try with different name.");
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("Errors", @"Error: FDP not registered. All fields need to be filled.");
+                }
+            }
+            return Json(new[] { fdpViewModel }.ToDataSourceResult(request, ModelState));
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
