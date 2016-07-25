@@ -311,6 +311,8 @@ namespace Cats.Areas.Logistics.Controllers
                 eta=giftCertificate.ETA,
                 quantity = giftCertificate.GiftCertificateDetails[0].WeightInMT, 
                 comodity = giftCertificate.GiftCertificateDetails[0].Commodity.Name,
+                parentCommodityType = giftCertificate.GiftCertificateDetails[0].Commodity.Commodity2 != null ? giftCertificate.GiftCertificateDetails[0].Commodity.Commodity2.Name : "",
+
                 commodityType = giftCertificate.GiftCertificateDetails[0].Commodity.CommodityType.Name
             }, JsonRequestBehavior.AllowGet) : null;
 
