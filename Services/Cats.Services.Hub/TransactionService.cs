@@ -11,7 +11,7 @@ using Cats.Models.Hubs.ViewModels.Report;
 using Cats.Models.Hubs.ViewModels.Report.Data;
 using Cats.Models.Hubs;
 using Cats.Data.UnitWork;
-using daModel= Cats.Models;
+using daModel = Cats.Models;
 using Ledger = Cats.Models.Ledger;
 
 
@@ -25,9 +25,10 @@ namespace Cats.Services.Hub
         private readonly IShippingInstructionService _shippingInstructionService;
         private readonly IProjectCodeService _projectCodeService;
 
-        public TransactionService(Data.Hub.UnitWork.IUnitOfWork unitOfWork, IAccountService accountService, IShippingInstructionService shippingInstructionService, IProjectCodeService projectCodeService)
+        public TransactionService(Data.Hub.UnitWork.IUnitOfWork unitOfWork, Data.UnitWork.IUnitOfWork unitOfWorkNew, IAccountService accountService, IShippingInstructionService shippingInstructionService, IProjectCodeService projectCodeService)
         {
             this._unitOfWork = unitOfWork;
+            this._unitOfWorkNew = unitOfWorkNew;
             this._accountService = accountService;
             this._shippingInstructionService = shippingInstructionService;
             this._projectCodeService = projectCodeService;
@@ -223,27 +224,27 @@ namespace Cats.Services.Hub
         /// </summary>
         /// <param name="receiveModels">The receive models.</param>
         /// <param name="user">The user.</param>
-        public Boolean SaveReceiptTransaction(ReceiveViewModel receiveModels, UserProfile user, Boolean reverse=false)
+        public Boolean SaveReceiptTransaction(ReceiveViewModel receiveModels, UserProfile user, Boolean reverse = false)
         {
             // Populate more details of the reciept object 
             // Save it when you are done.
             int transactionsign = reverse ? -1 : 1;
-            Receive receive; 
-            
-            if(receiveModels.ReceiveID!=null)
+            Receive receive;
+
+            if (receiveModels.ReceiveID != null)
             {
                 receive = _unitOfWork.ReceiveRepository.FindById(receiveModels.ReceiveID.GetValueOrDefault());
             }
             else
             {
-                receive=new Receive();
+                receive = new Receive();
                 receive = receiveModels.GenerateReceive();
             }
-            
+
             receive.CreatedDate = DateTime.Now;
             receive.HubID = user.DefaultHubObj.HubID;
             receive.UserProfileID = user.UserProfileID;
-            
+
             int? donorId = receive.SourceDonorID;
             var commType = _unitOfWork.CommodityTypeRepository.FindById(receiveModels.CommodityTypeID);
 
@@ -251,9 +252,9 @@ namespace Cats.Services.Hub
 
 
             var transactionGroupId = Guid.NewGuid();
-            
+
             receive.ReceiveDetails.Clear();
-            
+
             foreach (ReceiveDetailViewModel c in receiveModels.ReceiveDetails)
             {
                 if (commType.CommodityTypeID == 2)//if it's a non food
@@ -282,7 +283,7 @@ namespace Cats.Services.Hub
                 receiveDetail.TransactionGroupID = tgroup.TransactionGroupID;
                 receiveDetail.TransactionGroup = tgroup;
                 receive.ReceiveDetails.Add(receiveDetail);
-                
+
 
                 #region physical stock movement
                 //transaction for goods on hand // previously it was GOODS_ON_HAND_UNCOMMITED
@@ -357,8 +358,8 @@ namespace Cats.Services.Hub
                 transaction2.HubID = user.DefaultHubObj.HubID;
                 transaction2.UnitID = c.UnitID;
                 // this is the credit part, so make it Negative
-                if (c.ReceivedQuantityInMT != null) transaction2.QuantityInMT = transactionsign*(-c.ReceivedQuantityInMT.Value);
-                if (c.ReceivedQuantityInUnit != null) transaction2.QuantityInUnit = transactionsign*(-c.ReceivedQuantityInUnit.Value);
+                if (c.ReceivedQuantityInMT != null) transaction2.QuantityInMT = transactionsign * (-c.ReceivedQuantityInMT.Value);
+                if (c.ReceivedQuantityInUnit != null) transaction2.QuantityInUnit = transactionsign * (-c.ReceivedQuantityInUnit.Value);
                 if (c.CommodityGradeID != null) transaction2.CommodityGradeID = c.CommodityGradeID.Value;
 
                 transaction2.ProgramID = receiveModels.ProgramID;
@@ -386,7 +387,7 @@ namespace Cats.Services.Hub
                 transaction.ProjectCodeID = _projectCodeService.GetProjectCodeIdWIthCreate(receiveModels.ProjectNumber).ProjectCodeID;
                 transaction.HubID = user.DefaultHubObj.HubID;
                 transaction.UnitID = c.UnitID;
-                if (c.ReceivedQuantityInMT != null) transaction.QuantityInMT = transactionsign*  c.ReceivedQuantityInMT.Value;
+                if (c.ReceivedQuantityInMT != null) transaction.QuantityInMT = transactionsign * c.ReceivedQuantityInMT.Value;
                 if (c.ReceivedQuantityInUnit != null) transaction.QuantityInUnit = transactionsign * c.ReceivedQuantityInUnit.Value;
                 if (c.CommodityGradeID != null) transaction.CommodityGradeID = c.CommodityGradeID.Value;
 
@@ -443,7 +444,7 @@ namespace Cats.Services.Hub
                 transaction2.HubID = user.DefaultHubObj.HubID;
                 transaction2.UnitID = c.UnitID;
                 // this is the credit part, so make it Negative
-                if (c.ReceivedQuantityInMT != null) transaction2.QuantityInMT = transactionsign * (- c.ReceivedQuantityInMT.Value);
+                if (c.ReceivedQuantityInMT != null) transaction2.QuantityInMT = transactionsign * (-c.ReceivedQuantityInMT.Value);
                 if (c.ReceivedQuantityInUnit != null) transaction2.QuantityInUnit = transactionsign * (-c.ReceivedQuantityInUnit.Value);
                 if (c.CommodityGradeID != null) transaction2.CommodityGradeID = c.CommodityGradeID.Value;
 
@@ -461,9 +462,9 @@ namespace Cats.Services.Hub
 
             try
             {
-                if(!reverse)
+                if (!reverse)
                 {
-                    if(receiveModels.ReceiveID==null)
+                    if (receiveModels.ReceiveID == null)
                     {
                         _unitOfWork.ReceiveRepository.Add(receive);
                     }
@@ -471,9 +472,9 @@ namespace Cats.Services.Hub
                     {
                         _unitOfWork.ReceiveRepository.Edit(receive);
                     }
-                
+
                 }
-                
+
 
                 _unitOfWork.Save();
                 return true;
@@ -610,11 +611,11 @@ namespace Cats.Services.Hub
 
             //get transactionGroup from a a loaned commodity so that we can deduct commodity amount using this transactionGroup.
 
-             Guid? transactionGroupIdForLoan  = _unitOfWork.ReceiveDetailRepository.FindBy(r => r.ReceiveID == viewModel.SelectedGRN).Select(
-                    t => t.TransactionGroupID).FirstOrDefault();
+            Guid? transactionGroupIdForLoan = _unitOfWork.ReceiveDetailRepository.FindBy(r => r.ReceiveID == viewModel.SelectedGRN).Select(
+                   t => t.TransactionGroupID).FirstOrDefault();
 
-           
-            
+
+
             //physical stock movement 
 
             #region
@@ -756,13 +757,13 @@ namespace Cats.Services.Hub
             var transactionFour = new Transaction
             {
                 TransactionID = Guid.NewGuid(),
-                TransactionGroupID =transactionGroupIdForLoan,
+                TransactionGroupID = transactionGroupIdForLoan,
                 TransactionDate = DateTime.Now,
                 ParentCommodityID = null,
                 CommodityID = receiveDetail.CommodityID,
                 CommodityChildID = receiveDetail.CommodityChildID,
-                 LedgerID = Ledger.Constants.STATISTICS_FREE_STOCK,
-                 AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB,
+                LedgerID = Ledger.Constants.STATISTICS_FREE_STOCK,
+                AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB,
                     viewModel.SourceHubId.GetValueOrDefault(0)),
                 //HubOwnerID = 
                 DonorID = receive.SourceDonorID,
@@ -778,7 +779,7 @@ namespace Cats.Services.Hub
                 ProgramID = viewModel.ProgramId,
                 StoreID = viewModel.StoreId,
                 Stack = viewModel.StackNumber,
-                IsFalseGRN =true// viewModel.IsFalseGRN
+                IsFalseGRN = true// viewModel.IsFalseGRN
             };
 
             //if (transactionFour.CommoditySourceID == CommoditySource.Constants.DONATION ||
@@ -838,7 +839,7 @@ namespace Cats.Services.Hub
 
         public bool ReceiptDetailsTransaction(ReceiveNewViewModel viewModel, Boolean reverse = false, bool isOnEdit = false)
         {
-            
+
             //Todo: Construct Receive from the viewModel .... refactor 
             int transactionsign = reverse ? -1 : 1;
 
@@ -907,7 +908,7 @@ namespace Cats.Services.Hub
                         if (transactionGroupId != null)
                         {
                             var transactionGroupIds = (Guid)transactionGroupId;
-                            var tansacationIds = Get(t => t.TransactionGroupID == transactionGroupIds).Select(t=>t.TransactionID).ToList();
+                            var tansacationIds = Get(t => t.TransactionGroupID == transactionGroupIds).Select(t => t.TransactionID).ToList();
                             foreach (var tansacationId in tansacationIds)
                             {
                                 DeleteById(tansacationId);
@@ -971,8 +972,8 @@ namespace Cats.Services.Hub
                 };
                 //add to receive 
                 receive.ReceiveDetails.Add(receiveDetail);
-                
-                
+
+
                 var parentCommodityId =
                     _unitOfWork.CommodityRepository.FindById(viewModel.ReceiveDetailNewViewModel.CommodityId).ParentID ??
                     viewModel.ReceiveDetailNewViewModel.CommodityId;
@@ -1003,8 +1004,8 @@ namespace Cats.Services.Hub
                     ProjectCodeID = _projectCodeService.GetProjectCodeIdWIthCreate(viewModel.ProjectCode).ProjectCodeID,
                     HubID = viewModel.CurrentHub,
                     UnitID = receiveDetailsViewModel.UnitId,
-                    QuantityInMT = transactionsign*receiveDetailsViewModel.ReceivedQuantityInMt,
-                    QuantityInUnit = transactionsign*receiveDetailsViewModel.ReceivedQuantityInUnit,
+                    QuantityInMT = transactionsign * receiveDetailsViewModel.ReceivedQuantityInMt,
+                    QuantityInUnit = transactionsign * receiveDetailsViewModel.ReceivedQuantityInUnit,
 
                     //CommodityGradeID = 
                     ProgramID = viewModel.ProgramId,
@@ -1039,8 +1040,8 @@ namespace Cats.Services.Hub
                     ProjectCodeID = _projectCodeService.GetProjectCodeIdWIthCreate(viewModel.ProjectCode).ProjectCodeID,
                     HubID = viewModel.CurrentHub,
                     UnitID = receiveDetailsViewModel.UnitId,
-                    QuantityInMT = transactionsign*(-receiveDetailsViewModel.ReceivedQuantityInMt),
-                    QuantityInUnit = transactionsign*(-receiveDetailsViewModel.ReceivedQuantityInUnit),
+                    QuantityInMT = transactionsign * (-receiveDetailsViewModel.ReceivedQuantityInMt),
+                    QuantityInUnit = transactionsign * (-receiveDetailsViewModel.ReceivedQuantityInUnit),
 
                     //CommodityGradeID = 
                     ProgramID = viewModel.ProgramId,
@@ -1101,8 +1102,8 @@ namespace Cats.Services.Hub
                     ProjectCodeID = _projectCodeService.GetProjectCodeIdWIthCreate(viewModel.ProjectCode).ProjectCodeID,
                     HubID = viewModel.CurrentHub,
                     UnitID = receiveDetailsViewModel.UnitId,
-                    QuantityInMT = transactionsign*receiveDetailsViewModel.ReceivedQuantityInMt,
-                    QuantityInUnit = transactionsign*receiveDetailsViewModel.ReceivedQuantityInUnit,
+                    QuantityInMT = transactionsign * receiveDetailsViewModel.ReceivedQuantityInMt,
+                    QuantityInUnit = transactionsign * receiveDetailsViewModel.ReceivedQuantityInUnit,
 
                     //CommodityGradeID = 
                     ProgramID = viewModel.ProgramId,
@@ -1133,8 +1134,8 @@ namespace Cats.Services.Hub
                     ProjectCodeID = _projectCodeService.GetProjectCodeIdWIthCreate(viewModel.ProjectCode).ProjectCodeID,
                     HubID = viewModel.CurrentHub,
                     UnitID = receiveDetailsViewModel.UnitId,
-                    QuantityInMT = transactionsign*(-receiveDetailsViewModel.ReceivedQuantityInMt),
-                    QuantityInUnit = transactionsign*(-receiveDetailsViewModel.ReceivedQuantityInUnit),
+                    QuantityInMT = transactionsign * (-receiveDetailsViewModel.ReceivedQuantityInMt),
+                    QuantityInUnit = transactionsign * (-receiveDetailsViewModel.ReceivedQuantityInUnit),
 
                     //CommodityGradeID = 
                     ProgramID = viewModel.ProgramId,
@@ -1200,8 +1201,8 @@ namespace Cats.Services.Hub
             }
             return true;
 
-    }
-        public bool ReceiptTransaction(ReceiveNewViewModel viewModel, Boolean reverse=false)
+        }
+        public bool ReceiptTransaction(ReceiveNewViewModel viewModel, Boolean reverse = false)
         {
             //Todo: Construct Receive from the viewModel .... refactor 
             int transactionsign = reverse ? -1 : 1;
@@ -1226,40 +1227,40 @@ namespace Cats.Services.Hub
             receive.GRN = viewModel.Grn;
             receive.CommodityTypeID = viewModel.CommodityTypeId;
 
-                                  receive.SourceDonorID = viewModel.SourceDonorId;
-                                  receive.ResponsibleDonorID = viewModel.ResponsibleDonorId;
+            receive.SourceDonorID = viewModel.SourceDonorId;
+            receive.ResponsibleDonorID = viewModel.ResponsibleDonorId;
 
-                                  receive.TransporterID = viewModel.TransporterId > 0 ? viewModel.TransporterId : 1;
-                                  receive.PlateNo_Prime = viewModel.PlateNoPrime;
-                                  receive.PlateNo_Trailer = viewModel.PlateNoTrailer;
-                                  receive.DriverName = viewModel.DriverName;
-                                  receive.WeightBridgeTicketNumber = viewModel.WeightBridgeTicketNumber;
-                                  receive.WeightBeforeUnloading = viewModel.WeightBeforeUnloading;
-                                  receive.WeightAfterUnloading = viewModel.WeightAfterUnloading;
+            receive.TransporterID = viewModel.TransporterId > 0 ? viewModel.TransporterId : 1;
+            receive.PlateNo_Prime = viewModel.PlateNoPrime;
+            receive.PlateNo_Trailer = viewModel.PlateNoTrailer;
+            receive.DriverName = viewModel.DriverName;
+            receive.WeightBridgeTicketNumber = viewModel.WeightBridgeTicketNumber;
+            receive.WeightBeforeUnloading = viewModel.WeightBeforeUnloading;
+            receive.WeightAfterUnloading = viewModel.WeightAfterUnloading;
 
-                                  receive.VesselName = viewModel.VesselName;
-                                  receive.PortName = viewModel.PortName;
+            receive.VesselName = viewModel.VesselName;
+            receive.PortName = viewModel.PortName;
 
-                                  receive.ReceiptDate = viewModel.ReceiptDate;
-                                  receive.CreatedDate = DateTime.Now;
-                                  receive.WayBillNo = viewModel.WayBillNo;
-                                  receive.CommoditySourceID = viewModel.CommoditySourceTypeId;
-                                  receive.ReceivedByStoreMan = viewModel.ReceivedByStoreMan;
+            receive.ReceiptDate = viewModel.ReceiptDate;
+            receive.CreatedDate = DateTime.Now;
+            receive.WayBillNo = viewModel.WayBillNo;
+            receive.CommoditySourceID = viewModel.CommoditySourceTypeId;
+            receive.ReceivedByStoreMan = viewModel.ReceivedByStoreMan;
 
-                                  receive.PurchaseOrder = viewModel.PurchaseOrder;
-                                  receive.SupplierName = viewModel.SupplierName;
+            receive.PurchaseOrder = viewModel.PurchaseOrder;
+            receive.SupplierName = viewModel.SupplierName;
 
-                                  receive.Remark = viewModel.Remark;
+            receive.Remark = viewModel.Remark;
 
-                                  receive.ReceiptAllocationID = viewModel.ReceiptAllocationId;
-                                  receive.HubID = viewModel.CurrentHub;
+            receive.ReceiptAllocationID = viewModel.ReceiptAllocationId;
+            receive.HubID = viewModel.CurrentHub;
             receive.UserProfileID = viewModel.UserProfileId;
             receive.StoreId = viewModel.StoreId;
             receive.StackNumber = viewModel.StackNumber;
             receive.SourceDonorID = viewModel.SourceDonorId;
             receive.ResponsibleDonorID = viewModel.ResponsibleDonorId;
-                              
-            
+
+
 
             #endregion
 
@@ -1297,7 +1298,7 @@ namespace Cats.Services.Hub
                 ReceiveDetailID = Guid.NewGuid(), //Todo: if there is existing id dont give new one  
 
                 CommodityID = viewModel.ReceiveDetailNewViewModel.CommodityId,
-                CommodityChildID=viewModel.ReceiveDetailNewViewModel.CommodityChildID,
+                CommodityChildID = viewModel.ReceiveDetailNewViewModel.CommodityChildID,
                 Description = viewModel.ReceiveDetailNewViewModel.Description,
                 SentQuantityInMT = viewModel.ReceiveDetailNewViewModel.SentQuantityInMt,
                 SentQuantityInUnit = viewModel.ReceiveDetailNewViewModel.SentQuantityInUnit,
@@ -1305,7 +1306,7 @@ namespace Cats.Services.Hub
                 ReceiveID = receive.ReceiveID,
                 TransactionGroupID = transactionGroup.TransactionGroupID,
                 TransactionGroup = transactionGroup,
-            
+
             };
 
 
@@ -1379,7 +1380,7 @@ namespace Cats.Services.Hub
                 ProjectCodeID = _projectCodeService.GetProjectCodeIdWIthCreate(viewModel.ProjectCode).ProjectCodeID,
                 HubID = viewModel.CurrentHub,
                 UnitID = viewModel.ReceiveDetailNewViewModel.UnitId,
-                QuantityInMT = transactionsign *  (- viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt),
+                QuantityInMT = transactionsign * (-viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt),
                 QuantityInUnit = transactionsign * (-viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInUnit),
 
                 //CommodityGradeID = 
@@ -1471,7 +1472,7 @@ namespace Cats.Services.Hub
                 ProjectCodeID = _projectCodeService.GetProjectCodeIdWIthCreate(viewModel.ProjectCode).ProjectCodeID,
                 HubID = viewModel.CurrentHub,
                 UnitID = viewModel.ReceiveDetailNewViewModel.UnitId,
-                QuantityInMT = transactionsign * (- viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt),
+                QuantityInMT = transactionsign * (-viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt),
                 QuantityInUnit = transactionsign * (-viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInUnit),
 
                 //CommodityGradeID = 
@@ -1716,11 +1717,12 @@ namespace Cats.Services.Hub
             }
             return false;
         }
-        public bool PostSIAllocation(int requisitionID)
+        public bool PostSIAllocation(int requisitionID, int siPCAllocationID)
         {
-            var allocationDetails = _unitOfWorkNew.SIPCAllocationRepository.Get(t => t.ReliefRequisitionDetail.RequisitionID == requisitionID);
+            var allocationDetails = _unitOfWorkNew.SIPCAllocationRepository.Get(t => t.ReliefRequisitionDetail.RequisitionID == requisitionID, null, "ReliefRequisitionDetail");
+            allocationDetails = allocationDetails.Where(t => t.SIPCAllocationID == siPCAllocationID);
             if (allocationDetails == null) return false;
-            var d =  new daModel.TransactionGroup();
+            var d = new daModel.TransactionGroup();
             var transactionGroup = Guid.NewGuid();
             var transactionDate = DateTime.Now;
             _unitOfWorkNew.TransactionGroupRepository.Add(new daModel.TransactionGroup { PartitionID = 0, TransactionGroupID = transactionGroup });
@@ -1729,134 +1731,158 @@ namespace Cats.Services.Hub
 
             foreach (var allocationDetail in allocationDetails)
             {
-                var transaction = new Models.Transaction
+                if (allocationDetail.TransactionGroup == null && allocationDetail.ReliefRequisitionDetail != null)
                 {
-                    TransactionID = Guid.NewGuid(),
-                    TransactionGroupID = transactionGroup,
-                    TransactionDate = transactionDate,
-                    UnitID = 1
-                };
+                    var transaction = new Models.Transaction
+                    {
+                        TransactionID = Guid.NewGuid(),
+                        TransactionGroupID = transactionGroup,
+                        TransactionDate = transactionDate,
+                        UnitID = 1
+                    };
 
-                var allocation = allocationDetail;
+                    var allocation = allocationDetail;
 
 
 
 
-                transaction.QuantityInMT = -allocationDetail.AllocatedAmount;
-                transaction.QuantityInUnit = -allocationDetail.AllocatedAmount;
-                transaction.LedgerID = Ledger.Constants.COMMITED_TO_FDP;
-                transaction.CommodityID = allocationDetail.ReliefRequisitionDetail.CommodityID;
-                transaction.ParentCommodityID = allocationDetail.ReliefRequisitionDetail.Commodity.ParentID;
-                transaction.FDPID = allocationDetail.ReliefRequisitionDetail.FDPID;
-                transaction.ProgramID = (int)allocationDetail.ReliefRequisitionDetail.ReliefRequisition.ProgramID;
-                transaction.RegionID = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionID;
-                transaction.PlanId = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionalRequest.PlanID;
-                transaction.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
+                    transaction.QuantityInMT = -allocationDetail.AllocatedAmount;
+                    transaction.QuantityInUnit = -allocationDetail.AllocatedAmount;
+                    transaction.LedgerID = Ledger.Constants.COMMITED_TO_FDP;
+                    if (allocationDetail.ReliefRequisitionDetail.CommodityID != 0)
+                        transaction.CommodityID = allocationDetail.ReliefRequisitionDetail.CommodityID;
+                    transaction.ParentCommodityID = allocationDetail.ReliefRequisitionDetail.Commodity.ParentID;
+                    transaction.FDPID = allocationDetail.ReliefRequisitionDetail.FDPID;
+                    transaction.ProgramID = (int)allocationDetail.ReliefRequisitionDetail.ReliefRequisition.ProgramID;
+                    transaction.RegionID = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionID;
+                    transaction.PlanId = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionalRequest.PlanID;
+                    transaction.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
 
-                int hubID1 = 0;
-                if (allocationDetail.AllocationType ==daModel.TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
-                {
-                    transaction.ShippingInstructionID = allocationDetail.Code;
-                    hubID1 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+                    int hubID1 = 0;
+                    if (allocationDetail.AllocationType == daModel.TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
+                    {
+                        transaction.ShippingInstructionID = allocationDetail.Code;
+                        hubID1 =
+                            (int)
+                                _unitOfWorkNew.TransactionRepository.FindBy(
+                                    m =>
+                                        m.ShippingInstructionID == allocationDetail.Code &&
+                                        m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+                    }
+                    else
+                    {
+                        transaction.ProjectCodeID = allocationDetail.Code;
+                        hubID1 =
+                            (int)
+                                _unitOfWorkNew.TransactionRepository.FindBy(
+                                    m =>
+                                        m.ProjectCodeID == allocationDetail.Code &&
+                                        m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+
+                    }
+
+                    // I see some logical error here
+                    // what happens when hub x was selected and the allocation was made from hub y? 
+                    //TOFIX: 
+                    // Hub is required for this transaction
+                    // Try catch is danger!! Either throw the exception or use conditional statement. 
+
+                    if (hubID1 != 0)
+                    {
+                        transaction.HubID = hubID1;
+                    }
+                    else
+                    {
+                        transaction.HubID =
+                            _unitOfWorkNew.HubAllocationRepository.FindBy(
+                                r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
+                                    h => h.HubID).FirstOrDefault();
+                    }
+
+
+
+
+                    _unitOfWorkNew.TransactionRepository.Add(transaction);
+                    // result.Add(transaction);
+
+                    /*post Debit-Pledged To FDP*/
+                    var transaction2 = new Models.Transaction
+                    {
+                        TransactionID = Guid.NewGuid(),
+                        TransactionGroupID = transactionGroup,
+                        TransactionDate = transactionDate,
+                        UnitID = 1
+                    };
+
+
+
+                    transaction2.QuantityInMT = allocationDetail.AllocatedAmount;
+                    transaction2.QuantityInUnit = allocationDetail.AllocatedAmount;
+                    transaction2.LedgerID = Ledger.Constants.PLEDGED_TO_FDP;
+                    transaction2.CommodityID = allocationDetail.ReliefRequisitionDetail.CommodityID;
+                    transaction2.ParentCommodityID = allocationDetail.ReliefRequisitionDetail.Commodity.ParentID;
+                    transaction2.FDPID = allocationDetail.ReliefRequisitionDetail.FDPID;
+                    transaction2.ProgramID = (int)allocationDetail.ReliefRequisitionDetail.ReliefRequisition.ProgramID;
+                    transaction2.RegionID = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionID;
+                    transaction2.PlanId = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionalRequest.PlanID;
+                    transaction2.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
+
+                    int hubID2 = 0;
+                    if (allocationDetail.AllocationType == daModel.TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
+                    {
+                        var siCode = allocationDetail.Code.ToString();
+                        var shippingInstruction =
+                            _unitOfWorkNew.ShippingInstructionRepository.Get(t => t.Value == siCode).
+                                FirstOrDefault();
+                        if (shippingInstruction != null)
+                            transaction.ShippingInstructionID = shippingInstruction.ShippingInstructionID;
+
+                        hubID2 =
+                            (int)
+                                _unitOfWorkNew.TransactionRepository.FindBy(
+                                    m => m.ShippingInstructionID == allocationDetail.Code &&
+                                         m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+
+
+                    }
+                    else
+                    {
+                        var detail = allocationDetail;
+                        var code = detail.Code.ToString();
+                        var projectCode =
+                            _unitOfWork.ProjectCodeRepository.Get(t => t.Value == code).
+                                FirstOrDefault();
+                        if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
+
+                        hubID2 =
+                            (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
+                                                                               m.LedgerID == Ledger.Constants.GOODS_ON_HAND)
+                                .Select(m => m.HubID)
+                                .FirstOrDefault();
+
+                    }
+
+
+                    if (hubID2 != 0)
+                    {
+                        transaction2.HubID = hubID2;
+                    }
+
+                    else
+                    {
+                        transaction2.HubID =
+                            _unitOfWorkNew.HubAllocationRepository.FindBy(
+                                r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
+                                    h => h.HubID).FirstOrDefault();
+
+                    }
+
+                    _unitOfWorkNew.TransactionRepository.Add(transaction2);
+                    allocationDetail.TransactionGroupID = transactionGroup;
+                    _unitOfWorkNew.SIPCAllocationRepository.Edit(allocationDetail);
+                    //result.Add(transaction);
+
                 }
-                else
-                {
-                    transaction.ProjectCodeID = allocationDetail.Code;
-                    hubID1 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
-
-                }
-
-                // I see some logical error here
-                // what happens when hub x was selected and the allocation was made from hub y? 
-                //TOFIX: 
-                // Hub is required for this transaction
-                // Try catch is danger!! Either throw the exception or use conditional statement. 
-
-                if (hubID1 != 0)
-                {
-                    transaction.HubID = hubID1;
-                }
-                else
-                {
-                    transaction.HubID =
-                                      _unitOfWorkNew.HubAllocationRepository.FindBy(r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
-                                              h => h.HubID).FirstOrDefault();
-                }
-
-
-
-
-                _unitOfWorkNew.TransactionRepository.Add(transaction);
-                // result.Add(transaction);
-
-                /*post Debit-Pledged To FDP*/
-                var transaction2 = new Models.Transaction
-                {
-                    TransactionID = Guid.NewGuid(),
-                    TransactionGroupID = transactionGroup,
-                    TransactionDate = transactionDate,
-                    UnitID = 1
-                };
-
-
-
-                transaction2.QuantityInMT = allocationDetail.AllocatedAmount;
-                transaction2.QuantityInUnit = allocationDetail.AllocatedAmount;
-                transaction2.LedgerID = Ledger.Constants.PLEDGED_TO_FDP;
-                transaction2.CommodityID = allocationDetail.ReliefRequisitionDetail.CommodityID;
-                transaction2.ParentCommodityID = allocationDetail.ReliefRequisitionDetail.Commodity.ParentID;
-                transaction2.FDPID = allocationDetail.ReliefRequisitionDetail.FDPID;
-                transaction2.ProgramID = (int)allocationDetail.ReliefRequisitionDetail.ReliefRequisition.ProgramID;
-                transaction2.RegionID = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionID;
-                transaction2.PlanId = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionalRequest.PlanID;
-                transaction2.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
-
-                int hubID2 = 0;
-                if (allocationDetail.AllocationType == daModel.TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
-                {
-                    var siCode = allocationDetail.Code.ToString();
-                    var shippingInstruction =
-                        _unitOfWork.ShippingInstructionRepository.Get(t => t.Value == siCode).
-                            FirstOrDefault();
-                    if (shippingInstruction != null) transaction.ShippingInstructionID = shippingInstruction.ShippingInstructionID;
-
-                    hubID2 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code &&
-                            m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
-
-
-                }
-                else
-                {
-                    var detail = allocationDetail;
-                    var code = detail.Code.ToString();
-                    var projectCode =
-                        _unitOfWork.ProjectCodeRepository.Get(t => t.Value == code).
-                            FirstOrDefault();
-                    if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
-
-                    hubID2 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
-                               m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
-
-                }
-
-
-                if (hubID2 != 0)
-                {
-                    transaction2.HubID = hubID2;
-                }
-
-                else
-                {
-                    transaction2.HubID =
-                                       _unitOfWorkNew.HubAllocationRepository.FindBy(r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
-                                               h => h.HubID).FirstOrDefault();
-
-                }
-
-                _unitOfWorkNew.TransactionRepository.Add(transaction2);
-                allocationDetail.TransactionGroupID = transactionGroup;
-                _unitOfWorkNew.SIPCAllocationRepository.Edit(allocationDetail);
-                //result.Add(transaction);
             }
             var requisition = _unitOfWorkNew.ReliefRequisitionRepository.FindById(requisitionID);
             requisition.Status = 4;
@@ -1865,7 +1891,7 @@ namespace Cats.Services.Hub
             //return result;
             return true;
         }
-        public void SaveDispatchTransaction(DispatchViewModel dispatchViewModel, Boolean reverse=false)
+        public void SaveDispatchTransaction(DispatchViewModel dispatchViewModel, Boolean reverse = false)
         {
             int transactionsign = reverse ? -1 : 1;
             Dispatch dispatch;
@@ -1874,13 +1900,52 @@ namespace Cats.Services.Hub
             if (dispatchViewModel.ShippingInstructionID != tempDispatchAllocation.ShippingInstructionID)
             {
                 DispatchAllocation newDispatchAllocation = new DispatchAllocation();
-                newDispatchAllocation = tempDispatchAllocation;
+                // newDispatchAllocation = tempDispatchAllocation;
                 newDispatchAllocation.ShippingInstructionID = dispatchViewModel.ShippingInstructionID;
-                newDispatchAllocation.DispatchAllocationID = new Guid();
+                newDispatchAllocation.Amount = tempDispatchAllocation.Amount;
+                newDispatchAllocation.Beneficiery = tempDispatchAllocation.Beneficiery;
+                newDispatchAllocation.BidRefNo = tempDispatchAllocation.BidRefNo;
+                newDispatchAllocation.CommodityID = tempDispatchAllocation.CommodityID;
+
+
+                newDispatchAllocation.DonorID = tempDispatchAllocation.DonorID;
+                newDispatchAllocation.FDPID = tempDispatchAllocation.FDPID;
+                newDispatchAllocation.HubID = tempDispatchAllocation.HubID;
+                newDispatchAllocation.Month = tempDispatchAllocation.Month;
+                newDispatchAllocation.PartitionId = tempDispatchAllocation.PartitionId;
+                newDispatchAllocation.ProgramID = tempDispatchAllocation.ProgramID;
+                newDispatchAllocation.ProjectCodeID = tempDispatchAllocation.ProjectCodeID;
+                newDispatchAllocation.RequisitionNo = tempDispatchAllocation.RequisitionNo;
+                newDispatchAllocation.Round = tempDispatchAllocation.Round;
+                newDispatchAllocation.RequisitionId = tempDispatchAllocation.RequisitionId;
+                newDispatchAllocation.TransporterID = tempDispatchAllocation.TransporterID;
+                newDispatchAllocation.Unit = tempDispatchAllocation.Unit;
+                newDispatchAllocation.Year = tempDispatchAllocation.Year;
+                //newDispatchAllocation.DispatchAllocationID = Guid.Empty;
+                newDispatchAllocation.DispatchAllocationID = Guid.NewGuid();
                 _unitOfWork.DispatchAllocationRepository.Add(newDispatchAllocation);
-               // Cats.Services.Transaction.
+                _unitOfWork.Save();
+                int siPCAllocationID = 0;
+                var allocationFirst = _unitOfWorkNew.SIPCAllocationRepository.Get(t => t.ReliefRequisitionDetail.RequisitionID == newDispatchAllocation.RequisitionId.Value).FirstOrDefault();
+                if (allocationFirst != null)
+                {
+                    daModel.SIPCAllocation allocation = new daModel.SIPCAllocation();
+
+                    allocation.Code = newDispatchAllocation.ShippingInstructionID.Value;
+                    allocation.AllocatedAmount = dispatchViewModel.Quantity;
+                    allocation.AllocationType = allocationFirst.AllocationType;
+                    allocation.RequisitionDetailID = allocationFirst.RequisitionDetailID;
+                    _unitOfWorkNew.SIPCAllocationRepository.Add(allocation);
+                    _unitOfWorkNew.Save();
+
+                    siPCAllocationID = allocation.SIPCAllocationID;
+                }
+
+
+                if (newDispatchAllocation.RequisitionId.HasValue)
+                    PostSIAllocation(newDispatchAllocation.RequisitionId.Value, siPCAllocationID);
             }
-           
+
             if (dispatchViewModel.DispatchID != null)
                 dispatch = _unitOfWork.DispatchRepository.FindById(dispatchViewModel.DispatchID.GetValueOrDefault());
             else
@@ -1893,24 +1958,24 @@ namespace Cats.Services.Hub
 
 
             dispatch.BidNumber = dispatchViewModel.BidNumber;
-                dispatch.CreatedDate = dispatchViewModel.CreatedDate;
-                dispatch.DispatchAllocationID = dispatchViewModel.DispatchAllocationID;
-                dispatch.DispatchDate = dispatchViewModel.DispatchDate;
-                
-                dispatch.DispatchedByStoreMan = dispatchViewModel.DispatchedByStoreMan;
-                dispatch.DriverName = dispatchViewModel.DriverName;
-                dispatch.FDPID = dispatchViewModel.FDPID;
-                dispatch.GIN = dispatchViewModel.GIN;
-                dispatch.HubID = dispatchViewModel.HubID;
-                dispatch.PeriodMonth = dispatchViewModel.Month;
-                dispatch.PeriodYear = dispatchViewModel.Year;
-                dispatch.PlateNo_Prime = dispatchViewModel.PlateNo_Prime;
-                dispatch.PlateNo_Trailer = dispatchViewModel.PlateNo_Trailer;
-                dispatch.Remark = dispatchViewModel.Remark;
-                dispatch.RequisitionNo = dispatchViewModel.RequisitionNo;
-                dispatch.Round = dispatchViewModel.Round;
-                dispatch.TransporterID = dispatchViewModel.TransporterID;
-                dispatch.UserProfileID = dispatchViewModel.UserProfileID;
+            dispatch.CreatedDate = dispatchViewModel.CreatedDate;
+            dispatch.DispatchAllocationID = dispatchViewModel.DispatchAllocationID;
+            dispatch.DispatchDate = dispatchViewModel.DispatchDate;
+
+            dispatch.DispatchedByStoreMan = dispatchViewModel.DispatchedByStoreMan;
+            dispatch.DriverName = dispatchViewModel.DriverName;
+            dispatch.FDPID = dispatchViewModel.FDPID;
+            dispatch.GIN = dispatchViewModel.GIN;
+            dispatch.HubID = dispatchViewModel.HubID;
+            dispatch.PeriodMonth = dispatchViewModel.Month;
+            dispatch.PeriodYear = dispatchViewModel.Year;
+            dispatch.PlateNo_Prime = dispatchViewModel.PlateNo_Prime;
+            dispatch.PlateNo_Trailer = dispatchViewModel.PlateNo_Trailer;
+            dispatch.Remark = dispatchViewModel.Remark;
+            dispatch.RequisitionNo = dispatchViewModel.RequisitionNo;
+            dispatch.Round = dispatchViewModel.Round;
+            dispatch.TransporterID = dispatchViewModel.TransporterID;
+            dispatch.UserProfileID = dispatchViewModel.UserProfileID;
             dispatch.WeighBridgeTicketNumber = dispatchViewModel.WeighBridgeTicketNumber;
             dispatch.ShippingInstructionID = dispatchViewModel.ShippingInstructionID.Value;
 
@@ -1924,17 +1989,17 @@ namespace Cats.Services.Hub
             {
                 DispatchID = dispatch.DispatchID,
                 CommodityID = dispatchViewModel.CommodityID,
-                CommodityChildID=dispatchViewModel.CommodityChildID,
+                CommodityChildID = dispatchViewModel.CommodityChildID,
                 Description = dispatchViewModel.Commodity,
                 DispatchDetailID = Guid.NewGuid(),
                 RequestedQuantityInMT = dispatchViewModel.Quantity,
                 RequestedQunatityInUnit = dispatchViewModel.QuantityInUnit,
                 QuantityPerUnit = dispatchViewModel.QuantityPerUnit,
-                
+
                 UnitID = dispatchViewModel.UnitID,
                 TransactionGroupID = @group.TransactionGroupID
             };
-           
+
             //var parentCommodityId =
             //    _unitOfWork.CommodityRepository.FindById(dispatchViewModel.CommodityChildID).ParentID ??
             //    dispatchViewModel.CommodityID;
@@ -1951,7 +2016,7 @@ namespace Cats.Services.Hub
                 HubID = dispatchViewModel.HubID,
                 HubOwnerID = _unitOfWork.HubRepository.FindById(dispatchViewModel.HubID).HubOwnerID,
                 LedgerID = Models.Ledger.Constants.GOODS_IN_TRANSIT,
-                QuantityInMT = transactionsign * (+ dispatchViewModel.Quantity),
+                QuantityInMT = transactionsign * (+dispatchViewModel.Quantity),
                 QuantityInUnit = transactionsign * (+dispatchViewModel.QuantityInUnit),
                 ShippingInstructionID = dispatchViewModel.ShippingInstructionID,
                 ProjectCodeID = dispatchViewModel.ProjectCodeID,
@@ -2051,7 +2116,7 @@ namespace Cats.Services.Hub
             //transaction.StoreID = dispatch.StoreID;
             dispatch.DispatchDetails.Clear();
             dispatch.DispatchDetails.Add(dispatchDetail);
-            
+
 
             try
             {
@@ -2066,15 +2131,15 @@ namespace Cats.Services.Hub
                     {
                         _unitOfWork.DispatchRepository.Add(dispatch);
                     }
-                
+
                     else
                     {
                         _unitOfWork.DispatchRepository.Edit(dispatch);
                     }
                 }
-                
-            
-            _unitOfWork.Save();
+
+
+                _unitOfWork.Save();
 
             }
 
@@ -2540,7 +2605,7 @@ namespace Cats.Services.Hub
             }
         }
 
-        
+
         /// <summary>
         /// </summary>
         /// <param name="viewModel"></param>
@@ -2810,7 +2875,7 @@ namespace Cats.Services.Hub
 
                     join d in _unitOfWork.DonorRepository.Get() on t.Account.EntityID equals d.DonorID
                     where t.Account.EntityType == "Donor"
-                    let firstOrDefault = _unitOfWork.CommodityRepository.FindBy(c=>c.CommodityID == t.CommodityChildID).FirstOrDefault()
+                    let firstOrDefault = _unitOfWork.CommodityRepository.FindBy(c => c.CommodityID == t.CommodityChildID).FirstOrDefault()
                     where firstOrDefault != null
                     select new StartingBalanceViewModelDto()
                     {
@@ -2886,31 +2951,31 @@ namespace Cats.Services.Hub
             return (from t in dbGetOffloadingReport
                     group t by new { t.BidRefNo, t.ProgramName, t.Round, t.PeriodMonth, t.PeriodYear, t.RegionName }
                         into b
-                        select new OffloadingReport()
+                    select new OffloadingReport()
+                    {
+                        ContractNumber = b.Key.BidRefNo,
+                        EndDate = EndTime,
+                        StartDate = StartTime,
+                        Month = Convert.ToString(b.Key.PeriodMonth),
+                        Round = Convert.ToString(b.Key.Round),
+                        Year = b.Key.PeriodYear,//??0, modified Banty 23_5_13
+                        Region = b.Key.RegionName,
+                        Program = b.Key.ProgramName,
+                        OffloadingDetails = b.Select(t1 => new OffloadingDetail()
                         {
-                            ContractNumber = b.Key.BidRefNo,
-                            EndDate = EndTime,
-                            StartDate = StartTime,
-                            Month = Convert.ToString(b.Key.PeriodMonth),
-                            Round = Convert.ToString(b.Key.Round),
-                            Year = b.Key.PeriodYear,//??0, modified Banty 23_5_13
-                            Region = b.Key.RegionName,
-                            Program = b.Key.ProgramName,
-                            OffloadingDetails = b.Select(t1 => new OffloadingDetail()
-                            {
-                                RequisitionNumber = t1.RequisitionNo,
-                                Product = t1.CommodityName,
-                                Zone = t1.ZoneName,
-                                Woreda = t1.WoredaName,
-                                Destination = t1.FDPName,
-                                Allocation = t1.AllocatedInMT ?? 0,
-                                Dispatched = t1.DispatchedQuantity ?? 0,
-                                Remaining = t1.RemainingAmount ?? 0,
-                                Transporter = t1.TransaporterName,
-                                Donor = t1.DonorName
-                            }).ToList()
+                            RequisitionNumber = t1.RequisitionNo,
+                            Product = t1.CommodityName,
+                            Zone = t1.ZoneName,
+                            Woreda = t1.WoredaName,
+                            Destination = t1.FDPName,
+                            Allocation = t1.AllocatedInMT ?? 0,
+                            Dispatched = t1.DispatchedQuantity ?? 0,
+                            Remaining = t1.RemainingAmount ?? 0,
+                            Transporter = t1.TransaporterName,
+                            Donor = t1.DonorName
+                        }).ToList()
 
-                        }).ToList();
+                    }).ToList();
         }
 
 
@@ -2967,20 +3032,20 @@ namespace Cats.Services.Hub
             return (from t in dbGetReceiptReport
                     group t by new { t.BudgetYear }
                         into b
-                        select new ReceiveReport()
+                    select new ReceiveReport()
+                    {
+                        BudgetYear = b.Key.BudgetYear.Value,
+                        rows = b.Select(t1 => new ReceiveRow()
                         {
-                            BudgetYear = b.Key.BudgetYear.Value,
-                            rows = b.Select(t1 => new ReceiveRow()
-                            {
-                                Product = t1.CommodityName,
-                                Program = t1.ProgramName,
-                                Quantity = t1.BalanceInMt.Value,
-                                Quarter = t1.Quarter.Value
-                                /*MeasurementUnit = t1.BalanceInUnit.Value*/
+                            Product = t1.CommodityName,
+                            Program = t1.ProgramName,
+                            Quantity = t1.BalanceInMt.Value,
+                            Quarter = t1.Quarter.Value
+                            /*MeasurementUnit = t1.BalanceInUnit.Value*/
 
-                            }).ToList()
+                        }).ToList()
 
-                        }).ToList();
+                    }).ToList();
         }
 
 
@@ -3009,8 +3074,8 @@ namespace Cats.Services.Hub
             }
 
             return (from t in dbDistributionReport
-                    //  group t by new { t.BudgetYear }
-                    //      into b
+                        //  group t by new { t.BudgetYear }
+                        //      into b
                     select new DistributionRows()
                     {
                         BudgetYear = t.PeriodYear,

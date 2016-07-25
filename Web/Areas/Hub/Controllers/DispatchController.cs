@@ -196,6 +196,8 @@ namespace Cats.Areas.Hub.Controllers
             var hubId = _hubAllocationService.GetAllocatedHubId(reqId);
             List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodity(hubId, ComID);
             var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
+            tlistFiltered = tlistFiltered.Where(item => item.amount > 0);
+            ViewBag.AvailableSIList = tlistFiltered;
             return (Json(tlistFiltered, JsonRequestBehavior.AllowGet));
 
         }
@@ -288,7 +290,7 @@ namespace Cats.Areas.Hub.Controllers
 
         //GIN unique validation
         [HttpGet]
-        public  JsonResult NotUnique(string gin, string dispatchID)
+        public JsonResult NotUnique(string gin, string dispatchID)
         {
 
             var dispatch = _dispatchService.GetDispatchByGIN(gin);
@@ -311,16 +313,16 @@ namespace Cats.Areas.Hub.Controllers
         }
         //
         // GET: /Dispatch/Create
-                
+
         public ActionResult CreateDispatch(string allocationId, int type, string ginNo)
         {
             ViewBag.UnitID = new SelectList(_unitService.GetAllUnit(), "UnitID", "Name");
             ViewBag.UnitPreference = _userProfileService.GetUser(this.UserProfile.UserName).PreferedWeightMeasurment;
             //var commodities = _commodityService.GetAllCommodity();
             //ViewBag.CommodityID = new SelectList(commodities, "CommodityID", "Name");
-            var id = Guid.Parse(allocationId); 
-            DispatchViewModel dispatch; 
-            if(ginNo!= null)
+            var id = Guid.Parse(allocationId);
+            DispatchViewModel dispatch;
+            if (ginNo != null)
             {
                 Dispatch editdispatch = _dispatchService.GetDispatchByGIN(ginNo);
                 id = Guid.Parse(editdispatch.DispatchAllocationID.ToString());
@@ -329,7 +331,7 @@ namespace Cats.Areas.Hub.Controllers
                 dispatch.GIN = editdispatch.GIN;
                 DispatchDetail detail = editdispatch.DispatchDetails.FirstOrDefault();
                 dispatch.QuantityInUnit = detail.DispatchedQuantityInUnit;
-                dispatch.QuantityPerUnit = detail.DispatchedQuantityInMT*10;
+                dispatch.QuantityPerUnit = detail.DispatchedQuantityInMT * 10;
                 dispatch.Quantity = detail.DispatchedQuantityInMT;
                 dispatch.UnitID = detail.UnitID;
                 dispatch.PlateNo_Prime = editdispatch.PlateNo_Prime;
@@ -350,11 +352,11 @@ namespace Cats.Areas.Hub.Controllers
             }
             else
             {
-               dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(id, 0);
-                
-                
+                dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(id, 0);
+
+
             }
-            
+
             var fdp = _fdpService.Get(t => t.FDPID == dispatch.FDPID, null, "AdminUnit,AdminUnit.AdminUnit2,AdminUnit.AdminUnit2.AdminUnit2").FirstOrDefault();
             dispatch.UserProfileID = UserProfile.UserProfileID;
             dispatch.Region = fdp.AdminUnit.AdminUnit2.AdminUnit2.Name;
@@ -377,7 +379,7 @@ namespace Cats.Areas.Hub.Controllers
 
             var id1 = dispatch.CommodityID;
             commodity = _commodityService.FindById(id1);
-            
+
 
 
             //DispatchViewModel dispatchViewModel = DispatchViewModelBinder.BindDispatchViewModelBinder(dispatch);
@@ -385,6 +387,11 @@ namespace Cats.Areas.Hub.Controllers
             {
                 dispatch.Commodity = commodity.Name;
             }
+            var hubId = _hubAllocationService.GetAllocatedHubId(dispatch.RequisitionId ?? 0);
+            List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodity(hubId, dispatch.CommodityID);
+            var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
+            tlistFiltered = tlistFiltered.Where(item => item.amount > 0).ToList();
+            ViewBag.AvailableSIList = tlistFiltered;
             ViewBag.plannedAmount = dispatch.plannedAmount;
             return View(dispatch);
 
@@ -421,7 +428,7 @@ namespace Cats.Areas.Hub.Controllers
                 dispatch.UnitID = dispatchviewmodel.UnitID;
                 dispatch.QuantityInUnit = dispatchviewmodel.QuantityInUnit;
                 dispatch.QuantityPerUnit = dispatchviewmodel.QuantityPerUnit;
-                dispatch.Quantity = dispatchviewmodel.QuantityPerUnit.GetValueOrDefault()/10;
+                dispatch.Quantity = dispatchviewmodel.QuantityPerUnit.GetValueOrDefault() / 10;
                 dispatch.FDP = dispatchviewmodel.FDP;
                 dispatch.Transporter = dispatchviewmodel.Transporter;
                 dispatch.HubID = dispatchviewmodel.HubID;
@@ -431,47 +438,47 @@ namespace Cats.Areas.Hub.Controllers
                 dispatch.ShippingInstructionID = dispatchviewmodel.ShippingInstructionID;
                 dispatch.CommodityChildID = dispatchviewmodel.CommodityChildID;
                 //dispatch.Quantity = UserProfile.PreferedWeightMeasurment.ToLower() == "mt" ? dispatchviewmodel.Quantity : dispatchviewmodel.Quantity / 10;
-                
+
                 //if its being edited reverse previous transaction before saving the new one;
-                
+
                 var prevdispatch = _dispatchService.FindById(dispatchviewmodel.DispatchID.GetValueOrDefault());
                 if (prevdispatch != null)
                 {
                     var prevdispatchdetail = prevdispatch.DispatchDetails.FirstOrDefault();
-                
+
                     _transactionService.SaveDispatchTransaction(
                         new DispatchViewModel
-                            {
-                                CommodityID = prevdispatchdetail.CommodityID,
-                                Quantity = prevdispatchdetail.DispatchedQuantityInMT,
-                                QuantityInUnit = prevdispatchdetail.DispatchedQuantityInUnit,
-                                ShippingInstructionID = dispatchviewmodel.ShippingInstructionID,
-                                ProjectCodeID = dispatchviewmodel.ProjectCodeID,
-                                PlanId = dispatchviewmodel.PlanId,
-                                UnitID = dispatchviewmodel.UnitID,
-                                BidNumber = prevdispatch.BidNumber,
-                                CreatedDate = prevdispatch.CreatedDate,
-                                DispatchAllocationID = prevdispatch.DispatchAllocationID.GetValueOrDefault(),
-                                DispatchDate = prevdispatch.DispatchDate,
-                                DispatchID = prevdispatch.DispatchID,
-                                DispatchedByStoreMan = prevdispatch.DispatchedByStoreMan,
-                                DriverName = prevdispatch.DriverName,
-                                FDPID = prevdispatch.FDPID.GetValueOrDefault(),
-                                ProgramID = dispatchviewmodel.ProgramID,
-                                GIN = prevdispatch.GIN,
-                                HubID = prevdispatch.HubID,
-                                Month = prevdispatch.PeriodMonth,
-                                Year = prevdispatch.PeriodYear,
-                                PlateNo_Prime = prevdispatch.PlateNo_Prime,
-                                PlateNo_Trailer = prevdispatch.PlateNo_Trailer,
-                                Remark = prevdispatch.Remark,
-                                RequisitionNo = prevdispatch.RequisitionNo,
-                                Round = prevdispatch.Round,
-                                TransporterID = prevdispatch.TransporterID,
-                                UserProfileID = prevdispatch.UserProfileID,
-                              
-                                WeighBridgeTicketNumber = prevdispatch.WeighBridgeTicketNumber
-                            }, true);
+                        {
+                            CommodityID = prevdispatchdetail.CommodityID,
+                            Quantity = prevdispatchdetail.DispatchedQuantityInMT,
+                            QuantityInUnit = prevdispatchdetail.DispatchedQuantityInUnit,
+                            ShippingInstructionID = dispatchviewmodel.ShippingInstructionID,
+                            ProjectCodeID = dispatchviewmodel.ProjectCodeID,
+                            PlanId = dispatchviewmodel.PlanId,
+                            UnitID = dispatchviewmodel.UnitID,
+                            BidNumber = prevdispatch.BidNumber,
+                            CreatedDate = prevdispatch.CreatedDate,
+                            DispatchAllocationID = prevdispatch.DispatchAllocationID.GetValueOrDefault(),
+                            DispatchDate = prevdispatch.DispatchDate,
+                            DispatchID = prevdispatch.DispatchID,
+                            DispatchedByStoreMan = prevdispatch.DispatchedByStoreMan,
+                            DriverName = prevdispatch.DriverName,
+                            FDPID = prevdispatch.FDPID.GetValueOrDefault(),
+                            ProgramID = dispatchviewmodel.ProgramID,
+                            GIN = prevdispatch.GIN,
+                            HubID = prevdispatch.HubID,
+                            Month = prevdispatch.PeriodMonth,
+                            Year = prevdispatch.PeriodYear,
+                            PlateNo_Prime = prevdispatch.PlateNo_Prime,
+                            PlateNo_Trailer = prevdispatch.PlateNo_Trailer,
+                            Remark = prevdispatch.Remark,
+                            RequisitionNo = prevdispatch.RequisitionNo,
+                            Round = prevdispatch.Round,
+                            TransporterID = prevdispatch.TransporterID,
+                            UserProfileID = prevdispatch.UserProfileID,
+
+                            WeighBridgeTicketNumber = prevdispatch.WeighBridgeTicketNumber
+                        }, true);
                 }
 
 
@@ -480,12 +487,12 @@ namespace Cats.Areas.Hub.Controllers
 
                 var contacts = _contactService.FindBy(c => c.FDPID == dispatch.FDPID);
 
-                
-                if (_dispatchService.FindByAllocationId(dispatchviewmodel.DispatchAllocationID)==null)
+
+                if (_dispatchService.FindByAllocationId(dispatchviewmodel.DispatchAllocationID) == null)
                 {
 
                     DispatchAllocation totalAllocated = _dispatchAllocationService.FindById(dispatchviewmodel.DispatchAllocationID);
-                    
+
                     foreach (var contact in contacts)
                     {
                         var hub = _hubService.FindById(dispatch.HubID).Name;
@@ -494,7 +501,7 @@ namespace Cats.Areas.Hub.Controllers
                             MobileNumber = contact.PhoneNo,
                             Text =
                                 "Hello," + contact.FirstName + " There is a new dispatch from " + hub + " hub. COMMODITY: " + dispatch.Commodity +
-                                " QUT: " + totalAllocated.Amount  + " MT." + "Strarting from:" +
+                                " QUT: " + totalAllocated.Amount + " MT." + "Strarting from:" +
                                 DateTime.Today.ToShortDateString(),
                             Status = 1,
                             InOutInd = "O",
@@ -505,41 +512,39 @@ namespace Cats.Areas.Hub.Controllers
                     }
 
 
-                 /*
-                    foreach (var contact in contacts)
-                    {
-                        var hub = _hubService.FindById(dispatch.HubID).Name;
-                        var message = new SmsOutgoingMessage()
-                                          {
-                                              //id = Guid.NewGuid().ToString(),
-                                              to = contact.PhoneNo,
-                                              message =
-                                                  "Hello," + contact.FirstName + " There is a new dispatch with GIN " +
-                                                  dispatch.GIN + " from " + hub + " hub. COMMODITY: " +
-                                                  dispatch.Commodity + " QUT: " + dispatch.Quantity + " MT." +
-                                                  "Transporter: '" + dispatch.Transporter + "' Plate No.: "
-                                                  + dispatch.PlateNo_Prime + "-" + dispatch.PlateNo_Trailer + " Date: " +
-                                                  DateTime.Today.ToShortDateString(),
-                                          };
-
-                        var sms = new SMS()
-                                      {
-                                          MobileNumber = contact.PhoneNo,
-                                          Text =
-                                              "Hello," + contact.FirstName + " There is a new dispatch with GIN " +
-                                              dispatch.GIN + " from " + hub + " hub. COMMODITY: " + dispatch.Commodity +
-                                              " QUT: " + dispatch.Quantity + " MT." + "Transporter: '" +
-                                              dispatch.Transporter + "' Plate No.: "
-                                              + dispatch.PlateNo_Prime + "-" + dispatch.PlateNo_Trailer + " Date: " +
-                                              DateTime.Today.ToShortDateString(),
-                                          Status = 1,
-                                          InOutInd = "O",
-                                      };
-
-                        _smsService.AddSMS(sms);
-                        //var result = _smsGatewayService.SendSMS(message);
-                    }
-                  * */
+                    /*
+                       foreach (var contact in contacts)
+                       {
+                           var hub = _hubService.FindById(dispatch.HubID).Name;
+                           var message = new SmsOutgoingMessage()
+                                             {
+                                                 //id = Guid.NewGuid().ToString(),
+                                                 to = contact.PhoneNo,
+                                                 message =
+                                                     "Hello," + contact.FirstName + " There is a new dispatch with GIN " +
+                                                     dispatch.GIN + " from " + hub + " hub. COMMODITY: " +
+                                                     dispatch.Commodity + " QUT: " + dispatch.Quantity + " MT." +
+                                                     "Transporter: '" + dispatch.Transporter + "' Plate No.: "
+                                                     + dispatch.PlateNo_Prime + "-" + dispatch.PlateNo_Trailer + " Date: " +
+                                                     DateTime.Today.ToShortDateString(),
+                                             };
+                           var sms = new SMS()
+                                         {
+                                             MobileNumber = contact.PhoneNo,
+                                             Text =
+                                                 "Hello," + contact.FirstName + " There is a new dispatch with GIN " +
+                                                 dispatch.GIN + " from " + hub + " hub. COMMODITY: " + dispatch.Commodity +
+                                                 " QUT: " + dispatch.Quantity + " MT." + "Transporter: '" +
+                                                 dispatch.Transporter + "' Plate No.: "
+                                                 + dispatch.PlateNo_Prime + "-" + dispatch.PlateNo_Trailer + " Date: " +
+                                                 DateTime.Today.ToShortDateString(),
+                                             Status = 1,
+                                             InOutInd = "O",
+                                         };
+                           _smsService.AddSMS(sms);
+                           //var result = _smsGatewayService.SendSMS(message);
+                       }
+                     * */
                 }
                 return RedirectToAction("Index", "Dispatch");
             }
@@ -558,11 +563,11 @@ namespace Cats.Areas.Hub.Controllers
             var zones = _adminUnitService.GetAllAdminUnit().Where(t => t.AdminUnitTypeID == 2).ToList();
             var stores = _storeService.GetAllStore();
 
-           
+
             ViewBag.CommodityID = new SelectList(commodities, "CommodityID", "Name");
 
             ViewBag.Units = _unitService.GetAllUnit();
-            
+
             var dispatch = _dispatchService.GetDispatchByGIN(ginNo);
             var user = _userProfileService.GetUser(User.Identity.Name);
             if (dispatch != null)
@@ -578,7 +583,8 @@ namespace Cats.Areas.Hub.Controllers
                 var comms = new List<DispatchDetailModel>();
                 ViewBag.SelectedCommodities = comms;
                 var theViewModel = new DispatchModel(commodities, transporters, units,
-                    fdps, programs, regions, zones, stores) { Type = type, DispatchDetails = comms };
+                    fdps, programs, regions, zones, stores)
+                { Type = type, DispatchDetails = comms };
                 ViewBag.Message = "The selected GIN Number doesn't exist on your default warehouse. Try changing your default warehouse.";
                 return View(theViewModel);
             }
@@ -588,7 +594,8 @@ namespace Cats.Areas.Hub.Controllers
                 var comms = new List<DispatchDetailModel>();
                 ViewBag.SelectedCommodities = comms;
                 var theViewModel = new DispatchModel(commodities, transporters, units,
-                    fdps, programs, regions, zones, stores) { Type = type, DispatchDetails = comms };
+                    fdps, programs, regions, zones, stores)
+                { Type = type, DispatchDetails = comms };
 
                 if (Request["type"] != null && Request["allocationId"] != null)
                 {
@@ -926,16 +933,16 @@ namespace Cats.Areas.Hub.Controllers
                         let requestedQuantity = m.RequestedQuantity
                         where requestedQuantity != null
                         select new DispatchDetail
-                            {
-                                CommodityID = m.CommodityID,
-                                Description = m.Description,
-                                //DispatchDetailID = m.Id,
-                                RequestedQuantityInMT = requestedQuantityMt.Value,
-                                //DispatchedQuantityInMT = c.DispatchedQuantityMT,
-                                //DispatchedQuantityInUnit = c.DispatchedQuantity,
-                                RequestedQunatityInUnit = requestedQuantity.Value,
-                                UnitID = m.Unit
-                            }).ToList();
+                        {
+                            CommodityID = m.CommodityID,
+                            Description = m.Description,
+                            //DispatchDetailID = m.Id,
+                            RequestedQuantityInMT = requestedQuantityMt.Value,
+                            //DispatchedQuantityInMT = c.DispatchedQuantityMT,
+                            //DispatchedQuantityInUnit = c.DispatchedQuantity,
+                            RequestedQunatityInUnit = requestedQuantity.Value,
+                            UnitID = m.Unit
+                        }).ToList();
             }
             return new List<DispatchDetail>();
         }
@@ -1266,13 +1273,13 @@ namespace Cats.Areas.Hub.Controllers
                 var stores = (from tr in tempTransactions
                               group tr by new { tr.StoreID }
                                   into store
-                                  select
-                                      new
-                                          {
-                                              STORE = store.Key.StoreID,
-                                              AvailableBalance = store.Sum(p => p.QuantityInMT),
-                                              AvailableBalanceInUnit = store.Sum(q => q.QuantityInUnit)
-                                          });
+                              select
+                                  new
+                                  {
+                                      STORE = store.Key.StoreID,
+                                      AvailableBalance = store.Sum(p => p.QuantityInMT),
+                                      AvailableBalanceInUnit = store.Sum(q => q.QuantityInUnit)
+                                  });
 
                 var storeList = (from store in stores
                                  where store.AvailableBalance > 0 || store.AvailableBalanceInUnit > 0
