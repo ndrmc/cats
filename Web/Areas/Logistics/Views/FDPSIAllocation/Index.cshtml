@@ -150,7 +150,7 @@
                                                              jqyoui-draggable="{index: {{fdp.id}},placeholder:'keep',animate:true, onStart:'startCallback(fdp, $index)', onStop: 'stopCallback', onDrag: 'dragCallback'}">
                                                             <i class="icon-move"></i>
 
-                                                            <button class="btn red btn-xs button-remove" ng-click="on_remove_allocation(fdp.index)"><i class="fa fa-times-circle"></i></button>
+                                                            <button ng-show="fdp.totalAllocatedAmount>0" class="btn red btn-xs button-remove" ng-click="on_remove_allocation(fdp.index)"><i class="fa fa-times-circle"></i></button>
 
                                                             {{fdp.name}} [{{fdp.totalAllocatedAmount | number:2}} of {{fdp.requestedAmount | number:2}}]
                                                             <!--
