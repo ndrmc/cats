@@ -123,7 +123,8 @@ namespace Cats.Services.Hub
         /// <param name="closedToo">The closed too.</param>
         /// <param name="weightMeasurmentCode">The weight measurment code.</param>
         /// <returns></returns>
-        List<ReceiptAllocation> GetUnclosedAllocationsDetached(int hubId, int type, bool? closedToo, string weightMeasurmentCode, int? CommodityType, bool? receivable, string grn);
+        List<ReceiptAllocation> GetUnclosedAllocationsDetached(int hubId, int commoditySoureType, string weightMeasurmentCode, string grn, int CommodityType = 1, bool closedToo = false,
+            bool receivable = false);
 
         /// <summary>
         /// Gets all by type merged.
