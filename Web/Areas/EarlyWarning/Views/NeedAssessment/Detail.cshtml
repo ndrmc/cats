@@ -104,7 +104,7 @@ Plans
                                   columns.Bound(p => p.NeedACreaterName).Title(Html.Translate("Created By")).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title = "Created By" });
                                   columns.Bound(p => p.IsApproved).Visible(false);
 
-                                  if (Model.Status != (int) PlanStatus.Approved)
+                                  if (Model.Status == (int) PlanStatus.Draft)
                                   {
                                       columns.Command(p =>
                                       {
