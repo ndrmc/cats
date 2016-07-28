@@ -1,0 +1,27 @@
+USE [CatsMaster]
+GO
+
+/****** Object:  View [dbo].[DistibtionStatus]    Script Date: 7/19/2016 5:34:23 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER VIEW [dbo].[DistibtionStatus]
+AS
+SELECT        COUNT(dbo.WoredaStcokDistribution.WoredaID) AS WoredaID, dbo.WoredaStockDistributionDetail.FDPID, dbo.[Plan].PlanName, dbo.AdminUnit.Name AS WoredaName, dbo.[Plan].Status, 
+                         AdminUnit_2.AdminUnitID AS RegionID, AdminUnit_2.Name AS RegionName
+FROM            dbo.WoredaStcokDistribution INNER JOIN
+                         dbo.WoredaStockDistributionDetail ON dbo.WoredaStcokDistribution.WoredaStockDistributionID = dbo.WoredaStockDistributionDetail.WoredaStockDistributionID AND 
+                         dbo.WoredaStcokDistribution.WoredaStockDistributionID = dbo.WoredaStockDistributionDetail.WoredaStockDistributionID INNER JOIN
+                         dbo.[Plan] ON dbo.WoredaStcokDistribution.PlanID = dbo.[Plan].PlanID AND dbo.WoredaStcokDistribution.PlanID = dbo.[Plan].PlanID INNER JOIN
+                         dbo.AdminUnit ON dbo.WoredaStcokDistribution.WoredaID = dbo.AdminUnit.AdminUnitID AND dbo.WoredaStcokDistribution.WoredaID = dbo.AdminUnit.AdminUnitID INNER JOIN
+                         dbo.AdminUnit AS AdminUnit_1 ON dbo.AdminUnit.ParentID = AdminUnit_1.AdminUnitID AND dbo.AdminUnit.ParentID = AdminUnit_1.AdminUnitID AND 
+                         dbo.AdminUnit.ParentID = AdminUnit_1.AdminUnitID INNER JOIN
+                         dbo.AdminUnit AS AdminUnit_2 ON AdminUnit_1.ParentID = AdminUnit_2.AdminUnitID AND AdminUnit_1.ParentID = AdminUnit_2.AdminUnitID AND AdminUnit_1.ParentID = AdminUnit_2.AdminUnitID
+GROUP BY dbo.WoredaStcokDistribution.WoredaID, dbo.[Plan].PlanName, dbo.WoredaStockDistributionDetail.FDPID, dbo.AdminUnit.Name, dbo.[Plan].Status, AdminUnit_2.AdminUnitID, AdminUnit_2.Name
+
+GO
+
+
