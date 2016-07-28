@@ -124,8 +124,17 @@
                         @Html.LabelFor(model => model.ReceiptDate, new { @class = "cats-date-pref" })
                     </div>
                     <div class="controls">
-                        @Html.TextBoxFor(model => model.ReceiptDate, new { @class = "cats-datepicker2" , @readonly = Model.EditbleDateGap })
-                        @Html.ValidationMessageFor(model => model.ReceiptDate) 
+                        @if (!Model.EditbleDateGap)
+                        {
+                            @Html.TextBoxFor(model => model.ReceiptDate, new { @class = "cats-datepicker2 form-control" })
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(model => model.ReceiptDate, new { @readonly = true, @class = "form-control" })
+
+                        }
+                        @*@Html.TextBoxFor(model => model.ReceiptDate, new {@class = "cats-datepicker2", @readonly = Model.EditbleDateGap})*@
+                        @Html.ValidationMessageFor(model => model.ReceiptDate)
                     </div>
                 </div>
                 @if (CommoditySource.Constants.LOAN == Model.CommoditySourceTypeId
