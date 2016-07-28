@@ -15,7 +15,7 @@ namespace Cats.Models
        public int FDPID { get; set; }   
        public string RegionName { get; set; }
        public string WoredaName { get; set; }
-       public bool Status { get; set; }
+       public int Status { get; set; }
        public int RegionID { get; set; }
 
     }
