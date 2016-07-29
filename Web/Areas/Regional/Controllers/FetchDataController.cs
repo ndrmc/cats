@@ -166,10 +166,10 @@ namespace Cats.Areas.Regional.Controllers
             var deliveryReconciles = _deliveryReconcileService.GetAllDeliveryReconciles().Select(dr => dr.DispatchID).Distinct();
             var dispatchOnRegionNonReconcile = _dispatchService.Get(dd => dd.FDP.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID).Where(i => !deliveryReconciles.Contains(i.DispatchID)).ToList();
             var count = dispatchOnRegionNonReconcile.Count();
-            var dornr = dispatchOnRegionNonReconcile.Select(tt => tt.DispatchAllocationID).Distinct();
-            var amount = _dispatchAllocationService.Get(t => dornr.Contains(t.DispatchAllocationID));
-            var dispatchAllocations = amount as IList<DispatchAllocation> ?? amount.ToList();
-            var amt = dispatchAllocations.ToList().Sum(aa => aa.Amount) * 10;
+            //var dornr = dispatchOnRegionNonReconcile.Select(tt => tt.DispatchAllocationID).Distinct();
+            //var amount = _dispatchAllocationService.Get(t => dornr.Contains(t.DispatchAllocationID));
+            //var dispatchAllocations = amount as IList<DispatchAllocation> ?? amount.ToList();
+            var amt = dispatchOnRegionNonReconcile.Sum(aa => aa.DispatchDetails.Sum(bb=>bb.DispatchedQuantityInMT));
             d.IncomingCommodity = Convert.ToInt32(amt);
             d.IncomingDispatches = count;
 
