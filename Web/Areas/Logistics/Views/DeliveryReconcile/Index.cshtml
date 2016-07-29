@@ -100,7 +100,7 @@
                                        }
                                        else
                                        {
-                                           columns.Bound(c => c.ReceivedDatePref).Width(40).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).EditorTemplateName("AmharicDatePicker").Format("{0:M/d/yyyy}");
+                                           columns.Bound(c => c.ReceivedDatePref). Width(40).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).EditorTemplateName("AmharicDatePicker") ;
                                        }
                                        columns.Bound(c => c.ReceivedAmount).Width(45).Title("Rec. Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" });
                                        columns.Bound(c => c.LossAmount).Width(25).Title("Loss Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" }); ;
@@ -143,6 +143,7 @@
                       //.Update("ReconciledDeliveryUpdate", "DeliveryReconcile")
                       //.Destroy("FDP_Destroy","FDP")
                       ).Events(e => e.Edit("onEdit"))
+                       
                        .Resizable(resize => resize.Columns(true))
                       )
 
@@ -227,7 +228,10 @@
             var pickertop = thisPref.offset().top + thisPref.height() - 80;
             var pickerleft = thisPref.offset().left;
             $("div[class^='ui-ethdatepicker']").css({ top: pickertop, left: pickerleft, position: 'fixed', 'z-index': '1' });
+
+   
         });
+ 
     }
 </script>
 

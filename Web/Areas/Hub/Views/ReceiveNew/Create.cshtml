@@ -559,15 +559,15 @@
                 var mesarement = $('#ReceiveDetailNewViewModel_UnitId').val();
                 
                 var sentValue = $('#ReceiveDetailNewViewModel_SentQuantityInUnit').val();
-                if (mesarement == 1) {
-                    //alert(sentValue);
-                    $('#ReceiveDetailNewViewModel_SentQuantityInMt').val(sentValue * (1 / 20));
+                if (mesarement === '1') {
+
+                    $('#ReceiveDetailNewViewModel_SentQuantityInMt').val((sentValue * (1 / 20)).toFixed(2));
                 }
-                else if (mesarement == 8) {
-                    $('#ReceiveDetailNewViewModel_SentQuantityInMt').val(sentValue * (1 / 1000));
+                else if (mesarement === '8') {
+                    $('#ReceiveDetailNewViewModel_SentQuantityInMt').val((sentValue * (1 / 1000)).toFixed(2));
                 }
-                else if (mesarement == 9) {
-                    $('#ReceiveDetailNewViewModel_SentQuantityInMt').val(sentValue * (1 / 10));
+                else if (mesarement === '9') {
+                    $('#ReceiveDetailNewViewModel_SentQuantityInMt').val((sentValue * (1 / 10)).toFixed(2));
                 }
                 
             });
@@ -583,15 +583,15 @@
             var mesarement = $('#ReceiveDetailNewViewModel_UnitId').val();
 
             var sentValue = $('#ReceiveDetailNewViewModel_ReceivedQuantityInUnit').val();
-            if (mesarement == 1) {
+            if (mesarement === '1') {
                 //alert(sentValue);
-                $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val(sentValue * (1 / 20));
+                $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val((sentValue * (1 / 20)).toFixed(2));
             }
-            else if (mesarement == 8) {
-                $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val(sentValue * (1 / 1000));
+            else if (mesarement === '8') {
+                $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val((sentValue * (1 / 1000)).toFixed(2));
             }
-            else if (mesarement == 9) {
-                $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val(sentValue * (1 / 10));
+            else if (mesarement === '9') {
+                $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val((sentValue * (1 / 10)).toFixed(2));
             }
 
         });
