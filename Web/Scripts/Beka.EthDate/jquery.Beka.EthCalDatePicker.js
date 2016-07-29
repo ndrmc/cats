@@ -109,6 +109,7 @@
         var htm = "";
         // htm += date_picker.attr("id");
         $(".hover").each(function () { hide = false; });
+        console.log("hide: " + hide);
         if (hide) {
             date_picker.displayed = 0;
             date_picker.selected_month = "";

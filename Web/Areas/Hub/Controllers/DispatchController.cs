@@ -365,6 +365,7 @@ namespace Cats.Areas.Hub.Controllers
                 dispatch.Commodity = commodity.Name;
             }
             ViewBag.plannedAmount = dispatch.plannedAmount;
+            ViewBag.recivedAmount = dispatchAllocation.DispatchedAmount;
             return View(dispatch);
 
 

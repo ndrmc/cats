@@ -72,7 +72,7 @@ namespace Cats.Areas.Hub.Controllers
 
             viewModel.CreatedDate = receive.CreatedDate;
             viewModel.Grn = receive.GRN;
-            viewModel.ReceiptDate = receive.ReceiptDate;
+            viewModel.ReceiptDate = receive.ReceiptDate.Date;
                                                       viewModel.SiNumber=receiptAllocation.SINumber;
                                                            viewModel.ReceiptDate = viewModel.ReceiptDate;
             viewModel.ReceiptAllocationId = receive.ReceiptAllocationID.GetValueOrDefault();
