@@ -39,17 +39,21 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly ILossReasonService _lossReasonService;
         private readonly IPlanService _planService;
         private readonly IAdminUnitService _adminUnitService;
+        private readonly IDeliveryReconcileService _deliveryReconcileService;
+
         public WoredaStockDistributionController(
             IUtilizationHeaderSerivce utilizationService,
             IProgramService programService,
-            IUtilizationDetailSerivce utilizationDetailSerivce, 
+            IUtilizationDetailSerivce utilizationDetailSerivce,
             UserAccountService userAccountService,
-            ICommonService commonService, 
+            ICommonService commonService,
             IRegionalRequestService regionalRequestService,
             IReliefRequisitionDetailService reliefRequisitionDetailService,
             IReliefRequisitionService reliefRequisitionService,
 
-            ITransactionService transactionService, IDispatchService dispatchService, IDeliveryService deliveryService, ILossReasonService lossReasonService, IPlanService planService, IAdminUnitService adminUnitService)
+            ITransactionService transactionService, IDispatchService dispatchService, IDeliveryService deliveryService,
+            ILossReasonService lossReasonService, IPlanService planService, IAdminUnitService adminUnitService,
+            IDeliveryReconcileService deliveryReconcileService)
         {
             _utilizationService = utilizationService;
             _programService = programService;
@@ -65,6 +69,7 @@ namespace Cats.Areas.Logistics.Controllers
             _lossReasonService = lossReasonService;
             _planService = planService;
             _adminUnitService = adminUnitService;
+            _deliveryReconcileService = deliveryReconcileService;
         }
 
         //
@@ -187,110 +192,115 @@ namespace Cats.Areas.Logistics.Controllers
             RegionalRequest regionalRequest = null;
             if (programId == (int)Programs.Releif)
             {
-                 regionalRequest =
+                regionalRequest =
                     _regionalRequestService.FindBy(m => m.PlanID == planID && m.Round == month && m.RegionID == regionID)
                         .FirstOrDefault();
             }
             else if (programId == (int) Programs.PSNP)
             {
-                regionalRequest = _regionalRequestService.FindBy(m => m.PlanID == planID && m.Month == month && m.RegionID == regionID)
+                regionalRequest =
+                    _regionalRequestService.FindBy(m => m.PlanID == planID && m.Month == month && m.RegionID == regionID)
+                        .FirstOrDefault();
+            }
+            if (regionalRequest == null) return null;
+            var requisition =
+                _reliefRequisitionService.FindBy(
+                    m => m.RegionalRequestID == regionalRequest.RegionalRequestID && m.ZoneID == zoneID);
+
+            if (requisition == null) return null;
+            var woredaStockDistribution =
+                _utilizationService.FindBy(m => m.WoredaID == woredaID && m.Month == month && m.PlanID == planID)
                     .FirstOrDefault();
-            }
-            if (regionalRequest != null)
-            {
-                var requisition =
-                    _reliefRequisitionService.FindBy(
-                 m => m.RegionalRequestID == regionalRequest.RegionalRequestID && m.ZoneID == zoneID);
-                     
-                if (requisition != null)
+
+            var fdpStockDistribution = _commonService.GetFDPs(woredaID);
+            if (woredaStockDistribution==null)
+            {                     
+                var woredaDistributionDetailViewModels = new List<WoredaDistributionDetailViewModel>();
+                foreach (var reliefRequisition in requisition)
                 {
-                   
-                    var woredaStockDistribution = _utilizationService.FindBy(m => m.WoredaID == woredaID && m.Month == month && m.PlanID == planID).FirstOrDefault();
-                    if (woredaStockDistribution==null)
+                    var detail = GetWoredaStockDistribution(fdpStockDistribution, reliefRequisition);
+                    if (detail!=null)
                     {
-                       
-                        var fdpStockDistribution = _commonService.GetFDPs(woredaID);
-
-                        var woredaDistributionDetailViewModels = new List<WoredaDistributionDetailViewModel>();
-                        foreach (var reliefRequisition in requisition)
-                        {
-                            var detail = GetWoredaStockDistribution(fdpStockDistribution, reliefRequisition);
-                            if (detail!=null)
-                            {
-                                woredaDistributionDetailViewModels.AddRange(detail);
-                            }
-                          
-                        }
-                        var listOfFdps = new WoredaStockDistributionWithDetailViewModel
-                            {
-                                WoredaDistributionDetailViewModels = woredaDistributionDetailViewModels,
-                                
-                            };
-                            
-                        return listOfFdps;
-                    }
-
-                    var woredaStockDistributionWithDetailViewModel = new WoredaStockDistributionWithDetailViewModel()
-                    {
-                    WoredaStockDistributionID = woredaStockDistribution.WoredaStockDistributionID,
-                    WoredaID = woredaStockDistribution.WoredaID,
-                    ProgramID = woredaStockDistribution.ProgramID,
-                    PlanID = woredaStockDistribution.PlanID,
-                    Month = woredaStockDistribution.WoredaStockDistributionID,
-                    DirectSupport = woredaStockDistribution.DirectSupport,
-                    PublicSupport = woredaStockDistribution.PublicSupport,
-                    ActualBeneficairies = woredaStockDistribution.ActualBeneficairies,
-                    MaleBetween5And18Years = woredaStockDistribution.MaleBetween5And18Years,
-                    FemaleLessThan5Years = woredaStockDistribution.FemaleLessThan5Years,
-                    MaleAbove18Years = woredaStockDistribution.MaleAbove18Years,
-                    MaleLessThan5Years = woredaStockDistribution.MaleLessThan5Years,
-                    FemaleAbove18Years = woredaStockDistribution.FemaleAbove18Years,
-                    FemaleBetween5And18Years = woredaStockDistribution.FemaleBetween5And18Years,
-                    WoredaDistributionDetailViewModels = (from woredaDistributionDetail in woredaStockDistribution.WoredaStockDistributionDetails
-                                                          from reliefRequisition in requisition
-                                                          where woredaDistributionDetail.CommodityID==reliefRequisition.CommodityID
-                                                          let lossReason = woredaDistributionDetail.LossReason
-                                                          where lossReason != null
-                                                          select new WoredaDistributionDetailViewModel()
-                                                              {
-                                                                  WoredaStockDistributionDetailID = woredaDistributionDetail.WoredaStockDistributionDetailID,
-                                                                  FdpId = woredaDistributionDetail.FdpId,
-                                                                  FDP = woredaDistributionDetail.FDP.Name,
-                                                                  CommodityID = GetRequisionInfo(reliefRequisition.RequisitionID, woredaDistributionDetail.FdpId).CommodityID,
-                                                                  CommodityName = GetRequisionInfo(reliefRequisition.RequisitionID, woredaDistributionDetail.FdpId).CommodityName,
-                                                                  AllocatedAmount = GetRequisionInfo(reliefRequisition.RequisitionID, woredaDistributionDetail.FdpId).AllocatedAmount,
-                                                                  NumberOfBeneficiaries = GetRequisionInfo(reliefRequisition.RequisitionID, woredaDistributionDetail.FdpId).BeneficaryNumber,
-                                                                  //RequisitionDetailViewModel = GetRequisionInfo(reliefRequisition.RequisitionID, woredaDistributionDetail.FdpId),
-                                                                  dispatched = GetDispatchAllocation(reliefRequisition.RequisitionNo, woredaDistributionDetail.FDP.FDPID),
-                                                                  delivered = GetDelivered(reliefRequisition.RequisitionNo, woredaDistributionDetail.FDP.FDPID),
-                                                                  RequistionNo = reliefRequisition.RequisitionNo,
-                                                                  Round = reliefRequisition.Round,
-                                                                  Month = RequestHelper.MonthName(reliefRequisition.Month),
-                                                                  BeginingBalance = woredaDistributionDetail.StartingBalance,
-                                                                  EndingBalance = woredaDistributionDetail.EndingBalance,
-                                                                  DistributedAmount = woredaDistributionDetail.DistributedAmount,
-                                                                  TotalIn =  woredaDistributionDetail.TotalIn,
-                                                                  TotalOut = woredaDistributionDetail.TotoalOut,
-                                                                  LossAmount = woredaDistributionDetail.LossAmount,
-                                                                  LossReasonId = (int) lossReason,
-                                                                  RequisitionId = woredaDistributionDetail.RequisitionId,
-                                                                  DistributionStartDate = woredaDistributionDetail.DistributionStartDate,
-                                                                  DistributionEndDate = woredaDistributionDetail.DistributionEndDate
-
-
-                                                              }
-                         ).ToList()
-
-
-                };
-
-                    return woredaStockDistributionWithDetailViewModel;
+                        woredaDistributionDetailViewModels.AddRange(detail);
+                    }                         
                 }
-                return null;
-
+                var listOfFdps = new WoredaStockDistributionWithDetailViewModel
+                {
+                    WoredaDistributionDetailViewModels = woredaDistributionDetailViewModels,
+                                
+                };                           
+                return listOfFdps;
             }
-            return null;
-           
+
+            var woredaStockDistributionWithDetailViewModel = new WoredaStockDistributionWithDetailViewModel()
+            {
+                WoredaStockDistributionID = woredaStockDistribution.WoredaStockDistributionID,
+                WoredaID = woredaStockDistribution.WoredaID,
+                ProgramID = woredaStockDistribution.ProgramID,
+                PlanID = woredaStockDistribution.PlanID,
+                Month = woredaStockDistribution.WoredaStockDistributionID,
+                DirectSupport = woredaStockDistribution.DirectSupport,
+                PublicSupport = woredaStockDistribution.PublicSupport,
+                ActualBeneficairies = woredaStockDistribution.ActualBeneficairies,
+                MaleBetween5And18Years = woredaStockDistribution.MaleBetween5And18Years,
+                FemaleLessThan5Years = woredaStockDistribution.FemaleLessThan5Years,
+                MaleAbove18Years = woredaStockDistribution.MaleAbove18Years,
+                MaleLessThan5Years = woredaStockDistribution.MaleLessThan5Years,
+                FemaleAbove18Years = woredaStockDistribution.FemaleAbove18Years,
+                FemaleBetween5And18Years = woredaStockDistribution.FemaleBetween5And18Years,
+                WoredaDistributionDetailViewModels =
+                    (from woredaDistributionDetail in woredaStockDistribution.WoredaStockDistributionDetails
+                        from reliefRequisition in requisition
+                        where woredaDistributionDetail.CommodityID == reliefRequisition.CommodityID
+                        let lossReason = woredaDistributionDetail.LossReason
+                        //let reliefRequisition = _reliefRequisitionService.Get(r=>r.RequisitionID == woredaDistributionDetail.RequisitionId).FirstOrDefault()
+                        let totalIn =
+                            _deliveryReconcileService.Get(
+                                d =>
+                                    d.RequsitionNo == reliefRequisition.RequisitionNo &&
+                                    d.FDPID == woredaDistributionDetail.FdpId).Sum(s => s.ReceivedAmount)
+                        where lossReason != null
+                        select new WoredaDistributionDetailViewModel()
+                        {
+                            WoredaStockDistributionDetailID = woredaDistributionDetail.WoredaStockDistributionDetailID,
+                            FdpId = woredaDistributionDetail.FdpId,
+                            FDP = woredaDistributionDetail.FDP.Name,
+                            CommodityID =
+                                GetRequisionInfo(reliefRequisition.RequisitionID, woredaDistributionDetail.FdpId)
+                                    .CommodityID,
+                            CommodityName =
+                                GetRequisionInfo(reliefRequisition.RequisitionID, woredaDistributionDetail.FdpId)
+                                    .CommodityName,
+                            AllocatedAmount =
+                                GetRequisionInfo(reliefRequisition.RequisitionID, woredaDistributionDetail.FdpId)
+                                    .AllocatedAmount,
+                            NumberOfBeneficiaries =
+                                GetRequisionInfo(reliefRequisition.RequisitionID, woredaDistributionDetail.FdpId)
+                                    .BeneficaryNumber,
+                            //RequisitionDetailViewModel = GetRequisionInfo(reliefRequisition.RequisitionID, woredaDistributionDetail.FdpId),
+                            dispatched =
+                                GetDispatchAllocation(reliefRequisition.RequisitionNo,
+                                    woredaDistributionDetail.FDP.FDPID),
+                            delivered =
+                                GetDelivered(reliefRequisition.RequisitionNo, woredaDistributionDetail.FDP.FDPID),
+                            RequistionNo = reliefRequisition.RequisitionNo,
+                            Round = reliefRequisition.Round,
+                            Month = RequestHelper.MonthName(reliefRequisition.Month),
+                            BeginingBalance = woredaDistributionDetail.StartingBalance,
+                            EndingBalance = woredaDistributionDetail.EndingBalance,
+                            DistributedAmount = woredaDistributionDetail.DistributedAmount,
+                            TotalIn = totalIn, //woredaDistributionDetail.TotalIn,
+                            TotalOut = woredaDistributionDetail.TotoalOut,
+                            LossAmount = woredaDistributionDetail.LossAmount,
+                            LossReasonId = (int) lossReason,
+                            RequisitionId = woredaDistributionDetail.RequisitionId,
+                            DistributionStartDate = woredaDistributionDetail.DistributionStartDate,
+                            DistributionEndDate = woredaDistributionDetail.DistributionEndDate
+                        }
+                        ).ToList()
+            };
+
+            return woredaStockDistributionWithDetailViewModel;
         }
         private RequisitionDetailViewModel GetRequisionInfo(int requisitionID,int fdpID)
         {
