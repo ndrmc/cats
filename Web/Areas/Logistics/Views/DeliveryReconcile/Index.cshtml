@@ -100,7 +100,7 @@
                                        }
                                        else
                                        {
-                                           columns.Bound(c => c.ReceivedDatePref).Width(40).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).EditorTemplateName("AmharicDatePicker").Format("{0:M/d/yyyy}");
+                                           columns.Bound(c => c.ReceivedDatePref).Width(40).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).EditorTemplateName("AmharicDatePicker") ;
                                        }
                                        columns.Bound(c => c.ReceivedAmount).Width(45).Title("Rec. Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" });
                                        columns.Bound(c => c.LossAmount).Width(25).Title("Loss Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" }); ;
