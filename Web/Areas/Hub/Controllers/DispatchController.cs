@@ -111,9 +111,10 @@ namespace Cats.Areas.Hub.Controllers
                 var user = _userProfileService.GetUser(this.UserProfile.UserName);
                 var prefWeight =
                     _userProfileService.GetUser(this.UserProfile.UserName).PreferedWeightMeasurment.ToUpperInvariant();
-                var toFdps =
-                    _dispatchAllocationService.GetCommitedAllocationsByHubDetached(
-                        user.DefaultHub.Value, prefWeight, null, null, null);
+                //var toFdps =
+                //    _dispatchAllocationService.GetCommitedAllocationsByHubDetached(
+                //        user.DefaultHub.Value, prefWeight, null, null, null);
+                var toFdps = _dispatchAllocationService.GetAllVwDispatchAllocation(user.DefaultHub.Value, prefWeight, null, null, false);
                 var loans = _otherDispatchAllocationService.GetAllToOtherOwnerHubs(user);
                 var transfer = _otherDispatchAllocationService.GetAllToCurrentOwnerHubs(user);
                 var adminUnit = new List<AdminUnit> { _adminUnitService.FindById(1) };
@@ -209,7 +210,8 @@ namespace Cats.Areas.Hub.Controllers
         public ActionResult GetFdpAllocations(bool? closed, int? adminUnitID, int? commodityType)
         {
             var user = _userProfileService.GetUser(User.Identity.Name);
-            var fdpAllocations = _dispatchAllocationService.GetCommitedAllocationsByHubDetached(user.DefaultHub.Value, user.PreferedWeightMeasurment, closed, adminUnitID, commodityType);
+            //var fdpAllocations = _dispatchAllocationService.GetCommitedAllocationsByHubDetached(user.DefaultHub.Value, user.PreferedWeightMeasurment, closed, adminUnitID, commodityType);
+            var fdpAllocations = _dispatchAllocationService.GetAllVwDispatchAllocation(user.DefaultHub.Value, user.PreferedWeightMeasurment, commodityType, null, closed??false);
             return View(new GridModel(fdpAllocations));
         }
 
@@ -365,6 +367,7 @@ namespace Cats.Areas.Hub.Controllers
                 dispatch.Commodity = commodity.Name;
             }
             ViewBag.plannedAmount = dispatch.plannedAmount;
+            ViewBag.recivedAmount = dispatchAllocation.DispatchedAmount;
             return View(dispatch);
 
 

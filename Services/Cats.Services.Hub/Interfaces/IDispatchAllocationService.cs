@@ -171,6 +171,11 @@ namespace Cats.Services.Hub
         /// <returns></returns>
         List<DispatchAllocationViewModelDto> GetCommitedAllocationsByHubDetached(int hubId, string PreferedWeightMeasurment, bool? closedToo, int? AdminUnitId, int? CommodityType);
 
+        IEnumerable<VWDispatchAllocation> ExecWithStoreProcedure(string query, params object[] parameters);
+
+        List<DispatchAllocationViewModelDto> GetAllVwDispatchAllocation(int hubId, string PreferedWeightMeasurment,
+            int? AdminUnitId, int? CommodityType, bool closedToo = false);
+
         List<DispatchAllocationViewModelDto> GetCommitedAllocationsByHubDetached(int hubId,
                                                                                  string PreferedWeightMeasurment);
         DispatchAllocation FindById(System.Guid id);

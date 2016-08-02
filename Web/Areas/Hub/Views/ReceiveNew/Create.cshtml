@@ -12,7 +12,7 @@
 @section Toolbar
 {
     <a class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_receive"></a>
-    <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="#" title="Cancel"></a>
+    <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("Index", "Receive", new { Area = "Hub" })" title="Cancel"></a>
 }
 
 <h4 class="page-header">@Html.Translate("Receive")</h4>
@@ -124,8 +124,17 @@
                         @Html.LabelFor(model => model.ReceiptDate, new { @class = "cats-date-pref" })
                     </div>
                     <div class="controls">
-                        @Html.TextBoxFor(model => model.ReceiptDate, new { @class = "cats-datepicker2" , @readonly = Model.EditbleDateGap })
-                        @Html.ValidationMessageFor(model => model.ReceiptDate) 
+                        @if (!Model.EditbleDateGap)
+                        {
+                            @Html.TextBoxFor(model => model.ReceiptDate, new { @class = "cats-datepicker2 form-control" })
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(model => model.ReceiptDate, new { @readonly = true, @class = "cats-date-pref form-control" })
+
+                        }
+                        @*@Html.TextBoxFor(model => model.ReceiptDate, new {@class = "cats-datepicker2", @readonly = Model.EditbleDateGap})*@
+                        @Html.ValidationMessageFor(model => model.ReceiptDate)
                     </div>
                 </div>
                 @if (CommoditySource.Constants.LOAN == Model.CommoditySourceTypeId
