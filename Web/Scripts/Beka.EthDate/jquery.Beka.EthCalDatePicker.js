@@ -125,7 +125,7 @@
         var htm = "";
         // htm += date_picker.attr("id");
         $(".hover").each(function () { hide = false; });
-        console.log("hide: " + hide);
+    
         if (hide) {
             date_picker.displayed = 0;
             date_picker.selected_month = "";
@@ -183,7 +183,7 @@
         var month_yr_changed = function (date_picker) {
 
          
-            var selected_date = new EthDate();
+            var selected_ddate = new EthDate();
  
             var m = date_picker.ui.month.val() / 1 + 1;
     
@@ -212,7 +212,7 @@
     }
     var _write_month_option = function () {
         var htm = "";
-        htm += '<select class="ui-datepicker-month" value="5" >';
+        htm += '<select class="ui-datepicker-month"   >';
         for (var i in month_name_amh) {
             var mi = i / 1;
             htm += "<option value='" + mi + "'>" + month_name_amh[i] + "</option>"
@@ -223,7 +223,7 @@
     }
     var _write_year_option = function () {
         var htm = "";
-        htm += '<select class="ui-datepicker-year" name="ui-datepicker-ye" >';
+        htm += '<select class="ui-datepicker-year"   >';
         for (var i = 1990; i < 2030; i++) {
 
             htm += "<option value='" + i + "'>" + i + "</option>"
