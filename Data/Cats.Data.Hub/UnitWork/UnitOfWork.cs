@@ -717,6 +717,12 @@ namespace Cats.Data.Hub
             get { return this.vwReceiptAllocationAggregateRepository ?? (this.vwReceiptAllocationAggregateRepository = new GenericRepository<VWReceiptAllocationAggregate>(_context)); }
         }
 
+        private IGenericRepository<VWDispatchAllocation> vwDispatchAllocationRepository = null;
+        public IGenericRepository<VWDispatchAllocation> VWDispatchAllocationRepository
+        {
+            get { return this.vwDispatchAllocationRepository ?? (this.vwDispatchAllocationRepository = new GenericRepository<VWDispatchAllocation>(_context)); }
+        }
+
 
         private IGenericRepository<VWCommodityReceived> vwCommodityReceived = null;
        public IGenericRepository<VWCommodityReceived> VWCommodityReceived

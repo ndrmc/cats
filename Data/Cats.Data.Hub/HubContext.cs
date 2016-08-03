@@ -95,6 +95,8 @@ namespace Cats.Data.Hub
         public DbSet<FreeStockStatus> FreeStockStatus { get; set; }
 
         public DbSet<VWReceiptAllocationAggregate> VWReceiptAllocationAggregate { get; set; }
+
+        public DbSet<VWDispatchAllocation> VWDispatchAllocation { get; set; }
         #endregion
 
 
@@ -167,6 +169,7 @@ namespace Cats.Data.Hub
             modelBuilder.Configurations.Add(new VWFreePhysicalStockMap());
             modelBuilder.Configurations.Add(new VWTransferredStockMap());
             modelBuilder.Configurations.Add(new VWReceiptAllocationAggregateMap());
+            modelBuilder.Configurations.Add(new VWDispatchAllocationMap());
 
 
 

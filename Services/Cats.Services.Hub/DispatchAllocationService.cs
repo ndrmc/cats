@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using Cats.Data.Hub.UnitWork;
@@ -429,6 +431,90 @@ namespace Cats.Services.Hub
             }
             return GetUncloDetacheced;
 
+        }
+
+        public IEnumerable<VWDispatchAllocation> ExecWithStoreProcedure(string query, params object[] parameters)
+        {
+            var vwDispatchAllocations = new List<VWDispatchAllocation>();
+            try
+            {
+                vwDispatchAllocations = _unitOfWork.Database.SqlQuery<VWDispatchAllocation>(query, parameters).ToList();
+            }
+            catch (Exception ex)
+            {
+               
+            }
+            return vwDispatchAllocations;
+        }
+
+        public List<DispatchAllocationViewModelDto> GetAllVwDispatchAllocation(int hubId, string PreferedWeightMeasurment, int? AdminUnitId, int? CommodityType, bool closedToo = false)
+        {
+            var hubID = new SqlParameter("hubID", SqlDbType.Int) { Value = hubId };
+            var isClosed = new SqlParameter("isClosed", SqlDbType.Bit) { Value = closedToo };
+            var commodityTypeID = new SqlParameter("commodityTypeID", SqlDbType.Int) { Value = 1 };
+            if (CommodityType.HasValue)
+                commodityTypeID = new SqlParameter("commodityTypeID", SqlDbType.Int) { Value = CommodityType };
+            var woredaID = new SqlParameter("WoredaID", SqlDbType.Int) { Value = -1 };
+            var zoneID = new SqlParameter("ZoneID", SqlDbType.Int) { Value = -1 };
+            var regionID = new SqlParameter("RegionID", SqlDbType.Int) { Value = -1 };
+            if (AdminUnitId.HasValue)
+            {
+                AdminUnit adminunit = _unitOfWork.AdminUnitRepository.FindById(AdminUnitId.Value);
+
+                if (adminunit.AdminUnitType.AdminUnitTypeID == 2) //by region
+                    regionID = new SqlParameter("RegionID", SqlDbType.Int) { Value = AdminUnitId.Value };
+                else if (adminunit.AdminUnitType.AdminUnitTypeID == 3) //by zone
+                    zoneID = new SqlParameter("ZoneID", SqlDbType.Int) { Value = AdminUnitId.Value };
+                else if (adminunit.AdminUnitType.AdminUnitTypeID == 4) //by woreda
+                    woredaID = new SqlParameter("WoredaID", SqlDbType.Int) { Value = AdminUnitId.Value };
+            }
+
+            var result = this.ExecWithStoreProcedure("EXEC [dbo].[SPDispatchAllocationAggr] @hubID, @isClosed, @commodityTypeID, @woredaID, @zoneID, @regionID",
+                hubID, isClosed, commodityTypeID, woredaID, zoneID, regionID);
+
+            var dispatchAllocationViewModelDtos = new List<DispatchAllocationViewModelDto>();
+
+            foreach (var dispatchAllocation in result)
+            {
+                var DAVMD = new DispatchAllocationViewModelDto();
+                if (PreferedWeightMeasurment.ToUpperInvariant() == "MT " &&
+                    dispatchAllocation.CommodityTypeID == 1) //only for food
+                {
+                    DAVMD.Amount = dispatchAllocation.Amount;
+                    DAVMD.DispatchedAmount = dispatchAllocation.DispatchedAmount?? 0.00m;
+                    DAVMD.RemainingQuantityInQuintals = (dispatchAllocation.Amount) - (dispatchAllocation.DispatchedAmount??0.00m);
+                }
+                else
+                {
+                    DAVMD.Amount = dispatchAllocation.Amount * 10;
+                    DAVMD.DispatchedAmount = (dispatchAllocation.DispatchedAmount ?? 0.00m) * 10;
+                    DAVMD.RemainingQuantityInQuintals = (dispatchAllocation.Amount - (dispatchAllocation.DispatchedAmount ?? 0.00m)) * 10;
+                }
+                DAVMD.DispatchAllocationID = dispatchAllocation.DispatchAllocationID;
+                DAVMD.CommodityName = dispatchAllocation.CommodityName;
+                DAVMD.RequisitionNo = dispatchAllocation.RequisitionNo;
+                DAVMD.BidRefNo = dispatchAllocation.BidRefNo;
+
+                DAVMD.Region = dispatchAllocation.RegionName;
+                DAVMD.Zone = dispatchAllocation.ZoneName;
+                DAVMD.Woreda = dispatchAllocation.WoredaName;
+                DAVMD.FDPName = dispatchAllocation.FDPName;
+                DAVMD.IsClosed = dispatchAllocation.IsClosed;
+                if (dispatchAllocation.TransporterID != null) DAVMD.TransporterName = dispatchAllocation.TransporterName;
+                DAVMD.Round = (dispatchAllocation.Round == null) ? "-" : dispatchAllocation.Round.ToString();
+
+
+
+
+
+                DAVMD.AmountInUnit = DAVMD.Amount;
+                DAVMD.DispatchedAmountInUnit = dispatchAllocation.DispatchedAmountInUnit??0.00m;
+                DAVMD.RemainingQuantityInUnit = (dispatchAllocation.Amount - (dispatchAllocation.DispatchedAmount??0.00m));
+
+                dispatchAllocationViewModelDtos.Add(DAVMD);
+                // db.Detach(dispatchAllocation);
+            }
+            return dispatchAllocationViewModelDtos;
         }
 
         public List<DispatchAllocationViewModelDto> GetCommitedAllocationsByHubDetached(int hubId,
