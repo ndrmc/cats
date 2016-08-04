@@ -332,9 +332,9 @@ namespace Cats.Infrastructure
             kernel.Bind<Cats.Services.Hub.ISessionHistoryService>().To<Cats.Services.Hub.SessionHistoryService>();
             kernel.Bind<Cats.Services.Hub.ISessionAttemptService>().To<Cats.Services.Hub.SessionAttemptService>();
             kernel.Bind<Cats.Services.Hub.IDetailService>().To<Cats.Services.Hub.DetailService>();
-           
+            kernel.Bind<Cats.Services.Hub.IVWReceiptAllocationAggregateService>().To<Cats.Services.Hub.VWReceiptAllocationAggregateService>();
             //kernel.Bind<Cats.Services.Hub.Interfaces.IStockStatusService>().To<Cats.Services.Hub.DetailService>();
-           
+
         }
     }
 }

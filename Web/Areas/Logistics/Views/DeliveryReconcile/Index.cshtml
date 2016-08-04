@@ -100,7 +100,7 @@
                                        }
                                        else
                                        {
-                                           columns.Bound(c => c.ReceivedDatePref).Width(40).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).EditorTemplateName("AmharicDatePicker") ;
+                                           columns.Bound(c => c.ReceivedDatePref). Width(40).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).EditorTemplateName("AmharicDatePicker") ;
                                        }
                                        columns.Bound(c => c.ReceivedAmount).Width(45).Title("Rec. Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" });
                                        columns.Bound(c => c.LossAmount).Width(25).Title("Loss Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" }); ;
@@ -142,13 +142,20 @@
                                       .Update(update => update.Action("DeliveryReconcileUpdate", "DeliveryReconcile"))
                       //.Update("ReconciledDeliveryUpdate", "DeliveryReconcile")
                       //.Destroy("FDP_Destroy","FDP")
-                      ).Events(e => e.Edit("onEdit"))
+                      
+                      )
+                      .Events(e => e.Edit("onEdit"))
+            
+                       
                        .Resizable(resize => resize.Columns(true))
                       )
 
             </div>
         </div>
+        
+        <input type="hidden" id="dateTransfer"/>
     </body>
+
 </html>
 
 
@@ -214,21 +221,57 @@
 </script>
 
 <script type="text/javascript">
+    var currentModel;
     function onEdit(e) {
         thisPref.val(e.model.ReceivedDatePref);
         thisPrefGC.val(e.model.ReceivedDate);
-        thisPref.blur(function(b) {
+        currentModel = e.model;
+        thisPref.blur(function (b) {
             var GCdate = thisPrefGC.val();
             var ECdate = $(this).val();
             e.model.set('ReceivedDatePref', ECdate);
             e.model.set('ReceivedDate', GCdate);
         });
-        thisPref.click(function (b) {
+        
+
+
+        thisPref.change(function () {
+            var GCdate = thisPrefGC.val();
+            var ECdate = $(this).val();
+        
+            e.model.set('ReceivedDatePref', ECdate);
+            e.model.set('ReceivedDate', GCdate);
+        });
+       thisPref.click(function (b) {
             var pickertop = thisPref.offset().top + thisPref.height() - 80;
             var pickerleft = thisPref.offset().left;
             $("div[class^='ui-ethdatepicker']").css({ top: pickertop, left: pickerleft, position: 'fixed', 'z-index': '1' });
+
+   
         });
+
+ 
     }
+    $(document).on("dateEditorValueChanged", function (event) {
+
+        if (currentModel != null) {
+            currentModel.set('ReceivedDatePref', event.newDateEthiopian.toString());
+            currentModel.set('ReceivedDate', event.newDateGregorian);
+
+        }
+    });
+
+
+    $(document).on( "dateChanged",function (event) {
+        
+
+        if (currentModel != null)
+        {
+            currentModel.set('ReceivedDatePref', event.EthiopianDate.toString());
+            currentModel.set('ReceivedDate', event.GregorianDate);
+        
+        }     
+    });
 </script>
 
 

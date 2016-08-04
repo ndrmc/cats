@@ -93,7 +93,11 @@ namespace Cats.Data.Hub
         public DbSet<VWTransferredStock> VWTransferredStocks { get; set; }
 
         public DbSet<FreeStockStatus> FreeStockStatus { get; set; }
- #endregion
+
+        public DbSet<VWReceiptAllocationAggregate> VWReceiptAllocationAggregate { get; set; }
+
+        public DbSet<VWDispatchAllocation> VWDispatchAllocation { get; set; }
+        #endregion
 
 
         #region OverridenMethods
@@ -164,16 +168,17 @@ namespace Cats.Data.Hub
             modelBuilder.Configurations.Add(new VWCarryOverMap());
             modelBuilder.Configurations.Add(new VWFreePhysicalStockMap());
             modelBuilder.Configurations.Add(new VWTransferredStockMap());
+            modelBuilder.Configurations.Add(new VWReceiptAllocationAggregateMap());
+            modelBuilder.Configurations.Add(new VWDispatchAllocationMap());
 
 
-           
 
-       /*     modelBuilder.Entity<UserProfile>()
-           .HasMany(n => n.UserHubs)
-           .WithRequired() // <- no param because not exposed end of relation,
-                // nc => nc.News would throw an exception
-                // because nc.News is in the base class
-           .Map(a => a.MapKey("UserProfileID"));*/
+            /*     modelBuilder.Entity<UserProfile>()
+                .HasMany(n => n.UserHubs)
+                .WithRequired() // <- no param because not exposed end of relation,
+                     // nc => nc.News would throw an exception
+                     // because nc.News is in the base class
+                .Map(a => a.MapKey("UserProfileID"));*/
         }
         #endregion
 

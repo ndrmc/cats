@@ -40,6 +40,7 @@ namespace Cats.Areas.Hub.Controllers
         private readonly ITransporterService _transporterService;
         private readonly ICommoditySourceService _commoditySourceService;
         private readonly IDonorService _donorService;
+        private readonly IVWReceiptAllocationAggregateService _vwReceiptAllocationAggregateService;
 
         public ReceiveController(IReceiveService receiveService, IGiftCertificateService giftCertificateService,
                                  IReceiptAllocationService receiptAllocationService, IUserProfileService userProfileService,
@@ -47,7 +48,7 @@ namespace Cats.Areas.Hub.Controllers
                                  ICommodityService commodityService, IStoreService storeService, ITransactionService transactionService,
                                  IUnitService unitService, IShippingInstructionService shippingInstructionService, IHubService hubService,
                                  ICommodityGradeService commodityGradeService, IProgramService programService, ITransporterService transporterService,
-                                 ICommoditySourceService commoditySourceService, IDonorService donorService)
+                                ICommoditySourceService commoditySourceService, IDonorService donorService, IVWReceiptAllocationAggregateService vwReceiptAllocationAggregateService)
             : base(userProfileService)
         {
             _receiveService = receiveService;
@@ -67,7 +68,7 @@ namespace Cats.Areas.Hub.Controllers
             _transporterService = transporterService;
             _commoditySourceService = commoditySourceService;
             _donorService = donorService;
-
+            _vwReceiptAllocationAggregateService = vwReceiptAllocationAggregateService;
         }
         public void populateLookups(UserProfile user)
         {
@@ -162,16 +163,17 @@ namespace Cats.Areas.Hub.Controllers
             return Json(receiveDetails.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AllocationListJson([DataSourceRequest] DataSourceRequest request, int commodityType = 1, int type = 1, bool closed = false, int HubID = 0,bool receivable = false, string grn = "")
+        public ActionResult AllocationListJson([DataSourceRequest] DataSourceRequest request, int? commodityType, int type = 1, bool closed = false, int HubID = 0,bool receivable = false, string grn = "")
         {
-            List<ReceiptAllocation> list = new List<ReceiptAllocation>();
+            //List<ReceiptAllocation> list = new List<ReceiptAllocation>();
             List<ReceiptAllocationViewModel> listViewModel = new List<ReceiptAllocationViewModel>();
             try
             {
                 UserProfile user = _userProfileService.GetUser(User.Identity.Name);
                 HubID = HubID > 0 ? HubID : user.DefaultHub.Value;
                 //HubID=user.DefaultHub.HubID
-                list = _receiptAllocationService.GetUnclosedAllocationsDetached(HubID, type, user.PreferedWeightMeasurment, grn, commodityType, closed, receivable);
+                //list = _receiptAllocationService.GetUnclosedAllocationsDetached(HubID, type, closed, user.PreferedWeightMeasurment, commodityType, receivable, grn);
+                var list = _vwReceiptAllocationAggregateService.GetAllRAAggr(HubID, type, closed, user.PreferedWeightMeasurment, commodityType, receivable, grn);
                 list = list.Where(t => t.CommoditySourceID == type).ToList();
                 listViewModel = BindReceiptAllocationViewModels(list).ToList();
                 return Json(listViewModel.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
@@ -196,7 +198,12 @@ namespace Cats.Areas.Hub.Controllers
                         HubID = user.DefaultHub.Value;
                     }
                 }
-                var list = _receiptAllocationService.GetUnclosedAllocationsDetached(HubID, type, user.PreferedWeightMeasurment, grn, commodityType, closed, receivable);
+                
+                //var list = _receiptAllocationService.GetUnclosedAllocationsDetached(HubID, type, closed, user.PreferedWeightMeasurment, commodityType, receivable, grn);
+                //var list = _vwReceiptAllocationAggregateService.Get(t=>t.HubID == HubID && t.CommodityTypeID == type && t.IsClosed == closed && t.CommodityTypeID == commodityType &&
+                //t.IsFalseGRN == receivable && t.GRN == grn).ToList();
+                var list = _vwReceiptAllocationAggregateService.GetAllRAAggr(HubID, type, closed, user.PreferedWeightMeasurment, commodityType, receivable, grn);
+                                
                 //newly added
                 list = type == CommoditySource.Constants.LOAN ? 
                     list.Where(t => t.CommoditySourceID == CommoditySource.Constants.LOAN || t.CommoditySourceID == CommoditySource.Constants.SWAP || t.CommoditySourceID == CommoditySource.Constants.TRANSFER || t.CommoditySourceID == CommoditySource.Constants.REPAYMENT).ToList() : 
@@ -211,12 +218,13 @@ namespace Cats.Areas.Hub.Controllers
             }
         }
         [GridAction]
-        public ActionResult AllocationListGrid(int type, bool closedToo = false, int CommodityType = 1, bool receivable=false, string grn = "")
+        public ActionResult AllocationListGrid(int type, bool? closedToo, int? CommodityType, bool? receivable=false, string grn = "")
         {
             try
             {
                 UserProfile user = _userProfileService.GetUser(User.Identity.Name);
-                List<ReceiptAllocation> list = _receiptAllocationService.GetUnclosedAllocationsDetached(user.DefaultHub.Value, type, user.PreferedWeightMeasurment, grn, CommodityType, closedToo, receivable);
+                //List<ReceiptAllocation> list = _receiptAllocationService.GetUnclosedAllocationsDetached(user.DefaultHub.Value, type, closedToo, user.PreferedWeightMeasurment, CommodityType, receivable, grn);
+                var list = _vwReceiptAllocationAggregateService.GetAllRAAggr(user.DefaultHub.Value, type, closedToo, user.PreferedWeightMeasurment, CommodityType, receivable, grn);
                 //newly added
                 list = list.Where(t => t.CommoditySourceID == type).ToList();
                 //newly added
@@ -231,38 +239,39 @@ namespace Cats.Areas.Hub.Controllers
 
         }
 
-        private IEnumerable<ReceiptAllocationViewModel> BindReceiptAllocationViewModels(IEnumerable<ReceiptAllocation> receiptAllocations)
+        private IEnumerable<ReceiptAllocationViewModel> BindReceiptAllocationViewModels(IEnumerable<VWReceiptAllocationAggregate> vwReceiptAllocationAggregates)
         {
             var receiptAllocationViewModels = new List<ReceiptAllocationViewModel>();
-            foreach (var receiptAllocation in receiptAllocations)
+            foreach (var vwReceiptAllocationAggregate in vwReceiptAllocationAggregates)
             {
                 var receiptAllocationViewModel = new ReceiptAllocationViewModel
                     {
-                        ReceiptAllocationID = receiptAllocation.ReceiptAllocationID,
+                        ReceiptAllocationID = vwReceiptAllocationAggregate.ReceiptAllocationID,
                         //PartitionId = receiptAllocation.PartitionId,
-                        IsCommited = receiptAllocation.IsCommited,
-                        ETA = receiptAllocation.ETA,
-                        ProjectNumber = receiptAllocation.ProjectNumber,
-                        GiftCertificateDetailID = receiptAllocation.GiftCertificateDetailID,
-                        CommodityID = receiptAllocation.CommodityID,
-                        CommodityName = receiptAllocation.Commodity.Name,
-                        SINumber = receiptAllocation.SINumber,
-                        UnitID = receiptAllocation.UnitID,
-                        QuantityInUnit = receiptAllocation.QuantityInUnit ?? 0,
-                        QuantityInMT = receiptAllocation.QuantityInMT,
-                        QuantityInMTFormatted = receiptAllocation.QuantityInMT.ToString("N", new CultureInfo("en-US")),
-                        RemainingBalanceInMT = receiptAllocation.RemainingBalanceInMT,
-                        ReceivedQuantityInMT = receiptAllocation.ReceivedQuantityInMT,
-                        ReceivedQuantityInMTFormatted = receiptAllocation.ReceivedQuantityInMT.ToString("N", new CultureInfo("en-US")),
-                        DonorID = receiptAllocation.DonorID,
-                        ProgramID = receiptAllocation.ProgramID,
-                        CommoditySourceID = receiptAllocation.CommoditySourceID,
-                        IsClosed = receiptAllocation.IsClosed,
-                        PurchaseOrder = receiptAllocation.PurchaseOrder,
-                        SupplierName = receiptAllocation.SupplierName,
-                        SourceHubID = receiptAllocation.SourceHubID,
-                        OtherDocumentationRef = receiptAllocation.OtherDocumentationRef,
-                        Remark = receiptAllocation.Remark
+                        
+                        IsCommited = vwReceiptAllocationAggregate.IsCommited,
+                        ETA = vwReceiptAllocationAggregate.ETA,
+                        ProjectNumber = vwReceiptAllocationAggregate.ProjectNumber,
+                        GiftCertificateDetailID = vwReceiptAllocationAggregate.GiftCertificateDetailID,
+                        CommodityID = vwReceiptAllocationAggregate.CommodityID,
+                        CommodityName = vwReceiptAllocationAggregate.CommodityName,
+                        SINumber = vwReceiptAllocationAggregate.SINumber,
+                        UnitID = vwReceiptAllocationAggregate.UnitID,
+                        QuantityInUnit = vwReceiptAllocationAggregate.QuantityInUnit ?? 0,
+                        QuantityInMT = vwReceiptAllocationAggregate.QuantityInMT,
+                        QuantityInMTFormatted = vwReceiptAllocationAggregate.QuantityInMT.ToString("N", new CultureInfo("en-US")),
+                        RemainingBalanceInMT = vwReceiptAllocationAggregate.QuantityInMT - (vwReceiptAllocationAggregate.ReceivedQuantity ?? 0m),
+                        ReceivedQuantityInMT = vwReceiptAllocationAggregate.ReceivedQuantity ?? 0m,
+                        ReceivedQuantityInMTFormatted = vwReceiptAllocationAggregate.ReceivedQuantity?.ToString("N", new CultureInfo("en-US")) ?? "0.00",
+                        DonorID = vwReceiptAllocationAggregate.DonorID,
+                        ProgramID = vwReceiptAllocationAggregate.ProgramID,
+                        CommoditySourceID = vwReceiptAllocationAggregate.CommoditySourceID,
+                        IsClosed = vwReceiptAllocationAggregate.IsClosed,
+                        PurchaseOrder = vwReceiptAllocationAggregate.PurchaseOrder,
+                        SupplierName = vwReceiptAllocationAggregate.SupplierName,
+                        SourceHubID = vwReceiptAllocationAggregate.SourceHubID,
+                        OtherDocumentationRef = vwReceiptAllocationAggregate.OtherDocumentationRef,
+                        Remark = vwReceiptAllocationAggregate.Remark
                     };
                 receiptAllocationViewModels.Add(receiptAllocationViewModel);
             }
