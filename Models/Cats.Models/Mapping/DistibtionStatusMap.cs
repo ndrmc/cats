@@ -13,7 +13,7 @@ namespace Cats.Models.Mapping
         public DistibtionStatusMap()
         {
             // Primary Key
-            // this.HasKey(t => new { t.RegionID, t.WoredaID, t.FDPID });
+            this.HasKey(t => new { t.RegionID, t.WoredaID, t.PlanName });
             //this.HasKey(t => new { t.FDPID });
 
 
