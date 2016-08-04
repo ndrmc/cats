@@ -3225,6 +3225,7 @@
     </Content>
     <Content Include="Views\Shared\EditorTemplates\AmharicDatePicker.cshtml" />
     <Content Include="Views\Shared\_AdminUnitTree.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\CommodityChildEditor.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
