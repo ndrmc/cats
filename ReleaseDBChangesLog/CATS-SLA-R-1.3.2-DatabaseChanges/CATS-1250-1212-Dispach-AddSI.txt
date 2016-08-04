@@ -1,0 +1,10 @@
+USE [CatsMaster]
+GO
+ALTER TABLE [dbo].[Dispatch]
+ADD [ShippingInstructionID] [int] NULL
+GO
+UPDATE [dbo].[Dispatch]
+SET [dbo].[Dispatch].[DispatchAllocationID] = [dbo].[DispatchAllocation].[DispatchAllocationID]
+FROM [dbo].[DispatchAllocation]
+WHERE
+   [dbo].[Dispatch].[ShippingInstructionID] = [dbo].[DispatchAllocation].[ShippingInstructionID]

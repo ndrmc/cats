@@ -1,0 +1,9 @@
+/****** Object:  [SatelliteWarehouseID]  
+
+CATS-1249-Create
+  Script Date: 3/28/2016 9:39:27 AM ******/
+USE [CatsMaster]
+GO
+ALTER TABLE[Logistics].[HubAllocation] DROP COLUMN [SatelliteWarehouseID] ;
+
+ALTER TABLE [dbo].[Hub] DROP COLUMN [HubParentID];

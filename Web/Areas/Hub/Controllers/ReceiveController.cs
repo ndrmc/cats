@@ -162,7 +162,7 @@ namespace Cats.Areas.Hub.Controllers
             return Json(receiveDetails.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AllocationListJson([DataSourceRequest] DataSourceRequest request, int? commodityType, int type = 1, bool closed = false, int HubID = 0,bool receivable = false, string grn = "")
+        public ActionResult AllocationListJson([DataSourceRequest] DataSourceRequest request, int commodityType = 1, int type = 1, bool closed = false, int HubID = 0,bool receivable = false, string grn = "")
         {
             List<ReceiptAllocation> list = new List<ReceiptAllocation>();
             List<ReceiptAllocationViewModel> listViewModel = new List<ReceiptAllocationViewModel>();
@@ -171,7 +171,7 @@ namespace Cats.Areas.Hub.Controllers
                 UserProfile user = _userProfileService.GetUser(User.Identity.Name);
                 HubID = HubID > 0 ? HubID : user.DefaultHub.Value;
                 //HubID=user.DefaultHub.HubID
-                list = _receiptAllocationService.GetUnclosedAllocationsDetached(HubID, type, closed, user.PreferedWeightMeasurment, commodityType, receivable, grn);
+                list = _receiptAllocationService.GetUnclosedAllocationsDetached(HubID, type, user.PreferedWeightMeasurment, grn, commodityType, closed, receivable);
                 list = list.Where(t => t.CommoditySourceID == type).ToList();
                 listViewModel = BindReceiptAllocationViewModels(list).ToList();
                 return Json(listViewModel.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
@@ -183,7 +183,7 @@ namespace Cats.Areas.Hub.Controllers
             }
         }
         
-        public ActionResult AllocationListAjax([DataSourceRequest] DataSourceRequest request, int? commodityType, int type = 1, bool closed = false, int HubID = 0, bool? receivable=false, string grn = "")
+        public ActionResult AllocationListAjax([DataSourceRequest] DataSourceRequest request, int commodityType = 1, int type = 1, bool closed = false, int HubID = 0, bool receivable=false, string grn = "")
         {
             var listViewModel = new List<ReceiptAllocationViewModel>();
             try
@@ -196,7 +196,7 @@ namespace Cats.Areas.Hub.Controllers
                         HubID = user.DefaultHub.Value;
                     }
                 }
-                var list = _receiptAllocationService.GetUnclosedAllocationsDetached(HubID, type, closed, user.PreferedWeightMeasurment, commodityType, receivable, grn);
+                var list = _receiptAllocationService.GetUnclosedAllocationsDetached(HubID, type, user.PreferedWeightMeasurment, grn, commodityType, closed, receivable);
                 //newly added
                 list = type == CommoditySource.Constants.LOAN ? 
                     list.Where(t => t.CommoditySourceID == CommoditySource.Constants.LOAN || t.CommoditySourceID == CommoditySource.Constants.SWAP || t.CommoditySourceID == CommoditySource.Constants.TRANSFER || t.CommoditySourceID == CommoditySource.Constants.REPAYMENT).ToList() : 
@@ -211,12 +211,12 @@ namespace Cats.Areas.Hub.Controllers
             }
         }
         [GridAction]
-        public ActionResult AllocationListGrid(int type, bool? closedToo, int? CommodityType, bool? receivable=false, string grn = "")
+        public ActionResult AllocationListGrid(int type, bool closedToo = false, int CommodityType = 1, bool receivable=false, string grn = "")
         {
             try
             {
                 UserProfile user = _userProfileService.GetUser(User.Identity.Name);
-                List<ReceiptAllocation> list = _receiptAllocationService.GetUnclosedAllocationsDetached(user.DefaultHub.Value, type, closedToo, user.PreferedWeightMeasurment, CommodityType, receivable, grn);
+                List<ReceiptAllocation> list = _receiptAllocationService.GetUnclosedAllocationsDetached(user.DefaultHub.Value, type, user.PreferedWeightMeasurment, grn, CommodityType, closedToo, receivable);
                 //newly added
                 list = list.Where(t => t.CommoditySourceID == type).ToList();
                 //newly added
