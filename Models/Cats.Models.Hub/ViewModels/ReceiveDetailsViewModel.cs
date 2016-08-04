@@ -8,6 +8,7 @@ using Cats.Models.Hubs.ViewModels.Common;
 
 namespace Cats.Models.Hubs.ViewModels
 {
+    
     public class ReceiveDetailsViewModel
     {
         public ReceiveDetailsViewModel()
@@ -37,7 +38,6 @@ namespace Cats.Models.Hubs.ViewModels
 
         [Required(ErrorMessage = "required")]
         [Display(Name = "Unit")]
-        [UIHint("UnitEditor")]
         public int UnitId { get; set; }
 
         [Required(ErrorMessage = "Sent quantity required")]

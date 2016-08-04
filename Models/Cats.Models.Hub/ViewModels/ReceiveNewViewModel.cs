@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Cats.Models.Hubs.ViewModels.Common;
 
 namespace Cats.Models.Hubs.ViewModels
 {
     public class ReceiveNewViewModel
     {
+        public System.Collections.IEnumerable Commodities;
+        public System.Collections.IEnumerable Units;
         #region View Properties 
 
         public Guid ReceiveId { get; set; }
@@ -65,7 +68,6 @@ namespace Cats.Models.Hubs.ViewModels
         [StringLength(50)]
         [UIHint("AmharicTextBox")]
         public string ReceivedByStoreMan { get; set; }
-         
         public bool EditbleDateGap
         {
             get
@@ -79,7 +81,6 @@ namespace Cats.Models.Hubs.ViewModels
                     return false;
 
                 return true;
-              
             }
         }
         public Guid ReceiptAllocationId { get; set; }
@@ -87,10 +88,10 @@ namespace Cats.Models.Hubs.ViewModels
         public bool IsFalseGRN { get; set; }
         public Guid? SelectedGRN { get; set; }
         public int CommoditySourceTypeId { get; set; }
-        
+
 
         public int CurrentHub { get; set; }
-        public bool IsTransporterDetailVisible { get; set;}
+        public bool IsTransporterDetailVisible { get; set; }
         public IEnumerable<ReceiveDetailNewViewModel> ReceiveDetailNewViewModels { get; set; }
 
         public ReceiveDetailNewViewModel ReceiveDetailNewViewModel { get; set; }
@@ -132,6 +133,7 @@ namespace Cats.Models.Hubs.ViewModels
 
         public AllocationStatusViewModel AllocationStatusViewModel { get; set; }
 
-        #endregion 
+        public List<ReceiveDetailsViewModel> ReceiveDetailsViewModels { get; set; }
+        #endregion
     }
 }
