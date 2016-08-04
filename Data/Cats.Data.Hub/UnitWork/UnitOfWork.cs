@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Data.Objects.DataClasses;
+using System.Runtime.Remoting.Contexts;
 using Cats.Data.Hub.Repository;
 using Cats.Data.Hub.UnitWork;
 using Cats.Models.Hubs;
@@ -669,8 +672,8 @@ namespace Cats.Data.Hub
 
        private bool disposed = false;
 
-
-       protected virtual void Dispose(bool disposing)
+        
+        protected virtual void Dispose(bool disposing)
        {
            if (!this.disposed)
            {
@@ -692,7 +695,9 @@ namespace Cats.Data.Hub
 
        public Database Database { get { return _context.Database; } }
 
-       public IReportRepository ReportRepository
+        
+
+        public IReportRepository ReportRepository
        {
            get { return this._reportRepository ?? (this._reportRepository = new ReportRepository(_context)); }
        }
@@ -706,16 +711,29 @@ namespace Cats.Data.Hub
            get { return this.errorLogRepository ?? (this.errorLogRepository = new GenericRepository<ErrorLog>(_context)); }
 
        }
+        private IGenericRepository<VWReceiptAllocationAggregate> vwReceiptAllocationAggregateRepository = null;
+        public IGenericRepository<VWReceiptAllocationAggregate> VWReceiptAllocationAggregateRepository
+        {
+            get { return this.vwReceiptAllocationAggregateRepository ?? (this.vwReceiptAllocationAggregateRepository = new GenericRepository<VWReceiptAllocationAggregate>(_context)); }
+        }
+
+        private IGenericRepository<VWDispatchAllocation> vwDispatchAllocationRepository = null;
+        public IGenericRepository<VWDispatchAllocation> VWDispatchAllocationRepository
+        {
+            get { return this.vwDispatchAllocationRepository ?? (this.vwDispatchAllocationRepository = new GenericRepository<VWDispatchAllocation>(_context)); }
+        }
 
 
-       private IGenericRepository<VWCommodityReceived> vwCommodityReceived = null;
+        private IGenericRepository<VWCommodityReceived> vwCommodityReceived = null;
        public IGenericRepository<VWCommodityReceived> VWCommodityReceived
        {
            get { return this.vwCommodityReceived ?? (this.vwCommodityReceived = new GenericRepository<VWCommodityReceived>(_context)); }
        }
 
+        
 
-       private IGenericRepository<VWDispatchCommodity> vwDispatchCommodity = null;
+
+        private IGenericRepository<VWDispatchCommodity> vwDispatchCommodity = null;
 
         public IGenericRepository<VWDispatchCommodity> VWDispatchCommodity
         {

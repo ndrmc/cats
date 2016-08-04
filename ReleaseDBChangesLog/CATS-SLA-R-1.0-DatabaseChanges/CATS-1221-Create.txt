@@ -1,7 +1,7 @@
-USE [CatsMaster]
+USE [CatsDRMFSS]
 GO
 
-/****** Object:  View [dbo].[WoredaDistributionDashboardView]    Script Date: 7/19/2016 5:18:37 PM ******/
+/****** Object:  View [dbo].[WoredaDistributionDashboardView]    Script Date: 8/2/2016 5:21:46 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -10,15 +10,17 @@ GO
 
 CREATE VIEW [dbo].[WoredaDistributionDashboardView]
 AS
-SELECT        dbo.FDP.Name AS fdps, dbo.AdminUnit.Name AS WoredaName, dbo.WoredaStcokDistribution.WoredaID, AdminUnit_1.Name AS Zone, AdminUnit_2.Name AS RegionName, AdminUnit_2.AdminUnitID AS RegionId, 
-                         dbo.FDP.FDPID, dbo.[Plan].PlanName, dbo.[Plan].Status
-FROM            dbo.WoredaStcokDistribution INNER JOIN
-                         dbo.WoredaStockDistributionDetail ON dbo.WoredaStcokDistribution.WoredaStockDistributionID = dbo.WoredaStockDistributionDetail.WoredaStockDistributionID INNER JOIN
-                         dbo.FDP ON dbo.WoredaStockDistributionDetail.FDPID = dbo.FDP.FDPID INNER JOIN
-                         dbo.AdminUnit ON dbo.WoredaStcokDistribution.WoredaID = dbo.AdminUnit.AdminUnitID INNER JOIN
-                         dbo.AdminUnit AS AdminUnit_1 ON dbo.AdminUnit.ParentID = AdminUnit_1.AdminUnitID INNER JOIN
-                         dbo.AdminUnit AS AdminUnit_2 ON AdminUnit_1.ParentID = AdminUnit_2.AdminUnitID INNER JOIN
-                         dbo.[Plan] ON dbo.WoredaStcokDistribution.PlanID = dbo.[Plan].PlanID
+SELECT dbo.AdminUnit.Name AS WoredaName, dbo.WoredaStcokDistribution.WoredaID, AdminUnit_1.Name AS Zone, AdminUnit_2.Name AS RegionName, AdminUnit_2.AdminUnitID AS RegionID, COUNT(dbo.FDP.FDPID) 
+                  AS FdpCount, dbo.[Plan].PlanName, dbo.[Plan].Status, dbo.WoredaStcokDistribution.DistributionDate
+FROM     dbo.WoredaStcokDistribution INNER JOIN
+                  dbo.WoredaStockDistributionDetail ON dbo.WoredaStcokDistribution.WoredaStockDistributionID = dbo.WoredaStockDistributionDetail.WoredaStockDistributionID INNER JOIN
+                  dbo.FDP ON dbo.WoredaStockDistributionDetail.FDPID = dbo.FDP.FDPID INNER JOIN
+                  dbo.AdminUnit ON dbo.WoredaStcokDistribution.WoredaID = dbo.AdminUnit.AdminUnitID INNER JOIN
+                  dbo.AdminUnit AS AdminUnit_1 ON dbo.AdminUnit.ParentID = AdminUnit_1.AdminUnitID INNER JOIN
+                  dbo.AdminUnit AS AdminUnit_2 ON AdminUnit_1.ParentID = AdminUnit_2.AdminUnitID INNER JOIN
+                  dbo.[Plan] ON dbo.WoredaStcokDistribution.PlanID = dbo.[Plan].PlanID
+GROUP BY dbo.AdminUnit.Name, dbo.[Plan].PlanName, dbo.AdminUnit.Name, dbo.WoredaStcokDistribution.WoredaID, AdminUnit_1.Name, AdminUnit_2.Name, AdminUnit_2.AdminUnitID, dbo.[Plan].Status, 
+                  dbo.WoredaStcokDistribution.DistributionDate
 
 GO
 
@@ -27,7 +29,7 @@ Begin DesignProperties =
    Begin PaneConfigurations = 
       Begin PaneConfiguration = 0
          NumPanes = 4
-         Configuration = "(H (1[32] 4[5] 2[5] 3) )"
+         Configuration = "(H (1[39] 4[12] 2[14] 3) )"
       End
       Begin PaneConfiguration = 1
          NumPanes = 3
@@ -89,82 +91,82 @@ Begin DesignProperties =
    End
    Begin DiagramPane = 
       Begin Origin = 
-         Top = -190
+         Top = 0
          Left = 0
       End
       Begin Tables = 
          Begin Table = "WoredaStcokDistribution"
             Begin Extent = 
-               Top = 6
-               Left = 38
-               Bottom = 195
-               Right = 276
+               Top = 0
+               Left = 571
+               Bottom = 278
+               Right = 809
             End
             DisplayFlags = 280
             TopColumn = 0
          End
          Begin Table = "WoredaStockDistributionDetail"
             Begin Extent = 
-               Top = 6
-               Left = 314
-               Bottom = 136
-               Right = 576
+               Top = 0
+               Left = 34
+               Bottom = 297
+               Right = 296
             End
             DisplayFlags = 280
             TopColumn = 0
          End
          Begin Table = "FDP"
             Begin Extent = 
-               Top = 6
-               Left = 614
-               Bottom = 136
-               Right = 784
+               Top = 76
+               Left = 380
+               Bottom = 263
+               Right = 550
             End
             DisplayFlags = 280
             TopColumn = 0
          End
          Begin Table = "AdminUnit"
             Begin Extent = 
-               Top = 154
-               Left = 309
-               Bottom = 284
-               Right = 493
+               Top = 0
+               Left = 1097
+               Bottom = 255
+               Right = 1282
             End
             DisplayFlags = 280
             TopColumn = 0
          End
          Begin Table = "AdminUnit_1"
             Begin Extent = 
-               Top = 157
-               Left = 611
-               Bottom = 287
-               Right = 795
+               Top = 0
+               Left = 1339
+               Bottom = 247
+               Right = 1523
             End
             DisplayFlags = 280
             TopColumn = 0
          End
          Begin Table = "AdminUnit_2"
             Begin Extent = 
-               Top = 178
-               Left = 54
-               Bottom = 308
-               Right = 238
+               Top = 5
+               Left = 1599
+               Bottom = 261
+               Right = 1783
             End
             DisplayFlags = 280
             TopColumn = 0
          End
          Begin Table = "Plan"
             Begin Extent = 
-               Top = 288
-               Left = 276
-               Bottom = 418
-               Right = 461
-       ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'WoredaDistributionDashboardView'
+               Top = 104
+               Left = 848
+               Bottom = 267
+               Right = 1042
+     ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'WoredaDistributionDashboardView'
 GO
 
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'     End
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'       End
             DisplayFlags = 280
-            TopColumn = 3
+            TopColumn = 0
          End
       End
    End
@@ -173,7 +175,7 @@ EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'     End
    Begin DataPane = 
       Begin ParameterDefaults = ""
       End
-      Begin ColumnWidths = 9
+      Begin ColumnWidths = 10
          Width = 284
          Width = 1500
          Width = 1500
@@ -183,20 +185,21 @@ EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'     End
          Width = 1500
          Width = 1500
          Width = 1500
+         Width = 2112
       End
    End
    Begin CriteriaPane = 
-      Begin ColumnWidths = 11
+      Begin ColumnWidths = 12
          Column = 1440
-         Alias = 1515
-         Table = 2325
+         Alias = 1512
+         Table = 2328
          Output = 720
          Append = 1400
          NewValue = 1170
-         SortType = 1350
-         SortOrder = 1410
-         GroupBy = 1350
-         Filter = 1350
+         SortType = 1356
+         SortOrder = 1416
+         GroupBy = 1356
+         Filter = 1356
          Or = 1350
          Or = 1350
          Or = 1350

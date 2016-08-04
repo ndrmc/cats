@@ -6,6 +6,7 @@
 @using NUnit.Framework
 @using GridButtonType = Telerik.Web.Mvc.UI.GridButtonType
 @using GridEditMode = Telerik.Web.Mvc.UI.GridEditMode
+
 @model Cats.Models.Hubs.ViewModels.ReceiveNewViewModel
 
 @{
@@ -139,9 +140,9 @@
                             </div>
                         </div>
                         @if (CommoditySource.Constants.LOAN == Model.CommoditySourceTypeId
-         || CommoditySource.Constants.SWAP == Model.CommoditySourceTypeId
-         || CommoditySource.Constants.TRANSFER == Model.CommoditySourceTypeId
-         || CommoditySource.Constants.REPAYMENT == Model.CommoditySourceTypeId)
+|| CommoditySource.Constants.SWAP == Model.CommoditySourceTypeId
+|| CommoditySource.Constants.TRANSFER == Model.CommoditySourceTypeId
+|| CommoditySource.Constants.REPAYMENT == Model.CommoditySourceTypeId)
                         {
                             <div class="form-group col-md-12">
                                 <div class="col-md-4 control-label">@Html.LabelFor(model => model.SourceHub)</div>
@@ -320,7 +321,6 @@
                                       .DataTextField("Name")
                                       .DataValueField("UnitId")
                                       .HtmlAttributes(new { @class = "form-control" })
-
                                       .DataSource(source => source.Read(read => read.Action("GetUnities", "ReceiveNew")))
                                 )
                                 <span class="help-block">
@@ -406,31 +406,58 @@
                                 <div class="form-group col-md-12">
                                     <div class="col-md-4 control-label">@Html.LabelFor(model => model.ResponsibleDonorId)</div>
                                     <div class="col-md-8">
+                                        @*@(Html.Kendo().ComboBox()
+                                              .Name("ResponsibleDonorId")
+                                              .Placeholder("Select Responsible Donor")
+                                              .SelectedIndex(0)
+                                              .DataTextField("Name")
+                                              .HtmlAttributes(new { @class = "form-control" })
+                                              .DataValueField("DonorId")
+                                              .Filter(FilterType.Contains)
+                                              .DataSource(source => source.Read(read => read.Action("GetResponsibleDonor", "ReceiveNew"))))
+                                            <span class="help-block"> @Html.ValidationMessageFor(model => model.ResponsibleDonorId)</span>*@
                                         @(Html.Kendo().ComboBox()
-                                          .Name("ResponsibleDonorId")
-                                          .Placeholder("Select Responsible Donor")
-                                          .SelectedIndex(0)
-                                          .DataTextField("Name")
-                                          .HtmlAttributes(new { @class = "form-control" })
-                                          .DataValueField("DonorId")
-                                          .Filter(FilterType.Contains)
-                                          .DataSource(source => source.Read(read => read.Action("GetResponsibleDonor", "ReceiveNew"))))
+                                              .Name("ResponsibleDonorId")
+                                              .Placeholder("--Select Responsible Donor--")
+                                              .DataTextField("Name")
+                                              .DataValueField("DonorId")
+                                              .Filter(FilterType.Contains)
+                                              .HtmlAttributes(new { @class = "form-control" })
+                                              .DataSource(source => source.Read(read => read.Action("GetResponsibleDonor", "ReceiveNew")
+                                              .Data("filterStacks"))
+                                              .ServerFiltering(true))
+                                              .AutoBind(false)
+                                              .CascadeFrom("DonorId"))
                                         <span class="help-block"> @Html.ValidationMessageFor(model => model.ResponsibleDonorId)</span>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-12">
                                     <div class="col-md-4 control-label">@Html.LabelFor(model => model.SourceDonorId)</div>
                                     <div class="col-md-8">
+                                        @*@(Html.Kendo().ComboBox()
+                                              .Name("SourceDonorId")
+                                              .Placeholder("Select Source Donor")
+                                              .SelectedIndex(0)
+                                              .HtmlAttributes(new { @class = "form-control" })
+                                              .DataTextField("Name")
+                                              .DataValueField("DonorId")
+                                              .Filter(FilterType.Contains)
+                                              .DataSource(source => source.Read(read => read.Action("GetSourceDonor", "ReceiveNew"))))
+                                            <span class="help-block"> @Html.ValidationMessageFor(model => model.SourceDonorId)</span>*@
                                         @(Html.Kendo().ComboBox()
-                                          .Name("SourceDonorId")
-                                          .Placeholder("Select Source Donor")
-                                          .SelectedIndex(0)
-                                          .HtmlAttributes(new { @class = "form-control" })
-                                          .DataTextField("Name")
-                                          .DataValueField("DonorId")
-                                          .Filter(FilterType.Contains)
-                                          .DataSource(source => source.Read(read => read.Action("GetSourceDonor", "ReceiveNew"))))
+                                              .Name("SourceDonorId")
+                                              .Placeholder("--Select Source Donor--")
+                                              .DataTextField("Name")
+                                              .DataValueField("SourceDonorId")
+                                              .Filter(FilterType.Contains)
+                                              .HtmlAttributes(new { @class = "form-control" })
+                                              .DataSource(source => source.Read(read => read.Action("GetSourceDonor", "ReceiveNew")
+                                              .Data("filterStacks"))
+                                              .ServerFiltering(true))
+                                              .AutoBind(false)
+                                              .CascadeFrom("DonorId"))
                                         <span class="help-block"> @Html.ValidationMessageFor(model => model.SourceDonorId)</span>
+
                                     </div>
                                 </div>
                             }
@@ -461,14 +488,27 @@
                             <div class="form-group col-md-12">
                                 <div class="col-md-4 control-label">@Html.LabelFor(model => model.TransporterId)</div>
                                 <div class="col-md-8">
-                                    @(Html.Kendo().ComboBoxFor(m => m.TransporterId)
-                                      .Placeholder("Select Transporter")
-                                      .DataTextField("Name")
-                                      .HtmlAttributes(new { @class = "form-control" })
-                                      .DataValueField("TransporterId")
-                                      .Filter(FilterType.Contains)
-                                      .DataSource(source => source.Read(read => read.Action("GetTransporter", "ReceiveNew"))))
-                                    <span class="help-block"> @Html.ValidationMessageFor(model => model.TransporterId)</span>
+                                    @*@(Html.Kendo().ComboBoxFor(m => m.TransporterId)
+                                          .Placeholder("--Select Transporter--")
+                                          .DataTextField("Name")
+                                          .HtmlAttributes(new { @class = "form-control" })
+                                          .DataValueField("TransporterId")
+                                          .Filter(FilterType.Contains)
+                                          .DataSource(source => source.Read(read => read.Action("GetTransporter", "ReceiveNew"))))
+                                        <span class="help-block"> @Html.ValidationMessageFor(model => model.TransporterId)</span>*@
+                                    @(Html.Kendo().ComboBox()
+                                       .Name("Transporter")
+                                       .Placeholder("--Select Transporter--")
+                                       .DataTextField("Name")
+                                       .DataValueField("TransporterId")
+                                       .Filter(FilterType.Contains)
+                                       .HtmlAttributes(new { @class = "form-control" })
+                                       .DataSource(source => source.Read(read => read.Action("GetTransporter", "ReceiveNew")
+                                       .Data("filterStacks"))
+                                       .ServerFiltering(true))
+                                       .AutoBind(false)
+                                       .CascadeFrom("TransporterId"))
+                                    <span class="help-block">@Html.ValidationMessageFor(model => model.TransporterId)</span>
                                 </div>
                             </div>
                             <div class="form-group col-md-12">
@@ -520,41 +560,38 @@
     $(document).ready(function () {
         $("#ReceiveDetailNewViewModel_SentQuantityInUnit").on('input', function () {
 
-           // alert("why ?");
+            // alert("why ?");
             var mesarement = $('#ReceiveDetailNewViewModel_UnitId').val();
-
             var sentValue = $('#ReceiveDetailNewViewModel_SentQuantityInUnit').val();
 
             if (mesarement === '1') {
 
-                $('#ReceiveDetailNewViewModel_SentQuantityInMt').val(sentValue * (1 / 20));
+                $('#ReceiveDetailNewViewModel_SentQuantityInMt').val((sentValue * (1 / 20)).toFixed(2));
             }
             else if (mesarement === '8') {
-                $('#ReceiveDetailNewViewModel_SentQuantityInMt').val(sentValue * (1 / 1000));
+                $('#ReceiveDetailNewViewModel_SentQuantityInMt').val((sentValue * (1 / 1000)).toFixed(2));
             }
             else if (mesarement === '9') {
-                $('#ReceiveDetailNewViewModel_SentQuantityInMt').val(sentValue * (1 / 10));
+                $('#ReceiveDetailNewViewModel_SentQuantityInMt').val((sentValue * (1 / 10)).toFixed(2));
             }
-
         });
     });
     $(document).ready(function () {
         $("#ReceiveDetailNewViewModel_ReceivedQuantityInUnit").on('input', function () {
-
+            // alert("why ?");
             var mesarement = $('#ReceiveDetailNewViewModel_UnitId').val();
-
             var sentValue = $('#ReceiveDetailNewViewModel_ReceivedQuantityInUnit').val();
+
             if (mesarement === '1') {
                 //alert(sentValue);
-                $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val(sentValue * (1 / 20));
+                $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val((sentValue * (1 / 20)).toFixed(2));
             }
             else if (mesarement === '8') {
-                $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val(sentValue * (1 / 1000));
+                $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val((sentValue * (1 / 1000)).toFixed(2));
             }
             else if (mesarement === '9') {
-                $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val(sentValue * (1 / 10));
+                $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val((sentValue * (1 / 10)).toFixed(2));
             }
-
         });
     });
 

@@ -21,13 +21,15 @@
                 }
 
                 var eth_date_input = $($(that).clone()).insertAfter($(this));
-
+                var selected_date;
+                var gregorian_date;
                 eth_date_input.removeClass("cats-datepicker2").attr("name", "")
                     .val(geezStr)
                     .click(function () { _ethdatepicker_show(this); })
+
                     .change(function () {
                         var $this = $(this);
-                        var selected_date = new EthDate();
+                          selected_date = new EthDate();
                         if ($this.val()) {
 
                             selected_date.parse($this.val());
@@ -35,15 +37,18 @@
                                 $this.tooltip("show")
                                 .val("");
                             }
-
+                            gregorian_date = selected_date.toGreg().toLocaleDateString();
 
                             var inputid = eth_date_input.attr("id");
                             $("#" + inputid).attr("value", selected_date.toGreg().toLocaleDateString());
                         }
+
+
+                        $(document).change(dateEditorValueChanged(selected_date,gregorian_date));
                     })
                     .tooltip({ trigger: "hover manual", title: "dd/mm/yyyy" })
-                    .attr("placeholder", "dd/mm/yyyy");
-
+                    .attr("placeholder", "dd/mm/yyyy")
+               
                 eth_date_input.data("greg_input", this);
                 eth_date_input.blur(function (e) { _handle_blur(e, this) });
                 var dp = _build_date_picker(eth_date_input);
@@ -96,6 +101,17 @@
         return this;
 
     }
+
+    function dateEditorValueChanged(newDateEthiopian, newDateGregorian) {
+
+        editorValueChangedEvent.newDateEthiopian = newDateEthiopian;
+        editorValueChangedEvent.newDateGregorian = newDateGregorian;
+
+        $(document).trigger(editorValueChangedEvent);
+         
+    }
+    var editorValueChangedEvent = jQuery.Event("dateEditorValueChanged");
+
     function getInputDate(options, input) {
 
     }
@@ -109,6 +125,7 @@
         var htm = "";
         // htm += date_picker.attr("id");
         $(".hover").each(function () { hide = false; });
+    
         if (hide) {
             date_picker.displayed = 0;
             date_picker.selected_month = "";
@@ -151,9 +168,10 @@
 
         //        var $title = $(' <div class="ui-datepicker-title"><span class="ui-datepicker-month" id="ui-ethdatepicker-current-month">#Month#</span>&nbsp;<span class="ui-datepicker-year" id="ui-ethdatepicker-current-year">#Year#</span></div></div>').appendTo($header);
         var $title = $('<div class="ui-datepicker-title"></div>').appendTo($header);
-        var monthhtm = _write_month_option();
+        var monthhtm = _write_month_option() ;
         var yearhtm = _write_year_option();
         var $month = $(monthhtm).appendTo($title);
+   
         var $year = $(yearhtm).appendTo($title);
         var yearmonth = $("<div class='year-month'>Month : Year</div>").appendTo($title);
 
@@ -164,13 +182,11 @@
 
         var month_yr_changed = function (date_picker) {
 
-            //---------------------
-
-            var selected_date = new EthDate();
-
-            //---------------------
+         
+            var selected_ddate = new EthDate();
+ 
             var m = date_picker.ui.month.val() / 1 + 1;
-            // alert(m);
+    
             var yr = date_picker.ui.year.val();
             var selected_month = new EthDate(yr, m, 1);
             date_picker.selected_month = selected_month;
@@ -186,19 +202,17 @@
             var dp = $(this).data("date_picker");
             month_yr_changed($(this).data("date_picker"));
             return;
-            var m = dp.ui.month.val() / 1 + 1;
-            var yr = dp.ui.year.val();
-            var selected_month = new EthDate(yr, m, 1);
-            dp.selected_month = selected_month;
-            dp.ui.debug.html(dp.ui.month.val());
+          
 
         });
-        $year.change(function () { month_yr_changed($(this).data("date_picker")); });
+        $year.change(function () {
+            month_yr_changed($(this).data("date_picker"));
+        });
         return eth_date_pickerdata;
     }
     var _write_month_option = function () {
         var htm = "";
-        htm += '<select class="ui-datepicker-month" >';
+        htm += '<select class="ui-datepicker-month"   >';
         for (var i in month_name_amh) {
             var mi = i / 1;
             htm += "<option value='" + mi + "'>" + month_name_amh[i] + "</option>"
@@ -209,7 +223,7 @@
     }
     var _write_year_option = function () {
         var htm = "";
-        htm += '<select class="ui-datepicker-year" >';
+        htm += '<select class="ui-datepicker-year"   >';
         for (var i = 1990; i < 2030; i++) {
 
             htm += "<option value='" + i + "'>" + i + "</option>"
@@ -369,7 +383,8 @@
 
 
     }
-
+    var dateClickedEvent = jQuery.Event("dateChanged");
+   
     var _attach_eth_cal_event = function (date_picker) {
         var cal = date_picker.ui.container;
         cal.hover(function () { $(this).addClass("hover"); }, function () { $(this).removeClass("hover"); });
@@ -380,13 +395,23 @@
 															    var date = _this.find("a").html();
 															    var selected_date = new EthDate(_this.data("year") / 1, _this.data("month") / 1, date / 1);
 															    $("#ui-ethdatepicker-debug").html(selected_date.toString());
+
+															 
+
 															    var target = _this.data("target");
 															    target.val(selected_date);
 															    date_picker.input.val(selected_date);
 
+															    $("#dateTransfer").data("selectedDate", selected_date.toString());
+
 															    var greg_date = selected_date.toGreg();
 															    $(target.data("greg_input")).attr("value", greg_date.toLocaleDateString());
 															    cal.removeClass("hover");
+
+															    dateClickedEvent.EthiopianDate = selected_date.toString();
+															    dateClickedEvent.GregorianDate = greg_date.toLocaleDateString();
+
+															    $(document).trigger(dateClickedEvent);
 
 
 															    var inputid = date_picker.input.attr("id");
