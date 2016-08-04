@@ -279,68 +279,52 @@ namespace Cats.Services.Hub
             return x;
         }
 
-        public List<ReceiptAllocation> GetUnclosedAllocationsDetached(int hubId, int commoditySoureType, bool? closedToo, string weightMeasurmentCode, int? CommodityType, bool? receivable, string grn)
+        public List<ReceiptAllocation> GetUnclosedAllocationsDetached(int hubId, int commoditySoureType, string weightMeasurmentCode, string grn, int CommodityType = 1, bool closedToo = false, 
+            bool receivable = false)
         {
-            List<ReceiptAllocation> GetDetachecedList = new List<ReceiptAllocation>();
+            //List<ReceiptAllocation> GetDetachecedList = new List<ReceiptAllocation>();
 
             //var x = GetListOfSource(commoditySoureType);
-            var receiptAll = _unitOfWork.ReceiptAllocationRepository.Get().ToList();
-            var unclosed = (from rAll in receiptAll
-                            where hubId == rAll.HubID
-                                 select rAll).ToList();
-            if (closedToo == null || closedToo == false)
-            {
-                unclosed = unclosed.Where(p => p.IsClosed == false).ToList();
-            }
-            else
-            {
-                unclosed = unclosed.Where(p => p.IsClosed == true).ToList();
-            }
+            var unclosed = _unitOfWork.ReceiptAllocationRepository.Get(t=>t.HubID == hubId && t.IsClosed == closedToo && t.IsFalseGRN == receivable && 
+                    t.Receives.Any(q => q.GRN.Contains(grn)) && t.Commodity.CommodityTypeID == CommodityType).Take(10).ToList();
 
-            if (receivable == null || receivable == false)
+            unclosed.ForEach(t=>t.RemainingBalanceInMT = t.QuantityInMT - t.Receives.Sum(q=>q.ReceiveDetails.Sum(p=> Math.Abs(p.QuantityInMT))));
+            unclosed.ForEach(t=>t.CommodityName = t.Commodity.Name);
+            unclosed.ForEach(t => t.RemainingBalanceInUnit = ((t.QuantityInUnit ?? 0) - t.Receives.Sum(q => q.ReceiveDetails.Sum(p => Math.Abs(p.QuantityInUnit)))));
+            if (weightMeasurmentCode == "qn")
             {
-                unclosed = unclosed.Where(p => p.IsFalseGRN == false).ToList();
+                unclosed.ForEach(t=>t.QuantityInMT *= 10);
+                unclosed.ForEach(t => t.RemainingBalanceInMT *= 10);
+                unclosed.ForEach(t => t.ReceivedQuantityInMT *= 10);
             }
-            else
-            {
-                unclosed = unclosed.Where(p => p.IsFalseGRN == true).ToList();
-            }
-
-            unclosed = grn.Length == 0 ? unclosed : unclosed.Where(p => p.Receives.Any(q => q.GRN.Contains(grn))).ToList();
-            unclosed = CommodityType.HasValue ? unclosed.Where(p => p.Commodity.CommodityTypeID == CommodityType.Value).ToList() : unclosed.Where(p => p.Commodity.CommodityTypeID == 1).ToList();
-
-            foreach (ReceiptAllocation receiptAllocation in unclosed)
-            {
+            //foreach (ReceiptAllocation receiptAllocation in unclosed)
+            //{
                 
-               // int si = _unitOfWork.ShippingInstructionRepository.Get(s=>s.ShippingInstructionID == receiptAllocation.si
-                int si = _ShippingInstructionService.GetShipingInstructionId(receiptAllocation.SINumber);
-                receiptAllocation.RemainingBalanceInMT = receiptAllocation.QuantityInMT -
-                                                          GetReceivedAlready(
-                                                          receiptAllocation);
-                receiptAllocation.CommodityName = receiptAllocation.Commodity.Name;
+            //   // int si = _unitOfWork.ShippingInstructionRepository.Get(s=>s.ShippingInstructionID == receiptAllocation.si
+            //    int si = _ShippingInstructionService.GetShipingInstructionId(receiptAllocation.SINumber);
+            //    receiptAllocation.RemainingBalanceInMT = receiptAllocation.QuantityInMT -GetReceivedAlready(receiptAllocation);
+            //    receiptAllocation.CommodityName = receiptAllocation.Commodity.Name;
 
 
-                if (receiptAllocation.QuantityInUnit != null)
-                    receiptAllocation.RemainingBalanceInUnit = receiptAllocation.QuantityInUnit.Value -
-                                                               GetReceivedAlreadyInUnit(receiptAllocation);
-                else
-                    receiptAllocation.RemainingBalanceInUnit = 0 -
-                                           GetReceivedAlreadyInUnit(receiptAllocation);
+            //    if (receiptAllocation.QuantityInUnit != null)
+            //        receiptAllocation.RemainingBalanceInUnit = receiptAllocation.QuantityInUnit.Value - GetReceivedAlreadyInUnit(receiptAllocation);
+            //    else
+            //        receiptAllocation.RemainingBalanceInUnit = 0 - GetReceivedAlreadyInUnit(receiptAllocation);
 
 
-                if (weightMeasurmentCode == "qn")
-                {
-                    receiptAllocation.QuantityInMT *= 10;
-                    receiptAllocation.RemainingBalanceInMT *= 10;
-                    receiptAllocation.ReceivedQuantityInMT *= 10;
-                }
-                //modified Banty:24_5_2013 from db.Detach to ((IObjectContextAdapter)db).ObjectContext.Detach
-             //   ((IObjectContextAdapter)db).ObjectContext.Detach(receiptAllocation);
-                //Commented out by banty 16/8/2013
-                GetDetachecedList.Add(receiptAllocation);
-            }
+            //    if (weightMeasurmentCode == "qn")
+            //    {
+            //        receiptAllocation.QuantityInMT *= 10;
+            //        receiptAllocation.RemainingBalanceInMT *= 10;
+            //        receiptAllocation.ReceivedQuantityInMT *= 10;
+            //    }
+            //    //modified Banty:24_5_2013 from db.Detach to ((IObjectContextAdapter)db).ObjectContext.Detach
+            // //   ((IObjectContextAdapter)db).ObjectContext.Detach(receiptAllocation);
+            //    //Commented out by banty 16/8/2013
+            //    GetDetachecedList.Add(receiptAllocation);
+            //}
 
-            return GetDetachecedList.ToList();
+            return unclosed.ToList();
 
         }
 

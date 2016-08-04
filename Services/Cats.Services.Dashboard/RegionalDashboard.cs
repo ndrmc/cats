@@ -159,7 +159,7 @@ namespace Cats.Services.Dashboard
         public List<DistibtionStatusView> GetDistributions(int regionID)
         {
             var r = new List<DistibtionStatusView>();
-            var distibtion = _unitOfWork.WoredaDistributionDashboardRepository.FindBy(t => t.RegionID == regionID);
+            var distibtion = _unitOfWork.WoredaDistributionDashboardRepository.FindBy(t => t.RegionID == regionID).OrderByDescending(t=>t.DistributionDate).Take(10);
           //  var requests = _unitOfWork.RegionalRequestRepository.FindBy(t => t.RegionID == regionID && t.PlanID == currentHRD.PlanID).OrderByDescending(t => t.RegionalRequestID).Take(5);
 
             foreach (var distiribution in distibtion)
@@ -168,7 +168,7 @@ namespace Cats.Services.Dashboard
                 {
                     plan = distiribution.PlanName,
                     Woreda = distiribution.WoredaName,
-                    Fdps = distiribution.FDPID,
+                    Fdps = distiribution.FdpCount,
                     status = Convert.ToInt16(distiribution.Status) 
                    
                 };

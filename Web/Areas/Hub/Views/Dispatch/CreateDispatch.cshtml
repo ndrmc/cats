@@ -335,12 +335,14 @@
 
 }
 <script>
-    
+
     jQuery('#txtQtl').on('input', function () {
         var amountEntered = $('#txtQtl').val();
         var amountPlanned = "@ViewBag.plannedAmount";
-        if ((amountEntered / 10) > amountPlanned) {
-            alert("Dispatch amount must be less than the planned amount [ " + (amountPlanned*10) + " Qtl ]!");
+        var recivedAmount = "@ViewBag.recivedAmount";
+        var remainngAmount = amountPlanned - recivedAmount;
+        if ((amountEntered / 10) > remainngAmount) {
+            alert("Dispatch amount must be less than the remaing Amount amount [ " + (remainngAmount * 10) + " Qtl ]!");
             $('#txtQtl').val(0);
             $('#Quantity').val(0);
         }

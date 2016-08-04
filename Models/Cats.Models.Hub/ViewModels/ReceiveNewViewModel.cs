@@ -68,8 +68,10 @@ namespace Cats.Models.Hubs.ViewModels
         [StringLength(50)]
         [UIHint("AmharicTextBox")]
         public string ReceivedByStoreMan { get; set; }
-         public bool EditbleDateGap { get
+        public bool EditbleDateGap
         {
+            get
+            {
 
 
                 if (CreatedDate == Convert.ToDateTime("1 / 01 / 0001 12:00:00 AM"))
@@ -79,16 +81,17 @@ namespace Cats.Models.Hubs.ViewModels
                     return false;
 
                 return true;
-            } }
+            }
+        }
         public Guid ReceiptAllocationId { get; set; }
 
         public bool IsFalseGRN { get; set; }
         public Guid? SelectedGRN { get; set; }
         public int CommoditySourceTypeId { get; set; }
-        
+
 
         public int CurrentHub { get; set; }
-        public bool IsTransporterDetailVisible { get; set;}
+        public bool IsTransporterDetailVisible { get; set; }
         public IEnumerable<ReceiveDetailNewViewModel> ReceiveDetailNewViewModels { get; set; }
 
         public ReceiveDetailNewViewModel ReceiveDetailNewViewModel { get; set; }
@@ -130,7 +133,7 @@ namespace Cats.Models.Hubs.ViewModels
 
         public AllocationStatusViewModel AllocationStatusViewModel { get; set; }
 
-        public List<ReceiveDetailsViewModel> ReceiveDetailsViewModels { get; set; } 
-        #endregion 
+        public List<ReceiveDetailsViewModel> ReceiveDetailsViewModels { get; set; }
+        #endregion
     }
 }

@@ -183,10 +183,10 @@ namespace Cats.Areas.Logistics.Controllers
            (from obj in SWarehouse select new { Id = obj.HubID, Name = obj.Name })
            , JsonRequestBehavior.AllowGet
            );
-           // var requisitionViewModel = HubViewModelBinder.ReturnRequisitionGroupByReuisitionNo(requisititions);
+            // var requisitionViewModel = HubViewModelBinder.ReturnRequisitionGroupByReuisitionNo(requisititions);
             //return Json(SWarehouse, JsonRequestBehavior.AllowGet);
         }
-        
+
 
         [HttpGet]
         public JsonResult ReadRequisitions(int regionId)

@@ -300,4 +300,3 @@ app.directive('modal', function () {
         }
     };
 });
-

@@ -129,19 +129,17 @@
 <div id="myTabContent" class="tab-content">
     <div class="tab-pane fade active in" id="from_donation">
         <div class="field-set">
-            @Html.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.DONATION })
+           @Html.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.DONATION })
         </div>
     </div>
 
     <div class="tab-pane fade" id="from_loan">
         <div class="field-set">
-            @Html.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.LOAN })
         </div>
     </div>
 
     <div class="tab-pane fade" id="local_purchase">
         <div class="field-set">
-            @Html.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.LOCALPURCHASE })
         </div>
     </div>
 </div>
@@ -156,11 +154,11 @@
         type = type ? type : sourceType;
         var title;
         if (type == 1)
-            title='@Html.Translate("Donation")';
+            title = '@Html.Translate("Donation")';
         if (type == 2)
-            title='@Html.Translate("Loan, Swap, Repayment Or Other")';
+            title = '@Html.Translate("Loan, Swap, Repayment Or Other")';
         if (type == 3)
-            title='@Html.Translate("Local Purchase")';
+            title = '@Html.Translate("Local Purchase")';
         return title;
 
         var url = '@Url.Action("LoadBySIPartial", "ReceiptAllocation")';
@@ -271,49 +269,78 @@
     function getFilterAttributes() {
         var closed = "false";
         var receivable = "false";
-        console.log("chk_closed: " + $("#chk_closed").is(':checked'));
-        if ($("#chk_closed").is(':checked')) {
+        if (document.getElementById("chk_closed").checked) {
             closed = "true";
         }
 
-        if ($("#chk_receivable").is(':checked'))
-        {
+        if (document.getElementById("chk_receivable").checked) {
             receivable = "true";
         }
         var commodityType = $("#FilterCommodityTypeID").val();
         var GRN = $("#FilterGRN").val();
         var HubID = $("#HubsID").val();
-        return { closed: closed, commodityType: commodityType, HubID: HubID, receivable: receivable, grn : GRN};
+        return { closed: closed, commodityType: commodityType, HubID: HubID, receivable: receivable, grn: GRN };
     }
     function dataRefresh(refreshGrids) {
         //alert();
         //return;
 
         var gridUrl = '@Url.Action("AllocationListJson", "Receive")';
-        var gridTypes= [@Cats.Models.Hubs.CommoditySource.Constants.DONATION
+        var gridTypes = [@Cats.Models.Hubs.CommoditySource.Constants.DONATION
            , @Cats.Models.Hubs.CommoditySource.Constants.LOAN
            , @Cats.Models.Hubs.CommoditySource.Constants.LOCALPURCHASE];
         var attribs = getFilterAttributes();
-            console.log("dataRefresh ", attribs);
-            var urlParams = "";
-            var sep = "&";
-            for (var i in attribs) {
-                if (attribs[i] !== "") {
-                    urlParams += sep + i + "=" + attribs[i];
-                    sep = "&";
-                }
+        console.log("dataRefresh ", attribs);
+        var urlParams = "";
+        var sep = "&";
+        for (var i in attribs) {
+            if (attribs[i] !== "") {
+                urlParams += sep + i + "=" + attribs[i];
+                sep = "&";
             }
-
-            for (var i in gridTypes) {
-                var loadUrl = gridUrl + "?type=" + gridTypes[i] +  urlParams;
-                var gridName="ReceiveAllocationGrid" + gridTypes[i];
-                console.log("   " + gridName, loadUrl);
-                var gr = $("#" + gridName).data("kendoGrid");
-                if (gr != null) {
-                    gr.dataSource.transport.options.read.url = loadUrl;
-                    gr.dataSource.filter({});
-                }
-            }
-
         }
+
+        for (var i in gridTypes) {
+            var loadUrl = gridUrl + "?type=" + gridTypes[i] + urlParams;
+            var gridName = "ReceiveAllocationGrid" + gridTypes[i];
+            console.log("   " + gridName, loadUrl);
+            var gr = $("#" + gridName).data("kendoGrid");
+            if (gr != null) {
+                gr.dataSource.transport.options.read.url = loadUrl;
+                gr.dataSource.filter({});
+            }
+        }
+
+    }
+
+    var fromDonationLLoaded = false;
+    var fromLoadLoaded = false;
+    var localPurchaseLoaded = false;
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var target = $(e.target).attr("href");
+
+        if (target == "#from_donation") {
+
+            if (!fromDonationLLoaded) {
+                $(target).load('@(Url.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.DONATION }))');
+                fromDonationLLoaded = true;
+            }
+        }
+
+        if (target == "#from_loan") {
+            if (!fromDonationLLoaded) {
+
+                    $(target).load('@(Url.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.LOAN }))');
+                    fromDonationLLoaded = true;
+
+                }}
+
+        if (target == "#local_purchase") {
+            if (!localPurchaseLoaded)
+            {    $(target).load('@(Url.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.LOCALPURCHASE }))');
+                localPurchaseLoaded = true;  } }
+
+
+    });
 </script>
