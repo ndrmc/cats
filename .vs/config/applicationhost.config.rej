@@ -1,6 +1,0 @@
-diff a/.vs/config/applicationhost.config b/.vs/config/applicationhost.config	(rejected hunks)
-@@ -181,4 +181,3 @@
-                 <application path="/" applicationPool="Clr4IntegratedAppPool">
--                    <virtualDirectory path="/" physicalPath="C:\CatsRepo2\Web" />
-                     <virtualDirectory path="/" physicalPath="E:\code\cats\Web" />
-                 </application>
