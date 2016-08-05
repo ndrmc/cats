@@ -207,12 +207,24 @@ namespace Cats.Areas.Hub.Controllers
         public ActionResult Commodities(Guid? receiptAllocationId, string grn, Guid? receiveId)
         {
             ViewBag.receiveId = receiveId;
-            ViewBag.Commodities = _commodityService.GetAllCommodity().Where(l => l.ParentID == null).Where(l => l.CommodityTypeID == 1).Select(c => new CommodityModel() { Id = c.CommodityID, Name = c.Name }).ToList();
-            ViewBag.SubCommodities = _commodityService.GetAllSubCommodities().Where(l => l.ParentID != null).Where(l => l.CommodityTypeID == 1).Select(c => new SubCommodity() { Id = c.CommodityID, Name = c.Name }).ToList();
+            var commodityModelList = new List<CommodityModel>
+            {
+                new CommodityModel() { Id = -1, Name = ""}
+            };
+            var commodityModels = _commodityService.GetAllCommodity().Where(l => l.ParentID == null).Where(l => l.CommodityTypeID == 1).Select(c => new CommodityModel() { Id = c.CommodityID, Name = c.Name }).ToList();
+            commodityModelList.AddRange(commodityModels);
+             ViewBag.Commodities = commodityModelList; ViewBag.SubCommodities = _commodityService.GetAllSubCommodities().Where(l => l.ParentID != null).Where(l => l.CommodityTypeID == 1).Select(c => c.ParentID != null ? new SubCommodity() { CommodityId = c.ParentID.Value, Id = c.CommodityID, Name = c.Name } : null).ToList();
             ViewBag.Units = _unitService.GetAllUnit().Select(u => new UnitModel() { Id = u.UnitID, Name = u.Name }).ToList();
             ViewBag.SI = _shippingInstructionService.GetAllShippingInstruction().Select(s => new Cats.Models.Hubs.ViewModels.ShippingInstructionModel() { Id = s.ShippingInstructionID, Value = s.Value }).ToList();
 
             return View("Commodities");
+        }
+
+        public JsonResult GetCascadingData(int CommodityId)
+        {
+
+            var data = _commodityService.GetAllSubCommodities().Where(l => l.ParentID == CommodityId).Where(l => l.CommodityTypeID == 1).Select(c => c.ParentID != null ? new SubCommodity() { CommodityId = c.ParentID.Value, Id = c.CommodityID, Name = c.Name } : null).ToList();
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult ReadCommoditiesFromReceive([DataSourceRequest] DataSourceRequest request, Guid? receiveId)
