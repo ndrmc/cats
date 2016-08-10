@@ -1,0 +1,3 @@
+USE [CatsMaster]
+GO
+ALTER TABLE [dbo].[ReceiveDetail] ADD [SiNumber] [int] NULL ;
