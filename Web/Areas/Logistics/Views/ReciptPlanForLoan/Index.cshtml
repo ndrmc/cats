@@ -70,7 +70,12 @@
                 </select>
             </div>
         </div>
+        <div class="form-group form-md-line-input col-md-3">
+            <span class="input-group-btn btn-right">
+                <a class="btn green-haze" id="SearchButton"><i class="fa fa-search"></i> @Html.Translate("Search")</a>
+            </span>
 
+        </div>
     </div>
 </div>
 
@@ -336,7 +341,7 @@
     function searchGrid() {
         var gridListFilter = { filters: [] };
         var gridDataSource = $("#grid").data("kendoGrid").dataSource;
-        var siNo = $("#SI_Number").val();
+        var siNo = $("#SI_Number").val().trim();
         var progName = $("#ProgramID").val();
         var status = $("#StatusID").val();
         gridListFilter.logic = "and";   // a different logic 'or' can be selected
@@ -352,5 +357,6 @@
     $("#SI_Number, #ProgramID, #StatusID").change(function () {
         searchGrid();
     });
-    
+    $("#SearchButton").click(function () { searchGrid(); });
+
 </script>

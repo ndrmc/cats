@@ -50,6 +50,7 @@
                             })
                             .Editable(editable => editable.Mode(Kendo.Mvc.UI.GridEditMode.InCell))
                     .Pageable()
+                    .Selectable()
                     .Sortable()
                     .Scrollable()
                     .HtmlAttributes(new { style = "height:430px;" })
@@ -68,9 +69,9 @@
                 function error_handler(e) {
                     if (e.errors) {
                         var message = "Errors:\n";
-                        $.each(e.errors, function (key, value) {
+                        $.each(e.errors, function(key, value) {
                             if ('errors' in value) {
-                                $.each(value.errors, function () {
+                                $.each(value.errors, function() {
                                     message += this + "\n";
                                 });
                             }
@@ -78,7 +79,22 @@
                         alert(message);
                     }
                 }
+                function filterTemplate() {
+                    var id;
+                    var grid = $("#grid").data("kendoGrid");
+                    
+                    var ddl = $('#CommodityId');
+                  
+                    
+                    var selectedItem = grid.dataItem(grid.select().closest("tr"));
+                    //alert(model.text);
+
+                    return {
+                        CommodityId: selectedItem.CommodityId
+                };
+                }
             </script>
+           
         </div>
     </div>
 </div>

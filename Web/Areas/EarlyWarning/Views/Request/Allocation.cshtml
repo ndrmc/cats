@@ -15,21 +15,21 @@
 
 @section Toolbar    {
     <!--
-    <div class="btn-group">
-    <button class="btn dropdown-toggle " data-toggle="dropdown">
-        @Html.Translate("Actions")
-        <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu">
-        <li><a id="btnAddFDP" href="@Url.Action("AddBeneficary", "Request", new { id = Model.RegionalRequestID, programId = @ViewBag.programId })">@Html.Translate("Add FDP")</a></li>
-        <li><a id="btnAddCommodity" href="@Url.Action("AddCommodity", "Request", new { id = Model.RegionalRequestID })">@Html.Translate("Add Commodity")</a></li>
-    </ul>
-    </div>
-    <a class="btn toolbar-btn " data-buttontype="btn_save" href="javascript:saverecords()"></a>
+        <div class="btn-group">
+        <button class="btn dropdown-toggle " data-toggle="dropdown">
+            @Html.Translate("Actions")
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a id="btnAddFDP" href="@Url.Action("AddBeneficary", "Request", new { id = Model.RegionalRequestID, programId = @ViewBag.programId })">@Html.Translate("Add FDP")</a></li>
+            <li><a id="btnAddCommodity" href="@Url.Action("AddCommodity", "Request", new { id = Model.RegionalRequestID })">@Html.Translate("Add Commodity")</a></li>
+        </ul>
+        </div>
+        <a class="btn toolbar-btn " data-buttontype="btn_save" href="javascript:saverecords()"></a>
 
-    <a class="btn toolbar-btn " href="@Url.Action("Details", "Request", new { Area = "EarlyWarning", id = Model.RegionalRequestID })" data-buttontype="btn_back_to_list"></a>
+        <a class="btn toolbar-btn " href="@Url.Action("Details", "Request", new { Area = "EarlyWarning", id = Model.RegionalRequestID })" data-buttontype="btn_back_to_list"></a>
 
--->    
+    -->
     <a class="btn toolbar-btn " href="@Url.Action("Details", "Request", new { Area = "EarlyWarning",id = Model.RegionalRequestID })" data-buttontype="btn_back_to_list"></a>
 
 
@@ -38,16 +38,15 @@
 
 <fieldset>
     <legend>
-        @Html.Translate("Resource Allocation") 
-       
+        @Html.Translate("Resource Allocation")
+
     </legend>
 </fieldset>
 @Html.HiddenFor(m => m.RegionalRequestID)
 
 
 <style>
-    .summaryview
-    {
+    .summaryview {
         /*   width:90%;
         border:solid 1px #888;
         border-radius:4px;
@@ -55,74 +54,67 @@
         padding: 4px;
     }
 
-        .summaryview .fldlabel
-        {
+        .summaryview .fldlabel {
             text-align: right;
             font-weight: bold;
         }
 
-        .summaryview .fldvalue
-        {
+        .summaryview .fldvalue {
         }
 
-    .section-hilite
-    {
+    .section-hilite {
         border-radius: 4px;
         background-color: #F8F8F8;
         margin: 5px;
     }
 
-    .flat-input, .token-inputs input
-    {
+    .flat-input, .token-inputs input {
         background: transparent;
         border: none;
         box-shadow: none;
     }
 
-        .flat-input:active, .flat-input:focus, .token-inputs input:active, .token-inputs input:focus
-        {
+        .flat-input:active, .flat-input:focus, .token-inputs input:active, .token-inputs input:focus {
             color: #666;
             border: none;
             box-shadow: none;
         }
-    .token-inputs .token-input-token-facebook
-    {
-        padding:0px;
-        padding-left:5px;
-        padding-right:5px;
 
-        border-radius:2px;
-        color:#666;
+    .token-inputs .token-input-token-facebook {
+        padding: 0px;
+        padding-left: 5px;
+        padding-right: 5px;
+        border-radius: 2px;
+        color: #666;
     }
-    .token-inputs .token-input-list-facebook
-    {
-        border:solid 1px #ccc;
-        border-radius:2px;
-        width:500px;
 
+    .token-inputs .token-input-list-facebook {
+        border: solid 1px #ccc;
+        border-radius: 2px;
+        width: 500px;
     }
-    .activity_indicator
-    {
-        position:fixed;
-        left:50%;
-        top:45px;
-        width:100px;
-        height:30px;
-        line-height:30px;
-        margin-left:-50px;
-        border-radius:2px;
-        background:rgba(0,0,0,0.5);
-        text-align:center;
-        color:#FFF;
+
+    .activity_indicator {
+        position: fixed;
+        left: 50%;
+        top: 45px;
+        width: 100px;
+        height: 30px;
+        line-height: 30px;
+        margin-left: -50px;
+        border-radius: 2px;
+        background: rgba(0,0,0,0.5);
+        text-align: center;
+        color: #FFF;
     }
-    .pending-requests0 .activity_indicator
-    {
-        display:none;
-        opacity:0.2;
+
+    .pending-requests0 .activity_indicator {
+        display: none;
+        opacity: 0.2;
     }
-    .k-grid tbody tr:nth-child(2n)
-    {
-        background:#EEE;
+
+    .k-grid tbody tr:nth-child(2n) {
+        background: #EEE;
     }
 </style>
 
@@ -134,24 +126,34 @@
         -->
         <table style="width: 90%; background: #FFF">
             <tr>
-                <td class="fldlabel">Reference : </td><td class="fldvalue">@Model.ReferenceNumber</td>
-                <td class="fldlabel">Region : </td><td class="fldvalue">@Model.Region</td>
-                <td class="fldlabel">Program : </td><td class="fldvalue">@Model.Program</td>
+                <td class="fldlabel">Reference : </td>
+                <td class="fldvalue">@Model.ReferenceNumber</td>
+                <td class="fldlabel">Region : </td>
+                <td class="fldvalue">@Model.Region</td>
+                <td class="fldlabel">Program : </td>
+                <td class="fldvalue">@Model.Program</td>
             </tr>
             <tr>
-                <td class="fldlabel">@Html.Translate("Request Date") : </td><td class="fldvalue">@Model.RequestDate</td>
-                <td class="fldlabel">@Html.Translate("Year") : </td><td class="fldvalue">@Model.Year</td>
-                <td class="fldlabel">@Html.Translate("Ration") : </td><td class="fldvalue">@Model.Ration </td>
+                <td class="fldlabel">@Html.Translate("Request Date") : </td>
+                <td class="fldvalue">@Model.RequestDate</td>
+                <td class="fldlabel">@Html.Translate("Year") : </td>
+                <td class="fldvalue">@Model.Year</td>
+                <td class="fldlabel">@Html.Translate("Ration") : </td>
+                <td class="fldvalue">@Model.Ration </td>
             </tr>
         </table>
     </div>
 
 
     <div class="section-hilite token-inputs" style="padding: 1px;">
-        <table >
-            <tr><td style="padding-left: 20px; padding-right: 4px;">
+        <table>
+            <tr>
+                <td style="padding-left: 20px; padding-right: 4px;">
 
-                @Html.Translate("Commodities") </td><td><input id="txt_requested_commodities" class="flat-input"/></td></tr>
+                    @Html.Translate("Commodities")
+                </td>
+                <td><input id="txt_requested_commodities" class="flat-input" /></td>
+            </tr>
         </table>
     </div>
 
@@ -159,81 +161,97 @@
     <div class="k-widget k-grid" style="height: 400px; overflow: scroll;">
         <table id="tbl_allocation">
             <thead class="k-grid-header">
-            <tr>
-                <th style="width: 50px; padding: 7px;">No.</th>
-                <th style="width: 150px; padding: 7px;">Zone</th>
-                <th style="width: 150px">Woreda</th>
-                <th style="width: 150px">FDP</th>
-                <!-- <th style="width:150px">Planned</th>-->
-                <th style="width: 150px">Beneficiary</th>
-                <th></th>
-            </tr>
+                <tr>
+                    <th style="width: 50px; padding: 7px;">No.</th>
+                    <th style="width: 150px; padding: 7px;">Zone</th>
+                    <th style="width: 150px; padding: 7px;">Woreda</th>
+                    <th style="width: 150px">FDP</th>
+                    <!-- <th style="width:150px">Planned</th>-->
+                    <th style="width: 150px">Beneficiary</th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody class="k-grid-content">
 
-            @*@{
-                            var allocations = new List<RegionalRequestDetailViewModel>();
-                            if (ViewBag.Allocations != null)
-                            {
-                                allocations = (List<RegionalRequestDetailViewModel> )ViewBag.Allocations;
+                @*@{
+                                    var allocations = new List<RegionalRequestDetailViewModel>();
+                                    if (ViewBag.Allocations != null)
+                                    {
+                                        allocations = (List<RegionalRequestDetailViewModel> )ViewBag.Allocations;
+                                    }
+                                    var requestDetailViewModels = allocations as IList<RegionalRequestDetailViewModel> ?? allocations.ToList();
+                                    var zones = requestDetailViewModels.Select(r => r.Zone);
+                                    var index = 0;
+                                    foreach (var zone in zones)
+                                    {
+                                        var zoneAllocation = requestDetailViewModels.Where(a => a.Zone == zone);
+                                        foreach (var allocation in zoneAllocation)
+                                        {
+                                <tr>
+                                    <td>@index+1</td>
+
+                                    <td>@allocation.Zone</td>
+                                    <td>@allocation.Woreda</td>
+                                    <td>
+                                        <a ng-click="onFdpListShow($index)" id="fdp_selector_button{{$index}}" class="edit_button" href="javascript:_Void()">{{allocation.FDP}}</a>
+                                    </td>
+                                    <td><input class="flat-input txt_beneficiaries" onfocus="onGridInputFocus(this)" onchange="onAllocationBeneficiaryChange(index)" ng-model="allocation.Beneficiaries"/></td>
+                                    <td><button class="edit_button btn btn-danger" ng-click="deleteRequestedFDP($index)"><i class="icon-trash icon-white"></i> Delete</button></td>
+                                </tr>
                             }
-                            var requestDetailViewModels = allocations as IList<RegionalRequestDetailViewModel> ?? allocations.ToList();
-                            var zones = requestDetailViewModels.Select(r => r.Zone);
-                            var index = 0;
-                            foreach (var zone in zones)
-                            {
-                                var zoneAllocation = requestDetailViewModels.Where(a => a.Zone == zone);
-                                foreach (var allocation in zoneAllocation)
-                                {
-                        <tr>
-                            <td>@index+1</td>
+                        }
+                    }*@
 
-                            <td>@allocation.Zone</td>
-                            <td>@allocation.Woreda</td>
-                            <td>
-                                <a ng-click="onFdpListShow($index)" id="fdp_selector_button{{$index}}" class="edit_button" href="javascript:_Void()">{{allocation.FDP}}</a>
-                            </td>                 
-                            <td><input class="flat-input txt_beneficiaries" onfocus="onGridInputFocus(this)" onchange="onAllocationBeneficiaryChange(index)" ng-model="allocation.Beneficiaries"/></td>
-                            <td><button class="edit_button btn btn-danger" ng-click="deleteRequestedFDP($index)"><i class="icon-trash icon-white"></i> Delete</button></td>
-                        </tr>
-                    }
-                }
-            }*@
-
-                <tr ng-repeat="allocation in allocations | orderBy:['Zone', 'Woreda', 'FDP']" ng-show="isUniqueZone($index) || allocation.showA ">
+                <tr ng-repeat="allocation in allocations | orderBy:['Zone', 'Woreda', 'FDP']"
+                    ng-show="isUniqueZone($index) || isUniqueWoreda($index) || allocation.showA">
                     <td>{{$index+1}} </td>
 
-                    <td ng-show="isUniqueZone($index)"><button ng-click="ChangeVisible(allocation.Zone)" ng-show="allocation.showA"> -</button> <button ng-click="ChangeVisible(allocation.Zone)" ng-show="!allocation.showA"> + </button> <b class="margin-right-10">{{allocation.Zone}}</b> </td>
+                    <td ng-show="isUniqueZone($index)">
+                        <button ng-click="ChangeVisible(allocation.Zone)" ng-show="allocation.showA"> -</button>
+                        <button ng-click="ChangeVisible(allocation.Zone)" ng-show="!allocation.showA"> + </button>
+                        <b class="margin-right-10">{{allocation.Zone}}</b>
+                    </td>
+
                     <td ng-show="!isUniqueZone($index)"></td>
-                    <td ng-show="allocation.showA">{{allocation.Woreda}}</td>
+                    @*<td ng-show="allocation.showA">{{allocation.Woreda}}</td>*@
+
+                    <td ng-show="isUniqueWoreda($index)">
+                        <button ng-click="ChangeVisibleWoreda(allocation.Woreda)" ng-show="allocation.showA"> -</button>
+                        <button ng-click="ChangeVisibleWoreda(allocation.Woreda)" ng-show="!allocation.showA"> + </button>
+                        <b class="margin-right-10">{{allocation.Woreda}}</b>
+                    </td>
+                    <td ng-show="!isUniqueWoreda($index)"></td>
                     <td ng-show="allocation.showA">
                         <a ng-click="onFdpListShow($index)" id="fdp_selector_button{{$index}}" class="edit_button" href="javascript:_Void()">{{allocation.FDP}}</a>
                     </td>
                     <!--<td>{{allocation.PlannedBeneficiaries}}</td>-->
-                    <td ng-show="allocation.showA"><input class="flat-input txt_beneficiaries" onfocus="onGridInputFocus(this)" onchange="onAllocationBeneficiaryChange({{$index}})" ng-model="allocation.Beneficiaries" /></td>
+                    <td ng-show="allocation.showA">
+                        <input class="flat-input txt_beneficiaries" type="number" onfocus="onGridInputFocus(this)" onchange="onAllocationBeneficiaryChange({ {$index }})" ng-model="allocation.Beneficiaries" min="0" oninput="validity.valid||(value='');"/>
+                    </td>
                     <td ng-show="allocation.showA"><button class="edit_button btn btn-danger" ng-click="deleteRequestedFDP($index)"><i class="icon-trash icon-white"></i> Delete</button></td>
+
                 </tr>
 
-            <tr id="newAllocationEdit" style="display: none;">
-                <td></td>
-                <td>{{newAllocation.Zone}}</td>
-                <td>{{newAllocation.Woreda}}</td>
-                <td><a ng-click="onFdpListShow('new')" id="fdp_selector_buttonnew" class="edit_button" href="#">{{newAllocation.FDP}}</a></td>
-                <!-- <td></td>-->
-                <td><input class="flat-input" ng-model="newAllocation.Beneficiaries" id="txtNewAllocationBeneficiaries"/></td>
-                <td>
-                    <button class="edit_button btn btn-primary" ng-click="saveAllocation(newAllocation,true)"><i class="icon-ok icon-white"></i>Save</button>
-                    <button class="edit_button btn" ng-click="onCreateAllocationCancel()"><i class="icon-trash icon-white"></i>Cancel</button>
+                <tr id="newAllocationEdit" style="display: none;">
+                    <td></td>
+                    <td>{{newAllocation.Zone}}</td>
+                    <td>{{newAllocation.Woreda}}</td>
+                    <td><a ng-click="onFdpListShow('new')" id="fdp_selector_buttonnew" class="edit_button" href="#">{{newAllocation.FDP}}</a></td>
+                    <!-- <td></td>-->
+                    <td><input class="flat-input" ng-model="newAllocation.Beneficiaries" id="txtNewAllocationBeneficiaries" /></td>
+                    <td>
+                        <button class="edit_button btn btn-primary" ng-click="saveAllocation(newAllocation,true)"><i class="icon-ok icon-white"></i>Save</button>
+                        <button class="edit_button btn" ng-click="onCreateAllocationCancel()"><i class="icon-trash icon-white"></i>Cancel</button>
 
-                </td>
-            </tr>
-            <tr style="display: none;"><td colspan="6"></td></tr>
-            <tr id="cmdAddAllocation">
-                <td colspan="5"></td>
-                <td>
-                    <button class="edit_button btn btn-primary" ng-click="onCreateNewAllocation()"><i class="icon-plus icon-white"></i> New</button>
-                </td>
-            </tr>
+                    </td>
+                </tr>
+                <tr style="display: none;"><td colspan="6"></td></tr>
+                <tr id="cmdAddAllocation">
+                    <td colspan="5"></td>
+                    <td>
+                        <button class="edit_button btn btn-primary" ng-click="onCreateNewAllocation()"><i class="icon-plus icon-white"></i> New</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <div style="height: 350px;"></div>
@@ -248,7 +266,8 @@
     </div>
 
     <div id="activity_indicator" class="pending-requests">
-        <div class="activity_indicator" show="{{pendingRequests>0}}"><img src="~/Content/images/loading.gif"/>
+        <div class="activity_indicator" show="{{pendingRequests>0}}">
+            <img src="~/Content/images/loading.gif" />
         </div>
 
     </div>
@@ -263,12 +282,12 @@
                 <h4 class="modal-title">Message</h4>
             </div>
             <div class="modal-body">
-                <p>The data you entered is already registered. </p>             
+                <p>The data you entered is already registered. </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" aria-label="Left Align" data-dismiss="modal">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Ok
-                </button>            
+                </button>
             </div>
         </div>
     </div>
@@ -290,12 +309,12 @@
             ,Allocation_Create: "@Url.Action("Allocation_Create2", "Request")"
             ,Allocation_Update: "@Url.Action("Allocation_Update2", "Request")"
             ,Allocation_Delete: "@Url.Action("Allocation_Delete", "Request")"
-           
+
             ,getAllCommodities:"@Url.Action("getRationCommodities", "Request")"
             ,getRequestedCommodities:"@Url.Action("Commodity_Read", "Request")"
             ,Commodity_Create:"@Url.Action("Commodity_Create2", "Request")"
             ,Commodity_Delete:"@Url.Action("Commodity_Destroy2", "Request")"
-               
+
         };
 
     var adminTreeSelectionCallback=
@@ -319,7 +338,7 @@
         { return;}
         $$scope.onFdpChange(selection);
     }
-    
+
 </script>
 <script src="~/Content/tokeninput/js/jquery.tokeninput.js"></script>
 <script src="~/Scripts/RequestAllocation/RequestAllocationController.js"></script>

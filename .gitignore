@@ -136,3 +136,4 @@ Web/Web.config
 *.datasource
 *.config
 Web/Areas/EarlyWarning/Views/Request/Allocation.cshtml.rej
+/.vs/config/applicationhost.config

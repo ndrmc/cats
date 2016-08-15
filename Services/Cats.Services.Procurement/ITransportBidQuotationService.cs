@@ -27,6 +27,6 @@ namespace Cats.Services.Procurement
             Func<IQueryable<TransportBidQuotation>, IOrderedQueryable<TransportBidQuotation>> orderBy = null,
             string includeProperties = "");
 
-        List<TransportBidQuotation> GetSecondWinner(int transporterId, int woredaId);
+        List<TransportBidQuotation> GetSecondWinner(int transporterId, int woredaId, string bidDocumentNo);
     }
 }

@@ -49,10 +49,6 @@ namespace Cats.Helpers
         {
             //string templateName = string.Empty;
 
-
-            
-           
-
             var generator = new DocumentGenerator(templatePath, documentPath, GetTemplateData(templateType, id), GetTransactionDetails(id),_log);
 
             var result = generator.GenerateDocument();

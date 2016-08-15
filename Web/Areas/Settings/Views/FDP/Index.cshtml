@@ -130,14 +130,16 @@
               .DataSource(datasource =>
                           datasource
                               .Ajax()
-                              .Events(error => error.Error("error_handler").RequestEnd("onRequestEnd"))
-                              //.ServerOperation(false)
+                              .Events(error => error.Error("error_handler")
+                              .RequestEnd("onRequestEnd"))
+                              
                               .Model(m => m.Id(t => t.FDPID))
                               .Read(read => read.Action("FDP_Read", "FDP").Data("selectedWoredaId"))
                               .Create(create => create.Action("FDP_Create", "FDP").Data("selectedWoredaId"))
-                              .Update("FDP_Update", "FDP")
+                              .Update(update => update.Action("FDP_Update", "FDP").Data("selectedWoredaId"))
+                          
                               .Destroy(update => update.Action("FDP_Destroy", "FDP"))
-              //.Destroy("FDP_Destroy","FDP")
+              
               )
               )
 
@@ -244,6 +246,7 @@
 <script>
     var selectedWoreda;
 
+
     function error_handler(e) {
         if (e.errors) {
             var message = "Errors:\n";
@@ -256,9 +259,19 @@
             });
             alert(message);
             e.Edit("onEdit");
-            //$('#errormessage').Value = message;
-            //$("#errorMessageModal").modal('show');
-           
+ 
+        }
+    }
+
+    function onRequestEnd(e) {
+        if (e.type === "create") {
+            if (!e.response.Errors) {
+                e.sender.read();
+            }
+        }
+        else if (e.type === "update") {
+            if (!e.response.Errors)
+            { e.sender.read(); }
         }
     }
 
