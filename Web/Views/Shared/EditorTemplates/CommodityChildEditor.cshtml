@@ -1,6 +1,22 @@
 ﻿@(Html.Kendo().DropDownList()
-            .Name("CommodityChildID") 
-    .DataValueField("Id") 
-    .DataTextField("Name") 
-        .BindTo((System.Collections.IEnumerable)ViewBag.SubCommodities) 
+    .Name("CommodityChildID")
+
+
+
+    .DataValueField("Id")
+    .DataTextField("Name")
+
+        .AutoBind(false)
+         .CascadeFrom("CommodityId")
+         .DataSource(source =>
+         {
+             source.Read(read =>
+             {
+                 read.Action("GetCascadingData", "ReceiveNew").Data("filterTemplate");
+
+
+             })
+             .ServerFiltering(true);
+         })
+//.BindTo((System.Collections.IEnumerable)ViewBag.SubCommodities)
 )

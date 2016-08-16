@@ -1,7 +1,6 @@
 ﻿@using Cats.Areas.Logistics.Models
 @using Cats.Helpers
 @using Cats.Models.Hubs
-@using Cats.Security
 @using Kendo.Mvc.UI
 @{
     ViewBag.Title = "Index";
@@ -29,138 +28,134 @@
     </head>
     <body @*data-ng-controller="DeliveryReconcilationController"*@>
         <h3>FDP monthly Commodity Receipt Page</h3>
-    <div class="container" style="width: 1300px">
-        <div id="map_area"></div>
-        <div id="div_tree_view" class="span3 well" style="margin-left: 0px; width: 200px">
-            <div>Region: <strong>@ViewBag.Region</strong>
+        <div class="container" style="width: 1300px">
+            <div id="map_area"></div>
+            <div id="div_tree_view" class="span3 well" style="margin-left:0px;width:200px">
+                <div>Region: <strong>@ViewBag.Region</strong></div>
+                <div>Select an FDP from the tree.</div>
+                @(Html.Kendo().TreeView()
+                      .Name("AdminUnitTreeView")
+                      .Animation(animation => animation.Expand(open => open.Fade(FadeDirection.In)))
+                      .Events(events => events
+                                            .Select("onSelect")
+                      )
+                      .Items(treeview => treeview.Add().Text("Zones").Enabled(false)
+                                             .SpriteCssClasses("folder")
+                                             .Expanded(true)
+                                             .Items(root =>
+                                                        {
+                                                            foreach (var zone in ViewBag.ZoneCollection)
+                                                            {
+                                                                var zone1 = zone;
+                                                                root.Add().Text((string)zone.Zone)
+                                                                    .SpriteCssClasses("glyphicon glyphicon-star")
+                                                                    .Items(woredas =>
+                                                                               {
+                                                                                   foreach (var woreda in zone1.Woredas)
+                                                                                   {
+                                                                                       var woreda1 = woreda;
+                                                                                       woredas.Add().Text((string)woreda.Woreda)
+                                                                                           .SpriteCssClasses("image")
+                                                                                           .Items(fdps =>
+                                                                                                      {
+                                                                                                          foreach (var fdp in woreda1.FDPs)
+                                                                                                          {
+                                                                                                              fdps.Add().Text((string)fdp.Name)
+                                                                                                                  .Id(fdp.FDPID + "")
+                                                                                                                  .SpriteCssClasses("pdf");
+                                                                                                          }
+                                                                                                      });
+                                                                                   }
+
+                                                                               });
+                                                            }
+                                                        }))
+                      )
             </div>
-            <div>Select an FDP from the tree.</div>
-            @(Html.Kendo().TreeView()
-                  .Name("AdminUnitTreeView")
-                  .Animation(animation => animation.Expand(open => open.Fade(FadeDirection.In)))
-                  .Events(events => events
-                      .Select("onSelect")
-                  )
-                  .Items(treeview => treeview.Add().Text("Zones").Enabled(false)
-                      .SpriteCssClasses("folder")
-                      .Expanded(true)
-                      .Items(root =>
-                      {
-                          foreach (var zone in ViewBag.ZoneCollection)
-                          {
-                              var zone1 = zone;
-                              root.Add().Text((string) zone.Zone)
-                                  .SpriteCssClasses("glyphicon glyphicon-star")
-                                  .Items(woredas =>
-                                  {
-                                      foreach (var woreda in zone1.Woredas)
-                                      {
-                                          var woreda1 = woreda;
-                                          woredas.Add().Text((string) woreda.Woreda)
-                                              .SpriteCssClasses("image")
-                                              .Items(fdps =>
-                                              {
-                                                  foreach (var fdp in woreda1.FDPs)
-                                                  {
-                                                      fdps.Add().Text((string) fdp.Name)
-                                                          .Id(fdp.FDPID + "")
-                                                          .SpriteCssClasses("pdf");
-                                                  }
-                                              });
-                                      }
 
-                                  });
-                          }
-                      }))
-                  )
-        </div>
-
-        <div class="span10" style="width: 1060px; float: right">
-            @*  @if (@ViewData.ModelState.IsValid == false)
+            <div class="span10" style="width:1060px;float:right">
+                @*  @if (@ViewData.ModelState.IsValid == false)
                 {
                     *@
-            <div style="clear: both;" class="message-window">
-                <div class="cats_error">@Html.ValidationSummary(true)</div>
+                <div style="clear: both;" class="message-window">
+                        <div class="cats_error">@Html.ValidationSummary(true)</div>
+                    </div>
+                @*}*@
+                @(Html.Kendo().Grid<DispatchViewModelForReconcile>()
+                      .Name("grid")
+                      .Columns(columns =>
+                                   {
+                                       columns.Bound(c => c.DeliveryReconcileID).Visible(false);
+                                       columns.Bound(c => c.RequisitionNo).Width(30);
+                                       columns.Bound(c => c.GIN).Width(25);
+                                       columns.Bound(c => c.DispatchDatePref).Width(35).Title("Dis. Date");
+                                       columns.Bound(c => c.Commodity).Width(30);
+                                       columns.Bound(c => c.Round).Width(20);
+                                       columns.Bound(c => c.MonthYear).Width(30);
+                                       columns.Bound(c => c.Quantity).Width(40).Title("Dis. Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" });
+                                       columns.Bound(c => c.GRN).Width(25);
+                                       if (datepref == "GC" || datepref == "gc")
+                                       {
+                                           columns.Bound(c => c.ReceivedDate).Width(40).Format("{0:M/d/yyyy}");
+                                       }
+                                       else
+                                       {
+                                           columns.Bound(c => c.ReceivedDatePref). Width(40).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).EditorTemplateName("AmharicDatePicker") ;
+                                       }
+                                       columns.Bound(c => c.ReceivedAmount).Width(45).Title("Rec. Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" });
+                                       columns.Bound(c => c.LossAmount).Width(25).Title("Loss Qty. (Qtl)").HtmlAttributes(new { style = "text-align:right" }); ;
+                                       columns.ForeignKey(c => c.LossReasonId, (System.Collections.IEnumerable)ViewData["LossReasons"], "Id", "name").Title("Loss code - Reason").Width(40);
+                                       //columns.Bound(c => c.LossReason).Width(15);
+
+                                   })
+                      .ToolBar(toolbar => toolbar.Save())
+                      .Editable(edit => edit.Mode(GridEditMode.InCell))
+                      .Scrollable(t => t.Height(400))
+                      //.Selectable(t => t.Mode(GridSelectionMode.Single))
+                      .Navigatable()
+                      //.Selectable()
+                      //.AutoBind(false)
+                      //.Events(events => events.e("onChange"))
+                      .Filterable()
+                      .DataSource(datasource =>
+                                  datasource
+                                      .Ajax()
+                                               .Events(error => error.Error("error_handler").RequestEnd("onRequestEnd"))
+                                      
+                                      .PageSize(10)
+                                      .Model(m =>
+                                                 {
+                                                     m.Id(p => p.DeliveryReconcileID);
+                                                     m.Field(p => p.RequisitionNo).Editable(false);
+                                                     m.Field(p => p.GIN).Editable(false);
+                                                     m.Field(p => p.DispatchDatePref).Editable(false);
+                                                     m.Field(p => p.Commodity).Editable(false);
+                                                     m.Field(p => p.Round).Editable(false);
+                                                     m.Field(p => p.MonthYear).Editable(false);
+                                                     m.Field(p => p.Quantity).Editable(false);
+                                                     m.Field(p => p.Round).Editable(false);
+                                                     m.Field(p => p.MonthYear).Editable(false);
+                                                 }) 
+                                      //.Model(m => m.Id(t => t.DeliveryReconcileID))
+                                      .Read(read => read.Action("ReadDispatchesNotReconciled", "DeliveryReconcile").Data("selectedFDPID"))
+                                      .Create(create => create.Action("DeliveryReconcileUpdate", "DeliveryReconcile"))
+                                      .Update(update => update.Action("DeliveryReconcileUpdate", "DeliveryReconcile"))
+                      //.Update("ReconciledDeliveryUpdate", "DeliveryReconcile")
+                      //.Destroy("FDP_Destroy","FDP")
+                      
+                      )
+                      .Events(e => e.Edit("onEdit"))
+            
+                       
+                       .Resizable(resize => resize.Columns(true))
+                      )
+
             </div>
-            @*}*@
-            @(Html.Kendo().Grid<DispatchViewModelForReconcile>()
-                  .Name("grid")
-                  .Columns(columns =>
-                  {
-                      columns.Bound(c => c.DeliveryReconcileID).Visible(false);
-                      columns.Bound(c => c.RequisitionNo).Width(30);
-                      columns.Bound(c => c.GIN).Width(25);
-                      columns.Bound(c => c.DispatchDatePref).Width(35).Title("Dis. Date");
-                      columns.Bound(c => c.Commodity).Width(30);
-                      columns.Bound(c => c.Round).Width(20);
-                      columns.Bound(c => c.MonthYear).Width(30);
-                      columns.Bound(c => c.Quantity).Width(40).Title("Dis. Qty. (Qtl)").HtmlAttributes(new {style = "text-align:right"});
-                      columns.Bound(c => c.GRN).Width(25);
-                      if (datepref == "GC" || datepref == "gc")
-                      {
-                          columns.Bound(c => c.ReceivedDate).Width(40).Format("{0:M/d/yyyy}");
-                      }
-                      else
-                      {
-                          columns.Bound(c => c.ReceivedDatePref).Width(40).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid"}).EditorTemplateName("AmharicDatePicker").Format("{0:M/d/yyyy}");
-                      }
-                      columns.Bound(c => c.ReceivedAmount).Width(45).Title("Rec. Qty. (Qtl)").HtmlAttributes(new {style = "text-align:right"});
-                      columns.Bound(c => c.LossAmount).Width(25).Title("Loss Qty. (Qtl)").HtmlAttributes(new {style = "text-align:right"});
-                      ;
-                      columns.ForeignKey(c => c.LossReasonId, (System.Collections.IEnumerable) ViewData["LossReasons"], "Id", "name").Title("Loss code - Reason").Width(40);
-                      //columns.Bound(c => c.LossReason).Width(15);
-
-                  })
-                  .ToolBar(toolbar => toolbar.Save())
-                  .Editable(edit =>
-                  {
-                      if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_Distribution_Entry))
-                      {
-                          edit.Mode(GridEditMode.InCell);
-                      }
-
-                  })
-                  .Scrollable(t => t.Height(400))
-                  //.Selectable(t => t.Mode(GridSelectionMode.Single))
-                  .Navigatable()
-                  //.Selectable()
-                  //.AutoBind(false)
-                  //.Events(events => events.e("onChange"))
-                  .Filterable()
-                  .DataSource(datasource =>
-                      datasource
-                          .Ajax()
-                          .Events(error => error.Error("error_handler").RequestEnd("onRequestEnd"))
-
-                          .PageSize(10)
-                          .Model(m =>
-                          {
-                              m.Id(p => p.DeliveryReconcileID);
-                              m.Field(p => p.RequisitionNo).Editable(false);
-                              m.Field(p => p.GIN).Editable(false);
-                              m.Field(p => p.DispatchDatePref).Editable(false);
-                              m.Field(p => p.Commodity).Editable(false);
-                              m.Field(p => p.Round).Editable(false);
-                              m.Field(p => p.MonthYear).Editable(false);
-                              m.Field(p => p.Quantity).Editable(false);
-                              m.Field(p => p.Round).Editable(false);
-                              m.Field(p => p.MonthYear).Editable(false);
-                          })
-                          //.Model(m => m.Id(t => t.DeliveryReconcileID))
-                          .Read(read => read.Action("ReadDispatchesNotReconciled", "DeliveryReconcile").Data("selectedFDPID"))
-                          .Create(create => create.Action("DeliveryReconcileUpdate", "DeliveryReconcile"))
-                          .Update(update => update.Action("DeliveryReconcileUpdate", "DeliveryReconcile"))
-                  //.Update("ReconciledDeliveryUpdate", "DeliveryReconcile")
-                  //.Destroy("FDP_Destroy","FDP")
-                  ).Events(e => e.Edit("onEdit"))
-                  .Resizable(resize => resize.Columns(true))
-                  )
-
         </div>
-    </div>
-
-   
+        
+        <input type="hidden" id="dateTransfer"/>
     </body>
+
 </html>
 
 
@@ -170,7 +165,7 @@
 
     function error_handler(e) {
         if (e.errors) {
-            var message = "\n";
+            var message = "Errors:\n";
             $.each(e.errors, function(key, value) {
                 if ('errors' in value) {
                     $.each(value.errors, function() {
@@ -178,7 +173,6 @@
                     });
                 }
             });
-           
             alert(message);
         }
     }
@@ -227,21 +221,56 @@
 </script>
 
 <script type="text/javascript">
+    var currentModel;
     function onEdit(e) {
         thisPref.val(e.model.ReceivedDatePref);
         thisPrefGC.val(e.model.ReceivedDate);
-        thisPref.blur(function(b) {
+        currentModel = e.model;
+        thisPref.blur(function (b) {
             var GCdate = thisPrefGC.val();
             var ECdate = $(this).val();
             e.model.set('ReceivedDatePref', ECdate);
             e.model.set('ReceivedDate', GCdate);
         });
-        thisPref.click(function (b) {
+        
+
+
+        thisPref.change(function () {
+            var GCdate = thisPrefGC.val();
+            var ECdate = $(this).val();
+        
+            e.model.set('ReceivedDatePref', ECdate);
+            e.model.set('ReceivedDate', GCdate);
+        });
+       thisPref.click(function (b) {
             var pickertop = thisPref.offset().top + thisPref.height() - 80;
             var pickerleft = thisPref.offset().left;
             $("div[class^='ui-ethdatepicker']").css({ top: pickertop, left: pickerleft, position: 'fixed', 'z-index': '1' });
-        });
-    }
-</script>
 
+   
+        });
+
+ 
+    }
+    $(document).on("dateEditorValueChanged", function (event) {
+
+        if (currentModel != null) {
+            currentModel.set('ReceivedDatePref', event.newDateEthiopian.toString());
+            currentModel.set('ReceivedDate', event.newDateGregorian);
+
+        }
+    });
+
+
+    $(document).on( "dateChanged",function (event) {
+        
+
+        if (currentModel != null)
+        {
+            currentModel.set('ReceivedDatePref', event.EthiopianDate.toString());
+            currentModel.set('ReceivedDate', event.GregorianDate);
+        
+        }     
+    });
+</script>
 

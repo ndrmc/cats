@@ -49,25 +49,24 @@ namespace Cats.Areas.Settings.Controllers
 
         [AllowAnonymous]
         //[AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult FDP_Create([DataSourceRequest] DataSourceRequest request, FDPViewModel fdpViewModel , int? adminUnitID)
+        public ActionResult FDP_Create([DataSourceRequest] DataSourceRequest request, FDPViewModel fdpViewModel, int? adminUnitID)
         {
 
             var result = new List<FDPViewModel>();
 
-            
+
             if (fdpViewModel != null && ModelState.IsValid && adminUnitID.HasValue)
             {
                 try
                 {
-                    //foreach (var viewModel in fdpViewModel)
-                    //{
 
-                    if (!CheckIfFdpExists((int) adminUnitID, fdpViewModel.Name))
+                    if (!CheckIfFdpExists((int)adminUnitID, fdpViewModel.Name))
                     {
                         fdpViewModel.AdminUnitID = adminUnitID.Value;
+
                         var fdp = FDPViewModelBinder.BindFDP(fdpViewModel);
+
                         _fdpService.AddFDP(fdp);
-                        //result.Add(fdpViewModel);
                     }
                     else
                     {
@@ -76,7 +75,7 @@ namespace Cats.Areas.Settings.Controllers
                         //return Redirect("~/Setting/FDP/Index");
                         //return  RedirectToAction("Index", "FDP", new { Area = "Settings" });
                     }
-                    // }
+
                 }
                 catch (Exception ex)
                 {
@@ -98,24 +97,28 @@ namespace Cats.Areas.Settings.Controllers
                 return true;
             }
         }
-        public ActionResult FDP_Update(int fdpId)
-        {
-            var fdp = _fdpService.FindById(fdpId);
-            var fvm = FDPViewModelBinder.BindFDPViewModel(fdp);
-            return View(fvm);
-        }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult FDP_Update([DataSourceRequest] DataSourceRequest request, FDPViewModel fdpViewModel)
+        public ActionResult FDP_Update([DataSourceRequest] DataSourceRequest request, FDPViewModel fdpViewModel, int? adminUnitID)
         {
-            if (ModelState.IsValid)
+            if (fdpViewModel != null && ModelState.IsValid && adminUnitID.HasValue)
             {
+
                 try
                 {
-                    var fdp = FDPViewModelBinder.BindFDP(fdpViewModel);
-                    _fdpService.EditFDP(fdp);
-                    ModelState.AddModelError("Success", @"Success: FDP Updated.");
-                    return RedirectToAction("Index");
+                    if (!CheckIfFdpExists((int)adminUnitID, fdpViewModel.Name))
+                    {
+                        var fdp = FDPViewModelBinder.BindFDP(fdpViewModel);
+                        _fdpService.EditFDP(fdp);
+                        ModelState.AddModelError("Success", @"Success: FDP Updated.");
+                        //return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Errors",
+                            @"The FDP name is duplicated. The new FDP is not saved.Please try with different name.");
+
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -124,6 +127,26 @@ namespace Cats.Areas.Settings.Controllers
             }
             return Json(new[] { fdpViewModel }.ToDataSourceResult(request, ModelState));
         }
+
+     
+        //public ActionResult FDP_Update([DataSourceRequest] DataSourceRequest request, FDPViewModel fdpViewModel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            var fdp = FDPViewModelBinder.BindFDP(fdpViewModel);
+        //            _fdpService.EditFDP(fdp);
+        //            ModelState.AddModelError("Success", @"Success: FDP Updated.");
+        //            return RedirectToAction("Index");
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            ModelState.AddModelError("Errors", @"Error: FDP not registered. All fields need to be filled.");
+        //        }
+        //    }
+        //    return Json(new[] { fdpViewModel }.ToDataSourceResult(request, ModelState));
+        //}
 
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult FDP_Save([DataSourceRequest] DataSourceRequest request, FDPViewModel fdpViewModel)

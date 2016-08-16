@@ -158,13 +158,23 @@ namespace Cats.Areas.Logistics.Controllers
                             _transactionService.PostDeliveryReconcileReceipt(deliveryReconcile.DeliveryReconcileID);
                             ModelState.AddModelError("Success", @"Success: Delivery Reconcilation Data Added.");
                         }
+                        else if (dvmfr.GRN == null && dvmfr.LossAmount == null && dvmfr.LossReasonId == 0
+                          && dvmfr.ReceivedAmount == null && dvmfr.ReceivedDate == null)
+                        {
+                            // Empty row do nothing 
+                        }
+                        else if (dvmfr.GRN == null || dvmfr.LossAmount == null || dvmfr.LossReasonId == 0
+                           || dvmfr.ReceivedAmount == null || dvmfr.ReceivedDate != null)
+                        {
+                            ModelState.AddModelError("Errors", @"Error: FDP not registered. All fields need to be filled.");
+                        }
                     }
                     
                     //return RedirectToAction("Index", new {regionID = });
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("Errors", @"Error: FDP not registered. All fields need to be filled.");
+                   // ModelState.AddModelError("Errors", @"Error: FDP not registered. All fields need to be filled.");
                 }
             }
             return Json(new[] { dispatchViewModelForReconcile }.ToDataSourceResult(request, ModelState));

@@ -10,6 +10,7 @@ using Cats.Models.ViewModels;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Hub;
 using Cats.Services.Common;
+using Cats.Services.Dashboard;
 using Cats.ViewModelBinder;
 using Cats.Web.Hub;
 using Cats.Web.Hub.Helpers;
@@ -17,6 +18,8 @@ using LanguageHelpers.Localization;
 using Newtonsoft.Json;
 using Telerik.Web.Mvc;
 using System;
+using Cats.Helpers;
+
 
 using Cats.Models.Hubs;
 using Cats.Models.Hubs.ViewModels;

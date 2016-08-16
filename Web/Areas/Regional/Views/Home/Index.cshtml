@@ -131,7 +131,7 @@
                                 <table id="" class="table table-striped table-checkable">
                                     <thead>
                                         <tr>
-                                            <th class="hidden-xs">Plan ID</th>
+                                            @*<th class="hidden-xs">Plan ID</th>*@
                                             @*<th class="string">Season</th>*@
                                             <th>Assessment Name</th>
                                             <th>Start Date</th>
@@ -145,7 +145,7 @@
                                     <tbody>
 
                                         <tr class="" ng-repeat="assessment in Assesments">
-                                            <td class="hidden-xs">{{assessment.PlanID}}</td>
+                                            @*<td class="hidden-xs">{{assessment.PlanID}}</td>*@
                                             @*<td class="number">{{assessment.Season}}</td>*@
                                             <td>{{assessment.PlanName}}</td>
                                             <td>{{assessment.StartDate}} </td>
@@ -315,7 +315,7 @@
                             </h3>
                             <ul class="portlet-tools pull-right">
                                 <li>
-
+                                    
                                     <button class="btn btn-sm btn-default" ONCLICK="window.location.href='RegionRequisitions'">
                                         Show more
                                     </button>
@@ -335,7 +335,7 @@
                                             <th class="number">Beneficiaries</th>
                                             <th class="number">Amount(QT)</th>
                                             <th>Status</th>
-                                            @*<th class="align-center">Action</th>*@
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -346,7 +346,7 @@
                                             <td class="number">{{requisition.BenficiaryNo|number}}</td>
                                             <th class="number">{{requisition.Amount|number}} QT</th>
                                             <td><span class="label label-danger">Approved</span></td>
-                                         
+                                            
                                         </tr>
 
                                     </tbody>
@@ -409,7 +409,9 @@
                             </h3>
                             <ul class="portlet-tools pull-right">
                                 <li>
-                                    <a class="btn btn-sm btn-default" href="@Url.Action("Index", "Dispatch", new { Area = "Regional", regionID = ViewBag.RegionID })">Show More</a>                         
+
+                                    <a class="btn btn-sm btn-default" href="@Url.Action("Index", "Dispatch", new { Area = "Regional", regionID = ViewBag.RegionID })">Show More</a>   
+                                    <a class="btn btn-sm btn-default" href="@Url.Action("Index", "DeliveryReconcile", new { Area = "Logistics", regionID = ViewBag.RegionID })">FDP Commodity Receipt</a>
                                 </li>
                             </ul>
                         </div>
@@ -532,11 +534,11 @@
                                     <tbody>
 
 
+                                        
                                         <tr class="" ng-repeat="Distribution in Distribtion">
                                             <td>{{Distribution.plan}}</td>
                                             <th>{{Distribution.Woreda}}</th>
-                                            <td class="number">{{Distribution.Fdps}}</td>
-                                            
+                                           
 
                                         </tr>
 
@@ -765,9 +767,9 @@
             $http.post("@Url.Action("Distributions", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDistributionSuccess);
         };
 
-        $scope.getRegionalData = function () {
+        @*$scope.getRegionalData = function () {
             $http.post("@Url.Action("RegionalData", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDashboardDataSuccess);
-        };
+        };*@
         $scope.getRegionalData = function () {
             $http.post("@Url.Action("RegionalData", "FetchData", new { Area = "Regional" })", $scope.reqParam).success(onDashboardDataSuccess);
         };

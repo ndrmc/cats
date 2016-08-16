@@ -39,17 +39,21 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly ILossReasonService _lossReasonService;
         private readonly IPlanService _planService;
         private readonly IAdminUnitService _adminUnitService;
+        private readonly IDeliveryReconcileService _deliveryReconcileService;
+
         public WoredaStockDistributionController(
             IUtilizationHeaderSerivce utilizationService,
             IProgramService programService,
-            IUtilizationDetailSerivce utilizationDetailSerivce, 
+            IUtilizationDetailSerivce utilizationDetailSerivce,
             UserAccountService userAccountService,
-            ICommonService commonService, 
+            ICommonService commonService,
             IRegionalRequestService regionalRequestService,
             IReliefRequisitionDetailService reliefRequisitionDetailService,
             IReliefRequisitionService reliefRequisitionService,
 
-            ITransactionService transactionService, IDispatchService dispatchService, IDeliveryService deliveryService, ILossReasonService lossReasonService, IPlanService planService, IAdminUnitService adminUnitService)
+            ITransactionService transactionService, IDispatchService dispatchService, IDeliveryService deliveryService,
+            ILossReasonService lossReasonService, IPlanService planService, IAdminUnitService adminUnitService,
+            IDeliveryReconcileService deliveryReconcileService)
         {
             _utilizationService = utilizationService;
             _programService = programService;
@@ -65,6 +69,7 @@ namespace Cats.Areas.Logistics.Controllers
             _lossReasonService = lossReasonService;
             _planService = planService;
             _adminUnitService = adminUnitService;
+            _deliveryReconcileService = deliveryReconcileService;
         }
 
         //
@@ -184,31 +189,32 @@ namespace Cats.Areas.Logistics.Controllers
             //var woredaStockDistribution = _utilizationService.FindBy(m => m.WoredaID == woredaID && m.Month == month && m.PlanID == planID).FirstOrDefault();
             var zoneID = _commonService.GetZoneID(woredaID);
             var regionID = _commonService.GetRegion(zoneID);
-            var regionalRequest = new List<RegionalRequest>();
+            RegionalRequest regionalRequest = null;
             if (programId == (int)Programs.Releif)
             {
                 regionalRequest =
                     _regionalRequestService.FindBy(m => m.PlanID == planID && m.Round == month && m.RegionID == regionID)
-                        .ToList();
+                        .FirstOrDefault();
             }
             else if (programId == (int) Programs.PSNP)
             {
                 regionalRequest =
                     _regionalRequestService.FindBy(m => m.PlanID == planID && m.Month == month && m.RegionID == regionID)
-                        .ToList();
+                        .FirstOrDefault();
             }
-            if (!regionalRequest.Any()) return null;
-            var regionalRequestIds = regionalRequest.Select(r => r.RegionalRequestID).Distinct().ToList();
+            if (regionalRequest == null) return null;
             var requisition =
                 _reliefRequisitionService.FindBy(
-                    m => regionalRequestIds.Contains((int) m.RegionalRequestID) && m.ZoneID == zoneID);
+                    m => m.RegionalRequestID == regionalRequest.RegionalRequestID && m.ZoneID == zoneID);
+
             if (requisition == null) return null;
             var woredaStockDistribution =
                 _utilizationService.FindBy(m => m.WoredaID == woredaID && m.Month == month && m.PlanID == planID)
                     .FirstOrDefault();
+
+            var fdpStockDistribution = _commonService.GetFDPs(woredaID);
             if (woredaStockDistribution==null)
-            {                      
-                var fdpStockDistribution = _commonService.GetFDPs(woredaID);
+            {                     
                 var woredaDistributionDetailViewModels = new List<WoredaDistributionDetailViewModel>();
                 foreach (var reliefRequisition in requisition)
                 {
@@ -220,12 +226,13 @@ namespace Cats.Areas.Logistics.Controllers
                 }
                 var listOfFdps = new WoredaStockDistributionWithDetailViewModel
                 {
-                    WoredaDistributionDetailViewModels = woredaDistributionDetailViewModels,                               
+                    WoredaDistributionDetailViewModels = woredaDistributionDetailViewModels,
+                                
                 };                           
                 return listOfFdps;
             }
 
-            var woredaStockDistributionWithDetailViewModel = new WoredaStockDistributionWithDetailViewModel
+            var woredaStockDistributionWithDetailViewModel = new WoredaStockDistributionWithDetailViewModel()
             {
                 WoredaStockDistributionID = woredaStockDistribution.WoredaStockDistributionID,
                 WoredaID = woredaStockDistribution.WoredaID,
@@ -246,8 +253,14 @@ namespace Cats.Areas.Logistics.Controllers
                         from reliefRequisition in requisition
                         where woredaDistributionDetail.CommodityID == reliefRequisition.CommodityID
                         let lossReason = woredaDistributionDetail.LossReason
+                        //let reliefRequisition = _reliefRequisitionService.Get(r=>r.RequisitionID == woredaDistributionDetail.RequisitionId).FirstOrDefault()
+                        let totalIn =
+                            _deliveryReconcileService.Get(
+                                d =>
+                                    d.RequsitionNo == reliefRequisition.RequisitionNo &&
+                                    d.FDPID == woredaDistributionDetail.FdpId).Sum(s => s.ReceivedAmount)
                         where lossReason != null
-                        select new WoredaDistributionDetailViewModel
+                        select new WoredaDistributionDetailViewModel()
                         {
                             WoredaStockDistributionDetailID = woredaDistributionDetail.WoredaStockDistributionDetailID,
                             FdpId = woredaDistributionDetail.FdpId,
@@ -276,7 +289,7 @@ namespace Cats.Areas.Logistics.Controllers
                             BeginingBalance = woredaDistributionDetail.StartingBalance,
                             EndingBalance = woredaDistributionDetail.EndingBalance,
                             DistributedAmount = woredaDistributionDetail.DistributedAmount,
-                            TotalIn = woredaDistributionDetail.TotalIn,
+                            TotalIn = totalIn, //woredaDistributionDetail.TotalIn,
                             TotalOut = woredaDistributionDetail.TotoalOut,
                             LossAmount = woredaDistributionDetail.LossAmount,
                             LossReasonId = (int) lossReason,
@@ -596,38 +609,48 @@ namespace Cats.Areas.Logistics.Controllers
             if (woredaID == 0 || planID == 0 || month == 0) return null;
             var zone = _commonService.GetZoneID(woredaID);
             var region = _commonService.GetRegion(zone);
-            var regionalRequest = _regionalRequestService.FindBy(m => m.PlanID == planID && m.Month == month && m.RegionID == region).ToList();
+            var regionalRequest = _regionalRequestService.FindBy(m => m.PlanID == planID && m.Month == month && m.RegionID == region).FirstOrDefault();
 
-            if (!regionalRequest.Any())
-                return Json(new WoredaDistributionDetailViewModel(), JsonRequestBehavior.AllowGet);
-            var regionalRequestIds = regionalRequest.Select(r => r.RegionalRequestID).ToList();
-            var requisitions =
-                _reliefRequisitionService.FindBy(m => regionalRequestIds.Contains((int) m.RegionalRequestID)
-                                                      && m.ZoneID == zone);
-            if (requisitions == null)
-                return Json(new WoredaDistributionDetailViewModel(), JsonRequestBehavior.AllowGet);
-            if (woredaStockDistributionID != 0)
+            if (regionalRequest != null)
             {
-                var woredaStockDistribution =
-                    _utilizationDetailSerivce.FindBy(
-                        m => m.FDP.AdminUnitID == woredaID && m.WoredaStockDistributionID == woredaStockDistributionID);
-                var woredaDistributionDetail = new List<WoredaDistributionDetailViewModel>();
-                foreach (var reliefRequisition in requisitions)
+                var requisitions = _reliefRequisitionService.FindBy(m => m.RegionalRequestID == regionalRequest.RegionalRequestID
+                                                                && m.ZoneID == zone);
+
+                if (requisitions != null)
                 {
-                    woredaDistributionDetail = GetWoredaStockDistributionDetail(woredaStockDistribution, reliefRequisition);
+                    if (woredaStockDistributionID != 0)
+                    {
+                        var woredaStockDistribution =
+                            _utilizationDetailSerivce.FindBy(
+                                m => m.FDP.AdminUnitID == woredaID && m.WoredaStockDistributionID == woredaStockDistributionID);
+                        var woredaDistributionDetail = new List<WoredaDistributionDetailViewModel>();
+                        foreach (var reliefRequisition in requisitions)
+                        {
+                            woredaDistributionDetail = GetWoredaStockDistributionDetail(woredaStockDistribution, reliefRequisition);
+
+
+                        }
+
+                        return Json(woredaDistributionDetail.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+                    }
+
+
+                    var fdpStockDistribution = _commonService.GetFDPs(woredaID);
+                    var woredaStockDistributionDetail = new List<WoredaDistributionDetailViewModel>();
+                    foreach (var requisition in requisitions)
+                    {
+                        var detail = GetWoredaStockDistribution(fdpStockDistribution, requisition);
+                        woredaStockDistributionDetail.AddRange(detail);
+                    }
+
+                    return Json(woredaStockDistributionDetail.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
                 }
-                return Json(woredaDistributionDetail.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
             }
-            var fdpStockDistribution = _commonService.GetFDPs(woredaID);
-            var woredaStockDistributionDetail = new List<WoredaDistributionDetailViewModel>();
-            foreach (var requisition in requisitions)
-            {
-                var detail = GetWoredaStockDistribution(fdpStockDistribution, requisition);
-                woredaStockDistributionDetail.AddRange(detail);
-            }
-            return Json(woredaStockDistributionDetail.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+
+
             //var fdps = _commonService.GetFDPs(woredaID);
             //var detail = GetWoredaStockDistribution(fdps, requisitions);
+            return Json(new WoredaDistributionDetailViewModel(), JsonRequestBehavior.AllowGet);
         }
 
 
@@ -739,28 +762,31 @@ namespace Cats.Areas.Logistics.Controllers
             try
             {
                 var planid = int.Parse(id);
-                var requisition =
-                    _reliefRequisitionService.FindBy(m => m.ZoneID == zoneID)
-                        .Select(m => m.RegionalRequestID)
-                        .Distinct();
-                var request =
-                    _regionalRequestService.FindBy(m => requisition.Contains(m.RegionalRequestID) && m.PlanID == planid)
-                        .ToList();
-                //var months = _regionalRequestService.FindBy(r => r.PlanID == planid).ToList();           
-                if (programId == (int) Programs.Releif) 
+                var requisition = _reliefRequisitionService.FindBy(m => m.ZoneID == zoneID).Select(m => m.RegionalRequestID).Distinct();
+
+                var request = _regionalRequestService.FindBy(m => requisition.Contains(m.RegionalRequestID) && m.PlanID == planid) .ToList();
+                //var months = _regionalRequestService.FindBy(r => r.PlanID == planid).ToList();
+               
+                if (programId == (int) Cats.Models.Constant.Programs.Releif) 
                 {
                   var round  = from m in request
                             select new { round = m.Round };
                   var distinctRound = round.Distinct();
                   return Json(new SelectList(distinctRound, "round", "round"), JsonRequestBehavior.AllowGet);
                 }
-                var month = from m in request
-                    select new { month = m.Month };
-                var distinctMonth = month.Distinct();
-                return Json(new SelectList(distinctMonth, "month", "month"), JsonRequestBehavior.AllowGet);
+                else
+                {
+                   var month = from m in request
+                            select new { month = m.Month };
+                   var distinctMonth = month.Distinct();
+                   return Json(new SelectList(distinctMonth, "month", "month"), JsonRequestBehavior.AllowGet);
+                }
+                
+               
             }
             catch (Exception)
             {
+
                 return null;
             }
         }

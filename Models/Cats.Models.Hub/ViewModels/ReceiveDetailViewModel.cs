@@ -19,17 +19,21 @@ namespace Cats.Models.Hubs
         public string CommodityGradeName { get; set; }
         public string CommodityName { get; set; }
         public decimal ReceivedQuantityInUnit { get; set; }
+        public string ReceivedQuantityInUnitFormatted { get; set; }
         public decimal ReceivedQuantityInMT { get; set; }
+        public string ReceivedQuantityInMTFormatted { get; set; }
         public decimal SentQuantityInMT { get; set; }
+        public string SentQuantityInMTFormatted { get; set; }
         public decimal SentQuantityInUnit { get; set; }
+        public string SentQuantityInUnitFormatted { get; set; }
     }
-    public class ReceiveDetailViewModel 
+    public class ReceiveDetailViewModel
     {
         //public ReceiveDetailViewModel()
         //{
         //    ReceiveDetailCounter = -1;
         //}
-        
+
         public System.Collections.Generic.IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var validationResults = new List<ValidationResult>();
@@ -38,16 +42,16 @@ namespace Cats.Models.Hubs
         }
 
         public Guid? ReceiveDetailID { get; set; }
-        
+
         public int ReceiveDetailCounter { get; set; }
-        
+
         //TODO fails the validation
-       // [Required(ErrorMessage = "required")]
+        // [Required(ErrorMessage = "required")]
         public Guid? ReceiveID { get; set; }
-        
+
         public string Description { get; set; }
 
-        [Required(ErrorMessage="required")]
+        [Required(ErrorMessage = "required")]
         public int UnitID { get; set; }
 
         [Required(ErrorMessage = "Sent quantity required")]
@@ -68,12 +72,12 @@ namespace Cats.Models.Hubs
 
         [Required(ErrorMessage = "required")]
         [Range(0.1, 999999.99)]
-      //  [UIHint("PreferedWeightMeasurment")]
+        //  [UIHint("PreferedWeightMeasurment")]
         public decimal? ReceivedQuantityInMT { get; set; }
 
         [Required(ErrorMessage = "required")]
         [Range(0.1, 999999.99)]
-      //  [UIHint("PreferedWeightMeasurment")]
+        //  [UIHint("PreferedWeightMeasurment")]
         public decimal? SentQuantityInMT { get; set; }
         //Banty:Modified 23_5_2013 from EntityCollection to ICollection
         public static List<ReceiveDetailViewModel> GenerateReceiveDetailModels(ICollection<ReceiveDetail> entityCollection)

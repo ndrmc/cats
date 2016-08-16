@@ -1144,8 +1144,7 @@ namespace Cats.Services.Transaction
 
             if (firstOrDefault != null)
             {
-                transaction.CommodityID = firstOrDefault.CommodityID;
-                
+                transaction.CommodityID = firstOrDefault.CommodityID;                
             }
             transaction.QuantityInMT = deliveryReconcile.ReceivedAmount / 10;
             transaction.QuantityInUnit = deliveryReconcile.ReceivedAmount;

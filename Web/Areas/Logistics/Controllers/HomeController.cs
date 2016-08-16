@@ -446,8 +446,8 @@ namespace Cats.Areas.Logistics.Controllers
                 _transportOrderService.FindBy(s => s.StatusID < (int)(Cats.Models.Constant.TransportOrderStatus.Closed)).Select(p => new
                 {
                     name = p.Transporter.Name,
-                    region = p.Transporter.Region!=null ? _adminUnitService.FindById(p.Transporter.Region).Name : "",
-                    zone = p.Transporter.Zone!=null ? _adminUnitService.FindById(p.Transporter.Zone).Name : "",
+                    region = (p.Transporter.Region!=0) ? _adminUnitService.FindById(p.Transporter.Region).Name : "",
+                    zone = (p.Transporter.Zone != 0) ? _adminUnitService.FindById(p.Transporter.Zone).Name : "",
                     transportOrderNo = p.TransportOrderNo,
                     mobileNo = p.Transporter.MobileNo ?? ""
                 });

@@ -237,7 +237,8 @@ namespace Cats.Areas.Procurement.Controllers
             var filteredTrans = reliefRequisitionDetail.Where(d => d.FDP.AdminUnit.AdminUnitID == woredaId).Select(s => s.RequisitionDetailID).ToList();
 
 
-            var x = _transReqWithoutTransporterService.FindBy(m => filteredTrans.Contains(m.RequisitionDetailID) && m.IsAssigned == false);// &&
+            var x = _transReqWithoutTransporterService.Get(m => filteredTrans.Contains(m.RequisitionDetailID) && m.IsAssigned == false, null, "TransportRequisitionDetail,TransportRequisitionDetail.ReliefRequisition," +
+                                                                                             "TransportRequisitionDetail.ReliefRequisition.ReliefRequisitionDetails");// &&
                                                                          //  m.ReliefRequisitionDetail != null && (m.IsAssigned == false)).OrderByDescending(t => t.TransportRequisitionDetailID));
             //}
             //var transReqWithoutTransport = _transReqWithoutTransporterService.Get(m => m.ReliefRequisitionDetail != null && (m.IsAssigned == false && m.ReliefRequisitionDetail.FDP.AdminUnit.AdminUnitID == woredaId && m.TransportRequisitionDetail.TransportRequisition.TransportRequisitionID == transReqId)).Distinct().OrderByDescending(t => t.TransportRequisitionDetailID);
@@ -355,7 +356,7 @@ namespace Cats.Areas.Procurement.Controllers
             var substituteTransportersStanding = (from uniqueWoreda in uniqueWoredas
                                                   let woreda = uniqueWoreda
                                                   let changedTransporterPostition =_bidQuotationService.Get(t =>t.TransporterID == changedTransportOrderObj.TransporterID && t.DestinationID == woreda).Select(t => t.Position).FirstOrDefault()
-                                                  let woredaWinnersList = _bidQuotationService.GetSecondWinner(changedTransportOrderObj.TransporterID, woreda)// _bidQuotationService.Get(t => t.DestinationID == woreda && t.Position >= changedTransporterPostition && t.TransporterID != changedTransportOrderObj.TransporterID).ToList().OrderBy(t => t.Position)
+                                                  let woredaWinnersList = _bidQuotationService.GetSecondWinner(changedTransportOrderObj.TransporterID, woreda, changedTransportOrderObj.BidDocumentNo)// _bidQuotationService.Get(t => t.DestinationID == woreda && t.Position >= changedTransporterPostition && t.TransporterID != changedTransportOrderObj.TransporterID).ToList().OrderBy(t => t.Position)
                                                   let substituteTransportersStandingList = woredaWinnersList.ToList()
                                                  
                                                  select new SubstituteTransporterOrder
@@ -547,7 +548,8 @@ namespace Cats.Areas.Procurement.Controllers
         }
         public ActionResult TransReqWithoutTransporter_Read([DataSourceRequest] DataSourceRequest request)
         {
-            var transReqWithoutTransport = _transReqWithoutTransporterService.GetAllTransReqWithoutTransporter();
+            var transReqWithoutTransport = _transReqWithoutTransporterService.Get(null,null, "TransportRequisitionDetail,TransportRequisitionDetail.ReliefRequisition," +
+                                                                                             "TransportRequisitionDetail.ReliefRequisition.ReliefRequisitionDetails");
             if (transReqWithoutTransport != null)
             {
                 var withoutTransporterToDisplay = GetTransReqWithoutTransporter(transReqWithoutTransport).ToList();
