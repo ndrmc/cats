@@ -231,7 +231,7 @@ namespace Cats.Areas.Hub.Controllers
         public ActionResult GetFdpAllocations(bool? closed, int? adminUnitID, int? commodityType)
         {
             var user = _userProfileService.GetUser(User.Identity.Name);
-            var fdpAllocations = _dispatchAllocationService.GetAllVwDispatchAllocation(user.DefaultHub.Value, user.PreferedWeightMeasurment, commodityType, null, closed??false);
+            var fdpAllocations = _dispatchAllocationService.GetAllVwDispatchAllocation(user.DefaultHub.Value, user.PreferedWeightMeasurment, adminUnitID, commodityType, closed??false);
             return View(new GridModel(fdpAllocations));
         }
 
