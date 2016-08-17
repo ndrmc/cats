@@ -28,6 +28,7 @@ namespace Cats.ViewModelBinder
             giftCertificateViewModel.GiftDate = giftCertificateModel.GiftDate;
             giftCertificateViewModel.DonorID = giftCertificateModel.DonorID;
             giftCertificateViewModel.SINumber = giftCertificateModel.ShippingInstruction.Value;
+            giftCertificateViewModel.SiId = giftCertificateModel.ShippingInstructionID;
             giftCertificateViewModel.ReferenceNo = giftCertificateModel.ReferenceNo;
             giftCertificateViewModel.Vessel = giftCertificateModel.Vessel;
             giftCertificateViewModel.ETA = giftCertificateModel.ETA;
@@ -39,6 +40,7 @@ namespace Cats.ViewModelBinder
             giftCertificateViewModel.DeclarationNumber = giftCertificateModel.DeclarationNumber;
             giftCertificateViewModel.GiftDatePref=giftCertificateModel.GiftDate.ToCTSPreferedDateFormat(userPrefrence);
             giftCertificateViewModel.IsPrinted = giftCertificateModel.IsPrinted;
+            giftCertificateViewModel.AllowReject = true; // default
             var giftCertificateDetail = giftCertificateModel.GiftCertificateDetails.FirstOrDefault();
             if (giftCertificateDetail != null)
                 giftCertificateViewModel.CommodityTypeID = giftCertificateDetail.Commodity.CommodityTypeID;
