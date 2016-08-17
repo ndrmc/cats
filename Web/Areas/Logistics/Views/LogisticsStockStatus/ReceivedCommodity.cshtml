@@ -70,27 +70,28 @@
         <div class="table-responsive">
             @(Html.Kendo().Grid<VWCommodityReceived>().Name("grid").Columns(col =>
 
-                                                       {
+        {
 
-                                                           col.Bound(t => t.ShippingInstruction).Title(Html.Translate("Shipping Instruction"));
-                                                           col.Bound(t => t.Commodity).Title(Html.Translate("Commodity"));
-                                                           col.Bound(t => t.ProjectCode).Title(Html.Translate("Project Code"));
-                                                           col.Bound(t => t.Donor).Title(Html.Translate("Donor"));
-                                                           col.Bound(t => t.Program).Title(Html.Translate("Program"));
-                                                           col.Template(c => { }).ClientTemplate("#= kendo.toString(toCatsPreferedUnit(data.DonorAll), \"n2\") #").HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Donor All"));
-                                                           col.Template(c => { }).ClientTemplate("#= kendo.toString(toCatsPreferedUnit(data.Received), \"n2\") #").HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Received"));
-                                                           col.Template(c => c.Dispatched).ClientTemplate("#=  kendo.toString(toCatsPreferedUnit(data.Dispatched), \"n2\") #").HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Dispatched"));
-                                                           //col.Template(c => c.Expected).ClientTemplate("#=toCatsPreferedUnit(data.Expected)#").HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Expected"));
-                                                           col.Template(c => c.Commited).ClientTemplate("#= kendo.toString(toCatsPreferedUnit(data.Commited), \"n2\") #").HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Commited"));
+            col.Bound(t => t.ShippingInstruction).Title(Html.Translate("Shipping Instruction"));
+            col.Bound(t => t.Commodity).Title(Html.Translate("Commodity"));
+            col.Bound(t => t.ProjectCode).Title(Html.Translate("Project Code"));
+            col.Bound(t => t.Donor).Title(Html.Translate("Donor"));
+            col.Bound(t => t.Program).Title(Html.Translate("Program"));
+            col.Template(c => { }).ClientTemplate("#= kendo.toString(toCatsPreferedUnit(data.DonorAll), \"n2\") #").HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Donor All"));
+            col.Bound(c => c.Received).Title(Html.Translate("Received (MT)"));
+            //col.Template(c => { }).ClientTemplate("#= kendo.toString(toCatsPreferedUnit(data.Received), \"n2\") #").HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Received"));
+            col.Template(c => c.Dispatched).ClientTemplate("#=  kendo.toString(toCatsPreferedUnit(data.Dispatched), \"n2\") #").HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Dispatched"));
+            //col.Template(c => c.Expected).ClientTemplate("#=toCatsPreferedUnit(data.Expected)#").HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Expected"));
+            col.Template(c => c.Commited).ClientTemplate("#= kendo.toString(toCatsPreferedUnit(data.Commited), \"n2\") #").HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Commited"));
 
-                                                           col.Template(c => { }).ClientTemplate("#=calculateUnCommitedStock(data)#").Title(Html.Translate("Un Commited")).HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" });
-                                                           //col.Template(c => c.Dispatched).ClientTemplate("#=toCatsPreferedUnit(data.Dispatched)#").HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Dispatched"));
+            col.Template(c => { }).ClientTemplate("#=calculateUnCommitedStock(data)#").Title(Html.Translate("Un Commited")).HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" });
+            //col.Template(c => c.Dispatched).ClientTemplate("#=toCatsPreferedUnit(data.Dispatched)#").HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Dispatched"));
 
-                                                           col.Template(c => { }).ClientTemplate("#=calculatePhysicalStock(data)#").Title(Html.Translate("Physical Stock")).HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" });
+            col.Template(c => { }).ClientTemplate("#=calculatePhysicalStock(data)#").Title(Html.Translate("Physical Stock")).HeaderHtmlAttributes(new { @class = "cats-unit-pref" }).HtmlAttributes(new { align = "right" });
 
-                                                       }).DataSource(datasource =>
-                                                                             datasource.Ajax().Read(read => read.Action("CommodityReceived_read", "LogisticsStockStatus").Data("filterData"))
-                                                                                 .Group(t => t.Add(m => m.Commodity))
+        }).DataSource(datasource =>
+                              datasource.Ajax().Read(read => read.Action("CommodityReceived_read", "LogisticsStockStatus").Data("filterData"))
+                                  .Group(t => t.Add(m => m.Commodity))
 
                                                                          ).Sortable().Filterable()
             )

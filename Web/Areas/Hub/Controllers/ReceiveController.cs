@@ -130,7 +130,7 @@ namespace Cats.Areas.Hub.Controllers
             //TODO perform type specification here
             //Just return an empty list and bind it later
             var list = new List<ReceiptAllocationViewModel>();
-            
+
             ViewBag.CommoditySourceType = type;
             ViewBag.CommodityTypes = new SelectList(_commodityTypeService.GetAllCommodityType(), "CommodityTypeID", "Name", 1); //make the inital binding a food type
             return PartialView("Allocations2", list);
@@ -205,10 +205,32 @@ namespace Cats.Areas.Hub.Controllers
                 var list = _vwReceiptAllocationAggregateService.GetAllRAAggr(HubID, type, closed, user.PreferedWeightMeasurment, commodityType, receivable, grn);
                                 
                 //newly added
-                list = type == CommoditySource.Constants.LOAN ? 
-                    list.Where(t => t.CommoditySourceID == CommoditySource.Constants.LOAN || t.CommoditySourceID == CommoditySource.Constants.SWAP || t.CommoditySourceID == CommoditySource.Constants.TRANSFER || t.CommoditySourceID == CommoditySource.Constants.REPAYMENT).ToList() : 
-                    list.Where(t => t.CommoditySourceID == type).ToList();
-                listViewModel = BindReceiptAllocationViewModels(list).ToList();
+                list = type == CommoditySource.Constants.LOAN
+                    ? list.Where(
+                        t =>
+                            t.CommoditySourceID == CommoditySource.Constants.LOAN ||
+                            t.CommoditySourceID == CommoditySource.Constants.SWAP ||
+                            t.CommoditySourceID == CommoditySource.Constants.TRANSFER ||
+                            t.CommoditySourceID == CommoditySource.Constants.REPAYMENT).ToList()
+                    : list.Where(t => t.CommoditySourceID == type).ToList();
+
+                //aggregate 
+                if (type == CommoditySource.Constants.LOAN)
+                {
+                    var list2 = new List<VWReceiptAllocationAggregate>();
+                    foreach (var item in list)
+                    {
+                        var siNumber = item.SINumber;
+                        var receiveDetails =
+                            _receiveDetailService.FindBy(s => s.Receive.ReceiptAllocation.SINumber == siNumber);
+                        item.ReceivedQuantity = receiveDetails.Any() ? receiveDetails.Sum(s => s.SentQuantityInMT) : 0;
+                        list2.Add(item);
+                    }
+                    listViewModel = BindReceiptAllocationViewModels(list2).ToList();
+                }
+                else
+                    listViewModel = BindReceiptAllocationViewModels(list).ToList();
+
                 return Json(listViewModel.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)

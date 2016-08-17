@@ -34,15 +34,21 @@ namespace Cats.Areas.Logistics.Controllers
         private IProgramService _programService;
         private IDonorService _donorService;
         private IUserProfileService _userProfileService;
-        
+        private IReceiptAllocationService _receiptAllocationService;
+        private IReceiveDetailService _receiveDetailService;
+        private IReceiveService _receiveService;
+
         public LogisticsStockStatusController
-        (
+            (
             IUnitOfWork unitOfWork,
             IUserDashboardPreferenceService userDashboardPreferenceService,
             IDashboardWidgetService dashboardWidgetservice,
             IUserAccountService userService,
             IHubService hubService,
-            IStockStatusService stockStatusService, IAdminUnitService adminUnitService, IProgramService programService, IDonorService donorService, IUserProfileService userProfileService)
+            IStockStatusService stockStatusService, IAdminUnitService adminUnitService, IProgramService programService,
+            IDonorService donorService, IUserProfileService userProfileService,
+            IReceiptAllocationService receiptAllocationService, IReceiveDetailService receiveDetailService,
+            IReceiveService receiveService)
         {
             _unitOfWork = unitOfWork;
             _userDashboardPreferenceService = userDashboardPreferenceService;
@@ -54,6 +60,9 @@ namespace Cats.Areas.Logistics.Controllers
             _programService = programService;
             _donorService = donorService;
             _userProfileService = userProfileService;
+            _receiptAllocationService = receiptAllocationService;
+            _receiveDetailService = receiveDetailService;
+            _receiveService = receiveService;
         }
 
         // GET:/Logistics/StockStatus/
@@ -167,6 +176,7 @@ namespace Cats.Areas.Logistics.Controllers
         public JsonResult CommodityReceived_read([DataSourceRequest]DataSourceRequest request, int hubId = -1, int programId = -1)
         {
             List<VWCommodityReceived> data;
+            List<VWCommodityReceived> data2 = new List<VWCommodityReceived>();
             if (hubId==-2)
             {
                data = _stockStatusService.GetReceivedCommodity(t => t.ProgramID == programId);
@@ -175,12 +185,28 @@ namespace Cats.Areas.Logistics.Controllers
             {
                 data = (hubId == -1 || programId == -1)
                 ? new List<VWCommodityReceived>()
-                           : _stockStatusService.GetReceivedCommodity(t => t.HubID == hubId && t.ProgramID == programId);
+                           : _stockStatusService.GetReceivedCommodity(t => t.HubID == hubId && t.ProgramID == programId);            
             }
-            
 
-            
-            return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+            foreach (var item in data)
+            {
+                try
+                {
+                    var siNumber = item.ShippingInstruction;
+                    var receiveDetails =
+                        _receiveDetailService.FindBy(s => s.Receive.ReceiptAllocation.SINumber == siNumber);
+                    if (receiveDetails.Any())
+                        item.Received = receiveDetails.Sum(s => s.SentQuantityInMT);
+                    else item.Received = 0;
+                    data2.Add(item);
+                }
+                catch (Exception)
+                {
+                    ;
+                }
+            }
+
+            return Json(data2.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
 
         }
 
