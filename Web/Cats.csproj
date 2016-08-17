@@ -3485,6 +3485,7 @@
     <Content Include="Views\Shared\EditorTemplates\SIEditor.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\GuidTemplate.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\CommodityEditor.cshtml" />
+    <Content Include="Views\Shared\_AdminUnitTreeForAllocation.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
