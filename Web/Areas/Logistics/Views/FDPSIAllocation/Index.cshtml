@@ -218,7 +218,7 @@
                                     <ul class="nav nav-list ">
                                         <li class="btn-draggable" data-allocated="1" ng-repeat="item in si.allocatedRequests" data-drag="1" data-jqyoui-options="{revert: 'invalid'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}" data-index="{{item.index}}">
                                             @*  <button class="btn red btn-xs " ng-click="showEdit(item.type)"><i class="fa fa-times-circle"></i></button>*@
-                                            <a href ng-click="showEdit(item.type, item.allocatedAmount, item.index, si.index)" ng-show="si.index==item.allocated && item.allocatedAmount > 0  ">{{item.name}} [{{item.allocatedAmount | number:2}}]</a>
+                                            <a href ng-click="showEdit(item.type, item.allocatedAmount, item.index, si.index, item.FDPId )" ng-show="si.index==item.allocated && item.allocatedAmount > 0  ">{{item.name}} [{{item.allocatedAmount | number:2}}]</a>
                                         </li>
                                     </ul>
 
@@ -390,10 +390,21 @@
             }
 
         };
-        $scope.showEdit = function(type, allocatedAmount, index, siIndex) {
-            if(type =="FDP")
-            {
-                var location = $scope.allAdminRegions[index];
+        $scope.showEdit = function(type, allocatedAmount, index, siIndex, FdpId) {
+            if(type ==="FDP") {
+                var exactLocation;
+                for (var i in $scope.SIPCCodes[siIndex-1].allocatedRequests) {
+
+                    if (   $scope.SIPCCodes[siIndex-1].allocatedRequests[i].FDPId === FdpId) {
+                        exactLocation = $scope.SIPCCodes[siIndex-1].allocatedRequests[i];
+                    }
+
+                }
+                
+                if (angular.isUndefined(exactLocation))
+                    var location = $scope.allAdminRegions[index];
+                else
+                     location = exactLocation;
                 $scope.modalFor = 1;
                 $scope.EditLocation = location;
                 var compAmount = allocatedAmount + ($scope.allAdminRegions[index].requestedAmount - $scope.allAdminRegions[index].totalAllocatedAmount);
