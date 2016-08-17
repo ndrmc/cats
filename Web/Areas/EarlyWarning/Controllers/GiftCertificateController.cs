@@ -14,7 +14,9 @@ using Cats.Services.Common;
 using Master = Cats.Models.Constant.Master;
 using Cats.Helpers;
 using Cats.Data.UnitWork;
+using Cats.Models;
 using Cats.Security;
+using Cats.Services.Logistics;
 using log4net;
 using NetSqlAzMan.Providers;
 using GiftCertificateViewModel = Cats.Areas.GiftCertificate.Models.GiftCertificateViewModel;
@@ -32,9 +34,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly IUserAccountService _userAccountService;
         private readonly IShippingInstructionService _shippingInstructionService;
         private readonly ILog _log;
+        private readonly IDonationPlanHeaderService _donationPlanHeaderService;
         public GiftCertificateController(IGiftCertificateService giftCertificateService, IGiftCertificateDetailService giftCertificateDetailService,
                                          ICommonService commonService, ITransactionService transactionService, ILetterTemplateService letterTemplateService,
-                                         IUnitOfWork unitofwork,IUserAccountService userAccountService,IShippingInstructionService shippingInstructionService, ILog log)
+                                         IUnitOfWork unitofwork, IUserAccountService userAccountService, IShippingInstructionService shippingInstructionService, ILog log, IDonationPlanHeaderService donationPlanHeaderService)
         {
             _giftCertificateService = giftCertificateService;
             _giftCertificateDetailService = giftCertificateDetailService;
@@ -45,15 +48,31 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _userAccountService = userAccountService;
             _shippingInstructionService = shippingInstructionService;
             _log = log;
+            _donationPlanHeaderService = donationPlanHeaderService;
         }
 
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_Gift_Certificate_list)]
-        public ActionResult Index(int id=1)
+        public ActionResult Index(int id = 1)
         {
             ViewBag.Title = id == 1 ? "Draft Gift Certificates" : "Approved Gift Certificates";
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var gifts = _giftCertificateService.Get(t=>t.StatusID==id,null, "GiftCertificateDetails,Donor,GiftCertificateDetails.Detail,GiftCertificateDetails.Commodity");
-            var giftsViewModel = GiftCertificateViewModelBinder.BindListGiftCertificateViewModel(gifts.ToList(), datePref,true);
+            var gifts = _giftCertificateService.Get(t => t.StatusID == id, null, "GiftCertificateDetails,Donor,GiftCertificateDetails.Detail,GiftCertificateDetails.Commodity");
+
+            var donations = _donationPlanHeaderService.GetAllDonationPlanHeader().Where(d => d.IsCommited == false);
+
+            List<Cats.Models.GiftCertificate> filteredGiftCertificates = gifts.Where(giftCertificate => donations.FirstOrDefault(d =>
+            d.ShippingInstructionId == giftCertificate.ShippingInstructionID) != null).ToList();
+
+            var giftsViewModel = GiftCertificateViewModelBinder.BindListGiftCertificateViewModel(gifts.ToList(), datePref, true);
+
+            foreach (var filteredGift in filteredGiftCertificates)
+            {
+                GiftCertificateViewModel giftCertificateViewModel =
+                    giftsViewModel.Find(g => g.SiId == filteredGift.ShippingInstructionID);
+
+                if (giftCertificateViewModel != null)
+                    giftCertificateViewModel.AllowReject = false;
+            }
 
             var user = UserAccountHelper.GetUser(HttpContext.User.Identity.Name);
             var roles = _userAccountService.GetUserPermissions(user.UserName);
@@ -67,17 +86,17 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var giftCertList = _giftCertificateDetailService.GetAllGiftCertificateDetail();
 
             var result = giftCertList.ToList().Select(item => new GiftCertificateViewModel
-                                                                  {
-                                                                      CommodityName = item.Commodity.Name,
-                                                                      GiftDate = item.GiftCertificate.GiftDate,
-                                                                      Donor = item.GiftCertificate.Donor.Name,
-                                                                      Program = item.GiftCertificate.Program.Name,
-                                                                      ReferenceNo = item.GiftCertificate.ReferenceNo,
-                                                                      GiftCertificateID = item.GiftCertificateID,
-                                                                      SINumber = item.GiftCertificate.ShippingInstruction.Value,
-                                                                      PortName = item.GiftCertificate.PortName,
-                                                                      IsPrinted= item.GiftCertificate.IsPrinted
-                                                                  }).ToList();
+            {
+                CommodityName = item.Commodity.Name,
+                GiftDate = item.GiftCertificate.GiftDate,
+                Donor = item.GiftCertificate.Donor.Name,
+                Program = item.GiftCertificate.Program.Name,
+                ReferenceNo = item.GiftCertificate.ReferenceNo,
+                GiftCertificateID = item.GiftCertificateID,
+                SINumber = item.GiftCertificate.ShippingInstruction.Value,
+                PortName = item.GiftCertificate.PortName,
+                IsPrinted = item.GiftCertificate.IsPrinted
+            }).ToList();
 
             return Json(result.ToDataSourceResult(request, ModelState));
         }
@@ -85,13 +104,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template)]
         public ActionResult GenerateTemplate(int id)
         {
-            return RedirectToAction("LetterTemplate", new {giftceritificateId = id});
-            
-         
-        }
-     
+            return RedirectToAction("LetterTemplate", new { giftceritificateId = id });
 
-        public virtual ActionResult NotUnique(string siNumber, int giftCertificateId = -1 )
+
+        }
+
+        public virtual ActionResult NotUnique(string siNumber, int giftCertificateId = -1)
         {
             if (_giftCertificateService.IsSINumberNewOrEdit(siNumber, giftCertificateId))
             {
@@ -139,7 +157,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.New_Gift_Certificate)]
         public ActionResult GiftCertificateDetail_Create([DataSourceRequest] DataSourceRequest request, GiftCertificateDetailsViewModel giftCertificateDetailsViewModel, int? id)
         {
-            if (giftCertificateDetailsViewModel != null  && id.HasValue)
+            if (giftCertificateDetailsViewModel != null && id.HasValue)
             {
                 giftCertificateDetailsViewModel.GiftCertificateID = id.Value;
                 var giftcertifiateDtail = GiftCertificateViewModelBinder.BindGiftCertificateDetail(giftCertificateDetailsViewModel);
@@ -180,7 +198,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Edit_Gift_Certificate)]
         public ActionResult GiftCertificateDetail_Update([DataSourceRequest]DataSourceRequest request, GiftCertificateDetailsViewModel giftCertificateDetailsViewModel)
         {
-            if (giftCertificateDetailsViewModel != null )
+            if (giftCertificateDetailsViewModel != null)
             {
                 var target = _giftCertificateDetailService.FindById(giftCertificateDetailsViewModel.GiftCertificateDetailID);
                 if (target != null)
@@ -195,10 +213,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
             return Json(new[] { giftCertificateDetailsViewModel }.ToDataSourceResult(request, ModelState));
         }
 
-       // [AcceptVerbs(HttpVerbs.Get)]
-       [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Delete_needs_assessment)]
+        // [AcceptVerbs(HttpVerbs.Get)]
+        [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Delete_needs_assessment)]
         public ActionResult GiftCertificateDetail_Destroy([DataSourceRequest] DataSourceRequest request,
-                                                  GiftCertificateDetailsViewModel giftCertificateDetailsViewModel)
+                                                   GiftCertificateDetailsViewModel giftCertificateDetailsViewModel)
         {
             if (giftCertificateDetailsViewModel != null)
             {
@@ -217,7 +235,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var giftCertificateViewModel = GiftCertificateViewModelBinder.BindGiftCertificateViewModel(giftcertificate, datePref);
             return View(giftCertificateViewModel);
         }
-        
+
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Edit_Gift_Certificate)]
         public ActionResult Detail(int id)
         {
@@ -281,8 +299,6 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult Rejected(int id)
         {
             var giftCertificate = _giftCertificateService.FindById(id);
-            if (giftCertificate.IsPrinted)
-                return PartialView("_NotReject", null);
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             var giftCertificateViewModel = GiftCertificateViewModelBinder.BindGiftCertificateViewModel(giftCertificate, datePref);
             return PartialView("_Reject", giftCertificateViewModel);
@@ -290,24 +306,55 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
         [HttpPost]
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]
-        public ActionResult Reject(int GiftCertificateID)
+        public ActionResult Reject(int giftCertificateID)
         {
-            var result = _transactionService.RevertGiftCertificate(GiftCertificateID);
-            return RedirectToAction("Index", new { id = 2 });
+            var shippingInstruction = _giftCertificateService.FindById(giftCertificateID).ShippingInstructionID;
+            var donations =
+               _donationPlanHeaderService.GetAllDonationPlanHeader()
+                   .Where(d => d.ShippingInstructionId == shippingInstruction == d.IsCommited);
+
+            var donationPlanHeaders = donations as DonationPlanHeader[] ?? donations.ToArray();
+            if (donationPlanHeaders.Any()) // if any approved or commited receipt plan is found under this giftcertificate, then don't revert 
+            {
+                return RedirectToAction("Index", 2);
+            }
+
+            // find all receipt plans that are not commited or approved under this giftcertificate
+            // and revert them all
+            if (donations != null)
+            {
+                foreach (var donation in donationPlanHeaders.ToList())
+                {
+                    if (donation.IsCommited == true)
+                    {
+                        if (_donationPlanHeaderService.DeleteReceiptAllocation(donation))
+                        {
+                            donation.IsCommited = false;
+                            _donationPlanHeaderService.EditDonationPlanHeader(donation);
+                        }
+                    }
+                }
+            }
+
+            // now revert the giftcertificate itself
+            _transactionService.RevertGiftCertificate(giftCertificateID);
+
+            return RedirectToAction("Index", 2);
+
         }
         [HttpGet]
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]
-       public ActionResult Approved(int id)
-       {
-           var giftCertificate = _giftCertificateService.FindById(id);
-           var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-           var giftCertificateViewModel = GiftCertificateViewModelBinder.BindGiftCertificateViewModel(giftCertificate, datePref);
-           return PartialView("_Approve", giftCertificateViewModel);
-       }
+        public ActionResult Approved(int id)
+        {
+            var giftCertificate = _giftCertificateService.FindById(id);
+            var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
+            var giftCertificateViewModel = GiftCertificateViewModelBinder.BindGiftCertificateViewModel(giftCertificate, datePref);
+            return PartialView("_Approve", giftCertificateViewModel);
+        }
 
         [HttpPost]
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]
-       public ActionResult Approve(int GiftCertificateID)
+        public ActionResult Approve(int GiftCertificateID)
         {
             var result = _transactionService.PostGiftCertificate(GiftCertificateID);
             return RedirectToAction("Index");
@@ -321,30 +368,30 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewBag.DFundSources = _commonService.GetDetails(d => d.MasterID == Master.Constants.FUND_SOURCE, t => t.OrderBy(o => o.SortOrder));
             ViewBag.DBudgetTypes = _commonService.GetDetails(d => d.MasterID == Master.Constants.BUDGET_TYPE, t => t.OrderBy(o => o.SortOrder));
 
-             var giftCertificateDetails = new List<GiftCertificateDetailsViewModel>();
-             ViewBag.GiftCertificateDetails = giftCertificateDetails;
+            var giftCertificateDetails = new List<GiftCertificateDetailsViewModel>();
+            ViewBag.GiftCertificateDetails = giftCertificateDetails;
             if (isNew && giftCertificate == null)
             {
                 ViewBag.DonorID = new SelectList(_commonService.GetDonors(null, t => t.OrderBy(o => o.Name)), "DonorID",
                                                  "Name");
                 ViewBag.CommodityTypeID =
                     new SelectList(_commonService.GetCommodityTypes(null, t => t.OrderBy(o => o.Name)),
-                                   "CommodityTypeID", "Name",1);
+                                   "CommodityTypeID", "Name", 1);
                 ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name");
                 ViewBag.DModeOfTransport = new SelectList(_commonService.GetDetails(d => d.MasterID == Master.Constants.TRANSPORT_MODE, t => t.OrderBy(o => o.SortOrder)), "DetailID", "Name");
-        
+
             }
             else
             {
                 var giftDetails = giftCertificate.GiftCertificateDetails.FirstOrDefault();
                 ViewBag.DonorID = new SelectList(_commonService.GetDonors(null, t => t.OrderBy(o => o.Name)), "DonorID",
-                                                "Name",giftCertificate.DonorID);
+                                                "Name", giftCertificate.DonorID);
                 ViewBag.CommodityTypeID =
                     new SelectList(_commonService.GetCommodityTypes(null, t => t.OrderBy(o => o.Name)),
                                    "CommodityTypeID", "Name", giftDetails == null ? "1" : giftDetails.Commodity.CommodityTypeID.ToString());
-                ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name",giftCertificate.ProgramID);
-                ViewBag.DModeOfTransport = new SelectList(_commonService.GetDetails(d => d.MasterID == Master.Constants.TRANSPORT_MODE, t => t.OrderBy(o => o.SortOrder)), "DetailID", "Name",giftCertificate.DModeOfTransport);
-        
+                ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name", giftCertificate.ProgramID);
+                ViewBag.DModeOfTransport = new SelectList(_commonService.GetDetails(d => d.MasterID == Master.Constants.TRANSPORT_MODE, t => t.OrderBy(o => o.SortOrder)), "DetailID", "Name", giftCertificate.DModeOfTransport);
+
             }
         }
 
@@ -356,20 +403,20 @@ namespace Cats.Areas.EarlyWarning.Controllers
         }
 
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template)]
-       public ActionResult ShowLetterTemplates([DataSourceRequest] DataSourceRequest request)
-       {
-           return Json(_letterTemplateService.GetAllLetterTemplates().ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+        public ActionResult ShowLetterTemplates([DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(_letterTemplateService.GetAllLetterTemplates().ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
 
-       }
+        }
         public void ShowTemplate(string fileName, int giftCertificateId)
         {
             // TODO: Make sure to use DI to get the template generator instance
-           try
-           {
-                var template = new TemplateHelper(_unitofwork,_log);
+            try
+            {
+                var template = new TemplateHelper(_unitofwork, _log);
                 string filePath = template.GenerateTemplate(giftCertificateId, 1, fileName); //here you have to send the name of the tempalte and the id of the giftcertificate
-               
-               
+
+
                 Response.Clear();
                 Response.ContentType = "application/text";
                 Response.AddHeader("Content-Disposition", @"filename= " + fileName + ".docx");
@@ -377,29 +424,29 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 Response.End();
                 var result = _transactionService.PrintedGiftCertificate(giftCertificateId);
             }
-            catch(Exception ex)
-           {
+            catch (Exception ex)
+            {
 
 
-               _log.Error(ex.Message.ToString(CultureInfo.InvariantCulture), ex.GetBaseException());
-               //System.IO.File.AppendAllText(@"c:\temp\errors.txt", " ShowTemplate : " + ex.Message.ToString(CultureInfo.InvariantCulture));
+                _log.Error(ex.Message.ToString(CultureInfo.InvariantCulture), ex.GetBaseException());
+                //System.IO.File.AppendAllText(@"c:\temp\errors.txt", " ShowTemplate : " + ex.Message.ToString(CultureInfo.InvariantCulture));
 
-           }
+            }
 
-               
+
         }
         protected override void Dispose(bool disposing)
         {
             _giftCertificateService.Dispose();
         }
 
-       
+
         [HttpGet]
         public JsonResult AutoCompleteSiNumber(string term)
         {
             var result = (from siNumber in _shippingInstructionService.GetAllShippingInstruction()
                           where siNumber.Value.ToLower().StartsWith(term.ToLower())
-                          select siNumber.Value );
+                          select siNumber.Value);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 

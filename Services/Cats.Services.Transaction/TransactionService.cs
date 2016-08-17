@@ -1001,7 +1001,7 @@ namespace Cats.Services.Transaction
                 transaction.DonorID = giftCertificate.DonorID;
                 transaction.CommoditySourceID = giftCertificateDetail.DFundSourceID;
                 transaction.GiftTypeID = giftCertificateDetail.DFundSourceID;
-                transaction.QuantityInMT = giftCertificateDetail.WeightInMT;
+                transaction.QuantityInMT = -giftCertificateDetail.WeightInMT;
                 transaction.QuantityInUnit = giftCertificateDetail.WeightInMT;
                 transaction.TransactionGroupID = transactionGroup;
                 transaction.TransactionDate = transactionDate;
@@ -1016,7 +1016,7 @@ namespace Cats.Services.Transaction
                 transaction.TransactionID = Guid.NewGuid();
                 transaction.ProgramID = giftCertificate.ProgramID;
                 transaction.DonorID = giftCertificate.DonorID;
-                transaction.QuantityInMT = -giftCertificateDetail.WeightInMT;
+                transaction.QuantityInMT = giftCertificateDetail.WeightInMT;
                 transaction.TransactionGroupID = transactionGroup;
                 transaction.TransactionDate = transactionDate;
                 transaction.QuantityInUnit = giftCertificateDetail.WeightInMT;
@@ -1025,8 +1025,6 @@ namespace Cats.Services.Transaction
                 transaction.LedgerID = Ledger.Constants.PLEDGE;//Goods Promised - Pledge	 not found in ledger list
 
                 _unitOfWork.TransactionRepository.Add(transaction);
-
-
             }
 
             giftCertificate.StatusID = 1;
@@ -1082,8 +1080,6 @@ namespace Cats.Services.Transaction
                 transaction.LedgerID = Ledger.Constants.PLEDGE;//Goods Promised - Pledge	 not found in ledger list
 
                 _unitOfWork.TransactionRepository.Add(transaction);
-
-
             }
 
             giftCertificate.IsPrinted = true;
