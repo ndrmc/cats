@@ -1,7 +1,7 @@
 USE [CatsDRMFSS]
 GO
 
-/****** Object:  View [dbo].[VWReceiptAllocation]    Script Date: 7/31/2016 7:20:34 PM ******/
+/****** Object:  View [dbo].[VWReceiptAllocation]    Script Date: 8/18/2016 5:55:35 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -11,7 +11,7 @@ GO
 CREATE VIEW [dbo].[VWReceiptAllocation]
 AS
 SELECT dbo.ReceiptAllocation.ReceiptAllocationID, dbo.Commodity.CommodityTypeID, dbo.ReceiptAllocation.CommoditySourceID, dbo.Commodity.Name AS CommodityName, dbo.ReceiptAllocation.SINumber, 
-                  dbo.ReceiptAllocation.ProjectNumber, dbo.ReceiptAllocation.QuantityInMT, MAX(dbo.[Transaction].QuantityInMT) AS ReceivedQuantityInMT, dbo.Receive.GRN, dbo.ReceiptAllocation.HubID, 
+                  dbo.ReceiptAllocation.ProjectNumber, dbo.ReceiptAllocation.QuantityInMT, SUM(dbo.[Transaction].QuantityInMT) AS ReceivedQuantityInMT, dbo.Receive.GRN, dbo.ReceiptAllocation.HubID, 
                   dbo.ReceiptAllocation.IsClosed, dbo.ReceiptAllocation.IsFalseGRN, dbo.ReceiptAllocation.ETA, dbo.ReceiptAllocation.IsCommited, dbo.ReceiptAllocation.GiftCertificateDetailID, dbo.ReceiptAllocation.CommodityID, 
                   dbo.ReceiptAllocation.UnitID, dbo.ReceiptAllocation.QuantityInUnit, dbo.ReceiptAllocation.DonorID, dbo.ReceiptAllocation.ProgramID, dbo.ReceiptAllocation.PurchaseOrder, dbo.ReceiptAllocation.SupplierName, 
                   dbo.ReceiptAllocation.SourceHubID, dbo.ReceiptAllocation.OtherDocumentationRef, dbo.ReceiptAllocation.Remark
@@ -21,6 +21,10 @@ FROM     dbo.ReceiptAllocation LEFT OUTER JOIN
                   dbo.Commodity ON dbo.ReceiptAllocation.CommodityID = dbo.Commodity.CommodityID LEFT OUTER JOIN
                   dbo.TransactionGroup ON dbo.ReceiveDetail.TransactionGroupID = dbo.TransactionGroup.TransactionGroupID LEFT OUTER JOIN
                   dbo.[Transaction] ON dbo.TransactionGroup.TransactionGroupID = dbo.[Transaction].TransactionGroupID
+WHERE  (dbo.[Transaction].QuantityInUnit >= 0) AND (dbo.[Transaction].QuantityInMT >= 0) AND (dbo.[Transaction].LedgerID IN
+                      (SELECT LedgerID
+                       FROM      dbo.Ledger
+                       WHERE   (Name LIKE 'Statistics')))
 GROUP BY dbo.ReceiptAllocation.ReceiptAllocationID, dbo.Commodity.Name, dbo.ReceiptAllocation.SINumber, dbo.ReceiptAllocation.ProjectNumber, dbo.ReceiptAllocation.QuantityInMT, dbo.ReceiptAllocation.HubID, 
                   dbo.ReceiptAllocation.IsClosed, dbo.ReceiptAllocation.IsFalseGRN, dbo.Receive.GRN, dbo.Commodity.CommodityTypeID, dbo.[Transaction].LedgerID, dbo.ReceiptAllocation.CommoditySourceID, 
                   dbo.ReceiptAllocation.ETA, dbo.ReceiptAllocation.GiftCertificateDetailID, dbo.ReceiptAllocation.CommodityID, dbo.ReceiptAllocation.UnitID, dbo.ReceiptAllocation.QuantityInUnit, dbo.ReceiptAllocation.DonorID, 
@@ -34,7 +38,7 @@ Begin DesignProperties =
    Begin PaneConfigurations = 
       Begin PaneConfiguration = 0
          NumPanes = 4
-         Configuration = "(H (1[29] 4[30] 2[19] 3) )"
+         Configuration = "(H (1[30] 4[15] 2[17] 3) )"
       End
       Begin PaneConfiguration = 1
          NumPanes = 3
@@ -152,10 +156,10 @@ Begin DesignProperties =
          End
          Begin Table = "Transaction"
             Begin Extent = 
-               Top = 153
-               Left = 1287
-               Bottom = 316
-               Right = 1541
+               Top = 371
+               Left = 48
+               Bottom = 534
+               Right = 302
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -167,18 +171,26 @@ Begin DesignProperties =
    Begin DataPane = 
       Begin ParameterDefaults = ""
       End
-      Begin ColumnWidths = 18
+      Begin ColumnWidths = 26
          Width = 284
-         Width = ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VWReceiptAllocation'
+         Width = 276' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VWReceiptAllocation'
 GO
 
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'2760
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'0
          Width = 2820
          Width = 2976
          Width = 1560
          Width = 2448
          Width = 1536
          Width = 2028
+         Width = 2424
+         Width = 1200
+         Width = 1200
+         Width = 1200
+         Width = 1200
+         Width = 1200
+         Width = 1200
+         Width = 1200
          Width = 1200
          Width = 1200
          Width = 1200

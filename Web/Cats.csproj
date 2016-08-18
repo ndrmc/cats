@@ -750,7 +750,6 @@
     <Content Include="Areas\EarlyWarning\Views\GiftCertificate\_Reject.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\GiftCertificate\_NotReject.cshtml" />
     <Content Include="Areas\Hub\Views\ReceiveNew\Code" />
-    <Content Include="Areas\Hub\Views\ReceiveNew\Commodities.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\NeedAssessment\Create.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\Plan\Detail.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\Request\_AddCommodity.cshtml" />
