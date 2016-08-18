@@ -173,35 +173,6 @@
             </thead>
             <tbody class="k-grid-content">
 
-                @*@{
-                                    var allocations = new List<RegionalRequestDetailViewModel>();
-                                    if (ViewBag.Allocations != null)
-                                    {
-                                        allocations = (List<RegionalRequestDetailViewModel> )ViewBag.Allocations;
-                                    }
-                                    var requestDetailViewModels = allocations as IList<RegionalRequestDetailViewModel> ?? allocations.ToList();
-                                    var zones = requestDetailViewModels.Select(r => r.Zone);
-                                    var index = 0;
-                                    foreach (var zone in zones)
-                                    {
-                                        var zoneAllocation = requestDetailViewModels.Where(a => a.Zone == zone);
-                                        foreach (var allocation in zoneAllocation)
-                                        {
-                                <tr>
-                                    <td>@index+1</td>
-
-                                    <td>@allocation.Zone</td>
-                                    <td>@allocation.Woreda</td>
-                                    <td>
-                                        <a ng-click="onFdpListShow($index)" id="fdp_selector_button{{$index}}" class="edit_button" href="javascript:_Void()">{{allocation.FDP}}</a>
-                                    </td>
-                                    <td><input class="flat-input txt_beneficiaries" onfocus="onGridInputFocus(this)" onchange="onAllocationBeneficiaryChange(index)" ng-model="allocation.Beneficiaries"/></td>
-                                    <td><button class="edit_button btn btn-danger" ng-click="deleteRequestedFDP($index)"><i class="icon-trash icon-white"></i> Delete</button></td>
-                                </tr>
-                            }
-                        }
-                    }*@
-
                 <tr ng-repeat="allocation in allocations | orderBy:['Zone', 'Woreda', 'FDP']"
                     ng-show="isUniqueZone($index) || isUniqueWoreda($index) || allocation.showA">
                     <td>{{$index+1}} </td>
@@ -225,8 +196,11 @@
                         <a ng-click="onFdpListShow($index)" id="fdp_selector_button{{$index}}" class="edit_button" href="javascript:_Void()">{{allocation.FDP}}</a>
                     </td>
                     <!--<td>{{allocation.PlannedBeneficiaries}}</td>-->
+                    @*<td ng-show="allocation.showA">
+                        <input class="flat-input txt_beneficiaries" type="number" onfocus="onGridInputFocus(this)" onchange="onAllocationBeneficiaryChange({{allocation.Fdpid}}) ng-model="allocation.Beneficiaries"/>
+                    </td>*@
                     <td ng-show="allocation.showA">
-                        <input class="flat-input txt_beneficiaries" type="number" onfocus="onGridInputFocus(this)" onchange="onAllocationBeneficiaryChange({ {$index }})" ng-model="allocation.Beneficiaries" min="0" oninput="validity.valid||(value='');"/>
+                        <input class="flat-input txt_beneficiaries" type="number" onfocus="onGridInputFocus(this)" min="0" oninput="validity.valid||(value='');" onchange="onAllocationBeneficiaryChange({{allocation.Fdpid}})" ng-model="allocation.Beneficiaries"/>
                     </td>
                     <td ng-show="allocation.showA"><button class="edit_button btn btn-danger" ng-click="deleteRequestedFDP($index)"><i class="icon-trash icon-white"></i> Delete</button></td>
 
