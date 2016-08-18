@@ -155,8 +155,8 @@ namespace Cats.Services.Common
                     _unitOfWork.ReliefRequisitionDetailRepository.FindBy(
                         p =>
                         p.ReliefRequisition.RegionalRequest.PlanID == planId && p.FDP.AdminUnitID == woredaId &&
-                        p.ReliefRequisition.Round == roundOrMonth).Sum(
-                            s => s.BenficiaryNo);
+                        p.ReliefRequisition.Round == roundOrMonth).GroupBy(u=>u.RequisitionID).FirstOrDefault().Sum(u=>u.BenficiaryNo);
+  
                 return result;
             }
             if (program == (int) Cats.Models.Constant.Programs.PSNP)
@@ -165,8 +165,7 @@ namespace Cats.Services.Common
                     _unitOfWork.ReliefRequisitionDetailRepository.FindBy(
                         p =>
                         p.ReliefRequisition.RegionalRequest.PlanID == planId && p.FDP.AdminUnitID == woredaId &&
-                        p.ReliefRequisition.Month == roundOrMonth).Sum(
-                            s => s.BenficiaryNo);
+                        p.ReliefRequisition.Month == roundOrMonth).FirstOrDefault().BenficiaryNo;
                 return result;
             }
             if (program == (int) Cats.Models.Constant.Programs.IDPS)
@@ -175,8 +174,7 @@ namespace Cats.Services.Common
                     _unitOfWork.ReliefRequisitionDetailRepository.FindBy(
                         p =>
                         p.ReliefRequisition.RegionalRequest.PlanID == planId && p.FDP.AdminUnitID == woredaId &&
-                        p.ReliefRequisition.Month == roundOrMonth).Sum(
-                            s => s.BenficiaryNo);
+                        p.ReliefRequisition.Month == roundOrMonth).FirstOrDefault().BenficiaryNo;
                 return result;
             }
             return 0;
