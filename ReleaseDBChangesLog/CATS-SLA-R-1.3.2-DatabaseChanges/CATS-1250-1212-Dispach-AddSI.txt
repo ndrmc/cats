@@ -4,7 +4,7 @@ ALTER TABLE [dbo].[Dispatch]
 ADD [ShippingInstructionID] [int] NULL
 GO
 UPDATE [dbo].[Dispatch]
-SET [dbo].[Dispatch].[DispatchAllocationID] = [dbo].[DispatchAllocation].[DispatchAllocationID]
+SET [dbo].[Dispatch].[ShippingInstructionID] = [dbo].[DispatchAllocation].[ShippingInstructionID]
 FROM [dbo].[DispatchAllocation]
-WHERE
-   [dbo].[Dispatch].[ShippingInstructionID] = [dbo].[DispatchAllocation].[ShippingInstructionID]
+WHERE [dbo].[Dispatch].[DispatchAllocationID] = [dbo].[DispatchAllocation].[DispatchAllocationID]
+   
