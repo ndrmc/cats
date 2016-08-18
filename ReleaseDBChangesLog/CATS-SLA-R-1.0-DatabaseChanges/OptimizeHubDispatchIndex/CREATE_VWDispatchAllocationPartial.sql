@@ -1,12 +1,7 @@
 USE [CatsDRMFSS]
 GO
 
-/****** Object:  View [dbo].[VWDispatchAllocationPartial]    Script Date: 8/3/2016 12:15:41 PM ******/
--- =============================================
--- Author:		Nathnael Getahun
--- Create date: July 31, 2016
--- Description:	View that selects DispatchAllocations with their respective aggregated dispatched quantities
--- =============================================
+/****** Object:  View [dbo].[VWDispatchAllocationPartial]    Script Date: 8/18/2016 4:16:08 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -16,8 +11,8 @@ GO
 CREATE VIEW [dbo].[VWDispatchAllocationPartial]
 AS
 SELECT dbo.DispatchAllocation.ShippingInstructionID, dbo.DispatchAllocation.ProjectCodeID, dbo.DispatchAllocation.HubID, dbo.DispatchAllocation.IsClosed, dbo.DispatchAllocation.Amount AS AmountInUnit, 
-                  dbo.DispatchAllocation.DispatchAllocationID, dbo.DispatchAllocation.RequisitionNo, dbo.DispatchAllocation.BidRefNo, dbo.DispatchAllocation.Round, MAX(dbo.[Transaction].QuantityInMT) AS QuantityInMT, 
-                  MAX(dbo.[Transaction].QuantityInUnit) AS QuantityInUnit, dbo.DispatchAllocation.CommodityID, dbo.DispatchAllocation.FDPID, dbo.DispatchAllocation.StoreID, dbo.DispatchAllocation.Year, 
+                  dbo.DispatchAllocation.DispatchAllocationID, dbo.DispatchAllocation.RequisitionNo, dbo.DispatchAllocation.BidRefNo, dbo.DispatchAllocation.Round, SUM(dbo.[Transaction].QuantityInMT) AS QuantityInMT, 
+                  SUM(dbo.[Transaction].QuantityInUnit) AS QuantityInUnit, dbo.DispatchAllocation.CommodityID, dbo.DispatchAllocation.FDPID, dbo.DispatchAllocation.StoreID, dbo.DispatchAllocation.Year, 
                   dbo.DispatchAllocation.Month, dbo.DispatchAllocation.DonorID, dbo.DispatchAllocation.ProgramID, dbo.DispatchAllocation.RequisitionId, dbo.DispatchAllocation.ContractStartDate, 
                   dbo.DispatchAllocation.ContractEndDate, dbo.DispatchAllocation.Beneficiery, dbo.DispatchAllocation.Unit, dbo.DispatchAllocation.TransporterID, dbo.DispatchAllocation.TransportOrderID
 FROM     dbo.DispatchAllocation LEFT OUTER JOIN
@@ -25,6 +20,10 @@ FROM     dbo.DispatchAllocation LEFT OUTER JOIN
                   dbo.DispatchDetail ON dbo.DispatchDetail.DispatchID = dbo.Dispatch.DispatchID LEFT OUTER JOIN
                   dbo.TransactionGroup ON dbo.DispatchDetail.TransactionGroupID = dbo.TransactionGroup.TransactionGroupID LEFT OUTER JOIN
                   dbo.[Transaction] ON dbo.TransactionGroup.TransactionGroupID = dbo.[Transaction].TransactionGroupID
+WHERE  (dbo.[Transaction].QuantityInUnit >= 0) AND (dbo.[Transaction].QuantityInMT >= 0) AND (dbo.[Transaction].LedgerID IN
+                      (SELECT LedgerID
+                       FROM      dbo.Ledger
+                       WHERE   (Name LIKE 'Commited To FDP')))
 GROUP BY dbo.DispatchAllocation.ShippingInstructionID, dbo.DispatchAllocation.ProjectCodeID, dbo.DispatchAllocation.HubID, dbo.DispatchAllocation.IsClosed, dbo.DispatchAllocation.Amount, 
                   dbo.DispatchAllocation.DispatchAllocationID, dbo.DispatchAllocation.RequisitionNo, dbo.DispatchAllocation.BidRefNo, dbo.DispatchAllocation.Round, dbo.DispatchAllocation.CommodityID, 
                   dbo.DispatchAllocation.FDPID, dbo.DispatchAllocation.StoreID, dbo.DispatchAllocation.Year, dbo.DispatchAllocation.Month, dbo.DispatchAllocation.DonorID, dbo.DispatchAllocation.ProgramID, 
@@ -38,7 +37,7 @@ Begin DesignProperties =
    Begin PaneConfigurations = 
       Begin PaneConfiguration = 0
          NumPanes = 4
-         Configuration = "(H (1[34] 4[22] 2[17] 3) )"
+         Configuration = "(H (1[11] 4[21] 2[30] 3) )"
       End
       Begin PaneConfiguration = 1
          NumPanes = 3
@@ -161,7 +160,7 @@ Begin DesignProperties =
    Begin DataPane = 
       Begin ParameterDefaults = ""
       End
-      Begin ColumnWidths = 18
+      Begin ColumnWidths = 26
          Width = 284
          Width = 2016
          Width = 1848
@@ -180,6 +179,14 @@ GO
 
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'     Width = 1200
          Width = 1668
+         Width = 1200
+         Width = 1200
+         Width = 1200
+         Width = 1200
+         Width = 1200
+         Width = 1200
+         Width = 1200
+         Width = 1200
          Width = 1200
          Width = 1200
          Width = 1200
