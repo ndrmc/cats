@@ -1,8 +1,13 @@
 
 (function ($) {
+
     var _ethdatepickerInitialized = false;
+
+    var inputTargetIsReadonly =false;
+
     $.fn.ethcal_datepicker = function (options) {
         _ethdatepicker_init();
+
         this.each(function () {
             var that = this;
 
@@ -19,6 +24,9 @@
                 if ($(that).val()) {
                     geezStr = eth_date.toString();
                 }
+                
+
+ 
 
                 var eth_date_input = $($(that).clone()).insertAfter($(this));
                 var selected_date;
@@ -57,6 +65,15 @@
                 $(this).data("eth_date_input", eth_date_input);
                 $(this).css({ opacity: 0.5, display: "none" });
 
+                if ($(that).is('[readonly]')) {
+                    inputTargetIsReadonly = true;
+
+                }else{
+                    inputTargetIsReadonly = false;
+
+                }
+
+ 
             }
             else {
                 var geezDate = [""];
@@ -94,9 +111,6 @@
             }
 
         });
-
-
-
 
         return this;
 
@@ -151,6 +165,7 @@
         $("#div_test").html(htm);
 
     }
+
     var _build_date_picker = function (input) {
         var containerhtm = "<div class=\"ui-ethdatepicker ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all\" style=\"position: absolute; z-index: 1; display: block; left:900px; display:none;\" >";
 
@@ -210,6 +225,7 @@
         });
         return eth_date_pickerdata;
     }
+
     var _write_month_option = function () {
         var htm = "";
         htm += '<select class="ui-datepicker-month"   >';
@@ -221,6 +237,7 @@
 
         return htm;
     }
+
     var _write_year_option = function () {
         var htm = "";
         htm += '<select class="ui-datepicker-year"   >';
@@ -242,6 +259,9 @@
         //var txtdtgr = $(target).data("greg_input").value;
         //var converted = new EthDate();
         var datepicker = $(target).data("date_picker");
+         
+        if (inputTargetIsReadonly == true) return;
+        
         dispdate = datepicker.selected_month;
         if (datepicker.displayed) {
             //   return;
