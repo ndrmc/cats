@@ -280,14 +280,28 @@ namespace Cats.Services.EarlyWarning
                         if (lastRequest != null)
                         {
                             result.HRDPSNPPlan.RationID = hrd.RationID;
-                            var requests =
-                                _unitOfWork.RegionalRequestRepository.FindBy(
-                                    r => r.RegionID == plan.RegionID && r.ProgramId == 1 && r.PlanID == plan.PlanID);
-                            var numberOfRequestsPerRegion = requests.Count;
+                            //var requests =
+                            //    _unitOfWork.RegionalRequestRepository.FindBy(
+                            //        r => r.RegionID == plan.RegionID && r.ProgramId == 1 && r.PlanID == plan.PlanID);
+                            //var numberOfRequestsPerRegion = requests.Count;
                             var applicableWoredas = (from detail in hrd.HRDDetails
-                                                     where detail.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == plan.RegionID //&& detail.DurationOfAssistance > numberOfRequestsPerRegion
+                                                     where detail.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == plan.RegionID 
+                                                     && detail.NumberOfBeneficiaries > 0
+                                                     //&& detail.DurationOfAssistance > numberOfRequestsPerRegion
                                                      select detail.WoredaID).ToList();
+                        //woreds that exist in the previous request
+                        var previousWoredas =
+                                lastRequest.RegionalRequestDetails.Select(s => s.Fdp.AdminUnitID).ToList();
+                        //applicable woredas not exist in the previous request
+                            var woredasNotExistInpreviousRequest = (from detail in hrd.HRDDetails
+                                where detail.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == plan.RegionID
+                                      && detail.NumberOfBeneficiaries > 0
+                                      && !previousWoredas.Contains(detail.WoredaID)
+                                select detail).ToList();
+                                                
                             beneficiaryInfos = LastReliefRequest(lastRequest, applicableWoredas);
+                            if (woredasNotExistInpreviousRequest.Any())
+                                beneficiaryInfos.AddRange(HRDToRequest(woredasNotExistInpreviousRequest));
                             // var lastRequestDetail = LastReliefRequest(lastRequest);
                         }
                         else
@@ -298,6 +312,7 @@ namespace Cats.Services.EarlyWarning
                                  where
                                      woreda.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == plan.RegionID &&
                                      woreda.DurationOfAssistance > 0
+                                     && woreda.NumberOfBeneficiaries >0
                                  select woreda).ToList();
                             beneficiaryInfos = HRDToRequest(hrddetail);
                         }
@@ -346,7 +361,7 @@ namespace Cats.Services.EarlyWarning
                 List<FDP> WoredaFDPs = _unitOfWork.FDPRepository.FindBy(w => w.AdminUnitID == d.AdminUnit.AdminUnitID);
                 ICollection<BeneficiaryInfo> woredabeneficiaries =
                     (from FDP fdp in WoredaFDPs
-                     select new BeneficiaryInfo { FDPID = fdp.FDPID, FDPName = fdp.Name, Beneficiaries = 0 }).ToList();
+                        select new BeneficiaryInfo {FDPID = fdp.FDPID, FDPName = fdp.Name, Beneficiaries = 0}).ToList();
                 benficiaries.AddRange(woredabeneficiaries);
             }
             return benficiaries;
