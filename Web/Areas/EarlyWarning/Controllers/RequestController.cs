@@ -1149,19 +1149,27 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                    select woredaDetail);
 
                 result.AddRange(from sw in woredaG
-                                from hrdDetails in hrd.HRDDetails
-                                let oneWoreda = sw.ToList()
-                                let regionalRequestDetail = oneWoreda.FirstOrDefault()
-                                where regionalRequestDetail != null && hrdDetails.AdminUnit.AdminUnitID == sw.Key.AdminUnitID
-                                select new PLANWithRegionalRequestViewModel()
-                                    {
-                                        zone = regionalRequestDetail.Fdp.AdminUnit.AdminUnit2.Name,
-                                        Woreda = sw.Key.Name,
-                                        RequestedBeneficiaryNo = sw.Sum(m => m.Beneficiaries),
-                                        PlannedBeneficaryNo = hrd != null ? hrd.HRDDetails.First(m => m.AdminUnit.AdminUnitID == sw.Key.AdminUnitID).NumberOfBeneficiaries : 0,
-                                        Difference = ((hrd != null ? hrd.HRDDetails.First(m => m.AdminUnit.AdminUnitID == sw.Key.AdminUnitID).NumberOfBeneficiaries : 0) - (sw.Sum(m => m.Beneficiaries))),
-                                        RegionalRequestDetails = oneWoreda
-                                    });
+                    from hrdDetails in hrd.HRDDetails
+                    let oneWoreda = sw.ToList()
+                    let regionalRequestDetail = oneWoreda.FirstOrDefault()
+                    where regionalRequestDetail != null && hrdDetails.AdminUnit.AdminUnitID == sw.Key.AdminUnitID
+                    select new PLANWithRegionalRequestViewModel()
+                    {
+                        zone = regionalRequestDetail.Fdp.AdminUnit.AdminUnit2.Name,
+                        Woreda = sw.Key.Name,
+                        RequestedBeneficiaryNo = sw.Sum(m => m.Beneficiaries),
+                        PlannedBeneficaryNo =
+                            hrd != null
+                                ? hrd.HRDDetails.First(m => m.AdminUnit.AdminUnitID == sw.Key.AdminUnitID)
+                                    .NumberOfBeneficiaries
+                                : 0,
+                        Difference =
+                            ((hrd != null
+                                ? hrd.HRDDetails.First(m => m.AdminUnit.AdminUnitID == sw.Key.AdminUnitID)
+                                    .NumberOfBeneficiaries
+                                : 0) - (sw.Sum(m => m.Beneficiaries))),
+                        RegionalRequestDetails = oneWoreda
+                    });
             }
 
             if (regionalRequest.ProgramId == 2)
@@ -1214,7 +1222,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                     RegionalRequestDetails = oneWoreda
                                 });
             }
-            return result.OrderBy(t=>t.zone).ToList();
+            return result.OrderBy(t => t.zone).ThenBy(t => t.Woreda).ToList();
         }
 
         public JsonResult GetPlan(int programID)
