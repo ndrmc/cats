@@ -714,9 +714,73 @@ namespace Cats.Services.Transaction
 
         }
 
+        public bool RevertDonationPlan(DonationPlanHeader donationPlanHeader)
+        {
+            var transactionGroup = Guid.NewGuid();
+            var transactionDate = DateTime.Now;
+
+            _unitOfWork.TransactionGroupRepository.Add(new TransactionGroup()
+            {
+                PartitionID = 0,
+                TransactionGroupID = transactionGroup
+            });
+
+            //var donationDetailHubIDs =
+            //       _unitOfWork.DonationPlanDetailRepository.GetAll().Where(
+            //           m => m.DonationHeaderPlanID == donationPlanHeader.DonationHeaderPlanID);
+
+            foreach (var donationPlanDetail in donationPlanHeader.DonationPlanDetails)
+            {
+                var transaction = new Models.Transaction
+                {
+                    TransactionID = Guid.NewGuid(),
+                    ProgramID = donationPlanHeader.ProgramID,
+                    DonorID = donationPlanHeader.DonorID,
+                    CommoditySourceID = 1,
+                    QuantityInMT = -donationPlanDetail.AllocatedAmount,
+                    TransactionGroupID = transactionGroup,
+                    TransactionDate = transactionDate,
+                    CommodityID = donationPlanHeader.CommodityID,
+                    ParentCommodityID = donationPlanHeader.Commodity.ParentID,
+                    ShippingInstructionID = donationPlanHeader.ShippingInstructionId,
+                    HubID = donationPlanDetail.HubID,
+                    LedgerID = Ledger.Constants.GOODS_RECIEVABLE
+                };
+
+                _unitOfWork.TransactionRepository.Add(transaction);
+
+                transaction = new Models.Transaction
+                {
+                    TransactionID = Guid.NewGuid(),
+                    ProgramID = donationPlanHeader.ProgramID,
+                    DonorID = donationPlanHeader.DonorID,
+                    CommoditySourceID = 1,
+                    QuantityInMT = donationPlanDetail.AllocatedAmount,
+                    TransactionGroupID = transactionGroup,
+                    TransactionDate = transactionDate,
+                    CommodityID = donationPlanHeader.CommodityID,
+                    ParentCommodityID = donationPlanHeader.Commodity.ParentID,
+                    ShippingInstructionID = donationPlanHeader.ShippingInstructionId,
+                    HubID = donationPlanDetail.HubID,
+                    LedgerID = Ledger.Constants.GIFT_CERTIFICATE //good promissed - pledged is not in ledger list // Former LedgerID = 4
+                };
+
+                _unitOfWork.TransactionRepository.Add(transaction);
+            }
+
+            var donationHeader =
+                _unitOfWork.DonationPlanHeaderRepository.FindById(donationPlanHeader.DonationHeaderPlanID);
+            if (donationHeader != null)
+                donationPlanHeader.TransactionGroupID = transactionGroup;
+            _unitOfWork.Save();
+
+            return true;
+
+        }
+
         #endregion
 
-#region Post Local Purchase
+        #region Post Local Purchase
 
         public bool PostLocalPurchase(List<LocalPurchaseDetail> localPurchaseDetail)
         {
