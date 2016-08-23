@@ -164,12 +164,11 @@ namespace Cats.Areas.Logistics.Controllers
                            };
             }).ToList();
         }
-
         public JsonResult PaymentRequests2(int transporterID = 0)
         {
             var statuses = _workflowStatusService.GetStatus(WORKFLOW.TRANSPORT_ORDER);
             var currentUser = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name);
-
+            ViewBag.TransporterId = transporterID;
             var datePref = currentUser.DatePreference;
             ViewBag.TargetController = "TransporterPaymentRequest";
             var paymentRequests = _transporterPaymentRequestService
@@ -207,8 +206,7 @@ namespace Cats.Areas.Logistics.Controllers
                                      }).ToList();
             return Json(incommingGrns, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult PaymentRequests(int transporterID = 0)
+        public ActionResult PaymentRequests(int transporterID)
         {
             var statuses = _workflowStatusService.GetStatus(WORKFLOW.TRANSPORT_ORDER);
             var currentUser = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name);
@@ -233,6 +231,7 @@ namespace Cats.Areas.Logistics.Controllers
             }
             return View(transporterPaymentRequests);
         }
+
 
         public ActionResult TransporterDetail(int transporterID)
         {
