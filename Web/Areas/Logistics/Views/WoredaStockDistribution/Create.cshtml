@@ -234,7 +234,7 @@
                                 @Html.LabelFor(m => m.ActualBeneficairies, Html.Translate("Actual Beneficiary"))
                             </div>
                             <div class="controls">
-                                @Html.TextBoxFor(m => m.ActualBeneficairies)
+                                @Html.TextBoxFor(m => m.ActualBeneficairies, new Dictionary<string, object>() { { "readonly", "true" } })
                                 @Html.ValidationMessageFor(m => m.ActualBeneficairies)
                             </div>
                         </div>
