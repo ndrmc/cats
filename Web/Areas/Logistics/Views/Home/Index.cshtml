@@ -393,7 +393,8 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
-                                            <select class="form-control" id="incommingGRN" ng-change="onChange(transporter)" ng-model="transporter" ng-options="transporter.TransporterId as transporter.name for transporter in transporters">
+                                            <select class="form-control" id="incommingGRN" ng-change="onChange(transporter)" ng-model="transporter" ng-options="transporter.transporterId as transporter.name for transporter in transporters  ">
+
                                                 <option> Choose a Transporter </option>
                                             </select>       
                                             <label for="incommingGRN">Transporter: </label>                                           
