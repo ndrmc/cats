@@ -1021,7 +1021,6 @@
                                           </BackgroundImage>
                                         </Style>
                                       </Rectangle>
-                                      <rd:Selected>true</rd:Selected>
                                     </CellContents>
                                   </TablixCell>
                                 </TablixCells>
@@ -1477,7 +1476,7 @@
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="RegionName">
-          <DataField>Region</DataField>
+          <DataField>RegionName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Status">
@@ -1488,14 +1487,18 @@
           <DataField>StatusID</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
+        <Field Name="Region">
+          <DataField>Region</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>CTSDataSet</rd:DataSetName>
-        <rd:SchemaPath>G:\source\cats\Web\CTSDataSet.xsd</rd:SchemaPath>
-        <rd:TableName>vwPSNPAnnualPlan</rd:TableName>
-        <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
-        <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
-        <rd:TableAdapterName>vwPSNPAnnualPlanTableAdapter</rd:TableAdapterName>
+        <rd:SchemaPath>E:\Code\Cats\Web\CTSDataSet.xsd</rd:SchemaPath>
+        <rd:TableName>vwPSNPAnnualPlan1</rd:TableName>
+        <rd:TableAdapterFillMethod />
+        <rd:TableAdapterGetDataMethod />
+        <rd:TableAdapterName />
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
