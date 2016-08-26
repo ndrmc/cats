@@ -308,7 +308,7 @@ namespace Cats.Areas.Logistics.Controllers
                         paymentRequests.Contains(s.TransporterID)).Select(p => new
                         {
                             name = p.Transporter.Name,
-                            TransporterId = p.TransporterID
+                            transporterId = p.TransporterID
                         }).Distinct().ToList();
             return Json(transporters, JsonRequestBehavior.AllowGet);
         }

@@ -385,7 +385,8 @@
                                     <a href="#" class="collapse" data-original-title="" title=""></a>
                                 </div>
                                 <div class="actions">
-                                    <a class="btn green" onclick="DetailGRN()" ><i class="fa fa-list"></i> @Html.Translate("Detail")</a>
+                                    <input type="text" id="hiddenTransporterIdValue" name="myText" style="display:none">
+                                    <a class="btn green" onclick="DetailGRN()"><i class="fa fa-list"></i> @Html.Translate("Detail")</a>
                                     <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
                                 </div>
                             </div>
@@ -393,10 +394,10 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
-                                            <select class="form-control" id="incommingGRN" ng-change="onChange(transporter)" ng-model="transporter" ng-options="transporter.TransporterId as transporter.name for transporter in transporters">
+                                            <select class="form-control" id="incommingGRN" ng-change="onChange(transporter)" ng-model="transporter" ng-options="transporter.transporterId as transporter.name for transporter in transporters">
                                                 <option> Choose a Transporter </option>
-                                            </select>       
-                                            <label for="incommingGRN">Transporter: </label>                                           
+                                            </select>
+                                            <label for="incommingGRN">Transporter: </label>
                                         </div>
                                     </div>
                                 </div>
@@ -941,7 +942,9 @@
             });
 
 
-            $scope.onChange = function(transporterId) {
+
+            $scope.onChange = function (transporterId) {
+ 
                 $http({
                         method: 'GET',
                         params: { transporterID: transporterId },
@@ -951,6 +954,7 @@
                         $scope.IncommingGRNs.GRN = data;
                     }).error(function() {});
 
+                $('#hiddenTransporterIdValue').val(transporterId);
             };
 
             $scope.Detail = function (transporterId) {
@@ -1228,8 +1232,8 @@
 
 </script>
 <script>
-    function DetailGRN() {   
-        var transporterId = $('#incommingGRN option:selected').val();
+   function DetailGRN() {
+        var transporterId = $('#hiddenTransporterIdValue').val();
         window.location = "@Url.Action("PaymentRequests", "TransporterPaymentRequest", new {Area = "Logistics"})" + "?transporterID=" + transporterId;
     }
 </script>
