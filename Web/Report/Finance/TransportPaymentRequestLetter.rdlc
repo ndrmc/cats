@@ -1,76 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition">
-  <DataSources>
-    <DataSource Name="CTSDataSet">
-      <ConnectionProperties>
-        <DataProvider>System.Data.DataSet</DataProvider>
-        <ConnectString>/* Local Connection */</ConnectString>
-      </ConnectionProperties>
-      <rd:DataSourceID>4debd161-b905-4c55-b6f2-045ecd25a1c2</rd:DataSourceID>
-    </DataSource>
-  </DataSources>
-  <DataSets>
-    <DataSet Name="TPRL">
-      <Fields>
-         <Field Name="ReferenceNo">
-          <DataField>ReferenceNo</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-          <Field Name="TransporterName">
-          <DataField>TransporterName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="CommodityName">
-          <DataField>CommodityName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="Source">
-          <DataField>Source</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="ShortageBirr">
-          <DataField>ShortageBirr</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="FreightCharge">
-          <DataField>FreightCharge</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="ReceivedQuantity">
-          <DataField>ReceivedQuantity</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="ShortageQuantity">
-          <DataField>ShortageQuantity</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="ShortageBirrInWords">
-          <DataField>ShortageBirrInWords</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="FreightChargeInWords">
-          <DataField>FreightChargeInWords</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="NoRecords">
-          <DataField>NoRecords</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-      </Fields>
-      <Query>
-        <DataSourceName>CTSDataSet</DataSourceName>
-        <CommandText>/* Local Query */</CommandText>
-      </Query>
-      <rd:DataSetInfo>
-        <rd:DataSetName>CTSDataSet</rd:DataSetName>
-        <rd:SchemaPath>C:\Users\Biruk T\Documents\cats\Web\CTSDataSet.xsd</rd:SchemaPath>
-        <rd:TableName>TPRL</rd:TableName>
-        <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
-        <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
-        <rd:TableAdapterName>TPRLTableAdapter</rd:TableAdapterName>
-      </rd:DataSetInfo>
-    </DataSet>
-  </DataSets>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
   <Body>
     <ReportItems>
       <Tablix Name="content">
@@ -681,7 +610,7 @@
                             <TextRun>
                               <Value>=Fields!ShortageQuantity.Value</Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>Underline</TextDecoration>
@@ -705,7 +634,7 @@
                             <TextRun>
                               <Value>=Fields!ShortageBirr.Value</Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <Format>#,0.00</Format>
@@ -723,7 +652,7 @@
                             <TextRun>
                               <Value>=Fields!ShortageBirrInWords.Value</Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>Underline</TextDecoration>
@@ -740,7 +669,7 @@
                             <TextRun>
                               <Value>=Fields!FreightCharge.Value</Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <Format>#,0.00</Format>
@@ -758,7 +687,7 @@
                             <TextRun>
                               <Value>=Fields!FreightChargeInWords.Value</Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>Underline</TextDecoration>
@@ -797,7 +726,7 @@
                             <TextRun>
                               <Value>=Fields!NoRecords.Value</Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>None</TextDecoration>
@@ -1415,6 +1344,78 @@
     <PageWidth>8.27in</PageWidth>
     <Style />
   </Page>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="CTSDataSet">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>4debd161-b905-4c55-b6f2-045ecd25a1c2</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="TPRL">
+      <Query>
+        <DataSourceName>CTSDataSet</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="ReferenceNo">
+          <DataField>ReferenceNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="TransporterName">
+          <DataField>TransporterName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CommodityName">
+          <DataField>CommodityName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Source">
+          <DataField>Source</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="ShortageBirr">
+          <DataField>ShortageBirr</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="FreightCharge">
+          <DataField>FreightCharge</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="ReceivedQuantity">
+          <DataField>ReceivedQuantity</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="ShortageQuantity">
+          <DataField>ShortageQuantity</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="ShortageBirrInWords">
+          <DataField>ShortageBirrInWords</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="FreightChargeInWords">
+          <DataField>FreightChargeInWords</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="NoRecords">
+          <DataField>NoRecords</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>CTSDataSet</rd:DataSetName>
+        <rd:SchemaPath>C:\Users\Biruk T\Documents\cats\Web\CTSDataSet.xsd</rd:SchemaPath>
+        <rd:TableName>TPRL</rd:TableName>
+        <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
+        <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
+        <rd:TableAdapterName>TPRLTableAdapter</rd:TableAdapterName>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
   <EmbeddedImages>
     <EmbeddedImage Name="Embelem">
       <MIMEType>image/png</MIMEType>
@@ -2064,6 +2065,6 @@ CJk1xpVt3aZsLYUIIRQkhJAIOmHNMdkI4BsA+rkkhBAybfqVLd2obCvb9xJCQUIIKZBBAN8BsA7AHwA4
 JbZAWcvlIWTO6dYEyGtgtzxCCAUJIaSKScCtOwGsyfC/CWvmySfBrl2EzAbjAA7Basf7EqzJ6YQQQkFCCCEhnFOvx2EVxn9SvT4N4GNcHkIK5h1Y0Y9D6sWCdEIIBQkhhBRJFpZH93UAfwqrjbAuUG7nEhHicNonQAa5JIQQChJCCJldBuG2IIUSKPep1ycBfIRLRKqII0p42A0jKEAIIRQkhBBSAoGi1580a+LkPiVQ2MGLLATSSoAc1kQIp6MTQihICCGkzBiHO/vE5iPa62MAtnKZSAXQCasG5Ij2IoQQChJCCKlA/Ie5pZo4+QiA/eAUeVJa+gEcVfepLUKYfkUIoSAhhJAFyiCCUZTVsKbH66/9XCoyBxyFNQldf/VwWQghFCSEEFLd9KjXa76P3xny2sDlIgXQFSI8TnJZCCGEgoQQQooh7BC5WBMnd6vXnbAmzpPqI6HukePqZd8zI1waQgihICGEkLlgBG6bVZ2tSphs1d5eC0ZUFgpdALqV2OhUL/ttQgghFCSEEFJyOnMcTvcrYbJWEy0r1NukfDgJq8C8E9aQwS71OsqlIYQQChJCCKlkjuY41C4FcJsSLCtgTZ9vhpUKZn+OzJzLsBoaHIfVHvq0Eh9d2ucIIYRQkBBCSNUxqF65vPC1cKMpd6r3b1OCRRctt6N6alkSSlToYmNQvZ2GW/tzWn0tIYSQMkVIKbkKhBBSgez/+ou5Pm0LFsBKFVut3m5QwsVPLjFTbAvkfCLgOIBsxOey6vM2PbBqN6AJDkJIBEe/+zkuAqk4/v8BAHh2Zv100HCTAAAAAElFTkSuQmCC</ImageData>
     </EmbeddedImage>
   </EmbeddedImages>
-  <rd:ReportID>0f35cea5-6243-4b98-993e-f8de12cdd9c0</rd:ReportID>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>0f35cea5-6243-4b98-993e-f8de12cdd9c0</rd:ReportID>
 </Report>

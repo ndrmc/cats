@@ -48,7 +48,24 @@
             var programName = $("#program_filter").val();
             var urlName = "@Url.Action("PrintLetter", "TransporterPaymentRequest", new { transporterId = ViewBag.TransportOrderViewModel.TransporterID })";
             var finalurl = urlName + "&refno=" + refNo + "&programname=" + programName;
-            window.location.href = finalurl;
+            //window.location.href = finalurl;
+
+            var transporterId = @Html.Raw(ViewBag.TransportOrderViewModel.TransporterID);
+
+            $.ajax({
+                type: "POST",
+                url: finalurl, // replace with your actual controller and action
+                data: JSON.stringify({ transporterId: transporterId, refno: "", programname : "All"}),
+                success: function(result) {
+
+                    if (result == null || result == "") {
+                       // alert("Payement request is zero.");
+                    } else {
+                        //$('#result').html(result);
+                        window.location.href = finalurl;
+                    }
+                }
+            });
         }
     </script>
 <script type="text/javascript">
