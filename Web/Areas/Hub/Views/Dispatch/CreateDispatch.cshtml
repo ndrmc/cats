@@ -82,7 +82,8 @@
                               .DataTextField("SIcode")
                               .DataValueField("siCodeId")
                               .Filter(FilterType.Contains)
-                              .DataSource(source => source.Read(read => read.Action("AvailableSI", "Dispatch", new { @reqId = Model.RequisitionId, @ComID = Model.CommodityID }))))
+                              .DataSource(source => source.Read(read => read.Action("AvailableSI", "Dispatch", 
+                                    new { @reqDetailId = ViewBag.RequisitionDetailID, @siID = Model.ShippingInstructionID , @ComID = Model.CommodityID }))))
 
 
                     @Html.ValidationMessageFor(model => model.ShippingInstructionID)

@@ -14,6 +14,7 @@ namespace Cats.Models.Mapping
             this.ToTable("SIPCAllocation");
             this.Property(t => t.SIPCAllocationID).HasColumnName("SIPCAllocationID");
             this.Property(t => t.FDPID).HasColumnName("FDPID");
+            this.Property(t => t.HubID).HasColumnName("HubID");
             this.Property(t => t.RequisitionDetailID).HasColumnName("RequisitionDetailID");
             this.Property(t => t.Code).HasColumnName("Code");
             this.Property(t => t.AllocatedAmount).HasColumnName("AllocatedAmount");

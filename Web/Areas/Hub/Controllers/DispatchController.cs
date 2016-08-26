@@ -35,6 +35,7 @@ using IProjectCodeService = Cats.Services.Hub.IProjectCodeService;
 using IShippingInstructionService = Cats.Services.Hub.IShippingInstructionService;
 using IUnitService = Cats.Services.Hub.IUnitService;
 using Cats.Areas.Logistics.Models;
+using Cats.Services.Logistics;
 
 namespace Cats.Areas.Hub.Controllers
 {
@@ -66,6 +67,8 @@ namespace Cats.Areas.Hub.Controllers
         private readonly IReliefRequisitionService _reliefRequisitionService;
         private readonly Services.Common.ILedgerService _ledgerService;
         private readonly IHubAllocationService _hubAllocationService;
+        private readonly ISIPCAllocationService _sipcAllocationService;
+        private readonly IReliefRequisitionDetailService _reliefRequisitionDetailService;
         public DispatchController(IDispatchAllocationService dispatchAllocationService, IDispatchService dispatchService,
             IUserProfileService userProfileService, IOtherDispatchAllocationService otherDispatchAllocationService,
             IDispatchDetailService dispatchDetailService, IUnitService unitService, ICommodityTypeService commodityTypeService,
@@ -73,7 +76,9 @@ namespace Cats.Areas.Hub.Controllers
             ICommodityService commodityService, ITransactionService transactionService, IStoreService storeService,
             IAdminUnitService adminUnitService, IHubService hubService, IFDPService fdpService,
             IProjectCodeService projectCodeService, IShippingInstructionService shippingInstructionService,
-            ISMSGatewayService smsGatewayService, IContactService contactService, ISMSService smsService, IReliefRequisitionService reliefRequisitionService, Services.Common.ILedgerService ledgerService, IHubAllocationService hubAllocationService)
+            ISMSGatewayService smsGatewayService, IContactService contactService, ISMSService smsService, IReliefRequisitionService reliefRequisitionService, 
+            Services.Common.ILedgerService ledgerService, IHubAllocationService hubAllocationService, ISIPCAllocationService sipcAllocationService, 
+            IReliefRequisitionDetailService reliefRequisitionDetailService)
             : base(userProfileService)
         {
             _dispatchAllocationService = dispatchAllocationService;
@@ -100,6 +105,8 @@ namespace Cats.Areas.Hub.Controllers
             _reliefRequisitionService = reliefRequisitionService;
             _ledgerService = ledgerService;
             _hubAllocationService = hubAllocationService;
+            _sipcAllocationService = sipcAllocationService;
+            _reliefRequisitionDetailService = reliefRequisitionDetailService;
         }
         public void populateLookups(UserProfile user)
         {
@@ -192,9 +199,11 @@ namespace Cats.Areas.Hub.Controllers
             return free;
         }
 
-        public JsonResult AvailableSI(int reqId, int ComID)
+        public JsonResult AvailableSI(int reqDetailId, int siID, int ComID)
         {
-            var hubId = _hubAllocationService.GetAllocatedHubId(reqId);
+            //var hubId = _hubAllocationService.GetAllocatedHubId(reqId);
+            var hubId =
+                _sipcAllocationService.FindBy(t => t.RequisitionDetailID == reqDetailId && t.Code == siID).Select(t=>t.HubID).FirstOrDefault();
             List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodity(hubId, ComID);
             var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
             tlistFiltered = tlistFiltered.Where(item => item.amount > 0);
@@ -395,6 +404,9 @@ namespace Cats.Areas.Hub.Controllers
             ViewBag.AvailableSIList = tlistFiltered;
             ViewBag.plannedAmount = dispatch.plannedAmount;
             ViewBag.recivedAmount = dispatchAllocation.DispatchedAmount;
+            ViewBag.RequisitionDetailID =
+                _reliefRequisitionDetailService.Get(
+                    t => t.FDPID == dispatch.FDPID && t.RequisitionID == dispatch.RequisitionId).Select(t=>t.RequisitionDetailID).FirstOrDefault();
             return View(dispatch);
 
 

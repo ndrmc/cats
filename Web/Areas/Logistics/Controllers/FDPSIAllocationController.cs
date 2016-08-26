@@ -149,6 +149,7 @@ namespace Cats.Areas.Logistics.Controllers
                         allocation.Code = item.Code;
                         allocation.AllocatedAmount = item.AllocatedAmount;
                         allocation.AllocationType = item.AllocationType;
+                        allocation.HubID = item.HubID;
                         _allocationService.Update(allocation);
                     }
                 }
@@ -160,6 +161,7 @@ namespace Cats.Areas.Logistics.Controllers
                             Code = item.Code,
                             AllocatedAmount = item.AllocatedAmount,
                             AllocationType = item.AllocationType,
+                            HubID = item.HubID,
                             RequisitionDetailID = item.RequisitionDetailID
                         };
                         _allocationService.Create(allocation);

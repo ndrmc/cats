@@ -763,7 +763,7 @@ namespace Cats.Services.Procurement
                     dispatchAllocation.ContractEndDate = transportOrder.EndDate;
                     dispatchAllocation.DonorID = transportOrderDetail.DonorID;
                     dispatchAllocation.FDPID = transportOrderDetail.FdpID;
-                    dispatchAllocation.HubID = transportOrderDetail.SourceWarehouseID;
+                    dispatchAllocation.HubID = t.HubID;
                     dispatchAllocation.TransporterID = transportOrder.TransporterID;
                     // dispatchAllocation.IsClosed = false;
                     dispatchAllocation.Month = requisition.Month;

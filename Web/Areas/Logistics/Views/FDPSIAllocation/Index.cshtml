@@ -543,7 +543,7 @@ position:absolute; ">
         $scope.allocateCustomAdminRegion = function (location,index, customAmount) {
             if (location.type == "zone") {
                 for (var w in location.woredas) {
-                    c(location.woredas[w],index);
+                    $scope.allocateAdminRegion(location.woredas[w],index);
                 }
             }
             else if (location.type == "woreda") {
@@ -670,7 +670,7 @@ position:absolute; ">
             $scope.promot(Requisition.RequisitionId,1);
         };
         $scope.promot = function (RequisitionId,showmodal) {
-            var param = { RequisitionId:RequisitionId };
+            var param = { RequisitionId:RequisitionId, HubId:$scope.selectedHub };
             $http.post($scope.promoteUrl, param).success(promotSuccess).error(updateError);
            // alert($scope.promoteUrl);
             if (showmodal) {
@@ -758,12 +758,22 @@ position:absolute; ">
             $scope.calculateAllocated();
         }
         $scope.assigneAllocation = function (requestIndex, siIndex, amount) {
-            // alert(requestIndex + "," + siIndex);
+            //alert(requestIndex + "," + siIndex);
             $scope.clearSIPCAllocation();
             $scope.saved=0;
             var location = $scope.allAdminRegions[requestIndex];
             amount = location.requestedAmount - location.totalAllocatedAmount;
             var alocated = 0;
+            //$scope.allAdminRegions[requestIndex].HubID = $scope.selectedHub;
+            
+            //var assoc = {
+            //    "val"  : "New",
+            //    "number" : 8,
+            //    "theting" : $scope.allAdminRegions
+            //};
+	
+            //console.log(dump(assoc));
+
             if($scope.SIPCCodes[siIndex].availableAmount/1<amount/1)
             {
                 $scope.modalFor = 0;
@@ -779,39 +789,52 @@ position:absolute; ">
             }
             else
             {
-            var avail=$scope.SIPCCodes[siIndex].availableAmount-amount;
-            if($scope.allAdminRegions[requestIndex].allocatedAmount != 0)
-            {
+                
+                var avail=$scope.SIPCCodes[siIndex].availableAmount-amount;
+                
+                    
+                if($scope.allAdminRegions[requestIndex].allocatedAmount != 0)
+                {
 
-                var temp = angular.copy($scope.allAdminRegions[requestIndex]);
-                alocated =  $scope.existSIPCIndex(temp,$scope.SIPCCodes[siIndex].codeId);
+                    var temp = angular.copy($scope.allAdminRegions[requestIndex]);
+                    //temp.HubID = $scope.selectedHub;
+                    //$scope.allAdminRegions[requestIndex].HubID = $scope.selectedHub;
+                    //console.log("HubID when [allocatedAmount != 0]: " + $scope.allAdminRegions[requestIndex].HubID);
+                    //alert(requestIndex + "," + siIndex + "," + temp.HubID);
+                    alocated =  $scope.existSIPCIndex(temp,$scope.SIPCCodes[siIndex].codeId);
+                    if(alocated===0)
+                    {
+                        $scope.allAdminRegions.push(temp);
+                        $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
+                    
+                    }
+                    else
+
+                        alert(" Selected FDP has been allocated  from  " +   $scope.SIPCCodes[siIndex].name + " SI Number");
+                }
+
+
                 if(alocated===0)
                 {
-                $scope.allAdminRegions.push(temp);
-                $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
+                    $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
+                    $scope.allAdminRegions[requestIndex].allocatedAmount =  amount;
+                    $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
+                    //$scope.allAdminRegions[requestIndex].HubID = $scope.selectedHub;
+                    //console.log("HubID when [alocated===0]: " + $scope.allAdminRegions[requestIndex].HubID);
+
+                    $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
+                    //alert("HubID: " + $scope.allAdminRegions[requestIndex].HubID);
+                    $scope.SIPCCodes[siIndex].allocatedRequests.push($scope.allAdminRegions[requestIndex]);
+                        // $scope.allocateAdminRegion(location,siIndex/1 + 1);
+                    $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,amount);
                 }
-                else
-
-                    alert(" Selected FDP has been allocated  from  " +   $scope.SIPCCodes[siIndex].name + " SI Number");
+                $scope.calculateAllocated();
+                    //Duplicate remove
+                $scope.clearSIPCAllocation();
             }
+            
 
-
-            if(alocated===0)
-            {
-                $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
-                $scope.allAdminRegions[requestIndex].allocatedAmount =  amount;
-                $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
-                $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
-            $scope.SIPCCodes[siIndex].allocatedRequests.push($scope.allAdminRegions[requestIndex]);
-                // $scope.allocateAdminRegion(location,siIndex/1 + 1);
-            $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,amount);
-            }
-            $scope.calculateAllocated();
-                //Duplicate remove
-            $scope.clearSIPCAllocation();
-            }
-
-
+            
         }
         $scope.existSIPCIndex=function(temp, fdpID)
         {
@@ -1009,17 +1032,28 @@ position:absolute; ">
         {
             $scope.saved=1;
             var param = [];
+            var assoc = {
+                "val"  : "New",
+                "number" : 8,
+                "theting" : $scope.allAdminRegions
+            };
+	
+            console.log(dump(assoc));
             for(var i in $scope.allAdminRegions)
             {
+                
+
                 var location=$scope.allAdminRegions[i];
                 // location.name=location.name + i;
 
-                for(var a in location.Allocations)
-                {
-                    var siindex=$scope.getSIPCIndex(location.Allocations[a].Code,location.Allocations[a].AllocationType)
+                for(var a in location.Allocations) {
+                    var siindex = $scope.getSIPCIndex(location.Allocations[a].Code, location.Allocations[a].AllocationType);
+                    
                     if(siindex>=0)
                     {
                         location.Allocations[a].RequisitionDetailID=location.RequestDetailId;
+                        location.Allocations[a].HubID=$scope.selectedHub;
+                        //alert(location.Allocations[a].HubID + " , " + location.HubID);
                         param.push(location.Allocations[a]);
                     }
                 }
@@ -1084,7 +1118,30 @@ position:absolute; ">
         };
     });
 
-
+    function dump(arr,level) {
+        var dumped_text = "";
+        if(!level) level = 0;
+	
+        //The padding given at the beginning of the line.
+        var level_padding = "";
+        for(var j=0;j<level+1;j++) level_padding += "    ";
+	
+        if(typeof(arr) == 'object') { //Array/Hashes/Objects 
+            for(var item in arr) {
+                var value = arr[item];
+			
+                if(typeof(value) == 'object') { //If it is an array,
+                    dumped_text += level_padding + "'" + item + "' ...\n";
+                    dumped_text += dump(value,level+1);
+                } else {
+                    dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+                }
+            }
+        } else { //Stings/Chars/Numbers etc.
+            dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
+        }
+        return dumped_text;
+    }
 </script>
 
 
