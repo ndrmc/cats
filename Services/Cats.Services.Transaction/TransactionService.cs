@@ -343,18 +343,17 @@ namespace Cats.Services.Transaction
                 transaction.PlanId = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionalRequest.PlanID;
                 transaction.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
 
-                int hubID1=0 ;
+                
                 if (allocationDetail.AllocationType == TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
                 {
                     transaction.ShippingInstructionID = allocationDetail.Code;
-                    hubID1= (int) _unitOfWork.TransactionRepository.FindBy(m=>m.ShippingInstructionID==allocationDetail.Code && m.LedgerID==Ledger.Constants.GOODS_ON_HAND).Select(m=>m.HubID).FirstOrDefault();
                 }
                 else
                 {
                     transaction.ProjectCodeID = allocationDetail.Code;
-                    hubID1 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
-                
                 }
+
+                transaction.HubID = allocationDetail.HubID;
 
                 // I see some logical error here
                 // what happens when hub x was selected and the allocation was made from hub y? 
@@ -362,17 +361,17 @@ namespace Cats.Services.Transaction
                 // Hub is required for this transaction
                 // Try catch is danger!! Either throw the exception or use conditional statement. 
 
-                if (hubID1!=0)
-                {
-                    transaction.HubID = hubID1;
-                }
-                else
-                {
-                      transaction.HubID =
-                                        _unitOfWork.HubAllocationRepository.FindBy(r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
-                                                h => h.HubID).FirstOrDefault();
-                }
-                
+                //if (hubID1!=0)
+                //{
+                //    transaction.HubID = hubID1;
+                //}
+                //else
+                //{
+                //      transaction.HubID =
+                //                        _unitOfWork.HubAllocationRepository.FindBy(r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
+                //                                h => h.HubID).FirstOrDefault();
+                //}
+
 
 
 
@@ -410,8 +409,8 @@ namespace Cats.Services.Transaction
                             FirstOrDefault();
                     if (shippingInstruction != null) transaction.ShippingInstructionID = shippingInstruction.ShippingInstructionID;
 
-                    hubID2=(int) _unitOfWork.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code &&
-                           m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+                    //hubID2=(int) _unitOfWork.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code &&
+                    //       m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
                
 
                 }
@@ -424,25 +423,25 @@ namespace Cats.Services.Transaction
                             FirstOrDefault();
                     if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
 
-                    hubID2 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code && 
-                               m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+                    //hubID2 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code && 
+                    //           m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
                
                 }
+                transaction2.HubID = allocationDetail.HubID;
 
+                //if (hubID2!=0)
+                //{
+                //    transaction2.HubID = hubID2;
+                //}
 
-                if (hubID2!=0)
-                {
-                    transaction2.HubID = hubID2;
-                }
+                //else
+                //{
+                //    transaction2.HubID =
+                //                       _unitOfWork.HubAllocationRepository.FindBy(r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
+                //                               h => h.HubID).FirstOrDefault();
 
-                else
-                {
-                    transaction2.HubID =
-                                       _unitOfWork.HubAllocationRepository.FindBy(r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
-                                               h => h.HubID).FirstOrDefault();
+                //}
 
-                }
-               
                 _unitOfWork.TransactionRepository.Add(transaction2);
                 allocationDetail.TransactionGroupID = transactionGroup;
                 _unitOfWork.SIPCAllocationRepository.Edit(allocationDetail);
@@ -455,6 +454,8 @@ namespace Cats.Services.Transaction
               //return result;
             return true;
         }
+
+        
 
         public bool PostSIAllocationUncommit(int requisitionID)
         {
