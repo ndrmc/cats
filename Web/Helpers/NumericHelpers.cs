@@ -90,6 +90,75 @@ namespace Cats.Helpers
             return words;
 
         }
+        // Spell numbers in amharic
+        private static String NumWordsAM(double n) //converts double to words
+        {
+            var numbersArr = new string[] { "አንድ", "ሁለት", "ሦስት", "አራት", "አምስት", "ስድስት", "ሰባት", "ስምንት", "ዘጠኝ", "አስር", "አስራአንድ", "አስራሁለት", "አስራሦስት", "አስራአራት", "አስራአምስት", "አስራስድስት", "አስራሰባት", "አስራስምንት", "አስራዘጠኝ" };
+            var tensArr = new string[] { "ሃያ", "ሰላሳ", "አርባ", "ሃምሳ", "ስልሳ", "ሰባ", "ሰማኒያ", "ዘጠና" };
+            var suffixesArr = new string[] { "ሺህ", "ሚሊዮን", "ቢሊዮን", "ትሪሊዮን", "ኩዋድሪሊዮን", "ኩዊንቲሊዮን", "ሴክስቲሊዮን", "ሴፕቲሊዮን", "ኦክቲሊዮን", "ነኒሊዮን", "ዴሲሊዮን", "አንዴሲሊዮን", "ዱዎዴሲሊዮን", "ትሬዴሲሊዮን", "ኩዋትሮዴሲሊዮን", "ኩዊንዴሲሊዮን", "ሴክስዴሲሊዮን", "ሴፕትዴሲሊዮን", "ኦክቶዴሲሊዮን", "ኖቬምዴሲሊዮን", "ቪጂንቲሊዮን" };
+            string words = "";
+
+            bool tens = false;
+
+            if (n < 0)
+            {
+                words += "ነጌቲቭ ";
+                n *= -1;
+            }
+
+            int power = (suffixesArr.Length + 1) * 3;
+
+            while (power > 3)
+            {
+                double pow = Math.Pow(10, power);
+                if (n >= pow)
+                {
+                    if (n % pow > 0)
+                    {
+                        words += NumWordsAM(Math.Floor(n / pow)) + " " + suffixesArr[(power / 3) - 1] + ", ";
+                    }
+                    else if (n % pow == 0)
+                    {
+                        words += NumWordsAM(Math.Floor(n / pow)) + " " + suffixesArr[(power / 3) - 1];
+                    }
+                    n %= pow;
+                }
+                power -= 3;
+            }
+            if (n >= 1000)
+            {
+                if (n % 1000 > 0) words += NumWordsAM(Math.Floor(n / 1000)) + " ሺህ, ";
+                else words += NumWordsAM(Math.Floor(n / 1000)) + " ሺህ";
+                n %= 1000;
+            }
+            if (0 <= n && n <= 999)
+            {
+                if ((int)n / 100 > 0)
+                {
+                    words += NumWordsAM(Math.Floor(n / 100)) + " መቶ";
+                    n %= 100;
+                }
+                if ((int)n / 10 > 1)
+                {
+                    if (words != "")
+                        words += " ";
+                    words += tensArr[(int)n / 10 - 2];
+                    tens = true;
+                    n %= 10;
+                }
+
+                if (n < 20 && n > 0)
+                {
+                    if (words != "" && tens == false)
+                        words += " ";
+                    words += (tens ? "-" + numbersArr[(int)n - 1] : numbersArr[(int)n - 1]);
+                    n -= Math.Floor(n);
+                }
+            }
+
+            return words;
+
+        }
         // for null parameter
         public static String ToNumWordsWrapper(this decimal? number)
         {
@@ -99,12 +168,12 @@ namespace Cats.Helpers
         // for none null parameter
         public static String ToNumWordsWrapper(this decimal number)
         {
-            var n = (Double) number;
+            var n = (Double)number;
             string words = "";
             double intPart;
             double decPart = 0;
             if (n == 0)
-                return "zero";
+                return "ዜሮ";
             try
             {
                 string[] splitter = n.ToString().Split('.');
@@ -116,24 +185,44 @@ namespace Cats.Helpers
                 intPart = n;
             }
 
-            words = NumWords(intPart);
+            words = NumWordsAM(intPart);
 
             if (decPart > 0)
             {
                 if (words != "")
-                    words += " and ";
+                    words += " ከ ";
                 int counter = decPart.ToString().Length;
                 switch (counter)
                 {
-                    case 1: words += NumWords(decPart) + " tenths"; break;
-                    case 2: words += NumWords(decPart) + " hundredths"; break;
-                    case 3: words += NumWords(decPart) + " thousandths"; break;
-                    case 4: words += NumWords(decPart) + " ten-thousandths"; break;
-                    case 5: words += NumWords(decPart) + " hundred-thousandths"; break;
-                    case 6: words += NumWords(decPart) + " millionths"; break;
-                    case 7: words += NumWords(decPart) + " ten-millionths"; break;
+                    case 1: words += NumWordsAM(decPart) + " አስረኛ"; break;
+                    //case 2: words += NumWordsAM(decPart) + " መቶኛ"; break;
+                    case 2: words += NumWordsAM(decPart) + " ሳንቲም"; break;
+                    case 3: words += NumWordsAM(decPart) + " ሺኛ"; break;
+                    case 4: words += NumWordsAM(decPart) + " አስር-ሺኛ"; break;
+                    case 5: words += NumWordsAM(decPart) + " መቶ-ሺኛ"; break;
+                    case 6: words += NumWordsAM(decPart) + " ሚሊየንኛ"; break;
+                    case 7: words += NumWordsAM(decPart) + " አስር-ሚሊየንኛ"; break;
                 }
             }
+            //words = NumWords(intPart);
+
+            //if (decPart > 0)
+            //{
+            //    if (words != "")
+            //        words += " and ";
+            //    int counter = decPart.ToString().Length;
+            //    switch (counter)
+            //    {
+            //        case 1: words += NumWords(decPart) + " tenths"; break;
+            //        case 2: words += NumWords(decPart) + " hundredths"; break;
+            //        case 3: words += NumWords(decPart) + " thousandths"; break;
+            //        case 4: words += NumWords(decPart) + " ten-thousandths"; break;
+            //        case 5: words += NumWords(decPart) + " hundred-thousandths"; break;
+            //        case 6: words += NumWords(decPart) + " millionths"; break;
+            //        case 7: words += NumWords(decPart) + " ten-millionths"; break;
+            //    }
+            //}
+
             return words;
         }
     }
