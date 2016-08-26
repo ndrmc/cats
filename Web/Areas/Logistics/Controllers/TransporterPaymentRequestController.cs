@@ -571,9 +571,11 @@ namespace Cats.Areas.Logistics.Controllers
         {
             var reportPath = Server.MapPath("~/Report/Finance/TransportPaymentRequestLetter.rdlc");
             var reportData = PaymentRequestForPrint(transporterId, refno, programname);
+            if (reportData == null) return null;
             var dataSourceName = "TPRL";
             var result = ReportHelper.PrintReport(reportPath, reportData, dataSourceName);
             return File(result.RenderBytes, result.MimeType);
+            //return Json(new { status = true, content = File(result.RenderBytes, result.MimeType) });
         }
 
         public System.Collections.IEnumerable PaymentRequestForPrint(int transporterId, string refno = "", string programname = "All")
@@ -619,6 +621,9 @@ namespace Cats.Areas.Logistics.Controllers
                 } : null;
             });
             var req = requests.Where(m => m.TransporterId == transporterId).ToArray();
+
+            if (req.Sum(r => r.ShortageBirr) == 0) return null;
+
             return req;
         }
         public ActionResult Multiplesubmission(int actionType, int transporterID)
