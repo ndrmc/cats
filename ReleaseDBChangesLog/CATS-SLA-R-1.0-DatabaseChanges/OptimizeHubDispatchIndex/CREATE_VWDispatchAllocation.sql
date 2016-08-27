@@ -1,7 +1,7 @@
 USE [CatsDRMFSS]
 GO
 
-/****** Object:  View [dbo].[VWDispatchAllocation]    Script Date: 8/3/2016 12:17:03 PM ******/
+/****** Object:  View [dbo].[VWDispatchAllocation]    Script Date: 8/26/2016 6:29:07 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -18,12 +18,17 @@ SELECT dbo.VWDispatchAllocationPartial.ShippingInstructionID, dbo.VWDispatchAllo
                   dbo.Commodity.Name AS CommodityName, dbo.VWDispatchAllocationPartial.TransporterID, Procurement.Transporter.Name AS TransporterName, dbo.VWDispatchAllocationPartial.StoreID, 
                   dbo.VWDispatchAllocationPartial.Year, dbo.VWDispatchAllocationPartial.DonorID, dbo.VWDispatchAllocationPartial.Month, dbo.VWDispatchAllocationPartial.ProgramID, 
                   dbo.VWDispatchAllocationPartial.ContractStartDate, dbo.VWDispatchAllocationPartial.RequisitionId, dbo.VWDispatchAllocationPartial.ContractEndDate, dbo.VWDispatchAllocationPartial.Beneficiery, 
-                  dbo.VWDispatchAllocationPartial.Unit, dbo.VWDispatchAllocationPartial.TransportOrderID, dbo.VWDispatchAllocationPartial.QuantityInMT, dbo.VWDispatchAllocationPartial.QuantityInUnit
+                  dbo.VWDispatchAllocationPartial.Unit, dbo.VWDispatchAllocationPartial.TransportOrderID
 FROM     dbo.VWDispatchAllocationPartial LEFT OUTER JOIN
                   Procurement.Transporter ON dbo.VWDispatchAllocationPartial.TransporterID = Procurement.Transporter.TransporterID LEFT OUTER JOIN
                   dbo.Commodity ON dbo.VWDispatchAllocationPartial.CommodityID = dbo.Commodity.CommodityID LEFT OUTER JOIN
                   dbo.FDP ON dbo.FDP.FDPID = dbo.VWDispatchAllocationPartial.FDPID LEFT OUTER JOIN
                   dbo.VWAdminUnitHierarchy ON dbo.VWAdminUnitHierarchy.WoredaID = dbo.FDP.AdminUnitID
+WHERE  (dbo.VWDispatchAllocationPartial.LedgerID IN
+                      (SELECT LedgerID
+                       FROM      dbo.Ledger
+                       WHERE   (Name LIKE 'Commited To FDP'))) AND (dbo.VWDispatchAllocationPartial.QuantityInMT > 0) AND (dbo.VWDispatchAllocationPartial.QuantityInUnit > 0) OR
+                  (dbo.VWDispatchAllocationPartial.LedgerID IS NULL)
 GROUP BY dbo.VWDispatchAllocationPartial.ShippingInstructionID, dbo.VWDispatchAllocationPartial.ProjectCodeID, dbo.VWDispatchAllocationPartial.HubID, dbo.VWDispatchAllocationPartial.IsClosed, 
                   dbo.Commodity.CommodityTypeID, dbo.VWDispatchAllocationPartial.AmountInUnit, dbo.VWDispatchAllocationPartial.DispatchAllocationID, dbo.VWDispatchAllocationPartial.RequisitionNo, 
                   dbo.VWDispatchAllocationPartial.BidRefNo, dbo.VWDispatchAllocationPartial.Round, dbo.VWDispatchAllocationPartial.CommodityID, dbo.VWDispatchAllocationPartial.FDPID, dbo.FDP.Name, 
@@ -31,7 +36,7 @@ GROUP BY dbo.VWDispatchAllocationPartial.ShippingInstructionID, dbo.VWDispatchAl
                   dbo.VWAdminUnitHierarchy.RegionName, dbo.Commodity.Name, dbo.VWDispatchAllocationPartial.TransporterID, Procurement.Transporter.Name, dbo.VWDispatchAllocationPartial.StoreID, 
                   dbo.VWDispatchAllocationPartial.Year, dbo.VWDispatchAllocationPartial.DonorID, dbo.VWDispatchAllocationPartial.Month, dbo.VWDispatchAllocationPartial.ProgramID, 
                   dbo.VWDispatchAllocationPartial.ContractStartDate, dbo.VWDispatchAllocationPartial.RequisitionId, dbo.VWDispatchAllocationPartial.ContractEndDate, dbo.VWDispatchAllocationPartial.Beneficiery, 
-                  dbo.VWDispatchAllocationPartial.Unit, dbo.VWDispatchAllocationPartial.TransportOrderID, dbo.VWDispatchAllocationPartial.QuantityInMT, dbo.VWDispatchAllocationPartial.QuantityInUnit
+                  dbo.VWDispatchAllocationPartial.Unit, dbo.VWDispatchAllocationPartial.TransportOrderID, dbo.VWDispatchAllocationPartial.RequisitionId
 HAVING (dbo.VWDispatchAllocationPartial.ShippingInstructionID IS NOT NULL) OR
                   (dbo.VWDispatchAllocationPartial.ProjectCodeID IS NOT NULL)
 
@@ -42,7 +47,7 @@ Begin DesignProperties =
    Begin PaneConfigurations = 
       Begin PaneConfiguration = 0
          NumPanes = 4
-         Configuration = "(H (1[18] 4[36] 2[21] 3) )"
+         Configuration = "(H (1[9] 4[28] 2[34] 3) )"
       End
       Begin PaneConfiguration = 1
          NumPanes = 3
@@ -108,6 +113,16 @@ Begin DesignProperties =
          Left = 0
       End
       Begin Tables = 
+         Begin Table = "VWDispatchAllocationPartial"
+            Begin Extent = 
+               Top = 0
+               Left = 474
+               Bottom = 282
+               Right = 712
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
          Begin Table = "Transporter (Procurement)"
             Begin Extent = 
                Top = 7
@@ -148,16 +163,6 @@ Begin DesignProperties =
             DisplayFlags = 280
             TopColumn = 0
          End
-         Begin Table = "VWDispatchAllocationPartial"
-            Begin Extent = 
-               Top = 0
-               Left = 474
-               Bottom = 282
-               Right = 712
-            End
-            DisplayFlags = 280
-            TopColumn = 16
-         End
       End
    End
    Begin SQLPane = 
@@ -167,21 +172,22 @@ Begin DesignProperties =
       End
       Begin ColumnWidths = 38
          Width = 284
+         Width = 1800
          Width = 1200
          Width = 1200
          Width = 1200
          Width = 1200
          Width = 1200
+         Width = 2160
          Width = 1200
          Width = 1200
          Width = 1200
-         Width = 1200
-         Width = 1200
-         Width = 1200
-         W' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VWDispatchAllocation'
+         Width = 1776
+         Wid' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VWDispatchAllocation'
 GO
 
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'idth = 1200
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'th = 2412
+         Width = 1632
          Width = 1200
          Width = 1200
          Width = 1200
@@ -192,16 +198,15 @@ EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'idth = 1200
          Width = 1200
          Width = 1200
          Width = 1200
+         Width = 1860
          Width = 1200
          Width = 1200
          Width = 1200
          Width = 1200
          Width = 1200
          Width = 1200
-         Width = 1200
-         Width = 1200
-         Width = 1200
-         Width = 1200
+         Width = 1404
+         Width = 1488
          Width = 1200
          Width = 1200
          Width = 1200
