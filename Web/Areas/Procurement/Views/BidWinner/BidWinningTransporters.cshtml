@@ -34,8 +34,12 @@
                   if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.View_bid_winning_transporter).ToString() == "View_bid_winning_transporter")
                   {
                       columns.Bound(p => p.TransporterName).Title(Html.Translate("Transporter Name"))
-                      .ClientTemplate("<a href='" + Url.Action("Index", "ContractAdministration",
-                          new {transporterID = "#=TransporterID#"}) + " '>#=TransporterName#</a>  ");
+                          .ClientTemplate("<a href='" + Url.Action("Index", "ContractAdministration",
+                              new {transporterID = "#=TransporterID#"}) + " '>#=TransporterName#</a>  ");
+                  }
+                  else
+                  {
+                      columns.Bound(p => p.TransporterName).Title(Html.Translate("Transporter Name"));
                   }
                   columns.Bound(p => p.BidContract).Title(Html.Translate("Bid Number"));
                   if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.View_generate_agreement).ToString() == "View_generate_agreement")
