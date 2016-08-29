@@ -427,22 +427,58 @@ namespace Cats.Areas.Procurement.Controllers
                                 //var qty = weightPref == "QTL"
                                 //                  ? transportOrderDetail.QuantityQtl.ToMetricTone()/transporterCount
                                 //                  : transportOrderDetail.QuantityQtl/transporterCount;
+                                var qty =
+                                    _transportOrderService.CheckIfCommodityIsDipatchedToThisFdp(
+                                        transportOrderDetail.FdpID, transportOrderDetail.TransportOrder.BidDocumentNo,
+                                        transportOrderDetail.TransportOrder.TransporterID,
+                                        transportOrderDetail.TransportOrderID, transportOrderDetail.CommodityID);
 
-                                var transportOrderDetailObj = new TransportOrderDetail
+                                
+
+                                if (qty == null)
                                 {
-                                    CommodityID = transportOrderDetail.CommodityID,
-                                    FdpID = transportOrderDetail.FdpID,
-                                    RequisitionID = transportOrderDetail.RequisitionID,
-                                    QuantityQtl = transportOrderDetail.QuantityQtl / transporterCount,
-                                    TariffPerQtl = transportOrderDetail.TariffPerQtl,
-                                    SourceWarehouseID = transportOrderDetail.Hub.HubID,
-                                    BidID = transportOrderDetail.BidID
-                                    //transportOrderDetailObj.ZoneID = transportOrderDetail.ReliefRequisition.ZoneID;
-                                };
-                                _transportOrderService.UpdateTransporterOrder(transportOrderDetail.TransportOrderID,subTransporterOrders.WoredaID);
-                                transportOrderOld.TransportOrderDetails.Add(transportOrderDetailObj);
-                                _transportOrderService.EditTransportOrder(transportOrderOld);
-                                orderDetails.Add(transportOrderDetailObj);
+                                    var transportOrderDetailObj = new TransportOrderDetail
+                                    {
+                                        CommodityID = transportOrderDetail.CommodityID,
+                                        FdpID = transportOrderDetail.FdpID,
+                                        RequisitionID = transportOrderDetail.RequisitionID,
+                                        QuantityQtl = transportOrderDetail.QuantityQtl / transporterCount,
+                                        TariffPerQtl = transportOrderDetail.TariffPerQtl,
+                                        SourceWarehouseID = transportOrderDetail.Hub.HubID,
+                                        BidID = transportOrderDetail.BidID
+                                        //transportOrderDetailObj.ZoneID = transportOrderDetail.ReliefRequisition.ZoneID;
+                                    };
+                                    _transportOrderService.UpdateTransporterOrder(transportOrderDetail.TransportOrderID, subTransporterOrders.WoredaID);
+                                    transportOrderOld.TransportOrderDetails.Add(transportOrderDetailObj);
+                                    _transportOrderService.EditTransportOrder(transportOrderOld);
+                                    orderDetails.Add(transportOrderDetailObj);
+                                }
+                                else if (qty > 0)
+                                {
+                                    var transportOrderDetailObj = new TransportOrderDetail
+                                    {
+                                        CommodityID = transportOrderDetail.CommodityID,
+                                        FdpID = transportOrderDetail.FdpID,
+                                        RequisitionID = transportOrderDetail.RequisitionID,
+                                        QuantityQtl = ((decimal)qty / transporterCount),
+                                        TariffPerQtl = transportOrderDetail.TariffPerQtl,
+                                        SourceWarehouseID = transportOrderDetail.Hub.HubID,
+                                        BidID = transportOrderDetail.BidID
+                                        //transportOrderDetailObj.ZoneID = transportOrderDetail.ReliefRequisition.ZoneID;
+                                    };
+                                    _transportOrderService.UpdateTransporterOrder(transportOrderDetail.TransportOrderID, subTransporterOrders.WoredaID);
+                                    transportOrderOld.TransportOrderDetails.Add(transportOrderDetailObj);
+                                    _transportOrderService.EditTransportOrder(transportOrderOld);
+                                    orderDetails.Add(transportOrderDetailObj);
+                                }
+                                else if (qty <= 0)
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    continue;
+                                }
                             }
                         }
                         //_transportOrderService.DeleteTransportOrderDetails(orderDetails); // Delete details from the previous TO
@@ -492,7 +528,25 @@ namespace Cats.Areas.Procurement.Controllers
                                         CommodityID = transportOrderDetail.CommodityID,
                                         FdpID = transportOrderDetail.FdpID,
                                         RequisitionID = transportOrderDetail.RequisitionID,
-                                        QuantityQtl = transportOrderDetail.QuantityQtl,
+                                        QuantityQtl = transportOrderDetail.QuantityQtl / transporterCount, 
+                                        TariffPerQtl = transportOrderDetail.TariffPerQtl,
+                                        SourceWarehouseID = transportOrderDetail.Hub.HubID,
+                                        BidID = transportOrderDetail.BidID,
+                                        WinnerAssignedByLogistics = true
+                                    };
+                                    _transportOrderService.UpdateTransporterOrder(transportOrderDetail.TransportOrderID, subTransporterOrders.WoredaID);
+                                    //transportOrderDetail.ZoneID = reliefRequisitionDetail.ReliefRequisition.ZoneID;
+                                    _transportOrderDetailService.AddTransportOrderDetail(transportOrderDetailObj);
+                                }
+                                else if (qty > 0)
+                                {
+                                    var transportOrderDetailObj = new TransportOrderDetail
+                                    {
+                                        TransportOrderID = transportOrderObj.TransportOrderID,
+                                        CommodityID = transportOrderDetail.CommodityID,
+                                        FdpID = transportOrderDetail.FdpID,
+                                        RequisitionID = transportOrderDetail.RequisitionID,
+                                        QuantityQtl = ((decimal)qty / transporterCount), 
                                         TariffPerQtl = transportOrderDetail.TariffPerQtl,
                                         SourceWarehouseID = transportOrderDetail.Hub.HubID,
                                         BidID = transportOrderDetail.BidID,
@@ -503,6 +557,10 @@ namespace Cats.Areas.Procurement.Controllers
                                     _transportOrderDetailService.AddTransportOrderDetail(transportOrderDetailObj);
                                 }
                                 else if (qty <= 0)
+                                {
+                                    continue;
+                                }
+                                else
                                 {
                                     continue;
                                 }
