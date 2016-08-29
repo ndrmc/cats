@@ -841,7 +841,7 @@ namespace Cats.Areas.Procurement.Controllers
         }
 
         
-        public ActionResult RevertWinner(int bidNumber, int regionID)
+        public ActionResult RevertWinner(int bidNumber, int regionID,string remark)
         {
             var comparable = new List<TransportBidQuotationHeader>();
             var bid = _bidService.FindById(bidNumber);
@@ -856,7 +856,8 @@ namespace Cats.Areas.Procurement.Controllers
                 }
             }
 
-
+            bid.RevertRemark = remark;
+            _bidService.EditBid(bid);
             var bidWinners = _bidWinnerService.FindBy(m => m.BidID == bidNumber);
             if (bidWinners != null)
             {
