@@ -1,2 +1,4 @@
-ALTER TABLE dbo.Bid 
+ALTER TABLE Procurement.Bid 
 ADD RevertRemark nvarchar(max) NULL
+
+
