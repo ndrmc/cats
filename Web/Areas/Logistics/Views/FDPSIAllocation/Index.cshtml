@@ -819,7 +819,7 @@
                 {
                     $scope.allAdminRegions.push(temp);
 
-                    if(temp.Allocations[0].SIPCAllocationID=== "undefined")
+                    if(temp.Allocations[0].SIPCAllocationID=== undefined)
                 $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
                 }
                 else
