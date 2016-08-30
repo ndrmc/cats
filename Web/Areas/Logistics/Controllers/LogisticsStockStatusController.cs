@@ -215,7 +215,12 @@ namespace Cats.Areas.Logistics.Controllers
 
 
                     var enumerable = committed as IList<Cats.Models.Hubs.Transaction> ?? committed.ToList();
-                    item.Commited = enumerable.Any() ? (-1)*enumerable.Sum(c => c.QuantityInMT) : 0;
+                    item.Commited = 0;
+                    if (enumerable.Any())
+                    {
+                        var result = enumerable.Sum(c => c.QuantityInMT);
+                        item.Commited = result >= 0 ? result : (-1)*result;
+                    } 
                     data2.Add(item);
                 }
                 catch (Exception ex)
