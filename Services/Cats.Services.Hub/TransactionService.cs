@@ -285,7 +285,7 @@ namespace Cats.Services.Hub
                 receive.ReceiveDetails.Add(receiveDetail);
 
 
-                #region physical stock movement
+              
                 //transaction for goods on hand // previously it was GOODS_ON_HAND_UNCOMMITED
                 var transaction = new Transaction();
                 transaction.TransactionID = Guid.NewGuid();
@@ -367,7 +367,7 @@ namespace Cats.Services.Hub
                 transaction2.Stack = receiveModels.StackNumber;
                 transaction2.TransactionGroupID = tgroup.TransactionGroupID;
                 tgroup.Transactions.Add(transaction2);
-                #endregion
+           
 
                 #region plan side of the transaction
                 //transaction for statistics
@@ -1206,7 +1206,12 @@ namespace Cats.Services.Hub
         {
             //Todo: Construct Receive from the viewModel .... refactor 
             int transactionsign = reverse ? -1 : 1;
+            bool canCreateTransaction = false;
 
+            if (!reverse)
+            {
+                  canCreateTransaction = CanCreateTransaction(viewModel);
+            }
             #region BindReceiveFromViewModel
 
             Receive receive;
@@ -1260,25 +1265,10 @@ namespace Cats.Services.Hub
             receive.SourceDonorID = viewModel.SourceDonorId;
             receive.ResponsibleDonorID = viewModel.ResponsibleDonorId;
 
+ 
 
 
             #endregion
-
-            //Todo: Construct ReceiveDetail from the viewModel Transaction 
-
-            var transactionGroup = new TransactionGroup { TransactionGroupID = Guid.NewGuid() };
-
-            #region transaction for receiveDetail
-
-            //foreach (var receiveDetailNewViewModel in viewModel.ReceiveDetailNewViewModels)
-            //{
-            //    ReceiveSingleTransaction(viewModel, receiveDetailNewViewModel, receive, transactionGroup);
-            //}
-
-            //Tem implantation for one Receive 
-
-            //check for non food 
-
             #region
 
             if (viewModel.CommodityTypeId == 2)
@@ -1288,37 +1278,194 @@ namespace Cats.Services.Hub
             }
 
             #endregion
+           
+            receive.ReceiveDetails.Clear();
+
+
+            foreach (var receiveDetailModel in viewModel.ReceiveDetailsViewModels)
+            {
+                var receiveDetail = new ReceiveDetail
+                {
+                    ReceiveDetailID = Guid.NewGuid(), 
+
+                    CommodityID = receiveDetailModel.CommodityId,
+                    CommodityChildID = receiveDetailModel.CommodityChildID,
+                    Description = receiveDetailModel.Description,
+                    SentQuantityInMT = receiveDetailModel.SentQuantityInMt,
+                    SentQuantityInUnit = receiveDetailModel.SentQuantityInUnit,
+                    UnitID = receiveDetailModel.UnitId,
+                    ReceiveID = receive.ReceiveID
+
+
+                };
+ 
+                receive.ReceiveDetails.Add(receiveDetail);
+
+
+                try
+                {
+                    if (reverse)
+                        CreateTransaction(viewModel, transactionsign, receive, receiveDetail);
+
+                    if (!reverse)
+                    {
+                        if (viewModel.ReceiveId == Guid.Empty)
+                        {
+                            CreateTransaction(viewModel, transactionsign, receive, receiveDetail);
+ 
+                        }
+                        else
+                        {
+                            //CHECK IF FIELDS THAT AFFECT TRANSACTION TBL ARE CHANGED , IF CHANGED CREATE NEW TRANSACTION GROUP
+                            if (canCreateTransaction)
+                            {
+                                CreateTransaction(viewModel, transactionsign, receive, receiveDetail);
+                            }
+
+                           
+                        }
+
+                    }
+
+  
+                  
+                }
+                catch (Exception exception)
+                {
+                    throw exception;
+                }
+
+            }
+
+ 
+
+            try
+            {
+     
+                if (!reverse)
+                {
+                    if (viewModel.ReceiveId == Guid.Empty)
+                    {
+                
+                        _unitOfWork.ReceiveRepository.Add(receive);
+                    }
+                    else
+                    {
+ 
+                        _unitOfWork.ReceiveRepository.Edit(receive);
+                    }
+
+                }
+
+
+                _unitOfWork.Save();
+                return true;
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ediedReceive">Edited receive object</param>
+        /// <returns></returns>
+        private bool CanCreateTransaction(ReceiveNewViewModel editedReceiveNewViewModel )
+        {
+            var origionalReceive = _unitOfWork.ReceiveRepository.FindById(editedReceiveNewViewModel.ReceiveId);
+
+            //compare
+           // return true;
+
+            bool result = false;
+
+            //if store is changed Create transaction
+            if (editedReceiveNewViewModel.StoreId != origionalReceive.StoreId)
+            {
+                result = true;
+                return result;
+
+            }
+
+            //if stack is changed create transaction
+            if (editedReceiveNewViewModel.StackNumber != origionalReceive.StackNumber)
+            {
+                result = true;
+                return result;
+
+            }
+
+            //if transporter is changed
+            if (editedReceiveNewViewModel.TransporterId != origionalReceive.TransporterID)
+            {
+                result = true;
+                return result;
+
+            }
+
+            //If unit is changed
+
+            if (editedReceiveNewViewModel.CurrentHub != origionalReceive.HubID)
+            {
+                result = true;
+                return result;
+
+            }
+        //    editedReceiveNewViewModel.ReceiveDetailNewViewModels = new List<ReceiveDetailNewViewModel>();
+
+         //if (editedReceiveNewViewModel.ReceiveDetailNewViewModel != null)
+                  foreach(var editedRecDetails in editedReceiveNewViewModel.ReceiveDetailsViewModels)
+  {
+               // ReceiveDetailNewViewModel editedRecDetails = editedReceiveNewViewModel.ReceiveDetailNewViewModel;
+          
+       
+             var recDetailCommodities =    origionalReceive.ReceiveDetails.Where(u => u.CommodityID == editedRecDetails.CommodityId && u.CommodityChildID == editedRecDetails.CommodityChildID) ;
+
+                //there is no comodity id and CommodityChildID
+                if (recDetailCommodities.Any() && !origionalReceive.ReceiveDetails.Any()) { result = true; return result; }
+                if (!recDetailCommodities.Any() && origionalReceive.ReceiveDetails.Any()) { result = true; return result; }
+
+ 
+
+            if (editedRecDetails.UnitId != recDetailCommodities.FirstOrDefault().UnitID)
+            {
+                result = true;
+                return result;
+
+            }
+            if (editedRecDetails.ReceivedQuantityInMt != recDetailCommodities.FirstOrDefault().QuantityInMT)
+            {
+                result = true;
+                return result;
+
+            }
+            if (editedRecDetails.ReceivedQuantityInUnit != recDetailCommodities.FirstOrDefault().QuantityInUnit)
+            {
+                result = true;
+                return result;
+
+            }
+
+            }
+       
+
+       
+            return result;
+        }
+         
+
+        private void CreateTransaction(ReceiveNewViewModel viewModel, int transactionsign, Receive receive, ReceiveDetail receiveDetail)
+        {
+            #region transaction for receiveDetail
 
             //Construct receive detail from viewModel 
-
-            #region
-
-            var receiveDetail = new ReceiveDetail
-            {
-                ReceiveDetailID = Guid.NewGuid(), //Todo: if there is existing id dont give new one  
-
-                CommodityID = viewModel.ReceiveDetailNewViewModel.CommodityId,
-                CommodityChildID = viewModel.ReceiveDetailNewViewModel.CommodityChildID,
-                Description = viewModel.ReceiveDetailNewViewModel.Description,
-                SentQuantityInMT = viewModel.ReceiveDetailNewViewModel.SentQuantityInMt,
-                SentQuantityInUnit = viewModel.ReceiveDetailNewViewModel.SentQuantityInUnit,
-                UnitID = viewModel.ReceiveDetailNewViewModel.UnitId,
-                ReceiveID = receive.ReceiveID,
-                TransactionGroupID = transactionGroup.TransactionGroupID,
-                TransactionGroup = transactionGroup,
-
-            };
+            var transactionGroup = new TransactionGroup { TransactionGroupID = Guid.NewGuid() };
 
 
-            #endregion
-
-            //add to receive 
-            receive.ReceiveDetails.Clear();
-            receive.ReceiveDetails.Add(receiveDetail);
-
-            var parentCommodityId =
-                _unitOfWork.CommodityRepository.FindById(viewModel.ReceiveDetailNewViewModel.CommodityId).ParentID ??
-                viewModel.ReceiveDetailNewViewModel.CommodityId;
+            receiveDetail.TransactionGroupID = transactionGroup.TransactionGroupID;
+            receiveDetail.TransactionGroup = transactionGroup;
 
             //physical stock movement 
 
@@ -1509,32 +1656,6 @@ namespace Cats.Services.Hub
             #endregion
 
             #endregion
-
-            //Todo: Save Receive 
-
-            try
-            {
-                if (!reverse)
-                {
-                    if (viewModel.ReceiveId == Guid.Empty)
-                    {
-                        _unitOfWork.ReceiveRepository.Add(receive);
-                    }
-                    else
-                    {
-                        _unitOfWork.ReceiveRepository.Edit(receive);
-                    }
-
-                }
-
-
-                _unitOfWork.Save();
-                return true;
-            }
-            catch (Exception exception)
-            {
-                throw exception;
-            }
         }
 
         /// <summary>

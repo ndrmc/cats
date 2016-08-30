@@ -70,6 +70,7 @@ namespace Cats.Areas.Hub.Controllers
             var user = _userProfileService.GetUser(User.Identity.Name);
 
             var viewModel = _receiveService.ReceiptAllocationToReceive(receiptAllocation);
+        
             viewModel.CurrentHub = user.DefaultHub.Value;
             viewModel.UserProfileId = user.UserProfileID;
             var hubOwner = _hub.FindById(user.DefaultHub.Value);
@@ -138,7 +139,28 @@ namespace Cats.Areas.Hub.Controllers
                 ReceiveDetailId = receivedetail.ReceiveDetailID,
 
             };
+            viewModel.ReceiveDetailsViewModels = new List<ReceiveDetailsViewModel>();
+            foreach (var receivedetai in receive.ReceiveDetails)
+            {
+            var    ReceiveDetailNewViewModl = new ReceiveDetailsViewModel()
+            {
+                CommodityId = receivedetai.CommodityID,
+                CommodityChildID = receivedetai.CommodityChildID.GetValueOrDefault(),
+                ReceivedQuantityInMt =
+                                                             receivedetai.QuantityInMT,
+                ReceivedQuantityInUnit =
+                                                             receivedetai.QuantityInUnit,
+                SentQuantityInMt = receivedetai.SentQuantityInMT,
+                SentQuantityInUnit = receivedetai.SentQuantityInUnit,
+                UnitId = receivedetai.UnitID,
+                Description = receivedetai.Description,
+                ReceiveDetailsId = receivedetai.ReceiveDetailID,
+                
 
+            };
+
+                viewModel.ReceiveDetailsViewModels.Add(ReceiveDetailNewViewModl);
+            }
             viewModel.WeightBridgeTicketNumber = receive.WeightBridgeTicketNumber;
             viewModel.WeightBeforeUnloading = receive.WeightBeforeUnloading;
             viewModel.WeightAfterUnloading = receive.WeightAfterUnloading;
@@ -283,7 +305,7 @@ namespace Cats.Areas.Hub.Controllers
                          ReceiveDetailsId = receives.ReceiveDetailID,
                          ReceiveDetailsIdString = receives.ReceiveDetailID.ToString()
                      }).ToList();
-
+               
                 return Json(receiveDetailsViewModels.ToDataSourceResult(request));
             }
             else
@@ -323,6 +345,9 @@ namespace Cats.Areas.Hub.Controllers
                 }
 
             }
+
+         
+
             return Json(results.ToDataSourceResult(request, ModelState));
         }
 
@@ -424,14 +449,10 @@ namespace Cats.Areas.Hub.Controllers
                 }
 
                 #endregion
+ 
+                List<ReceiveDetailsViewModel> receiveDetailsViewModels = GetReceiveDetailsViewModels(viewModel);
 
-
-                //check if it is loan and not a false GRN
-                //if (viewModel.CommoditySourceTypeId == CommoditySource.Constants.LOAN && !viewModel.IsFalseGRN && viewModel.SelectedGRN !=null)// this means it is the orginal GRN
-                //{
-                //    _transactionService.ReceiptTransactionForLoanFromNGOs(viewModel);
-                //    return RedirectToAction("Index", "Receive");
-                //}
+                viewModel.ReceiveDetailsViewModels = receiveDetailsViewModels;
 
                 //Save transaction 
                 if (viewModel.ReceiveId != Guid.Empty)
@@ -442,8 +463,11 @@ namespace Cats.Areas.Hub.Controllers
                     _transactionService.ReceiptTransaction(ModeltoNewView(prevmodel), true);
 
                 }
+
                 _transactionService.ReceiptTransaction(viewModel);
-                var receiveID =
+     
+
+           var receiveID =
                     _receiveService.GetAllReceive()
                         .Where(r => r.ReceiptAllocationID == viewModel.ReceiptAllocationId)
                         .Select(r => r.ReceiveID)
@@ -461,6 +485,31 @@ namespace Cats.Areas.Hub.Controllers
             ViewBag.Units = _unitService.GetAllUnit().Select(u => new UnitModel() { Id = u.UnitID, Name = u.Name }).ToList();
 
             return View(viewModel);
+        }
+
+        private List<ReceiveDetailsViewModel> GetReceiveDetailsViewModels(ReceiveNewViewModel viewModel)
+        {
+            return (from receives in _receiveService.FindById((Guid)viewModel.ReceiveId).ReceiveDetails
+                    let transaction =
+                        receives.TransactionGroup.Transactions.FirstOrDefault(
+                            p => p.QuantityInMT > 0 || p.QuantityInUnit > 0)
+                    where transaction != null
+                    let amount = transaction.QuantityInMT
+                    select new ReceiveDetailsViewModel()
+                    {
+
+                        CommodityId = receives.CommodityID,
+                        Description = receives.Description,
+                        SentQuantityInMt = receives.SentQuantityInMT,
+                        SentQuantityInUnit = receives.SentQuantityInUnit,
+                        ReceivedQuantityInMt = transaction.QuantityInMT,
+                        ReceivedQuantityInUnit = transaction.QuantityInUnit,
+                        SiNumber = transaction.ShippingInstructionID,
+                        CommodityChildID = receives.CommodityChildID ?? 0,
+                        UnitId = receives.UnitID,
+                        ReceiveDetailsId = receives.ReceiveDetailID,
+                        ReceiveDetailsIdString = receives.ReceiveDetailID.ToString()
+                    }).ToList();
         }
 
         public JsonResult AllocationStatus(string receiptAllocationId)
