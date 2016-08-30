@@ -1,4 +1,6 @@
 ﻿@using Cats.Helpers
+@using Cats.Models
+@using Cats.Security
 
 @{
     ViewBag.Title = Html.Translate("Index");
@@ -59,7 +61,10 @@
                                         <span class="caption-helper">  </span>
                                     </div>
                                     <div class="actions">
-                                        <a class="btn btn-circle btn-default btn-sm" href="@Url.Action("Index", "Request", new {Area = "EarlyWarning"})" data-original-title="" title=""><i class="fa fa-list-alt"></i> @Html.Translate("Show More")</a>
+                                        @if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.View_requests_menu_item))
+                                        {
+                                            <a class="btn btn-circle btn-default btn-sm" href="@Url.Action("Index", "Request", new {Area = "EarlyWarning"})" data-original-title="" title=""><i class="fa fa-list-alt"></i> @Html.Translate("Show More")</a>
+                                        }
                                     </div>
                                 </div>
 
@@ -72,7 +77,10 @@
                                                     <th style="text-align: right">@Html.Translate("FDPS")</thstyle>
                                                     <th style="text-align: right">@Html.Translate("Beneficiaries")</th>
                                                     <th>@Html.Translate("Status")</th>
-                                                    <th>@Html.Translate("Detail")</th>
+                                                   @if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.View_request_Detail))
+                                                   {
+                                                       <th>@Html.Translate("Detail")</th>
+                                                   }
                                                 </tr>
                                             </thead>
                                             <tbody ng-cloak>
@@ -82,9 +90,12 @@
                                                     <td style="text-align: right">{{request.beneficiaries|number}}</td>
                                                     <td><span status-class="request.status">{{states[request.status-1]}}</span></td>
                                                     <th>
-                                                        <a ng-click="viewRequest(request)" class="btn btn-xs green-stripe btn-default">
-                                                            View <i class="icon-chevron-right"></i>
-                                                        </a>
+                                                        @if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.View_request_Detail))
+                                                        {
+                                                            <a ng-click="viewRequest(request)" class="btn btn-xs green-stripe btn-default">
+                                                                View <i class="icon-chevron-right"></i>
+                                                            </a>
+                                                        }
                                                     </th>
                                                 </tr>
                                             </tbody>
