@@ -96,7 +96,7 @@ namespace Cats.Services.Procurement
                 //    .OrderByDescending(o => o.Key)
                 //    .Select(s => new { Qoutation = s.ToList() })
                 //    .ToList()[secondTransporter - 1].Qoutation;
-                var topwinners = bidQoutation.OrderByDescending(g => g.TransportBidQuotationID).ToList();
+                var topwinners = bidQoutation.OrderBy(g => g.Tariff).ToList();
               
                   
                 int count = 0;

@@ -30,7 +30,7 @@ namespace Cats.Models
         public string BidOpeningTime { get; set; }
         public int UserProfileId { get; set; }
 
-       
+        public string RevertRemark { get; set; }
 
       
        #region Navigation Properties

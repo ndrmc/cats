@@ -101,9 +101,12 @@
                 <hr />*@
 
             <div class="portlet light bordered bg-inverse">
+
                 <div class="portlet-title">
-                    <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("Requisition")</div>
-                    <div class="tools"><a href="#" class="collapse" data-original-title="" title=""></a></div>
+                    <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("Requisition") </div>
+                    <div class="tools">
+                        <a href="#" class="collapse" data-original-title="" title=""> </a>
+                    </div>
                     @*<div class="actions"><a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a></div>*@
                 </div>
                 <div class="portlet-body">
@@ -116,14 +119,16 @@
                                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion_zone" href="#collapse_zone{{zone.zoneId}}">
                                     <i class="icon-move icon-align-right"></i><span> {{zone.name}} [{{zone.allocatedAmount | number:2}} of {{zone.requestedAmount | number:2}}]</span>
                                 </a>
-                                <div style="margin: auto; text-align: center; 
-position:absolute; ">
-                                    <button ng-show="zone.allocatedAmount==zone.requestedAmount && saved==1" ng-click="on_Allocation_Done(zone.id)" class="btn btn-mini btn-primary"><i class="icon-ok"></i>@Html.Translate("Commit")</button>
+                                <div style="margin: auto; text-align: center;
+                                                                                                                                                                                                                                                                                                                                                                                                 position: absolute;">
+
+                                    <button ng-show="zone.requestedAmount-zone.allocatedAmount <  0.04   && saved==1" ng-click="on_Allocation_Done(zone.id)" class="btn btn-mini btn-primary"><i class="icon-ok"></i>@Html.Translate("Commit")</button>
+
 
                                 </div>
                             </div>
                             <div id="collapse_zone{{zone.zoneId}}" class="accordion-body dd-list collapse">
-                                <div style="height:45px;">
+                                <div style="height: 45px;">
                                     <div class="label2">@Html.Translate("Region"): </div>
                                     <div class="value2">{{zone.RegionName}}</div>
 
@@ -147,7 +152,7 @@ position:absolute; ">
                                             <div id="collapse_woreda{{woreda.woredaId}}" class="accordion-body dd-list collapse" style="height: 0px;">
                                                 <div class="accordion-inner">
                                                     <div class="list-fdp dd-item" ng-repeat="fdp in woreda.fdps">
-                                                        <div data-allocated="0" data-index="{{fdp.index}}" class="admin-list dd-handle btn-draggable" ng-model="unallocated" data-drag="fdp.allocatedAmount<fdp.requestedAmount || fdp.totalAllocatedAmount<fdp.requestedAmount" data-jqyoui-options="{revert: 'invalid'}"
+                                                        <div data-allocated="0" data-index="{{fdp.index}}" class="admin-list dd-handle btn-draggable" ng-model="unallocated" data-drag="fdp.totalAllocatedAmount - fdp.requestedAmount < 0" data-jqyoui-options="{revert: 'invalid'}"
                                                              jqyoui-draggable="{index: {{fdp.id}},placeholder:'keep',animate:true, onStart:'startCallback(fdp, $index)', onStop: 'stopCallback', onDrag: 'dragCallback'}">
                                                             <i class="icon-move"></i>
 
@@ -156,7 +161,7 @@ position:absolute; ">
                                                             {{fdp.name}} [{{fdp.totalAllocatedAmount | number:2}} of {{fdp.requestedAmount | number:2}}]
                                                             <!--
                                                             <span ng-repeat="allocation in fdp.Allocations"> {{allocation.Code}} {{allocation.AllocatedAmount}}  </span>
-                                                                -->
+                                                            -->
                                                         </div>
 
                                                     </div>
@@ -177,13 +182,14 @@ position:absolute; ">
                 <div class="portlet-title">
                     <div class="caption font-green-sharp">
                         <div class="form-group form-md-line-input">
-                            <select class="form-control" ng-model="selectedHub" id="hubSelector">
+
+                            <select class="form-control" ng-model="selectedHub" id="hubSelector" ng-disabled="requests[0].allocatedAmount> 0.1">
                                 @foreach (var hub in ViewBag.Hubs)
                                 {
                                     <option value="@hub.HubID">@hub.Name [@hub.HubOwner.Name]</option>
                                 }
                             </select>
-                            <label for="hubSelector">@Html.Translate("Hub")</label>
+                            <label for="hubSelector">@Html.Translate("Hub") </label>
                         </div>
 
                     </div>
@@ -275,7 +281,8 @@ position:absolute; ">
         </form>
     </modal>
 </div>
-<script type="text/javascript">
+<Allocations>
+    <script type="text/javascript">
 
     /*
     SIPCAllocationID
@@ -296,7 +303,7 @@ position:absolute; ">
     var $$scope;
 
 
-    App.controller('oneCtrl', function ($scope, $http)
+    App.controller('oneCtrl', function ($scope, $http,  $window)
     {
         $scope.saved=1;
         $scope.response=[];
@@ -351,20 +358,22 @@ position:absolute; ">
             {
                 $scope.ValiedAmount = !$scope.ValiedAmount;
             }
-            else if($scope.modalFor ==0)
+            else if($scope.modalFor ===0)
             {
                 $scope.showAmountModal= !$scope.showAmountModal;
                 $scope.isSelected2 = true;
                 var location = $scope.allAdminRegions[$scope.requestIndexG];
                 amount = location.requestedAmount - CustomAmount;//location.allocatedAmount;
-               // var customAmount =  $scope.CustomAmount; //$scope.SIPCCodes[$scope.siindexG].availableAmount; use this var to accept new value default will be available amount
+                // var customAmount =  $scope.CustomAmount; //$scope.SIPCCodes[$scope.siindexG].availableAmount; use this var to accept new value default will be available amount
                 var avail=$scope.SIPCCodes[$scope.siindexG].availableAmount-CustomAmount;
-                if($scope.allAdminRegions[ $scope.requestIndexG].allocatedAmount != 0)
+                if($scope.allAdminRegions[ $scope.requestIndexG].allocatedAmount !== 0)
                 {
 
                     var temp = angular.copy($scope.allAdminRegions[ $scope.requestIndexG]);
                     $scope.allAdminRegions.push(temp);
                     $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
+                    // add splice code here
+                    //$scope.allAdminRegions.splice($scope.requestIndexG,1);
                 }
                 $scope.allAdminRegions[$scope.requestIndexG].allocated = $scope.siindexG/1 + 1;
 
@@ -376,773 +385,809 @@ position:absolute; ">
 
                 $scope.allocateCustomAdminRegion(location,$scope.siindexG/1 + 1,CustomAmount);
                 $scope.calculateAllocated();
+                $scope.saved=0;
             }
             else if($scope.modalFor ===1)
             {
                 $scope.showAmountModal= !$scope.showAmountModal;
+                $scope.flag = 0;
                 var adjustedallocatedAmount = $scope.EditLocation.allocatedAmount - CustomAmount;
                 //$scope.EditLocation.totalAllocatedAmount= ($scope.EditLocation.totalAllocatedAmount-  $scope.EditLocation.allocatedAmount) + CustomAmount;
                 $scope.TopEditLocation.totalAllocatedAmount= ($scope.TopEditLocation.totalAllocatedAmount-  $scope.EditLocation.allocatedAmount) + CustomAmount;
                 $scope.EditLocation.allocatedAmount= CustomAmount;
-                
-                $scope.EditLocation.Allocations[0].AllocatedAmount= CustomAmount;
-                $scope.SIPCCodes[$scope.siindexG].availableAmount = $scope.SIPCCodes[$scope.siindexG].availableAmount  + adjustedallocatedAmount ;
-                if(CustomAmount===0)
-                    $scope.clearSIPCAllocation();// $scope.SIPCCodes[si].allocatedRequests.splice(i, 1);
+                for (var i in $scope.TopEditLocation.Allocations) {
+
+                    if (   $scope.TopEditLocation.Allocations[i].AllocatedAmount=== $scope.EditLocation.Allocations[0].AllocatedAmount &&  $scope.TopEditLocation.Allocations[i].Code=== $scope.EditLocation.Allocations[0].Code &&  $scope.TopEditLocation.Allocations[i].FDPID=== $scope.EditLocation.Allocations[0].FDPID ) {
+                        $scope.TopEditLocation.Allocations[i].AllocatedAmount= CustomAmount;
+                        $scope.flag = 1;
+                    }
+                }
+                if(flag===0)
+                    $scope.EditLocation.Allocations[0].AllocatedAmount= CustomAmount;
+                    $scope.SIPCCodes[$scope.siindexG].availableAmount = $scope.SIPCCodes[$scope.siindexG].availableAmount  + adjustedallocatedAmount ;
+                    if(CustomAmount===0)
+                        $scope.clearSIPCAllocation();// $scope.SIPCCodes[si].allocatedRequests.splice(i, 1);
+                    $scope.calculateAllocated();
+                    $scope.clearSIPCAllocation();
+                    $scope.saved=0;
+
+                }
+
+            };
+            $scope.showEdit = function(type, allocatedAmount, index, siIndex, FdpId) {
+                if(type ==="FDP") {
+                    var exactLocation;
+                    for (var i in $scope.SIPCCodes[siIndex-1].allocatedRequests) {
+
+                        if (   $scope.SIPCCodes[siIndex-1].allocatedRequests[i].FDPId === FdpId) {
+                            exactLocation = $scope.SIPCCodes[siIndex-1].allocatedRequests[i];
+                        }
+
+                    }
+                    $scope.TopEditLocation = $scope.allAdminRegions[index];
+                    if (angular.isUndefined(exactLocation))
+                        var location = $scope.allAdminRegions[index];
+                    else
+                        location = exactLocation;
+                    $scope.modalFor = 1;
+                    $scope.EditLocation = location;
+                    var compAmount = allocatedAmount + ($scope.allAdminRegions[index].requestedAmount - $scope.allAdminRegions[index].totalAllocatedAmount);
+                    if ((allocatedAmount + $scope.SIPCCodes[siIndex-1].availableAmount ) < compAmount)
+                        compAmount = allocatedAmount + $scope.SIPCCodes[siIndex-1].availableAmount;
+                    $scope.viewQmount = compAmount;// allocatedAmount + ($scope.allAdminRegions[index].requestedAmount - $scope.allAdminRegions[index].totalAllocatedAmount);// allocatedAmount;
+                    $scope.siindexG = siIndex-1;
+
+                    $scope.showAmountModal= !$scope.showAmountModal;
+                }
+            }
+            $scope.confiremedAmonut = function() {
+                return $scope.isSelected2;
+            }
+            var updateError=function()
+            {
+                $('#modalContent').html("Error");
+            }
+            $scope.on_remove_allocation=function(adminIndex)
+            {
+                // alert(adminIndex);
+                $scope.saved=0;
+                var location = $scope.allAdminRegions[adminIndex];
+
+                for(var i in $scope.allAdminRegions)
+                {
+                    var inlocation=$scope.allAdminRegions[i];
+                    // location.name=location.name + i;
+
+                    for(var a in inlocation.Allocations)
+                    {
+                        if(location.FDPId===inlocation.FDPId && location.RequestDetailId===inlocation.RequestDetailId && inlocation.type==="FDP" ) {
+
+                            $scope.removeAllocation(inlocation, a);
+                        }
+                    }
+                }
+                $scope.removeAllocation(location,0);
                 $scope.calculateAllocated();
                 $scope.clearSIPCAllocation();
-
             }
-
-        };
-        $scope.showEdit = function(type, allocatedAmount, index, siIndex, FdpId) {
-            if(type ==="FDP") {
-                var exactLocation;
-                for (var i in $scope.SIPCCodes[siIndex-1].allocatedRequests) {
-
-                    if (   $scope.SIPCCodes[siIndex-1].allocatedRequests[i].FDPId === FdpId) {
-                        exactLocation = $scope.SIPCCodes[siIndex-1].allocatedRequests[i];
-                    }
-
+            $scope.removeAllocation=function(location, indexAloc)
+            {
+                // alert(location.allocated);
+                var temp = angular.copy(location.allocated);
+                if (location.allocated) {
+                    $scope.deleteSIPCAllocation(location.allocated , location.index, location.FDPId);
                 }
-                $scope.TopEditLocation = $scope.allAdminRegions[index];
-                if (angular.isUndefined(exactLocation))
-                    var location = $scope.allAdminRegions[index];
+
+                if (location.type === "zone") {
+                    for (var w in location.woredas) {
+                        $scope.removeAllocation(location.woredas[w]);
+                    }
+                }
+                else if (location.type === "woreda") {
+                    for (var f in location.fdps) {
+                        var fdp = location.fdps[f];
+                        if (!fdp.allocatedAmount) {
+                            fdp.allocatedAmount = 0;
+                            fdp.totalAllocatedAmount = 0;
+                            fdp.allocatedIndirect = 0;
+                            fdp.allocated = 0;
+
+                        }
+
+                    }
+                }
                 else
-                     location = exactLocation;
-                $scope.modalFor = 1;
-                $scope.EditLocation = location;
-                var compAmount = allocatedAmount + ($scope.allAdminRegions[index].requestedAmount - $scope.allAdminRegions[index].totalAllocatedAmount);
-                if ((allocatedAmount + $scope.SIPCCodes[siIndex-1].availableAmount ) < compAmount)
-                    compAmount = allocatedAmount + $scope.SIPCCodes[siIndex-1].availableAmount;
-                $scope.viewQmount = compAmount;// allocatedAmount + ($scope.allAdminRegions[index].requestedAmount - $scope.allAdminRegions[index].totalAllocatedAmount);// allocatedAmount;
-                $scope.siindexG = siIndex-1;
-
-                $scope.showAmountModal= !$scope.showAmountModal;
-            }
-        }
-        $scope.confiremedAmonut = function() {
-            return $scope.isSelected2;
-        }
-        var updateError=function()
-        {
-            $('#modalContent').html("Error");
-        }
-        $scope.on_remove_allocation=function(adminIndex)
-        {
-            // alert(adminIndex);
-            $scope.saved=0;
-            var location = $scope.allAdminRegions[adminIndex];
-
-            for(var i in $scope.allAdminRegions)
-            {
-                var inlocation=$scope.allAdminRegions[i];
-                // location.name=location.name + i;
-
-                for(var a in inlocation.Allocations)
                 {
-                    if(location.FDPId==inlocation.FDPId && location.RequestDetailId==inlocation.RequestDetailId && inlocation.type=="FDP")
-                        $scope.removeAllocation(inlocation);
-                }
-            }
-            $scope.removeAllocation(location);
-            $scope.calculateAllocated();
-            $scope.clearSIPCAllocation();
-        }
-        $scope.removeAllocation=function(location)
-        {
-            // alert(location.allocated);
-            var temp = angular.copy(location.allocated);
-            if(location.allocated)
-            {
-                $scope.deleteSIPCAllocation(location.allocated-1,location.index);
-            }
-            if (location.type == "zone") {
-                for (var w in location.woredas) {
-                    $scope.removeAllocation(location.woredas[w]);
-                }
-            }
-            else if (location.type == "woreda") {
-                for (var f in location.fdps) {
-                    var fdp = location.fdps[f];
-                    if (!fdp.allocatedAmount) {
-                        fdp.allocatedAmount = 0;
-                        fdp.totalAllocatedAmount = 0;
-                        fdp.allocatedIndirect = 0;
-                        fdp.allocated = 0;
+                    location.allocatedAmount = 0;
+                    location.allocatedIndirect = 0;
+                    // location.allocated = 0;
+                    location.totalAllocatedAmount = 0;
 
+                    if(location.Allocations[indexAloc]) {
+                        if(!temp && location.Allocations[indexAloc].AllocatedAmount !== 0)
+                            $scope.adjustAmount(location.Allocations[indexAloc].Code,location.Allocations[indexAloc].AllocatedAmount );
+                        var tempcode = location.Allocations[0].Code;
+                        location.Allocations[indexAloc].Code="";
+                        location.Allocations[indexAloc].AllocationType="";
+                        location.Allocations[indexAloc].AllocatedAmount = 0;
+                        // $scope.allocatedAdjestment(tempcode,location.index);
                     }
 
+
+
                 }
+                $scope.calculateAllocated();
+                //Duplicate remove
+                $scope.clearSIPCAllocation();
             }
-            else
+            $scope.adjustAmount =function (code, amount)
             {
-                location.allocatedAmount = 0;
-                location.allocatedIndirect = 0;
-                location.allocated = 0;
-                location.totalAllocatedAmount = 0;
-
-                if(location.Allocations[0]) {
-                    if(!temp)
-                        $scope.adjustAmount(location.Allocations[0].Code,location.Allocations[0].AllocatedAmount );
-                    var tempcode = location.Allocations[0].Code;
-                    location.Allocations[0].Code="";
-                    location.Allocations[0].AllocationType="";
-                    location.Allocations[0].AllocatedAmount = 0;
-                   // $scope.allocatedAdjestment(tempcode,location.index);
-                }
-
-
-
-            }
-        }
-        $scope.adjustAmount =function (code, amount)
-        {
-            for(var i in $scope.SIPCCodes) {
-                if ($scope.SIPCCodes.hasOwnProperty(i)) {
-                    var si = $scope.SIPCCodes[i];
-                    if (si.codeId === code) {
-                        si.availableAmount = si.availableAmount / 1 + amount;
-                        break;
+                for(var i in $scope.SIPCCodes) {
+                    if ($scope.SIPCCodes.hasOwnProperty(i)) {
+                        var si = $scope.SIPCCodes[i];
+                        if (si.codeId === code) {
+                            si.availableAmount = si.availableAmount / 1 + amount;
+                            break;
+                        }
                     }
                 }
-            }
 
-        }
-        $scope.clearSIPCAllocation = function()
-        {
-            //$scope.SIPCCodes[si].allocatedRequests[i].totalAllocatedAmount === 0 &&
-            for(var si in $scope.SIPCCodes) {
+            }
+            $scope.clearSIPCAllocation = function()
+            {
+                //$scope.SIPCCodes[si].allocatedRequests[i].totalAllocatedAmount === 0 &&
+                for(var si in $scope.SIPCCodes) {
 
                     for (var i in $scope.SIPCCodes[si].allocatedRequests) {
 
-                            if (   $scope.SIPCCodes[si].allocatedRequests[i].allocatedAmount === 0)
+                        if (   $scope.SIPCCodes[si].allocatedRequests[i].allocatedAmount === 0)
+                        {
+
+                            $scope.SIPCCodes[si].allocatedRequests.splice(i, 1);
+                            return;
+                        }
+
+                    }
+
+                }
+                $scope.clearZeroSIPCAllocation();
+            }
+            $scope.clearZeroSIPCAllocation = function()
+            {
+                //$scope.SIPCCodes[si].allocatedRequests[i].totalAllocatedAmount === 0 &&
+                for(var si in $scope.SIPCCodes) {
+
+                    for (var i in $scope.SIPCCodes[si].allocatedRequests) {
+                        for (var j in $scope.SIPCCodes[si].allocatedRequests[i].Allocations)
+                        {
+                            if (   $scope.SIPCCodes[si].allocatedRequests[i].Allocations[j].AllocatedAmount === 0)
                             {
 
-                                $scope.SIPCCodes[si].allocatedRequests.splice(i, 1);
+                                $scope.SIPCCodes[si].allocatedRequests[i].Allocations.splice(j, 1);
                                 return;
                             }
+                        }
 
                     }
 
+                }
             }
-        }
-        $scope.deleteSIPCAllocation = function(siindex,fdpindex)
-        {
-            var si=$scope.SIPCCodes[siindex];
-            for(var i in si.allocatedRequests)
+            $scope.deleteSIPCAllocation = function(siindex,fdpindex, fdpId)
             {
-                if(si.allocatedRequests[i].index==fdpindex && si.allocatedRequests[i].allocatedAmount !=0)
+                //var si=$scope.SIPCCodes[siindex];
+                for(var si in $scope.SIPCCodes) {
+                    for(var i in $scope.SIPCCodes[si].allocatedRequests)
+                    {
+                        if(($scope.SIPCCodes[si].allocatedRequests[i].index===fdpindex || $scope.SIPCCodes[si].allocatedRequests[i].FDPId===fdpId) && $scope.SIPCCodes[si].allocatedRequests[i].allocatedAmount !==0)
+                        {
+                            $scope.SIPCCodes[si].availableAmount = $scope.SIPCCodes[si].availableAmount/1 +  $scope.SIPCCodes[si].allocatedRequests[i].allocatedAmount/1;
+                            $scope.SIPCCodes[si].allocatedRequests.splice(i,1);
+                            return;
+                        }
+                    }
+                }
+            }
+            $scope.allocateCustomAdminRegion = function (location,index, customAmount) {
+                if (location.type === "zone") {
+                    for (var w in location.woredas) {
+                        $scope.allocateCustomAdminRegion(location.woredas[w],index);
+                    }
+                }
+                else if (location.type === "woreda") {
+                    for (var f in location.fdps) {
+                        var fdp = location.fdps[f];
+                        if (!fdp.allocatedAmount) {
+                            fdp.allocatedAmount = fdp.requestedAmount;
+                            fdp.totalAllocatedAmount = fdp.requestedAmount;
+                            fdp.allocatedIndirect = index;
+                            $scope.allocateAdminRegion(location.fdps[f], index);
+                        }
+                        else {
+                            fdp.allocatedAmount =  fdp.requestedAmount - fdp.allocatedAmount;
+                            fdp.allocatedIndirect = index;
+                            $scope.allocateAdminRegion(location.fdps[f], index);
+                        }
+                    }
+                }
+                else
                 {
-                    si.availableAmount = si.availableAmount/1 +  si.allocatedRequests[i].allocatedAmount/1;
-                    si.allocatedRequests.splice(i,1);
-                    return;
-                }
-            }
-        }
-        $scope.allocateCustomAdminRegion = function (location,index, customAmount) {
-            if (location.type == "zone") {
-                for (var w in location.woredas) {
-                    $scope.allocateAdminRegion(location.woredas[w],index);
-                }
-            }
-            else if (location.type == "woreda") {
-                for (var f in location.fdps) {
-                    var fdp = location.fdps[f];
-                    if (!fdp.allocatedAmount) {
-                        fdp.allocatedAmount = fdp.requestedAmount;
-                        fdp.totalAllocatedAmount = fdp.requestedAmount;
-                        fdp.allocatedIndirect = index;
-                        $scope.allocateAdminRegion(location.fdps[f], index);
-                    }
-                    else {
-                        fdp.allocatedAmount =  fdp.requestedAmount - fdp.allocatedAmount;
-                        fdp.allocatedIndirect = index;
-                        $scope.allocateAdminRegion(location.fdps[f], index);
-                    }
-                }
-            }
-            else
-            {
 
-                if(!location.Allocations[0])
+                    if(!location.Allocations[0])
+                    {
+                        location.Allocations[0]={};
+                    }
+
+                    location.Allocations[0].Code=$scope.SIPCCodes[index-1].codeId;
+                    location.Allocations[0].AllocationType=$scope.SIPCCodes[index-1].type;
+                    location.Allocations[0].AllocatedAmount = customAmount;
+                    location.Allocations[0].FDPID = location.FDPId;
+                }
+            }
+            $scope.allocateAdminRegion = function (location,index) {
+                if (location.type === "zone") {
+                    for (var w in location.woredas) {
+                        $scope.allocateAdminRegion(location.woredas[w],index);
+                    }
+                }
+                else if (location.type === "woreda") {
+                    for (var f in location.fdps) {
+                        var fdp = location.fdps[f];
+                        if (!fdp.allocatedAmount) {
+                            fdp.allocatedAmount = fdp.requestedAmount;
+                            fdp.totalAllocatedAmount = fdp.requestedAmount;
+                            fdp.allocatedIndirect = index;
+                            $scope.allocateAdminRegion(location.fdps[f], index);
+                        }
+                        else {
+                            fdp.allocatedAmount =  fdp.requestedAmount - fdp.allocatedAmount;
+                            fdp.allocatedIndirect = index;
+                            $scope.allocateAdminRegion(location.fdps[f], index);
+                        }
+                    }
+                }
+                else
                 {
-                    location.Allocations[0]={};
-                }
 
-                location.Allocations[0].Code=$scope.SIPCCodes[index-1].codeId;
-                location.Allocations[0].AllocationType=$scope.SIPCCodes[index-1].type;
-                location.Allocations[0].AllocatedAmount = customAmount;
-
-            }
-        }
-        $scope.allocateAdminRegion = function (location,index) {
-            if (location.type == "zone") {
-                for (var w in location.woredas) {
-                    $scope.allocateAdminRegion(location.woredas[w],index);
-                }
-            }
-            else if (location.type == "woreda") {
-                for (var f in location.fdps) {
-                    var fdp = location.fdps[f];
-                    if (!fdp.allocatedAmount) {
-                        fdp.allocatedAmount = fdp.requestedAmount;
-                        fdp.totalAllocatedAmount = fdp.requestedAmount;
-                        fdp.allocatedIndirect = index;
-                        $scope.allocateAdminRegion(location.fdps[f], index);
+                    if(!location.Allocations[0])
+                    {
+                        location.Allocations[0]={};
                     }
-                    else {
-                        fdp.allocatedAmount =  fdp.requestedAmount - fdp.allocatedAmount;
-                        fdp.allocatedIndirect = index;
-                        $scope.allocateAdminRegion(location.fdps[f], index);
+
+                    location.Allocations[0].Code=$scope.SIPCCodes[index-1].codeId;
+                    location.Allocations[0].AllocationType=$scope.SIPCCodes[index-1].type;
+                    location.Allocations[0].AllocatedAmount = location.requestedAmount;
+                    location.Allocations[0].FDPID = location.FDPId;
+
+                }
+            }
+            $scope.initUi = function () {
+                var i = 0;
+
+                for (var z in $scope.requests) {
+                    $scope.addItemToList($scope.requests[z]);
+                    for (var w in $scope.requests[z].woredas) {
+                        var woreda = $scope.requests[z].woredas[w];
+                        $scope.addItemToList(woreda);
+                        for (var f in woreda.fdps) {
+                            $scope.addItemToList(woreda.fdps[f]);
+                            woreda.fdps[f].allocatedAmount = 0;
+                            $scope.requisitionDetail.push(woreda.fdps[f]);
+                        }
                     }
                 }
+                $scope.calculateAllocated();
+            };
+            $scope.addItemToList = function (item) {
+                item.id = $scope.unallocated.length;
+                item.index = $scope.unallocated.length;
+                item.totalAllocatedAmount=0;
+                $scope.unallocated.push(item);
+                $scope.allAdminRegions.push(item);
+                item.allocated = 0;
+            };
+            $scope.calculateAllocated = function () {
+                for (var z in $scope.requests) {
+                    $scope.requests[z].allocatedAmount = 0;
+                    $scope.requests[z].requestedAmount = 0;
+
+                    for (var w in $scope.requests[z].woredas) {
+                        var woreda = $scope.requests[z].woredas[w];
+                        woreda.allocatedAmount = 0;
+                        woreda.requestedAmount = 0;
+                        for (var f in woreda.fdps) {
+                            woreda.allocatedAmount += woreda.fdps[f].totalAllocatedAmount;
+                            woreda.requestedAmount += woreda.fdps[f].requestedAmount;
+                        }
+                        $scope.requests[z].allocatedAmount += woreda.allocatedAmount;
+                        $scope.requests[z].requestedAmount += woreda.requestedAmount;
+                    }
+                }
             }
-            else
+            $scope.refreshList = function () {
+                for (var i in $scope.fdps) {
+                    $scope.fdps[i].index = i;
+
+                }
+            };
+
+
+            $scope.on_Allocation_Done=function(index)
             {
+                var Requisition=$scope.allAdminRegions[index];
+                //alert(Requisition.RequisitionId);
+                $scope.promot(Requisition.RequisitionId,1);
+            };
+            $scope.promot = function (RequisitionId,showmodal) {
+                var param = { RequisitionId:RequisitionId };
+                var param = { RequisitionId:RequisitionId, HubId:$scope.selectedHub };
+                $http.post($scope.promoteUrl, param).success(promotSuccess).error(updateError);
+                // alert($scope.promoteUrl);
+                if (showmodal) {
+                    $('#modalContent').html("");
+                    $('#myModal').modal('show');
+                }
+            }
+            $scope.startCallback = function (event, ui, item) {
+                console.log('You started draggin: ' + item.name + " Requested " +item.requestedAmount);
+                $scope.draggedItem = item;
 
-                if(!location.Allocations[0])
+                for(var i in $scope.SIPCCodes)
                 {
-                    location.Allocations[0]={};
-                }
-
-                location.Allocations[0].Code=$scope.SIPCCodes[index-1].codeId;
-                location.Allocations[0].AllocationType=$scope.SIPCCodes[index-1].type;
-                location.Allocations[0].AllocatedAmount=location.requestedAmount
-
-            }
-        }
-        $scope.initUi = function () {
-            var i = 0;
-
-            for (var z in $scope.requests) {
-                $scope.addItemToList($scope.requests[z]);
-                for (var w in $scope.requests[z].woredas) {
-                    var woreda = $scope.requests[z].woredas[w];
-                    $scope.addItemToList(woreda);
-                    for (var f in woreda.fdps) {
-                        $scope.addItemToList(woreda.fdps[f]);
-                        woreda.fdps[f].allocatedAmount = 0;
-                        $scope.requisitionDetail.push(woreda.fdps[f]);
+                    var ind=i/1+1;
+                    console.log('  Avaialable: ' + ind);
+                    // $("#SIPC" + ind).css("visibility", "hidden");
+                    if (item.type==="FDP") {
+                        if ($scope.SIPCCodes[i].availableAmount / 1 > 0) {
+                            $("#SIPC" + ind).css("display", "block");
+                        } else {
+                            $("#SIPC" + ind).css("display", "none");
+                        }
+                    }
+                    else
+                    {
+                        if($scope.SIPCCodes[i].availableAmount/1<item.requestedAmount/1)
+                        {
+                            $("#SIPC" + ind).css("display", "none");
+                        }
+                        else {
+                            $("#SIPC" + ind).css("display", "block");
+                        }
                     }
                 }
-            }
-            $scope.calculateAllocated();
-        };
-        $scope.addItemToList = function (item) {
-            item.id = $scope.unallocated.length;
-            item.index = $scope.unallocated.length;
-            item.totalAllocatedAmount=0;
-            $scope.unallocated.push(item);
-            $scope.allAdminRegions.push(item);
-            item.allocated = 0;
-        };
-        $scope.calculateAllocated = function () {
-            for (var z in $scope.requests) {
-                $scope.requests[z].allocatedAmount = 0;
-                $scope.requests[z].requestedAmount = 0;
+            };
 
-                for (var w in $scope.requests[z].woredas) {
-                    var woreda = $scope.requests[z].woredas[w];
-                    woreda.allocatedAmount = 0;
-                    woreda.requestedAmount = 0;
-                    for (var f in woreda.fdps) {
-                        woreda.allocatedAmount += woreda.fdps[f].totalAllocatedAmount;
-                        woreda.requestedAmount += woreda.fdps[f].requestedAmount;
-                    }
-                    $scope.requests[z].allocatedAmount += woreda.allocatedAmount;
-                    $scope.requests[z].requestedAmount += woreda.requestedAmount;
+            $scope.stopCallback = function (event, ui) {
+
+                for(var i in $scope.SIPCCodes)
+                {
+                    var ind=i/1+1;
+                    $("#SIPC" + ind).css("display", "block");
+
                 }
-            }
-        }
-        $scope.refreshList = function () {
-            for (var i in $scope.fdps) {
-                $scope.fdps[i].index = i;
+                // alert('Why did you stop draggin me?');
 
-            }
-        };
+            };
 
+            $scope.dragCallback = function (event, ui) {
+                //alert('hey , look I`m flying');
+            };
 
-        $scope.on_Allocation_Done=function(index)
-        {
-            var Requisition=$scope.allAdminRegions[index];
-            //alert(Requisition.RequisitionId);
-            $scope.promot(Requisition.RequisitionId,1);
-        };
-        $scope.promot = function (RequisitionId,showmodal) {
-            var param = { RequisitionId:RequisitionId, HubId:$scope.selectedHub };
-            $http.post($scope.promoteUrl, param).success(promotSuccess).error(updateError);
-           // alert($scope.promoteUrl);
-            if (showmodal) {
-                $('#modalContent').html("");
-                $('#myModal').modal('show');
-            }
-        }
-        $scope.startCallback = function (event, ui, item) {
-            console.log('You started draggin: ' + item.name + " Requested " +item.requestedAmount);
-            $scope.draggedItem = item;
+            $scope.dropCallback = function (event, ui) {
+                var requestIndex = $scope.draggedItem.index;
+                var siIndex = $(event.target).data("index") / 1 - 1;
+                $scope.assigneAllocation(requestIndex, siIndex);
+                //$scope.allAdminRegions[requestIndex].allocated = $(event.target).data("index") / 1;
 
-            for(var i in $scope.SIPCCodes)
-            {
-                var ind=i/1+1;
-                console.log('  Avaialable: ' + ind);
-               // $("#SIPC" + ind).css("visibility", "hidden");
-                if (item.type==="FDP") {
-                   if ($scope.SIPCCodes[i].availableAmount / 1 > 0) {
-                       $("#SIPC" + ind).css("display", "block");
-                   } else {
-                       $("#SIPC" + ind).css("display", "none");
-                   }
-               }
-               else
-               {
-                   if($scope.SIPCCodes[i].availableAmount/1<item.requestedAmount/1)
-                   {
-                       $("#SIPC" + ind).css("display", "none");
-                   }
-                   else {
-                       $("#SIPC" + ind).css("display", "block");
-                   }
-               }
-            }
-        };
+                $scope.refreshList();
+                var target = $(event.target).data("id");
+                //  alert('hey, you dumped on ' + target + ' :-(', event);
+            };
+            $scope.assigneAllocationOnPageLoad = function (requestIndex, siIndex, amount,sIPCAllocationID ) {
+                // alert(requestIndex + "," + siIndex);
+                $scope.saved=0;
+                var alocated = 0;
 
-        $scope.stopCallback = function (event, ui) {
-
-            for(var i in $scope.SIPCCodes)
-            {
-                var ind=i/1+1;
-                $("#SIPC" + ind).css("display", "block");
-
-            }
-           // alert('Why did you stop draggin me?');
-
-        };
-
-        $scope.dragCallback = function (event, ui) {
-            //alert('hey , look I`m flying');
-        };
-
-        $scope.dropCallback = function (event, ui) {
-            var requestIndex = $scope.draggedItem.index;
-            var siIndex = $(event.target).data("index") / 1 - 1;
-            $scope.assigneAllocation(requestIndex, siIndex);
-            //$scope.allAdminRegions[requestIndex].allocated = $(event.target).data("index") / 1;
-
-            $scope.refreshList();
-            var target = $(event.target).data("id");
-          //  alert('hey, you dumped on ' + target + ' :-(', event);
-        };
-        $scope.assigneAllocationOnPageLoad = function (requestIndex, siIndex, amount) {
-            // alert(requestIndex + "," + siIndex);
-            $scope.saved=0;
-            var alocated = 0;
-            var location = $scope.allAdminRegions[requestIndex];
-            //amount = location.requestedAmount - location.allocatedAmount;
-            var avail=$scope.SIPCCodes[siIndex].availableAmount-amount;
-
-            $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
-            $scope.allAdminRegions[requestIndex].allocatedAmount = amount;
-            $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
-            var temp = angular.copy($scope.allAdminRegions[requestIndex]);
-            alocated =  $scope.existSIPCIndex(temp,$scope.SIPCCodes[siIndex].codeId);
-            if(alocated===0)
-            {
-            $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
-            $scope.SIPCCodes[siIndex].allocatedRequests.push(temp);
-
-}
-          //  $scope.allocateAdminRegion(location,siIndex/1 + 1);
-
-            $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,amount);
-            $scope.calculateAllocated();
-        }
-        $scope.assigneAllocation = function (requestIndex, siIndex, amount) {
-            //alert(requestIndex + "," + siIndex);
-            $scope.clearSIPCAllocation();
-            $scope.saved=0;
-            var location = $scope.allAdminRegions[requestIndex];
-            amount = location.requestedAmount - location.totalAllocatedAmount;
-            var alocated = 0;
-            //$scope.allAdminRegions[requestIndex].HubID = $scope.selectedHub;
-            
-            //var assoc = {
-            //    "val"  : "New",
-            //    "number" : 8,
-            //    "theting" : $scope.allAdminRegions
-            //};
-	
-            //console.log(dump(assoc));
-
-            if($scope.SIPCCodes[siIndex].availableAmount/1<amount/1)
-            {
-                $scope.modalFor = 0;
-                $scope.viewQmount = $scope.SIPCCodes[siIndex].availableAmount;
-                $scope.CustomAmount = $scope.SIPCCodes[siIndex].availableAmount;
-                $scope.ValiedAmount = false;
-                $scope.showAmountModal = !$scope.showAmountModal;
-                $scope.siindexG=siIndex;
-                $scope.requestIndexG=requestIndex;
-                //stop e and wait for the  modual popup input
-
-
-            }
-            else
-            {
-                
+                var location = $scope.allAdminRegions[requestIndex];
+                //amount = location.requestedAmount - location.allocatedAmount;
                 var avail=$scope.SIPCCodes[siIndex].availableAmount-amount;
-                
-                    
-                if($scope.allAdminRegions[requestIndex].allocatedAmount != 0)
-                {
 
-                    var temp = angular.copy($scope.allAdminRegions[requestIndex]);
-                    //temp.HubID = $scope.selectedHub;
-                    //$scope.allAdminRegions[requestIndex].HubID = $scope.selectedHub;
-                    //console.log("HubID when [allocatedAmount != 0]: " + $scope.allAdminRegions[requestIndex].HubID);
-                    //alert(requestIndex + "," + siIndex + "," + temp.HubID);
-                    alocated =  $scope.existSIPCIndex(temp,$scope.SIPCCodes[siIndex].codeId);
+                $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
+                $scope.allAdminRegions[requestIndex].allocatedAmount = amount;
+                $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
+                var temp = angular.copy($scope.allAdminRegions[requestIndex]);
+                alocated =  $scope.existSIPCIndex(temp,$scope.SIPCCodes[siIndex].codeId);
+
+                var j = temp.Allocations.length;
+
+                while (j--) {
+
+
+                    if (temp.Allocations[j].SIPCAllocationID !== sIPCAllocationID) {
+                        temp.Allocations.splice(j, 1);
+                    }
+                }
+                if(alocated===0)
+                {
+                    $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
+                    $scope.SIPCCodes[siIndex].allocatedRequests.push(temp);
+
+                }
+
+                //  $scope.allocateAdminRegion(location,siIndex/1 + 1);
+
+                //$scope.allocateCustomAdminRegion(location,siIndex/1 + 1,amount);
+                $scope.calculateAllocated();
+            }
+            $scope.assigneAllocation = function (requestIndex, siIndex, amount) {
+                // alert(requestIndex + "," + siIndex);
+                $scope.clearSIPCAllocation();
+                $scope.saved=0;
+                var location = $scope.allAdminRegions[requestIndex];
+                amount = location.requestedAmount - location.totalAllocatedAmount;
+                var alocated = 0;
+
+                if($scope.SIPCCodes[siIndex].availableAmount/1<amount/1)
+                {
+                    alocated =  $scope.existSIPCIndex($scope.allAdminRegions[requestIndex], $scope.SIPCCodes[siIndex].codeId);
                     if(alocated===0)
                     {
-                        $scope.allAdminRegions.push(temp);
-                        $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
-                    
+                        $scope.modalFor = 0;
+                        $scope.viewQmount = $scope.SIPCCodes[siIndex].availableAmount;
+                        $scope.CustomAmount = $scope.SIPCCodes[siIndex].availableAmount;
+                        $scope.ValiedAmount = false;
+                        $scope.showAmountModal = !$scope.showAmountModal;
+                        $scope.siindexG=siIndex;
+                        $scope.requestIndexG=requestIndex;
+                        //stop e and wait for the  modual popup input
+
                     }
                     else
 
                         alert(" Selected FDP has been allocated  from  " +   $scope.SIPCCodes[siIndex].name + " SI Number");
+
                 }
-
-
-                if(alocated===0)
+                else
                 {
-                    $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
-                    $scope.allAdminRegions[requestIndex].allocatedAmount =  amount;
-                    $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
-                    //$scope.allAdminRegions[requestIndex].HubID = $scope.selectedHub;
-                    //console.log("HubID when [alocated===0]: " + $scope.allAdminRegions[requestIndex].HubID);
-
-                    $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
-                    //alert("HubID: " + $scope.allAdminRegions[requestIndex].HubID);
-                    $scope.SIPCCodes[siIndex].allocatedRequests.push($scope.allAdminRegions[requestIndex]);
-                        // $scope.allocateAdminRegion(location,siIndex/1 + 1);
-                    $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,amount);
-                }
-                $scope.calculateAllocated();
-                    //Duplicate remove
-                $scope.clearSIPCAllocation();
-            }
-            
-
-            
-        }
-        $scope.existSIPCIndex=function(temp, fdpID)
-        {
-            for(var si in $scope.SIPCCodes) {
-
-                for (var i in $scope.SIPCCodes[si].allocatedRequests) {
-
-                    if (   $scope.SIPCCodes[si].allocatedRequests[i].FDPId === temp.FDPId)
+                    var avail=$scope.SIPCCodes[siIndex].availableAmount-amount;
+                    if($scope.allAdminRegions[requestIndex].allocatedAmount !== 0)
                     {
-                        if(temp.Allocations[0] && $scope.SIPCCodes[si].allocatedRequests[i].Allocations[0] )
+
+                        var temp = angular.copy($scope.allAdminRegions[requestIndex]);
+                        alocated =  $scope.existSIPCIndex(temp,$scope.SIPCCodes[siIndex].codeId);
+                        if(alocated===0)
                         {
-                            if (   $scope.SIPCCodes[si].allocatedRequests[i].Allocations[0].Code === fdpID)//temp.Allocations[0].Code
+                            $scope.allAdminRegions.push(temp);
+
+                            if( angular.isUndefined(temp.Allocations[0].SIPCAllocationID))// if(temp.Allocations[0].SIPCAllocationID=== undefined)
+                                $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
+                        }
+                        else
+
+                            alert(" Selected FDP has been allocated  from  " +   $scope.SIPCCodes[siIndex].name + " SI Number");
+                    }
+
+
+                    if(alocated===0)
+                    {
+                        $scope.allAdminRegions[requestIndex].allocated = siIndex/1 + 1;
+                        $scope.allAdminRegions[requestIndex].allocatedAmount =  amount;
+                        $scope.allAdminRegions[requestIndex].totalAllocatedAmount = $scope.allAdminRegions[requestIndex].totalAllocatedAmount + amount;
+                        $scope.SIPCCodes[siIndex].availableAmount = Math.round(100*avail)/100;
+                        $scope.SIPCCodes[siIndex].allocatedRequests.push($scope.allAdminRegions[requestIndex]);
+                        // $scope.allocateAdminRegion(location,siIndex/1 + 1);
+                        $scope.allocateCustomAdminRegion(location,siIndex/1 + 1,amount);
+                        $scope.calculateAllocated();
+                    //Duplicate remove
+                    $scope.clearSIPCAllocation();
+                    }
+
+                }
+
+
+            }
+            $scope.existSIPCIndex=function(temp, fdpID)
+            {
+                for(var si in $scope.SIPCCodes) {
+
+                    for (var i in $scope.SIPCCodes[si].allocatedRequests) {
+
+                        if (   $scope.SIPCCodes[si].allocatedRequests[i].FDPId === temp.FDPId)
+                        {
+                            if(temp.Allocations[0] && $scope.SIPCCodes[si].allocatedRequests[i].Allocations[0] )
                             {
+                                if (   $scope.SIPCCodes[si].allocatedRequests[i].Allocations[0].Code === fdpID)//temp.Allocations[0].Code
+                                {
 
-                                return 1;
+                                    return 1;
+                                }
+                            }
                         }
-                        }
+
                     }
 
                 }
-
+                return 0;
             }
-            return 0;
-        }
-        $scope.getSIPCIndex=function(id,type)
-        {
-            for(var i in $scope.SIPCCodes)
+            $scope.getSIPCIndex=function(id,type)
             {
-                var si=$scope.SIPCCodes[i];
-                if(si.codeId==id && si.type==type)
+                for(var i in $scope.SIPCCodes)
                 {
-                    return i;
-                }
-            }
-        }
-        $scope.updateSavedAllocations = function()
-        {
-            for(var i in $scope.allAdminRegions)
-            {
-                var location=$scope.allAdminRegions[i];
-               // location.name=location.name + i;
-
-                for(var a in location.Allocations) {
-                    var siindex = $scope.getSIPCIndex(location.Allocations[a].Code, location.Allocations[a].AllocationType)
-                    if(siindex>=0)
+                    var si=$scope.SIPCCodes[i];
+                    if(si.codeId===id && si.type===type)
                     {
-                        $scope.assigneAllocationOnPageLoad(i, siindex, location.Allocations[a].AllocatedAmount);
+                        return i;
                     }
                 }
             }
-        };
+            $scope.updateSavedAllocations = function()
+            {
+                for(var i in $scope.allAdminRegions)
+                {
+                    var location=$scope.allAdminRegions[i];
+                    // location.name=location.name + i;
 
-        $scope.overCallback = function (event, ui) {
-            console.log('Look, I`m over you');
-        };
+                    for(var a in location.Allocations) {
+                        var siindex = $scope.getSIPCIndex(location.Allocations[a].Code, location.Allocations[a].AllocationType)
+                        if(siindex>=0)
+                        {
+                            $scope.assigneAllocationOnPageLoad(i, siindex, location.Allocations[a].AllocatedAmount,location.Allocations[a].SIPCAllocationID);
+                        }
+                    }
+                }
+            };
 
-        $scope.outCallback = function (event, ui) {
-            console.log('I`m not, hehe');
-        };
-        $scope.on_drop_on_allocation = function (item) {
-            $("#debug2").html("droped");
-            if (item) {
+            $scope.overCallback = function (event, ui) {
+                console.log('Look, I`m over you');
+            };
 
-                $("#debug2").html(item);
-                //item.allocated = 1;
-            }
-        };
-        $scope.optionsList1 = {
-            accept: function (dragEl) {
-                if (dragEl.data("allocated")) {
+            $scope.outCallback = function (event, ui) {
+                console.log('I`m not, hehe');
+            };
+            $scope.on_drop_on_allocation = function (item) {
+                $("#debug2").html("droped");
+                if (item) {
+
+                    $("#debug2").html(item);
+                    //item.allocated = 1;
+                }
+            };
+            $scope.optionsList1 = {
+                accept: function (dragEl) {
+                    if (dragEl.data("allocated")) {
+                        return false;
+                    }
+                    return true;
+                }
+            };
+
+            // Limit items to be dropped in list1
+            $scope.optionsList2 = {
+                accept: function (dragEl) {
+                    $("#debug").html("Reset " + dragEl.data("allocated"));
                     return false;
+                    var ret = false;
+                    if (dragEl.data("index") && $scope.allAdminRegions[dragEl.data("index")].allocated) {
+                        var msg = $("#debug").html();
+
+                        $("#debug").html(msg + " --- back " + dragEl.data("index"));
+                        $scope.allAdminRegions[dragEl.data("index")].allocated = 0;
+                        $scope.refreshList();
+                        ret = true;
+                    }
+                    return ret;
+
+
                 }
-                return true;
-            }
-        };
+            };
 
-        // Limit items to be dropped in list1
-        $scope.optionsList2 = {
-            accept: function (dragEl) {
-                $("#debug").html("Reset " + dragEl.data("allocated"));
-                return false;
-                var ret = false;
-                if (dragEl.data("index") && $scope.allAdminRegions[dragEl.data("index")].allocated) {
-                    var msg = $("#debug").html();
-
-                    $("#debug").html(msg + " --- back " + dragEl.data("index"));
-                    $scope.allAdminRegions[dragEl.data("index")].allocated = 0;
-                    $scope.refreshList();
-                    ret = true;
-                }
-                return ret;
-
-
-            }
-        };
-
-        var GetListSuccessCB = function (resp, status, headers, config) {
-            $$scope=$scope;
-            $scope.response=resp;
-            $scope.MapViewModel(resp);
-            $scope.initUi();
-            $scope.updateSavedAllocations();
-            $scope.saved=1;
-        };
-        $scope.MapViewModel=function(response)
-        {
-            /*
-            codeId: 1, name: "Adama-SI-1001", availableAmount: 300, type: "SI", allocatedRequests: [], index: 1
-            */
-            $scope.requests=[];
-            $scope.SIPCCodes=[];
-            var w=1;
-            var availSi=1;
-            for(var i in $scope.response)
+            var GetListSuccessCB = function (resp, status, headers, config) {
+                $$scope=$scope;
+                $scope.response=resp;
+                $scope.MapViewModel(resp);
+                $scope.initUi();
+                $scope.updateSavedAllocations();
+                $scope.saved=1;
+            };
+            $scope.MapViewModel=function(response)
             {
-                var requisition=$scope.response[i];
-                var request={name: $scope.response[i].ZoneName, type: "zone", zoneId:$scope.response[i].RequisitionId,Commodity:$scope.response[i].Commodity, woredas:[]
-                    ,RequisitionId:requisition.RequisitionId,RegionName:requisition.RegionName};
-
-                var woredasHash={};
-
-                request.FreeSIPCCodes=$scope.response[i].FreeSIPCCodes;
-                for(var f in $scope.response[i].FDPRequests)
+                /*
+                codeId: 1, name: "Adama-SI-1001", availableAmount: 300, type: "SI", allocatedRequests: [], index: 1
+                */
+                $scope.requests=[];
+                $scope.SIPCCodes=[];
+                var w=1;
+                var availSi=1;
+                for(var i in $scope.response)
                 {
-                    var fdpRequest=$scope.response[i].FDPRequests[f];
-                    if(!woredasHash[fdpRequest.WoredaName])
+                    var requisition=$scope.response[i];
+                    var request={name: $scope.response[i].ZoneName, type: "zone", zoneId:$scope.response[i].RequisitionId,Commodity:$scope.response[i].Commodity, woredas:[]
+                        ,RequisitionId:requisition.RequisitionId,RegionName:requisition.RegionName};
+
+                    var woredasHash={};
+
+                    request.FreeSIPCCodes=$scope.response[i].FreeSIPCCodes;
+                    for(var f in $scope.response[i].FDPRequests)
                     {
-                        woredasHash[fdpRequest.WoredaName]={name: fdpRequest.WoredaName, type: "woreda", woredaId: w,fdps:[]};
-                        w++;
-                    }
-                    //for (var silist in fdpRequest.Allocations) {
+                        var fdpRequest=$scope.response[i].FDPRequests[f];
+                        if(!woredasHash[fdpRequest.WoredaName])
+                        {
+                            woredasHash[fdpRequest.WoredaName]={name: fdpRequest.WoredaName, type: "woreda", woredaId: w,fdps:[]};
+                            w++;
+                        }
+                        //for (var silist in fdpRequest.Allocations) {
 
-                    //    var requisitionDetail1 ={Allocations:fdpRequest.Allocations,RequestDetailId:fdpRequest.RequestDetailId,FDPId:fdpRequest.FDPId,type: "FDP", name: fdpRequest.FDPName, requestedAmount: fdpRequest.Allocations[silist].AllocatedAmount};
-                    //    woredasHash[fdpRequest.WoredaName].fdps.push(requisitionDetail1);
-                    //}
-                    if(fdpRequest.RequestedAmount  )//&& !fdpRequest.Allocations
-                    {
-                        var requisitionDetail={Allocations:fdpRequest.Allocations,RequestDetailId:fdpRequest.RequestDetailId,FDPId:fdpRequest.FDPId,type: "FDP", name: fdpRequest.FDPName, requestedAmount: fdpRequest.RequestedAmount};
-                        woredasHash[fdpRequest.WoredaName].fdps.push(requisitionDetail);
+                        //    var requisitionDetail1 ={Allocations:fdpRequest.Allocations,RequestDetailId:fdpRequest.RequestDetailId,FDPId:fdpRequest.FDPId,type: "FDP", name: fdpRequest.FDPName, requestedAmount: fdpRequest.Allocations[silist].AllocatedAmount};
+                        //    woredasHash[fdpRequest.WoredaName].fdps.push(requisitionDetail1);
+                        //}
+                        if(fdpRequest.RequestedAmount  )//&& !fdpRequest.Allocations
+                        {
+                            var requisitionDetail={Allocations:fdpRequest.Allocations,RequestDetailId:fdpRequest.RequestDetailId,FDPId:fdpRequest.FDPId,type: "FDP", name: fdpRequest.FDPName, requestedAmount: fdpRequest.RequestedAmount};
+                            woredasHash[fdpRequest.WoredaName].fdps.push(requisitionDetail);
+                        }
                     }
+                    for(var ws in woredasHash)
+                    {
+                        request.woredas.push(woredasHash[ws]);
+                    }
+                    $scope.requests.push(request);
+                    for(var sii in request.FreeSIPCCodes.FreeSICodes)
+                    {
+                        var si=request.FreeSIPCCodes.FreeSICodes[sii];
+                        var sicode={codeId: si.siCodeId, name:si.SIcode, availableAmount:si.amount/1, type: "SI",HubId:si.HubId/1,HubName:si.HubName, allocatedRequests: [], index: availSi};
+                        $scope.SIPCCodes.push(sicode);
+                        availSi++;
+                    }
+                    for(var pci in request.FreeSIPCCodes.FreePCCodes)
+                    {
+                        var pc=request.FreeSIPCCodes.FreePCCodes[pci];
+                        var pccode={codeId: pc.pcCodeId.SIcode, name:pc.PCcode, availableAmount:pc.amount/1, type: "PC",HubId:pc.HubId/1,HubName:pc.HubName, allocatedRequests: [], index: availSi};
+                        $scope.SIPCCodes.push(pccode);
+                        availSi++;
+                    }
+
                 }
-                for(var ws in woredasHash)
+                var sortPCSI=function(v1,v2)
                 {
-                    request.woredas.push(woredasHash[ws]);
-                }
-                $scope.requests.push(request);
-                for(var sii in request.FreeSIPCCodes.FreeSICodes)
+                    if(v1.HubId<v2.HubId)
+                    {
+                        return -1;
+                    }
+                    if(v1.HubId>v2.HubId)
+                    {
+                        return 1;
+                    }
+                    return v1.availableAmount>v2.availableAmount?-1:1;
+                };
+                // var arry=[];
+                $scope.SIPCCodes.sort(sortPCSI)
+                var availSi=1;
+                for(var i in $scope.SIPCCodes)
                 {
-                    var si=request.FreeSIPCCodes.FreeSICodes[sii];
-                    var sicode={codeId: si.siCodeId, name:si.SIcode, availableAmount:si.amount/1, type: "SI",HubId:si.HubId/1,HubName:si.HubName, allocatedRequests: [], index: availSi};
-                    $scope.SIPCCodes.push(sicode);
+                    $scope.SIPCCodes[i].index=availSi;
                     availSi++;
                 }
-                for(var pci in request.FreeSIPCCodes.FreePCCodes)
-                {
-                    var pc=request.FreeSIPCCodes.FreePCCodes[pci];
-                    var pccode={codeId: pc.pcCodeId.SIcode, name:pc.PCcode, availableAmount:pc.amount/1, type: "PC",HubId:pc.HubId/1,HubName:pc.HubName, allocatedRequests: [], index: availSi};
-                    $scope.SIPCCodes.push(pccode);
-                    availSi++;
-                }
 
-            }
-            var sortPCSI=function(v1,v2)
-            {
-                if(v1.HubId<v2.HubId)
-                {
-                    return -1;
-                }
-                if(v1.HubId>v2.HubId)
-                {
-                    return 1;
-                }
-                return v1.availableAmount>v2.availableAmount?-1:1;
             };
-           // var arry=[];
-            $scope.SIPCCodes.sort(sortPCSI)
-            var availSi=1;
-            for(var i in $scope.SIPCCodes)
-            {
-                $scope.SIPCCodes[i].index=availSi;
-                availSi++;
-            }
-
-        };
-        $scope.loadPage = function (showmodal) {
-            var param = { regionId: $scope.regionId,RequisitionID:$scope.RequisitionID };
-            $http.post($scope.getListUrl, param).success(GetListSuccessCB);
-            if (showmodal) {
-                $('#modalContent').html("...");
-                $('#myModal').modal('show');
-            }
-        };
-
-        $scope.Save=function(showmodal)
-        {
-            $scope.saved=1;
-            var param = [];
-            var assoc = {
-                "val"  : "New",
-                "number" : 8,
-                "theting" : $scope.allAdminRegions
+            $scope.loadPage = function (showmodal) {
+                var param = { regionId: $scope.regionId,RequisitionID:$scope.RequisitionID };
+                $http.post($scope.getListUrl, param).success(GetListSuccessCB);
+                if (showmodal) {
+                    $('#modalContent').html("...");
+                    $('#myModal').modal('show');
+                }
             };
-	
-            console.log(dump(assoc));
-            for(var i in $scope.allAdminRegions)
+
+            $scope.Save=function(showmodal)
             {
-                
+                $scope.saved=1;
+                var param = [];
+                var assoc = {
+                    "val"  : "New",
+                    "number" : 8,
+                    "theting" : $scope.allAdminRegions
+                };
+                console.log(dump(assoc));
+                var RequisitionId = $scope.allAdminRegions[0].RequisitionId;
+                for(var i in $scope.allAdminRegions)
+                {
+                    var location=$scope.allAdminRegions[i];
+                    // location.name=location.name + i;
 
-                var location=$scope.allAdminRegions[i];
-                // location.name=location.name + i;
-
-                for(var a in location.Allocations) {
-                    var siindex = $scope.getSIPCIndex(location.Allocations[a].Code, location.Allocations[a].AllocationType);
-                    
-                    if(siindex>=0)
-                    {
-                        location.Allocations[a].RequisitionDetailID=location.RequestDetailId;
-                        location.Allocations[a].HubID=$scope.selectedHub;
-                        //alert(location.Allocations[a].HubID + " , " + location.HubID);
-                        param.push(location.Allocations[a]);
+                    for(var a in location.Allocations) {
+                        var siindex = $scope.getSIPCIndex(location.Allocations[a].Code, location.Allocations[a].AllocationType);
+                        if(siindex>=0)
+                        {
+                            location.Allocations[a].RequisitionDetailID=location.RequestDetailId;
+                            location.Allocations[a].HubID=$scope.selectedHub;
+                            //alert(location.Allocations[a].HubID + " , " + location.HubID);
+                            param.push(location.Allocations[a]);
+                        }
                     }
                 }
-            }
-            //for(var i in $scope.requisitionDetail)
-            //{
-            //    var item=$scope.requisitionDetail[i];
-            //    for(var alloc in item.Allocations)
-            //    {
-            //        item.Allocations[alloc].RequisitionDetailID=item.RequestDetailId;
-            //        param.push(item.Allocations[alloc]);
-            //    }
+                if (param.length===0)
+                {
+                    var emptyCode ={AllocatedAmount: 0, AllocationType:"no" , Code: 0 ,FDPID:0 ,RequisitionDetailID:RequisitionId}
 
-            //}
-            $http.post($scope.updateUrl, param).success(updateSuccess).error(updateError);
-            if (showmodal) {
-                $('#modalContent').html("...");
-                $('#myModal').modal('show');
-            }
-        };
-        $scope.loadPage();
-    });
-    App.directive('modal', function () {
-        return {
-            template: '<div class="modal fade">' +
-                '<div class="modal-dialog">' +
-                  '<div class="modal-content">' +
-                    '<div class="modal-header">' +
-                      '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-                      '<h4 class="modal-title">{{ title }}</h4>' +
+                    param.push(emptyCode);
+                }
+                $http.post($scope.updateUrl, param).success(updateSuccess).error(updateError);
+                $window.location.reload();
+                if (showmodal) {
+                    $('#modalContent').html("...");
+                    $('#myModal').modal('show');
+                }
+            };
+            $scope.loadPage();
+
+        });
+        App.directive('modal', function () {
+            return {
+                template: '<div class="modal fade">' +
+                    '<div class="modal-dialog">' +
+                      '<div class="modal-content">' +
+                        '<div class="modal-header">' +
+                          '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+                          '<h4 class="modal-title">{{ title }}</h4>' +
+                        '</div>' +
+                        '<div class="modal-body" ng-transclude></div>' +
+                      '</div>' +
                     '</div>' +
-                    '<div class="modal-body" ng-transclude></div>' +
-                  '</div>' +
-                '</div>' +
-              '</div>',
-            restrict: 'E',
-            transclude: true,
-            replace: true,
-            scope: true,
-            link: function postLink(scope, element, attrs) {
-                scope.title = attrs.title;
+                  '</div>',
+                restrict: 'E',
+                transclude: true,
+                replace: true,
+                scope: true,
+                link: function postLink(scope, element, attrs) {
+                    scope.title = attrs.title;
 
-                scope.$watch(attrs.visible, function (value) {
-                    if (value == true)
-                        $(element).modal('show');
-                    else
-                        $(element).modal('hide');
-                });
-
-                $(element).on('shown.bs.modal', function () {
-                    scope.$apply(function () {
-                        scope.$parent[attrs.visible] = true;
+                    scope.$watch(attrs.visible, function (value) {
+                        if (value === true)
+                            $(element).modal('show');
+                        else
+                            $(element).modal('hide');
                     });
-                });
 
-                $(element).on('hidden.bs.modal', function () {
-                    scope.$apply(function () {
-                        scope.$parent[attrs.visible] = false;
+                    $(element).on('shown.bs.modal', function () {
+                        scope.$apply(function () {
+                            scope.$parent[attrs.visible] = true;
+                        });
                     });
-                });
-            }
-        };
-    });
 
-    function dump(arr,level) {
-        var dumped_text = "";
-        if(!level) level = 0;
-	
-        //The padding given at the beginning of the line.
-        var level_padding = "";
-        for(var j=0;j<level+1;j++) level_padding += "    ";
-	
-        if(typeof(arr) == 'object') { //Array/Hashes/Objects 
-            for(var item in arr) {
-                var value = arr[item];
-			
-                if(typeof(value) == 'object') { //If it is an array,
-                    dumped_text += level_padding + "'" + item + "' ...\n";
-                    dumped_text += dump(value,level+1);
-                } else {
-                    dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+                    $(element).on('hidden.bs.modal', function () {
+                        scope.$apply(function () {
+                            scope.$parent[attrs.visible] = false;
+                        });
+                    });
                 }
+            };
+        });
+
+        function dump(arr,level) {
+            var dumped_text = "";
+            if(!level) level = 0;
+
+            //The padding given at the beginning of the line.
+            var level_padding = "";
+            for(var j=0;j<level+1;j++) level_padding += "    ";
+
+            if(typeof(arr) == 'object') { //Array/Hashes/Objects
+                for(var item in arr) {
+                    var value = arr[item];
+
+                    if(typeof(value) == 'object') { //If it is an array,
+                        dumped_text += level_padding + "'" + item + "' ...\n";
+                        dumped_text += dump(value,level+1);
+                    } else {
+                        dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+                    }
+                }
+            } else { //Stings/Chars/Numbers etc.
+                dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
             }
-        } else { //Stings/Chars/Numbers etc.
-            dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
+            return dumped_text;
         }
-        return dumped_text;
-    }
-</script>
+    </script>
+</Allocations>
 
 
 <style>

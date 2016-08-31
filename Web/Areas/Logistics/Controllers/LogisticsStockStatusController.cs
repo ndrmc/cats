@@ -37,7 +37,7 @@ namespace Cats.Areas.Logistics.Controllers
         private IReceiptAllocationService _receiptAllocationService;
         private IReceiveDetailService _receiveDetailService;
         private IReceiveService _receiveService;
-
+        private IShippingInstructionService _shippingInstructionService;
         public LogisticsStockStatusController
             (
             IUnitOfWork unitOfWork,
@@ -48,7 +48,7 @@ namespace Cats.Areas.Logistics.Controllers
             IStockStatusService stockStatusService, IAdminUnitService adminUnitService, IProgramService programService,
             IDonorService donorService, IUserProfileService userProfileService,
             IReceiptAllocationService receiptAllocationService, IReceiveDetailService receiveDetailService,
-            IReceiveService receiveService)
+            IReceiveService receiveService,IShippingInstructionService shippingInstructionService,ITransactionService transactionService)
         {
             _unitOfWork = unitOfWork;
             _userDashboardPreferenceService = userDashboardPreferenceService;
@@ -63,6 +63,8 @@ namespace Cats.Areas.Logistics.Controllers
             _receiptAllocationService = receiptAllocationService;
             _receiveDetailService = receiveDetailService;
             _receiveService = receiveService;
+            _shippingInstructionService = shippingInstructionService;
+            _transcationService = transactionService;
         }
 
         // GET:/Logistics/StockStatus/
@@ -193,14 +195,35 @@ namespace Cats.Areas.Logistics.Controllers
                 try
                 {
                     var siNumber = item.ShippingInstruction;
+                    var shippingInstructionId =
+                        _shippingInstructionService.FindBy(s => s.Value == siNumber)
+                            .FirstOrDefault()
+                            .ShippingInstructionID;
                     var receiveDetails =
                         _receiveDetailService.FindBy(s => s.Receive.ReceiptAllocation.SINumber == siNumber);
                     if (receiveDetails.Any())
                         item.Received = receiveDetails.Sum(s => s.SentQuantityInMT);
                     else item.Received = 0;
+
+                    var committed =
+                        _transcationService.Get(
+                            t =>
+                                t.ShippingInstructionID == shippingInstructionId &&
+                                t.ProgramID == item.ProgramID &&
+                                //t.DonorID == item.DonorID &&
+                                t.LedgerID == 8);
+
+
+                    var enumerable = committed as IList<Cats.Models.Hubs.Transaction> ?? committed.ToList();
+                    item.Commited = 0;
+                    if (enumerable.Any())
+                    {
+                        var result = enumerable.Sum(c => c.QuantityInMT);
+                        item.Commited = result >= 0 ? result : (-1)*result;
+                    } 
                     data2.Add(item);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     ;
                 }

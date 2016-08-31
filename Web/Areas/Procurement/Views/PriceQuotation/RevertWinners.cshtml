@@ -50,14 +50,50 @@
     </div>
 </div>
 
+ <!-- Added by Nigus-->
+<div class="modal" id="cats-modal-delete">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="myModalLabel" class="modal-title">@Html.Translate("Rever a plan")</h4>
+            </div>
+
+
+            <div class="modal-body">
+               
+                <br/>
+                <p>
+                    Revert Remark:
+                </p>
+                <textarea class="form-control" id="revert-remark" rows="4" cols="20"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id="yes-revert" class="btn btn-primary" type="submit">Yes</button>
+                <button id="no" class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
 <script>
     function onRevert(e) {
-        
-        if (confirm("Are you sure? ")) {
-            e.preventDefault();
-            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-            window.location.href = "@Url.Action("RevertWinner", "PriceQuotation")" + "?bidNumber=" + dataItem.BidID + "&regionID=" + dataItem.RegionId;
-        }
+
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        $('#cats-modal-delete').modal('show');      
+        var remark = '';
+        $("#yes-revert").click(function() {
+            remark = $('textarea#revert-remark').val();
+
+            if (confirm("Are you sure? ")) {
+
+                window.location.href = "@Url.Action("RevertWinner", "PriceQuotation")" + "?bidNumber=" + dataItem.BidID + "&regionID=" + dataItem.RegionId + "&remark=" + remark;
+            }
+            });
+
     }
 </script>
 
