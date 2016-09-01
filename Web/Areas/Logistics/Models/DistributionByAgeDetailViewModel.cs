@@ -7,7 +7,7 @@ using Cats.Models;
 
 namespace Cats.Areas.Logistics.Models
 {
-    public class WoredaDistributionDetailViewModel:IValidatableObject
+    public class WoredaDistributionDetailViewModel : IValidatableObject
     {
         public int FdpId { get; set; }
         public string FDP { get; set; }
@@ -27,16 +27,23 @@ namespace Cats.Areas.Logistics.Models
         public decimal DistributedAmount { get; set; }
         public int CommodityID { get; set; }
         public string CommodityName { get; set; }
-        public int ? Round { get; set; }
+        public int? Round { get; set; }
         public string Month { get; set; }
         public decimal BeginingBalance { get; set; }
         public decimal EndingBalance { get; set; }
         public decimal TotalIn { get; set; }
         public decimal TotalOut { get; set; }
-        [DisplayFormat(DataFormatString ="{0:mm/dd/yy}" ,ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:mm/dd/yy}", ApplyFormatInEditMode = true)]
         public DateTime? DistributionStartDate { get; set; }
         [DisplayFormat(DataFormatString = "{0:mm/dd/yy}", ApplyFormatInEditMode = true)]
+
+        public string DistributionStartDatePref { get; set; }
+
+
         public DateTime? DistributionEndDate { get; set; }
+
+        public string DistributionEndDatePref { get; set; }
+
         public decimal LossAmount { get; set; }
         public string LossReason { get; set; }
         public int LossReasonId { get; set; }
@@ -51,7 +58,7 @@ namespace Cats.Areas.Logistics.Models
         public int FemaleBetween5And18Years { get; set; }
         public int MaleAbove18Years { get; set; }
         public int FemaleAbove18Years { get; set; }
-       
+
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
@@ -70,7 +77,7 @@ namespace Cats.Areas.Logistics.Models
                 yield return new ValidationResult("Loss amount can not be greater than the amount allocated for distribution");
             }
         }
-       
+
     }
     public class RequisitionDetailViewModel
     {

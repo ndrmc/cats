@@ -4,9 +4,13 @@
 @using Cats.Security
 
 @model Cats.Areas.Logistics.Models.WoredaStockDistributionWithDetailViewModel
+
 @{
     ViewBag.Title = "Create";
-    Layout = "~/Views/Shared/_MainLayout.cshtml";  
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    var datepref = UserAccountHelper.GetUser(HttpContext.Current.User.Identity.Name).DatePreference;
+
+
 }
 
 <h4>Woreda Distribution Information </h4>
@@ -19,235 +23,235 @@
     @if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_woreda_distribution))
     {
         <button id="SubmitButton" data-buttontype="btn_save" class="btn btn-default" data-loading-text="Saving...">Save</button>
-    @*<a id="SaveButton" class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_create_utilization" title="Save"></a>
-    *@<a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("Index", "WoredaStockDistribution")" title="Cancel"></a>
+        @*<a id="SaveButton" class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_create_utilization" title="Save"></a>
+        *@<a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("Index", "WoredaStockDistribution")" title="Cancel"></a>
     }
 
-    
-    
+
+
 }
 
- @using (Html.BeginForm("Create", "WoredaStockDistribution", FormMethod.Post, FormMethod.Post, new { id = "frm_create_utilization" }))
- {
-@Html.HiddenFor(m => m.WoredaID)
-@Html.HiddenFor(m => m.PlanID)
-@Html.HiddenFor(m => m.Month)
-@Html.HiddenFor(m => m.ProgramID)
-@Html.HiddenFor(m => m.WoredaStockDistributionID)
+@using (Html.BeginForm("Create", "WoredaStockDistribution", FormMethod.Post, FormMethod.Post, new { id = "frm_create_utilization" }))
+{
+    @Html.HiddenFor(m => m.WoredaID)
+    @Html.HiddenFor(m => m.PlanID)
+    @Html.HiddenFor(m => m.Month)
+    @Html.HiddenFor(m => m.ProgramID)
+    @Html.HiddenFor(m => m.WoredaStockDistributionID)
+
+    @Html.Hidden("DatePref", datepref);
 
 
-     
-     <style>
-    .summaryview
-    {
-        /*   width:90%;
-        border:solid 1px #888;
-        border-radius:4px;
-     */
-        padding: 4px;
-    }
-
-        .summaryview .fldlabel
-        {
-            text-align: right;
-            font-weight: bold;
+    <style>
+        .summaryview {
+            /*   width:90%;
+           border:solid 1px #888;
+           border-radius:4px;
+        */
+            padding: 4px;
         }
 
-        .summaryview .fldvalue
-        {
+            .summaryview .fldlabel {
+                text-align: right;
+                font-weight: bold;
+            }
+
+            .summaryview .fldvalue {
+            }
+
+        .section-hilite {
+            border-radius: 4px;
+            background-color: #F8F8F8;
+            margin: 5px;
         }
 
-    .section-hilite
-    {
-        border-radius: 4px;
-        background-color: #F8F8F8;
-        margin: 5px;
-    }
-
-    .flat-input, .token-inputs input
-    {
-        background: transparent;
-        border: none;
-        box-shadow: none;
-    }
-
-        .flat-input:active, .flat-input:focus, .token-inputs input:active, .token-inputs input:focus
-        {
-            color: #666;
+        .flat-input, .token-inputs input {
+            background: transparent;
             border: none;
             box-shadow: none;
         }
-    .token-inputs .token-input-token-facebook
-    {
-        padding:0px;
-        padding-left:5px;
-        padding-right:5px;
 
-        border-radius:2px;
-        color:#666;
-    }
-    .token-inputs .token-input-list-facebook
-    {
-        border:solid 1px #ccc;
-        border-radius:2px;
-        width:500px;
+            .flat-input:active, .flat-input:focus, .token-inputs input:active, .token-inputs input:focus {
+                color: #666;
+                border: none;
+                box-shadow: none;
+            }
 
-    }
-    .activity_indicator
-    {
-        position:fixed;
-        left:50%;
-        top:45px;
-        width:100px;
-        height:30px;
-        line-height:30px;
-        margin-left:-50px;
-        border-radius:2px;
-        background:rgba(0,0,0,0.5);
-        text-align:center;
-        color:#FFF;
-    }
-    .pending-requests0 .activity_indicator
-    {
-        display:none;
-        opacity:0.2;
-    }
-    .k-grid tbody tr:nth-child(2n)
-    {
-        background:#EEE;
-    }
-</style>
-     //@Html.HiddenFor(m=>m.WoredaDistributionDetailViewModels)
+        .token-inputs .token-input-token-facebook {
+            padding: 0px;
+            padding-left: 5px;
+            padding-right: 5px;
+            border-radius: 2px;
+            color: #666;
+        }
+
+        .token-inputs .token-input-list-facebook {
+            border: solid 1px #ccc;
+            border-radius: 2px;
+            width: 500px;
+        }
+
+        .activity_indicator {
+            position: fixed;
+            left: 50%;
+            top: 45px;
+            width: 100px;
+            height: 30px;
+            line-height: 30px;
+            margin-left: -50px;
+            border-radius: 2px;
+            background: rgba(0,0,0,0.5);
+            text-align: center;
+            color: #FFF;
+        }
+
+        .pending-requests0 .activity_indicator {
+            display: none;
+            opacity: 0.2;
+        }
+
+        .k-grid tbody tr:nth-child(2n) {
+            background: #EEE;
+        }
+    </style>
+    //@Html.HiddenFor(m=>m.WoredaDistributionDetailViewModels)
     <div style="display: none" id="error" class='cats_error'>
-        
-    </div> 
-     
-      <div class="section-hilite summaryview" style="width:90%; background:#FFF">
-            <!--
-            <div class="loading"><i class="fa fa-book fa-fw fa-border"></i> loading</div>
-            -->
-                <table style="width:90%; background:#FFF">
-                <tr>
-                    <td class="fldlabel">@Html.Translate("Region"): </td><td class="fldvalue">@ViewBag.SelectedRegion</td>
-                    <td class="fldlabel">@Html.Translate("Zone"): </td><td class="fldvalue">@ViewBag.SelectedZone</td>
-                    <td class="fldlabel">@Html.Translate("Woreda") : </td><td class="fldvalue">@ViewBag.SelectedWoreda</td>
-                </tr>
-                <tr>
-                    <td class="fldlabel">@Html.Translate("HRD/Annual Plan") : </td><td class="fldvalue">@ViewBag.SelectedPlan</td>
-                    <td class="fldlabel">@Html.Translate("Month/Round") : </td><td class="fldvalue">@ViewBag.selectedmonth</td>
-                    <td class="fldlabel">@Html.Translate("Program") : </td><td class="fldvalue">@ViewBag.SelectedProgram </td>
-                </tr>
-            </table>
-        </div>
-    <div id="title">
-        
+
     </div>
-    <div class="form-horizontal">
-        <table border="0">
+
+    <div class="section-hilite summaryview" style="width:90%; background:#FFF">
+        <!--
+        <div class="loading"><i class="fa fa-book fa-fw fa-border"></i> loading</div>
+        -->
+        <table style="width:90%; background:#FFF">
             <tr>
-                <td rowspan="5">
-                    <div id="div_Male" class="form-horizontal well" >
-                        <div class="control-group">
-                            <div class="control-label">
-                                @Html.LabelFor(m => m.PublicSupport, Html.Translate("Public support"))
-                            </div>
-                            <div class="controls">
-                                @Html.TextBoxFor(m => m.PublicSupport)
-                                @Html.ValidationMessageFor(m => m.PublicSupport)
-                            </div>
-                        </div>
-                      
-                        <div class="control-group">
-                            <div class="control-label">
-                                @Html.LabelFor(m => m.DirectSupport, Html.Translate("Direct support"))
-                            </div>
-                            <div class="controls">
-                                @Html.TextBoxFor(m => m.DirectSupport)
-                                @Html.ValidationMessageFor(m => m.DirectSupport)
-                            </div>
-                        </div>
-
-                        <div class="control-group">
-                            <div class="control-label">
-                                @Html.LabelFor(m => m.MaleLessThan5Years, Html.Translate("Male <5 Years"))
-                            </div>
-                            <div class="controls">
-                                @Html.TextBoxFor(m => m.MaleLessThan5Years)
-                                @Html.ValidationMessageFor(m => m.MaleLessThan5Years)
-                            </div>
-                        </div>
-    
-                        <div class="control-group">
-                            <div class="control-label">
-                                @Html.LabelFor(m => m.MaleBetween5And18Years, Html.Translate("Male 5-18 Years"))
-                            </div>
-                            <div class="controls">
-                                @Html.TextBoxFor(m => m.MaleBetween5And18Years)
-                                @Html.ValidationMessageFor(m => m.MaleBetween5And18Years)
-                            </div>
-                        </div>
-    
-                        <div class="control-group">
-                            <div class="control-label">
-                                @Html.LabelFor(m => m.MaleAbove18Years, Html.Translate("Male >18 Years"))
-                            </div>
-                            <div class="controls">
-                                @Html.TextBoxFor(m => m.MaleAbove18Years)
-                                @Html.ValidationMessageFor(m => m.MaleAbove18Years)
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td rowspan="5">
-                    <div id="div_Female1" class="form-horizontal well">
-                        <div class="control-group">
-                            <div class="control-label">
-                                @Html.LabelFor(m => m.FemaleLessThan5Years, Html.Translate("Female <5 Years"))
-                            </div>
-                            <div class="controls">
-                                @Html.TextBoxFor(m => m.FemaleLessThan5Years)
-                                @Html.ValidationMessageFor(m => m.FemaleLessThan5Years)
-                            </div>
-                        </div>
-
-                        <div class="control-group">
-                            <div class="control-label">
-                                @Html.LabelFor(m => m.FemaleBetween5And18Years, Html.Translate("Female 5-18 Years"))
-                            </div>
-                            <div class="controls">
-                                @Html.TextBoxFor(m => m.FemaleBetween5And18Years)
-                                @Html.ValidationMessageFor(m => m.FemaleBetween5And18Years)
-                            </div>
-                        </div>
-    
-                        <div class="control-group">
-                            <div class="control-label">
-                                @Html.LabelFor(m => m.FemaleAbove18Years, Html.Translate("Female >18 Years"))
-                            </div>
-                            <div class="controls">
-                                @Html.TextBoxFor(m => m.FemaleAbove18Years)
-                                @Html.ValidationMessageFor(m => m.FemaleAbove18Years)
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="control-label">
-                                @Html.LabelFor(m => m.ActualBeneficairies, Html.Translate("Actual Beneficiary"))
-                            </div>
-                            <div class="controls">
-                                @Html.TextBoxFor(m => m.ActualBeneficairies, new Dictionary<string, object>() { { "readonly", "true" } })
-                                @Html.ValidationMessageFor(m => m.ActualBeneficairies)
-                            </div>
-                        </div>
-                       
-                    </div>
-                </td>
+                <td class="fldlabel">@Html.Translate("Region"): </td>
+                <td class="fldvalue">@ViewBag.SelectedRegion</td>
+                <td class="fldlabel">@Html.Translate("Zone"): </td>
+                <td class="fldvalue">@ViewBag.SelectedZone</td>
+                <td class="fldlabel">@Html.Translate("Woreda") : </td>
+                <td class="fldvalue">@ViewBag.SelectedWoreda</td>
             </tr>
-           
-            
+            <tr>
+                <td class="fldlabel">@Html.Translate("HRD/Annual Plan") : </td>
+                <td class="fldvalue">@ViewBag.SelectedPlan</td>
+                <td class="fldlabel">@Html.Translate("Month/Round") : </td>
+                <td class="fldvalue">@ViewBag.selectedmonth</td>
+                <td class="fldlabel">@Html.Translate("Program") : </td>
+                <td class="fldvalue">@ViewBag.SelectedProgram </td>
+            </tr>
         </table>
     </div>
-    <div>
-        @(Html.Kendo().Grid(Model.WoredaDistributionDetailViewModels)
+    <div id="title">
+
+    </div>
+        <div class="form-horizontal">
+            <table border="0">
+                <tr>
+                    <td rowspan="5">
+                        <div id="div_Male" class="form-horizontal well">
+                            <div class="control-group">
+                                <div class="control-label">
+                                    @Html.LabelFor(m => m.PublicSupport, Html.Translate("Public support"))
+                                </div>
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.PublicSupport)
+                                    @Html.ValidationMessageFor(m => m.PublicSupport)
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="control-label">
+                                    @Html.LabelFor(m => m.DirectSupport, Html.Translate("Direct support"))
+                                </div>
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.DirectSupport)
+                                    @Html.ValidationMessageFor(m => m.DirectSupport)
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="control-label">
+                                    @Html.LabelFor(m => m.MaleLessThan5Years, Html.Translate("Male <5 Years"))
+                                </div>
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.MaleLessThan5Years)
+                                    @Html.ValidationMessageFor(m => m.MaleLessThan5Years)
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="control-label">
+                                    @Html.LabelFor(m => m.MaleBetween5And18Years, Html.Translate("Male 5-18 Years"))
+                                </div>
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.MaleBetween5And18Years)
+                                    @Html.ValidationMessageFor(m => m.MaleBetween5And18Years)
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="control-label">
+                                    @Html.LabelFor(m => m.MaleAbove18Years, Html.Translate("Male >18 Years"))
+                                </div>
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.MaleAbove18Years)
+                                    @Html.ValidationMessageFor(m => m.MaleAbove18Years)
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td rowspan="5">
+                        <div id="div_Female1" class="form-horizontal well">
+                            <div class="control-group">
+                                <div class="control-label">
+                                    @Html.LabelFor(m => m.FemaleLessThan5Years, Html.Translate("Female <5 Years"))
+                                </div>
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.FemaleLessThan5Years)
+                                    @Html.ValidationMessageFor(m => m.FemaleLessThan5Years)
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="control-label">
+                                    @Html.LabelFor(m => m.FemaleBetween5And18Years, Html.Translate("Female 5-18 Years"))
+                                </div>
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.FemaleBetween5And18Years)
+                                    @Html.ValidationMessageFor(m => m.FemaleBetween5And18Years)
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="control-label">
+                                    @Html.LabelFor(m => m.FemaleAbove18Years, Html.Translate("Female >18 Years"))
+                                </div>
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.FemaleAbove18Years)
+                                    @Html.ValidationMessageFor(m => m.FemaleAbove18Years)
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="control-label">
+                                    @Html.LabelFor(m => m.ActualBeneficairies, Html.Translate("Actual Beneficiary"))
+                                </div>
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.ActualBeneficairies, new Dictionary<string, object>() { { "readonly", "true" } })
+                                    @Html.ValidationMessageFor(m => m.ActualBeneficairies)
+                                </div>
+                            </div>
+
+                        </div>
+                    </td>
+                </tr>
+
+
+            </table>
+        </div>
+        <div>
+
+            @(Html.Kendo().Grid(Model.WoredaDistributionDetailViewModels)
                       .Name("RequisitionGridDetail")
                       .Columns(columns =>
                       {
@@ -293,12 +297,30 @@
                           columns.Bound(p => p.DistributedAmount).Width(70)
                                .ClientTemplate("<span class='rowCount' rowCount='#=rowCount#' nextRow='#=getRowNo(data)#' > #=DistributedAmount#</span>" +
                           "<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].DistributedAmount'  value='#= DistributedAmount #' />");
+                          if (datepref == "GC" || datepref == "gc")
+                          {
+                              columns.Bound(p => p.DistributionStartDate).Width(100).Format("{0:MM-dd-yy}");
+                              columns.Bound(p => p.DistributionStartDate).Format("{0:mm-dd-yy}").ClientTemplate("  <input type='hidden'  id='WoredaDistributionDetailViewModels[#= index(data)#].DistributionStartDate'  name='WoredaDistributionDetailViewModels[#= index(data)#].DistributionStartDate'  value='#= DistributionStartDate #' />");
+                          }
+                          else
+                          {
+                              columns.Bound(p => p.DistributionStartDatePref).Width(100).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).EditorTemplateName("WoredaStockDistrAmhDPStart");
+                          }
 
-                          columns.Bound(p => p.DistributionStartDate).Width(100).Format("{0:MM-dd-yy}");
-                          columns.Bound(p => p.DistributionStartDate).Format("{0:mm-dd-yy}").ClientTemplate("  <input type='hidden'  id='WoredaDistributionDetailViewModels[#= index(data)#].DistributionStartDate'  name='WoredaDistributionDetailViewModels[#= index(data)#].DistributionStartDate'  value='#= DistributionStartDate #' />");
-                          columns.Bound(p => p.DistributionEndDate).Width(100).Format("{0:MM-dd-yy}");
-                          columns.Bound(p => p.DistributionEndDate).Format("{0:mm-dd-yy}")
-                                                       .ClientTemplate("<input  type='hidden'  id='WoredaDistributionDetailViewModels[#= index(data)#].DistributionEndDate'  name='WoredaDistributionDetailViewModels[#= index(data)#].DistributionEndDate'  value='#= DistributionEndDate #' />");
+
+
+                          if (datepref == "GC" || datepref == "gc")
+                          {
+                              columns.Bound(p => p.DistributionEndDate).Width(100).Format("{0:MM-dd-yy}");
+                              columns.Bound(p => p.DistributionEndDate).Format("{0:mm-dd-yy}")
+                                                           .ClientTemplate("<input  type='hidden'  id='WoredaDistributionDetailViewModels[#= index(data)#].DistributionEndDate'  name='WoredaDistributionDetailViewModels[#= index(data)#].DistributionEndDate'  value='#= DistributionEndDate #' />");
+
+                          }
+                          else
+                          {
+                              columns.Bound(p => p.DistributionEndDatePref).Width(100).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).EditorTemplateName("WoredaStockDistrAmhDPEnd");
+                          }
+
 
                           columns.Bound(p => p.LossAmount).Width(80)
                                .ClientTemplate("<span class='rowCount' rowCount='#=rowCount#' nextRow='#=getRowNo(data)#'>#= LossAmount #</span>" +
@@ -327,13 +349,16 @@
                               editable.Mode(GridEditMode.InCell);
                           }
                       })
+                      .Editable(edit => edit.Mode(GridEditMode.InCell))
 
                       .Scrollable()
                       //.Selectable(t => t.Mode(GridSelectionMode.Single))
                       .Navigatable()
                       .HtmlAttributes(new { style = "height:350px;" })
-                       .Events(events => events.Change("onDataBound"))
-                        .Events(events => events.DataBound("onDataBound"))
+
+                      .Events(e => e.Edit("onEdit"))
+                      .Events(events => events.Change("onDataBound"))
+                       .Events(events => events.DataBound("onDataBound"))
                       .DataSource(dataSource => dataSource
                                                     .Ajax()
                                                     .Batch(true)
@@ -369,21 +394,30 @@
 
                       )
                       .Resizable(re => re.Columns(true))
-                      )
+            )
 
-    </div>
- }
+        </div>
+}
 <script type="text/javascript">
 
     var save = false;
     var rowCount = 0;
     var gridData = [];
-   
+    var dateprefJS;
+
+    $(function () {
+        {
+
+
+            dateprefJS = $("#DatePref").val();
+        }
+    });
+
     function getRowNo(data) {
         gridData[rowCount] = data;
         return 1 + rowCount++;
     }
-    
+
 
     function onDataBound(e) {
         var grid = $("#RequisitionGridDetail").data("kendoGrid");
@@ -394,19 +428,22 @@
             $(this).change(function () {
                 var r = $(this).closest("tr");
                 var rIndex = $("tr", grid.tbody).index(r);
-               
+
                 var $rowCount = $(this).closest("tr").find(".rowCount");
                 var $EndingBalance = $(this).closest("tr").find(".EndingBalance");
                var rowCount = $rowCount.attr("rowCount");
                var data = gridData[rowCount];
                var endingBalance = TotalEndingBalance(data);
 
-               
-               var distributionEndDate = document.getElementById("WoredaDistributionDetailViewModels[" + rIndex + "].DistributionEndDate");
-               var distributionStartDate = document.getElementById("WoredaDistributionDetailViewModels[" + rIndex + "].DistributionStartDate");
-               distributionStartDate.value = kendo.toString(kendo.parseDate(data.DistributionStartDate), "MM/dd/yy");
-               distributionEndDate.value = kendo.toString(kendo.parseDate(data.DistributionEndDate), "MM/dd/yy");
-                
+               if (dateprefJS == "GC" || dateprefJS == "gc") {
+
+                   var distributionEndDate = document.getElementById("WoredaDistributionDetailViewModels[" + rIndex + "].DistributionEndDate");
+                   var distributionStartDate = document.getElementById("WoredaDistributionDetailViewModels[" + rIndex + "].DistributionStartDate");
+                   distributionStartDate.value = kendo.toString(kendo.parseDate(data.DistributionStartDate), "MM/dd/yy");
+                   distributionEndDate.value = kendo.toString(kendo.parseDate(data.DistributionEndDate), "MM/dd/yy");
+               }
+
+
                if (validatEndingBalance(data)) {
                    save = true;
                    $EndingBalance.html(endingBalance);
@@ -415,7 +452,7 @@
                }
             });
         });
-        
+
 
     }
 
@@ -450,31 +487,31 @@
         var currentStock = parseInt(data.BeginingBalance) + parseInt(data.TotalIn);
         var deliveredAmount = parseInt(data.delivered);
         var totalIn = parseInt(data.TotalIn);
-        
+
         if (parseInt(lossamount) > parseInt(distributedamount)) {
-            
+
             elem.innerHTML = "Loss amount can not be greater than distributed amount:  " + lossamount;
             elem.style.display = "block";
             //alert("Loss amount can not be greater than distributed amount:  " + lossamount);
             return false;
         }
         if (parseInt(distributedamount) > parseInt(totalOut)) {
-           
+
             elem.innerHTML = "Distribution amount can not be greater than total out amount:   " + distributedamount;
             elem.style.display = "block";
             //alert("Distribution amount can not be greater than total out amount:   " + distributedamount);
             return false;
         }
         if (parseInt(totalOut) > parseInt(currentStock)) {
-            
+
             elem.innerHTML = "Total out can not be greater than available stock:  " + totalOut;
             elem.style.display = "block";
             // alert("Total out can not be greater than available stock:  " + totalOut);
             return false;
         }
-       
+
         //if (deliveredAmount < totalIn) {
-            
+
         //    elem.innerHTML = "The amount received " + totalIn + " is greater than the amount delivered.FDP " + data.FDP;
         //    elem.style.display = "block";
         //    return false;
@@ -488,7 +525,7 @@
         if (data.DistributedAmount == 0 || data.DistributedAmount==null) {
             return (data.BeginingBalance + data.TotalIn) - data.TotalOut  - data.LossAmount;
         }
-        
+
         return (data.BeginingBalance + data.TotalIn)  - data.DistributedAmount - data.LossAmount;
     }
 
@@ -551,26 +588,28 @@
         var kdata = grid.dataSource.data();
         for (var i = 0; i < kdata.length; i++) {
             kdata[i].dirty = true;
-            var distributionStartDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionStartDate");
-            var distributionEndDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionEndDate");
-            var dsd = kendo.toString(kendo.parseDate(distributionStartDate.value), "MM/dd/yy");
-            var ded = kendo.toString(kendo.parseDate(distributionEndDate.value), "MM/dd/yy");
-            kdata[i].DistributionStartDate = dsd == null ? distributionStartDate.value : dsd;
-            kdata[i].DistributionEndDate = ded == null ? distributionEndDate.value : ded;
-            distributionStartDate.value = kdata[i].DistributionStartDate;
-            distributionEndDate.value = kdata[i].DistributionEndDate;
+            if (dateprefJS == "GC" || dateprefJS == "gc") {
+                var distributionStartDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionStartDate");
+                var distributionEndDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionEndDate");
+                var dsd = kendo.toString(kendo.parseDate(distributionStartDate.value), "MM/dd/yy");
+                var ded = kendo.toString(kendo.parseDate(distributionEndDate.value), "MM/dd/yy");
+                kdata[i].DistributionStartDate = dsd == null ? distributionStartDate.value : dsd;
+                kdata[i].DistributionEndDate = ded == null ? distributionEndDate.value : ded;
+                distributionStartDate.value = kdata[i].DistributionStartDate;
+                distributionEndDate.value = kdata[i].DistributionEndDate;
+            }
         }
         return true;
     }
     $(function () {
         $("#SubmitButton").click(function () {
-           
+
             if (validateNoOfBeneficiaries() == true && validateDirectAndPublic() == true && save == true) {
-                makeKendoDirty();
+                //makeKendoDirty();
                 save = false;
                 $(this).button('loading');
                 $("#frm_create_utilization").submit();
-                
+
             } else {
                 alert("You haven't make any change or  \n There is an error on the page. \n please correct the error and try again to save!");
             }
@@ -579,29 +618,158 @@
 </script>
 
 
-@* @Html.Partial("_DistributionByBeneficiary", Model)*@
 
-@*<script>
-    
-    $(function () {
+<script type="text/javascript">
+    var currentModel;
+
+    var selectedDateisStartDate = false;
+    var selectedDateisEndDate = false;
+
+    function onEdit(e) {
 
 
+        if(DistributionStartDatePrefHidden!=null)
+            //if (!(DistributionStartDatePrefHidden.visibilityState === ""))
 
-        $("#ProgramID").change(function () {
+            {
 
-            $("#div_round").hide();
-            $("#div_month").hide();
+            selectedDateisStartDate = true;
+            selectedDateisEndDate = false;
+            DistributionStartDatePrefHidden.val(e.model.DistributionStartDatePref);
+            DistributionStartDatePrefShown.val(e.model.DistributionStartDate);
+            currentModel = e.model;
 
-            $.getJSON('/WoredaStockDistribution/GetPlans/' + $("#ProgramID").val(), function (data) {
-                var plans = '<option> Select a Plan </option>';
-                $.each(data, function (i, plan) {
-                    plans += "<option value='" + plan.Value + "'>" + plan.Text + "</option>";
-                });
-                $("#PlanID").html(plans);
+            //if (DistributionEndDatePrefHidden != null)
+            //DistributionEndDatePrefHidden.visibilityState = "";
+
+
+            DistributionStartDatePrefHidden.blur(function (b) {
+                var GCdate = DistributionStartDatePrefShown.val();
+                var ECdate = $(this).val();
+                e.model.set('DistributionStartDatePref', ECdate);
+                e.model.set('DistributionStartDate', GCdate);
+
+
             });
 
 
 
-        });
+            DistributionStartDatePrefHidden.change(function () {
+                var GCdate = DistributionStartDatePrefShown.val();
+                var ECdate = $(this).val();
+
+                e.model.set('DistributionStartDatePref', ECdate);
+                e.model.set('DistributionStartDate', GCdate);
+            });
+            DistributionStartDatePrefHidden.click(function (b) {
+                var pickertop = DistributionStartDatePrefHidden.offset().top + DistributionStartDatePrefHidden.height() - 80;
+                var pickerleft = DistributionStartDatePrefHidden.offset().left;
+                $("div[class^='ui-ethdatepicker']").css({ top: pickertop, left: pickerleft, position: 'fixed', 'z-index': '1' });
+
+
+            });
+
+        }
+
+        if (DistributionEndDatePrefHidden != null)
+ 
+        {
+            selectedDateisEndDate = true;
+            selectedDateisStartDate = false;
+            DistributionEndDatePrefHidden.val(e.model.DistributionEndDatePref);
+            DistributionEndDatePrefShown.val(e.model.DistributionEndDate);
+            currentModel = e.model;
+
+            //if (DistributionStartDatePrefHidden != null)
+            //DistributionStartDatePrefHidden.visibilityState = "";
+
+            DistributionEndDatePrefHidden.blur(function (b) {
+                var GCdate = DistributionEndDatePrefShown.val();
+                var ECdate = $(this).val();
+                e.model.set('DistributionEndDatePref', ECdate);
+                e.model.set('DistributionEndDate', GCdate);
+
+
+            });
+
+
+
+            DistributionEndDatePrefHidden.change(function () {
+                var GCdate = DistributionEndDatePrefShown.val();
+                var ECdate = $(this).val();
+
+                e.model.set('DistributionEndDatePref', ECdate);
+                e.model.set('DistributionEndDate', GCdate);
+            });
+            DistributionEndDatePrefHidden.click(function (b) {
+                var pickertop = DistributionEndDatePrefHidden.offset().top + DistributionEndDatePrefHidden.height() - 80;
+                var pickerleft = DistributionEndDatePrefHidden.offset().left;
+                $("div[class^='ui-ethdatepicker']").css({ top: pickertop, left: pickerleft, position: 'fixed', 'z-index': '1' });
+
+
+            });
+
+        }
+
+    }
+
+
+    $(document).on("dateEditorValueChanged", function (event) {
+
+        if (selectedDateisStartDate)
+            {
+        if (currentModel != null) {
+            currentModel.set('DistributionStartDatePref', event.newDateEthiopian.toString());
+            currentModel.set('DistributionStartDate', event.newDateGregorian);
+
+        }
+        selectedDateisEndDate = false;
+        }
+
+          if (selectedDateisEndDate)
+            {
+        if (currentModel != null) {
+            currentModel.set('DistributionEndDatePref', event.newDateEthiopian.toString());
+            currentModel.set('DistributionEndDate', event.newDateGregorian);
+
+        }
+        selectedDateisStartDate = false;
+
+          }
+
+
+
     });
-</script>*@
+
+    $(document).on( "dateChanged",function (event) {
+
+        if (selectedDateisStartDate)
+        {
+        if (currentModel != null)
+        {
+            currentModel.set('DistributionStartDatePref', event.EthiopianDate.toString());
+            currentModel.set('DistributionStartDate', event.GregorianDate);
+
+        }
+        selectedDateisEndDate = false;
+
+        }
+
+
+        if (selectedDateisEndDate)
+
+        {
+            if (currentModel != null) {
+                currentModel.set('DistributionEndDatePref', event.EthiopianDate.toString());
+                currentModel.set('DistributionEndDate', event.GregorianDate);
+
+            }
+
+            selectedDateisStartDate = false;
+
+        }
+
+
+
+    });
+</script>
