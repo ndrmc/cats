@@ -298,6 +298,7 @@ namespace Cats.Areas.Hub.Controllers
             {
                 var receiveDetailsViewModels =
                     (from receives in _receiveService.FindById((Guid)receiveId).ReceiveDetails
+                     where receives.TransactionGroup !=null && receives.TransactionGroup.Transactions !=null
                      let transaction =
                          receives.TransactionGroup.Transactions.FirstOrDefault(
                              p => p.QuantityInMT > 0 || p.QuantityInUnit > 0)
@@ -511,6 +512,7 @@ namespace Cats.Areas.Hub.Controllers
                 if (ReceiveDetails == null) return result;
                 else
                     return (from receives in ReceiveDetails.ReceiveDetails
+                            where receives.TransactionGroup!=null && receives.TransactionGroup.Transactions!=null
                             let transaction =
                                 receives.TransactionGroup.Transactions.FirstOrDefault(
                                     p => p.QuantityInMT > 0 || p.QuantityInUnit > 0)

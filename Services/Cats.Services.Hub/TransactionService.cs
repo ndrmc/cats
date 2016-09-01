@@ -1403,6 +1403,10 @@ namespace Cats.Services.Hub
         /// <returns></returns>
         private bool CanCreateTransaction(ReceiveNewViewModel editedReceiveNewViewModel )
         {
+            if (editedReceiveNewViewModel.ReceiveId == Guid.Empty)
+            {
+                return true;
+            }
             var origionalReceive = _unitOfWork.ReceiveRepository.FindById(editedReceiveNewViewModel.ReceiveId);
 
             //compare
