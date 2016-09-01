@@ -220,6 +220,7 @@ namespace Cats.Areas.Logistics.Controllers
                             AllocatedAmount = item.AllocatedAmount,
                             AllocationType = item.AllocationType,
                             RequisitionDetailID = item.RequisitionDetailID,
+                            HubID = item.HubID,
                             FDPID = item.FDPID
                         };
                         _allocationService.Create(allocation);
