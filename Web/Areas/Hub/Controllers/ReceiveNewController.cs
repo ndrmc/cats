@@ -117,6 +117,14 @@ namespace Cats.Areas.Hub.Controllers
                 viewModel.PurchaseOrder = receiptAllocation.PurchaseOrder;
             }
 
+
+            if (String.IsNullOrEmpty(viewModel.SupplierName))
+                viewModel.SupplierName = receive.SupplierName;
+
+
+            if (String.IsNullOrEmpty(viewModel.PurchaseOrder))
+                viewModel.PurchaseOrder = receive.PurchaseOrder;
+
             viewModel.CommoditySource = receiptAllocation.CommoditySource.Name;
             viewModel.CommoditySourceTypeId = receiptAllocation.CommoditySourceID;
             viewModel.ReceivedByStoreMan = receive.ReceivedByStoreMan;
@@ -170,6 +178,8 @@ namespace Cats.Areas.Hub.Controllers
             viewModel.PlateNoTrailer = receive.PlateNo_Trailer;
             viewModel.PortName = receive.PortName;
             viewModel.Remark = receive.Remark;
+            viewModel.ResponsibleDonorId = receive.ResponsibleDonorID;
+            viewModel.SourceDonorId = receive.SourceDonorID;
 
             return viewModel;
 
@@ -492,27 +502,38 @@ namespace Cats.Areas.Hub.Controllers
 
         private List<ReceiveDetailsViewModel> GetReceiveDetailsViewModels(ReceiveNewViewModel viewModel)
         {
-            return (from receives in _receiveService.FindById((Guid)viewModel.ReceiveId).ReceiveDetails
-                    let transaction =
-                        receives.TransactionGroup.Transactions.FirstOrDefault(
-                            p => p.QuantityInMT > 0 || p.QuantityInUnit > 0)
-                    where transaction != null
-                    let amount = transaction.QuantityInMT
-                    select new ReceiveDetailsViewModel()
-                    {
+            List<ReceiveDetailsViewModel> result = new List<ReceiveDetailsViewModel>();
+            if (viewModel.ReceiveId == Guid.NewGuid())
+                return result;
+            else
+            {
+                var ReceiveDetails = _receiveService.FindById((Guid)viewModel.ReceiveId);
+                if (ReceiveDetails == null) return result;
+                else
+                    return (from receives in ReceiveDetails.ReceiveDetails
+                            let transaction =
+                                receives.TransactionGroup.Transactions.FirstOrDefault(
+                                    p => p.QuantityInMT > 0 || p.QuantityInUnit > 0)
+                            where transaction != null
+                            let amount = transaction.QuantityInMT
+                            select new ReceiveDetailsViewModel()
+                            {
 
-                        CommodityId = receives.CommodityID,
-                        Description = receives.Description,
-                        SentQuantityInMt = receives.SentQuantityInMT,
-                        SentQuantityInUnit = receives.SentQuantityInUnit,
-                        ReceivedQuantityInMt = transaction.QuantityInMT,
-                        ReceivedQuantityInUnit = transaction.QuantityInUnit,
-                        SiNumber = transaction.ShippingInstructionID,
-                        CommodityChildID = receives.CommodityChildID ?? 0,
-                        UnitId = receives.UnitID,
-                        ReceiveDetailsId = receives.ReceiveDetailID,
-                        ReceiveDetailsIdString = receives.ReceiveDetailID.ToString()
-                    }).ToList();
+                                CommodityId = receives.CommodityID,
+                                Description = receives.Description,
+                                SentQuantityInMt = receives.SentQuantityInMT,
+                                SentQuantityInUnit = receives.SentQuantityInUnit,
+                                ReceivedQuantityInMt = transaction.QuantityInMT,
+                                ReceivedQuantityInUnit = transaction.QuantityInUnit,
+                                SiNumber = transaction.ShippingInstructionID,
+                                CommodityChildID = receives.CommodityChildID ?? 0,
+                                UnitId = receives.UnitID,
+                                ReceiveDetailsId = receives.ReceiveDetailID,
+                                ReceiveDetailsIdString = receives.ReceiveDetailID.ToString()
+                            }).ToList();
+            }
+
+
         }
 
         public JsonResult AllocationStatus(string receiptAllocationId)

@@ -1210,7 +1210,7 @@ namespace Cats.Services.Hub
 
             if (!reverse)
             {
-                  canCreateTransaction = CanCreateTransaction(viewModel);
+                canCreateTransaction = CanCreateTransaction(viewModel);
             }
             #region BindReceiveFromViewModel
 
@@ -1265,7 +1265,7 @@ namespace Cats.Services.Hub
             receive.SourceDonorID = viewModel.SourceDonorId;
             receive.ResponsibleDonorID = viewModel.ResponsibleDonorId;
 
- 
+
 
 
             #endregion
@@ -1278,80 +1278,109 @@ namespace Cats.Services.Hub
             }
 
             #endregion
-           
+
             receive.ReceiveDetails.Clear();
 
-
-            foreach (var receiveDetailModel in viewModel.ReceiveDetailsViewModels)
+            if (viewModel.ReceiveId == Guid.Empty)
             {
                 var receiveDetail = new ReceiveDetail
                 {
-                    ReceiveDetailID = Guid.NewGuid(), 
+                    ReceiveDetailID = Guid.NewGuid(), //Todo: if there is existing id dont give new one  
 
-                    CommodityID = receiveDetailModel.CommodityId,
-                    CommodityChildID = receiveDetailModel.CommodityChildID,
-                    Description = receiveDetailModel.Description,
-                    SentQuantityInMT = receiveDetailModel.SentQuantityInMt,
-                    SentQuantityInUnit = receiveDetailModel.SentQuantityInUnit,
-                    UnitID = receiveDetailModel.UnitId,
-                    ReceiveID = receive.ReceiveID
+                    CommodityID = viewModel.ReceiveDetailNewViewModel.CommodityId,
+                    CommodityChildID = viewModel.ReceiveDetailNewViewModel.CommodityChildID,
+                    Description = viewModel.ReceiveDetailNewViewModel.Description,
+                    SentQuantityInMT = viewModel.ReceiveDetailNewViewModel.SentQuantityInMt,
+                    SentQuantityInUnit = viewModel.ReceiveDetailNewViewModel.SentQuantityInUnit,
+                    UnitID = viewModel.ReceiveDetailNewViewModel.UnitId,
+                    ReceiveID = receive.ReceiveID,
 
 
                 };
- 
+
+
+
+                CreateTransaction(viewModel, transactionsign, receive, receiveDetail);
+
+
+                //add to receive 
+                receive.ReceiveDetails.Clear();
                 receive.ReceiveDetails.Add(receiveDetail);
 
-
-                try
+            }
+            else
+            {
+                foreach (var receiveDetailModel in viewModel.ReceiveDetailsViewModels)
                 {
-                    if (reverse)
-                        CreateTransaction(viewModel, transactionsign, receive, receiveDetail);
-
-                    if (!reverse)
+                    var receiveDetail = new ReceiveDetail
                     {
-                        if (viewModel.ReceiveId == Guid.Empty)
-                        {
+                        ReceiveDetailID = Guid.NewGuid(),
+
+                        CommodityID = receiveDetailModel.CommodityId,
+                        CommodityChildID = receiveDetailModel.CommodityChildID,
+                        Description = receiveDetailModel.Description,
+                        SentQuantityInMT = receiveDetailModel.SentQuantityInMt,
+                        SentQuantityInUnit = receiveDetailModel.SentQuantityInUnit,
+                        UnitID = receiveDetailModel.UnitId,
+                        ReceiveID = receive.ReceiveID
+
+
+                    };
+
+                    receive.ReceiveDetails.Add(receiveDetail);
+
+
+                    try
+                    {
+                        if (reverse)
                             CreateTransaction(viewModel, transactionsign, receive, receiveDetail);
- 
-                        }
-                        else
+
+                        if (!reverse)
                         {
-                            //CHECK IF FIELDS THAT AFFECT TRANSACTION TBL ARE CHANGED , IF CHANGED CREATE NEW TRANSACTION GROUP
-                            if (canCreateTransaction)
+                            if (viewModel.ReceiveId == Guid.Empty)
                             {
                                 CreateTransaction(viewModel, transactionsign, receive, receiveDetail);
+
+                            }
+                            else
+                            {
+                                //CHECK IF FIELDS THAT AFFECT TRANSACTION TBL ARE CHANGED , IF CHANGED CREATE NEW TRANSACTION GROUP
+                                if (canCreateTransaction)
+                                {
+                                    CreateTransaction(viewModel, transactionsign, receive, receiveDetail);
+                                }
+
+
                             }
 
-                           
                         }
 
+
+
+                    }
+                    catch (Exception exception)
+                    {
+                        throw exception;
                     }
 
-  
-                  
                 }
-                catch (Exception exception)
-                {
-                    throw exception;
-                }
-
             }
 
- 
+
 
             try
             {
-     
+
                 if (!reverse)
                 {
                     if (viewModel.ReceiveId == Guid.Empty)
                     {
-                
+
                         _unitOfWork.ReceiveRepository.Add(receive);
                     }
                     else
                     {
- 
+
                         _unitOfWork.ReceiveRepository.Edit(receive);
                     }
 
