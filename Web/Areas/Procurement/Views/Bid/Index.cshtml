@@ -36,7 +36,8 @@
             <a href="javascript:;" class="remove" data-original-title="" title=""></a>
         </div>
         <div class="actions">
-            @if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Create_new_bid_plan)){ 
+            @if (UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Create_new_bid))
+            {
                 <a class="btn btn-circle btn-default btn-sm green-stripe" data-buttontype="btn_new_record" href="@Url.Action("Create", "Bid")"><i class="fa fa-plus-circle"></i> @Html.Translate("Create New Bid")</a>
             }
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>

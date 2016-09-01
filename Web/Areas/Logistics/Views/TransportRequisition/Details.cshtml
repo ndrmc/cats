@@ -2,7 +2,7 @@
 @using Kendo.Mvc.UI
 @using Cats.Localization;
 @using Cats.Helpers
-
+@using Cats.Security
 @model Cats.Areas.Logistics.Models.TransportRequisitionViewModel
 
 @{
@@ -35,11 +35,17 @@
         </div>
         <div class="actions">
             <a class="btn green toolbar-btn" href="#" style="display:none;" target="_blank" id="toolbar_button_print" title="Print"><i class="fa fa-print"></i> @Html.Translate("Print")</a>
-            @if (Model.StatusID == (int)Cats.Models.Constant.TransportRequisitionStatus.Draft)
-{
-    <a class="btn green toolbar-btn " href="@Url.Action("Edit", "TransportRequisition", new { Area = "Logistics", id = Model.TransportRequisitionID })" data-buttontype="btn_edit"><i class="fa fa-edit"></i> @Html.Translate("Edit")</a>
-    <a class="btn green toolbar-btn btn-approve-transportrequisition" href="@Url.Action("Approve", "TransportRequisition", new {id = Model.TransportRequisitionID})" data-buttontype=""><i class="fa fa-check"></i> @Html.Translate("Approve")</a>
-}
+           @if (Model.StatusID == (int)Cats.Models.Constant.TransportRequisitionStatus.Draft)
+            {
+                if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_transport_requisition).ToString() == "Edit_transport_requisition")
+                {
+                <a class="btn green toolbar-btn " href="@Url.Action("Edit", "TransportRequisition", new {Area = "Logistics", id = Model.TransportRequisitionID})" data-buttontype="btn_edit"><i class="fa fa-edit"></i> @Html.Translate("Edit")</a>
+               }
+               if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_transport_requisition).ToString() == "Approve_transport_requisition")
+               {
+                <a class="btn green toolbar-btn btn-approve-transportrequisition" href="@Url.Action("Approve", "TransportRequisition", new {id = Model.TransportRequisitionID})" data-buttontype=""><i class="fa fa-check"></i> @Html.Translate("Approve")</a>
+               }
+           }
             @*<a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
         </div>
     </div>
