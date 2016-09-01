@@ -267,10 +267,13 @@ namespace Cats.Areas.Hub.Controllers
             {
                 new SubCommodity() { Id = -1, CommodityId = -1, Name = ""}
             };
-            var subCommodityModels = _commodityService.GetAllSubCommodities().Where(l => l.ParentID != null).Where(l => l.CommodityTypeID == 1).Select(c => new SubCommodity() { Id = c.CommodityID, CommodityId = c.ParentID ?? 0, Name = c.Name }).ToList();
+
+            var subCommodityModels = _commodityService.GetAllSubCommodities().Where(l => l.ParentID != null)
+                .Where(l => l.CommodityTypeID == 1 && l.ParentID == CommodityId).Select(c => new SubCommodity()
+                { Id = c.CommodityID, CommodityId = c.ParentID ?? 0, Name = c.Name }).ToList();
+
             subCommodityModelList.AddRange(subCommodityModels);
 
-            //var data = _commodityService.GetAllSubCommodities().Where(l => l.ParentID == CommodityId).Where(l => l.CommodityTypeID == 1).Select(c => c.ParentID != null ? new SubCommodity() { CommodityId = c.ParentID.Value, Id = c.CommodityID, Name = c.Name } : null).ToList();
             return Json(subCommodityModelList, JsonRequestBehavior.AllowGet);
         }
 
