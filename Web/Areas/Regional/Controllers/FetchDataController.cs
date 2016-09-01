@@ -10,10 +10,13 @@ using Cats.Services.Dashboard;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Hub;
 using Cats.Services.Logistics;
+using Cats.Services.Security;
 using Cats.ViewModelBinder;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using IFDPService = Cats.Services.EarlyWarning.IFDPService;
 using Cats.Web.Hub.Helpers;
+using Microsoft.Win32;
+using UserAccountHelper = Cats.Helpers.UserAccountHelper;
 
 namespace Cats.Areas.Regional.Controllers
 {
@@ -33,6 +36,7 @@ namespace Cats.Areas.Regional.Controllers
         private readonly IDeliveryReconcileService _deliveryReconcileService;
         private readonly INeedAssessmentService _needAssessmentService;
         private readonly IPlanService _planService;
+        private readonly IUserProfileService _userProfileService;
         public FetchDataController(IRegionalDashboard regionalDashboard,
             IRegionalRequestService regionalRequestService,
             IReliefRequisitionService reliefRequisitionService,
@@ -40,7 +44,7 @@ namespace Cats.Areas.Regional.Controllers
             IFDPService fdpService,
             IHRDService hrdService,
             IUtilizationHeaderSerivce utilization, IDispatchService dispatchService, IDeliveryReconcileService deliveryReconcileService, IDispatchAllocationService dispatchAllocationService
-            , INeedAssessmentService needAssessmentService, IPlanService planService
+            , INeedAssessmentService needAssessmentService, IPlanService planService, IUserProfileService userProfileService
             )
         {
             _regionalDashboard = regionalDashboard;
@@ -55,6 +59,7 @@ namespace Cats.Areas.Regional.Controllers
             _dispatchAllocationService = dispatchAllocationService;
             _needAssessmentService = needAssessmentService;
             _planService = planService;
+            _userProfileService = userProfileService;
         }
 
         public JsonResult AllocationChanges(int regionID)
@@ -168,14 +173,23 @@ namespace Cats.Areas.Regional.Controllers
             d.Male = male;
 
 
-            var deliveryReconciles = _deliveryReconcileService.GetAllDeliveryReconciles().Select(dr => dr.DispatchID).Distinct();
-            var dispatchOnRegionNonReconcile = _dispatchService.Get(dd => dd.FDP.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID).Where(i => !deliveryReconciles.Contains(i.DispatchID)).ToList();
+            var deliveryReconciles =
+                _deliveryReconcileService.GetAllDeliveryReconciles().Select(dr => dr.DispatchID).Distinct();
+            var dispatchOnRegionNonReconcile =
+                _dispatchService.Get(dd => dd.FDP.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID)
+                    .Where(i => !deliveryReconciles.Contains(i.DispatchID))
+                    .ToList();
             var count = dispatchOnRegionNonReconcile.Count();
             //var dornr = dispatchOnRegionNonReconcile.Select(tt => tt.DispatchAllocationID).Distinct();
             //var amount = _dispatchAllocationService.Get(t => dornr.Contains(t.DispatchAllocationID));
             //var dispatchAllocations = amount as IList<DispatchAllocation> ?? amount.ToList();
             var amt = dispatchOnRegionNonReconcile.Sum(aa => aa.DispatchDetails.Sum(bb=>bb.DispatchedQuantityInMT));
+            var currentUser = UserAccountHelper.GetCurrentUser();
+            var userprofile = _userProfileService.GetUser(currentUser.UserName);
             d.IncomingCommodity = Convert.ToInt32(amt);
+            if (userprofile.PreferedWeightMeasurment == "QTL")
+                d.IncomingCommodity = d.IncomingCommodity*10;
+           
             d.IncomingDispatches = count;
 
             return Json(d, JsonRequestBehavior.AllowGet);
