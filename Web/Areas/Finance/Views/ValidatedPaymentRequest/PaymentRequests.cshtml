@@ -715,21 +715,22 @@
                                 <label class="col-md-4 control-label" for="CheckNo"> @Html.Translate("Check No.")</label>
                                 <div class="col-md-6">
                                     <input class="form-control" type="text" value="{{SelectedCheckInfo.CheckNo}}" name="CheckNo" id="CheckNo"
-                                           data-ng-model="SelectedCheckInfo.CheckNo" />
+                                           data-ng-model="SelectedCheckInfo.CheckNo" required/>
+                                    
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-4 control-label" for="PaymentVoucherNo"> @Html.Translate("Payment Voucher No.")</label>
                                 <div class="col-md-6">
                                     <input class="form-control" type="text" value="{{SelectedCheckInfo.PaymentVoucherNo}}" name="PaymentVoucherNo" id="PaymentVoucherNo"
-                                           data-ng-model="SelectedCheckInfo.PaymentVoucherNo" />
+                                           data-ng-model="SelectedCheckInfo.PaymentVoucherNo" required/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-4 control-label" for="BankName"> @Html.Translate("Bank Name")</label>
                                 <div class="col-md-6">
                                     <input class="form-control" type="text" value="{{SelectedCheckInfo.BankName}}" name="BankName" id="BankName"
-                                           data-ng-model="SelectedCheckInfo.BankName" />
+                                           data-ng-model="SelectedCheckInfo.BankName" required/>
                                 </div>
                             </div>
                             <div class="form-group">

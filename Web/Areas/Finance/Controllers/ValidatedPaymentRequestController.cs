@@ -491,6 +491,12 @@ namespace Cats.Areas.Finance.Controllers
 
         public ActionResult EditCollectiveChequeInfo(Models.TransporterChequeViewModel transporterChequeViewModel, int transporterID)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = "Check No,Payment Voucher No and Bank name are required fields. Please fill the value to these fields and try again!";
+                ModelState.AddModelError("Errors", ViewBag.Error);
+                return RedirectToAction("PaymentRequests", new { transporterID = transporterID});
+            }
             var paymentRequestList = (IEnumerable<Cats.Models.TransporterPaymentRequest>)_transporterPaymentRequestService
                         .Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo == 3 && t.TransportOrder.TransporterID == transporterID, null, "BusinessProcess")
                         .OrderByDescending(t => t.TransporterPaymentRequestID);
