@@ -119,11 +119,7 @@ namespace Cats.Tests.ControllersTests
             shippingInstructionService.Setup(m => m.GetAllShippingInstruction()).Returns(shippingInstruction);
 
             _giftCertificateController = new GiftCertificateController(giftCertificateService.Object, giftCertificateDetailService.Object, commonService.Object,
-<<<<<<< HEAD
                                          transactionService.Object, letterTemplateService.Object, _unitOfWork, userAccountService.Object,shippingInstructionService.Object,log.Object,null);
-=======
-                                         transactionService.Object, letterTemplateService.Object, _unitOfWork, userAccountService.Object,shippingInstructionService.Object,log.Object, null);
->>>>>>> CATS-1242
             _giftCertificateController.ControllerContext = controllerContext.Object; 
         }
 
