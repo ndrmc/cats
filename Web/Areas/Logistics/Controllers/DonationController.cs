@@ -481,10 +481,8 @@ namespace Cats.Areas.Logistics.Controllers
 
                 if (donation.Count > 0)
                 {
-
-
-
                     var detailArray = donationViewModel.DonationPlanDetails.ToArray();
+
                     foreach (var donationPlanDetail in donation)
                     {
                         donationPlanDetail.DonationPlanHeader.AllocationDate = DateTime.Now;
@@ -496,7 +494,6 @@ namespace Cats.Areas.Logistics.Controllers
                         donationPlanDetail.DonationPlanHeader.ShippingInstructionId = shippinInstructionId;
                         donationPlanDetail.DonationPlanHeader.DonatedAmount = donationViewModel.WieghtInMT;
                         donationPlanDetail.DonationPlanHeader.CommodityTypeID = donationViewModel.CommodityTypeID;
-
                         donationPlanDetail.AllocatedAmount = detailArray[index].AllocatedAmount;
                         donationPlanDetail.ReceivedAmount = detailArray[index].ReceivedAmount;
                         donationPlanDetail.Balance = detailArray[index].Balance;
@@ -645,21 +642,25 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult Revert(int id)
         {
             var donation = _donationPlanHeaderService.FindById(id);
+
             if (donation != null)
             {
                 if (donation.IsCommited == true)
                 {
+                    _transactionService.RevertDonationPlan(donation);
+
                     if (_donationPlanHeaderService.DeleteReceiptAllocation(donation))
                     {
                         donation.IsCommited = false;
                         _donationPlanHeaderService.EditDonationPlanHeader(donation);
                         RedirectToAction("Index", "Donation");
                     }
+
                     return RedirectToAction("Index", "Donation");
                 }
             }
+
             return RedirectToAction("Index", "Donation");
         }
-
     }
 }

@@ -40,7 +40,7 @@ namespace Cats.ViewModelBinder
             giftCertificateViewModel.DeclarationNumber = giftCertificateModel.DeclarationNumber;
             giftCertificateViewModel.GiftDatePref=giftCertificateModel.GiftDate.ToCTSPreferedDateFormat(userPrefrence);
             giftCertificateViewModel.IsPrinted = giftCertificateModel.IsPrinted;
-            giftCertificateViewModel.AllowReject = true; // default
+            giftCertificateViewModel.AllowReject = giftCertificateModel.Donor.DonationPlanHeaders.Count > 0; // default
             var giftCertificateDetail = giftCertificateModel.GiftCertificateDetails.FirstOrDefault();
             if (giftCertificateDetail != null)
                 giftCertificateViewModel.CommodityTypeID = giftCertificateDetail.Commodity.CommodityTypeID;
