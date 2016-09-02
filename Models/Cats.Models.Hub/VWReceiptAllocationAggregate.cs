@@ -8,7 +8,6 @@ namespace Cats.Models.Hubs
 {
     public class VWReceiptAllocationAggregate
     {
-        
         public decimal? ReceivedQuantity { get; set; }
         public System.Guid ReceiptAllocationID { get; set; }
         public bool IsCommited { get; set; }

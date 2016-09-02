@@ -15,5 +15,7 @@ namespace Cats.Services.Common
        List<LedgerService.AvailableShippingCodes> GetFreeSICodesByCommodity(int hubId, int commodityId);
        List<LedgerService.AvailableProjectCodes> GetFreePCCodesByCommodity(int hubId, int commodityId);
 
+       List<LedgerService.AvailableShippingCodes> GetFreeSICodesByCommodityAmount(int hubId, int commodityId, System.Guid dispatchAllocationId);
+
    }
 }
