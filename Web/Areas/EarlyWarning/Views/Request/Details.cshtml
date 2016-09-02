@@ -19,8 +19,8 @@
 }
 
 @{
-    //var user = (UserIdentity)System.Web.HttpContext.Current.User.Identity;
-    //var unit = user.Profile.PreferedWeightMeasurment;
+//var user = (UserIdentity)System.Web.HttpContext.Current.User.Identity;
+//var unit = user.Profile.PreferedWeightMeasurment;
 }
 
 @section Toolbar
@@ -52,45 +52,45 @@
     @*<a class="btn toolbar-btn " href="@Url.Action("Index", "Request", new { Area = "EarlyWarning" })" data-buttontype="btn_back_to_list"></a>*@
 
     @*<div class="btn-group">
-        <button class="btn">Action</button>
-        @{
-            <button class="btn dropdown-toggle " data-toggle="dropdown">
-                <span class="caret"></span>
-            </button>
-        }
-
-        <ul class="dropdown-menu">
-            @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Draft)
-            {
-            <li><a href="@Url.Action("Edit", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Edit</a></li>
-            <li><a href="@Url.Action("Allocation", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Allocation</a></li>
-            <li><a href="@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID})">Approve</a></li>
-
-            }
-            @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved && modelRequest.ProgramId == 3)
-            {
-            <li><a id="btnEditPlan" href="@Url.Action("CreateRequisitionForIDPS", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID, programId = modelRequest.ProgramId })"><i class="icon-plus"></i>IDPS Requisiton</a></li>
-            <li><a href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li>
-            }
-            else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
-            {
-            <li><a href="@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })"><i class="icon-plus"></i>Requisiton</a></li>
-            <li><a href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li>
-            }
-            else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Closed)
-            {
-            <li><a href="@Url.Action("RevertRequestStatus", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Revert Status</a></li>
-            }
-            else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Reject)
-            {
-            <li><a href="@Url.Action("Edit", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Edit</a></li>
-            <li><a href="@Url.Action("Allocation", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Allocation</a></li>
-            <li><a href="@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID})">Approve</a></li>
+            <button class="btn">Action</button>
+            @{
+                <button class="btn dropdown-toggle " data-toggle="dropdown">
+                    <span class="caret"></span>
+                </button>
             }
 
-        </ul>
-        <a class="btn toolbar-btn" href="@Url.Action("Print", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })" style="display:none1;" target="_blank" id="toolbar_button_print" title="Print"><i class="icon-print"></i></a>
-    </div>*@
+            <ul class="dropdown-menu">
+                @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Draft)
+                {
+                <li><a href="@Url.Action("Edit", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Edit</a></li>
+                <li><a href="@Url.Action("Allocation", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Allocation</a></li>
+                <li><a href="@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID})">Approve</a></li>
+
+                }
+                @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved && modelRequest.ProgramId == 3)
+                {
+                <li><a id="btnEditPlan" href="@Url.Action("CreateRequisitionForIDPS", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID, programId = modelRequest.ProgramId })"><i class="icon-plus"></i>IDPS Requisiton</a></li>
+                <li><a href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li>
+                }
+                else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
+                {
+                <li><a href="@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })"><i class="icon-plus"></i>Requisiton</a></li>
+                <li><a href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li>
+                }
+                else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Closed)
+                {
+                <li><a href="@Url.Action("RevertRequestStatus", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Revert Status</a></li>
+                }
+                else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Reject)
+                {
+                <li><a href="@Url.Action("Edit", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Edit</a></li>
+                <li><a href="@Url.Action("Allocation", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Allocation</a></li>
+                <li><a href="@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID})">Approve</a></li>
+                }
+
+            </ul>
+            <a class="btn toolbar-btn" href="@Url.Action("Print", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })" style="display:none1;" target="_blank" id="toolbar_button_print" title="Print"><i class="icon-print"></i></a>
+        </div>*@
 
     @* @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
         {
@@ -169,76 +169,108 @@
                 <button class="btn green dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis"></i> Action <i class="fa fa-angle-down"></i></button>
                 <ul class="dropdown-menu pull-right" style="-moz-min-width: 120px; -ms-min-width: 120px; -o-min-width: 120px; -webkit-min-width: 120px; min-width: 120px;">
                     @*<li><a id="btnAddFDP"  href="@Url.Action("AddBeneficary", "Request", new { id = modelRequest.RegionalRequestID })" >ADD FDP </a></li>*@
-                    @if (modelRequest.StatusID == (int) Cats.Models.Constant.RegionalRequestStatus.Draft)
+                    @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Draft)
                     {
                         <li><a class="btn green-haze-stripe" href="@Url.Action("Edit", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Edit</a></li>
                         <li><a class="btn green-haze-stripe" href="@Url.Action("Allocation", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Allocation</a></li>
                         @*<li><a class="btn green-haze-stripe" href="@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID })">Approve</a></li>*@
-                        if (modelRequest.Program == "Relief")
-                        {
-                            <li>
-                                <a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
-                                                                     EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))</a>
-                                <a class="btn green-haze-stripe">@Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
-                                                                     @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li>
-                                <a class="btn green-haze-stripe">@Html.PSNPOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
-                                                                     PsnpConstants.Operation.Approve_Request)</a>
-                                <a class="btn green-haze-stripe">@Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
-                                                                     RegionalConstants.Operation.Approve_regional_request)</a>
-                            </li>
+                    if (modelRequest.Program == "Relief")
+                    {
+                        <li>
+                            <a class="btn green-haze-stripe">
+                                @Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                     EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))
+                        </a>
+                        <a class="btn green-haze-stripe">
+                            @Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                     RegionalConstants.Operation.Approve_regional_request)
+                        </a>
+                    </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a class="btn green-haze-stripe">
+                                @Html.PSNPOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                     PsnpConstants.Operation.Approve_Request)
+                        </a>
+                        <a class="btn green-haze-stripe">
+                            @Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                     RegionalConstants.Operation.Approve_regional_request)
+                    </a>
+                </li>
                         }
 
 
                     }
-                    @if (modelRequest.StatusID == (int) Cats.Models.Constant.RegionalRequestStatus.Approved && modelRequest.ProgramId == (int) Cats.Models.Constant.Programs.IDPS)
+                    @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved && modelRequest.ProgramId == (int)Cats.Models.Constant.Programs.IDPS)
                     {
                         <li><a class="btn green-haze-stripe" id="btnEditPlan" href="@Url.Action("CreateRequisitionForIDPS", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID, programId = modelRequest.ProgramId})"><i class="icon-plus"></i>IDPS Requisiton</a></li>
                         <li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li>
                     }
-                    else if (modelRequest.StatusID == (int) Cats.Models.Constant.RegionalRequestStatus.Approved)
+                    else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
                     {
                         if (modelRequest.Program == "Relief")
                         {
-                            <li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("CreateRequisiton", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID}),
-                                                                     EarlyWarningConstants.Operation.New_requisition, @Html.Translate("Requisiton"))</a></li>
+                            <li>
+                                <a class="btn green-haze-stripe">
+                                    @Html.EarlyWarningOperationMenuItem(@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID }),
+                                                                     EarlyWarningConstants.Operation.New_requisition, @Html.Translate("Requisiton"))
+                            </a>
+                        </li>
 
-                            <li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID}),
-                                                                     EarlyWarningConstants.Operation.Reject_Request, @Html.Translate("Reject"))</a></li>
+                                                                    <li>
+                                                                        <a class="btn green-haze-stripe">
+                                                                            @Html.EarlyWarningOperationMenuItem(@Url.Action("RejectRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                     EarlyWarningConstants.Operation.Reject_Request, @Html.Translate("Reject"))
+                                                                    </a>
+                                                                </li>
                         }
                         else if (modelRequest.Program == "PSNP")
                         {
-                            <li><a class="btn green-haze-stripe">@Html.PSNPOperationMenuItem(@Html.Translate("Requisiton"), @Url.Action("CreateRequisiton", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID}),
-                                                                     PsnpConstants.Operation.New_requisition)</a></li>
+                            <li>
+                                <a class="btn green-haze-stripe">
+                                    @Html.PSNPOperationMenuItem(@Html.Translate("Requisiton"), @Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID }),
+                                                                     PsnpConstants.Operation.New_requisition)
+                            </a>
+                        </li>
 
-                            <li><a class="btn green-haze-stripe">@Html.PSNPOperationMenuItem(@Html.Translate("Reject"), @Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID}),
-                                                                     PsnpConstants.Operation.Reject_Request)</a></li>
+                                                                    <li>
+                                                                        <a class="btn green-haze-stripe">
+                                                                            @Html.PSNPOperationMenuItem(@Html.Translate("Reject"), @Url.Action("RejectRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                     PsnpConstants.Operation.Reject_Request)
+                                                                    </a>
+                                                                </li>
                         } @*
-                          
-                        <li><a class="btn green-haze-stripe" href="@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })"><i class="icon-plus"></i>Requisiton</a></li>
-                        <li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new { id = modelRequest.RegionalRequestID })">Reject</a></li>*@
+
+                                                                        <li><a class="btn green-haze-stripe" href="@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })"><i class="icon-plus"></i>Requisiton</a></li>
+                                                                        <li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new { id = modelRequest.RegionalRequestID })">Reject</a></li>*@
                     }
-                    else if (modelRequest.StatusID == (int) Cats.Models.Constant.RegionalRequestStatus.Closed)
+                    else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Closed)
                     {
                         @*<li><a class="btn green-haze-stripe" href="@Url.Action("RevertRequestStatus", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Revert Status</a></li>*@
 
-                        switch (modelRequest.Program)
-                        {
-                            case "Relief":
-                                <li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("RevertRequestStatus", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID}),
-                                                                         EarlyWarningConstants.Operation.Reverse_Request, @Html.Translate("Revert Status"))</a></li>
-                                break;
-                            case "PSNP":
-                                <li><a class="btn green-haze-stripe">@Html.PSNPOperationMenuItem(@Html.Translate("Revert Status"), @Url.Action("RevertRequestStatus", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID}),
-                                                                         PsnpConstants.Operation.Reverse_Request)</a></li>
+                    switch (modelRequest.Program)
+                    {
+                        case "Relief":
+                            <li>
+                                <a class="btn green-haze-stripe">
+                                    @Html.EarlyWarningOperationMenuItem(@Url.Action("RevertRequestStatus", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID }),
+                                                                         EarlyWarningConstants.Operation.Reverse_Request, @Html.Translate("Revert Status"))
+                            </a>
+                        </li>
+                            break;
+                        case "PSNP":
+                            <li>
+                                <a class="btn green-haze-stripe">
+                                    @Html.PSNPOperationMenuItem(@Html.Translate("Revert Status"), @Url.Action("RevertRequestStatus", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID }),
+                                                                         PsnpConstants.Operation.Reverse_Request)
+                            </a>
+                        </li>
                                 break;
                         }
                     }
-                    else if (modelRequest.StatusID == (int) Cats.Models.Constant.RegionalRequestStatus.Reject)
+                    else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Reject)
                     {
                         if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_request)
                             || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Edit_regional_request))
@@ -253,20 +285,28 @@
                         if (modelRequest.Program == "Relief")
                         {
                             <li>
-                                <a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
-                                                                     EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))</a>
-                                <a class="btn green-haze-stripe">@Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
-                                                                     @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)</a>
-                            </li>
+                                <a class="btn green-haze-stripe">
+                                    @Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                     EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))
+                            </a>
+                            <a class="btn green-haze-stripe">
+                                @Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                     @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)
+                        </a>
+                    </li>
                         }
                         else
                         {
                             <li>
-                                <a class="btn green-haze-stripe">@Html.PSNPOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
-                                                                     PsnpConstants.Operation.Approve_Request)</a>
-                                <a class="btn green-haze-stripe">@Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID}),
-                                                                     RegionalConstants.Operation.Approve_regional_request)</a>
-                            </li>
+                                <a class="btn green-haze-stripe">
+                                    @Html.PSNPOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                     PsnpConstants.Operation.Approve_Request)
+                            </a>
+                            <a class="btn green-haze-stripe">
+                                @Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                     RegionalConstants.Operation.Approve_regional_request)
+                        </a>
+                    </li>
                         }
                         @*<li><a class="btn green-haze-stripe" href="@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID })">Approve</a></li>*@
                     }
@@ -424,7 +464,7 @@
         <div class="table-responsive">
             @(Html.Kendo().Grid(Model)
                   .Name("Grid")
-                  .Columns(columns  =>
+                  .Columns(columns =>
                   {
 
                       foreach (System.Data.DataColumn column in Model.Columns)
@@ -439,7 +479,7 @@
                               columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).ClientGroupFooterTemplate("<div style='float: right'>#= kendo.toString(sum, 'N2') #</div>").ClientFooterTemplate("Sum: #=sum#"); ;
 
                           }
-                          else if(column.ColumnName == "Zone")
+                          else if (column.ColumnName == "Zone")
                           {
                               //columns.Bound(column.ColumnName);
                           }
@@ -478,7 +518,7 @@
         })
         )
 
-                          )
+            )
         </div>
     </div>
 </div>
@@ -596,6 +636,7 @@
     .popover-title {
         padding: 5px 2px;
     }
+
     .k-grid-content {
         min-height: 500px;
     }

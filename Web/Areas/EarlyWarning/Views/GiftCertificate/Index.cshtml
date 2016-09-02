@@ -83,6 +83,7 @@
                                             @Html.EarlyWarningOperationButton(
                     @Url.Action("GenerateTemplate", new { id = item.GiftCertificateID }),
                     EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template, "<button type=\"button\" class=\"btn btn-xs btn-primary\"><span class=\"fa fa-print\"></span> " + @Html.Translate("Print") + " </button> ", "btn-Print-gift")
+
                                             if (item.IsPrinted == false & item.AllowReject == false)
                                             {
                                                 @Html.EarlyWarningOperationButton(

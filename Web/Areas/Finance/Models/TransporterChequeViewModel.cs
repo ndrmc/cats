@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using Cats.Models;
@@ -10,8 +11,11 @@ namespace Cats.Areas.Finance.Models
     {
         public int TransporterChequeId { get; set; }
         public string PaymentRequestsList { get; set; }
+        [Required]
         public string CheckNo { get; set; }
+        [Required]
         public string PaymentVoucherNo { get; set; }
+        [Required]
         public string BankName { get; set; }
         public DateTime? PaymentDate { get; set; }
         public decimal Amount { get; set; }

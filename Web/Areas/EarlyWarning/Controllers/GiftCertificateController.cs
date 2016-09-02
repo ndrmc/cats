@@ -57,23 +57,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewBag.Title = id == 1 ? "Draft Gift Certificates" : "Approved Gift Certificates";
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             var gifts = _giftCertificateService.Get(t => t.StatusID == id, null, "GiftCertificateDetails,Donor,GiftCertificateDetails.Detail,GiftCertificateDetails.Commodity");
-
-            var donations = _donationPlanHeaderService.GetAllDonationPlanHeader().Where(d => d.IsCommited == false);
-
-            List<Cats.Models.GiftCertificate> filteredGiftCertificates = gifts.Where(giftCertificate => donations.FirstOrDefault(d =>
-            d.ShippingInstructionId == giftCertificate.ShippingInstructionID) != null).ToList();
-
             var giftsViewModel = GiftCertificateViewModelBinder.BindListGiftCertificateViewModel(gifts.ToList(), datePref, true);
-
-            foreach (var filteredGift in filteredGiftCertificates)
-            {
-                GiftCertificateViewModel giftCertificateViewModel =
-                    giftsViewModel.Find(g => g.SiId == filteredGift.ShippingInstructionID);
-
-                if (giftCertificateViewModel != null)
-                    giftCertificateViewModel.AllowReject = false;
-            }
-
             var user = UserAccountHelper.GetUser(HttpContext.User.Identity.Name);
             var roles = _userAccountService.GetUserPermissions(user.UserName);
 
@@ -105,8 +89,6 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult GenerateTemplate(int id)
         {
             return RedirectToAction("LetterTemplate", new { giftceritificateId = id });
-
-
         }
 
         public virtual ActionResult NotUnique(string siNumber, int giftCertificateId = -1)
@@ -298,7 +280,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]
         public ActionResult Rejected(int id)
         {
+            int donationHeaderCount = _giftCertificateService.FindById(id).Donor.DonationPlanHeaders.Count;
             var giftCertificate = _giftCertificateService.FindById(id);
+            if (giftCertificate.IsPrinted || donationHeaderCount > 0)
+                return PartialView("_NotReject", null);
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             var giftCertificateViewModel = GiftCertificateViewModelBinder.BindGiftCertificateViewModel(giftCertificate, datePref);
             return PartialView("_Reject", giftCertificateViewModel);
@@ -308,22 +293,22 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]
         public ActionResult Reject(int giftCertificateID)
         {
-            var shippingInstruction = _giftCertificateService.FindById(giftCertificateID).ShippingInstructionID;
-            var donations =
-               _donationPlanHeaderService.GetAllDonationPlanHeader()
-                   .Where(d => d.ShippingInstructionId == shippingInstruction == d.IsCommited);
-
-            var donationPlanHeaders = donations as DonationPlanHeader[] ?? donations.ToArray();
-            if (donationPlanHeaders.Any()) // if any approved or commited receipt plan is found under this giftcertificate, then don't revert 
+            int donationHeaderCount = _giftCertificateService.FindById(giftCertificateID).Donor.DonationPlanHeaders.Count;
+            
+            if (donationHeaderCount > 0) // if any approved or commited receipt plan is found under this giftcertificate, then don't revert 
             {
                 return RedirectToAction("Index", 2);
             }
 
+            var donations =
+             _donationPlanHeaderService.GetAllDonationPlanHeader()
+                 .Where(d => d.ShippingInstructionId == _giftCertificateService.FindById(giftCertificateID).ShippingInstructionID);
+
             // find all receipt plans that are not commited or approved under this giftcertificate
             // and revert them all
-            if (donations != null)
+            if (donationHeaderCount > 0)
             {
-                foreach (var donation in donationPlanHeaders.ToList())
+                foreach (var donation in donations.ToList())
                 {
                     if (donation.IsCommited == true)
                     {
@@ -340,7 +325,6 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _transactionService.RevertGiftCertificate(giftCertificateID);
 
             return RedirectToAction("Index", 2);
-
         }
         [HttpGet]
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]
@@ -426,11 +410,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
             }
             catch (Exception ex)
             {
-
-
                 _log.Error(ex.Message.ToString(CultureInfo.InvariantCulture), ex.GetBaseException());
                 //System.IO.File.AppendAllText(@"c:\temp\errors.txt", " ShowTemplate : " + ex.Message.ToString(CultureInfo.InvariantCulture));
-
+          
             }
 
 

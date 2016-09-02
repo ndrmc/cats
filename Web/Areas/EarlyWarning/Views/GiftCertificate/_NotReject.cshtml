@@ -4,25 +4,24 @@
 
 <div class="modal-dialog modal-sm">
     <div class="modal-content">
-      
+
         <div class="modal-header">
-          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-          <h4 id="myModalLabel" class="modal-title">@Html.Translate("Unable to reject")</h4>
+            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+            <h4 id="myModalLabel" class="modal-title">@Html.Translate("Unable to reject")</h4>
         </div>
 
-       
-            <div class="modal-body">
-                
-                <p>
-                    @Html.Translate("This gift certificate is printed unable to reject ")
-                </p>
+        <div class="modal-body">
 
-            </div>
-            <div class="modal-footer">
-                
-                <button class="btn" data-dismiss="modal" aria-hidden="true"> @Html.Translate("Cancel")</button>
-            </div>
-   
-        
+            <p>
+                @Html.Translate("This gift certificate is printed or may have a receipt plan, unable to reject.")
+            </p>
+
+        </div>
+        <div class="modal-footer">
+
+            <button class="btn" data-dismiss="modal" aria-hidden="true"> @Html.Translate("Cancel")</button>
+        </div>
+
+
     </div>
 </div>

@@ -107,7 +107,7 @@ namespace Cats.Services.Logistics
                                                                                && m.ETA ==donationPlanHeader.ETA );
                foreach (var receiptAllocation in receiptPlans)
                {
-                   _unitOfWork.ReceiptAllocationReository.Delete(receiptAllocation);
+                   //_unitOfWork.ReceiptAllocationReository.Delete(receiptAllocation);
                }
                _unitOfWork.Save();
                return true;

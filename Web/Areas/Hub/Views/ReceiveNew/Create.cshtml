@@ -386,7 +386,6 @@
             </div>
         </div>
     </div>
-
     if (Model.IsTransporterDetailVisible)
     {
         <div class="form-horizontal row-fluid">
@@ -406,56 +405,34 @@
                                 <div class="form-group col-md-12">
                                     <div class="col-md-4 control-label">@Html.LabelFor(model => model.ResponsibleDonorId)</div>
                                     <div class="col-md-8">
-                                        @*@(Html.Kendo().ComboBox()
-                                              .Name("ResponsibleDonorId")
-                                              .Placeholder("Select Responsible Donor")
-                                              .SelectedIndex(0)
-                                              .DataTextField("Name")
-                                              .HtmlAttributes(new { @class = "form-control" })
-                                              .DataValueField("DonorId")
-                                              .Filter(FilterType.Contains)
-                                              .DataSource(source => source.Read(read => read.Action("GetResponsibleDonor", "ReceiveNew"))))
-                                            <span class="help-block"> @Html.ValidationMessageFor(model => model.ResponsibleDonorId)</span>*@
-                                        @(Html.Kendo().ComboBox()
+                                        @(Html.Kendo().ComboBoxFor(m => m.ResponsibleDonorId)
                                               .Name("ResponsibleDonorId")
                                               .Placeholder("--Select Responsible Donor--")
                                               .DataTextField("Name")
                                               .DataValueField("DonorId")
                                               .Filter(FilterType.Contains)
                                               .HtmlAttributes(new { @class = "form-control" })
-                                              .DataSource(source => source.Read(read => read.Action("GetResponsibleDonor", "ReceiveNew")
-                                              .Data("filterStacks"))
-                                              .ServerFiltering(true))
-                                              .AutoBind(false)
-                                              .CascadeFrom("DonorId"))
+                                              .DataSource(source => source.Read(read => read.Action("GetResponsibleDonor", "ReceiveNew"))
+                                              )
+                                        )
                                         <span class="help-block"> @Html.ValidationMessageFor(model => model.ResponsibleDonorId)</span>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-12">
                                     <div class="col-md-4 control-label">@Html.LabelFor(model => model.SourceDonorId)</div>
                                     <div class="col-md-8">
-                                        @*@(Html.Kendo().ComboBox()
-                                              .Name("SourceDonorId")
-                                              .Placeholder("Select Source Donor")
-                                              .SelectedIndex(0)
-                                              .HtmlAttributes(new { @class = "form-control" })
-                                              .DataTextField("Name")
-                                              .DataValueField("DonorId")
-                                              .Filter(FilterType.Contains)
-                                              .DataSource(source => source.Read(read => read.Action("GetSourceDonor", "ReceiveNew"))))
-                                            <span class="help-block"> @Html.ValidationMessageFor(model => model.SourceDonorId)</span>*@
-                                        @(Html.Kendo().ComboBox()
+                                        <span class="help-block"> @Html.ValidationMessageFor(model => model.SourceDonorId)</span>
+                                        @(Html.Kendo().ComboBoxFor(s => s.SourceDonorId)
                                               .Name("SourceDonorId")
                                               .Placeholder("--Select Source Donor--")
                                               .DataTextField("Name")
-                                              .DataValueField("SourceDonorId")
+                                              .DataValueField("DonorId")
                                               .Filter(FilterType.Contains)
                                               .HtmlAttributes(new { @class = "form-control" })
                                               .DataSource(source => source.Read(read => read.Action("GetSourceDonor", "ReceiveNew")
-                                              .Data("filterStacks"))
-                                              .ServerFiltering(true))
-                                              .AutoBind(false)
-                                              .CascadeFrom("DonorId"))
+                                              )
+                                      )
+                                        )
                                         <span class="help-block"> @Html.ValidationMessageFor(model => model.SourceDonorId)</span>
 
                                     </div>
@@ -488,26 +465,18 @@
                             <div class="form-group col-md-12">
                                 <div class="col-md-4 control-label">@Html.LabelFor(model => model.TransporterId)</div>
                                 <div class="col-md-8">
-                                    @*@(Html.Kendo().ComboBoxFor(m => m.TransporterId)
-                                          .Placeholder("--Select Transporter--")
-                                          .DataTextField("Name")
-                                          .HtmlAttributes(new { @class = "form-control" })
-                                          .DataValueField("TransporterId")
-                                          .Filter(FilterType.Contains)
-                                          .DataSource(source => source.Read(read => read.Action("GetTransporter", "ReceiveNew"))))
-                                        <span class="help-block"> @Html.ValidationMessageFor(model => model.TransporterId)</span>*@
-                                    @(Html.Kendo().ComboBox()
-                                       .Name("Transporter")
+                                    @(Html.Kendo().ComboBoxFor(m => m.TransporterId)
+                                       .Name("TransporterID")
                                        .Placeholder("--Select Transporter--")
                                        .DataTextField("Name")
                                        .DataValueField("TransporterId")
                                        .Filter(FilterType.Contains)
                                        .HtmlAttributes(new { @class = "form-control" })
                                        .DataSource(source => source.Read(read => read.Action("GetTransporter", "ReceiveNew")
-                                       .Data("filterStacks"))
-                                       .ServerFiltering(true))
-                                       .AutoBind(false)
-                                       .CascadeFrom("TransporterId"))
+                                    )
+                                       )
+
+                                    )
                                     <span class="help-block">@Html.ValidationMessageFor(model => model.TransporterId)</span>
                                 </div>
                             </div>

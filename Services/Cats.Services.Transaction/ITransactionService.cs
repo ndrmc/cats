@@ -30,6 +30,7 @@ namespace Cats.Services.Transaction
         bool PostSIAllocation(int requisitionID);
         bool PostSIAllocationUncommit(int requisitionID);
         bool PostDonationPlan(DonationPlanHeader donationPlanDetail);
+        bool RevertDonationPlan(DonationPlanHeader donationPlanDetail);
         bool PostDistribution(int distributionId);
     }
 }
