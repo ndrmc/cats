@@ -199,16 +199,16 @@ namespace Cats.Areas.Hub.Controllers
             return free;
         }
 
-        public JsonResult AvailableSI(int reqDetailId, int siID, int ComID)
+        public JsonResult AvailableSI(int reqDetailId, int siID, int ComID, System.Guid DaID)
         {
             //var hubId = _hubAllocationService.GetAllocatedHubId(reqId);
             var hubId =
                 _sipcAllocationService.FindBy(t => t.RequisitionDetailID == reqDetailId && t.Code == siID).Select(t=>t.HubID).FirstOrDefault();
-            List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodity(hubId, ComID);
-            var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
-            tlistFiltered = tlistFiltered.Where(item => item.amount > 0);
-            ViewBag.AvailableSIList = tlistFiltered;
-            return (Json(tlistFiltered, JsonRequestBehavior.AllowGet));
+            List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodityAmount(hubId, ComID, DaID);
+            //var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
+            //tlistFiltered = tlistFiltered.Where(item => item.amount > 0);
+            //ViewBag.AvailableSIList = tlistFiltered;
+            return (Json(freeSICodes, JsonRequestBehavior.AllowGet));
 
         }
         public ActionResult DispatchedToTransferListAjax([DataSourceRequest] DataSourceRequest request, int? HubID, bool? closed, int? commodityType)
@@ -398,10 +398,10 @@ namespace Cats.Areas.Hub.Controllers
                 dispatch.Commodity = commodity.Name;
             }
             var hubId = _hubAllocationService.GetAllocatedHubId(dispatch.RequisitionId ?? 0);
-            List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodity(hubId, dispatch.CommodityID);
-            var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
-            tlistFiltered = tlistFiltered.Where(item => item.amount > 0).ToList();
-            ViewBag.AvailableSIList = tlistFiltered;
+            List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodityAmount(hubId, dispatch.CommodityID, id);
+            //var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
+            //tlistFiltered = tlistFiltered.Where(item => item.amount > 0).ToList();
+            ViewBag.AvailableSIList = freeSICodes;
             ViewBag.plannedAmount = dispatch.plannedAmount;
             ViewBag.recivedAmount = dispatchAllocation.DispatchedAmount;
             ViewBag.RequisitionDetailID =

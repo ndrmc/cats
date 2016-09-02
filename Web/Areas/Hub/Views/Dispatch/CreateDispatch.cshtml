@@ -73,8 +73,8 @@
         </div>
         <div class="span4">
             <div class="control-group">
-                <div class="control-label"> 
-                    @Html.LabelFor(model => model.SINumber)
+                <div class="control-label">
+                    @Html.LabelFor(model => model.ShippingInstructionID)
                 </div>
                 <div class="controls">
                     @(Html.Kendo().ComboBoxFor(m => m.ShippingInstructionID)
@@ -82,15 +82,16 @@
                               .DataTextField("SIcode")
                               .DataValueField("siCodeId")
                               .Filter(FilterType.Contains)
-                              .DataSource(source => source.Read(read => read.Action("AvailableSI", "Dispatch", 
-                                    new { @reqDetailId = ViewBag.RequisitionDetailID, @siID = Model.ShippingInstructionID , @ComID = Model.CommodityID }))))
+                              .DataSource(source => source.Read(read => read.Action("AvailableSI", "Dispatch",
+                                    new { @reqDetailId = ViewBag.RequisitionDetailID, @siID = Model.ShippingInstructionID, @ComID = Model.CommodityID, @DaID = Model.DispatchAllocationID }))))
 
 
                     @Html.ValidationMessageFor(model => model.ShippingInstructionID)
 
                 </div>
-               
+
             </div>
+
             <div class="control-group">
                 <div class="control-label">
                     @Html.LabelFor(model => model.Region)
