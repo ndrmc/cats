@@ -5,8 +5,8 @@
 <input type="text" id="ReceivedDatePref" class="cats-datepicker2" value="@Model"/>
 
 <script type="text/javascript">
-    $(".cats-datepicker2").ethcal_datepicker();
-    $("#ReceivedDatePref").click();
+    $("input[class='cats-datepicker2'][id='ReceivedDatePref']").ethcal_datepicker();
+    $("input[class='cats-datepicker2'][id='ReceivedDatePref']").click();
     var thisPref = $("input[placeholder='dd/mm/yyyy'][id='ReceivedDatePref']");
     var thisPrefGC = $("input[class='cats-datepicker2'][id='ReceivedDatePref']");
  

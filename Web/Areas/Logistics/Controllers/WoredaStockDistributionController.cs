@@ -299,7 +299,9 @@ namespace Cats.Areas.Logistics.Controllers
                          RequisitionId = woredaDistributionDetail.RequisitionId,
                          DistributionStartDate = woredaDistributionDetail.DistributionStartDate,
                          DistributionStartDatePref = woredaDistributionDetail.DistributionStartDate.GetValueOrDefault().ToCTSPreferedDateFormat(datePref),
-                         DistributionEndDate = woredaDistributionDetail.DistributionEndDate
+                         DistributionEndDate = woredaDistributionDetail.DistributionEndDate,
+                         DistributionEndDatePref = woredaDistributionDetail.DistributionEndDate.GetValueOrDefault().ToCTSPreferedDateFormat(datePref)
+
                      }
                         ).ToList()
             };
@@ -373,6 +375,7 @@ namespace Cats.Areas.Logistics.Controllers
             }
             return null;
         }
+        String datePref = String.Empty;
         [HttpPost]
         public ActionResult Create(WoredaStockDistributionWithDetailViewModel woredaStockDistribution)
         {
@@ -393,10 +396,7 @@ namespace Cats.Areas.Logistics.Controllers
                     var saved = _utilizationService.AddHeaderDistribution(bindToModel);
                     if (saved)
                     {
-                        //var fdpStockDistribution = _commonService.GetFDPs(woredaStockDistribution.WoredaID);
-
-                        //var woredaDistributionDetailViewModels = GetWoredaStockDistribution(fdpStockDistribution,null);
-
+               
 
                         var distributionHeader = _utilizationService.FindBy(m => m.WoredaID == woredaStockDistribution.WoredaID &&
                                                              m.PlanID == woredaStockDistribution.PlanID &&
@@ -417,11 +417,11 @@ namespace Cats.Areas.Logistics.Controllers
                                 LossReason = woredaDistributionDetailViewModel.LossReasonId,
                                 DistributedAmount = woredaDistributionDetailViewModel.DistributedAmount,
                                 RequisitionId = woredaDistributionDetailViewModel.RequisitionId,
-                                DistributionStartDate = woredaDistributionDetailViewModel.DistributionStartDate,
-
-                                DistributionEndDate = woredaDistributionDetailViewModel.DistributionEndDate
-
+             
                             };
+
+                             SetServiceModelDate(distributionDetailModel, woredaDistributionDetailViewModel);
+
                             _utilizationDetailSerivce.AddDetailDistribution(distributionDetailModel);
                         }
 
@@ -476,6 +476,7 @@ namespace Cats.Areas.Logistics.Controllers
                                           Convert.ToDateTime(
                                               (woredaDistributionDetailViewModel.DistributionStartDate.ToString()))
                                         : null;
+
                                 woredaDistributionDetail.DistributionEndDate =
                                     woredaDistributionDetailViewModel.DistributionEndDate != null
                                         ? (DateTime?)
@@ -530,6 +531,27 @@ namespace Cats.Areas.Logistics.Controllers
                                             month = woredaStockDistribution.Month
                                         });
             return RedirectToAction("Create");
+        }
+
+        private void SetServiceModelDate(WoredaStockDistributionDetail distributionDetailModel, WoredaDistributionDetailViewModel woredaDistributionDetailViewModel)
+        {
+            datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
+
+            //if(datePref.Trim().ToLower().Equals("gc"))
+            //{
+                distributionDetailModel.DistributionStartDate = woredaDistributionDetailViewModel.DistributionStartDate;
+                distributionDetailModel.DistributionEndDate = woredaDistributionDetailViewModel.DistributionEndDate;
+
+
+            //}
+            //else
+            //{
+            //    //distributionDetailModel.DistributionStartDate =  DateTime.Parse(woredaDistributionDetailViewModel.DistributionStartDatePref).ToCTSPreferedDateFormat()
+            //    //    . ToCTSPreferedDateFormat(datePref);
+            //    //distributionDetailModel.DistributionEndDate = woredaDistributionDetailViewModel.DistributionEndDate;
+
+            //}
+
         }
 
 
