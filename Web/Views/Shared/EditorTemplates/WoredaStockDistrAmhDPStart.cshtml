@@ -1,0 +1,16 @@
+﻿@using Cats.Helpers
+@using Kendo.Mvc.UI
+@model string
+
+ 
+
+<input type="text" id="DistributionStartDatePref" class="cats-datepicker2" value="@Model" />
+
+<script type="text/javascript">
+    $(".cats-datepicker2").ethcal_datepicker();
+    $("#DistributionStartDatePref").click();
+    var DistributionStartDatePrefHidden = $("input[placeholder='dd/mm/yyyy'][id='DistributionStartDatePref']");
+    var DistributionStartDatePrefShown = $("input[class='cats-datepicker2'][id='DistributionStartDatePref']");
+
+
+</script>
