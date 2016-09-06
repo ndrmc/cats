@@ -67,6 +67,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ViewResult Index()
         {
             ViewBag.Status = 1;
+
             var filter = new SearchRequistionViewModel();
             var user = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name);
             var firstOrDefault = _commonService.GetAminUnits(t => t.AdminUnitTypeID == 2 && t.AdminUnitID == user.RegionID).FirstOrDefault();
@@ -236,17 +237,33 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             var input = _reliefRequisitionService.GetRequisitionByRequestId(id).ToList();
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            
+
+            IList<string> allRequisitionNumbers = new List<string>();
+            IList<string>  filteredReqNumbers = new List<string>();
+
             foreach (var reliefRequisitionNew in input)
             {
                 if (reliefRequisitionNew.RequestedDate.HasValue)
                 {
                     reliefRequisitionNew.RequestDatePref = reliefRequisitionNew.RequestedDate.Value.ToCTSPreferedDateFormat(datePref);
                     reliefRequisitionNew.RegionalRequestId = id;
+
+                    filteredReqNumbers.Add(reliefRequisitionNew.Input.RequisitionNo);
                 }
                 reliefRequisitionNew.MonthName = RequestHelper.MonthName(reliefRequisitionNew.Month);
             }
             ViewBag.RequestId = id;
+
+            var requsitionNos = _reliefRequisitionService.GetAllReliefRequisition();
+
+            foreach (var reliefRequisitionNew in requsitionNos)
+            {
+                allRequisitionNumbers.Add(reliefRequisitionNew.RequisitionNo);
+            }
+
+            ViewBag.AllRequistionNumbers = allRequisitionNumbers; // will be used to validate new input requistion numbers...
+            ViewBag.ClientSideReqNumbers = filteredReqNumbers; // will be used to validate new input requistion numbers...
+
             return View(input);
         }
 
