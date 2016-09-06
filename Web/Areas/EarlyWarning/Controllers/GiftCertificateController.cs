@@ -340,6 +340,13 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]
         public ActionResult Approve(int GiftCertificateID)
         {
+            var detailCount = _giftCertificateDetailService.GetAllGiftCertificateDetail().Where(g => g.GiftCertificateID == GiftCertificateID).ToList().Count();
+
+            if (detailCount == 0)
+            {
+                return RedirectToAction("Index");
+            }
+
             var result = _transactionService.PostGiftCertificate(GiftCertificateID);
             return RedirectToAction("Index");
         }
