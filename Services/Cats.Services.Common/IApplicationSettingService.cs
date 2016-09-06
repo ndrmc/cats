@@ -20,11 +20,21 @@ namespace Cats.Services.Common
         int getTransporterChequeWorkflow();
         int getDefaultRation();
         int getBidWinnerWorkflow();
+        int getRegionalRequestWorkflow();
         ApplicationSetting FindById(int id);
         List<ApplicationSetting> GetAllApplicationSetting();
         List<ApplicationSetting> FindBy(Expression<Func<ApplicationSetting, bool>> predicate);
         void SetValue(string name, string value);
         string FindValue(string name);
-        
+        int getTransportOrderWorkflow();
+        int getReciptPlanForLoanWorkflow();
+        int getNeedAssessmentPlanWorkflow();
+        int getNeedAssessmentWorkflow();
+        int getReliefRequisitionWorkflow();
+        int getHRDWorkflow();
+        int GetLocalPurchaseReceiptPlanWorkflow();
+        int GetSwapWrokflow();
+        int getTransportRequisitionWorkflow();
+        int getDonationPlanHeaderWorkflow();
     }
 }

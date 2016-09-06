@@ -133,7 +133,7 @@ namespace Cats.Infrastructure
             // Security service registration
             kernel.Bind<IUserAccountService>().To<UserAccountService>();
             kernel.Bind<Cats.Data.Security.IUnitOfWork>().To<Cats.Data.Security.UnitOfWork>();
-
+            kernel.Bind<IReasonService>().To<ReasonService>();
             kernel.Bind<ITransportOrderService>().To<TransportOrderService>();
             kernel.Bind<IProjectCodeService>().To<ProjectCodeService>();
             kernel.Bind<IProjectCodeAllocationService>().To<ProjectCodeAllocationService>();
@@ -269,6 +269,7 @@ namespace Cats.Infrastructure
             kernel.Bind<ILossReasonService>().To<LossReasonService>();
             kernel.Bind<ITransporterChequeDetailService>().To<TransporterChequeDetailService>();
             kernel.Bind<Cats.Services.Administration.IStoreService>().To<Cats.Services.Administration.StoreService>();
+            kernel.Bind<ILgDashboardService>().To<LgDashboardService>();
         }
         private void AddBindingsHub()
         {

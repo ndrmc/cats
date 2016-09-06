@@ -204,6 +204,7 @@ namespace Cats.Helpers
                     case 7: words += NumWordsAM(decPart) + " አስር-ሚሊየንኛ"; break;
                 }
             }
+
             //words = NumWords(intPart);
 
             //if (decPart > 0)

@@ -35,7 +35,7 @@
         </div>
         <div class="actions">
             <a class="btn green toolbar-btn" href="#" style="display:none;" target="_blank" id="toolbar_button_print" title="Print"><i class="fa fa-print"></i> @Html.Translate("Print")</a>
-           @if (Model.StatusID == (int)Cats.Models.Constant.TransportRequisitionStatus.Draft)
+            @if (Model.StatusID == (int)Cats.Models.Constant.TransportRequisitionStatus.Draft)
             {
                 if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_transport_requisition).ToString() == "Edit_transport_requisition")
                 {

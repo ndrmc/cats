@@ -92,8 +92,6 @@ namespace Cats.Data
         public DbSet<GiftCertificate> GiftCertificates { get; set; }
         public DbSet<GiftCertificateDetail> GiftCertificateDetails { get; set; }
         public DbSet<Unit> Units { get; set; }
-        public DbSet<Season> Seasons { get; set; }
-
         public DbSet<ProcessTemplate> ProcessTemplates { get; set; }
         public DbSet<StateTemplate> StateTemplates { get; set; }
         public DbSet<FlowTemplate> FlowTemplates { get; set; }
@@ -240,7 +238,6 @@ namespace Cats.Data
             modelBuilder.Configurations.Add(new HRDMap());
             modelBuilder.Configurations.Add(new HRDDetailMap());
             modelBuilder.Configurations.Add(new RationDetailMap());
-
             modelBuilder.Configurations.Add(new RegionalPSNPPlanMap());
             modelBuilder.Configurations.Add(new RegionalPSNPPlanDetailMap());
             modelBuilder.Configurations.Add(new WoredaHubMap());

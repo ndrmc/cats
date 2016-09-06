@@ -416,7 +416,7 @@ namespace Cats.Areas.Hub.Controllers
         {
             ViewBag.UnitID = new SelectList(_unitService.GetAllUnit(), "UnitID", "Name", dispatchviewmodel.UnitID);
             var errors = ModelState
-                .Where(x => x.Value.Errors.Count > 0)
+				.Where(x => x.Value.Errors.Count > 0)
                 .Select(x => new {x.Key, x.Value.Errors})
                 .ToArray();
             if (ModelState.IsValid)
@@ -462,8 +462,7 @@ namespace Cats.Areas.Hub.Controllers
 
                     _transactionService.SaveDispatchTransaction(
                         new DispatchViewModel
-                            
-                        {
+                            {
                             CommodityID = prevdispatchdetail.CommodityID,
                             Quantity = prevdispatchdetail.DispatchedQuantityInMT,
                             QuantityInUnit = prevdispatchdetail.DispatchedQuantityInUnit,

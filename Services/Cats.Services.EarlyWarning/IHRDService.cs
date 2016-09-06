@@ -26,7 +26,7 @@ namespace Cats.Services.EarlyWarning
         Plan GetPlan(int id);
         void PublishHrd(int hrdId);
         bool AddHRDFromAssessment(HRD hrd);
-        bool AddHRD(int year,int userID,int seasonID,int rationID,int planID);
+        bool AddHRD(int year,int userID,int seasonID,int rationID,int planID,int businessProcessId);
         int GetWoredaBeneficiaryNumber(int hrdID, int woredaID);
         IEnumerable<HRDViewModel> GetHrds();
     }

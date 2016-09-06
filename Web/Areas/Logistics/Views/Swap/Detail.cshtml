@@ -1,4 +1,5 @@
 ﻿@using Cats.Helpers
+@using Cats.Models
 @using Cats.Models.Constant
 @using Cats.Security
 @model Cats.Models.Transfer
@@ -60,6 +61,15 @@
                     <i class="fa fa-angle-down"></i>
                 </a>
                 <ul class="dropdown-menu pull-right">
+                    @{
+                        var currentState = Model.BusinessProcess.CurrentState;
+                        var state = currentState != null ? currentState.BaseStateTemplate : null;
+                        var isDraft = false;
+                        if (state != null)
+                        {
+                            isDraft = state.Name == "Draft";
+                        }
+                    }
                     @if (Model.StatusID == (int) LocalPurchaseStatus.Draft)
                     {
                         if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_Swap).ToString() == "Edit_Swap")
@@ -68,13 +78,25 @@
                         }
                         if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_Swap).ToString() == "Approve_Swap")
                         {
-                            <li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "Swap", new {id = Model.TransferID})">@Html.Translate("Approve(Send to Hub)")</a></li>
+                            foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                             {
+
+                                 if (actions.Name == "Approve")
+                                 {
+                                     <li class="edit_button">
+                                         <a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@Model.TransferID)" title="@actions.Name">"Approve(Send to Hub)"</a>
+                                     </li>
+                                 }
+                             }
+                            <li class="divider"></li>
+                            <li class="edit_button"><a href="javascript:workflow_history(@Model.BusinessProcessID)"> History </a></li>
+                            @*<li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "Swap", new {id = Model.TransferID})">@Html.Translate("Approve(Send to Hub)")</a></li>*@
                         }
                     }
 
                 </ul>
             </div>
-            
+
             <a class="btn  btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
         </div>
     </div>
@@ -86,7 +108,7 @@
                         @Html.LabelFor(m => m.ShippingInstruction.Value, @Html.Translate("SI Number"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.ShippingInstruction.Value, new {Disabled = true, @class="form-control"})
+                        @Html.TextBoxFor(m => m.ShippingInstruction.Value, new {Disabled = true, @class = "form-control"})
                     </div>
                 </div>
                 <div class="form-group col-sm-6">
@@ -94,7 +116,7 @@
                         @Html.LabelFor(m => m.SourceHubID, @Html.Translate("Source Hub"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.Hub.Name, new {Disabled = true, @class="form-control"})
+                        @Html.TextBoxFor(m => m.Hub.Name, new {Disabled = true, @class = "form-control"})
                     </div>
                 </div>
             </div>
@@ -104,7 +126,7 @@
                         @Html.LabelFor(m => m.DestinationSwap, @Html.Translate("Destination to Swap"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.Hub3.Name, new {Disabled = true, @class="form-control"})
+                        @Html.TextBoxFor(m => m.Hub3.Name, new {Disabled = true, @class = "form-control"})
 
                     </div>
                 </div>
@@ -113,7 +135,7 @@
                         @Html.LabelFor(m => m.ProgramID, @Html.Translate("Program"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.Program.Name, new {Disabled = true, @class="form-control"})
+                        @Html.TextBoxFor(m => m.Program.Name, new {Disabled = true, @class = "form-control"})
                     </div>
                 </div>
             </div>
@@ -123,7 +145,7 @@
                         @Html.LabelFor(m => m.CommodityID, @Html.Translate("Commodity"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.Commodity.Name, new {Disabled = true, @class="form-control"})
+                        @Html.TextBoxFor(m => m.Commodity.Name, new {Disabled = true, @class = "form-control"})
                     </div>
                 </div>
                 <div class="form-group col-sm-6">
@@ -131,7 +153,7 @@
                         @Html.LabelFor(m => m.CommoditySourceID, @Html.Translate("Commodity Source"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.CommoditySource.Name, new {Disabled = true, @class="form-control"})
+                        @Html.TextBoxFor(m => m.CommoditySource.Name, new {Disabled = true, @class = "form-control"})
                     </div>
                 </div>
             </div>
@@ -141,7 +163,7 @@
                         @Html.LabelFor(m => m.ProjectCode, @Html.Translate("Project Code"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.ProjectCode, new {Disabled = true, @class="form-control"})
+                        @Html.TextBoxFor(m => m.ProjectCode, new {Disabled = true, @class = "form-control"})
                     </div>
                 </div>
                 <div class="form-group col-sm-6">
@@ -149,7 +171,7 @@
                         @Html.LabelFor(m => m.SourceSwap, @Html.Translate("Source from Swap"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.Hub2.Name, new {Disabled = true, @class="form-control"})
+                        @Html.TextBoxFor(m => m.Hub2.Name, new {Disabled = true, @class = "form-control"})
 
                     </div>
                 </div>
@@ -160,7 +182,7 @@
                         @Html.LabelFor(m => m.DestinationHubID, @Html.Translate("Destination Hub"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.Hub1.Name, new {Disabled = true, @class="form-control"})
+                        @Html.TextBoxFor(m => m.Hub1.Name, new {Disabled = true, @class = "form-control"})
                     </div>
                 </div>
                 <div class="form-group col-sm-6">
@@ -168,10 +190,53 @@
                         @Html.LabelFor(m => m.Quantity, @Html.Translate("Quantity in MT"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.Quantity, new {Disabled = true, @class="form-control"})
+                        @Html.TextBoxFor(m => m.Quantity, new {Disabled = true, @class = "form-control"})
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id="modalHistoryLabel">Activity History</h4>
+            </div>
+            <div class="modal-body" id="modalHistoryBody">History</div>
+
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml");
+<script>
+    // Workflow Implementation
+    var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
+
+    function promot_workflow(BusinessProcessID, nextstate, actionname, PlanID) {
+        //alert(PaymentRequestID);
+        $('#ParentBusinessProcessID').val(BusinessProcessID);
+        $('#stateID').val(nextstate);
+        $('#modalPromotionLabel').html(actionname);
+        $('#TransporterChequeID').val(TransporterChequeID);
+        $('#modalPromotion').modal();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ApproveHRD", "HRD")",
+            data: "{id:" + PlanID + "}",
+        dataType: json
+    });
+    }
+
+    function workflow_history(BusinessProcessID) {
+        $('#modalHistory').modal();
+        $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+        $.post(history_link + BusinessProcessID, {},
+            function(data) {
+                $("#modalHistoryBody").html(data);
+            }
+        );
+    }
+
+</script>

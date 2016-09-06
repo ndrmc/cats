@@ -23,6 +23,7 @@ namespace Cats.Models.Mapping
             // Table & Column Mappings
             this.ToTable("TransportRequisition", "Logistics");
             this.Property(t => t.TransportRequisitionID).HasColumnName("TransportRequisitionID");
+            this.Property(t => t.BusinessProcessID).HasColumnName("BusinessProcessID");
             this.Property(t => t.TransportRequisitionNo).HasColumnName("TransportRequisitionNo");
             this.Property(t => t.RegionID).HasColumnName("RegionID");
             this.Property(t => t.ProgramID).HasColumnName("ProgramID");
@@ -41,6 +42,9 @@ namespace Cats.Models.Mapping
             this.HasRequired(t => t.Program)
                 .WithMany(t => t.TransportRequisitions)
                 .HasForeignKey(d => d.ProgramID);
+            this.HasRequired(t => t.BusinessProcess)
+                .WithMany(t => t.TransportRequisitions)
+                .HasForeignKey(d => d.BusinessProcessID);
 
         }
     }

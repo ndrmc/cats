@@ -150,27 +150,49 @@
         ;
         columns.Bound(to => to.Status).Title(Html.Translate("Status")).Width(45).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
         ;
-        columns.Command(p =>
-        {
+        //columns.Command(p =>
+        //{
 
-        if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transport_order))
-        {
-            p.Custom("Approve").Click("onApprove");
-        }
-        if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Sign_transport_order))
-        {
-            p.Custom("Signed").Click("onSigned");
-        }
-        if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Edit_transport_order))
-        {
-            p.Custom("Edit").Click("onEdit");
-        }
-        if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Revert_transport_order))
-        {
-            p.Custom("Revert TO").Click("onRevert");
-        }
-        }).Width(100);
+        //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transport_order))
+        //{
+        //    p.Custom("Approve").Click("onApprove");
+        //}
+        //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Sign_transport_order))
+        //{
+        //    p.Custom("Signed").Click("onSigned");
+        //}
+        //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Edit_transport_order))
+        //{
+        //    p.Custom("Edit").Click("onEdit");
+        //}
+        //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Revert_transport_order))
+        //{
+        //    p.Custom("Revert TO").Click("onRevert");
+        //}
+        //}).Width(100);
+        columns.Bound(trasportOrder => trasportOrder.Status).Title("Actions")
+             .ClientTemplate(
+             @"<div class='btn-group'>
+                <button type='button' id='workflow-#=RequisitionId#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
+                    <i class='fa fa-ellipsis-horizontal'></i>Workflow<i class='fa fa-angle-down'></i>
+                </button>
+                <ul class='dropdown-menu pull-right' style='overflow: visible;'>" +
+                 "# if ('data.Status' == 'Project Code Assigned') { #" +
+                     "# if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transport_order) + "' == 'true') { #" +
+                         "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=UncommitStateID#','Uncommit','#=TransportOrderID#')\" title='Reject Requisition'>Uncommit</a></li>" +
+                     " # } #" +
+                     "# if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Sign_transport_order) + "' == 'true') { #" +
+                         "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=ApproveStateID#','Approve','#=TransportOrderID#')\" title='Approve Requisition'>Approve</a></li>" +
+                     " # } #" +
+                 " # } #" +
+                  " # if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Edit_transport_order) + "' == 'true') { #" +
+                     "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
+                 " # } #" +
+                 " # if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Revert_transport_order) + "' == 'true') { #" +
+                     "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
+                 " # } #" +
 
+             "</ul></div>");
 
 
     })
@@ -188,134 +210,153 @@
     </div>
 </div>
     <div>
-        <hr />
+        <hr/>
+        @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
     </div>
     @if (@ViewBag.TransportOrderTitle == "Draft")
     {
         @Html.Partial("AssignTransporter", Model)
     }
 
-    <script>
-        function onEdit(e) {
+<script>
+    
+    function onEdit(e) {
+        e.preventDefault();
+
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location = "@Url.Action("Edit", "TransportOrder")" + "/" + dataItem.TransportOrderID;
+
+    }
+    function onApprove(e) {
+        e.preventDefault();
+
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location = "@Url.Action("Approve","TransportOrder")" + "/" + dataItem.TransportOrderID;
+    }
+
+    function onSigned(e) {
+        e.preventDefault();
+
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location = "@Url.Action("Signed","TransportOrder")" + "/" + dataItem.TransportOrderID;
+    }
+
+    function onRevert(e) {
+
+        var result = confirm("Revert Transport Order to Draft?");
+        if (result) {
             e.preventDefault();
 
             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-            window.location = "@Url.Action("Edit", "TransportOrder")" + "/" + dataItem.TransportOrderID;
-
+            window.location = "@Url.Action("reverseTOFromClosedtoDraft","TransportOrder")" + "/" + dataItem.TransportOrderID;
         }
-        function onApprove(e) {
-            e.preventDefault();
-
-            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-            window.location = "@Url.Action("Approve","TransportOrder")" + "/" + dataItem.TransportOrderID;
-        }
-
-        function onSigned(e) {
-            e.preventDefault();
-
-            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-            window.location = "@Url.Action("Signed","TransportOrder")" + "/" + dataItem.TransportOrderID;
-        }
-
-        function onRevert(e) {
-
-            var result = confirm("Revert Transport Order to Draft?");
-            if (result) {
-                e.preventDefault();
-
-                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                window.location = "@Url.Action("reverseTOFromClosedtoDraft","TransportOrder")" + "/" + dataItem.TransportOrderID;
-            }
-        }
-        @*   function onRevert(e) {
+    }
+    @*   function onRevert(e) {
         e.preventDefault();
 
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         window.location = "@Url.Action("Revert","TransportOrder")" + "/" + dataItem.TransportOrderID;
     }*@
 
-        function filterData() {
+    function filterData() {
 
-            return {
-                id: $("#StatusID").val(),
-                programId: $("#ProgramID").val(),
-                regionId: $("#RegionID").val()
-
-
-            };
-        }
+        return {
+            id: $("#StatusID").val(),
+            programId: $("#ProgramID").val(),
+            regionId: $("#RegionID").val()
 
 
+        };
+    }
+
+    var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
+    function promot_workflow(BusinessProcessID, nextstate, actionname, TransportOrderID) {
+        $('#ParentBusinessProcessID').val(BusinessProcessID);
+        $('#stateID').val(nextstate);
+        $('#modalPromotionLabel').html(actionname);
+        $('#TransportOrderID').val(TransportOrderID);
+        $('#modalPromotion').modal();
+           
+    }
+    function workflow_history(BusinessProcessID) {
+        $('#modalHistory').modal();
+        $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+        $.post(history_link + BusinessProcessID, {},
+            function (data) {
+                $("#modalHistoryBody").html(data);
+            }
+        );
+    }
 
 
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-            $('#ProgramID').change(function () {
+        $('#ProgramID').change(function () {
 
-                $("#Grid").data("kendoGrid").dataSource.read();
-            });
+            $("#Grid").data("kendoGrid").dataSource.read();
+        });
+    });
+
+    $(document).ready(function () {
+
+        $('#StatusID').change(function () {
+
+            $("#Grid").data("kendoGrid").dataSource.read();
         });
 
-        $(document).ready(function () {
+        $('#RegionID').change(function () {
 
-            $('#StatusID').change(function () {
-
-                $("#Grid").data("kendoGrid").dataSource.read();
-            });
-
-            $('#RegionID').change(function () {
-
-                $("#Grid").data("kendoGrid").dataSource.read();
-            });
-
+            $("#Grid").data("kendoGrid").dataSource.read();
         });
 
+    });
 
 
-        function onDataBound(e) {
-            resetRowNumber(e);
-            var grid = $("#Grid").data("kendoGrid");
-            var gridData = grid.dataSource.view();
-            //alert(gridData.length);
-            for (var i = 0; i < gridData.length; i++) {
-                var currentUid = gridData[i].uid;
-                //alert(gridData[i].Status);
-                var currentRow = grid.table.find("tr[data-uid='" + currentUid + "']");
-                if (gridData[i].Status == "Signed") {
-                    var approveButton4 = $(currentRow).find(".k-grid-Approve");
-                    approveButton4.hide();
-                    var signedButton2 = $(currentRow).find(".k-grid-Signed");
-                    signedButton2.hide();
-                    var editButton3 = $(currentRow).find(".k-grid-Edit");
-                    editButton3.hide();
-                    var revertButton3 = $(currentRow).find(".k-grid-RevertTO");
-                    revertButton3.hide();
-                }
-                else if (gridData[i].Status == "Approved") {
-                    var approveButton1 = $(currentRow).find(".k-grid-Approve");
-                    approveButton1.hide();
-                    var revertButton1 = $(currentRow).find(".k-grid-RevertTO");
-                    revertButton1.hide();
-                }
-                else if (gridData[i].Status == "Draft") {
-                    var signedButton1 = $(currentRow).find(".k-grid-Signed");
-                    signedButton1.hide();
-                    var revertButton2 = $(currentRow).find(".k-grid-RevertTO");
-                    revertButton2.hide();
-                }
-                else if (gridData[i].Status == "Closed") {
-                    var revertButton = $(currentRow).find(".k-grid-RevertTO");
-                    revertButton.show();
-                    var approveButton = $(currentRow).find(".k-grid-Approve");
-                    approveButton.hide();
-                    var signedButton = $(currentRow).find(".k-grid-Signed");
-                    signedButton.hide();
-                    var editButton = $(currentRow).find(".k-grid-Edit");
-                    editButton.hide();
-                }
+
+    function onDataBound(e) {
+        resetRowNumber(e);
+        var grid = $("#Grid").data("kendoGrid");
+        var gridData = grid.dataSource.view();
+        //alert(gridData.length);
+        for (var i = 0; i < gridData.length; i++) {
+            var currentUid = gridData[i].uid;
+            //alert(gridData[i].Status);
+            var currentRow = grid.table.find("tr[data-uid='" + currentUid + "']");
+            if (gridData[i].Status == "Signed") {
+                var approveButton4 = $(currentRow).find(".k-grid-Approve");
+                approveButton4.hide();
+                var signedButton2 = $(currentRow).find(".k-grid-Signed");
+                signedButton2.hide();
+                var editButton3 = $(currentRow).find(".k-grid-Edit");
+                editButton3.hide();
+                var revertButton3 = $(currentRow).find(".k-grid-RevertTO");
+                revertButton3.hide();
+            }
+            else if (gridData[i].Status == "Approved") {
+                var approveButton1 = $(currentRow).find(".k-grid-Approve");
+                approveButton1.hide();
+                var revertButton1 = $(currentRow).find(".k-grid-RevertTO");
+                revertButton1.hide();
+            }
+            else if (gridData[i].Status == "Draft") {
+                var signedButton1 = $(currentRow).find(".k-grid-Signed");
+                signedButton1.hide();
+                var revertButton2 = $(currentRow).find(".k-grid-RevertTO");
+                revertButton2.hide();
+            }
+            else if (gridData[i].Status == "Closed") {
+                var revertButton = $(currentRow).find(".k-grid-RevertTO");
+                revertButton.show();
+                var approveButton = $(currentRow).find(".k-grid-Approve");
+                approveButton.hide();
+                var signedButton = $(currentRow).find(".k-grid-Signed");
+                signedButton.hide();
+                var editButton = $(currentRow).find(".k-grid-Edit");
+                editButton.hide();
             }
         }
-    </script>
+    }
+</script>
     <script type="text/javascript">
         var rowNumber = 0;
 

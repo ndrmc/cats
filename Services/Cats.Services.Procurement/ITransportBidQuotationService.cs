@@ -18,6 +18,8 @@ namespace Cats.Services.Procurement
         bool DeleteTransportBidQuotation(TransportBidQuotation item);
         bool DeleteById(int id);
 
+        bool AddWoreda(TransportBidQuotation transportBidQuotation);
+
         TransportBidQuotation FindById(int id);
         List<TransportBidQuotation> GetAllTransportBidQuotation();
         List<TransportBidQuotation> FindBy(Expression<Func<TransportBidQuotation, bool>> predicate);

@@ -5,6 +5,7 @@
 @using Cats.Models.Constant
 @using Cats.Services.Security
 @using Cats.Helpers;
+@using Cats.Models.ViewModels
 @using Cats.Security
 @using Kendo.Mvc.UI
 
@@ -50,7 +51,7 @@
             <a href="#" class="collapse" data-original-title="" title=""></a>
         </div>
         <div class="actions">
-            @if (Model.StatusID == (int) Cats.Models.Constant.ReliefRequisitionStatus.Draft || Model.StatusID == (int) Cats.Models.Constant.ReliefRequisitionStatus.Rejected)
+            @if (Model.Status == "Draft" || Model.Status == "Rejected")
             {
                 <div class="btn-group">
                     <button class="btn green dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis"></i> Action <i class="fa fa-angle-down"></i></button>
@@ -60,12 +61,33 @@
                         {
                             <li><a class="btn green-haze-stripe" data-buttontype="btn_edit" href="@Url.Action("Edit", "ReliefRequisition", new {id = @Model.RequisitionID})"> Edit</a></li>
                         }
-                        @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Requisition)
+                        @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Requisition)
                             || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Approve_Monthly_relife_requisitions))
                         {
                             <li><a href="@Url.Action("SendToLogistics", "ReliefRequisition", new {id = Model.RequisitionID})" class="btn green-haze-stripe  btn-Approve-allocation"> @Html.Translate("Approve")</a></li>
-                        }
+                        }*@
                         
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button type="button" id="action" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
+                        <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        @foreach (FlowTemplateViewModel actions in Model.InitialStateFlowTemplates)
+                        {
+                            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Requisition)
+                            || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Approve_Monthly_relife_requisitions))
+                            {
+                                <li class="edit_button"><a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@Model.RequisitionID)" title="@actions.Name">@actions.Name</a></li>
+                            }
+                        }
+                        <li class="divider"></li>
+                        @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Requisition)
+                            || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.View_Requisitions))
+                        {
+                            <li class="edit_button"><a href="javascript:workflow_history(@Model.BusinessProcessID)"> History </a></li>
+                        }
                     </ul>
                 </div>
             }
@@ -277,9 +299,39 @@
 <div id='dialogDiv' class='modal fade bs-modal-md' tabindex="-1" aria-hidden="true">
     <div id='dialogContent'></div>
 </div>
+<div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id="modalHistoryLabel">Activity History</h4>
+            </div>
+            <div class="modal-body" id="modalHistoryBody">History</div>
 
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
 
-<script type="text/javascript">
+<script>
+    var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
+
+    function promot_workflow(BusinessProcessID, nextstate, actionname, PlanID) {
+        //alert(PaymentRequestID);
+        $('#ParentBusinessProcessID').val(BusinessProcessID);
+        $('#stateID').val(nextstate);
+        $('#modalPromotionLabel').html(actionname);
+        $('#modalPromotion').modal();
+    }
+    function workflow_history(BusinessProcessID) {
+        $('#modalHistory').modal();
+        $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+        $.post(history_link + BusinessProcessID, {},
+            function (data) {
+                $("#modalHistoryBody").html(data);
+            }
+        );
+    }
 
 
     var tblbody;

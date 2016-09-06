@@ -41,7 +41,9 @@
   <ItemGroup>
     <Compile Include="EWDashboardService.cs" />
     <Compile Include="IEWDashboardService.cs" />
+    <Compile Include="ILGDashboardService.cs" />
     <Compile Include="IRegionalDashboard.cs" />
+    <Compile Include="LGDashboardService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionalDashboard.cs" />
   </ItemGroup>

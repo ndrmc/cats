@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Cats.Areas.EarlyWarning.Models;
 using Cats.Helpers;
 using Cats.Models;
 using Cats.Models.Constant;
+using Cats.Services.Common;
 using Cats.Services.Dashboard;
+using Cats.Services.EarlyWarning;
 using Cats.Services.Security;
+using Plan = Cats.Models.Partial.Plan;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -15,16 +19,30 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
         private readonly IEWDashboardService _eWDashboardService;
         private readonly IUserAccountService _userAccountService;
-        public EWDashboardController(IEWDashboardService ewDashboardService,IUserAccountService userAccountService)
+        private ICommonService _commonService;
+        private IHRDDetailService _hrdDetailService;
+       
+        private readonly IReliefRequisitionService _reliefRequisitionService;
+
+        public EWDashboardController(IEWDashboardService ewDashboardService, IUserAccountService userAccountService,
+            ICommonService commonService, IReliefRequisitionService reliefRequisitionService,
+            IHRDDetailService hrdDetailService)
+
         {
             _eWDashboardService = ewDashboardService;
             _userAccountService = userAccountService;
+            _commonService = commonService;
 
+            _hrdDetailService = hrdDetailService;
+            _reliefRequisitionService = reliefRequisitionService;
         }
 
         public JsonResult GetRation()
         {
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
+            var currentHrd = GetCurrentHrd();
+                //_eWDashboardService.FindByHrd(
+                //    m => m.Status == 3 || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                    //.FirstOrDefault();
 
             var rationDetail = _eWDashboardService.FindByRationDetail(m => m.RationID == currentHrd.RationID);
             var rationDetailInfo = GetRationDetailInfo(rationDetail);
@@ -44,8 +62,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public JsonResult GetRegionalRequests()
         {
 
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
-            var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID && m.ProgramId==1).OrderByDescending(m=>m.RegionalRequestID);
+            var currentHrd = GetCurrentHrd();           
+            var requests =
+                _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID && m.ProgramId == 1)
+                    .OrderByDescending(m => m.RegionalRequestID);       
             var requestDetail = GetRecentRegionalRequests(requests);
 
             return Json(requestDetail, JsonRequestBehavior.AllowGet);
@@ -54,55 +74,65 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private IEnumerable<RegionalRequestViewModel> GetRecentRegionalRequests(IEnumerable<RegionalRequest> regionalRequests)
         {
             return (from regionalRequest in regionalRequests
-                    where  regionalRequest.ProgramId==1// only for relief program
-                   // from requestDetail in regionalRequest.RegionalRequestDetails
-                    select new RegionalRequestViewModel()
-                        {
-                            RegionalRequestID =regionalRequest.RegionalRequestID, 
-                            Region = regionalRequest.AdminUnit.Name,
-                            Round = regionalRequest.Round,
-                            MonthName = RequestHelper.MonthName(regionalRequest.Month),
-                            StatusID = regionalRequest.Status,
-                            Beneficiary = regionalRequest.RegionalRequestDetails.Sum(m=>m.Beneficiaries),
-                            NumberOfFDPS = regionalRequest.RegionalRequestDetails.Count(),
-                            Status = _eWDashboardService.GetStatusName(WORKFLOW.REGIONAL_REQUEST, regionalRequest.Status)
+                where regionalRequest.ProgramId == 1
+                // only for relief program
+                // from requestDetail in regionalRequest.RegionalRequestDetails
+                select new RegionalRequestViewModel()
+                {
+                    RegionalRequestID = regionalRequest.RegionalRequestID,
+                    Region = regionalRequest.AdminUnit.Name,
+                    Round = regionalRequest.Round,
+                    MonthName = RequestHelper.MonthName(regionalRequest.Month),
+                    StatusID = regionalRequest.Status,
+                    Beneficiary = regionalRequest.RegionalRequestDetails.Sum(m => m.Beneficiaries),
+                    NumberOfFDPS = regionalRequest.RegionalRequestDetails.Count(),
+                    Status = _eWDashboardService.GetStatusName(WORKFLOW.REGIONAL_REQUEST, regionalRequest.Status)
 
-                        }).Take(10);
+                }); //.Take(10);
         }
         public JsonResult GetRequisition()
         {
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
-            var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID).OrderByDescending(m=>m.RegionalRequestID);
+            var currentHrd = GetCurrentHrd();         
+            var requests =
+                _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID)
+                    .OrderByDescending(m => m.RegionalRequestID);
             var requisitions = GetRequisisition(requests);
             return Json(requisitions, JsonRequestBehavior.AllowGet);
 
         }
         private IEnumerable<ReliefRequisitionInfoViewModel> GetRequisisition(IEnumerable<RegionalRequest> requests)
         {
-            var reliefRequisitions = _eWDashboardService.GetAllReliefRequisition();
+            
+            var regionalRequests = requests as IList<RegionalRequest> ?? requests.ToList();
+            var regionalRequestIds = regionalRequests.Select(t=>t.RegionalRequestID).ToList();
+            var reliefRequisitions = _reliefRequisitionService.Get(
+                t => t.RegionalRequestID != null && regionalRequestIds.Contains((int) t.RegionalRequestID), null,
+                "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate");
+
+            //var reliefRequisitions = _eWDashboardService.GetAllReliefRequisition();
             return (from reliefRequisition in reliefRequisitions
-                    from request in requests
-                    where reliefRequisition.RegionalRequestID == request.RegionalRequestID 
                     //&& reliefRequisition.Status==(int)ReliefRequisitionStatus.Draft 
                     select new ReliefRequisitionInfoViewModel
                         {
-                            RequisitionID = reliefRequisition.RequisitionID,
+                            RequisitionID = reliefRequisition.RequisitionID ,
                             RequisitonNumber = reliefRequisition.RequisitionNo,
+                            Round = reliefRequisition.Round ?? 0,
                             Region = reliefRequisition.AdminUnit.Name,
                             Zone = reliefRequisition.AdminUnit1.Name,
                             Commodity = reliefRequisition.Commodity.Name,
                             Beneficiary = reliefRequisition.ReliefRequisitionDetails.Sum(m=>m.BenficiaryNo),
                             Amount = reliefRequisition.ReliefRequisitionDetails.Sum(m=>m.Amount),
-                            Status =_eWDashboardService.GetStatusName(WORKFLOW.RELIEF_REQUISITION,
-                                                                  reliefRequisition.Status.Value)
+                            Status = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name
 
 
-                        }).Take(8);
+                    }); //Take(8) removed
         }
         public JsonResult GetRequestedInfo()
         {
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
-            var request = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID).OrderByDescending(m=>m.RegionalRequestID);
+            var currentHrd = GetCurrentHrd();
+            var request =
+                _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID)
+                    .OrderByDescending(m => m.RegionalRequestID);
             var requestDetail = GetRquestDetailViewModel(request);
             return Json(requestDetail, JsonRequestBehavior.AllowGet);
         }
@@ -151,7 +181,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public JsonResult GetRequisitionStatusPercentage()
         {
             RequisitionStatusPercentage requisitionStatusPercentage = null;
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
+            var currentHrd = GetCurrentHrd();
             var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID).OrderByDescending(m => m.RegionalRequestID);
             var allRequisitions = _eWDashboardService.GetAllReliefRequisition();
 
@@ -196,7 +226,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         }
         public JsonResult GetHrdRegionPercentage()
         {
-            var currentHrd = _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
+            var currentHrd = GetCurrentHrd();
             IEnumerable<RegionalTotalViewModel> regionalSummery = new List<RegionalTotalViewModel>(); 
             if (currentHrd != null)
             {
@@ -233,11 +263,28 @@ namespace Cats.Areas.EarlyWarning.Controllers
         }
         private HRD GetCurrentHrd()
         {
-            return _eWDashboardService.FindByHrd(m => m.Status == 3).FirstOrDefault();
+            try
+            {
+                return
+                    _eWDashboardService.FindByHrd(
+                        m => m.Status == 3 || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                        .FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
-        public JsonResult GetRecentGiftCertificates()
+        public JsonResult GetRecentGiftCertificates(DateTime startDate,DateTime endDate )
         {
-            var draftGiftCertificate = _eWDashboardService.GetAllGiftCertificate().Where(m => m.StatusID == 1).OrderByDescending(m=>m.GiftCertificateID);
+            var draftGiftCertificate =
+                from gs in
+                    _eWDashboardService.GetAllGiftCertificate()
+                        .Where(m => m.StatusID == 1)
+                        .OrderByDescending(m => m.GiftCertificateID)
+                where DateTime.Compare(gs.GiftDate, startDate) >= 0
+                      && DateTime.Compare(gs.GiftDate, endDate) <= 0
+                select gs;
 
             var giftCertificate = GetGiftCertificate(draftGiftCertificate);
 
@@ -260,7 +307,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                             TotalEstimatedTax = giftCertificate.GiftCertificateDetails.Sum(m=>m.EstimatedTax)
 
                             // Commodity = giftCertificate.GiftCertificateDetails.FirstOrDefault().Commodity.Name
-                        }).Take(5);
+                        }).OrderByDescending(o=>o.GiftDate); //take(5) Removed
 
 
         }
@@ -389,6 +436,74 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 return 0;
             }
             return 0;
+        }
+
+      
+        public JsonResult GetRegionalRequestDataEntryStatus()
+        {
+            var currentHrd = GetCurrentHrd();
+            var rationDetail = _eWDashboardService.FindByRationDetail(m => m.RationID == currentHrd.RationID);
+            var numberOfCommodities = rationDetail.Count();
+            var regions = _commonService.GetAminUnits(t => t.AdminUnitTypeID == 2).OrderBy(t=>t.Name).ToList();
+            var regionalRequestDataEntryStatus = new List<RegionalRequestDataEntryStatusViewModel>();
+            var rounds = _eWDashboardService.GetDistinctRounds(currentHrd.PlanID);
+            foreach (var region in regions)
+            {
+                foreach (int round in rounds)
+                {
+                    var numberOfZones = _commonService.GetAminUnits(p => p.ParentID == region.AdminUnitID).Count();
+                    var completed =
+                        _eWDashboardService.GetRegionalRequestSubmittedToLogistics(region.AdminUnitID, currentHrd.PlanID,
+                            round);
+                    var allocated = _eWDashboardService.GetRemainingRequest(region.AdminUnitID, currentHrd.PlanID,round);
+                    int expected = numberOfCommodities*numberOfZones;
+                    var ratio = expected != 0 ? completed/Convert.ToDouble(expected) : 0;
+                    var progress = ratio*100.0;
+                    var regionalDataEntryStatus = new RegionalRequestDataEntryStatusViewModel
+                    {
+                        Region = region.Name,
+                        TotalRequested = expected,
+                        Allocated = allocated,
+                        AllocationProgress = Convert.ToDecimal(Math.Round(progress, 2)),
+                        Completed = completed,
+                        Round = (int) round,
+                    };
+                    regionalRequestDataEntryStatus.Add(regionalDataEntryStatus);
+                }
+            }
+            return Json(regionalRequestDataEntryStatus, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetHRDDataEntryStatus()
+        {
+            var currentHrd = GetCurrentHrd();
+            var regions = _commonService.GetAminUnits(t => t.AdminUnitTypeID == 2).OrderBy(t => t.Name).ToList();
+            var hrdDataEntryStatus = new List<RegionalRequestDataEntryStatusViewModel>();
+
+            foreach (var region in regions)
+            {
+                var zonesId =
+                    _commonService.GetAminUnits(p => p.ParentID == region.AdminUnitID)
+                        .Select(z => z.AdminUnitID)
+                        .ToList();
+                var woredaIds = _commonService.GetAminUnits(p => zonesId.Contains((int) p.ParentID))
+                    .Select(z => z.AdminUnitID)
+                    .ToList();
+                var hrdDetails =
+                    _hrdDetailService.FindBy(h => h.HRDID == currentHrd.HRDID && woredaIds.Contains(h.WoredaID));
+                var woredaCounts = hrdDetails.Count;
+                var woredasWithBeneficiary = hrdDetails.Count(w => w.NumberOfBeneficiaries > 0);
+                var progress = woredaCounts != 0 ? (woredasWithBeneficiary/woredaCounts)*100.0 : 0;
+                var dataEntryStatus = new RegionalRequestDataEntryStatusViewModel
+                {
+                    Region = region.Name,
+                    TotalRequested = hrdDetails.Count,
+                    AllocationProgress = Convert.ToDecimal(Math.Round(progress, 2)),
+                    Completed = woredasWithBeneficiary,
+                };
+                hrdDataEntryStatus.Add(dataEntryStatus);
+            }
+            return Json(hrdDataEntryStatus, JsonRequestBehavior.AllowGet);
         }
     }
 }

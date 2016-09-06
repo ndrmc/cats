@@ -59,8 +59,10 @@ namespace Cats.Models
         public virtual Hub Hub3 { get; set; }
        public virtual Program Program { get; set; }
         public virtual ShippingInstruction ShippingInstruction { get; set; }
-      
+
         //public virtual Transfer Transfer1 { get; set; }
         //public virtual Transfer Transfer2 { get; set; }
+        public int BusinessProcessID { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }

@@ -286,7 +286,7 @@ namespace Cats.Data.Tests.ServicesTest.Logistics
             unitOfWork.Setup(t => t.ProgramRepository).Returns(programRepository.Object);
 
             _notificationService = new NotificationService(unitOfWorkNotify.Object);
-            _transportRequisitionService = new TransportRequisitionService(unitOfWork.Object, _notificationService);
+            _transportRequisitionService = new TransportRequisitionService(unitOfWork.Object, _notificationService,null,null,null);
 
 
         }
@@ -319,7 +319,7 @@ namespace Cats.Data.Tests.ServicesTest.Logistics
             var reqList = new List<List<int>>();
             reqList.Add(_reliefRequisitions);
             //Act
-            var result = _transportRequisitionService.CreateTransportRequisition(reqList,1);
+            var result = _transportRequisitionService.CreateTransportRequisition(reqList,1,"");
             //Assert
             Assert.IsTrue(result);
         }
@@ -328,7 +328,7 @@ namespace Cats.Data.Tests.ServicesTest.Logistics
         public void SholdNotCreateTransportRequisitionIfNoReliefRequisition()
         {
             //Act
-            var result = _transportRequisitionService.CreateTransportRequisition(new List<List<int>>(),1);
+            var result = _transportRequisitionService.CreateTransportRequisition(new List<List<int>>(),1,"");
             //Assert
             Assert.False(result);
         }
@@ -363,7 +363,7 @@ namespace Cats.Data.Tests.ServicesTest.Logistics
         {
             //Act
 
-            var result = _transportRequisitionService.ApproveTransportRequisition(1,1);
+            var result = _transportRequisitionService.ApproveTransportRequisition(1,1,"");
 
             //Assert
             var status = _transportRequisition.Status;

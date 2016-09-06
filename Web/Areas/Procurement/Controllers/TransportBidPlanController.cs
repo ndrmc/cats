@@ -15,6 +15,9 @@ using Cats.Services.EarlyWarning;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Cats.Areas.Procurement.Models;
+using Cats.Models.ViewModels;
+using Cats.Helpers;
+using System.IO;
 
 namespace Cats.Areas.Procurement.Controllers
 {
@@ -26,12 +29,14 @@ namespace Cats.Areas.Procurement.Controllers
         private readonly ITransportBidPlanDetailService _transportBidPlanDetailService;
         private readonly IHubService _hubService;
         private readonly ICommonService _commonService;
-
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IBusinessProcessService _businessProcessService;
         public TransportBidPlanController(ITransportBidPlanService transportBidPlanServiceParam
                                           , IAdminUnitService adminUnitServiceParam
                                           , IProgramService programServiceParam
                                           , ITransportBidPlanDetailService transportBidPlanDetailServiceParam
-                                          , IHubService hubServiceParam, ICommonService commonService)
+                                          , IHubService hubServiceParam, ICommonService commonService, IApplicationSettingService applicationSettingService,
+            IBusinessProcessService businessProcessService)
         {
             this._transportBidPlanService = transportBidPlanServiceParam;
             this._adminUnitService = adminUnitServiceParam;
@@ -39,6 +44,8 @@ namespace Cats.Areas.Procurement.Controllers
             this._transportBidPlanDetailService = transportBidPlanDetailServiceParam;
             this._hubService = hubServiceParam;
             _commonService = commonService;
+            _applicationSettingService = applicationSettingService;
+            _businessProcessService = businessProcessService;
         }
         public TransportBidPlan fetchFromDB(int id)
         {
@@ -50,7 +57,11 @@ namespace Cats.Areas.Procurement.Controllers
             return new TransportBidPlanViewModel{TransportBidPlanID=transportbidplan.TransportBidPlanID
                                                 ,Year=transportbidplan.Year
                                                 ,YearHalf=transportbidplan.YearHalf
-                                                };
+                                             
+
+
+
+            };
         }
         public IEnumerable<TransportBidPlanViewModel> CopyListToView(IEnumerable<Cats.Models.TransportBidPlan> bidplan)
         {
@@ -73,8 +84,14 @@ namespace Cats.Areas.Procurement.Controllers
 
         public ActionResult Index()
         {
-            List<Cats.Models.TransportBidPlan> list = _transportBidPlanService.GetAllTransportBidPlan();
-            return View(CopyListToView(list).ToList());
+            var list = _transportBidPlanService
+                .Get(
+                    null,
+                    null,
+                    "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                .OrderByDescending(m => m.TransportBidPlanID);
+            ViewBag.TargetController = "TransportBidPlan";
+            return View(list.ToList());
         }
         public ActionResult GetListJson([DataSourceRequest] DataSourceRequest request)
         {
@@ -97,6 +114,48 @@ namespace Cats.Areas.Procurement.Controllers
 
         //
         // GET: /Procurement/TransportBidPlan/Create
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+            _businessProcessService.PromotWorkflow(businessProcessState);
+            if (statusId != null)
+                return RedirectToAction("Details", "TransportBidPlan", new { Area = "Procurement", statusId });
+            return RedirectToAction("Index", "TransportBidPlan", new { Area = "Procurement" });
+        }
+
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
+        }
 
         public ActionResult Create()
         {
@@ -116,6 +175,25 @@ namespace Cats.Areas.Procurement.Controllers
                 var transportPlan =_transportBidPlanService.FindBy( m => m.Year == transportbidplan.Year && m.YearHalf == transportbidplan.YearHalf).FirstOrDefault();
                 if (transportPlan == null)
                 {
+                    int BP_PR = _applicationSettingService.getReciptPlanForLoanWorkflow();
+                    if (BP_PR != 0)
+                    {
+                        BusinessProcessState createdstate = new BusinessProcessState
+                        {
+                            DatePerformed = DateTime.Now,
+                            PerformedBy = User.Identity.Name,
+                            Comment = "Transport Bid plan  Added"
+
+                        };
+                        //_PaymentRequestservice.Create(request);
+
+                        BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                                                                                        "ReciptPlanForLoan", createdstate);
+                        if (bp != null)
+                            transportbidplan.BusinessProcessID = bp.BusinessProcessID;
+
+
+                    }
 
 
                     var woredas = _adminUnitService.FindBy(m => m.AdminUnitTypeID == 4);

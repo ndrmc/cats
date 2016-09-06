@@ -10,6 +10,7 @@ TestResults
 
 # User-specific files
 *.suo
+.suo
 *.user
 *.sln.docstates
 
@@ -36,7 +37,7 @@ x64/
 *.vspscc
 *.vssscc
 .builds
-
+*.dll
 # Visual C++ cache files
 ipch/
 *.aps
@@ -82,7 +83,7 @@ publish
 packages
 
 # Windows Azure Build Output
-csx
+csxs
 *.build.csdef
 
 # Windows Store app package directory
@@ -94,7 +95,7 @@ AppPackages/
 sql
 TestResults
 [Tt]est[Rr]esult*
-*.Cache
+*.cache
 ClientBin
 [Ss]tyle[Cc]op.*
 ~$*
@@ -105,11 +106,7 @@ Generated_Code #added for RIA/Silverlight projects
 # Visual Studio version. Backup files are not needed, because we have git ;-)
 _UpgradeReport_Files/
 Backup*/
-<<<<<<< HEAD
 UpgradeLog*.XML
-=======
-UpgradeLog*.XML
->>>>>>> 1f00cfd5390e051d588442ff4e090802e1a746d6
 /.project
 /UpgradeLog.htm
 Web/Templates/0271bcdf-fd04-43c0-9c2c-890183ad43e1.docx
@@ -135,5 +132,16 @@ Web/Web.config
 *.docx
 *.datasource
 *.config
-Web/Areas/EarlyWarning/Views/Request/Allocation.cshtml.rej
-/.vs/config/applicationhost.config
+
+
+
+bin
+obj
+
+src/*/bin/*
+src/*/obj/*
+.vs
+/.vs/Cats/v14/.suo
+/.vs/Cats/v14/.suo
+/.vs/Cats/v14/.suo
+/packages

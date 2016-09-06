@@ -43,6 +43,8 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IReliefRequisitionDetailService _reliefRequisitionDetailService;
         private readonly IRationService _rationService;
         private readonly INotificationService _notificationService;
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IStateTemplateService _stateTemplateService;
         //private readonly IUserProfileService _userProfileService;
         
         public TransportRequisitionController(
@@ -56,7 +58,9 @@ namespace Cats.Areas.Logistics.Controllers
             IHubAllocationService hubAllocationService,
             IProjectCodeAllocationService projectCodeAllocationService,
             IReliefRequisitionDetailService reliefRequisitionDetailService,
-            IRationService rationService, INotificationService notificationService)
+            IRationService rationService, INotificationService notificationService,
+            IApplicationSettingService applicationSettingService,
+            IStateTemplateService stateTemplateService)
         
             {
             this._transportRequisitionService = transportRequisitionService;
@@ -72,6 +76,8 @@ namespace Cats.Areas.Logistics.Controllers
             _reliefRequisitionService = reliefRequisitionService;
             _rationService = rationService;
             _notificationService = notificationService;
+            _applicationSettingService = applicationSettingService;
+            _stateTemplateService = stateTemplateService;
             //_userProfileService = userProfileService;
     }
         //
@@ -80,13 +86,24 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult Index(int id = -1)
         {
             ViewBag.Status = id;
+            var firstOrDefault = _applicationSettingService.FindBy(t => t.SettingName == "TransportRequisitionWorkflow").FirstOrDefault();
+            var processTemplateId = 0;
+            if (firstOrDefault != null)
+            {
+                processTemplateId = int.Parse(firstOrDefault.SettingValue);
+
+                var processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
+
+                ViewBag.StatusID = new SelectList(processStates, "Name", "Name");
+            }
             return View();
 
         }
-        public ActionResult TransportRequisition_Read([DataSourceRequest] DataSourceRequest request, string searchIndex,int status)
+        public ActionResult TransportRequisition_Read([DataSourceRequest] DataSourceRequest request, string searchIndex,string status)
         {
-            var transportRequisitions = status ==-1 ? _transportRequisitionService.Get(t => t.TransportRequisitionNo.Contains(searchIndex)):
-                _transportRequisitionService.Get(t=>t.TransportRequisitionNo.Contains(searchIndex) && t.Status==(int)status).OrderByDescending(t=>t.TransportRequisitionID);
+            var transportRequisitions = status =="" ? _transportRequisitionService.Get(t => t.TransportRequisitionNo.Contains(searchIndex)):
+                _transportRequisitionService.Get(t=>t.TransportRequisitionNo.Contains(searchIndex) && t.BusinessProcess.CurrentState.BaseStateTemplate.Name==status)
+                .OrderByDescending(t=>t.TransportRequisitionID);
             var statuses = _workflowStatusService.GetStatus(WORKFLOW.TRANSPORT_REQUISITION);
             var users = _userAccountService.GetUsers();
             var transportRequisitonViewModels =
@@ -110,6 +127,7 @@ namespace Cats.Areas.Logistics.Controllers
                 var transportRequisitionObj =
                     _transportRequisitionService.FindById(transportRequisition.TransportRequisitionID);
                 transportRequisitionViewModel = new TransportRequisitionViewModel();
+                transportRequisitionViewModel.BusinessProcessID = transportRequisitionObj.BusinessProcessID;
                 transportRequisitionViewModel.CertifiedBy = _userAccountService.FindById(transportRequisitionObj.CertifiedBy).FullName;
                 transportRequisitionViewModel.CertifiedDate = transportRequisitionObj.CertifiedDate;
                 transportRequisitionViewModel.DateCertified = transportRequisitionObj.CertifiedDate.ToCTSPreferedDateFormat(userPreference);
@@ -119,8 +137,8 @@ namespace Cats.Areas.Logistics.Controllers
                 transportRequisitionViewModel.RequestedDate = transportRequisitionObj.RequestedDate;
                 transportRequisitionViewModel.DateRequested = transportRequisitionObj.RequestedDate.ToCTSPreferedDateFormat(userPreference);
                 //EthiopianDate.GregorianToEthiopian( transportRequisition.RequestedDate);
-                transportRequisitionViewModel.Status = _workflowStatusService.GetStatusName(WORKFLOW.TRANSPORT_REQUISITION, transportRequisitionObj.Status);
-                transportRequisitionViewModel.StatusID = transportRequisitionObj.Status;
+                transportRequisitionViewModel.Status = transportRequisitionObj.BusinessProcess.CurrentState.BaseStateTemplate.Name;
+                transportRequisitionViewModel.StatusID = transportRequisitionObj.BusinessProcess.CurrentState.BaseStateTemplate.StateTemplateID;
                 transportRequisitionViewModel.TransportRequisitionID = transportRequisitionObj.TransportRequisitionID;
                 transportRequisitionViewModel.TransportRequisitionNo = transportRequisitionObj.TransportRequisitionNo;
                 transportRequisitionViewModel.Region = _adminUnitService.FindById(transportRequisitionObj.RegionID).Name;
@@ -289,10 +307,11 @@ namespace Cats.Areas.Logistics.Controllers
             try
 
             {
-                var requisitions = _reliefRequisitionService.FindBy(t => t.RegionID == regionId && t.Status == (int)ReliefRequisitionStatus.SiPcAllocationApproved);
+                var requisitions = _reliefRequisitionService.Get(t => t.RegionID == regionId && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "SiPc Allocation Approved", null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate");
                 var programs = (from item in requisitions select item.ProgramID).Distinct().ToList();
                 var requisitionToDispatches = new List<List<int>>();
-                var currentUser = UserAccountHelper.GetUser(User.Identity.Name).UserProfileID;
+                var currentUser = UserAccountHelper.GetUser(User.Identity.Name);
                 foreach (var program in programs)
                 {
                     var requisitionToDispatche =
@@ -300,7 +319,7 @@ namespace Cats.Areas.Logistics.Controllers
                     requisitionToDispatches.Add(requisitionToDispatche);
 
                 }
-                _transportRequisitionService.CreateTransportRequisition(requisitionToDispatches, currentUser);
+                _transportRequisitionService.CreateTransportRequisition(requisitionToDispatches, currentUser.UserProfileID, currentUser.UserName);
 
                 return RedirectToAction("Index", "TransportRequisition");//,new {id=(int)TransportRequisitionStatus.Draft});
             }
@@ -401,8 +420,8 @@ namespace Cats.Areas.Logistics.Controllers
         [HttpPost]
         public ActionResult ApproveConfirmed(int TransportRequisitionID)
         {
-            var currentUser = UserAccountHelper.GetUser(User.Identity.Name).UserProfileID;
-            _transportRequisitionService.ApproveTransportRequisition(TransportRequisitionID, currentUser);
+            var currentUser = UserAccountHelper.GetUser(User.Identity.Name);
+            _transportRequisitionService.ApproveTransportRequisition(TransportRequisitionID, currentUser.UserProfileID, currentUser.UserName);
            
             return RedirectToAction("Index", "TransportRequisition");
         }

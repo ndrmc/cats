@@ -14,9 +14,13 @@ using Cats.Services.Procurement;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Common;
 using Cats.Areas.Procurement.Models;
+using Cats.Models.ViewModels.Bid;
+using Cats.Models.ViewModels.HRD;
 using Cats.Services.Security;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using log4net;
+
 namespace Cats.Areas.Procurement.Controllers
 {
     public class PriceQuotationController : Controller
@@ -35,6 +39,7 @@ namespace Cats.Areas.Procurement.Controllers
         private readonly IBusinessProcessService _BusinessProcessService;
         private readonly IApplicationSettingService _ApplicationSettingService;
         private readonly ITransportOrderService _transportOrderService;
+        private readonly ILog _log;
         public PriceQuotationController(ITransportBidPlanService transportBidPlanServiceParam
                                             , IAdminUnitService adminUnitServiceParam
                                             , IProgramService programServiceParam
@@ -48,7 +53,8 @@ namespace Cats.Areas.Procurement.Controllers
                                             , IBusinessProcessService businessProcessService
                                             , IApplicationSettingService applicationSettingService
                                             , ITransportBidQuotationHeaderService transportBidQuotationHeaderService
-                                            , ITransportOrderService transportOrderService  )
+                                            , ITransportOrderService transportOrderService
+                                            , ILog log)
         {
             this._transportBidPlanService = transportBidPlanServiceParam;
             this._adminUnitService = adminUnitServiceParam;
@@ -63,6 +69,7 @@ namespace Cats.Areas.Procurement.Controllers
             this._BusinessProcessService = businessProcessService;
             this._transportBidQuotationHeaderService = transportBidQuotationHeaderService;
             this._ApplicationSettingService = applicationSettingService;
+            this._log = log;
             _transportOrderService = transportOrderService;
         }
 
@@ -1117,5 +1124,93 @@ namespace Cats.Areas.Procurement.Controllers
             return RedirectToAction("Index");
         }
         //END~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~B
+
+        // Add a missing woreda in price quotation page
+        public ActionResult AddWoreda(int id)
+        {
+            var bidQuotation = _transportBidQuotationHeaderService.FindById(id);
+            if (bidQuotation == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.RegionID = new SelectList(_adminUnitService.GetRegions(), "AdminUnitID", "Name");
+            ViewBag.ZoneID = new SelectList(_adminUnitService.FindBy(m => m.AdminUnitTypeID == 3), "AdminUnitID", "Name");
+            ViewBag.WoredaID = new SelectList(_adminUnitService.FindBy(m => m.AdminUnitTypeID == 4), "AdminUnitID", "Name");
+            ViewBag.hubID = new SelectList(_hubService.GetAllHub(), "HUBID", "Name");
+            var addWoredaViewModel = new BidAddWoredaViewModel();
+            addWoredaViewModel.TransportBidQuotationHeaderID = id;
+            addWoredaViewModel.TransporterID = bidQuotation.Transporter.TransporterID;
+            addWoredaViewModel.BidID = bidQuotation.Bid.BidID;
+            return PartialView(addWoredaViewModel);
+        }
+        [HttpPost]
+        public ActionResult AddWoreda(BidAddWoredaViewModel bidAddWoredaViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var detail = GetDetail(bidAddWoredaViewModel);
+
+                    if (_transportBidQuotationService.AddWoreda(detail))
+                        return RedirectToAction("Details", new { id = bidAddWoredaViewModel.TransportBidQuotationHeaderID });
+                    ViewBag.Errors = 1;
+                    return RedirectToAction("Details", new { id = bidAddWoredaViewModel.TransportBidQuotationHeaderID });
+
+                }
+
+                catch (Exception ex)
+                {
+                    var log = new Logger();
+                    log.LogAllErrorsMesseges(ex, _log);
+
+                }
+
+            }
+
+            return PartialView(bidAddWoredaViewModel);
+        }
+
+        private TransportBidQuotation GetDetail(BidAddWoredaViewModel bidAddWoredaViewModel)
+        {
+            var detail = new TransportBidQuotation()
+            {
+                TransportBidQuotationHeaderID = bidAddWoredaViewModel.TransportBidQuotationHeaderID,
+                BidID = bidAddWoredaViewModel.BidID,
+                TransporterID = bidAddWoredaViewModel.TransporterID,
+                SourceID = bidAddWoredaViewModel.hubID,
+                DestinationID = bidAddWoredaViewModel.WoredaID,
+                Tariff = bidAddWoredaViewModel.Tariff,
+                IsWinner = bidAddWoredaViewModel.IsWinner,
+                Remark = bidAddWoredaViewModel.Remark,
+                Position = bidAddWoredaViewModel.Position
+            };
+            return detail;
+        }
+
+        public JsonResult GetAdminUnits()
+        {
+            var r = (from region in _adminUnitService.GetRegions()
+                     select new
+                     {
+
+                         RegionID = region.AdminUnitID,
+                         RegionName = region.Name,
+                         Zones = from zone in _adminUnitService.GetZones(region.AdminUnitID)
+                                 select new
+                                 {
+                                     ZoneID = zone.AdminUnitID,
+                                     ZoneName = zone.Name,
+                                     Woredas = from woreda in _adminUnitService.GetWoreda(zone.AdminUnitID)
+                                               select new
+                                               {
+                                                   WoredaID = woreda.AdminUnitID,
+                                                   WoredaName = woreda.Name
+                                               }
+                                 }
+                     }
+                    );
+            return Json(r, JsonRequestBehavior.AllowGet);
+        }
     }
 }

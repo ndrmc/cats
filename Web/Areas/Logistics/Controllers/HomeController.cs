@@ -20,6 +20,8 @@ using hub = Cats.Services.Hub;
 using Cats.Models;
 using Cats.Helpers;
 using System.Data;
+using Cats.Models.ViewModels.Dashboard;
+using Cats.Services.Dashboard;
 using TransporterViewModel = Cats.Models.ViewModels.TransporterViewModel;
 
 namespace Cats.Areas.Logistics.Controllers
@@ -51,6 +53,7 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IGiftCertificateDetailService _giftCertificateDetailService;
         private readonly hub.IReceiptAllocationService _receiptAllocationService;
         private readonly ITransporterPaymentRequestService _transporterPaymentRequestService;
+        private readonly ILgDashboardService _lgDashboardService;
         public HomeController(IReliefRequisitionService reliefRequisitionService,
             hub.IDispatchAllocationService dispatchAllocationService,
             IUserAccountService userAccountService,
@@ -66,7 +69,13 @@ namespace Cats.Areas.Logistics.Controllers
             IHRDDetailService hrdDetailService,
             IRationDetailService rationDetailService,
             IProgramService programService,
-            IStockStatusService stockStatusService, IReceiptPlanDetailService receiptPlanDetailService, IDeliveryService deliveryService, IGiftCertificateDetailService giftCertificateDetailService, hub.IReceiptAllocationService receiptAllocationService,ITransporterPaymentRequestService transporterPaymentRequestService)
+            IStockStatusService stockStatusService, 
+            IReceiptPlanDetailService receiptPlanDetailService, 
+            IDeliveryService deliveryService, 
+            IGiftCertificateDetailService giftCertificateDetailService, 
+            hub.IReceiptAllocationService receiptAllocationService,
+            ITransporterPaymentRequestService transporterPaymentRequestService, 
+            ILgDashboardService lgDashboardService)
         {
             this._reliefRequisitionService = reliefRequisitionService;
             _dispatchAllocationService = dispatchAllocationService;
@@ -89,6 +98,7 @@ namespace Cats.Areas.Logistics.Controllers
             _giftCertificateDetailService = giftCertificateDetailService;
             _receiptAllocationService = receiptAllocationService;
             _transporterPaymentRequestService = transporterPaymentRequestService;
+            _lgDashboardService = lgDashboardService;
         }
 
         public ActionResult Index()
@@ -299,7 +309,7 @@ namespace Cats.Areas.Logistics.Controllers
         public JsonResult GetTransporters2()
         {
             var paymentRequests = _transporterPaymentRequestService
-                .Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo < 2
+                .Get(t => t.BusinessProcess != null && t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo < 2
                 ).Select(t => t.TransportOrder.TransporterID).Distinct().ToList();
             var transporters =
                 _transportOrderService.FindBy(
@@ -571,6 +581,45 @@ namespace Cats.Areas.Logistics.Controllers
                      });
             return Json(q, JsonRequestBehavior.AllowGet);
         }
+        #endregion
+
+        #region Data entry indicator: Dispatch Allocation
+        
+        public JsonResult DispatchAllocationIndicator(DateTime? startDate, DateTime? endDate, int round = 0)
+        {
+            var dispatchAllocatedRequisitions = _lgDashboardService.DispatchAllocatedRequisitions(startDate, endDate, round);
+            return Json(dispatchAllocatedRequisitions, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetRounds()
+        {
+            var rounds = _lgDashboardService.GetRounds();
+            return Json(rounds, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult BidPlanningIndicator(DateTime? startDate, DateTime? endDate, int lguser = 0)
+        {
+            var bidPlanEntry = _lgDashboardService.BidPlanEntryStatus(startDate, endDate, lguser);
+            return Json(bidPlanEntry, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetLogisticsUsers()
+        {
+            var lgUsers = _userAccountService.FindBy(t=>t.CaseTeam.Value == (int)UserType.CASETEAM.LOGISTICS);
+            var dashboardUserViewModels = new List<DashboardUserViewModel>();
+            foreach (var lgUser in lgUsers)
+            {
+                var dashboardUserViewModel = new DashboardUserViewModel()
+                {
+                    UserProfileId = lgUser.UserProfileID,
+                    UserName = lgUser.UserName
+                };
+                dashboardUserViewModels.Add(dashboardUserViewModel);
+            }
+            
+            return Json(dashboardUserViewModels, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
     }
 }

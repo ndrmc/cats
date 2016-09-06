@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cats.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Web;
 
 namespace Cats.Areas.EarlyWarning.Models
 {
+    [Serializable]
     public class RegionalRequestViewModel
     { 
         [ScaffoldColumn(false)]
@@ -34,13 +36,13 @@ namespace Cats.Areas.EarlyWarning.Models
         public string Remark { get; set; }
         public string MonthName { get; set; }
         public int? Round { get; set; }
-
+        public int BusinessProcessID { get; set; }
 
         public int Beneficiary { get; set; }
         public int NumberOfFDPS { get; set; }
 
         public string RequestedBy { get; set; }
         public string ApprovedBy { get; set; }
-       
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }

@@ -32,12 +32,13 @@ namespace Cats.Models
        public DateTime EndDate { get; set; }
        public int? PartitionId { get; set; }
        public int? TransportRequiqsitionId { get; set; }
-      // public int? BidID { get; set; }
-
-       public virtual Transporter Transporter { get; set; }
+        // public int? BidID { get; set; }
+        public int BusinessProcessID { get; set; }
+        public virtual Transporter Transporter { get; set; }
        public virtual ICollection<TransportOrderDetail> TransportOrderDetails { get; set; }
        public virtual ICollection<PaymentRequest> PaymentRequests { get; set; }
        public virtual ICollection<TransporterPaymentRequest> TransporterPaymentRequests { get; set; }
-       //public virtual ICollection<BidWinner> BidWinners  { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
+        //public virtual ICollection<BidWinner> BidWinners  { get; set; }
     }
 }

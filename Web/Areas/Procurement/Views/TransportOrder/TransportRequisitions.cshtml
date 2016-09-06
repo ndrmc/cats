@@ -79,7 +79,7 @@
                       .Ajax()
                       .PageSize(20)
                       .Model(model => model.Id(p => p.TransportRequisitionID))
-                      .Read(read => read.Action("TransportRequisition_Read", "TransportRequisition", new {Area = "Logistics", status = (int) TransportRequisitionStatus.Approved}).Data("searchIndexObj"))
+                      .Read(read => read.Action("TransportRequisition_Read", "TransportRequisition", new {Area = "Logistics", status = "Approved"}).Data("searchIndexObj"))
                   ).Pageable()
                   )
         </div>

@@ -182,6 +182,7 @@ namespace Cats.Data.UnitWork
         IGenericRepository<Transfer> TransferRepository { get; }
         IGenericRepository<TransporterCheque> TransporterChequeRepository { get; }
         IGenericRepository<LossReason> LossReasonRepository { get; }
+        IGenericRepository<Reason> ReasonRepository { get; }
         IGenericRepository<VWRegionalRequest> VWRegionalRequestRepository { get; } 
         void Save();
 

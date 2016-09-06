@@ -54,9 +54,10 @@ namespace Cats.ViewModelBinder
             if (regionalRequest.UserProfile != null)
                 regionalRequestViewModel.RequestedBy = regionalRequest.UserProfile.FirstName + " " +
                                                        regionalRequest.UserProfile.LastName;
-            if (regionalRequest.UserProfile1 != null && regionalRequest.Status == (int) Cats.Models.Constant.RegionalRequestStatus.Approved)
+            if (regionalRequest.UserProfile1 != null && regionalRequest.Status == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
                 regionalRequestViewModel.ApprovedBy = regionalRequest.UserProfile1.FirstName + " " +
                                                       regionalRequest.UserProfile1.LastName;
+                regionalRequestViewModel.BusinessProcess = regionalRequest.BusinessProcess;
             return regionalRequestViewModel;
         }
 
@@ -96,7 +97,7 @@ namespace Cats.ViewModelBinder
             return request;
         }
 
-       
+
 
 
         public static DataTable TransposeDataNew(List<PLANWithRegionalRequestViewModel> woredaRequestDetail, int programID, string preferedweight)
@@ -296,7 +297,7 @@ namespace Cats.ViewModelBinder
                                         from regionalRequestDetail in requestDetails
                                         group regionalRequestDetail by regionalRequestDetail.Fdp.AdminUnit
                                             into g
-                                            select g
+                                        select g
                                       );
 
                 foreach (var requestDetail in requestDetails)

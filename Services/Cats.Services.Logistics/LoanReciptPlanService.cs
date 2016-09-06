@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using Cats.Data.UnitWork;
 using Cats.Models;
 using Cats.Models.Constant;
+using System.Linq;
 
 namespace Cats.Services.Logistics
 {
@@ -59,8 +60,11 @@ namespace Cats.Services.Logistics
        {
            return _unitOfWork.LoanReciptPlanRepository.FindBy(predicate);
        }
-
-       public bool ApproveRecieptPlan(LoanReciptPlan loanReciptPlan)
+        public IEnumerable<LoanReciptPlan> Get(Expression<Func<LoanReciptPlan, bool>> filter = null, Func<IQueryable<LoanReciptPlan>, IOrderedQueryable<LoanReciptPlan>> orderBy = null, string includeProperties = "")
+        {
+            return _unitOfWork.LoanReciptPlanRepository.Get(filter, orderBy, includeProperties);
+        }
+        public bool ApproveRecieptPlan(LoanReciptPlan loanReciptPlan)
        {
            if (loanReciptPlan != null)
            {

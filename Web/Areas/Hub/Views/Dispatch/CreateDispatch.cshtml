@@ -4,6 +4,7 @@
 @using Kendo.Mvc.UI
 @using Telerik.Web.Mvc.UI
 @using GridEditMode = Kendo.Mvc.UI.GridEditMode
+@using System.Web.Helpers;
 @{
     ViewBag.Title = Html.Translate("New/Edit Dispatch");
     Layout = "~/Views/Shared/_MainLayoutWide.cshtml";
@@ -73,8 +74,7 @@
         </div>
         <div class="span4">
             <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.ShippingInstructionID)
+                    @Html.LabelFor(model => model.SINumber)
                 </div>
                 <div class="controls">
                     @(Html.Kendo().ComboBoxFor(m => m.ShippingInstructionID)
@@ -86,10 +86,14 @@
                                     new { @reqDetailId = ViewBag.RequisitionDetailID, @siID = Model.ShippingInstructionID, @ComID = Model.CommodityID, @DaID = Model.DispatchAllocationID }))))
 
 
+
+
                     @Html.ValidationMessageFor(model => model.ShippingInstructionID)
 
                 </div>
-
+                <div class="control-label">
+                    <label for="a" id="AvailableAmount"></label>
+                </div>
             </div>
 
             <div class="control-group">
@@ -340,12 +344,38 @@
 
     jQuery('#txtQtl').on('input', function () {
         var amountEntered = $('#txtQtl').val();
+        var changedSi = $('#ShippingInstructionID').val();
+
+        var availableSIList = "@ViewBag.AvailableSIList";
         var amountPlanned = "@ViewBag.plannedAmount";
         var recivedAmount = "@ViewBag.recivedAmount";
         var remainngAmount = amountPlanned - recivedAmount;
         if ((amountEntered / 10) > remainngAmount) {
             alert("Dispatch amount must be less than the remaing Amount amount [ " + (remainngAmount * 10) + " Qtl ]!");
+            
+
+        var array = @Html.Raw(Json.Encode(@ViewBag.AvailableSIList));
+        for(var i = 0; i < array.length; i++) {
+            var str= array[i].siCodeId;
+            if(str ===parseInt(changedSi, 10) ) {
+                
+                if ((amountEntered / 10) > array[i].amount)
+                    {
+                    alert("Dispatch amount must be less than the Available amount [ " + (array[i].amount * 10) + " Qtl ]!");
+                $('#txtQtl').val(0);
+
+                $('#Quantity').val(0);
+                    }
+            }
+        }
+        //for(j = 0; j <availableSIList.length; j++)
+        //{
+        //    alert(availableSIList[j].amount);
+        //}
+        if ((amountEntered / 10) > amountPlanned) {
+            alert("Dispatch amount must be less than the planned amount [ " + (amountPlanned * 10) + " Qtl ]!");
             $('#txtQtl').val(0);
+
             $('#Quantity').val(0);
         }
 
@@ -366,6 +396,17 @@
         }
         $('#Quantity').val($('#txtQtl').val() / 10);
 
+    });
+    $("#ShippingInstructionID").change(function () {
+        var changedSi = $('#ShippingInstructionID').val();
+        var array = @Html.Raw(Json.Encode(@ViewBag.AvailableSIList));
+        for(var i = 0; i < array.length; i++) {
+            var str= array[i].siCodeId;
+            if(str ===parseInt(changedSi, 10) ) {
+                var hi =$('#AvailableAmount').text();
+                $('#AvailableAmount').text("Available Amount "+ array[i].amount);
+            }
+        }
     });
     $('.change_si_no').on('click',
                 function (e) {

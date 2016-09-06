@@ -84,7 +84,7 @@
 
             @Html.HiddenFor(model => model.TransportRequisitionID)
             <div class="modal-footer">
-                @if (Model.StatusID == (int)Cats.Models.Constant.TransportRequisitionStatus.Draft)
+                @if (Model.Status == "Draft")
                 {
                     <button class="btn btn-primary" type="submit">Yes</button>
                 }

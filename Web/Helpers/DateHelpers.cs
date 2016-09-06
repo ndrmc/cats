@@ -191,5 +191,10 @@ namespace Cats.Helpers
             return amountInMT * 10;
         }
 
+        public static decimal ToBag(this decimal amountInMT)
+        {
+            return amountInMT / (decimal) 0.05;
+        }
+
     }
 }

@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using Cats.Areas.Logistics.Models;
+using Cats.Helpers;
 using Cats.Models;
 using Cats.Models.Constant;
+using Cats.Models.ViewModels;
 using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Logistics;
@@ -26,8 +29,12 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IGiftCertificateService _giftCertificateService;
         private readonly IShippingInstructionService _shippingInstructionService;
         private readonly ICommodityService _commodityService;
-        public LocalPurchaseController( ILocalPurchaseService localPurchaseService,ICommonService commonService,ILocalPurchaseDetailService localPurchaseDetailService,
-                                        IGiftCertificateService giftCertificateService,IShippingInstructionService shippingInstructionService,ICommodityService commodityService)
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IBusinessProcessService _businessProcessService;
+        public LocalPurchaseController(ILocalPurchaseService localPurchaseService, ICommonService commonService,
+            ILocalPurchaseDetailService localPurchaseDetailService,
+            IGiftCertificateService giftCertificateService, IShippingInstructionService shippingInstructionService,
+            ICommodityService commodityService, IApplicationSettingService applicationSettingService,IBusinessProcessService businessProcessService)
         {
             _localPurchaseService = localPurchaseService;
             _commonService = commonService;
@@ -35,6 +42,8 @@ namespace Cats.Areas.Logistics.Controllers
             _giftCertificateService = giftCertificateService;
             _shippingInstructionService = shippingInstructionService;
             _commodityService = commodityService;
+            _applicationSettingService = applicationSettingService;
+            _businessProcessService = businessProcessService;
         }
 
         public ActionResult Index()
@@ -47,6 +56,8 @@ namespace Cats.Areas.Logistics.Controllers
                 ModelState.AddModelError("Errors",TempData["Received"].ToString());
             else if (TempData["Error"]!=null)
                 ModelState.AddModelError("Errors",TempData["Error"].ToString());
+
+            ViewBag.TargetController = "LocalPurchase";
             return View();
         }
         public ActionResult Create()
@@ -68,31 +79,35 @@ namespace Cats.Areas.Logistics.Controllers
             ViewBag.CommodityID = new SelectList(_commodityService.FindBy(m => m.ParentID == parentCommodityID), "CommodityID", "Name", localPurchase.CommodityID);
             ViewBag.CommodityTypeID = new SelectList(_commonService.GetCommodityTypes(), "CommodityTypeID", "Name");
             ViewBag.DonorID = new SelectList(_commonService.GetDonors(), "DonorID", "Name",localPurchase.DonorID);
+            
             if (localPurchase!=null)
             {
                 var localPurchaseWithDetailViewModel = new LocalPurchaseWithDetailViewModel()
-                    {
-                        LocalPurchaseID = localPurchase.LocalPurchaseID,
-                        ProgramID = localPurchase.ProgramID,
-                        DonorID = localPurchase.DonorID,
-                        CommodityID = localPurchase.DonorID,
-                        ProjectCode = localPurchase.ProjectCode,
-                        SINumber = localPurchase.ShippingInstruction.Value,
-                        ReferenceNumber = localPurchase.ReferenceNumber,
-                        SupplierName = localPurchase.SupplierName,
-                        PurchaseOrder = localPurchase.PurchaseOrder,
-                        Quantity = localPurchase.Quantity,
-                        StatusID = localPurchase.StatusID,
-                        CommoditySource = _commonService.GetCommditySourceName(3),//commodity source for local purchase
-                        LocalPurchaseDetailViewModels = GetLocalPurchaseDetail(localPurchase.LocalPurchaseDetails)
-
-                    };
+                {
+                    LocalPurchaseID = localPurchase.LocalPurchaseID,
+                    ProgramID = localPurchase.ProgramID,
+                    DonorID = localPurchase.DonorID,
+                    CommodityID = localPurchase.DonorID,
+                    ProjectCode = localPurchase.ProjectCode,
+                    SINumber = localPurchase.ShippingInstruction.Value,
+                    ReferenceNumber = localPurchase.ReferenceNumber,
+                    SupplierName = localPurchase.SupplierName,
+                    PurchaseOrder = localPurchase.PurchaseOrder,
+                    Quantity = localPurchase.Quantity,
+                    StatusID = localPurchase.StatusID,
+                    CommoditySource = _commonService.GetCommditySourceName(3), //commodity source for local purchase
+                    LocalPurchaseDetailViewModels = GetLocalPurchaseDetail(localPurchase.LocalPurchaseDetails),
+                    BusinessProcessID = localPurchase.BusinessProcessID,
+                    BusinessProcess = localPurchase.BusinessProcess
+                };
                 if (TempData["CustomError"] != null)
                 {
                     ModelState.AddModelError("Errors", TempData["CustomError"].ToString());
                 }
                 if (TempData["success"] != null)
                     ModelState.AddModelError("Success", TempData["success"].ToString());
+
+                ViewBag.TargetController = "LocalPurchase";
                 return View(localPurchaseWithDetailViewModel);
 
             }
@@ -101,27 +116,45 @@ namespace Cats.Areas.Logistics.Controllers
         [HttpPost]
         public ActionResult Create(LocalPurchaseWithDetailViewModel localPurchaseWithDetailViewModel)
         {
-            if (localPurchaseWithDetailViewModel != null && localPurchaseWithDetailViewModel.Quantity >= localPurchaseWithDetailViewModel.LocalPurchaseDetailViewModels.Sum(m => m.AllocatedAmonut))
+            if (localPurchaseWithDetailViewModel != null &&
+                localPurchaseWithDetailViewModel.Quantity >=
+                localPurchaseWithDetailViewModel.LocalPurchaseDetailViewModels.Sum(m => m.AllocatedAmonut))
             {
-                var shippingInstractionID = CheckAvilabilityOfSiNumber(localPurchaseWithDetailViewModel.SINumber);
-                if (shippingInstractionID != 0)
+                var shippingInstractionId = CheckAvilabilityOfSiNumber(localPurchaseWithDetailViewModel.SINumber);
+
+                // Workflow Implementation
+                int BP_PR = _applicationSettingService.GetLocalPurchaseReceiptPlanWorkflow();
+                if (BP_PR != 0)
                 {
-                    
-                    if (!CheckAvailabilityOfSiInLocalPurchase(localPurchaseWithDetailViewModel.SINumber))
+                    var createdstate = new BusinessProcessState
+                    {
+                        DatePerformed = DateTime.Now,
+                        PerformedBy = User.Identity.Name,
+                        Comment = "Local Purchase Created"
+                    };
+                    var bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                        "Local Purchase Receipt plan", createdstate);
+
+
+                    if (shippingInstractionId != 0)
+                    {
+
+                        if (!CheckAvailabilityOfSiInLocalPurchase(localPurchaseWithDetailViewModel.SINumber) && bp != null)
                         {
 
-                            SaveNewLocalPurchase(localPurchaseWithDetailViewModel, shippingInstractionID);
+                            SaveNewLocalPurchase(localPurchaseWithDetailViewModel, shippingInstractionId, bp.BusinessProcessID);
                         }
-                  
+
+                    }
+                    else
+                    {
+                        var si = AddSiNumber(localPurchaseWithDetailViewModel.SINumber);
+                        if (si != -1 && bp != null)
+                            SaveNewLocalPurchase(localPurchaseWithDetailViewModel, si,bp.BusinessProcessID); // second in doation table
+                    }
+                    TempData["success"] = "Local Purchase Sucessfully Saved";
+                    return RedirectToAction("Index");
                 }
-                else
-                {
-                    var si = AddSiNumber(localPurchaseWithDetailViewModel.SINumber);
-                    if (si != -1)
-                        SaveNewLocalPurchase(localPurchaseWithDetailViewModel, si);// second in doation table
-                }
-                TempData["success"] = "Local Purchase Sucessfully Saved";
-                return RedirectToAction("Index");
             }
             ModelState.AddModelError("Errors", @"Total Allocated Amount Can't Exceed Planned Quantity"); 
             PopulateLookUps();
@@ -135,12 +168,10 @@ namespace Cats.Areas.Logistics.Controllers
             int resultInt = siList.Max() + 1;
             return Json("LP-" + resultInt, JsonRequestBehavior.AllowGet);
         }
-        private bool SaveNewLocalPurchase(LocalPurchaseWithDetailViewModel localPurchaseWithDetailViewModel, int sippingInstractionID)
+        private bool SaveNewLocalPurchase(LocalPurchaseWithDetailViewModel localPurchaseWithDetailViewModel, int sippingInstractionID, int businessProcessId )
         {
             try
             {
-
-
                 var localPurchase = new LocalPurchase()
                 {
                     DateCreated = DateTime.Now,
@@ -154,7 +185,7 @@ namespace Cats.Areas.Logistics.Controllers
                     ReferenceNumber = localPurchaseWithDetailViewModel.ReferenceNumber,
                     ProjectCode = localPurchaseWithDetailViewModel.ProjectCode,
                     StatusID = (int)LocalPurchaseStatus.Draft,
-
+                    BusinessProcessID = businessProcessId,
 
                 };
 
@@ -173,7 +204,6 @@ namespace Cats.Areas.Logistics.Controllers
             }
             catch (Exception)
             {
-
                 return false;
             }
         }
@@ -245,25 +275,27 @@ namespace Cats.Areas.Logistics.Controllers
         private IEnumerable<LocalPurchaseViewModel> GetLocalPurchase(IEnumerable<LocalPurchase> localPurchases)
         {
             return (from localPurchase in localPurchases
-                    select new LocalPurchaseViewModel
-                        {
-                            LocalPurchaseID = localPurchase.LocalPurchaseID,
-                            CommodityID = localPurchase.CommodityID,
-                            Commodity = localPurchase.Commodity.Name,
-                            ProgramID = localPurchase.ProgramID,
-                            Program = localPurchase.Program.Name,
-                            DonorID = localPurchase.DonorID,
-                            DonorName = localPurchase.Donor.Name,
-                            SupplierName = localPurchase.SupplierName,
-                            ReferenceNumber = localPurchase.ReferenceNumber,
-                            SiNumber = localPurchase.ShippingInstruction.Value,
-                            Quantity = localPurchase.Quantity,
-                            ProjectCode = localPurchase.ProjectCode,
-                            Status = _commonService.GetStatusName(WORKFLOW.LocalPUrchase, localPurchase.StatusID)
-                            //CreatedDate = localPurchase.DateCreated,
-                           
-                        });
-
+                let status =
+                    localPurchase.BusinessProcess.CurrentState != null
+                        ? localPurchase.BusinessProcess.CurrentState.BaseStateTemplate.Name
+                        : _commonService.GetStatusName(WORKFLOW.LocalPUrchase, localPurchase.StatusID)
+                select new LocalPurchaseViewModel
+                {
+                    LocalPurchaseID = localPurchase.LocalPurchaseID,
+                    CommodityID = localPurchase.CommodityID,
+                    Commodity = localPurchase.Commodity.Name,
+                    ProgramID = localPurchase.ProgramID,
+                    Program = localPurchase.Program.Name,
+                    DonorID = localPurchase.DonorID,
+                    DonorName = localPurchase.Donor.Name,
+                    SupplierName = localPurchase.SupplierName,
+                    ReferenceNumber = localPurchase.ReferenceNumber,
+                    SiNumber = localPurchase.ShippingInstruction.Value,
+                    Quantity = localPurchase.Quantity,
+                    ProjectCode = localPurchase.ProjectCode,
+                    Status = status,
+                    //CreatedDate = localPurchase.DateCreated,                     
+                });
         }
 
         private IEnumerable<LocalPurchaseDetailViewModel> GetNewLocalPurchaseDetail()
@@ -316,24 +348,25 @@ namespace Cats.Areas.Logistics.Controllers
             }
             catch (Exception)
             {
-
                 return 0;
             }
         }
 
         private Boolean CheckAvailabilityOfSiInLocalPurchase(string siNumber)
         {
-            var shippingInstructionID = _shippingInstructionService.FindBy(m => m.Value == siNumber).FirstOrDefault().ShippingInstructionID;
+            var shippingInstructionID =
+                _shippingInstructionService.FindBy(m => m.Value == siNumber).FirstOrDefault().ShippingInstructionID;
             try
             {
-                var siId = _localPurchaseService.FindBy(d => d.ShippingInstructionID == shippingInstructionID).SingleOrDefault();
+                var siId =
+                    _localPurchaseService.FindBy(d => d.ShippingInstructionID == shippingInstructionID)
+                        .SingleOrDefault();
                 if (siId == null)
                     return false;
                 return true;
             }
             catch (Exception)
             {
-
                 return false;
             }
         }
@@ -349,7 +382,6 @@ namespace Cats.Areas.Logistics.Controllers
             }
             catch (Exception)
             {
-
                 return -1;
             }
         }
@@ -418,6 +450,50 @@ namespace Cats.Areas.Logistics.Controllers
             }
             TempData["Error"] = "Unable to revert local purchase.";
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+
+            _businessProcessService.PromotWorkflow(businessProcessState);
+            if (statusId != null)
+                return RedirectToAction("Index", "LocalPurchase", new { Area = "Logistics", statusId });
+            return RedirectToAction("Index", "LocalPurchase", new { Area = "Logistics" });
+        }
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                    .Select(s => s[random.Next(s.Length)])
+                    .ToArray());
+
+            return result;
         }
     }
 }

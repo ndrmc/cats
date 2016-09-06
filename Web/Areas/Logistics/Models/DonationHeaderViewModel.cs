@@ -8,6 +8,9 @@ namespace Cats.Areas.Logistics.Models
     public class DonationHeaderViewModel
     {
         public int DonationHeaderPlanID { get; set; }
+        public int BusinessProcessID { get; set; }
+        public int StateTemplateID { get; set; }
+        public string Status { get; set; }
         public int ShippingInstructionId { get; set; }
         public string SINumber { get; set; }
         public Nullable<int> GiftCertificateID { get; set; }

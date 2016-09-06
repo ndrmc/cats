@@ -55,6 +55,11 @@ namespace Cats.Helpers
         {
             return System.Text.RegularExpressions.Regex.Replace(input, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
         }
+
+        public static bool HasFile(this HttpPostedFileBase file)
+        {
+            return file != null && file.ContentLength > 0;
+        }
     }
 }
 

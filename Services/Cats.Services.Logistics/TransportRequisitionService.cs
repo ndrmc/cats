@@ -11,6 +11,7 @@ using Cats.Models.Constant;
 using Cats.Models.ViewModels;
 using Cats.Services.Logistics;
 using Cats.Services.Common;
+using Cats.Services.EarlyWarning;
 
 namespace Cats.Services.Logistics
 {
@@ -18,12 +19,17 @@ namespace Cats.Services.Logistics
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly INotificationService _notificationService;
-     
+        private readonly IBusinessProcessService _businessProcessService;
+        private readonly IReliefRequisitionService _reliefRequisitionService;
+        private readonly IApplicationSettingService _applicationSettingService;
 
-        public TransportRequisitionService(IUnitOfWork unitOfWork, INotificationService notificationService)
+        public TransportRequisitionService(IUnitOfWork unitOfWork, INotificationService notificationService, IBusinessProcessService businessProcessService, IReliefRequisitionService reliefRequisitionService, IApplicationSettingService applicationSettingService)
         {
             this._unitOfWork = unitOfWork;
             _notificationService = notificationService;
+            _businessProcessService = businessProcessService;
+            _reliefRequisitionService = reliefRequisitionService;
+            _applicationSettingService = applicationSettingService;
         }
 
         #region Default Service Implementation
@@ -78,7 +84,7 @@ namespace Cats.Services.Logistics
         }
         #endregion
 
-        public bool CreateTransportRequisition(List<List<int>> programRequisitons,int requestedBy)
+        public bool CreateTransportRequisition(List<List<int>> programRequisitons,int requestedBy, string requesterName)
         {
             if(programRequisitons.Count < 1) return false;
             foreach (var reliefRequisitions in programRequisitons)
@@ -112,14 +118,64 @@ namespace Cats.Services.Logistics
                                                    ProgramID = program.ProgramID
                                                };
 
+                int BP_PR = 0;
+                List<ApplicationSetting> ret = _applicationSettingService.FindBy(t => t.SettingName == "TransportRequisitionWorkflow");
+                if (ret.Count == 1)
+                {
+                    BP_PR = Int32.Parse(ret[0].SettingValue);
+                }
+                if (BP_PR != 0)
+                {
+                    BusinessProcessState createdstate = new BusinessProcessState
+                    {
+                        DatePerformed = DateTime.Now,
+                        PerformedBy = requesterName,
+                        Comment = "New Requisition Created"
+
+                    };
+                    //_PaymentRequestservice.Create(request);
+
+                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                        "ReliefRequisition", createdstate);
+                    if (bp != null)
+                    {
+                        transportRequisition.BusinessProcessID = bp.BusinessProcessID;
+                    }
+                    else
+                    {
+                        //ModelState.AddModelError("Error", errorMessage: @"Could not create a business process object");
+                    }
+                }
+
                 foreach (var reliefRequisition in reliefRequisitions)
                 {
                     transportRequisition.TransportRequisitionDetails.Add(new TransportRequisitionDetail
                                                                              {RequisitionID = reliefRequisition});
-                    var orignal =
-                        _unitOfWork.ReliefRequisitionRepository.Get(t => t.RequisitionID == reliefRequisition).
-                            FirstOrDefault();
-                    orignal.Status = (int) ReliefRequisitionStatus.TransportRequisitionCreated;
+                    //var orignal =
+                    //    _unitOfWork.ReliefRequisitionRepository.Get(t => t.RequisitionID == reliefRequisition).
+                    //        FirstOrDefault();
+                    //orignal.Status = (int) ReliefRequisitionStatus.TransportRequisitionCreated;
+
+                    var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == reliefRequisition, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+                    if (requisition != null)
+                    {
+                        var approveFlowTemplate = requisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Requisition");
+                        if (approveFlowTemplate != null)
+                        {
+                            var businessProcessState = new BusinessProcessState()
+                            {
+                                StateID = approveFlowTemplate.FinalStateID,
+                                PerformedBy = requesterName,
+                                DatePerformed = DateTime.Now,
+                                Comment = "Transport requisition has been created for the requisition.",
+                                //AttachmentFile = fileName,
+                                ParentBusinessProcessID = requisition.BusinessProcessID
+                            };
+                            //return 
+                            _businessProcessService.PromotWorkflow(businessProcessState);
+                        }
+                    }
                 }
 
                 AddTransportRequisition(transportRequisition);
@@ -149,8 +205,7 @@ namespace Cats.Services.Logistics
                                  "/Procurement/TransportOrder/NotificationNewRequisitions?recordId=" + transportRequisition.TransportRequisitionID;
                 return;
             }
-            destinationURl = "http://" + HttpContext.Current.Request.Url.Authority +
-                             HttpContext.Current.Request.ApplicationPath +
+            destinationURl = 
                              "/Procurement/TransportOrder/NotificationNewRequisitions?recordId=" + transportRequisition.TransportRequisitionID;
             _notificationService.AddNotificationForProcurementFromLogistics(destinationURl, transportRequisition);
         }
@@ -291,24 +346,43 @@ namespace Cats.Services.Logistics
 
         public IEnumerable<ReliefRequisition> GetProjectCodeAssignedRequisitions()
         {
-            return _unitOfWork.ReliefRequisitionRepository.Get(t => t.Status == (int)ReliefRequisitionStatus.ProjectCodeAssigned, null,
-                                                          "ReliefRequisitionDetails,Program,AdminUnit1,AdminUnit,Commodity");
+            return _unitOfWork.ReliefRequisitionRepository.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Project Code Assigned", null,
+                    "ReliefRequisitionDetails,Program,AdminUnit1,AdminUnit,Commodity,BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate");
         }
 
 
-        public bool ApproveTransportRequisition(int id,int approvedBy)
+        public bool ApproveTransportRequisition(int id,int approvedBy, string approvedByName)
         {
-            var transportRequisition =
-                _unitOfWork.TransportRequisitionRepository.FindById(id);
-            if(transportRequisition==null) return false;
+            var transportRequisition = _unitOfWork.TransportRequisitionRepository.Get(t => t.TransportRequisitionID == id, null,
+                            "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+            if (transportRequisition==null) return false;
+
+            var approveFlowTemplate = transportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Approve");
+            if (approveFlowTemplate != null)
+            {
+                var businessProcessState = new BusinessProcessState()
+                {
+                    StateID = approveFlowTemplate.FinalStateID,
+                    PerformedBy = approvedByName,
+                    DatePerformed = DateTime.Now,
+                    Comment = "Transport requisition has been approved",
+                    //AttachmentFile = fileName,
+                    ParentBusinessProcessID = transportRequisition.BusinessProcessID
+                };
+                //return 
+               _businessProcessService.PromotWorkflow(businessProcessState);
+                AddToNotification(transportRequisition);
+                return true;
+
+            }
+
+            //transportRequisition.Status = (int) TransportRequisitionStatus.Approved;
+            //transportRequisition.CertifiedBy = approvedBy;
+            //transportRequisition.CertifiedDate = DateTime.Today;
             
-            transportRequisition.Status = (int) TransportRequisitionStatus.Approved;
-            transportRequisition.CertifiedBy = approvedBy;
-            transportRequisition.CertifiedDate = DateTime.Today;
-            _unitOfWork.Save();
             //calling the notification 
-            AddToNotification(transportRequisition);
-            return true;
+            //AddToNotification(transportRequisition);
+            return false;
         }
 
         //public string GetStoreName(int hubId, int requisitionId)

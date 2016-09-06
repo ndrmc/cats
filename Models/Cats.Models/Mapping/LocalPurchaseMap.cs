@@ -44,6 +44,9 @@ namespace Cats.Models.Mapping
            this.HasRequired(t => t.Program)
              .WithMany(t => t.LocalPurchases)
              .HasForeignKey(t => t.ProgramID);
+           this.HasRequired(t => t.BusinessProcess)
+               .WithMany(t => t.LocalPurchases)
+               .HasForeignKey(t => t.BusinessProcessID);
        }
     }
 }

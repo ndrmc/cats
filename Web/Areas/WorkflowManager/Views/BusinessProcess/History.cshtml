@@ -14,6 +14,7 @@
         <th> State</th>
         <th> User</th>
         <th>Comment</th>
+        <th>Attachment</th>
     </tr>
 
     @foreach (BusinessProcessState item in Model.BusinessProcessStates)
@@ -24,6 +25,11 @@
             <td> @item.BaseStateTemplate.Name</td>
             <td>@item.PerformedBy</td>
             <td>@item.Comment</td>
+            @if (!string.IsNullOrEmpty(item.AttachmentFile))
+            {
+                <td><a href="@Url.Content("~/Content/Attachment/")@item.AttachmentFile">@item.AttachmentFile</a></td>
+            }
+            
         </tr>
     }
 

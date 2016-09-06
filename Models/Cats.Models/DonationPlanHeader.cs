@@ -14,6 +14,7 @@ namespace Cats.Models
         }
 
         public int DonationHeaderPlanID { get; set; }
+        public int BusinessProcessID { get; set; }
         public int ShippingInstructionId { get; set; }
         public Nullable<int> GiftCertificateID { get; set; }
         public int CommodityID { get; set; }
@@ -38,5 +39,6 @@ namespace Cats.Models
         public virtual Donor Donor { get; set; }
         public virtual Program Program { get; set; }
         public virtual UserProfile UserProfile { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }

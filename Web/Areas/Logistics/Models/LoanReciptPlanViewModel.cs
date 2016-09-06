@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Cats.Models;
+using Cats.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -30,7 +32,9 @@ namespace Cats.Areas.Logistics.Models
         public int StatusID { get; set; }
         public string Status { get; set; }
         public bool IsFalseGRN { get; set; }
-
+        public int BusinessProcessID { get; set; }
+        //public virtual BusinessProcess BusinessProcess { get; set; }
+        public List<FlowTemplateViewModel> InitialStateFlowTemplates { get; set; }
 
     }
     public class LoanReciptPlanWithDetailViewModel//:IValidatableObject

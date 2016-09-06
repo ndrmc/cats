@@ -95,6 +95,10 @@ namespace Cats.Services.Common
         {
             return getIntValue("TransporterPaymentRequestWorkflow");
         }
+        public int getRegionalRequestWorkflow()
+        {
+            return getIntValue("RegionalRequestWorkflow");
+        }
         public int getTransporterChequeWorkflow()
         {
             return getIntValue("TransporterChequeWorkflow");
@@ -109,8 +113,48 @@ namespace Cats.Services.Common
             return getIntValue("DefaultRation");
         }
 
-    }
+        public int getNeedAssessmentPlanWorkflow()
+        {
+            return getIntValue("NeedAssessmentPlanWorkflow");
+        }
+        public int getNeedAssessmentWorkflow()
+        {
+            return getIntValue("NeedAssessmentWorkflow");
+        }
+        public int getReliefRequisitionWorkflow()
+        {
+            return getIntValue("ReliefRequisitionWorkflow");
+        }
+        public int getTransportOrderWorkflow()
+        {
+            return getIntValue("TransportOrderWorkflow");
+        }
+        public int getHRDWorkflow()
+        {
+            return getIntValue("HRDWorkflow");
+        }
+        public int getReciptPlanForLoanWorkflow()
+        {
+            return getIntValue("ReciptPlanForLoanWorkflow");
+        }
+        public int GetLocalPurchaseReceiptPlanWorkflow()
+        {
+            return getIntValue("LocalPurchaseReceiptPlanWorkflow");
+        }
 
+        public int GetSwapWrokflow()
+        {
+            return getIntValue("SwapWorkflow");
+        }
 
+        public int getTransportRequisitionWorkflow()
+        {
+            return getIntValue("TransportRequisitionWorkflow");
+        }
 
+        public int getDonationPlanHeaderWorkflow()
+        {
+            return getIntValue("DonationPlanHeaderWorkflow");
+        }
+    }  
 }

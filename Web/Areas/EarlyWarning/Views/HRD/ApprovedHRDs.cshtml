@@ -1,13 +1,16 @@
 ﻿@using Cats.Helpers
+@using Cats.Models
+@using Cats.Models.ViewModels.HRD
 @using Cats.Security
 @using Kendo.Mvc.UI
 @using Cats.Services.Security
 @using LanguageHelpers.Localization
-@model List<Cats.Models.HRD>
+@model List<Cats.Models.ViewModels.HRD.HRDViewModel>
 
 @{
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_CATSLayout.cshtml";
+    var index = 0;
 }
 
 @section Title
@@ -29,11 +32,13 @@ Plans
             <div class="box-body row">
                 <div class="text-right col-md-12">
                     @Html.EarlyWarningOperationButton(
-                        @Url.Action("Create", "HRD", new { Area = "EarlyWarning" }),
+                        @Url.Action("Create", "HRD", new {Area = "EarlyWarning"}),
                         EarlyWarningConstants.Operation.New_HRD, "<button type=\"button\" class=\"btn btn-success\"><span class=\"fa fa-plus\"></span> New HRD</button>", "btn", "btn_new_record")
                 </div>
                 <div class="col-md-12">
-                    <div class="table-responsive">
+
+
+                    @*<div class="table-responsive">
                         
 @(Html.Kendo().Grid<Cats.Models.ViewModels.HRD.HRDViewModel>()
     .Name("grid")
@@ -83,14 +88,128 @@ Plans
 
       )
 
+                    @*</div>*@
+
+
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-condensed">
+                            <thead>
+                            <tr>
+                                <th>HRD Name</th>
+                                <th>Ration No</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Created By</th>
+                                <th>Date Created</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (HRDViewModel item in Model)
+                            {
+                                index++;
+                                var currentState = item.BusinessProcess.CurrentState;
+                                var state = currentState != null ? currentState.BaseStateTemplate : null;
+                                <tr>
+                                    <td>
+                                        <a href='@Url.Action("Detail", "HRD", new {id = item.HRDID})'> @item.Plan </a>
+                                    </td>
+                                    <td>
+                                        @item.Ration
+                                    </td>
+                                    <td>
+                                        @item.StartDate
+                                    </td>
+                                    <td>
+                                        @item.EndDate
+                                    </td>
+                                    <td>
+                                        @item.CreatedBy
+                                    </td>
+                                    <td>
+                                        @item.CreatedDatePref
+                                    </td>
+                                    <td>
+                                        @item.Status
+                                    </td>
+                                    <td>
+                                        @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Modify_HRD))
+                                        {
+                                            <a href='@Url.Action("Edit", "HRD", new {id = item.HRDID})' class="btn-warning">
+                                                @*<span class="glyphicon glyphicon-edit"></span>*@
+                                                Edit
+                                            </a>
+                                        }
+                                        &nbsp;
+                                        @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.HRD_Summary))
+                                        {
+                                            <a href='@Url.Action("RegionalSummary", "HRD", new {id = item.HRDID})' class="btn-primary btn-large">
+                                                @*<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>*@
+                                                Summary
+                                            </a>
+                                        }
+                                        &nbsp;
+                                        <div class="btn-group">
+                                            <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
+                                                <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
+                                            </button>
+
+                                            <ul class="dropdown-menu pull-right">
+                                                @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                                                {
+                                                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Publish_HRD) && actions.Name == "Publish")
+                                                    {
+                                                        <li class="edit_button">
+                                                            <a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.HRDID)" title="@actions.Name">@actions.Name</a>
+                                                        </li>
+                                                    }
+
+                                                }
+                                                <li class="divider"></li>
+                                                @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_HRD_Detail))
+                                                {
+                                                    <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
                     </div>
+
+
+
+
+
+
+
+
+
+
+
                 </div>
 
             </div>
         </div>
     </div>
 </div>
+               <div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+                   <div class="modal-dialog">
+                       <div class="modal-content">
+                           <div class="modal-header">
+                               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                               <h4 id="modalHistoryLabel">Activity History</h4>
+                           </div>
+                           <div class="modal-body" id="modalHistoryBody">History</div>
 
+                       </div>
+                   </div>
+               </div>
+               @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml");
 
 
 <script>
@@ -128,9 +247,10 @@ Plans
     function error_handler(e) {
         if (e.errors) {
             var message = "Errors:\n";
-            $.each(e.errors, function (key, value) {da
+            $.each(e.errors, function(key, value) {
+                da
                 if ('errors' in value) {
-                    $.each(value.errors, function () {
+                    $.each(value.errors, function() {
                         message += this + "\n";
                     });
                 }
@@ -138,4 +258,35 @@ Plans
             alert(message);
         }
     }
+
+</script>
+<script>
+    // Workflow Implementation
+    var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
+
+    function promot_workflow(BusinessProcessID, nextstate, actionname, PlanID) {
+        //alert(PaymentRequestID);
+        $('#ParentBusinessProcessID').val(BusinessProcessID);
+        $('#stateID').val(nextstate);
+        $('#modalPromotionLabel').html(actionname);
+        $('#TransporterChequeID').val(TransporterChequeID);
+        $('#modalPromotion').modal();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ApproveHRD", "HRD")",
+            data: "{id:" + PlanID + "}",
+        dataType: json
+    });
+    }
+
+    function workflow_history(BusinessProcessID) {
+        $('#modalHistory').modal();
+        $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+        $.post(history_link + BusinessProcessID, {},
+            function(data) {
+                $("#modalHistoryBody").html(data);
+            }
+        );
+    }
+
 </script>

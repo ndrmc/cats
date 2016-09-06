@@ -1,7 +1,10 @@
 ﻿@model Cats.Areas.Logistics.Models.LoanReciptPlanViewModel
 @using Cats.Areas.Logistics.Models
 @using Cats.Helpers
+@using Cats.Models
+@using Cats.Security
 @using Cats.Models.Constant
+@using Cats.Models.ViewModels
 @using Kendo.Mvc.UI
 @{
     ViewBag.Title = "Detail";
@@ -10,6 +13,7 @@
     Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
     ViewBag.PageTitle = Html.Translate("List of Receipt Plan From Loan Details");
     ViewBag.PageTitleDescription = "";
+    int index = 0;
 }
 @section Toolbar
 {
@@ -74,18 +78,46 @@
         </div>
         <div class="actions">
             <div class="btn-group">
+                <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
+                    <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right">
+
+                 
+
+
+                @foreach (FlowTemplateViewModel actions in Model.InitialStateFlowTemplates)
+                {
+                    if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transfer_plan) && actions.Name == "Approve")
+                    {
+                        <li class="edit_button"><a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , @Model.LoanReciptPlanID)" title="@actions.Name">@actions.Name</a></li>
+                    }
+
+                }
+                    <li class="divider"></li>
+                    @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
+                {*@
+                    <li class="edit_button"><a href="javascript:workflow_history(@Model.BusinessProcessID)"> History </a></li>
+                    @*}*@
+                </ul>
+            </div>
+            <div class="btn-group">
                 <a class="btn green dropdown-toggle " data-toggle="dropdown">
                     @Html.Translate("Action")
                     <i class="fa fa-angle-down"></i>
                 </a>
 
                 <ul class="dropdown-menu pull-right">
-                    @if (Model.StatusID == (int)LocalPurchaseStatus.Draft)
-                    {
-                    <li><a id="btnRecive" class="btn green-sharp-stripe" href="@Url.Action("ReciptPlan", "ReciptPlanForLoan", new { id = Model.LoanReciptPlanID})">@Html.Translate("Recieve Plan")</a></li>
-                    <li><a id="btnEdit" class="btn green-sharp-stripe" href="@Url.Action("Edit", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Edit")</a></li>
-                    <li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Approve")</a></li>
-                    }
+
+                   
+                        @if (Model.StatusID == (int) LocalPurchaseStatus.Draft)
+                        {
+                            <li><a id="btnRecive" class="btn green-sharp-stripe" href="@Url.Action("ReciptPlan", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Recieve Plan")</a></li>
+                            <li><a id="btnEdit" class="btn green-sharp-stripe" href="@Url.Action("Edit", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Edit")</a></li>
+                            
+                           // <li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Approve")</a></li>
+                        }
+                    
                 </ul>
             </div>
 
@@ -181,7 +213,7 @@
 
     </div>
 </div>
-
+@Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
 
 <div class="portlet light bordered">
     <div class="portlet-title">
@@ -236,3 +268,23 @@
         </div>
     </div>
 </div>
+<script>
+    var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
+    function promot_workflow(BusinessProcessID, nextstate, actionname, LoanReciptPlanID) {
+        $('#ParentBusinessProcessID').val(BusinessProcessID);
+        $('#stateID').val(nextstate);
+        $('#modalPromotionLabel').html(actionname);
+        $('#LoanReciptPlanID').val(LoanReciptPlanID);
+        $('#modalPromotion').modal();
+       
+    }
+    function workflow_history(BusinessProcessID) {
+        $('#modalHistory').modal();
+        $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+        $.post(history_link + BusinessProcessID, {},
+        function (data) {
+            $("#modalHistoryBody").html(data);
+        }
+        );
+    }
+</script>

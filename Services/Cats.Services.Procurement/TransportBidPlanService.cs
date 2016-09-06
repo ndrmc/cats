@@ -56,5 +56,9 @@ namespace Cats.Services.Procurement
             return _unitOfWork.TransportBidPlanRepository.FindBy(predicate);
 
         }
+        public IEnumerable<TransportBidPlan> Get(Expression<Func<TransportBidPlan, bool>> filter = null, Func<IQueryable<TransportBidPlan>, IOrderedQueryable<TransportBidPlan>> orderBy = null, string includeProperties = "")
+        {
+            return _unitOfWork.TransportBidPlanRepository.Get(filter, orderBy, includeProperties);
+        }
     }
 }

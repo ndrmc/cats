@@ -35,7 +35,7 @@ namespace Cats.Models
       public int? ShippingInstructionID {get; set;}
       public int? ProjectCodeID {get; set;}
  
-      public int TransportOrderID { get; set; }
+      public int? TransportOrderID { get; set; }
       public virtual ICollection<Dispatch> Dispatches { get; set; }
     }
 }

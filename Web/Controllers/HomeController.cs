@@ -192,23 +192,97 @@ namespace Cats.Controllers
             return Redirect("/hub");
         }
 
+        private static string GetApplication(string user)
+        {
 
+            var currentUser = UserAccountHelper.GetUser(user);
+            var userID = currentUser.UserProfileID;
+            if (currentUser.IsAdmin)
+            {
+                return Cats.Models.Constant.Application.EARLY_WARNING;
+            }
+            if (currentUser.DefaultHub != null)
+            {
+
+                return Cats.Models.Constant.Application.HUB;
+
+            }
+            if (currentUser.RegionalUser)
+            {
+                return Cats.Models.Constant.Application.REGIONAL;
+            }
+            switch (currentUser.CaseTeam)
+            {
+                case 1://EarlyWarning
+                    return Cats.Models.Constant.Application.EARLY_WARNING;
+                    break;
+                case 2://PSNP
+                    return Cats.Models.Constant.Application.PSNP;
+                    break;
+                case 3://Logistics
+                    return Cats.Models.Constant.Application.LOGISTICS;
+                    break;
+                case 4://Procurement
+                    return Cats.Models.Constant.Application.PROCUREMENT;
+                    break;
+                case 5://Finance
+                    return Cats.Models.Constant.Application.FINANCE;
+                    break;
+                default:
+                    return "";
+
+            }
+
+        }
         public ActionResult GetUnreadNotification([DataSourceRequest] DataSourceRequest request)
         {
 
             var user = System.Web.HttpContext.Current.User.Identity.Name;
-            var roles = _userAccountService.GetUserPermissions(user).Select(a => a.Roles).ToList();
-            var allUserRollsInAllApplications = new List<string>();
+            var notificationService = (INotificationService)DependencyResolver.Current.GetService(typeof(INotificationService));
 
-            foreach (var app in roles)
+            List<Cats.Models.Notification> totallUnread = null;
+            var currentUser = UserAccountHelper.GetUser(user);
+            var app = GetApplication(user);
+
+            if (app == Models.Constant.Application.HUB)
             {
-                allUserRollsInAllApplications.AddRange(app.Select(role => role.RoleName));
+                totallUnread = notificationService.GetAllNotification().Where(n => n.IsRead == false && n.Id == currentUser.DefaultHub && app.Contains(n.Application)).OrderByDescending(n => n.NotificationId).ToList();
+            }
+            else if (app == Models.Constant.Application.REGIONAL)
+            {
+                totallUnread = notificationService.GetAllNotification().Where(n => n.IsRead == false && n.Id == currentUser.RegionID && app.Contains(n.Application)).OrderByDescending(n => n.NotificationId).ToList();
+            }
+            else
+            {
+                totallUnread = notificationService.GetAllNotification().Where(n => n.IsRead == false && app.Contains(n.Application)).OrderByDescending(n => n.NotificationId).ToList();
             }
 
-            var totalUnread = _notificationService.GetAllNotification().Where(n => n.IsRead == false && allUserRollsInAllApplications.Contains(n.Application)).ToList();
+            //var user = System.Web.HttpContext.Current.User.Identity.Name;
+            //var roles = _userAccountService.GetUserPermissions(user).Select(a => a.Roles).ToList();
+            //var allUserRollsInAllApplications = new List<string>();
 
-            var notificationViewModel = Cats.ViewModelBinder.NotificationViewModelBinder.ReturnNotificationViewModel(totalUnread.ToList());
+            //foreach (var app in roles)
+            //{
+            //    allUserRollsInAllApplications.AddRange(app.Select(role => role.RoleName));
+            //}
+
+            //var totalUnread = _notificationService.GetAllNotification().Where(n => n.IsRead == false && allUserRollsInAllApplications.Contains(n.Application)).ToList();
+            foreach (var nai in totallUnread)
+            {
+                nai.Url = GetRelativeURL(nai.Url);
+
+            }
+            var notificationViewModel = Cats.ViewModelBinder.NotificationViewModelBinder.ReturnNotificationViewModel(totallUnread.ToList());
             return Json(notificationViewModel.ToDataSourceResult(request));
+        }
+        public static string GetRelativeURL(string AbsURL)
+        {
+            var extractedUrl = AbsURL.Substring(AbsURL.IndexOf("//", StringComparison.Ordinal) + 1);
+            extractedUrl = extractedUrl.Substring(extractedUrl.IndexOf("//", StringComparison.Ordinal) + 1);
+            string local = System.Web.HttpContext.Current.Request.Url.ToString();
+            if (local.Contains("/trunk"))
+                extractedUrl = "/trunk" + extractedUrl;
+            return extractedUrl;
         }
         public ActionResult GetUnreadNotificationDetail([DataSourceRequest] DataSourceRequest request)
         {

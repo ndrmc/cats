@@ -27,7 +27,7 @@ using Cats.Services.Administration;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using IFDPService = Cats.Services.EarlyWarning.IFDPService;
 using Workflow = Cats.Models.Constant.WORKFLOW;
-
+using System.IO;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -35,7 +35,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
     {
         //
         // GET: /EarlyWarning/RegionalRequest/
-
+        private readonly IBusinessProcessService _businessProcessService;
         private IRegionalRequestService _regionalRequestService;
         private IFDPService _fdpService;
         private IUserAccountService _userAccountService;
@@ -53,6 +53,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly Cats.Services.Transaction.ITransactionService _transactionService;
         private readonly INotificationService _notificationService;
         private readonly IUserProfileService _userProfileService;
+        private IReasonService _reasonService;
         public RequestController(IRegionalRequestService reliefRequistionService,
                                 IFDPService fdpService,
                                 IRegionalRequestDetailService reliefRequisitionDetailService,
@@ -66,7 +67,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                 IRegionalPSNPPlanService RegionalPSNPPlanService,
             IAdminUnitService adminUnitService,
             IPlanService planService,
-            IIDPSReasonTypeServices idpsReasonTypeServices, ITransactionService transactionService, INotificationService notificationService, IUserProfileService userProfileService)
+            IIDPSReasonTypeServices idpsReasonTypeServices, ITransactionService transactionService, INotificationService notificationService, 
+            IUserProfileService userProfileService, IReasonService reasonService, IBusinessProcessService businessProcessService )
         {
             _regionalRequestService = reliefRequistionService;
             _fdpService = fdpService;
@@ -85,6 +87,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _transactionService = transactionService;
             _notificationService = notificationService;
             _userProfileService = userProfileService;
+            _reasonService = reasonService;
+            _businessProcessService = businessProcessService;
         }
         public ActionResult RegionalRequestsPieChart()
         {
@@ -149,13 +153,28 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     Beneficiaries = item.Beneficiaries,
                     Fdpid = item.FDPID
                 }).ToList();
+            // Add an application ssetting in database and service for the document workflow
+            int BP_PR = _applicationSettingService.getRegionalRequestWorkflow();
+
+            // Check if BP_PR is not null
+            BusinessProcessState createdstate = new BusinessProcessState
+            {
+                DatePerformed = DateTime.Now,
+                PerformedBy = User.Identity.Name,
+                Comment = "A RegionalRequest is Created"
+            };
+
+            BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "RegionalRequest", createdstate);
+            if (bp != null)
+                regionalRequest.BusinessProcessID = bp.BusinessProcessID;
             _regionalRequestService.AddRegionalRequest(regionalRequest);
             return regionalRequest;
         }
 
         private RegionalRequest CreateRegionalRequest(HRDPSNPPlanInfo hrdpsnpPlanInfo, FormCollection collection, int planid, int reasonTypeID)
         {
-
+            int id;
+            if (!int.TryParse(collection["RegionId"].ToString(CultureInfo.InvariantCulture), out id)) return null; // if region id has null value
             int regionId = Convert.ToInt32(collection["RegionId"].ToString(CultureInfo.InvariantCulture));
             var programId = 3;
             UserProfile user = _userProfileService.GetUser(User.Identity.Name);
@@ -183,10 +202,66 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                                                                    Fdpid = item.FDPID
                                                                                }).ToList()
                                       };
+            // Add an application ssetting in database and service for the document workflow
+            int BP_PR = _applicationSettingService.getRegionalRequestWorkflow();
+           
+            // Check if BP_PR is not null
+            BusinessProcessState createdstate = new BusinessProcessState
+            {
+                DatePerformed = DateTime.Now,
+                PerformedBy = User.Identity.Name,
+                Comment = "A RegionalRequest is Created"
+            };
 
-            _regionalRequestService.AddRegionalRequest(regionalRequest);
+            BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "RegionalRequest", createdstate);
+            if (bp != null)
+                regionalRequest.BusinessProcessID = bp.BusinessProcessID;
+                _regionalRequestService.AddRegionalRequest(regionalRequest);
 
             return regionalRequest;
+        }
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+            _businessProcessService.PromotWorkflow(businessProcessState);
+            if (statusId != null)
+                return RedirectToAction("Details", "Request", new { Area = "EarlyWarning", statusId });
+           
+            return   RedirectToAction("Index");
+        }
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
         }
         private void PopulateLookup()
         {
@@ -332,7 +407,38 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             return RedirectToAction("Index");
         }
-
+        [HttpPost]
+        public ActionResult Upload()
+        {
+            var user = _userAccountService.GetUserInfo(User.Identity.Name);
+            var attachment = "";
+            for (int i = 0; i < Request.Files.Count; i++)
+            {
+                var file = Request.Files[i];
+                var reasonDetail = Request.Form[i];
+               
+                // reasonDetail;
+                
+                if (file == null) continue;
+                var fileName = Path.GetFileName(file.FileName);
+                
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                file.SaveAs(path);
+                attachment = path;
+            }
+            Reason saveReason = new Reason();
+            saveReason.RegionalRequestID = Convert.ToInt32(Request.Form["RegionalRequestID"]);
+            saveReason.Comment = Request.Form["Comment"];
+            saveReason.CommentedBy = user.UserProfileID;
+            saveReason.CommentedDate = DateTime.Now;
+            saveReason.EditedDate = DateTime.Now;
+            saveReason.Status= "Reject";
+            saveReason.Attachment = attachment; 
+            _reasonService.AddReason(saveReason);
+            _regionalRequestService.RejectRequest(Convert.ToInt32(Request.Form["RegionalRequestID"]), user);
+            return RedirectToAction("Index");
+        }
+       
         [HttpPost]
         public ActionResult New(HRDPSNPPlan hrdpsnpPlan, FormCollection formCollection)
         {
@@ -425,8 +531,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                          "/EarlyWarning/Request/IndexFromNotification?recordId=" + regionalRequest.RegionalRequestID;
                         return;
                     }
-                    destinationURl = "http://" + Request.Url.Authority +
-                                     Request.ApplicationPath +
+                    destinationURl = 
                                      "/EarlyWarning/Request/IndexFromNotification?recordId=" + regionalRequest.RegionalRequestID;
 
                     _notificationService.AddNotificationForEarlyWaringFromRegions(destinationURl,
@@ -452,16 +557,32 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [HttpGet]
         public ActionResult NewIdps()
         {
+            var adunit = new AdminUnit();
+            adunit.AdminUnitID = 0;
+            adunit.Name = "Select a region";
+            var regions = new List<AdminUnit>();
+            regions.Add(adunit);
+            regions.AddRange(_adminUnitService.GetRegions());
             ViewBag.RationID = new SelectList(_commonService.GetRations(), "RationID", "RefrenceNumber");
-            ViewBag.RegionID = new SelectList(_adminUnitService.GetRegions(), "AdminUnitID", "Name", 0);
+            ViewBag.RegionID = new SelectList(regions, "AdminUnitID", "Name", 0);
             ViewBag.IDPSReasonType = new SelectList(_idpsReasonTypeServices.GetAllIDPSReasonType(), "IDPSId", "Name");
             return View();
         }
         [HttpPost]
         public ActionResult NewIdps(HRDPSNPPlan hrdpsnpPlan, FormCollection collection)
         {
-
             Plan plan = null;
+            int id;
+            if (!int.TryParse(collection["RegionId"].ToString(CultureInfo.InvariantCulture), out id))
+            {               
+                ModelState.AddModelError("Errors", @"The data is invalid.");
+                return RedirectToAction("NewIdps"); // if region id has null value
+            }
+            if (id == 0 || (hrdpsnpPlan.RationID == null))
+            {
+                ModelState.AddModelError("Errors", @"The data is invalid.");
+                return RedirectToAction("NewIdps"); // region not selected
+            }
 
             var reasonTypeID = int.Parse(collection["ReasonType"].ToString(CultureInfo.InvariantCulture));
 
@@ -731,7 +852,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var result = GetRequestWithPlan(request);
             //var dt = RequestViewModelBinder.TransposeData(requestDetails);
             var dt = RequestViewModelBinder.TransposeDataNew(result, request.ProgramId, preferedweight);
-
+            ViewBag.TargetController = "Request";
             ViewData["Request_main_data"] = requestModelView;
             return View(dt);
         }
@@ -1055,9 +1176,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-           
-            
 
+
+            ViewBag.TargetController = "Request";
             var filter = new SearchRequsetViewModel();
             ViewBag.Filter = filter;
             PopulateLookup();

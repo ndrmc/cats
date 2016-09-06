@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cats.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -21,7 +22,8 @@ namespace Cats.Areas.Procurement.Models
         //YearHalf
         [Display(Name = "Year Half")]
         public int YearHalf { get; set; }
-
+        //public int BusinessProcessID { get; set; }
+        //public virtual BusinessProcess BusinessProcess { get; set; }
         public string ShortName
         {
             get { return this.Year + "-" + this.YearHalf; }

@@ -54,6 +54,13 @@
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.5.0.8\lib\net20\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -74,6 +81,8 @@
     <Compile Include="AllocationByRegionService.cs" />
     <Compile Include="BusinessProcessService.cs" />
     <Compile Include="BusinessProcessStateService.cs" />
+    <Compile Include="IReasonService.cs" />
+    <Compile Include="ReasonService.cs" />
     <Compile Include="CommodityService.cs" />
     <Compile Include="CommodityTypeService.cs" />
     <Compile Include="CurrencyService.cs" />
@@ -188,6 +197,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

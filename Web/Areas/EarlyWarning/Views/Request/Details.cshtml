@@ -4,6 +4,7 @@
 @model System.Data.DataTable
 @using Cats.Helpers
 @using Cats.Security
+@using Cats.Models
 @using Cats.Services.Security
 @using Kendo.Mvc.UI
 
@@ -13,6 +14,8 @@
     Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
     ViewBag.PageTitle = "Regional Request Detail";
     ViewBag.PageTitleDescription = "";
+    int index = 0;
+
 }
 @{
     var modelRequest = (RegionalRequestViewModel)ViewData["Request_main_data"];
@@ -100,15 +103,15 @@
 
 }
 <script type="text/javascript">
-    $(function () {
+    $(function() {
 
         //Optional: turn the chache off
         $.ajaxSetup({ cache: false });
 
-        $('#btnEditPlan').click(function () {
+        $('#btnEditPlan').click(function() {
 
             // alert("");
-            $('#dialogContent').load(this.href, function () {
+            $('#dialogContent').load(this.href, function() {
                 $('#dialogDiv').modal({
                     backdrop: 'static',
                     keyboard: true
@@ -117,7 +120,19 @@
             });
             return false;
         });
+        $('#btnAddFDP').click(function() {
+            e.preventDefault();
+            var grid = this;
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var row = $(e.currentTarget).closest("tr");
+            $('#cats-modal-reject').modal('show');
 
+            $("#yes").click(function() {
+
+                window.location = "@Url.Action("ApproveHRD", "HRD")" + "/" + dataItem.HRDID;
+
+            });
+        });
         $('#btnAddFDP').click(function () {
 
             // alert("");
@@ -166,6 +181,42 @@
         </div>
         <div class="actions">
             <div class="btn-group">
+                <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
+                    <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right">
+
+                    @{
+
+                        var state = modelRequest.BusinessProcess.CurrentState.BaseStateTemplate;
+                    }
+
+
+                    @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                    {
+                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request) && actions.Name == "Approve")
+                        {
+                            <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , @modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                        }
+                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "FederalApproved")
+                        {
+                            <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                        }
+                        if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Reject")
+                        {
+                            <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                        }
+
+                    }
+                    <li class="divider"></li>
+                    @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
+                        {*@
+                    <li class="edit_button"><a href="javascript:workflow_history(@modelRequest.BusinessProcessID)"> History </a></li>
+                    @*}*@
+                </ul>
+            </div>
+
+            <div class="btn-group">
                 <button class="btn green dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis"></i> Action <i class="fa fa-angle-down"></i></button>
                 <ul class="dropdown-menu pull-right" style="-moz-min-width: 120px; -ms-min-width: 120px; -o-min-width: 120px; -webkit-min-width: 120px; min-width: 120px;">
                     @*<li><a id="btnAddFDP"  href="@Url.Action("AddBeneficary", "Request", new { id = modelRequest.RegionalRequestID })" >ADD FDP </a></li>*@
@@ -176,16 +227,18 @@
                         @*<li><a class="btn green-haze-stripe" href="@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID })">Approve</a></li>*@
                     if (modelRequest.Program == "Relief")
                     {
+
                         <li>
                             <a class="btn green-haze-stripe">
                                 @Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
                                                                      EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))
                         </a>
+
                         <a class="btn green-haze-stripe">
-                            @Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     RegionalConstants.Operation.Approve_regional_request)
-                        </a>
-                    </li>
+                            @Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                     @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)
+                    </a>
+                </li>
                     }
                     else
                     {
@@ -206,6 +259,7 @@
                     @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved && modelRequest.ProgramId == (int)Cats.Models.Constant.Programs.IDPS)
                     {
                         <li><a class="btn green-haze-stripe" id="btnEditPlan" href="@Url.Action("CreateRequisitionForIDPS", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID, programId = modelRequest.ProgramId})"><i class="icon-plus"></i>IDPS Requisiton</a></li>
+
                         <li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li>
                     }
                     else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
@@ -218,13 +272,9 @@
                                                                      EarlyWarningConstants.Operation.New_requisition, @Html.Translate("Requisiton"))
                             </a>
                         </li>
-
-                                                                    <li>
-                                                                        <a class="btn green-haze-stripe">
-                                                                            @Html.EarlyWarningOperationMenuItem(@Url.Action("RejectRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     EarlyWarningConstants.Operation.Reject_Request, @Html.Translate("Reject"))
-                                                                    </a>
-                                                                </li>
+                                                                    <li> <a class="btn green-haze-stripe" href="javascript:rejectRequest('@modelRequest.RegionalRequestID')">Reject</a> </li>
+                                                                    @*<li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem( "javascript:rejectRequest('@modelRequest.RegionalRequestID')" ,
+                                                                        EarlyWarningConstants.Operation.Reject_Request, @Html.Translate("Reject"))</a></li>*@
                         }
                         else if (modelRequest.Program == "PSNP")
                         {
@@ -314,155 +364,155 @@
                 </ul>
             </div>
             @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Print_request)
-            || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Print_request)
-            || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Print_requests))
+                 || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Print_request)
+                 || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Print_requests))
             {
-                <a class="btn green dropdown-toggle toolbar-btn" href="@Url.Action("Print", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })" target="_blank" id="toolbar_button_print" title="Print"><i class="fa fa-print"></i> @Html.Translate("Print")</a>
+                <a class="btn green dropdown-toggle toolbar-btn" href="@Url.Action("Print", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})" target="_blank" id="toolbar_button_print" title="Print"><i class="fa fa-print"></i> @Html.Translate("Print")</a>
             }
             @*<a class="btn btn-circle btn-default btn-sm green-stripe" data-buttontype="btn_new_record" href="@Url.Action("New", "Request")"><i class="fa fa-plus-circle"></i> @Html.Translate("New Request")</a>*@
-            @*<a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
-        </div>
-    </div>
-    <div class="portlet-body">
-        <div class="form-horizontal">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @Html.LabelFor(m => modelRequest.ReferenceNumber, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-7">
-                            @Html.TextBoxFor(m => modelRequest.ReferenceNumber, new { Disabled = true, @class = "form-control" })
-                        </div>
+                        @*<a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @Html.LabelFor(m => modelRequest.Program, new { @class = "col-md-4 control-label" })
-                        @*@Html.Label(Html.Translate("Dispatch Date"),new { @class = "cats-date-pref" })*@
-                        <div class="col-md-7">
-                            @Html.TextBoxFor(m => modelRequest.Program, new { Disabled = true, @class = "form-control" })
-                            @*<td>
-                                <b>@Html.Translate("Year"):</b>
-                                @modelRequest.Year*@
-                        </div>
-                    </div>
-                </div>
+                <div class="portlet-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => modelRequest.ReferenceNumber, new { @class = "col-md-4 control-label" })
+                                    <div class="col-md-7">
+                                        @Html.TextBoxFor(m => modelRequest.ReferenceNumber, new { Disabled = true, @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => modelRequest.Program, new { @class = "col-md-4 control-label" })
+                                    @*@Html.Label(Html.Translate("Dispatch Date"),new { @class = "cats-date-pref" })*@
+                                    <div class="col-md-7">
+                                        @Html.TextBoxFor(m => modelRequest.Program, new { Disabled = true, @class = "form-control" })
+                                        @*<td>
+                                            <b>@Html.Translate("Year"):</b>
+                                            @modelRequest.Year*@
+                                    </div>
+                                </div>
+                            </div>
 
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @Html.LabelFor(m => modelRequest.RequestedBy, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-7">
-                            @Html.TextBoxFor(m => modelRequest.RequestedBy, new { Disabled = true, @class = "form-control" })
-                        </div>
-                    </div>
-                </div>
-                @* <div class="span3">
-                        <div style="float: right">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => modelRequest.RequestedBy, new { @class = "col-md-4 control-label" })
+                                    <div class="col-md-7">
+                                        @Html.TextBoxFor(m => modelRequest.RequestedBy, new { Disabled = true, @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            @* <div class="span3">
+                                    <div style="float: right">
 
+                                    </div>
+                                </div>*@
                         </div>
-                    </div>*@
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @Html.LabelFor(m => modelRequest.Region, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-7">
-                            @Html.TextBoxFor(m => modelRequest.Region, new { Disabled = true, @class = "form-control" })
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @Html.LabelFor(m => modelRequest.MonthName, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-7">
-                            @Html.TextBoxFor(m => modelRequest.MonthName, new { Disabled = true, @class = "form-control" })
-                        </div>
-                    </div>
-                </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => modelRequest.Region, new { @class = "col-md-4 control-label" })
+                                    <div class="col-md-7">
+                                        @Html.TextBoxFor(m => modelRequest.Region, new { Disabled = true, @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => modelRequest.MonthName, new { @class = "col-md-4 control-label" })
+                                    <div class="col-md-7">
+                                        @Html.TextBoxFor(m => modelRequest.MonthName, new { Disabled = true, @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
 
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @Html.LabelFor(m => modelRequest.ApprovedBy, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-7">
-                            @Html.TextBoxFor(m => modelRequest.ApprovedBy, new { Disabled = true, @class = "form-control" })
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @Html.LabelFor(m => modelRequest.RequestDate, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-7">
-                            @Html.TextBoxFor(m => modelRequest.RequestDate, new { Disabled = true, @class = "cats-date-pref form-control" })
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @Html.Label("Year(EC)", new { @class = "col-md-4 control-label" })
-                        <div class="col-md-7">
-                            @Html.TextBoxFor(m => modelRequest.Year, new { Disabled = true, @class = "form-control" })
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @Html.LabelFor(m => modelRequest.Status, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-7">
-                            @Html.TextBoxFor(m => modelRequest.Status, new { Disabled = true, @class = "form-control" })
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @Html.LabelFor(m => modelRequest.Ration, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-7">
-                            <div class="input-group">
-                                @Html.TextBoxFor(m => modelRequest.Ration, new { Disabled = true, @class = "form-control" })
-                                <span class="input-group-addon">
-                                    <a class="" id="pop" data-original-title="  Ration Detail  ">
-                                        @*<a id="pop" class="" href="#" data-original-title="Ration Detail">*@
-                                        <i class="icon-question"></i>
-                                        @*</a>*@
-                                    </a>
-                                </span>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => modelRequest.ApprovedBy, new { @class = "col-md-4 control-label" })
+                                    <div class="col-md-7">
+                                        @Html.TextBoxFor(m => modelRequest.ApprovedBy, new { Disabled = true, @class = "form-control" })
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => modelRequest.RequestDate, new { @class = "col-md-4 control-label" })
+                                    <div class="col-md-7">
+                                        @Html.TextBoxFor(m => modelRequest.RequestDate, new { Disabled = true, @class = "cats-date-pref form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.Label("Year(EC)", new { @class = "col-md-4 control-label" })
+                                    <div class="col-md-7">
+                                        @Html.TextBoxFor(m => modelRequest.Year, new { Disabled = true, @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => modelRequest.Status, new { @class = "col-md-4 control-label" })
+                                    <div class="col-md-7">
+                                        @Html.TextBoxFor(m => modelRequest.Status, new { Disabled = true, @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => modelRequest.Ration, new { @class = "col-md-4 control-label" })
+                                    <div class="col-md-7">
+                                        <div class="input-group">
+                                            @Html.TextBoxFor(m => modelRequest.Ration, new { Disabled = true, @class = "form-control" })
+                                            <span class="input-group-addon">
+                                                <a class="" id="pop" data-original-title="  Ration Detail  ">
+                                                    @*<a id="pop" class="" href="#" data-original-title="Ration Detail">*@
+                                                    <i class="icon-question"></i>
+                                                    @*</a>*@
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div>
+                                    <a id="pop" class="btn btn-sm" href="#" data-original-title="Ration Detail"><i class="icon-question"></i></a>
+                                </div>*@
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            @*<div id='dialogDiv' class='modal hide fade in'>
+                    <div id='dialogContent'></div>
+                </div>*@
+            <div class="portlet light bordered" style="display: block;">
+                <div class="portlet-title">
+                    <div class="caption font-green-sharp">
+                        <i class="fa fa-list font-green-sharp"></i>
+                        <span class="caption-subject bold uppercase"> @Html.Translate("Details")</span>
+                        <span class="caption-helper">  </span>
+                    </div>
+                    @*<div class="tools">
+                            <a href="#" class="collapse" data-original-title="" title=""></a>
+                            <a href="javascript:;" class="remove" data-original-title="" title=""></a>
+                        </div>*@
+                    <div class="actions">
+                        @*<a class="btn btn-circle btn-default btn-sm green-stripe" data-buttontype="btn_new_record" href="@Url.Action("New", "Request")"><i class="fa fa-plus-circle"></i> @Html.Translate("New Request")</a>*@
+                        <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
                     </div>
                 </div>
-                @*<div>
-                        <a id="pop" class="btn btn-sm" href="#" data-original-title="Ration Detail"><i class="icon-question"></i></a>
-                    </div>*@
-            </div>
-        </div>
-
-    </div>
-</div>
-@*<div id='dialogDiv' class='modal hide fade in'>
-        <div id='dialogContent'></div>
-    </div>*@
-<div class="portlet light bordered" style="display: block;">
-    <div class="portlet-title">
-        <div class="caption font-green-sharp">
-            <i class="fa fa-list font-green-sharp"></i>
-            <span class="caption-subject bold uppercase"> @Html.Translate("Details")</span>
-            <span class="caption-helper">  </span>
-        </div>
-        @*<div class="tools">
-                <a href="#" class="collapse" data-original-title="" title=""></a>
-                <a href="javascript:;" class="remove" data-original-title="" title=""></a>
-            </div>*@
-        <div class="actions">
-            @*<a class="btn btn-circle btn-default btn-sm green-stripe" data-buttontype="btn_new_record" href="@Url.Action("New", "Request")"><i class="fa fa-plus-circle"></i> @Html.Translate("New Request")</a>*@
-            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
-        </div>
-    </div>
-    <div class="portlet-body">
-        <div class="table-responsive">
-            @(Html.Kendo().Grid(Model)
+                <div class="portlet-body">
+                    <div class="table-responsive">
+                        @(Html.Kendo().Grid(Model)
                   .Name("Grid")
                   .Columns(columns =>
                   {
@@ -476,7 +526,8 @@
                           }
                           else if (column.DataType == typeof(int))
                           {
-                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).ClientGroupFooterTemplate("<div style='float: right'>#= kendo.toString(sum, 'N2') #</div>").ClientFooterTemplate("Sum: #=sum#"); ;
+                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).ClientGroupFooterTemplate("<div style='float: right'>#= kendo.toString(sum, 'N2') #</div>").ClientFooterTemplate("Sum: #=sum#");
+                              ;
 
                           }
                           else if (column.ColumnName == "Zone")
@@ -492,38 +543,79 @@
                   })
                   .Sortable()
                   .Scrollable()
-                          .Groupable()
-                           .DataSource(dataSource => dataSource
-        .Ajax()
-         .Model(model =>
-         {
-             foreach (System.Data.DataColumn column in Model.Columns)
-             {
+                  .Groupable()
+                  .DataSource(dataSource => dataSource
+                      .Ajax().Group(a =>
+                      {
+                          a.Add("Zone", typeof(string));
+                          //a.Add("Beneficiaries", typeof(int));
+                          //a.Add("PlannedBeneficiaries", typeof(int));
+                      })
+                  //     .Model(model =>
+                  //     {
+                  //         foreach (System.Data.DataColumn column in Model.Columns)
+                  //         {
 
-                 model.Field(column.ColumnName, column.DataType);
-             }
-         }).Read(read =>
+                  //             model.Field(column.ColumnName, column.DataType);
+                  //         }
+                  //     }).Read(read =>
 
-    read.Action("StatusGeneric", "Configuration")
-    )
-        .Aggregates(a =>
-        {
-            a.Add("Beneficiaries", typeof(int)).Sum();
-            a.Add("PlannedBeneficiaries", typeof(int)).Sum();
-        }).Group(a =>
-        {
-            a.Add("Zone", typeof(string));
-            //a.Add("Beneficiaries", typeof(int));
-            //a.Add("PlannedBeneficiaries", typeof(int));
-        })
-        )
+                  //read.Action("StatusGeneric", "Configuration")
+                  //)
+                  //    .Aggregates(a =>
+                  //    {
+                  //        a.Add("Beneficiaries", typeof(int)).Sum();
+                  //        a.Add("PlannedBeneficiaries", typeof(int)).Sum();
+                  //    })
 
-            )
-        </div>
-    </div>
-</div>
 
-<script>
+                  )
+
+                        )
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
+            <div class="modal" id="cats-modal-reject">
+                <div class="modal-dialog ">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                            <h4 id="myModalLabel" class="modal-title">Reject Detail</h4>
+                        </div>
+
+
+                        <div class="modal-body">
+
+                            <div class="row-fluid">
+                                <div class="controls span6">
+
+
+                                    <textarea class="input-xlarge" id="Comment"
+                                              name="Summary" rows="5" cols="0"
+                                              placeholder="Comment"></textarea>
+                                    <div class="controls span6">
+                                        <label> Attachment</label>
+                                    </div>
+                                    <input type="file"
+                                           class="input-xlarge" id="Attachment" name="Attachment"
+                                           placeholder="Attachment" />
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button id="yes" class="btn btn-danger" type="submit">Reject</button>
+                            <button id="no" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <script>
 
     var tblbody;
 
@@ -579,7 +671,49 @@
             //alert(message);
         }
     }
+    function rejectRequest(regionalRequestId) {
+        //e.preventDefault();
+        //var grid = this;
+        //var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        //var row = $(e.currentTarget).closest("tr");
 
+        $('#cats-modal-reject').modal('show');
+
+        $("#yes").click(function() {
+            var comment = $('#Comment').val();
+            var reasonDetail = { RegionalRequestID: regionalRequestId, Comment: comment, Attachment: '1' };
+            var formData = new FormData();
+            $('#cats-modal-reject').modal('hide');
+            var totalFiles = document.getElementById("Attachment").files.length;
+            for (var i = 0; i < totalFiles; i++)
+            {
+                var file = document.getElementById("Attachment").files[i];
+
+                formData.append("Attachment", file);
+                formData.append("ReasonDetail", reasonDetail);
+            }
+            formData.append("RegionalRequestId", regionalRequestId);
+            formData.append("Comment", comment);
+            $.ajax({
+                type: "POST",
+                url: '../Upload',
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    //alert('succes!!');
+                },
+                error: function (error) {
+                    //alert("errror");
+                }
+            });
+           @*window.location = "@Url.Action("RejectRequestWithComment", "Request")" + "/" + reasonDetail;*@
+
+        });
+
+
+    }
 
     function onDataBound(e) {
 
@@ -618,26 +752,51 @@
             rowIdx++;
         });
     }
-</script>
 
-<style>
-    .surplus * {
-        color: red;
+    var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
+    function promot_workflow(BusinessProcessID, nextstate, actionname, RegionalRequestID) {
+        $('#ParentBusinessProcessID').val(BusinessProcessID);
+        $('#stateID').val(nextstate);
+        $('#modalPromotionLabel').html(actionname);
+        $('#RegionalRequestID').val(RegionalRequestID);
+        $('#modalPromotion').modal();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ApproveRequest", "Request")",
+            data: "{id:" + RegionalRequestID + "}",
+            dataType: json
+        });
+    }
+    function workflow_history(BusinessProcessID) {
+        $('#modalHistory').modal();
+        $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+        $.post(history_link + BusinessProcessID, {},
+        function (data) {
+            $("#modalHistoryBody").html(data);
+        }
+        );
     }
 
-    .surplus {
-        color: red;
-    }
+            </script>
 
-    .popover-content {
-        padding: 5px;
-    }
+            <style>
+                .surplus * {
+                    color: red;
+                }
 
-    .popover-title {
-        padding: 5px 2px;
-    }
+                .surplus {
+                    color: red;
+                }
 
-    .k-grid-content {
-        min-height: 500px;
-    }
-</style>
+                .popover-content {
+                    padding: 5px;
+                }
+
+                .popover-title {
+                    padding: 5px 2px;
+                }
+
+                .k-grid-content {
+                    min-height: 500px;
+                }
+            </style>

@@ -53,6 +53,13 @@
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.5.0.8\lib\net20\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -118,6 +125,10 @@
     <ProjectReference Include="..\Cats.Services.Common\Cats.Services.Common.csproj">
       <Project>{083d007c-dd3b-42c0-b11c-a7015a909085}</Project>
       <Name>Cats.Services.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cats.Services.EarlyWarning\Cats.Services.EarlyWarning.csproj">
+      <Project>{A08CF415-6299-41AB-9D69-C3CE9B49CCD6}</Project>
+      <Name>Cats.Services.EarlyWarning</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

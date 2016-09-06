@@ -56,11 +56,15 @@
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -110,6 +114,7 @@
     <Compile Include="Mapping\LocalPurchaseDetailMap.cs" />
     <Compile Include="Mapping\LocalPurchaseMap.cs" />
     <Compile Include="Mapping\LossReasonMap.cs" />
+    <Compile Include="Mapping\ReasonMap.cs" />
     <Compile Include="Mapping\ReceiptPlanDetailMap.cs" />
     <Compile Include="Mapping\ReceiptPlanMap.cs" />
     <Compile Include="Mapping\LoanReciptPlanMap.cs" />
@@ -119,6 +124,7 @@
     <Compile Include="Mapping\TransporterPaymentRequestMap.cs" />
     <Compile Include="Mapping\DistibtionStatusMap.cs" />
     <Compile Include="Mapping\VWRegionalRequestMap.cs" />
+    <Compile Include="Reason.cs" />
     <Compile Include="ReceiptPlan.cs" />
     <Compile Include="ReceiptPlanDetal.cs" />
     <Compile Include="Mapping\OtherDispatchAllocationMap.cs" />
@@ -130,9 +136,15 @@
     <Compile Include="TransporterCheque.cs" />
     <Compile Include="TransporterChequeDetail.cs" />
     <Compile Include="TransporterPaymentRequest.cs" />
+    <Compile Include="ViewModels\Bid\BidAddWoredaViewModel.cs" />
+    <Compile Include="ViewModels\BusinessProcessStateViewModel.cs" />
+    <Compile Include="ViewModels\DashboardBidPlan.cs" />
+    <Compile Include="ViewModels\Dashboard\DashboardUserViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\RecentRequests.cs" />
     <Compile Include="ViewModels\DistributionByAgeViewModel.cs" />
     <Compile Include="DistibtionStatus.cs" />
+    <Compile Include="ViewModels\DashboardDispAlloRequisition.cs" />
+    <Compile Include="ViewModels\FlowTemplateViewModel.cs" />
     <Compile Include="VWRegionalRequest.cs" />
     <Compile Include="WoredaStockDistributionDetail.cs" />
     <Compile Include="Delivery.cs" />

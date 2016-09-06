@@ -216,6 +216,7 @@
     </Compile>
     <Compile Include="Areas\EarlyWarning\Controllers\ContributionController.cs" />
     <Compile Include="Areas\EarlyWarning\Models\GiftCertificateModel.cs" />
+    <Compile Include="Areas\EarlyWarning\Models\RegionalRequestDataEntryStatusViewModel.cs" />
     <Compile Include="Areas\Finance\Controllers\ChequeController.cs" />
     <Compile Include="Areas\Finance\Models\TransporterPaymentRequestViewModel.cs" />
     <Compile Include="Areas\Hub\Controllers\AccountController.cs" />
@@ -667,6 +668,7 @@
     <Compile Include="ReportViewer.aspx.designer.cs">
       <DependentUpon>ReportViewer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ReportViewerCredentials.cs" />
     <Compile Include="Requisitionattachment.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

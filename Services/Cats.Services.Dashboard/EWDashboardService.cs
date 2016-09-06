@@ -11,7 +11,7 @@ namespace Cats.Services.Dashboard
   public  class EWDashboardService:IEWDashboardService
   {
       private IUnitOfWork _unitOfWork;
-      public EWDashboardService(IUnitOfWork unitOfWork )
+        public EWDashboardService(IUnitOfWork unitOfWork )
       {
           _unitOfWork = unitOfWork;
 
@@ -48,9 +48,27 @@ namespace Cats.Services.Dashboard
         {
             return _unitOfWork.ReliefRequisitionRepository.GetAll();
         }
-        public int GetRemainingRequest(int regionID, int planID)
+
+      public int GetRemainingRequest(int regionID, int planID)
+      {
+            var hrd = _unitOfWork.HRDRepository.FindBy(m => m.Status == 2).FirstOrDefault();
+            var totalRequest = (from hrdDetail in hrd.HRDDetails
+                                where hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID
+                                select new
+                                {
+
+                                    hrdDetail.DurationOfAssistance
+                                });
+
+          var requested =
+              _unitOfWork.RegionalRequestRepository.FindBy(
+                  m => m.RegionID == regionID && m.PlanID == planID).Count;
+          return (totalRequest.Max(m => m.DurationOfAssistance) - requested);
+      }
+
+      public int GetRemainingRequest(int regionID, int planID,int roundId)
         {
-            var hrd = _unitOfWork.HRDRepository.FindBy(m => m.Status==3).FirstOrDefault();
+            var hrd = _unitOfWork.HRDRepository.FindBy(m => m.Status==2).FirstOrDefault();
              var totalRequest = (from hrdDetail in hrd.HRDDetails
                                   where hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID==regionID
                                  select new
@@ -58,8 +76,10 @@ namespace Cats.Services.Dashboard
                                       
                                    hrdDetail.DurationOfAssistance
                                  });
-                                          
-            var requested =_unitOfWork.RegionalRequestRepository.FindBy(m => m.RegionID == regionID && m.PlanID == planID).Count;
+
+            var requested =
+                _unitOfWork.RegionalRequestRepository.FindBy(
+                    m => m.RegionID == regionID && m.PlanID == planID && m.Round == roundId).Count;
             return (totalRequest.Max(m=>m.DurationOfAssistance) - requested);
         }
       public  List<Models.GiftCertificate> GetAllGiftCertificate()
@@ -78,12 +98,40 @@ namespace Cats.Services.Dashboard
      {
          return _unitOfWork.DeliveryRepository.Get(m => dispatchIds.Contains(m.DispatchID.Value)).ToList();
      }
-       public void Dispose()
+
+      public int GetTotalRegionalRequest(int regionId, int planId)
+      {
+            var requested = _unitOfWork.RegionalRequestRepository.FindBy(m => m.RegionID == regionId && m.PlanID == planId).Count;
+          return requested;
+      }
+
+      public int GetRegionalRequestSubmittedToLogistics(int regionId, int planId)
+      {
+          var requested =
+              _unitOfWork.RegionalRequestRepository.FindBy(
+                  m => m.RegionID == regionId && m.PlanID == planId && m.Status == 2).Count; //status = 2 submitted to finance
+            return requested;
+        }
+
+      public int GetRegionalRequestSubmittedToLogistics(int regionId, int planId, int round)
+      {
+          var requested =
+              _unitOfWork.RegionalRequestRepository.FindBy(
+                  m => m.RegionID == regionId && m.PlanID == planId && m.Round == round && m.Status == 2).Count; //status = 2 submitted to finance
+            return requested;
+        }
+
+      public void Dispose()
         {
             _unitOfWork.Dispose();
         }
-
-
-      
-  }
+        public List<int?> GetDistinctRounds(int planId)
+        {
+            return
+              _unitOfWork.RegionalRequestRepository.Get(r => r.PlanID == planId)
+                  .Select(p => p.Round)
+                  .Distinct()
+                  .ToList();
+        }
+    }
 }

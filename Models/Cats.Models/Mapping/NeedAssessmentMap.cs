@@ -19,6 +19,7 @@ namespace Cats.Models.Mapping
             // Table & Column Mappings
             this.ToTable("NeedAssessment", "EarlyWarning");
             this.Property(t => t.NeedAID).HasColumnName("NeedAID");
+            this.Property(t => t.BusinessProcessID).HasColumnName("BusinessProcessID");
             this.Property(t => t.Region).HasColumnName("Region");
             this.Property(t => t.Season).HasColumnName("Season");
             this.Property(t => t.NeedADate).HasColumnName("NeedADate");
@@ -47,6 +48,9 @@ namespace Cats.Models.Mapping
              this.HasRequired(t => t.Plan)
                 .WithMany(t => t.NeedAssessments)
                 .HasForeignKey(d => d.PlanID);
+            this.HasRequired(t => t.BusinessProcess)
+                .WithMany(t => t.NeedAssessments)
+                .HasForeignKey(d => d.BusinessProcessID);
 
         }
     }

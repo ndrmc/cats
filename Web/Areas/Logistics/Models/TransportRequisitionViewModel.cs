@@ -10,7 +10,9 @@ namespace Cats.Areas.Logistics.Models
     public class TransportRequisitionViewModel
     {
         public int TransportRequisitionID { get; set; }
-        
+
+        public int BusinessProcessID { get; set; }
+
         [Display(Name="No.")]
         public string TransportRequisitionNo { get; set; }
         

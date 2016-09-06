@@ -68,7 +68,7 @@
                             <TextRun>
                               <Value>=Today.ToShortDateString()</Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>Underline</TextDecoration>
@@ -77,7 +77,7 @@
                             <TextRun>
                               <Value xml:space="preserve"> </Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                               </Style>
                             </TextRun>
@@ -157,7 +157,7 @@
                               <Label>TransporterName</Label>
                               <Value />
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -243,7 +243,7 @@
                             <TextRun>
                               <Value />
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -276,7 +276,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!ReferenceNo.Value</Value>
+                              <Value>="RfNo: " + Fields!ReferenceNo.Value</Value>
                               <Style>
                                 <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
@@ -311,7 +311,7 @@
                             <TextRun>
                               <Value />
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -477,7 +477,7 @@
                             <TextRun>
                               <Value>=Fields!TransporterName.Value</Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>Underline</TextDecoration>
@@ -494,7 +494,7 @@
                             <TextRun>
                               <Value>=Fields!ReceivedQuantity.Value</Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>Underline</TextDecoration>
@@ -503,7 +503,7 @@
                             <TextRun>
                               <Value xml:space="preserve">  </Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                               </Style>
                             </TextRun>
@@ -548,7 +548,7 @@
                             <TextRun>
                               <Value>=Fields!NoRecords.Value</Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>None</TextDecoration>
@@ -619,7 +619,7 @@
                             <TextRun>
                               <Value xml:space="preserve">     </Value>
                               <Style>
-                                <FontFamily>Tahoma</FontFamily>
+                                <FontFamily>Nyala</FontFamily>
                                 <FontSize>12pt</FontSize>
                               </Style>
                             </TextRun>
@@ -1071,9 +1071,9 @@
             <Paragraph>
               <TextRuns>
                 <TextRun>
-                  <Value>DISASTER RISK MANAGEMENT AND FOOD SECURITY SECTOR</Value>
+                  <Value>ብሔራዊ የአደጋ ሥጋት ስራ አመራር ኮሚሽን</Value>
                   <Style>
-                    <FontFamily>Verdana</FontFamily>
+                    <FontFamily>Nyala</FontFamily>
                     <FontSize>13pt</FontSize>
                     <FontWeight>Bold</FontWeight>
                   </Style>
@@ -1107,9 +1107,9 @@
               <TextRuns>
                 <TextRun>
                   <Label>Transporter Payment Request</Label>
-                  <Value>="Transport Payment Request Letter"</Value>
+                  <Value>="የማጓጓዣ ክፍያ የመጠየቂያ ደብዳቤ"</Value>
                   <Style>
-                    <FontFamily>Verdana</FontFamily>
+                    <FontFamily>Nyala</FontFamily>
                     <FontSize>14pt</FontSize>
                     <FontWeight>Normal</FontWeight>
                   </Style>
@@ -1188,7 +1188,7 @@
             <Paragraph>
               <TextRuns>
                 <TextRun>
-                  <Value>Transporter Payment Request Report</Value>
+                  <Value></Value>
                   <Style>
                     <FontFamily>Verdana</FontFamily>
                     <FontSize>8pt</FontSize>
@@ -1269,9 +1269,9 @@
             <Paragraph>
               <TextRuns>
                 <TextRun>
-                  <Value>="Page "&amp;Globals!PageNumber &amp;" of "&amp;Globals!TotalPages</Value>
+                  <Value>="ገፅ "&amp;Globals!PageNumber &amp;" ከ "&amp;Globals!TotalPages</Value>
                   <Style>
-                    <FontFamily>Verdana</FontFamily>
+                    <FontFamily>Nyala</FontFamily>
                     <FontSize>8pt</FontSize>
                   </Style>
                 </TextRun>
@@ -1304,10 +1304,10 @@
             <Paragraph>
               <TextRuns>
                 <TextRun>
-                  <Value>Printed:</Value>
+                  <Value>ታተመ:</Value>
                   <Style>
                     <FontStyle>Normal</FontStyle>
-                    <FontFamily>Verdana</FontFamily>
+                    <FontFamily>Nyala</FontFamily>
                     <FontSize>9pt</FontSize>
                     <FontWeight>Bold</FontWeight>
                     <TextDecoration>None</TextDecoration>

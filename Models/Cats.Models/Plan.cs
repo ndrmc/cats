@@ -17,7 +17,8 @@ namespace Cats.Models
        }
        
        public int PlanID { get; set; }
-       [Required(ErrorMessage = "Enter Plan Name")]
+       public int BusinessProcessID { get; set; }
+        [Required(ErrorMessage = "Enter Plan Name")]
        public string PlanName { get; set; }
         [Required(ErrorMessage = "Enter Start Date")]
        public DateTime StartDate { get; set; }
@@ -36,5 +37,6 @@ namespace Cats.Models
        public virtual Program Program { get; set; }
        public virtual ICollection<RegionalPSNPPlan> RegionalPSNPPlans { get; set; }
        public virtual ICollection<RegionalRequest> RegionalRequests { get; set; }
+       public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Cats.Models;
+using System.Linq;
+
 namespace Cats.Services.Logistics
 {
    public  interface ILoanReciptPlanService:IDisposable
@@ -18,9 +20,12 @@ namespace Cats.Services.Logistics
        bool DeleteLoanReciptAllocation(LoanReciptPlan loanReciptPlan);
        bool DeleteLoanWithDetail(LoanReciptPlan loanReciptPlan);
 
+        IEnumerable<LoanReciptPlan> Get(
+           Expression<Func<LoanReciptPlan, bool>> filter = null,
+           Func<IQueryable<LoanReciptPlan>, IOrderedQueryable<LoanReciptPlan>> orderBy = null,
+           string includeProperties = "");
 
-
-   }
+    }
 }
 
 
