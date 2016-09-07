@@ -98,12 +98,14 @@ namespace Cats.Areas.Regional.Controllers
         }
 
         public JsonResult RegionalData(int regionID)
-        {
-            var requests = _regionalRequestService.FindBy(t => t.RegionID == regionID);
+        {        
+           var requests = _regionalRequestService.FindBy(t => t.RegionID == regionID);
             var requisitions = _reliefRequisitionService.FindBy(t => t.RegionID == regionID);
             var totalRequests = requests.Count();
             var currentPlan = _hrdService.FindBy(t => t.Status == 3).FirstOrDefault().PlanID;
-            var utilizations = _utilization.FindBy(t => t.PlanID == currentPlan);
+            var utilizations =
+                _utilization.FindBy(
+                    t => t.PlanID == currentPlan && t.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID);
             
             var sum18 = 0;
             var sum518 = 0;
@@ -112,12 +114,13 @@ namespace Cats.Areas.Regional.Controllers
             var male = 0;
 
             if(utilizations!=null){
-            foreach (var i in utilizations) {
-                sum18 = +(i.FemaleAbove18Years+i.MaleAbove18Years);
-                sum5 = +(i.FemaleLessThan5Years + i.MaleLessThan5Years);
-                sum518 = +(i.FemaleBetween5And18Years + i.MaleBetween5And18Years);
-                female = +(i.FemaleAbove18Years + i.FemaleBetween5And18Years + i.FemaleLessThan5Years);
-                male = +(i.MaleAbove18Years + i.MaleBetween5And18Years + i.MaleLessThan5Years);
+            foreach (var i in utilizations)
+            {
+                sum18 = sum18 + (i.FemaleAbove18Years + i.MaleAbove18Years);
+                sum5 = sum5 + (i.FemaleLessThan5Years + i.MaleLessThan5Years);
+                sum518 = sum518 + (i.FemaleBetween5And18Years + i.MaleBetween5And18Years);
+                female = female + (i.FemaleAbove18Years + i.FemaleBetween5And18Years + i.FemaleLessThan5Years);
+                male = male + (i.MaleAbove18Years + i.MaleBetween5And18Years + i.MaleLessThan5Years);
             }}
 
 
@@ -153,17 +156,17 @@ namespace Cats.Areas.Regional.Controllers
 
             if (totalRequests != 0)
             {
-                d.ApprovedRequests = (decimal)approved;
-                d.PendingRequests = (decimal)(draft);
-                d.HubAssignedRequests = (decimal)(closed);
-                d.FederalApproved = (decimal)(federalApp);
+                d.ApprovedRequests = approved;
+                d.PendingRequests = draft;
+                d.HubAssignedRequests = closed;
+                d.FederalApproved = federalApp;
 
             }
             if (requisitions.Count() != 0)
             {
-                d.ApprovedRequisitions = ((decimal)(reqApp));
-                d.HubAssignedRequisitions = ((decimal)(reqHub));
-                d.PendingRequisitions = ((decimal)(reqDraft));
+                d.ApprovedRequisitions = reqApp;
+                d.HubAssignedRequisitions = reqHub;
+                d.PendingRequisitions = reqDraft;
             }
 
             d.Above18 = sum18;
@@ -185,6 +188,10 @@ namespace Cats.Areas.Regional.Controllers
             //var dispatchAllocations = amount as IList<DispatchAllocation> ?? amount.ToList();
             //var amt = dispatchOnRegionNonReconcile.Sum(aa => aa.DispatchDetails.Sum(bb=>bb.DispatchedQuantityInMT));
             var amt = _regionalDashboard.GetRegionalNotReconcileDispatchAmount(regionID);
+
+            //var amt = dispatchOnRegionNonReconcile.Sum(aa => aa.DispatchDetails.Sum(bb=>bb.DispatchedQuantityInMT));
+            //var dispatchdetails = from ds in dispatchOnRegionNonReconcile select ds.DispatchDetails;
+            //var amt = (from dd in dispatchdetails select dd.Sum(s => s.DispatchedQuantityInMT)).Sum();
             var currentUser = UserAccountHelper.GetCurrentUser();
             var userprofile = _userProfileService.GetUser(currentUser.UserName);
             d.IncomingCommodity = Convert.ToInt32(amt);

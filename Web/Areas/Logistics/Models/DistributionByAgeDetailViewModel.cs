@@ -33,7 +33,7 @@ namespace Cats.Areas.Logistics.Models
         public decimal EndingBalance { get; set; }
         public decimal TotalIn { get; set; }
         public decimal TotalOut { get; set; }
-        [DisplayFormat(DataFormatString = "{0:mm/dd/yy}", ApplyFormatInEditMode = true)]
+     
         public DateTime? DistributionStartDate { get; set; }
         [DisplayFormat(DataFormatString = "{0:mm/dd/yy}", ApplyFormatInEditMode = true)]
 

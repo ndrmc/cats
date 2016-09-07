@@ -18,7 +18,7 @@
             <p id="duplicate"></p> Duplicate Requisition Numbers!*@
         <h6 id="duplicate">
             <span class="label label-default" id="duplicatespan" style="background-color: red;">
-                
+
             </span>
         </h6>
     </fieldset>
@@ -35,7 +35,9 @@
 
     }
 
-    @using (Html.BeginForm("NewRequisiton", "ReliefRequisition", new { id = Model.FirstOrDefault().RegionalRequestId }, FormMethod.Post, new { id = "frm_create_Requistions" }))
+    @using (Html.BeginForm("NewRequisiton", "ReliefRequisition",
+                                new { id = Model.FirstOrDefault().RegionalRequestId },
+                                FormMethod.Post, new { id = "frm_create_Requistions" }))
     {
         <table id="kGrid">
             <thead>
@@ -123,11 +125,11 @@
                             @if (counter > 1)
                             {
 
-                                <input type='text' name="input[@index].RequisitionNo" id="txtRequisitionID" value="@item.Input.RequisitionNo" style="width: 80%; background-color: firebrick; font-weight: bold; border: none; !important;" onchange="Validate();"/>
+                                <input type='text' name="input[@index].RequisitionNo" id="txtRequisitionID" value="@item.Input.RequisitionNo" style="width: 80%; background-color: firebrick; font-weight: bold; border: none; !important;" onchange="Validate();" />
                             }
                             @if (counter <= 1)
                             {
-                                <input type='text' name="input[@index].RequisitionNo" id="txtRequisitionID" value="@item.Input.RequisitionNo" style="width: 80%; border: none; !important;" onchange="Validate();"/>
+                                <input type='text' name="input[@index].RequisitionNo" id="txtRequisitionID" value="@item.Input.RequisitionNo" style="width: 80%; border: none; !important;" onchange="Validate();" />
                             }
                             @Html.ValidationMessageFor(modelItem => item.RequisitionNo)
                         </td>
@@ -169,52 +171,52 @@
                                 @Html.DisplayFor(modelItem => item.ApprovedDate)
                             </td>*@
                         <td>
-                        @{
-                            var statusName = item.Status.ToString();
-                            var showme = item.Status == 2 ? "" : "hidden";
-                        }
-                        @{
-                            string status = string.Empty;
-
-                            switch (item.Status)
-                            {
-                                case (int) ReliefRequisitionStatus.Draft:
-                                    status = "Draft";
-                                    break;
-                                case (int) ReliefRequisitionStatus.Approved:
-                                    status = "Approved";
-                                    break;
-                                case (int) ReliefRequisitionStatus.HubAssigned:
-                                    status = "HubAssigned";
-                                    break;
-                                case (int) ReliefRequisitionStatus.ProjectCodeAssigned:
-                                    status = "ProjectCodeAssigned";
-                                    break;
-                                case (int) ReliefRequisitionStatus.TransportOrderCreated:
-                                    status = "TransportOrderCreated";
-                                    break;
-                                case (int) ReliefRequisitionStatus.TransportRequisitionCreated:
-                                    status = "TransportRequisitionCreated";
-                                    break;
+                            @{
+                                var statusName = item.Status.ToString();
+                                var showme = item.Status == 2 ? "" : "hidden";
                             }
+                            @{
+                                string status = string.Empty;
 
-                        }
-                        @status
-                        <input type='hidden' name="input[@index].Number" id="txtReqID" value="@item.Input.Number"/>
-                        <input type='hidden' name="input[@index].RegionalRequestId" id="txtRegionalRequestId" value="@item.RegionalRequestId"/>
-                        @* </td>
+                                switch (item.Status)
+                                {
+                                    case (int)ReliefRequisitionStatus.Draft:
+                                        status = "Draft";
+                                        break;
+                                    case (int)ReliefRequisitionStatus.Approved:
+                                        status = "Approved";
+                                        break;
+                                    case (int)ReliefRequisitionStatus.HubAssigned:
+                                        status = "HubAssigned";
+                                        break;
+                                    case (int)ReliefRequisitionStatus.ProjectCodeAssigned:
+                                        status = "ProjectCodeAssigned";
+                                        break;
+                                    case (int)ReliefRequisitionStatus.TransportOrderCreated:
+                                        status = "TransportOrderCreated";
+                                        break;
+                                    case (int)ReliefRequisitionStatus.TransportRequisitionCreated:
+                                        status = "TransportRequisitionCreated";
+                                        break;
+                                }
+
+                            }
+                            @status
+                            <input type='hidden' name="input[@index].Number" id="txtReqID" value="@item.Input.Number" />
+                            <input type='hidden' name="input[@index].RegionalRequestId" id="txtRegionalRequestId" value="@item.RegionalRequestId" />
+                            @* </td>
 
                                 <td>*@
-                        @*  <input type="hidden" value="@item.Input.Number" name="@("input[" + index + "].Number")" value="@item.Input.Number" />*@
-                        @*</td>
+                            @*  <input type="hidden" value="@item.Input.Number" name="@("input[" + index + "].Number")" value="@item.Input.Number" />*@
+                            @*</td>
                                 <td>*@
-                        @*@Html.ActionLink("Edit", "Edit", new {id = item.RequisitionID}) |*@
+                            @*@Html.ActionLink("Edit", "Edit", new {id = item.RequisitionID}) |*@
 
-                        @* </td>*@
+                            @* </td>*@
                     </tr>
-                    requisitionNos.Add(@item.Input.RequisitionNo);
-                    index++;
-                }
+                                    requisitionNos.Add(@item.Input.RequisitionNo);
+                                    index++;
+                                }
 
             </tbody>
         </table>
@@ -252,7 +254,6 @@
             $modal.load($remote);
         };
 
-
         function Validate(e) {
 
             var requisitionsNos = [];
@@ -260,13 +261,24 @@
             var entityGrid = $("#kGrid").data("kendoGrid");
             var data = entityGrid.dataSource.data();
             var totalNumber = data.length;
+            var allRequisitionNumbers = new Array();
+            var filteredReqNumbers = new Array();
+
+            var clientReqNumbers = @Html.Raw(Json.Encode(@ViewBag.ClientSideReqNumbers));
+            var allReqNumbers = @Html.Raw(Json.Encode(@ViewBag.AllRequistionNumbers));
+
+            for(var i =0; i < allReqNumbers.length;i++){
+                allRequisitionNumbers[i] = allReqNumbers[i];
+            }
 
             for (var i = 0; i < totalNumber; i++) {
                 var name = "input[" + i + "]." + "RequisitionNo";
                 var x = document.getElementsByName(name);
                 requisitionsNos[i] = x[0].value;
             }
+
             var totalRepeatedNos = 0;
+
             for (var i = 0; i < totalNumber; i++) {
                 var name = "input[" + i + "]." + "RequisitionNo";
                 var x = document.getElementsByName(name);
@@ -274,16 +286,41 @@
                 var count = requisitionsNos.filter(function (value) {
                     return value == requisitionNo;
                 }).length;
+
+                var remoteIndex = allRequisitionNumbers.indexOf(requisitionsNos[i]);
+
+                if (remoteIndex !== -1) {
+
+                    var clientIndex =  clientReqNumbers.indexOf(requisitionsNos[i]);
+
+                    if (clientIndex === -1) {
+                        $(x).css({ "background-color": "red", "font-weight": "normal" });
+                        totalRepeatedNos = totalRepeatedNos + 1;
+
+                        var localIndex = repeatedRequisitionNumbers.indexOf(requisitionsNos[i]);
+
+                        if (localIndex === -1) {
+                            
+                            repeatedRequisitionNumbers.push(requisitionsNos[i]);
+                            continue;
+                        }
+
+                    }else $(x).css({ "background-color": "white", "font-weight": "normal" });
+                }
+
                 if (count > 1) {
                     $(x).css({ "background-color": "red", "font-weight": "normal" });
                     totalRepeatedNos = totalRepeatedNos + 1;
                     var index = repeatedRequisitionNumbers.indexOf(requisitionsNos[i]);
+
                     if (index === -1) {
                         repeatedRequisitionNumbers.push(requisitionsNos[i]);
+                        continue;
                     }
+
                 } else $(x).css({ "background-color": "white", "font-weight": "normal" });
             }
-           
+
             if (totalRepeatedNos >= 1) {
 
                 var text = "Duplicate Requisition Numbers! ";

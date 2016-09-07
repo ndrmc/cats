@@ -2,13 +2,12 @@
 @using Kendo.Mvc.UI
 @model string
 
- 
 
 <input type="text" id="DistributionEndDatePref" class="cats-datepicker2" value="@Model" />
 
 <script type="text/javascript">
-    $(".cats-datepicker2").ethcal_datepicker();
-    $("#DistributionEndDatePref").click();
+    $("input[class='cats-datepicker2'][id='DistributionEndDatePref']").ethcal_datepicker();
+    $("input[class='cats-datepicker2'][id='DistributionEndDatePref']").click();
     var DistributionEndDatePrefHidden = $("input[placeholder='dd/mm/yyyy'][id='DistributionEndDatePref']");
     var DistributionEndDatePrefShown = $("input[class='cats-datepicker2'][id='DistributionEndDatePref']");
 

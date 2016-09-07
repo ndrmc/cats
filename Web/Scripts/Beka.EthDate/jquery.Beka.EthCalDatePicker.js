@@ -52,7 +52,7 @@
                         }
 
 
-                        $(document).change(dateEditorValueChanged(selected_date,gregorian_date));
+                        dateEditorValueChanged(selected_date,gregorian_date,this);
                     })
                     .tooltip({ trigger: "hover manual", title: "dd/mm/yyyy" })
                     .attr("placeholder", "dd/mm/yyyy")
@@ -116,19 +116,19 @@
 
     }
 
-    function dateEditorValueChanged(newDateEthiopian, newDateGregorian) {
+    function dateEditorValueChanged(newDateEthiopian, newDateGregorian, sender) {
 
         editorValueChangedEvent.newDateEthiopian = newDateEthiopian;
         editorValueChangedEvent.newDateGregorian = newDateGregorian;
-
-        $(document).trigger(editorValueChangedEvent);
+        editorValueChangedEvent.sender = sender
+        ;
+        var id = sender.id;
+        $('#'+id).trigger(editorValueChangedEvent);
          
     }
     var editorValueChangedEvent = jQuery.Event("dateEditorValueChanged");
 
-    function getInputDate(options, input) {
-
-    }
+ 
     var test_coutn = 0;
     var _handle_blur = function (evt, elem) {
         var input = $(elem);
@@ -430,8 +430,10 @@
 
 															    dateClickedEvent.EthiopianDate = selected_date.toString();
 															    dateClickedEvent.GregorianDate = greg_date.toLocaleDateString();
+															    dateClickedEvent.date_picker = date_picker;
 
-															    $(document).trigger(dateClickedEvent);
+
+															    $('#' + date_picker.input[0].id).trigger(dateClickedEvent);
 
 
 															    var inputid = date_picker.input.attr("id");
