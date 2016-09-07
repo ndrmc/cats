@@ -298,9 +298,9 @@ namespace Cats.Areas.Logistics.Controllers
                          LossReasonId = (int)lossReason,
                          RequisitionId = woredaDistributionDetail.RequisitionId,
                          DistributionStartDate = woredaDistributionDetail.DistributionStartDate,
-                         DistributionStartDatePref = woredaDistributionDetail.DistributionStartDate.GetValueOrDefault().ToCTSPreferedDateFormat(datePref),
+                         DistributionStartDatePref = woredaDistributionDetail.DistributionStartDate.GetValueOrDefault().ToCtsPreferedDateFormatShort(datePref),
                          DistributionEndDate = woredaDistributionDetail.DistributionEndDate,
-                         DistributionEndDatePref = woredaDistributionDetail.DistributionEndDate.GetValueOrDefault().ToCTSPreferedDateFormat(datePref)
+                         DistributionEndDatePref = woredaDistributionDetail.DistributionEndDate.GetValueOrDefault().ToCtsPreferedDateFormatShort(datePref)
 
                      }
                         ).ToList()
