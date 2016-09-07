@@ -183,7 +183,8 @@ namespace Cats.Areas.Regional.Controllers
             //var dornr = dispatchOnRegionNonReconcile.Select(tt => tt.DispatchAllocationID).Distinct();
             //var amount = _dispatchAllocationService.Get(t => dornr.Contains(t.DispatchAllocationID));
             //var dispatchAllocations = amount as IList<DispatchAllocation> ?? amount.ToList();
-            var amt = dispatchOnRegionNonReconcile.Sum(aa => aa.DispatchDetails.Sum(bb=>bb.DispatchedQuantityInMT));
+            //var amt = dispatchOnRegionNonReconcile.Sum(aa => aa.DispatchDetails.Sum(bb=>bb.DispatchedQuantityInMT));
+            var amt = _regionalDashboard.GetRegionalNotReconcileDispatchAmount(regionID);
             var currentUser = UserAccountHelper.GetCurrentUser();
             var userprofile = _userProfileService.GetUser(currentUser.UserName);
             d.IncomingCommodity = Convert.ToInt32(amt);
