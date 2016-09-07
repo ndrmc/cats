@@ -73,9 +73,12 @@
                                                     @Url.Action("Detail", new { id = item.GiftCertificateID }),
                                                     EarlyWarningConstants.Operation.Edit_Gift_Certificate, " <button type=\"button\" class=\"btn btn-xs btn-primary\"><span class=\"fa fa-list\"></span>" + @Html.Translate("Detail") + " </button> ")
 
-                                            @Html.EarlyWarningOperationButton(
+                                            if (item.IsApprovable)
+                                            {
+                                                @Html.EarlyWarningOperationButton(
                                                     @Url.Action("Approved", "GiftCertificate", new { id = item.GiftCertificateID }),
                                                     EarlyWarningConstants.Operation.Approve_Gift_Certeficate, " <button type=\"button\" class=\"btn btn-xs btn-success\"><span class=\"fa fa-check\"></span> " + @Html.Translate("Approve") + " </button> ", "btn-Approve-Gift", "", "btnApprove")
+                                            }
                                         }
                                         else
                                         {
