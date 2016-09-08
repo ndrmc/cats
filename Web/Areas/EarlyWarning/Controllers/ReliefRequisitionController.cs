@@ -520,7 +520,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 {
                     ViewBag.program = "PSNP";
                 }
+
                 ViewBag.RationID = new SelectList(_rationService.Get(t => t.RationDetails.Select(m => m.CommodityID).Contains((int)relifRequisition.CommodityID)), "RationID", "RefrenceNumber", relifRequisition.RationID);
+
                 return View(relifRequisition);
             }
             return HttpNotFound();
@@ -533,6 +535,13 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (ModelState.IsValid)
             {
                 var requisition = _reliefRequisitionService.FindById(reliefrequisition.RequisitionID);
+                var requisitionNumber =
+                    _reliefRequisitionService.FindBy(r => r.RequisitionNo == reliefrequisition.RequisitionNo)
+                        .FirstOrDefault();
+
+                if (requisitionNumber != null)
+                    return PartialView("_ReliefReqMessage", null);
+
                 if (requisition.ReliefRequisitionDetails.Count > 0)
                 {
                     foreach (var oldRequisitionDetail in requisition.ReliefRequisitionDetails)
