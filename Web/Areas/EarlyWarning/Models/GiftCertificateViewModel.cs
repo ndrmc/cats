@@ -186,5 +186,6 @@ namespace Cats.Areas.GiftCertificate.Models
         public string GiftDatePref { get; set; }
         public bool AllowReject { get; set; }
         public int SiId { get; set; }
+        public bool IsApprovable { get; set; }
      }
 }

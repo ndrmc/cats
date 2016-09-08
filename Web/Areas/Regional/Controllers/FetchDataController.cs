@@ -123,7 +123,7 @@ namespace Cats.Areas.Regional.Controllers
                 male = male + (i.MaleAbove18Years + i.MaleBetween5And18Years + i.MaleLessThan5Years);
             }}
 
-           
+
             var draft = (from r in requests
                          where r.Status == 1
                          select r).Count();
@@ -186,11 +186,12 @@ namespace Cats.Areas.Regional.Controllers
             //var dornr = dispatchOnRegionNonReconcile.Select(tt => tt.DispatchAllocationID).Distinct();
             //var amount = _dispatchAllocationService.Get(t => dornr.Contains(t.DispatchAllocationID));
             //var dispatchAllocations = amount as IList<DispatchAllocation> ?? amount.ToList();
+            //var amt = dispatchOnRegionNonReconcile.Sum(aa => aa.DispatchDetails.Sum(bb=>bb.DispatchedQuantityInMT));
+            var amt = _regionalDashboard.GetRegionalNotReconcileDispatchAmount(regionID);
 
             //var amt = dispatchOnRegionNonReconcile.Sum(aa => aa.DispatchDetails.Sum(bb=>bb.DispatchedQuantityInMT));
-            var dispatchdetails = from ds in dispatchOnRegionNonReconcile select ds.DispatchDetails;
-            var amt = (from dd in dispatchdetails
-                select dd.Sum(s => s.DispatchedQuantityInMT)).Sum();
+            //var dispatchdetails = from ds in dispatchOnRegionNonReconcile select ds.DispatchDetails;
+            //var amt = (from dd in dispatchdetails select dd.Sum(s => s.DispatchedQuantityInMT)).Sum();
             var currentUser = UserAccountHelper.GetCurrentUser();
             var userprofile = _userProfileService.GetUser(currentUser.UserName);
             d.IncomingCommodity = Convert.ToInt32(amt);
