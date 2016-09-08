@@ -105,7 +105,7 @@ namespace Cats.Areas.Logistics.Controllers
                 SIPCAllocationID = item.SIPCAllocationID,
                 RequisitionDetailID = item.RequisitionDetailID,
                 Code = item.Code,
-                AllocatedAmount = item.AllocatedAmount,
+                AllocatedAmount = item.AllocatedAmount.ToPreferedWeightUnit(),
                 AllocationType = item.AllocationType,
                 FDPID = item.FDPID
 
@@ -117,6 +117,14 @@ namespace Cats.Areas.Logistics.Controllers
             var hubId = _hubAllocationService.GetAllocatedHubId(reqId);
             List<LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodity(hubId, CommodityID);
             List<LedgerService.AvailableProjectCodes> freePCCodes = _ledgerService.GetFreePCCodesByCommodity(hubId, CommodityID);
+            foreach (var fsi in freeSICodes)
+            {
+                fsi.amount = fsi.amount.ToPreferedWeightUnit();
+            }
+            foreach (var fpc in freePCCodes)
+            {
+                fpc.amount = fpc.amount.ToPreferedWeightUnit();
+            }
             FreeSIPC free = new FreeSIPC { FreePCCodes = freePCCodes, FreeSICodes = freeSICodes };
             return free;
         }
@@ -217,7 +225,7 @@ namespace Cats.Areas.Logistics.Controllers
                         SIPCAllocation allocation = new SIPCAllocation
                         {
                             Code = item.Code,
-                            AllocatedAmount = item.AllocatedAmount,
+                            AllocatedAmount = item.AllocatedAmount.ToPreferedWeightUnitForInsert(),
                             AllocationType = item.AllocationType,
                             RequisitionDetailID = item.RequisitionDetailID,
                             HubID = item.HubID,
