@@ -110,6 +110,7 @@
                     @*<div class="actions"><a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a></div>*@
                 </div>
                 <div class="portlet-body">
+                    <div><i class="cats-unit-pref"> Preferred Measurement </i> </div>
                     <div class="accordion dd-item" id="accordion_zone">
                         <div class="accordion-group" id="accordion_zone{{$index}}" data-index="{{zone.id}}" ng-repeat="zone in requests" class="btn-draggable" ng-model="unallocated" data-drag="zone.allocatedAmount< 0.1"
                              data-jqyoui-options="{revert: 'invalid'}" jqyoui-draggable="{index: {{zone.id}},placeholder:'keep',animate:true, onStart:'startCallback(zone, $index)', onStop: 'stopCallback', onDrag: 'dragCallback'}" ng-cloak>
@@ -142,7 +143,7 @@
                                 <div class="accordion-inner">
                                     <div>@Html.Translate("Woredas")</div>
                                     <div class="accordion dd-item" id="woredas_inzone{{zone.zoneId}}">
-                                        <div class="accordion-group" data-index="{{woreda.id}}" ng-repeat="woreda in zone.woredas" class="list-woreda btn-draggable" ng-model="unallocated" data-drag="woreda.allocatedAmount<woreda.requestedAmount"
+                                        <div class="accordion-group" data-index="{{woreda.id}}" ng-repeat="woreda in zone.woredas" class="list-woreda btn-draggable" ng-model="unallocated" data-drag="woreda.allocatedAmount< 0.1"
                                              data-jqyoui-options="{revert: 'invalid'}" jqyoui-draggable="{index: {{woreda.index}},placeholder:'keep',animate:true, onStart:'startCallback(woreda, $index)', onStop: 'stopCallback', onDrag: 'dragCallback'}">
                                             <div class="accordion-heading dd-handle">
                                                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#woredas_inzone{{zone.zoneId}}" href="#collapse_woreda{{woreda.woredaId}}">
@@ -373,7 +374,20 @@
                     $scope.allAdminRegions.push(temp);
                     $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
                     // add splice code here
-                    //$scope.allAdminRegions.splice($scope.requestIndexG,1);
+                    $scope.allAdminRegions[$scope.requestIndexG].allocated = $scope.siindexG/1 + 1;
+                    $scope.allAdminRegions[$scope.requestIndexG].allocated = $scope.siindexG/1 + 1;
+                    for (var j in $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests) {
+
+                        if (   $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests[j].FDPId === temp.FDPId)// && $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests[j].allocated !== $scope.SIPCCodes[temp.allocated/1 -1].index)
+                            $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.splice(j, 1);
+                    }
+
+                  //  $scope.SIPCCodes[temp.allocated / 1 - 1].allocatedRequests.push(temp);
+                    //{
+
+                    //    if (   $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests[j].FDPId === temp.FDPId && $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests[j].allocated !== $scope.SIPCCodes[temp.allocated/1 -1].index)
+                    //        $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.splice(j, 1);
+                    //}
                 }
                 $scope.allAdminRegions[$scope.requestIndexG].allocated = $scope.siindexG/1 + 1;
 
@@ -402,7 +416,7 @@
                         $scope.flag = 1;
                     }
                 }
-                if(flag===0)
+                if( $scope.flag===0)
                     $scope.EditLocation.Allocations[0].AllocatedAmount= CustomAmount;
                     $scope.SIPCCodes[$scope.siindexG].availableAmount = $scope.SIPCCodes[$scope.siindexG].availableAmount  + adjustedallocatedAmount ;
                     if(CustomAmount===0)
@@ -466,7 +480,9 @@
                         }
                     }
                 }
+
                 $scope.removeAllocation(location,0);
+                location.Allocations.length = 0;
                 $scope.calculateAllocated();
                 $scope.clearSIPCAllocation();
             }
@@ -857,9 +873,20 @@
                         if(alocated===0)
                         {
                             $scope.allAdminRegions.push(temp);
+                            for (var i in $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests) {
 
-                            if( angular.isUndefined(temp.Allocations[0].SIPCAllocationID))// if(temp.Allocations[0].SIPCAllocationID=== undefined)
-                                $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.push(temp);
+                                if (   $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests[i].FDPId === temp.FDPId)// && $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests[i].allocated !== $scope.SIPCCodes[temp.allocated/1 -1].index)
+                                    $scope.SIPCCodes[temp.allocated/1 -1].allocatedRequests.splice(i, 1);
+                            }
+                            //if (angular.isUndefined(temp.Allocations[0].SIPCAllocationID))
+                            //{
+                                $scope.SIPCCodes[temp.allocated / 1 - 1].allocatedRequests.push(temp);
+                            //}
+                            //else if(temp.allocatedAmount === temp.totalAllocatedAmount) {
+
+                            //    $scope.SIPCCodes[temp.allocated / 1 - 1].allocatedRequests.push(temp);
+
+                            //}
                         }
                         else
 
@@ -1111,7 +1138,7 @@
                     param.push(emptyCode);
                 }
                 $http.post($scope.updateUrl, param).success(updateSuccess).error(updateError);
-                $window.location.reload();
+                //$window.location.reload();
                 if (showmodal) {
                     $('#modalContent').html("...");
                     $('#myModal').modal('show');
