@@ -376,6 +376,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewBag.SeasonID = hrd.Season.Name;
             ViewBag.Year = hrd.Year;
             ViewBag.HRDID = id;
+            ViewBag.HrdStatus = hrd.Status; 
             var dt = GetTransposedHRD(id, preferedweight);
             return View(dt);
         }
