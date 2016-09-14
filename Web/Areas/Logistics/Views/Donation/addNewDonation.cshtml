@@ -88,16 +88,19 @@
                             @(Html.TextBoxFor(model => model.CommomdityTypeName, new { @readonly = "readonly" })) @*, new SelectList(Model.CommodityTypes, "CommodityTypeID", "Name")*@
                         </div>
 
+
                     </td>
 
                     <td style="width:50%; padding-bottom: 10px;">
-
                         <div class="control-label">
-                            @Html.Label(@Html.Translate("Commodity"))
+                            @Html.Label(@Html.Translate("Parent Commodity"))
                         </div>
                         <div class="controls">
-                            @(Html.TextBoxFor(model => model.CommodityName, new { @readonly = "readonly" })) @*, new SelectList(Model.Commodities, "CommodityID", "Name")*@
+                            @(Html.TextBoxFor(model => model.ParentCommodityName, new { @readonly = "readonly" })) @*, new SelectList(Model.Commodities, "CommodityID", "Name")*@
                         </div>
+
+
+
 
 
                     </td>
@@ -115,12 +118,11 @@
                     <td style="width:50%; padding-bottom: 10px;">
 
                         <div class="control-label">
-                            @Html.Label(@Html.Translate("Parent Commodity"))
+                            @Html.Label(@Html.Translate("Child Commodity"))
                         </div>
                         <div class="controls">
-                            @(Html.TextBoxFor(model => model.ParentCommodityName, new { @readonly = "readonly" })) @*, new SelectList(Model.Commodities, "CommodityID", "Name")*@
+                            @(Html.TextBoxFor(model => model.CommodityName, new { @readonly = "readonly" })) @*, new SelectList(Model.Commodities, "CommodityID", "Name")*@
                         </div>
-
 
                     </td>
                 </tr>
@@ -132,6 +134,8 @@
 
 
         }
+
+
 
 
 
