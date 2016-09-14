@@ -204,11 +204,21 @@ namespace Cats.Areas.Hub.Controllers
             //var hubId = _hubAllocationService.GetAllocatedHubId(reqId);
             var hubId =
                 _sipcAllocationService.FindBy(t => t.RequisitionDetailID == reqDetailId && t.Code == siID).Select(t=>t.HubID).FirstOrDefault();
-            List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodityAmount(hubId, ComID, DaID);
+
+            var dispatchAllocation = _dispatchAllocationService.FindById(DaID);
+            var freeSICodesList = new List<Services.Common.LedgerService.AvailableShippingCodes>
+            {
+                new Services.Common.LedgerService.AvailableShippingCodes() { amount = 10000000000, siCodeId = dispatchAllocation.ShippingInstructionID, SIcode = dispatchAllocation.ShippingInstruction.Value, HubName = "", HubId = 1}
+            };
+            var freeSICodes = _ledgerService.GetFreeSICodesByCommodityAmount(hubId, ComID, DaID).ToList();
+            freeSICodesList.AddRange(freeSICodes);
+
+
+            //List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodityAmount(hubId, ComID, DaID);
             //var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
             //tlistFiltered = tlistFiltered.Where(item => item.amount > 0);
             //ViewBag.AvailableSIList = tlistFiltered;
-            return (Json(freeSICodes, JsonRequestBehavior.AllowGet));
+            return (Json(freeSICodesList, JsonRequestBehavior.AllowGet));
 
         }
         public ActionResult DispatchedToTransferListAjax([DataSourceRequest] DataSourceRequest request, int? HubID, bool? closed, int? commodityType)
