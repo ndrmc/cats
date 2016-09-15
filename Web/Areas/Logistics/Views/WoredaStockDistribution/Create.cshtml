@@ -730,10 +730,12 @@
 
             $("input[class='cats-datepicker2'][id='DistributionStartDatePref']").on("dateEditorValueChanged", function (event) {
                 SetModelStartDate(event.newDateGregorian);
+                        
+                var value = event.newDateEthiopian == null ? "" : event.newDateEthiopian.toString();
 
-                e.model.set('DistributionStartDatePref', event.newDateEthiopian.toString());
+                e.model.set('DistributionStartDatePref', value);
 
-                SetModelStartDatePref(event.newDateEthiopian.toString());
+                SetModelStartDatePref(value);
 
 
 
@@ -773,12 +775,14 @@
             });
 
         $("input[class='cats-datepicker2'][id='DistributionEndDatePref']").on("dateEditorValueChanged", function (event) {
+
             SetModelEndDate(event.newDateGregorian);
 
-            e.model.set('DistributionEndDatePref', event.newDateEthiopian.toString());
+            var value = event.newDateEthiopian == null ? "" : event.newDateEthiopian.toString();
 
-            SetModelEndDatePref(event.newDateEthiopian.toString());
+            e.model.set('DistributionStartDatePref', value);
 
+            SetModelStartDatePref(value);
 
 
         });

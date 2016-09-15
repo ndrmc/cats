@@ -50,6 +50,10 @@
                             var inputid = eth_date_input.attr("id");
                             $("#" + inputid).attr("value", selected_date.toGreg().toLocaleDateString());
                         }
+                        else {
+
+                            selected_date = null;
+                        }
 
 
                         dateEditorValueChanged(selected_date,gregorian_date,this);
