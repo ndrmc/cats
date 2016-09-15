@@ -315,8 +315,7 @@
                           }
 
 
-
-                          if (datepref == "GC" || datepref == "gc")
+                          if (datepref == "GC"| datepref == "gc")
                           {
 
                               columns.Bound(p => p.DistributionEndDate).Width(100).Format("{0:MM-dd-yy}");
@@ -326,6 +325,7 @@
                           }
                           else
                           {
+
 
                               columns.Bound(p => p.DistributionEndDate).Format("{0:mm-dd-yy}").Hidden().
                                      ClientTemplate("  <input type='hidden'  id='WoredaDistributionDetailViewModels[#= index(data)#].DistributionEndDate'  name='WoredaDistributionDetailViewModels[#= index(data)#].DistributionEndDate'  value='#= DistributionEndDate #' />");
@@ -348,13 +348,8 @@
                           columns.Template(c => { }).Width(100).Title(Html.Translate("EndingBalance")).HtmlAttributes(new { @class = "calculated" }).ClientTemplate("<span class='rowCount EndingBalance' rowCount='#=rowCount#' nextRow='#=getRowNo(data)#'>#=TotalEndingBalance(data)# </span>" +
                               " <input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].EndingBalance' value='#= EndingBalance #' />");
 
-                          //columns.Bound(p => p.EndingBalance).Width(80).HtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
-                          //.ClientTemplate("<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].EndingBalance' value='#= EndingBalance #' />");
-                          //// columns.Bound(p => p.DistributionStartDate);
-                          //// columns.Bound(p => p.DistributionEndDate);
 
                       })
-                      //.ToolBar(toolBar=>toolBar.Save())
                       .Editable(editable =>
                       {
                           if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_Distribution_Entry))
@@ -365,7 +360,6 @@
                       .Editable(edit => edit.Mode(GridEditMode.InCell))
 
                       .Scrollable()
-                      //.Selectable(t => t.Mode(GridSelectionMode.Single))
                       .Navigatable()
                       .HtmlAttributes(new { style = "height:350px;" })
 
@@ -377,9 +371,7 @@
                                                     .Batch(true)
                                                     .ServerOperation(false)
                                                     .Events(error => error.Error("error_handler"))
-                                                    //.Group(m => m.Add(t => t.CommodityName))
-                                                    // .Events(e=>e.RequestEnd("onRequestEnd"))
-                                                    // .ServerOperation(false)
+                   
                                                     .Model(model =>
                                                     {
                                                         model.Id(p => p.WoredaStockDistributionDetailID);
@@ -400,9 +392,6 @@
 
                                                     })
                                                     .ServerOperation(false)
-
-                      //.Read(read => read.Action("WoredaStockDetail_Read", "WoredaStockDistribution", new {woredaStockDistributionID =Model.WoredaStockDistributionID, woredaID=Model.WoredaID,planID=Model.PlanID,month=Model.Month}))
-                      //.Update(update => update.Action("UpdateWoredaDistribution", "WoredaStockDistribution"))
 
 
                       )
