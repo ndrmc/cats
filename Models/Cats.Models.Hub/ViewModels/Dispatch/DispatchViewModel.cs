@@ -766,6 +766,7 @@ namespace Cats.Models.Hubs
         [Display(Name = "Sub Commodity")]
         public int? CommodityChildID { get; set; }
         public string Commodity { get; set; }
+        public string ChildCommodity { get; set; }
         [Display(Name = "Remark")]
         [UIHint("AmharicTextArea")]
         public string Remark { get; set; }
@@ -776,7 +777,8 @@ namespace Cats.Models.Hubs
         public decimal Quantity { get; set; }
         [Display(Name = "Unit")]
         public int UnitID { get; set; }
-
+        public string Unit { get; set; }
+        
         public Guid DispatchAllocationID { get; set; }
         public int TransporterID { get; set; }
 
