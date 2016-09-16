@@ -351,7 +351,7 @@ namespace Cats.Areas.Hub.Controllers
                 dispatch.GIN = editdispatch.GIN;
                 DispatchDetail detail = editdispatch.DispatchDetails.FirstOrDefault();
                 dispatch.QuantityInUnit = detail.DispatchedQuantityInUnit;
-                dispatch.QuantityPerUnit = detail.DispatchedQuantityInMT * 10;
+                dispatch.QuantityPerUnit = detail.DispatchedQuantityInMT*10;
                 dispatch.Quantity = detail.DispatchedQuantityInMT;
                 dispatch.UnitID = detail.UnitID;
                 dispatch.PlateNo_Prime = editdispatch.PlateNo_Prime;
@@ -368,11 +368,16 @@ namespace Cats.Areas.Hub.Controllers
                 //dispatch.Month = editdispatch.PeriodMonth;
                 //dispatch.Round = editdispatch.Round;
                 //"nov 24 afternoon"
-
+                dispatch.SINumber = _shippingInstructionService.FindById((int)dispatch.ShippingInstructionID).Value;
+                if (dispatch.CommodityChildID != null)
+                {
+                    dispatch.ChildCommodity = _commodityService.FindById((int)dispatch.CommodityChildID).Name;
+                }
+                dispatch.Unit = _unitService.FindById(dispatch.UnitID).Name;
             }
             else
             {
-               dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(id, 0);
+                dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(id, 0);
 
 
             }
@@ -399,14 +404,16 @@ namespace Cats.Areas.Hub.Controllers
 
             var id1 = dispatch.CommodityID;
             commodity = _commodityService.FindById(id1);
+            
 
-
+            
 
             //DispatchViewModel dispatchViewModel = DispatchViewModelBinder.BindDispatchViewModelBinder(dispatch);
             if (commodity != null)
             {
                 dispatch.Commodity = commodity.Name;
             }
+            
             var hubId = _hubAllocationService.GetAllocatedHubId(dispatch.RequisitionId ?? 0);
             List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodityAmount(hubId, dispatch.CommodityID, id);
             //var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
