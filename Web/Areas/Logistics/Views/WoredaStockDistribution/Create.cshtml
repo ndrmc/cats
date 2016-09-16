@@ -607,7 +607,7 @@
         var kdata = grid.dataSource.data();
         for (var i = 0; i < kdata.length; i++) {
             kdata[i].dirty = true;
-            if (dateprefJS == "GC" || dateprefJS == "gc") {
+          
                 var distributionStartDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionStartDate");
                 var distributionEndDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionEndDate");
                 var dsd = kendo.toString(kendo.parseDate(distributionStartDate.value), "MM/dd/yy");
@@ -616,7 +616,7 @@
                 kdata[i].DistributionEndDate = ded == null ? distributionEndDate.value : ded;
                 distributionStartDate.value = kdata[i].DistributionStartDate;
                 distributionEndDate.value = kdata[i].DistributionEndDate;
-            }
+        
         }
         return true;
     }
@@ -625,7 +625,7 @@
         $("#SubmitButton").click(function () {
 
             if (validateNoOfBeneficiaries() == true && validateDirectAndPublic() == true && save == true) {
-                //makeKendoDirty();
+                makeKendoDirty();
                 save = false;
                 $(this).button('loading');
                 $("#frm_create_utilization").submit();
