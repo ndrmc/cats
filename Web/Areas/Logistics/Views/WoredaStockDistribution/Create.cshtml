@@ -13,6 +13,7 @@
 
 }
 
+
 <h4>Woreda Distribution Information </h4>
 @section leftBar
 {
@@ -20,7 +21,7 @@
 }
 @section Toolbar
 {
-    @*@if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_woreda_distribution))*@
+    if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_woreda_distribution))
     {
         <button id="SubmitButton" data-buttontype="btn_save" class="btn btn-default" data-loading-text="Saving...">Save</button>
         @*<a id="SaveButton" class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_create_utilization" title="Save"></a>
