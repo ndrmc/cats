@@ -158,7 +158,8 @@ namespace Cats.Services.Common
                                       p.ReliefRequisition.RegionalRequest.PlanID == planId && p.FDP.AdminUnitID == woredaId &&
                                       p.ReliefRequisition.Round == roundOrMonth).GroupBy(u => u.RequisitionID).FirstOrDefault();
 
-                var result = firstOrDefault?.Sum(u => u.BenficiaryNo) ?? 0;
+                int result = 0;
+                if (firstOrDefault != null) result =firstOrDefault.Sum(u => u.BenficiaryNo);
 
                 return result;
             }
