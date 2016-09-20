@@ -204,11 +204,21 @@ namespace Cats.Areas.Hub.Controllers
             //var hubId = _hubAllocationService.GetAllocatedHubId(reqId);
             var hubId =
                 _sipcAllocationService.FindBy(t => t.RequisitionDetailID == reqDetailId && t.Code == siID).Select(t=>t.HubID).FirstOrDefault();
-            List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodityAmount(hubId, ComID, DaID);
+
+            var dispatchAllocation = _dispatchAllocationService.FindById(DaID);
+            var freeSICodesList = new List<Services.Common.LedgerService.AvailableShippingCodes>
+            {
+                new Services.Common.LedgerService.AvailableShippingCodes() { amount = 10000000000, siCodeId = dispatchAllocation.ShippingInstructionID, SIcode = dispatchAllocation.ShippingInstruction.Value, HubName = "", HubId = 1}
+            };
+            var freeSICodes = _ledgerService.GetFreeSICodesByCommodityAmount(hubId, ComID, DaID).ToList();
+            freeSICodesList.AddRange(freeSICodes);
+
+
+            //List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodityAmount(hubId, ComID, DaID);
             //var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
             //tlistFiltered = tlistFiltered.Where(item => item.amount > 0);
             //ViewBag.AvailableSIList = tlistFiltered;
-            return (Json(freeSICodes, JsonRequestBehavior.AllowGet));
+            return (Json(freeSICodesList, JsonRequestBehavior.AllowGet));
 
         }
         public ActionResult DispatchedToTransferListAjax([DataSourceRequest] DataSourceRequest request, int? HubID, bool? closed, int? commodityType)
@@ -341,7 +351,7 @@ namespace Cats.Areas.Hub.Controllers
                 dispatch.GIN = editdispatch.GIN;
                 DispatchDetail detail = editdispatch.DispatchDetails.FirstOrDefault();
                 dispatch.QuantityInUnit = detail.DispatchedQuantityInUnit;
-                dispatch.QuantityPerUnit = detail.DispatchedQuantityInMT * 10;
+                dispatch.QuantityPerUnit = detail.DispatchedQuantityInMT*10;
                 dispatch.Quantity = detail.DispatchedQuantityInMT;
                 dispatch.UnitID = detail.UnitID;
                 dispatch.PlateNo_Prime = editdispatch.PlateNo_Prime;
@@ -358,11 +368,16 @@ namespace Cats.Areas.Hub.Controllers
                 //dispatch.Month = editdispatch.PeriodMonth;
                 //dispatch.Round = editdispatch.Round;
                 //"nov 24 afternoon"
-
+                dispatch.SINumber = _shippingInstructionService.FindById((int)dispatch.ShippingInstructionID).Value;
+                if (dispatch.CommodityChildID != null)
+                {
+                    dispatch.ChildCommodity = _commodityService.FindById((int)dispatch.CommodityChildID).Name;
+                }
+                dispatch.Unit = _unitService.FindById(dispatch.UnitID).Name;
             }
             else
             {
-               dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(id, 0);
+                dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(id, 0);
 
 
             }
@@ -389,14 +404,16 @@ namespace Cats.Areas.Hub.Controllers
 
             var id1 = dispatch.CommodityID;
             commodity = _commodityService.FindById(id1);
+            
 
-
+            
 
             //DispatchViewModel dispatchViewModel = DispatchViewModelBinder.BindDispatchViewModelBinder(dispatch);
             if (commodity != null)
             {
                 dispatch.Commodity = commodity.Name;
             }
+            
             var hubId = _hubAllocationService.GetAllocatedHubId(dispatch.RequisitionId ?? 0);
             List<Services.Common.LedgerService.AvailableShippingCodes> freeSICodes = _ledgerService.GetFreeSICodesByCommodityAmount(hubId, dispatch.CommodityID, id);
             //var tlistFiltered = freeSICodes.Where(item => item.HubId == hubId);
