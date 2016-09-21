@@ -479,11 +479,14 @@ namespace Cats.Areas.Hub.Controllers
                 }
 
                 _transactionService.ReceiptTransaction(viewModel);
-     
 
-           var receiveID =
+
+                var receiveID =
                     _receiveService.GetAllReceive()
-                        .Where(r => r.ReceiptAllocationID == viewModel.ReceiptAllocationId)
+                        .Where(
+                            r =>
+                                r.ReceiptAllocationID == viewModel.ReceiptAllocationId &&
+                                r.WayBillNo == viewModel.WayBillNo && r.GRN == viewModel.Grn)
                         .Select(r => r.ReceiveID)
                         .LastOrDefault();
                 return RedirectToAction("Commodities", "ReceiveNew", new { @receiptAllocationId = viewModel.ReceiptAllocationId, @grn = viewModel.Grn, @receiveId = receiveID });
