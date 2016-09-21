@@ -17,7 +17,7 @@ namespace Cats.Models
        }
        
        public int PlanID { get; set; }
-       public int BusinessProcessID { get; set; }
+       public int? BusinessProcessID { get; set; }
         [Required(ErrorMessage = "Enter Plan Name")]
        public string PlanName { get; set; }
         [Required(ErrorMessage = "Enter Start Date")]

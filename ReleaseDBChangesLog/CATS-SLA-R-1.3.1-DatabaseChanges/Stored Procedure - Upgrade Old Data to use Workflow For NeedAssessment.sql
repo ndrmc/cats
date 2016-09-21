@@ -5,18 +5,18 @@ use [CatsDRMFSS];
 --	Author: Nathnael Getahun (Senior Software Developer @ Neuronet)
 --	Type: Stored Procedure
 --	Name: Upgrade Old Data
---	Description: Make old data of Transport Requisition table support the new workflow implementation
+--	Description: Make old data of Needs Assessment table support the new workflow implementation
 --	What it does:
-----	> Add BusinessProcessID column in Transport Requisition table 
+----	> Add BusinessProcessID column in Needs Assessment table 
 ----	> Iterate through each Transport Requisition entry and create them a business process and 
 ----	  business process state for their current status only
 ********************************************************************************************************
 ********************************************************************************************************/
 
 
-IF COL_LENGTH('Logistics.TransportRequisition','BusinessProcessID') IS NULL
+IF COL_LENGTH('EarlyWarning.NeedAssessment','BusinessProcessID') IS NULL
 BEGIN
-	ALTER TABLE [Logistics].[TransportRequisition]
+	ALTER TABLE [EarlyWarning].[NeedAssessment]
 	ADD BusinessProcessID INT NOT NULL
 	CONSTRAINT BP_Default_0 DEFAULT 0 WITH VALUES;
 END
@@ -24,12 +24,12 @@ END
 IF EXISTS(
     SELECT *
     FROM sys.procedures 
-    WHERE Object_ID = Object_ID(N'upgrade_transport_requisition_old_data'))
+    WHERE Object_ID = Object_ID(N'upgrade_needs_assessment_old_data'))
 BEGIN
-    DROP PROCEDURE upgrade_transport_requisition_old_data  
+    DROP PROCEDURE upgrade_needs_assessment_old_data  
 END
 GO
-CREATE PROCEDURE upgrade_transport_requisition_old_data  @xmldoc	int        
+CREATE PROCEDURE upgrade_needs_assessment_old_data  @xmldoc	int        
 AS  
 
 /* Begin a transaction that will hold all the statements executed in this procedure */
@@ -47,7 +47,7 @@ IF(@@error <> 0)
 	ROLLBACK /* Rollback of the transaction */
 
 DECLARE document_table CURSOR FOR  
-    SELECT TransportRequisitionID FROM [Logistics].[TransportRequisition] 
+    SELECT NeedAID FROM [EarlyWarning].[NeedAssessment] 
 /* Check if the above statement failed to execute and rollback the transcation */
 IF(@@error <> 0)
 	ROLLBACK /* Rollback of the transaction */
@@ -75,26 +75,21 @@ BEGIN
 		--IF (@bpid = 0)  
 		--BEGIN
 			DECLARE @status int, @businessprocessid int, @businessprocessstateid int, @stateid int;
-			SET @status = ( SELECT [Status] FROM [Logistics].[TransportRequisition] WHERE TransportRequisitionID = @rowid );
-			IF (@status = 1)  
-				SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Draft' );
-			ELSE IF (@status = 2)
-				SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Approved' );
-			ELSE IF (@status = 3)
-				SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Closed' );
-
+			--SET @status = ( SELECT [Status] FROM [EarlyWarning].[NeedAssessment] WHERE PlanID = @rowid );
+			--IF (@status = 1)  
+			SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Draft' );
 
 			INSERT INTO BusinessProcessState 
-			VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'Transport Requisition business process created by data migrator', NULL);
+			VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'Need Assessment business process created by data migrator', NULL);
 			SET @businessprocessstateid = SCOPE_IDENTITY();			
 
 			INSERT INTO BusinessProcess 
-			VALUES ( @processid, 0, 'TransportRequisition', @businessprocessstateid, NULL);
+			VALUES ( @processid, 0, 'NeedAssessment', @businessprocessstateid, NULL);
 			SET @businessprocessid = SCOPE_IDENTITY();
 
-			UPDATE [Logistics].[TransportRequisition]
+			UPDATE [EarlyWarning].[NeedAssessment]
 			SET BusinessProcessID=@businessprocessid
-			WHERE TransportRequisitionID = @rowid;
+			WHERE NeedAID = @rowid;
 				
 		--END		
     END  
@@ -111,8 +106,8 @@ Go
 
 DECLARE @h int
 EXECUTE sp_xml_preparedocument @h OUTPUT, N'<Data>  
-	<ProcessTemplate Name="Transport Requisition" Description="Workflow for transport requisition" GraphicsData="NULL" PartitionId="0" />
-	<ApplicationSetting SettingName="TransportRequisitionWorkflow" SettingValue="" />
+	<ProcessTemplate Name="Needs Assessment" Description="Workflow for needs assessment processing" GraphicsData="NULL" PartitionId="0" />
+	<ApplicationSetting SettingName="NeedAssessmentWorkflow" SettingValue="" />
 </Data>'
 
 

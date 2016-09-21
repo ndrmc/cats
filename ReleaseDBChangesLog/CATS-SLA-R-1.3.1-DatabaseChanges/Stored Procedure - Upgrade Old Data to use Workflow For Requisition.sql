@@ -24,12 +24,12 @@ END
 IF EXISTS(
     SELECT *
     FROM sys.procedures 
-    WHERE Object_ID = Object_ID(N'upgrade_old_data'))
+    WHERE Object_ID = Object_ID(N'upgrade_old_Requisition_data'))
 BEGIN
-    DROP PROCEDURE upgrade_old_data  
+    DROP PROCEDURE upgrade_old_Requisition_data  
 END
 GO
-CREATE PROCEDURE upgrade_old_data  @xmldoc	int        
+CREATE PROCEDURE upgrade_old_Requisition_data  @xmldoc	int        
 AS  
 
 /* Begin a transaction that will hold all the statements executed in this procedure */

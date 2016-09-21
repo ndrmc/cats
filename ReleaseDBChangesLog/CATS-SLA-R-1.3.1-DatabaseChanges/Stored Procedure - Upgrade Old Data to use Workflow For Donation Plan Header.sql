@@ -24,7 +24,7 @@ END
 IF EXISTS(
     SELECT *
     FROM sys.procedures 
-    WHERE Object_ID = Object_ID(N'upgrade_old_data'))
+    WHERE Object_ID = Object_ID(N'upgrade_donation_plan_header_old_data'))
 BEGIN
     DROP PROCEDURE upgrade_donation_plan_header_old_data  
 END
