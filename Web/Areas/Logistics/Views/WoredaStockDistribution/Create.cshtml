@@ -712,7 +712,7 @@
 
             if (DistributionStartDatePrefShown != null)
                 DistributionStartDatePrefHidden.click(function (b) {
-                    var pickertop = DistributionStartDatePrefHidden.offset().top + DistributionStartDatePrefHidden.height() - 120;
+                    var pickertop = DistributionStartDatePrefHidden.offset().top + DistributionStartDatePrefHidden.height() - $("div[class^='ui-ethdatepicker']")["0"].clientHeight;
                     var pickerleft = DistributionStartDatePrefHidden.offset().left;
                     $("div[class^='ui-ethdatepicker']").css({ top: pickertop, left: pickerleft, position: 'fixed', 'z-index': '1' });
 
@@ -758,7 +758,7 @@
 
         if (DistributionEndDatePrefShown != null)
             DistributionEndDatePrefHidden.click(function (b) {
-                var pickertop = DistributionEndDatePrefHidden.offset().top + DistributionEndDatePrefHidden.height() - 120;
+                var pickertop = DistributionEndDatePrefHidden.offset().top + DistributionEndDatePrefHidden.height() - $("div[class^='ui-ethdatepicker']")["0"].clientHeight;
                 var pickerleft = DistributionEndDatePrefHidden.offset().left;
                 $("div[class^='ui-ethdatepicker']").css({ top: pickertop, left: pickerleft, position: 'fixed', 'z-index': '1' });
 
