@@ -220,10 +220,14 @@ namespace Cats.Areas.Hub.Controllers
                     var list2 = new List<VWReceiptAllocationAggregate>();
                     foreach (var item in list)
                     {
-                        var siNumber = item.SINumber;
-                        var receiveDetails =
-                            _receiveDetailService.FindBy(s => s.Receive.ReceiptAllocation.SINumber == siNumber);
-                        item.ReceivedQuantity = receiveDetails.Any() ? receiveDetails.Sum(s => s.SentQuantityInMT) : 0;
+
+                        //var siNumber = item.SINumber;
+                        //var receiveDetails =
+                        //    _receiveDetailService.FindBy(s => s.Receive.ReceiptAllocation.SINumber == siNumber);
+                        //item.ReceivedQuantity = receiveDetails.Any() ? receiveDetails.Sum(s => s.SentQuantityInMT) : 0;
+
+                        var recieveAllocationModel = _receiveService.GetAllocationStatus(item.ReceiptAllocationID);
+                        item.ReceivedQuantity = recieveAllocationModel.ReceivedAllocation;
                         list2.Add(item);
                     }
                     listViewModel = BindReceiptAllocationViewModels(list2).ToList();
