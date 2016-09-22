@@ -526,6 +526,8 @@
                                     <thead>
                                         <tr>
                                             <th class="hidden-xs">Plan</th>
+                                        
+                                            <th>Round</th>
                                             <th>Woreda</th>
                                             <th class="number">FDPs</th>
                                             
@@ -538,6 +540,7 @@
                                         
                                         <tr class="" ng-repeat="Distribution in Distribtion">
                                             <td>{{Distribution.plan}}</td>
+                                            <td>{{Distribution.Month}}</td>
                                             <th>{{Distribution.Woreda}}</th>
                                             <th>{{Distribution.Fdps}}</th>
                                            
@@ -714,6 +717,7 @@
     function RegionalDashboardController($scope, $http) {
 
         $scope.reqParam = { regionID: '@ViewBag.RegionID' };
+
         $scope.Requests = [];
         $scope.Requisitions = [];
         $scope.AllocationChanges = [];
