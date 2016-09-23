@@ -37,6 +37,7 @@ namespace Cats.ViewModelBinder
             giftCertificateViewModel.DModeOfTransport = giftCertificateModel.DModeOfTransport;
             giftCertificateViewModel.Donor = giftCertificateModel.Donor.Name;
             giftCertificateViewModel.StatusID = giftCertificateModel.StatusID;
+            giftCertificateViewModel.Status = giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.Name;
             giftCertificateViewModel.DeclarationNumber = giftCertificateModel.DeclarationNumber;
             giftCertificateViewModel.GiftDatePref=giftCertificateModel.GiftDate.ToCTSPreferedDateFormat(userPrefrence);
             giftCertificateViewModel.IsPrinted = giftCertificateModel.IsPrinted;

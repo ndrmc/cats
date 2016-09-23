@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Cats.Areas.EarlyWarning.Models;
 using Cats.Services.EarlyWarning;
@@ -15,6 +16,7 @@ using Master = Cats.Models.Constant.Master;
 using Cats.Helpers;
 using Cats.Data.UnitWork;
 using Cats.Models;
+using Cats.Models.ViewModels;
 using Cats.Security;
 using Cats.Services.Logistics;
 using log4net;
@@ -35,9 +37,18 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly IShippingInstructionService _shippingInstructionService;
         private readonly ILog _log;
         private readonly IDonationPlanHeaderService _donationPlanHeaderService;
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IBusinessProcessService _businessProcessService;
+        private readonly IPlanService _planService;
+        private readonly IAdminUnitService _adminUnitService;
+        private readonly ISeasonService _seasonService;
+        private readonly ITypeOfNeedAssessmentService _typeOfNeedAssessmentService;
         public GiftCertificateController(IGiftCertificateService giftCertificateService, IGiftCertificateDetailService giftCertificateDetailService,
                                          ICommonService commonService, ITransactionService transactionService, ILetterTemplateService letterTemplateService,
-                                         IUnitOfWork unitofwork, IUserAccountService userAccountService, IShippingInstructionService shippingInstructionService, ILog log, IDonationPlanHeaderService donationPlanHeaderService)
+                                         IUnitOfWork unitofwork, IUserAccountService userAccountService, IShippingInstructionService shippingInstructionService, ILog log, IApplicationSettingService applicationSettingService,
+                                         IBusinessProcessService businessProcessService, IPlanService planService,
+                                          IAdminUnitService adminUnitService, ISeasonService seasonService,
+                                          ITypeOfNeedAssessmentService typeOfNeedAssessmentService, IDonationPlanHeaderService donationPlanHeaderService)
         {
             _giftCertificateService = giftCertificateService;
             _giftCertificateDetailService = giftCertificateDetailService;
@@ -49,6 +60,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _shippingInstructionService = shippingInstructionService;
             _log = log;
             _donationPlanHeaderService = donationPlanHeaderService;
+            _applicationSettingService = applicationSettingService;
+            _businessProcessService = businessProcessService;
+            _planService = planService;
+            _adminUnitService = adminUnitService;
+            _seasonService = seasonService;
+            _typeOfNeedAssessmentService = typeOfNeedAssessmentService;
         }
 
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_Gift_Certificate_list)]
@@ -56,10 +73,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             ViewBag.Title = id == 1 ? "Draft Gift Certificates" : "Approved Gift Certificates";
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var gifts = _giftCertificateService.Get(t => t.StatusID == id, null, "GiftCertificateDetails,Donor,GiftCertificateDetails.Detail,GiftCertificateDetails.Commodity");
+            var gifts = _giftCertificateService.Get(null, null, "GiftCertificateDetails,Donor,GiftCertificateDetails.Detail,GiftCertificateDetails.Commodity");
             var giftsViewModel = GiftCertificateViewModelBinder.BindListGiftCertificateViewModel(gifts.ToList(), datePref, true);
             var user = UserAccountHelper.GetUser(HttpContext.User.Identity.Name);
             var roles = _userAccountService.GetUserPermissions(user.UserName);
+
+            ViewBag.TargetController = "GiftCertificate";
 
             return View(giftsViewModel);
         }
@@ -118,21 +137,118 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
         [HttpPost]
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.New_Gift_Certificate)]
-        public ActionResult Create(GiftCertificateViewModel giftcertificateViewModel)
+        public ActionResult Create(GiftCertificateViewModel giftcertificateViewModel, FormCollection collection)
         {
+            //int season = int.Parse(collection["SeasonID"].ToString(CultureInfo.InvariantCulture));
+            //int typeOfNeedID = int.Parse(collection["TypeOfNeedID"].ToString(CultureInfo.InvariantCulture));
+            //string planName = collection["Plan.PlanName"].ToString(CultureInfo.InvariantCulture);
+            //DateTime startDate = DateTime.Parse(collection["Plan.StartDate"].ToString(CultureInfo.InvariantCulture));
+            //var firstDayOfTheMonth = startDate.AddDays(1 - startDate.Day);
+            //var duration = int.Parse(collection["Plan.Duration"].ToString(CultureInfo.InvariantCulture));
+            //DateTime endDate = DateTime.Parse(collection["Plan.EndDate"].ToString(CultureInfo.InvariantCulture));
+            //var endDate = firstDayOfTheMonth.AddMonths(duration);
+
             if (ModelState.IsValid && giftcertificateViewModel != null)
             {
-                var giftCertificate = GiftCertificateViewModelBinder.BindGiftCertificate(giftcertificateViewModel);
-                giftCertificate.StatusID = 1;
-                var shippingInstructionID = _shippingInstructionService.GetSiNumber(giftcertificateViewModel.SINumber).ShippingInstructionID;
-                giftCertificate.ShippingInstructionID = shippingInstructionID;
-                _giftCertificateService.AddGiftCertificate(giftCertificate);
-                return RedirectToAction("Index");
+                try
+                {
+                    int BP_PR = _applicationSettingService.getGiftCertificateWorkflow();
+
+                    if (BP_PR != 0)
+                    {
+                        BusinessProcessState createdstate = new BusinessProcessState
+                        {
+                            DatePerformed = DateTime.Now,
+                            PerformedBy = User.Identity.Name,
+                            Comment = "Gift Certificate Workflow"
+                        };
+                        //_PaymentRequestservice.Create(request);
+
+                        BusinessProcess bp = _businessProcessService.CreateBusinessProcess(
+                            BP_PR, 0, "GiftCertificateWorkflow", createdstate);
+
+                        if (bp != null)
+                        {
+                            var giftCertificate =
+                                GiftCertificateViewModelBinder.BindGiftCertificate(giftcertificateViewModel);
+                            giftCertificate.StatusID = 1;
+                            giftCertificate.BusinessProcessID = bp.BusinessProcessID;
+
+                            var shippingInstructionID =
+                                _shippingInstructionService.GetSiNumber(giftcertificateViewModel.SINumber)
+                                    .ShippingInstructionID;
+                            giftCertificate.ShippingInstructionID = shippingInstructionID;
+                            _giftCertificateService.AddGiftCertificate(giftCertificate);
+
+                            return RedirectToAction("Index");
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+                    var log = new Logger();
+                    log.LogAllErrorsMesseges(exception, _log);
+                    ViewBag.Regions = new SelectList(_adminUnitService.FindBy(t => t.AdminUnitTypeID == 2),
+                                                     "AdminUnitID", "Name");
+                    ViewBag.Season = new SelectList(_seasonService.GetAllSeason(), "SeasonID", "Name");
+                    //ViewBag.TypeOfNeed = new SelectList(_typeOfNeedAssessmentService.GetAllTypeOfNeedAssessment(),
+                    //                                    "TypeOfNeedAssessmentID", "TypeOfNeedAssessment1");
+                    ViewBag.Error = "Gift Certificate Already Exists Please Change Plan Name or Region Name";
+                    ModelState.AddModelError("Errors", ViewBag.Error);
+
+                    return View();
+                }
             }
 
             PopulateLookup();
 
             return Create(); //GiftCertificateViewModel.GiftCertificateModel(giftcertificate));
+        }
+
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+
+            _businessProcessService.PromotWorkflow(businessProcessState);
+
+            if (statusId != null)
+                return RedirectToAction("Detail", "GiftCertificate", new { Area = "EarlyWarning", statusId });
+
+            return RedirectToAction("Index", "GiftCertificate", new { Area = "EarlyWarning" });
+        }
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
         }
 
         //[AcceptVerbs(HttpVerbs.Post)]
@@ -291,18 +407,28 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
         [HttpPost]
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]
-        public ActionResult Reject(int giftCertificateID)
+        public ActionResult Reject(int giftCertificateId)
         {
-            int donationHeaderCount = _giftCertificateService.FindById(giftCertificateID).Donor.DonationPlanHeaders.Count;
-            
-            if (donationHeaderCount > 0) // if any approved or commited receipt plan is found under this giftcertificate, then don't revert 
+            int donationHeaderCount = _giftCertificateService.FindById(giftCertificateId).Donor.DonationPlanHeaders.Count;
+
+            var giftCertificate = _giftCertificateService.Get(t => t.GiftCertificateID == giftCertificateId, null,
+                   "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                   .FirstOrDefault();
+
+            if (giftCertificate == null)
+            {
+                return RedirectToAction("Index", 2);
+            }
+
+            // if any approved or commited receipt plan is found under this giftcertificate, then don't revert/reject
+            if (donationHeaderCount > 0) // if count is greater than 0, then don't reject
             {
                 return RedirectToAction("Index", 2);
             }
 
             var donations =
              _donationPlanHeaderService.GetAllDonationPlanHeader()
-                 .Where(d => d.ShippingInstructionId == _giftCertificateService.FindById(giftCertificateID).ShippingInstructionID);
+                 .Where(d => d.ShippingInstructionId == _giftCertificateService.FindById(giftCertificateId).ShippingInstructionID);
 
             // find all receipt plans that are not commited or approved under this giftcertificate
             // and revert them all
@@ -322,7 +448,27 @@ namespace Cats.Areas.EarlyWarning.Controllers
             }
 
             // now revert the giftcertificate itself
-            _transactionService.RevertGiftCertificate(giftCertificateID);
+            if (_transactionService.RevertGiftCertificate(giftCertificateId)) // check if transaction returns true
+            {
+                // workflow implementation
+                var approveFlowTemplate = giftCertificate.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates
+                        .FirstOrDefault(t => t.Name == "Reject");
+                if (approveFlowTemplate != null)
+                {
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = approveFlowTemplate.FinalStateID,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "GiftCertificate has been rejected!",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = giftCertificate.BusinessProcessID
+                    };
+
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+                // workflow implementation ends here
+            }
 
             return RedirectToAction("Index", 2);
         }
@@ -338,9 +484,33 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
         [HttpPost]
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Approve_Gift_Certeficate)]
-        public ActionResult Approve(int GiftCertificateID)
+        public ActionResult Approve(int giftCertificateId)
         {
-            var result = _transactionService.PostGiftCertificate(GiftCertificateID);
+            bool result = _transactionService.PostGiftCertificate(giftCertificateId);
+            var giftCertificate = _giftCertificateService.Get(t => t.GiftCertificateID == giftCertificateId, null,
+                  "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                  .FirstOrDefault();
+
+            if (giftCertificate != null && result)
+            {
+                var approveFlowTemplate = giftCertificate.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Approve");
+                if (approveFlowTemplate != null)
+                {
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = approveFlowTemplate.FinalStateID,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "GiftCertificate has been approved",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = giftCertificate.BusinessProcessID
+                    };
+
+                    //_giftCertificateService.EditGiftCertificate(giftCertificate);
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -406,13 +576,38 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 Response.AddHeader("Content-Disposition", @"filename= " + fileName + ".docx");
                 Response.TransmitFile(filePath);
                 Response.End();
-                var result = _transactionService.PrintedGiftCertificate(giftCertificateId);
+
+                bool result = _transactionService.PrintedGiftCertificate(giftCertificateId);
+
+                var giftCertificate = _giftCertificateService.Get(t => t.GiftCertificateID == giftCertificateId, null,
+                    "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+
+                if (giftCertificate != null && result)
+                {
+                    var approveFlowTemplate = giftCertificate.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Print");
+                    if (approveFlowTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = approveFlowTemplate.FinalStateID,
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment = "GiftCertificate has been printed",
+                            //AttachmentFile = fileName,
+                            ParentBusinessProcessID = giftCertificate.BusinessProcessID
+                        };
+
+                        //_giftCertificateService.EditGiftCertificate(giftCertificate);
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                    }
+                }
+
             }
             catch (Exception ex)
             {
                 _log.Error(ex.Message.ToString(CultureInfo.InvariantCulture), ex.GetBaseException());
                 //System.IO.File.AppendAllText(@"c:\temp\errors.txt", " ShowTemplate : " + ex.Message.ToString(CultureInfo.InvariantCulture));
-          
+
             }
 
 

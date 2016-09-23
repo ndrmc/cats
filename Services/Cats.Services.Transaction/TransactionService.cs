@@ -1054,6 +1054,8 @@ namespace Cats.Services.Transaction
 
             var transactionGroup = Guid.NewGuid();
             var transactionDate = DateTime.Now;
+
+
             _unitOfWork.TransactionGroupRepository.Add(new TransactionGroup()
             {
                 PartitionID = 0,
