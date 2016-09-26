@@ -488,6 +488,13 @@ namespace Cats.Areas.Hub.Controllers
             if (viewModel.ReceiveDetailsViewModels.Any())
             {
                 var firstOrdefault = viewModel.ReceiveDetailsViewModels.FirstOrDefault();
+                var viewNewModel =
+                    viewModel.ReceiveDetailsViewModels.FirstOrDefault(
+                        f => f.ReceiveDetailsId == viewModel.ReceiveDetailNewViewModel.ReceiveDetailId);
+                if (viewNewModel != null)
+                    firstOrdefault = viewNewModel;         
+                if (firstOrdefault != null && firstOrdefault.ReceiveDetailsId == null)
+                    firstOrdefault.ReceiveDetailsId = Guid.NewGuid();
                 viewModel.ReceiveDetailNewViewModel = new ReceiveDetailNewViewModel
                 {                  
                     CommodityId = firstOrdefault.CommodityId,
