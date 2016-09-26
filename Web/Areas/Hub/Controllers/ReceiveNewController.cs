@@ -139,7 +139,7 @@ namespace Cats.Areas.Hub.Controllers
                 SentQuantityInMt = receivedetail.SentQuantityInMT,
                 SentQuantityInUnit = receivedetail.SentQuantityInUnit,
                 UnitId = receivedetail.UnitID,
-                Description = receivedetail.Description,
+                Description = receivedetail.Description??string.Empty,
                 ReceiveId = receivedetail.ReceiveID,
                 ReceiveDetailId = receivedetail.ReceiveDetailID,
 
@@ -158,7 +158,7 @@ namespace Cats.Areas.Hub.Controllers
                 SentQuantityInMt = receivedetai.SentQuantityInMT,
                 SentQuantityInUnit = receivedetai.SentQuantityInUnit,
                 UnitId = receivedetai.UnitID,
-                Description = receivedetai.Description,
+                Description = receivedetai.Description??string.Empty,
                 ReceiveDetailsId = receivedetai.ReceiveDetailID,
                 
 
@@ -602,9 +602,10 @@ namespace Cats.Areas.Hub.Controllers
             ModelState.AddModelError("ReceiveDetails", "Please add at least one commodity");
             viewModel.AllocationStatusViewModel = _receiveService.GetAllocationStatus(_receiptAllocationId);
             viewModel.IsTransporterDetailVisible = !hubOwner.HubOwner.Name.Contains("WFP");
-           
 
-            return View(viewModel);
+            //return Create(viewModel.ReceiptAllocationId.ToString(),viewModel.Grn);
+
+            return RedirectToAction("Index", "Receive");
         }
 
         private List<ReceiveDetailsViewModel> GetReceiveDetailsViewModels(ReceiveNewViewModel viewModel)
