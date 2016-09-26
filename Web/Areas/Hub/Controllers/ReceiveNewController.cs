@@ -602,8 +602,9 @@ namespace Cats.Areas.Hub.Controllers
             ModelState.AddModelError("ReceiveDetails", "Please add at least one commodity");
             viewModel.AllocationStatusViewModel = _receiveService.GetAllocationStatus(_receiptAllocationId);
             viewModel.IsTransporterDetailVisible = !hubOwner.HubOwner.Name.Contains("WFP");
-           
 
+            //return Create(viewModel.ReceiptAllocationId.ToString(),viewModel.Grn);
+            ViewBag.isEditMode = true;
             return View(viewModel);
         }
 
