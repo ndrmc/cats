@@ -13,7 +13,7 @@ namespace Cats.Models.Mapping
         public DistibtionStatusMap()
         {
             // Primary Key
-            this.HasKey(t => new { t.RegionID, t.WoredaID, t.PlanName });
+            this.HasKey(t => new { t.RegionID, t.WoredaID, t.PlanName ,t.Month });
             //this.HasKey(t => new { t.FDPID });
 
 
@@ -39,6 +39,7 @@ namespace Cats.Models.Mapping
             this.Property(t => t.WoredaID).HasColumnName("WoredaID");
             this.Property(t => t.Status).HasColumnName("Status");
             this.Property(t => t.DistributionDate).HasColumnName("DistributionDate");
+            this.Property(t => t.Month).HasColumnName("Month");
             // this.Property(t => t.FDPName).HasColumnName("FDPName");
 
         }
