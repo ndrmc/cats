@@ -21,9 +21,9 @@
 {
     @*<a class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_receive"></a>
         <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="#" title="Cancel"></a>*@
-    <a data-buttontype="btn_save" data-submittedform="frm_receive" class="btn btn-fit-height grey-salt toolbar-btn"><i class="fa fa-save"></i> @Html.Translate("Save")</a>
+    <a data-buttontype="btn_save" id="SubmitButton" data-submittedform ="frm_receive" class="btn btn-fit-height grey-salt toolbar-btn"><i class="fa fa-save"></i> @Html.Translate("Save")</a>
 
-    <a class="btn grey-salt " href='@Url.Action("index", "Receive" )' data-buttontype="btn_cancel"><i class="fa fa-times-circle"></i> @Html.Translate("Cancel")</a>
+    <a class="btn grey-salt " href='@Url.Action("index", "Receive" )' data-buttontype="btn_cancel"><i class="fa fa-times-circle"></i> @Html.Translate("Back to list")</a>
 
 }
 
@@ -279,115 +279,243 @@
                 <div class="tools">
                     <a href="#" class="collapse" data-original-title="" title=""></a>
                 </div>
-                <div class="actions">
-                    <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                @*<div class="actions">
+                        <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
 
-                    @if (ViewBag.isEditMode == true)
-                    {
-                        <a class="btn btn-default green-haze-stripe" href="@Url.Action("Commodities", "ReceiveNew", new { @receiptAllocationId = Model.ReceiptAllocationId, @grn = Model.Grn, @receiveId = Model.ReceiveId })" title="Commodities">Add New Commodities</a>
-                    }
+                        @if (ViewBag.isEditMode == true)
+                        {
+                            <a class="btn btn-default green-haze-stripe" href="@Url.Action("Commodities", "ReceiveNew", new { @receiptAllocationId = Model.ReceiptAllocationId, @grn = Model.Grn, @receiveId = Model.ReceiveId })" title="Commodities">Add New Commodities</a>
+                        }
 
-                </div>
+                    </div>*@
             </div>
             <div class="portlet-body">
-                <div class="row">
-                    <div class="col-md-4" style="vertical-align: top">
-                        <div class="form-group col-md-12">
-                            <div class="col-md-4 control-label">
-                                @Html.LabelFor(model => model.ReceiveDetailNewViewModel.CommodityChildID)
-                            </div>
-                            <div class="col-md-8">
+                @*<div class="row">
+                        <div class="col-md-4" style="vertical-align: top">
+                            <div class="form-group col-md-12">
+                                <div class="col-md-4 control-label">
+                                    @Html.LabelFor(model => model.ReceiveDetailNewViewModel.CommodityChildID)
+                                </div>
+                                <div class="col-md-8">
 
-                                @(Html.Kendo().ComboBoxFor(m => m.ReceiveDetailNewViewModel.CommodityChildID)
-                                      .Placeholder("Select Commodity")
-                                      .DataTextField("CommodityName")
-                                      .DataValueField("CommodityId")
-                                      .Filter(FilterType.Contains).HtmlAttributes(new { @class = "form-control" })
-                                      .Enable(false)
-                                      .DataSource(source => source.Read(read => read.Action("GetCommodities", "ReceiveNew", new { @receiptAllocationId = Model.ReceiptAllocationId }))))
+                                    @(Html.Kendo().ComboBoxFor(m => m.ReceiveDetailNewViewModel.CommodityChildID)
+                                          .Placeholder("Select Commodity")
+                                          .DataTextField("CommodityName")
+                                          .DataValueField("CommodityId")
+                                          .Filter(FilterType.Contains).HtmlAttributes(new { @class = "form-control" })
+                                          .Enable(false)
+                                          .DataSource(source => source.Read(read => read.Action("GetCommodities", "ReceiveNew", new { @receiptAllocationId = Model.ReceiptAllocationId }))))
 
-                                <span class="help-block">
-                                    @Html.ValidationMessageFor(model => model.ReceiveDetailNewViewModel.CommodityChildID)
-                                </span>
+                                    <span class="help-block">
+                                        @Html.ValidationMessageFor(model => model.ReceiveDetailNewViewModel.CommodityChildID)
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-12 form-group ">
-                            <div class="col-md-4 control-label">
-                                @Html.LabelFor(model => model.ReceiveDetailNewViewModel.UnitId)
-                            </div>
-                            <div class="col-md-8">
-                                @(Html.Kendo().DropDownListFor(m => m.ReceiveDetailNewViewModel.UnitId)
+                            <div class="col-md-12 form-group ">
+                                <div class="col-md-4 control-label">
+                                    @Html.LabelFor(model => model.ReceiveDetailNewViewModel.UnitId)
+                                </div>
+                                <div class="col-md-8">
+                                    @(Html.Kendo().DropDownListFor(m => m.ReceiveDetailNewViewModel.UnitId)
 
-                                      .DataTextField("Name")
-                                      .DataValueField("UnitId")
-                                      .HtmlAttributes(new { @class = "form-control" })
-                                      .DataSource(source => source.Read(read => read.Action("GetUnities", "ReceiveNew")))
-                                )
-                                <span class="help-block">
-                                    @Html.ValidationMessageFor(model => model.ReceiveDetailNewViewModel.UnitId)
-                                </span>
+                                          .DataTextField("Name")
+                                          .DataValueField("UnitId")
+                                          .HtmlAttributes(new { @class = "form-control" })
+                                          .DataSource(source => source.Read(read => read.Action("GetUnities", "ReceiveNew")))
+                                    )
+                                    <span class="help-block">
+                                        @Html.ValidationMessageFor(model => model.ReceiveDetailNewViewModel.UnitId)
+                                    </span>
+                                </div>
                             </div>
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-4 control-label">
+                                    @Html.LabelFor(m => m.ReceiveDetailNewViewModel.SentQuantityInUnit)
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(m => m.ReceiveDetailNewViewModel.SentQuantityInUnit)
+                                    <span class="help-block">@Html.ValidationMessageFor(m => m.ReceiveDetailNewViewModel.SentQuantityInUnit)</span>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-4 control-label">
+                                    @Html.LabelFor(m => m.ReceiveDetailNewViewModel.SentQuantityInMt)
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(m => m.ReceiveDetailNewViewModel.SentQuantityInMt)
+                                    <span class="help-block">@Html.ValidationMessageFor(m => m.ReceiveDetailNewViewModel.SentQuantityInMt)</span>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="col-md-12 form-group">
-                            <div class="col-md-4 control-label">
-                                @Html.LabelFor(m => m.ReceiveDetailNewViewModel.SentQuantityInUnit)
+                        <div class="col-md-4" style="vertical-align: top">
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-4 control-label">
+                                    @Html.LabelFor(m => m.ReceiveDetailNewViewModel.Description)
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.TextAreaFor(m => m.ReceiveDetailNewViewModel.Description)
+                                    <span class="help-block">@Html.ValidationMessageFor(m => m.ReceiveDetailNewViewModel.Description)</span>
+                                </div>
                             </div>
-                            <div class="col-md-8">
-                                @Html.EditorFor(m => m.ReceiveDetailNewViewModel.SentQuantityInUnit)
-                                <span class="help-block">@Html.ValidationMessageFor(m => m.ReceiveDetailNewViewModel.SentQuantityInUnit)</span>
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-4 control-label">
+                                    @Html.LabelFor(m => m.ReceiveDetailNewViewModel.ReceivedQuantityInUnit)
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(m => m.ReceiveDetailNewViewModel.ReceivedQuantityInUnit)
+                                    <span class="help-block">@Html.ValidationMessageFor(m => m.ReceiveDetailNewViewModel.ReceivedQuantityInUnit)</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <div class="col-md-4 control-label">
-                                @Html.LabelFor(m => m.ReceiveDetailNewViewModel.SentQuantityInMt)
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-4 control-label">
+                                    @Html.LabelFor(m => m.ReceiveDetailNewViewModel.ReceivedQuantityInMt)
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(m => m.ReceiveDetailNewViewModel.ReceivedQuantityInMt)
+                                    <span class="help-block">@Html.ValidationMessageFor(m => m.ReceiveDetailNewViewModel.ReceivedQuantityInMt)</span>
+                                </div>
                             </div>
-                            <div class="col-md-8">
-                                @Html.EditorFor(m => m.ReceiveDetailNewViewModel.SentQuantityInMt)
-                                <span class="help-block">@Html.ValidationMessageFor(m => m.ReceiveDetailNewViewModel.SentQuantityInMt)</span>
-                            </div>
+
                         </div>
 
-                    </div>
-                    <div class="col-md-4" style="vertical-align: top">
-                        <div class="col-md-12 form-group">
-                            <div class="col-md-4 control-label">
-                                @Html.LabelFor(m => m.ReceiveDetailNewViewModel.Description)
-                            </div>
-                            <div class="col-md-8">
-                                @Html.TextAreaFor(m => m.ReceiveDetailNewViewModel.Description)
-                                <span class="help-block">@Html.ValidationMessageFor(m => m.ReceiveDetailNewViewModel.Description)</span>
-                            </div>
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <div class="col-md-4 control-label">
-                                @Html.LabelFor(m => m.ReceiveDetailNewViewModel.ReceivedQuantityInUnit)
-                            </div>
-                            <div class="col-md-8">
-                                @Html.EditorFor(m => m.ReceiveDetailNewViewModel.ReceivedQuantityInUnit)
-                                <span class="help-block">@Html.ValidationMessageFor(m => m.ReceiveDetailNewViewModel.ReceivedQuantityInUnit)</span>
-                            </div>
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <div class="col-md-4 control-label">
-                                @Html.LabelFor(m => m.ReceiveDetailNewViewModel.ReceivedQuantityInMt)
-                            </div>
-                            <div class="col-md-8">
-                                @Html.EditorFor(m => m.ReceiveDetailNewViewModel.ReceivedQuantityInMt)
-                                <span class="help-block">@Html.ValidationMessageFor(m => m.ReceiveDetailNewViewModel.ReceivedQuantityInMt)</span>
-                            </div>
-                        </div>
+                        <div class="col-md-4" style="vertical-align: top">
 
-                    </div>
+                        </div>
+                    </div>*@
 
-                    <div class="col-md-4" style="vertical-align: top">
+                <div class="form-horizontal row-fluid">
+                    <div class="portlet light bordered bg-inverse">
 
+                        <div class="portlet-body">
+                            @(Html.Kendo().Grid<ReceiveDetailsViewModel>(Model.ReceiveDetailsViewModels)
+                    .Name("grid")
+                    .Columns(columns =>
+                    {
+                        //columns.ForeignKey(p => p.CommodityId, (IEnumerable<Cats.Models.Hubs.CommodityModel>) ViewBag.Commodities, "Id", "Name").EditorTemplateName("CommodityEditor").Width(150).Title(Html.Translate("Commodity"))
+                        //.ClientTemplate( 
+                        // "<input type='hidden' name='ReceiveDetailsViewModels[#= index(data)#].CommodityId' value='#=CommodityId#' />");
+                        columns.ForeignKey(p => p.CommodityId, (IEnumerable<Cats.Models.Hubs.CommodityModel>)ViewBag.Commodities, "Id", "Name").EditorTemplateName("CommodityEditor").Width(150).Title(Html.Translate("Commodity"));
+                        columns.Bound(p => p.CommodityId).Hidden().EditorTemplateName("CommodityEditor").Width(150).Title(Html.Translate("Commodity"))
+                        .ClientTemplate("#= CommodityId #" +
+                        "<input type='hidden' name='ReceiveDetailsViewModels[#= index(data)#].CommodityId' value='#=CommodityId#' />");
+
+                        //columns.ForeignKey(p => p.SiNumber, (IEnumerable<Cats.Models.Hubs.ViewModels.ShippingInstructionModel>)ViewBag.SI, "Id", "Value").EditorTemplateName("SIEditor").Width(150).Title(Html.Translate("SI Number"));
+                        columns.ForeignKey(p => p.CommodityChildID, (IEnumerable<Cats.Models.Hubs.SubCommodity>)ViewBag.SubCommodities, "Id", "Name").EditorTemplateName("CommodityChildEditor").Width(150).Title(Html.Translate("Sub Commodity"));
+                        columns.Bound(p => p.CommodityChildID).Hidden().EditorTemplateName("CommodityChildEditor").Width(150).Title(Html.Translate("Commodity"))
+                       .ClientTemplate("#= CommodityChildID #" +
+                       "<input type='hidden' name='ReceiveDetailsViewModels[#= index(data)#].CommodityChildID' value='#=CommodityChildID#' />");
+                        //columns.ForeignKey(p => p.CommodityId, (IEnumerable<Cats.Models.Hubs.CommodityModel>)ViewBag.SubCommodities, "Id", "Name").EditorTemplateName("SubCommoditiesEditor").Width(150).Title(Html.Translate("Commodity"));
+                        // columns.Bound(p => p.CommodityChildID).Width(100);
+                        columns.Bound(p => p.Description).Width(100).ClientTemplate("#= Description #" +
+                       "<input type='hidden' name='ReceiveDetailsViewModels[#= index(data)#].Description' value='#= Description #' />");
+                        columns.ForeignKey(p => p.UnitId, (IEnumerable<Cats.Models.Hubs.UnitModel>)ViewBag.Units, "Id", "Name").EditorTemplateName("UnitEditor").Width(80);
+                        columns.Bound(p => p.UnitId).Hidden().EditorTemplateName("UnitEditor").Width(150).Title(Html.Translate("UnitId"))
+                        .ClientTemplate("#= UnitId #" +
+                        "<input type='hidden' name='ReceiveDetailsViewModels[#= index(data)#].UnitId' value='#=UnitId#' />");
+
+
+                        columns.Bound(p => p.SentQuantityInUnit).Width(100).ClientTemplate("#= SentQuantityInUnit #" +
+                       "<input type='hidden' name='ReceiveDetailsViewModels[#= index(data)#].SentQuantityInUnit' value='#= SentQuantityInUnit #' />"); ;
+                        columns.Bound(p => p.SentQuantityInMt).Width(100).ClientTemplate("#= SentQuantityInMt #" +
+                       "<input type='hidden' name='ReceiveDetailsViewModels[#= index(data)#].SentQuantityInMt' value='#= SentQuantityInMt #' />");
+
+                        columns.Bound(p => p.ReceivedQuantityInUnit).Width(100).ClientTemplate("#= ReceivedQuantityInUnit #" +
+                       "<input type='hidden' name='ReceiveDetailsViewModels[#= index(data)#].ReceivedQuantityInUnit' value='#= ReceivedQuantityInUnit #' />");
+                        //columns.Bound(p => p.ReceivedQuantityInMt).Width(100);
+                        columns.Bound(p => p.ReceivedQuantityInMt).Width(100).ClientTemplate("#= ReceivedQuantityInMt #" +
+                       "<input type='hidden' name='ReceiveDetailsViewModels[#= index(data)#].ReceivedQuantityInMt' value='#= ReceivedQuantityInMt #' />");
+
+                        //columns.Bound(p => p.ReceiveDetailsId).Width(100).Hidden(true);
+                        columns.Bound(p => p.ReceiveDetailsId).ClientTemplate("#= ReceiveDetailsId #" +
+                       "<input type='hidden' name='ReceiveDetailsViewModels[#= index(data)#].ReceiveDetailsId' value='#= ReceiveDetailsId #' />").Hidden(true);
+                        //columns.Command(command => { command.Edit(); command.Destroy(); });
+                    })
+                            .ToolBar(toolbar =>
+                            {
+                                toolbar.Create();
+                                toolbar.Save();
+                            })
+                            .Editable(editable => editable.Mode(Kendo.Mvc.UI.GridEditMode.InCell))
+                    .Pageable()
+                    .Selectable()
+                    .Sortable()
+                    .Scrollable().Events(e=>e.Change("gridonDataBound"))
+                    //.Events(e=>e.Edit("OnEdit"))
+                    .HtmlAttributes(new { style = "height:430px;" })
+                            .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .PageSize(20)
+                                .Events(events => events.Error("error_handler"))
+                                .Model(model =>
+                                {
+                                    model.Id(p => p.ReceiveDetailsId);
+                                    //model.Field(p => p.CommodityId).Editable(
+                                    //    false);
+                                    //model.Field(p => p.CommodityChildID).Editable(false);
+                                    //model.Field(p => p.Description).Editable(false);
+                                    //model.Field(p => p.UnitId).Editable(false);
+                                    //model.Field(p => p.SentQuantityInUnit).Editable(false);
+                                    //model.Field(p => p.SentQuantityInMt).Editable(false);
+                                    //model.Field(p => p.ReceivedQuantityInUnit).Editable(false);
+                                    //model.Field(p => p.ReceivedQuantityInMt).Editable(false);
+                                }).ServerOperation(false)
+                                .Model(model => model.Id(p => p.ReceiveDetailsId))
+                                                       .Create(update => update.Action("CreateCommoditiesFromReceive", "ReceiveNew", new { @Model.ReceiveId }))
+                                                    // .Read(read => read.Action("ReadCommoditiesFromReceive", "ReceiveNew", new { @Model.ReceiveId }))
+                                                    .Update(update => update.Action("CreateCommoditiesFromReceive", "ReceiveNew", new { @Model.ReceiveId })).ServerOperation(false)
+                            //.Destroy(update => update.Action("ReceiveDetails_Destroy", "ReceiveNew"))
+                            )
+                            )
+                            <script type="text/javascript">
+                                function error_handler(e) {
+            if (e.errors) {
+                var message = "Errors:\n";
+                                        $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                                                $.each(value.errors, function () {
+                            message += this + "\n";
+                        });
+                    }
+                });
+                alert(message);
+            }
+                                }
+                                function gridonDataBound(arg) {
+                                    console.log("Grid data bound");
+                                }
+        function filterTemplate() {
+            var id;
+            var grid = $("#grid").data("kendoGrid");
+
+            var ddl = $('#CommodityId');
+
+
+            var selectedItem = grid.dataItem(grid.select().closest("tr"));
+            //alert(model.text);
+
+            return {
+                CommodityId: selectedItem.CommodityId
+                                    };
+        }
+
+        function index(dataItem) {
+
+            var data = $("#grid").data("kendoGrid").dataSource.data();
+            return data.indexOf(dataItem);
+        }
+                            </script>
+
+                        </div>
                     </div>
                 </div>
+
+
             </div>
         </div>
     </div>
     if (Model.IsTransporterDetailVisible)
-    {
+        {
         <div class="form-horizontal row-fluid">
             <div class="portlet light bordered bg-inverse">
                 <div class="portlet-title">
@@ -401,7 +529,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             @if (CommoditySource.Constants.LOAN != Model.CommoditySourceTypeId)
-                            {
+{
                                 <div class="form-group col-md-12">
                                     <div class="col-md-4 control-label">@Html.LabelFor(model => model.ResponsibleDonorId)</div>
                                     <div class="col-md-8">
@@ -574,11 +702,9 @@
             if (mesarement === '1') {
 
                 $('#ReceiveDetailNewViewModel_SentQuantityInMt').val((sentValue * (1 / 20)).toFixed(2));
-            }
-            else if (mesarement === '8') {
+            } else if (mesarement === '8') {
                 $('#ReceiveDetailNewViewModel_SentQuantityInMt').val((sentValue * (1 / 1000)).toFixed(2));
-            }
-            else if (mesarement === '9') {
+            } else if (mesarement === '9') {
                 $('#ReceiveDetailNewViewModel_SentQuantityInMt').val((sentValue * (1 / 10)).toFixed(2));
             }
         });
@@ -592,20 +718,18 @@
             if (mesarement === '1') {
                 //alert(sentValue);
                 $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val((sentValue * (1 / 20)).toFixed(2));
-            }
-            else if (mesarement === '8') {
+            } else if (mesarement === '8') {
                 $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val((sentValue * (1 / 1000)).toFixed(2));
-            }
-            else if (mesarement === '9') {
+            } else if (mesarement === '9') {
                 $('#ReceiveDetailNewViewModel_ReceivedQuantityInMt').val((sentValue * (1 / 10)).toFixed(2));
             }
         });
     });
 
-    function index(dataItem) {
-        var data = $("#ReceiveDetailGrid").data("kendoGrid").dataSource.data();
-        return data.indexOf(dataItem);
-    }
+    //function index(dataItem) {
+    //    var data = $("#ReceiveDetailGrid").data("kendoGrid").dataSource.data();
+    //    return data.indexOf(dataItem);
+    //}
 
     function filterStacks() { return { storeId: $("#StoreId").val() }; }
 
@@ -614,12 +738,48 @@
     kendo.data.DataSource.prototype.GetUnsavedData = function () {
         var that = this, idx, length, created = [], updated = [], destroyed = that._destroyed, allRows = [], data = that._flatData(that._data);
 
-        for (idx = 0, length = data.length; idx < length; idx++) { if (data[idx].isNew()) { created.push(data[idx]); } else if (data[idx].dirty) { updated.push(data[idx]); } }
+        for (idx = 0, length = data.length; idx < length; idx++) {
+            if (data[idx].isNew()) {
+                created.push(data[idx]);
+            } else if (data[idx].dirty) {
+                updated.push(data[idx]);
+            }
+        }
 
         allRows = created.concat(updated).concat(destroyed);
         var allRowsJson = JSON.stringify(allRows);
         return allRowsJson;
     }
 
+
+    function onEdit(e) {
+        var selectedIndex = e.sender._data.indexOf(e.model);
+
+    }
+
+    function makeKendoDirty() {
+        var grid = $("#grid").data("kendoGrid");
+        var kdata = grid.dataSource.data();
+        for (var i = 0; i < kdata.length; i++) {
+            kdata[i].dirty = true;
+
+            
+            var rci = kendo.toString(receiveCommodityId.value);
+            kdata[i].CommodityId = rci == null ? receiveCommodityId.value : rci;
+
+        }
+        return true;
+    }
+
+    //$(function () {
+
+    //    $("#SubmitButton").click(function () {
+
+    //            //makeKendoDirty();
+    //            $(this).button('loading');
+    //            $("#frm_receive").submit();
+
+ 
+    //    });
+    //});
 </script>
-@*<script type="text/javascript"> $(function() { $(document).tooltip(); }); </script>*@

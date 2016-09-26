@@ -16,6 +16,7 @@ namespace Cats.Models.Hubs.ViewModels
         [RegularExpression("[0-9]*", ErrorMessage = @"Only numbers allowed")]
         [Required]
         [Display(Name = "GRN")]
+        [StringLength(7, ErrorMessage = "Length Must be less than or equal to 7")]
         public string Grn { get; set; }
 
         [Required]
@@ -92,6 +93,7 @@ namespace Cats.Models.Hubs.ViewModels
 
         public int CurrentHub { get; set; }
         public bool IsTransporterDetailVisible { get; set; }
+        [Display(Name = "Commodities")]
         public IEnumerable<ReceiveDetailNewViewModel> ReceiveDetailNewViewModels { get; set; }
 
         public ReceiveDetailNewViewModel ReceiveDetailNewViewModel { get; set; }
