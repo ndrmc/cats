@@ -186,12 +186,15 @@ namespace Cats.Areas.Hub.Controllers
         public ActionResult Create(string receiptAllocationId, string grn)
         {
             ViewBag.isEditMode = false;
-            ViewBag.Commodities =
-                _commodityService.GetAllCommodity()
-                    .Where(l => l.ParentID == null)
-                    .Where(l => l.CommodityTypeID == 1)
-                    .Select(c => new CommodityModel() {Id = c.CommodityID, Name = c.Name})
-                    .ToList();
+            var commodities =
+               _commodityService.GetAllCommodity()
+                   .Where(l => l.ParentID == null)
+                   .Where(l => l.CommodityTypeID == 1)
+                   .Select(c => new CommodityModel() { Id = c.CommodityID, Name = c.Name })
+                   .ToList();
+            var commodity = new CommodityModel() { Id = 0, Name = string.Empty };
+            commodities.Insert(0, commodity);
+            ViewBag.Commodities = commodities;
             ViewBag.SubCommodities =
                 _commodityService.GetAllSubCommodities()
                     .Where(l => l.ParentID != null)
@@ -247,7 +250,7 @@ namespace Cats.Areas.Hub.Controllers
                 {
                     CommodityChildID = Convert.ToInt32(viewModel.ReceiveDetailNewViewModel.CommodityChildID),
                     CommodityId = viewModel.ReceiveDetailNewViewModel.CommodityId,
-                    Description = viewModel.ReceiveDetailNewViewModel.Description,
+                    Description = viewModel.ReceiveDetailNewViewModel.Description ?? string.Empty ,
                     ReceiveDetailsId = viewModel.ReceiveDetailNewViewModel.ReceiveDetailId,
                     ReceivedQuantityInMt = viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt,
                     SentQuantityInMt = viewModel.ReceiveDetailNewViewModel.SentQuantityInMt,
@@ -429,8 +432,15 @@ namespace Cats.Areas.Hub.Controllers
         [HttpPost]
         public ActionResult Create(ReceiveNewViewModel viewModel)
         {
-
-            ViewBag.Commodities = _commodityService.GetAllCommodity().Where(l => l.ParentID == null).Where(l => l.CommodityTypeID == 1).Select(c => new CommodityModel() { Id = c.CommodityID, Name = c.Name }).ToList();
+            var commodities =
+                _commodityService.GetAllCommodity()
+                    .Where(l => l.ParentID == null)
+                    .Where(l => l.CommodityTypeID == 1)
+                    .Select(c => new CommodityModel() {Id = c.CommodityID, Name = c.Name})
+                    .ToList();
+            var commodity = new CommodityModel() {Id = 0, Name = string.Empty};
+            commodities.Insert(0,commodity);
+            ViewBag.Commodities = commodities;
             ViewBag.SubCommodities = _commodityService.GetAllSubCommodities().Where(l => l.ParentID != null).Where(l => l.CommodityTypeID == 1).Select(c => new SubCommodity() { Id = c.CommodityID, Name = c.Name }).ToList();
             ViewBag.Units = _unitService.GetAllUnit().Select(u => new UnitModel() { Id = u.UnitID, Name = u.Name }).ToList();
             //Todo: change to support multiple receive detail 
@@ -588,7 +598,6 @@ namespace Cats.Areas.Hub.Controllers
                 //    });
                 //return RedirectToAction("Index", "Receive");
             }
-            viewModel.AllocationStatusViewModel = _receiveService.GetAllocationStatus(_receiptAllocationId);
             viewModel.IsTransporterDetailVisible = !hubOwner.HubOwner.Name.Contains("WFP");
             ModelState.AddModelError("ReceiveDetails", "Please add at least one commodity");
             viewModel.AllocationStatusViewModel = _receiveService.GetAllocationStatus(_receiptAllocationId);
