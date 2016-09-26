@@ -1310,6 +1310,8 @@ namespace Cats.Services.Hub
                 {
                     //var receiveDetail = reciev
 
+                    if(receiveDetailModel.ReceiveDetailsId == null) continue;
+
                    var  receiveDetail = new ReceiveDetail
                     {
                         ReceiveDetailID = (Guid) receiveDetailModel.ReceiveDetailsId,
