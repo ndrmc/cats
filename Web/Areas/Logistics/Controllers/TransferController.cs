@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -7,6 +8,7 @@ using Cats.Areas.Logistics.Models;
 using Cats.Helpers;
 using Cats.Models;
 using Cats.Models.Constant;
+using Cats.Models.ViewModels;
 using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Logistics;
@@ -26,21 +28,30 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly ICommonService _commonService;
         private readonly IUserAccountService _userAccountService;
         private readonly ICommodityService _commodityService;
+        private readonly IBusinessProcessService _businessProcessService;
         private ILog _log;
-        
+        private readonly IApplicationSettingService _applicationSettingService;
+
         public TransferController(ITransferService transferService,ICommonService commonService,IUserAccountService userAccountService,
-                                  ICommodityService commodityService,ILog log)
+                                  ICommodityService commodityService,ILog log, IBusinessProcessService businessProcessService,
+                                   IApplicationSettingService applicationSettingService)
         {
             _transferService = transferService;
             _commonService = commonService;
             _userAccountService = userAccountService;
             _commodityService = commodityService;
             _log = log;
+            _businessProcessService = businessProcessService;
+            _applicationSettingService = applicationSettingService;
         }
 
         public ActionResult Index()
         {
-            
+            ViewBag.TargetController = "Transfer";
+
+            var transfer = _transferService.GetAllTransfer().OrderByDescending(m => m.TransferID);
+            var transferToDisplay = GetAllTransfers(transfer);
+
             return View();
         }
         public ActionResult Create()
@@ -58,13 +69,48 @@ namespace Cats.Areas.Logistics.Controllers
         [HttpPost]
         public ActionResult Create(TransferViewModel transferViewModel)
         {
-            if (ModelState.IsValid && transferViewModel != null)
+            try
             {
-                var transfer = GetTransfer(transferViewModel);
-                _transferService.AddTransfer(transfer);
-                return RedirectToAction("Index");
+                int BP_PR = _applicationSettingService.getTransferReceiptPlanWorkflow();
+                if (BP_PR != 0)
+                {
+                    BusinessProcessState createdstate = new BusinessProcessState
+                    {
+                        DatePerformed = DateTime.Now,
+                        PerformedBy = User.Identity.Name,
+                        Comment = "Transfer Receipt Workflow"
+
+                    };
+                  
+                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                                                                                    "TransferReceiptPlan",
+                                                                                    createdstate);
+                    if (bp != null)
+                    {
+                        var transfer = GetTransfer(transferViewModel);
+
+                        transfer.BusinessProcessID = bp.BusinessProcessID;
+
+                        _transferService.AddTransfer(transfer);
+
+                        return RedirectToAction("Index");
+                    }
+                }
             }
+            catch (Exception exception)
+            {
+                var log = new Logger();
+                log.LogAllErrorsMesseges(exception, _log);
+                //ViewBag.Regions = new SelectList(_adminUnitService.FindBy(t => t.AdminUnitTypeID == 2), "AdminUnitID", "Name");
+                //ViewBag.Season = new SelectList(_seasonService.GetAllSeason(), "SeasonID", "Name");
+                //ViewBag.TypeOfNeed = new SelectList(_typeOfNeedAssessmentService.GetAllTypeOfNeedAssessment(), "TypeOfNeedAssessmentID", "TypeOfNeedAssessment1");
+                ViewBag.Error = "Transfer Receipt Plan is already Created for this region";
+                //ModelState.AddModelError("Errors", ViewBag.Error);
+                // return RedirectToAction("Detail", "Transfer", new { id =.PlanID });
+            }
+
             return View(transferViewModel);
+
         }
         public ActionResult Edit(int id)
         {
@@ -241,6 +287,54 @@ namespace Cats.Areas.Logistics.Controllers
             }
             return RedirectToAction("Index", "Transfer");
         }
-       
+
+        [HttpPost]
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        {
+            var fileName = "";
+            if (st.AttachmentFile.HasFile())
+            {
+                //save the file
+                fileName = st.AttachmentFile.FileName;
+                var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+
+                if (System.IO.File.Exists(path))
+                {
+                    var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                    fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                    path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                }
+                st.AttachmentFile.SaveAs(path);
+            }
+            var businessProcessState = new BusinessProcessState()
+            {
+                StateID = st.StateID,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = st.Comment,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = st.ParentBusinessProcessID
+            };
+
+            _businessProcessService.PromotWorkflow(businessProcessState);
+
+            if (statusId != null)
+                return RedirectToAction("Detail", "Transfer", new { Area = "Logistics", statusId });
+
+            return RedirectToAction("Index", "Transfer", new { Area = "Logistics" });
+        }
+
+        public static string GetRandomAlphaNumeric(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
+        }
+
     }
 }

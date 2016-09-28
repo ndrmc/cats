@@ -1,198 +1,317 @@
 ﻿@using Cats.Areas.Logistics.Models
 @using Cats.Helpers
-@using Kendo.Mvc.UI
 @using Cats.Security
-@{
-    ViewBag.Title = Html.Translate("Index");
-    //Layout = "~/Views/Shared/_MainLayout.cshtml";
-    const string pageName = "Logistics.Transfer.Index";
-    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
-    ViewBag.PageTitle = Html.Translate("List of Receipt Plan From Transfer");
-    ViewBag.PageTitleDescription = "";
-}
-
-@*@section Toolbar
-    {
-        <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn toolbar-btn " href="@Url.Action("Create", "Transfer")"></a>
-    }*@
-
-<style>
-    .busy  {
-        cursor: wait !important;
+@using Cats.Models
+@model IEnumerable<TransferViewModel>
+    @{
+        ViewBag.Title = Html.Translate("Index");
+        //Layout = "~/Views/Shared/_MainLayout.cshtml";
+        const string pageName = "Logistics.Transfer.Index";
+        Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+        ViewBag.PageTitle = Html.Translate("List of Receipt Plan From Transfer");
+        ViewBag.PageTitleDescription = "";
+        var index = 0;
     }
-</style>
-<script>
-    function loadWaitModal() {
-        $("body").addClass("busy");
-    }
-    function unloadWaitModal() {
-        $("body").removeClass("busy");
-    }
-</script>
-<script type="text/javascript">
-    $(function () {
 
-        //Optional: turn the chache off
-        //$.ajaxSetup({ cache: false });
+    @*@section Toolbar
+        {
+            <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn toolbar-btn " href="@Url.Action("Create", "Transfer")"></a>
+        }*@
 
-        $('#btnAddReciptPlan').click(function () {
+    <style>
+        .busy {
+            cursor: wait !important;
+        }
+    </style>
+    <script>
+        function loadWaitModal() {
+            $("body").addClass("busy");
+        }
+        function unloadWaitModal() {
+            $("body").removeClass("busy");
+        }
+    </script>
+    <script type="text/javascript">
+        $(function () {
 
-            // alert("");
-            loadWaitModal();
-            $('#dialogContent').load(this.href, function () {
-                $('#dialogDiv').modal({
-                    backdrop: 'static',
-                    keyboard: true
-                }, 'show');
-                //bindForm(this);
-                $(".modal-dialog").removeClass("modal-sm").addClass("modal-lg");
+            //Optional: turn the chache off
+            //$.ajaxSetup({ cache: false });
+
+            $('#btnAddReciptPlan').click(function () {
+
+                // alert("");
+                loadWaitModal();
+                $('#dialogContent').load(this.href, function () {
+                    $('#dialogDiv').modal({
+                        backdrop: 'static',
+                        keyboard: true
+                    }, 'show');
+                    //bindForm(this);
+                    $(".modal-dialog").removeClass("modal-sm").addClass("modal-lg");
+                });
+                unloadWaitModal();
+                return false;
             });
-            unloadWaitModal();
-            return false;
+
         });
+    </script>
 
-    });
-</script>
-
-<div id='dialogDiv' class='modal fade in'>
-    <div id='dialogContent'></div>
-</div>
+    <div id='dialogDiv' class='modal fade in'>
+        <div id='dialogContent'></div>
+    </div>
 
 
-<div class="portlet light bordered">
-    <div class="portlet-title">
-        <div class="caption font-green-sharp">
-            <i class="fa fa-list font-green-sharp"></i>
-            <span class="caption-subject bold uppercase"> @Html.Translate("List of Receipt Plan From Transfer")</span>
-            <span class="caption-helper">  </span>
-        </div>
-        @*<div class="tools">
-                <a href="#" class="collapse" data-original-title="" title=""></a>
-                <a href="javascript:;" class="remove" data-original-title="" title=""></a>
-            </div>*@
-        <div class="actions">
-            @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Add_new_transfer_plan).ToString() == "Add_new_transfer_plan")
+    <div class="portlet light bordered">
+        <div class="portlet-title">
+            <div class="caption font-green-sharp">
+                <i class="fa fa-list font-green-sharp"></i>
+                <span class="caption-subject bold uppercase"> @Html.Translate("List of Receipt Plan From Transfer")</span>
+                <span class="caption-helper">  </span>
+            </div>
+            @*<div class="tools">
+                    <a href="#" class="collapse" data-original-title="" title=""></a>
+                    <a href="javascript:;" class="remove" data-original-title="" title=""></a>
+                </div>*@
+            <div class="actions">
+                @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Add_new_transfer_plan).ToString() == "Add_new_transfer_plan")
             {
-                <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn green" href="@Url.Action("Create", "Transfer")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
-            }
-             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                    <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn green" href="@Url.Action("Create", "Transfer")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
+                }
+                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+            </div>
+        </div>
+
+        <div class="portlet-body">
+            @*<div class="table-responsive">
+                    @(Html.Kendo().Grid<TransferViewModel>()
+                          .Name("grid")
+                          .Columns(columns =>
+                          {
+                              if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Transfer_plan_link).ToString() == "Transfer_plan_link")
+                              {
+                                  columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "Transfer", new {id = "#=TransferID#"}) + " '>#=SiNumber#</a>  ");
+                              }
+                              columns.Bound(m => m.SourceHubName).Width(200).Title(@Html.Translate("Source Hub"));
+                              columns.Bound(m => m.Program).Title(@Html.Translate("Program"));
+                              columns.Bound(m => m.Commodity).Width(200).Title(@Html.Translate("Commodity"));
+                              columns.Bound(m => m.CommoditySource).Width(100).Title(@Html.Translate("Commodity Source"));
+                              columns.Bound(m => m.Quantity).HtmlAttributes(new {align = "right"}).Title(@Html.Translate("Quantity in MT"));
+                              columns.Bound(m => m.CreatedDate).Title(@Html.Translate("Created Date"));
+                              columns.Bound(m => m.DestinationHubName).Title(@Html.Translate("Destination hub"));
+                              columns.Bound(m => m.StatusName).Title(@Html.Translate("Status Name"));
+                              if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Transfer_Plan).ToString() == "Delete_Transfer_Plan")
+                              {
+                                  columns.Command(p => p.Custom("Delete").Click("OnDelete")).Width(250);
+                              }
+
+                          }
+
+                          )
+
+                          .Navigatable()
+                          .Events(e => e.DataBound("onDataBound"))
+                          .HtmlAttributes(new {style = "height:100%;"})
+                          .TableHtmlAttributes(new {@class = "table table-condensed"})
+                          .DataSource(dataSource => dataSource
+                              .Ajax()
+                              .Model(model => model.Id(m => m.TransferID))
+                              .Read(read => read.Action("Transfer_Read", "Transfer"))
+                          //.Update(update => update.Action("Commodity_Update", "Request"))
+                          )
+                          )
+                </div>*@
+        </div>
+
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th>SI Number</th>
+                            <th>Source Hub</th>
+                            <th>Program</th>
+                            <th>Commodity</th>
+                            <th>Commodity Source</th>
+                            <th>Quantity in MT</th>
+                            <th>Created Date</th>
+                            <th>Destination hub</th>
+                            <th>Status Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (TransferViewModel item in Model)
+                        {
+                            index++;
+
+                            var currentState = item.BusinessProcess.CurrentState;
+                            var state = currentState != null ? currentState.BaseStateTemplate : null;
+                            <tr>
+                                <td>
+                                    @*Si Number Here*@
+                                </td>
+                                <td>
+                                    @item.SourceHubName
+                                </td>
+                                <td>
+                                    @item.Program
+                                </td>
+                                <td>
+                                    @item.Commodity
+                                </td>
+                                <td>
+                                    @item.CommoditySource
+                                </td>
+                                <td>
+                                    @item.Quantity
+                                </td>
+                                <td>
+                                    @item.CreatedDate
+                                </td>
+                                <td>
+                                    @item.DestinationHubName
+                                </td>
+                                <td>
+                                    @item.StatusName
+                                </td>
+
+                                <td>
+                                    &nbsp;
+                                    <div class="btn-group">
+                                        <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
+                                            <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
+                                        </button>
+
+                                        <ul class="dropdown-menu pull-right">
+                                            @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                                            {
+                                                <li class="edit_button">
+                                                    <a href="javascript:promot_workflow(@item.BusinessProcessID,
+                                                           @actions.FinalStateID,'@actions.Name',
+                                                           @item.TransferID)" title="@actions.Name">@actions.Name</a>
+                                                    </li>
+
+                                                    <li class="edit_button">
+                                                        <a href="javascript:promot_workflow(@item.BusinessProcessID,
+                                                           @actions.FinalStateID,'@actions.Name',
+                                                           @item.TransferID)" title="@actions.Name">@actions.Name</a>
+                                                    </li>
+                                            }
+                                            <li class="divider"></li>
+
+                                            <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
+
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+    <div id='dialogDivSmall' class='modal fade'>
+        <div id='dialogContentSmall'></div>
+    </div>
+
+
+    <div id="modalWindow" style="display: none;">
+        <div class="alert alert-warning">
+            <strong>Warning!</strong> Are You Sure You Want to Delete this Transfer?
+        </div>
+        <hr />
+        <div class="pull-right">
+            <button id="yes" class="btn green">Yes</button>
+            <button id="no" class="btn red">No</button>
         </div>
     </div>
-    <div class="portlet-body">
-        <div class="table-responsive">
-            @(Html.Kendo().Grid<TransferViewModel>()
-                  .Name("grid")
-                  .Columns(columns =>
-                  {
-                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Transfer_plan_link).ToString() == "Transfer_plan_link")
-                      {
-                          columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "Transfer", new {id = "#=TransferID#"}) + " '>#=SiNumber#</a>  ");
-                      }
-                      columns.Bound(m => m.SourceHubName).Width(200).Title(@Html.Translate("Source Hub"));
-                      columns.Bound(m => m.Program).Title(@Html.Translate("Program"));
-                      columns.Bound(m => m.Commodity).Width(200).Title(@Html.Translate("Commodity"));
-                      columns.Bound(m => m.CommoditySource).Width(100).Title(@Html.Translate("Commodity Source"));
-                      columns.Bound(m => m.Quantity).HtmlAttributes(new {align = "right"}).Title(@Html.Translate("Quantity in MT"));
-                      columns.Bound(m => m.CreatedDate).Title(@Html.Translate("Created Date"));
-                      columns.Bound(m => m.DestinationHubName).Title(@Html.Translate("Destination hub"));
-                      columns.Bound(m => m.StatusName).Title(@Html.Translate("Status Name"));
-                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Transfer_Plan).ToString() == "Delete_Transfer_Plan")
-                      {
-                          columns.Command(p => p.Custom("Delete").Click("OnDelete")).Width(250);
-                      }
-
-                  }
-
-                  )
-
-                  .Navigatable()
-                  .Events(e => e.DataBound("onDataBound"))
-                  .HtmlAttributes(new {style = "height:100%;"})
-                  .TableHtmlAttributes(new {@class = "table table-condensed"})
-                  .DataSource(dataSource => dataSource
-                      .Ajax()
-                      .Model(model => model.Id(m => m.TransferID))
-                      .Read(read => read.Action("Transfer_Read", "Transfer"))
-                  //.Update(update => update.Action("Commodity_Update", "Request"))
-                  )
-                  )
-        </div>
-    </div>
-</div>
 
 
-<div id='dialogDivSmall' class='modal fade'>
-    <div id='dialogContentSmall'></div>
-</div>
+    <script>
+        function onDataBound(e) {
+            //alert("show");
+            var grid = $("#grid").data("kendoGrid");
+            var gridData = grid.dataSource.view();
+            //alert(gridData.length);
+            for (var i = 0; i < gridData.length; i++) {
+                var currentUid = gridData[i].uid;
+                //alert(gridData[i].Status);
+                if (gridData[i].StatusName == "Approved") {
+                    var currentRow = grid.table.find("tr[data-uid='" + currentUid + "']");
+                    var deleteButton = $(currentRow).find(".k-grid-Delete");
+                    deleteButton.hide();
 
-
-<div id="modalWindow" style="display: none;">
-    <div class="alert alert-warning">
-        <strong>Warning!</strong> Are You Sure You Want to Delete this Transfer?
-    </div>
-    <hr/>
-    <div class="pull-right">
-        <button id="yes" class="btn green">Yes</button>
-        <button id="no" class="btn red">No</button>
-    </div>
-</div>
-
-
-<script>
-    function onDataBound(e) {
-        //alert("show");
-        var grid = $("#grid").data("kendoGrid");
-        var gridData = grid.dataSource.view();
-        //alert(gridData.length);
-        for (var i = 0; i < gridData.length; i++) {
-            var currentUid = gridData[i].uid;
-            //alert(gridData[i].Status);
-            if (gridData[i].StatusName == "Approved") {
-                var currentRow = grid.table.find("tr[data-uid='" + currentUid + "']");
-                var deleteButton = $(currentRow).find(".k-grid-Delete");
-                deleteButton.hide();
-
+                }
             }
         }
-    }
 
 
-    function OnDelete(e) {
-        e.preventDefault();
+        function OnDelete(e) {
+            e.preventDefault();
 
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        wnd.center().open();
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            wnd.center().open();
 
-        $("#yes").click(function () {
+            $("#yes").click(function () {
 
-            window.location = "@Url.Action("Delete", "Transfer")" + "/" + dataItem.TransferID;
-            wnd.close();
+                window.location = "@Url.Action("Delete", "Transfer")" + "/" + dataItem.TransferID;
+                wnd.close();
+            });
+
+            $("#no").click(function () {
+                window.wnd.close();
+            });
+        }
+
+        var wnd;
+        $(document).ready(function () {
+            wnd = $("#modalWindow").kendoWindow({
+                title: "Delete confirmation",
+                modal: true,
+                visible: false,
+                resizable: false
+                //width: 300
+            }).data("kendoWindow");
         });
+    </script>
 
-        $("#no").click(function () {
-            window.wnd.close();
-        });
-    }
+    <style>
+        .k-window-titlebar {
+            margin-top: -30px;
+            height: 30px;
+        }
 
-    var wnd;
-    $(document).ready(function () {
-        wnd = $("#modalWindow").kendoWindow({
-            title: "Delete confirmation",
-            modal: true,
-            visible: false,
-            resizable: false
-            //width: 300
-        }).data("kendoWindow");
-    });
-</script>
+        hr {
+            margin: 5px 0;
+        }
+    </style>
 
-<style>
-    .k-window-titlebar {
-        margin-top: -30px;
-        height: 30px;
-    }
+    @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml");
 
-    hr {
-        margin: 5px 0;
-    }
-</style>
+    <script type="text/javascript">
+
+        var history_link = "@Url.Action("History", "BusinessProcess", new {Area = "WorkflowManager", id = "0"})";
+
+        function promot_workflow(BusinessProcessID, nextstate, actionname, PlanID) {
+            $('#ParentBusinessProcessID').val(BusinessProcessID);
+            $('#stateID').val(nextstate);
+            $('#modalPromotionLabel').html(actionname);
+            $('#DOCUMENT_ID').val(DOCUMENT_ID);
+            $('#modalPromotion').modal();
+        }
+
+        function workflow_history(BusinessProcessID) {
+            $('#modalHistory').modal();
+            $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+            $.post(history_link + BusinessProcessID, {},
+                function (data) {
+                    $("#modalHistoryBody").html(data);
+                }
+            );
+        }
+    </script>
