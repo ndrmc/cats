@@ -201,8 +201,11 @@ namespace Cats.Areas.Hub.Controllers
                     .Where(l => l.CommodityTypeID == 1)
                     .Select(c => new SubCommodity() {Id = c.CommodityID, Name = c.Name})
                     .ToList();
-            ViewBag.Units =
+            var units =
                 _unitService.GetAllUnit().Select(u => new UnitModel() {Id = u.UnitID, Name = u.Name}).ToList();
+            var unit = new UnitModel {Id = 0, Name = string.Empty};
+            units.Insert(0,unit);
+            ViewBag.Units = units;
             if (grn != null)
             {           
                 ViewBag.isEditMode = true;
@@ -403,12 +406,45 @@ namespace Cats.Areas.Hub.Controllers
             return Json(results.ToDataSourceResult(request, ModelState));
         }
 
-        public bool CreateCommoditiesFromReceive(List<ReceiveDetailsViewModel> receiveDetailsViewModels, Guid receiveId)
+        public bool CreateCommoditiesFromReceive(List<ReceiveDetailsViewModel> receiveDetailsViewModels,
+            Guid receiveId,ReceiveNewViewModel receiveNewViewModel)
         {
             var result = false;
             var recieve = _receiveService.FindById(receiveId);
             if (recieve == null) return false;
             var receiveModel = ModeltoNewView(recieve);
+
+
+            receiveModel.Grn = receiveNewViewModel.Grn;
+            receiveModel.CommodityTypeId = receiveNewViewModel.CommodityTypeId;
+            receiveModel.SourceDonorId = receiveNewViewModel.SourceDonorId;
+            receiveModel.ResponsibleDonorId = receiveNewViewModel.ResponsibleDonorId;
+            receiveModel.TransporterId = receiveNewViewModel.TransporterId > 0 ? receiveNewViewModel.TransporterId : 1;
+            receiveModel.PlateNoPrime = receiveNewViewModel.PlateNoPrime;
+            receiveModel.PlateNoTrailer = receiveNewViewModel.PlateNoTrailer;
+            receiveModel.DriverName = receiveNewViewModel.DriverName;
+            receiveModel.WeightBridgeTicketNumber = receiveNewViewModel.WeightBridgeTicketNumber;
+            receiveModel.WeightBeforeUnloading = receiveNewViewModel.WeightBeforeUnloading;
+            receiveModel.WeightAfterUnloading = receiveNewViewModel.WeightAfterUnloading;
+            receiveModel.VesselName = receiveNewViewModel.VesselName;
+            receiveModel.PortName = receiveNewViewModel.PortName;
+            receiveModel.ReceiptDate = receiveNewViewModel.ReceiptDate;
+            receiveModel.CreatedDate = DateTime.Now;
+            receiveModel.WayBillNo = receiveNewViewModel.WayBillNo;
+            receiveModel.CommoditySourceTypeId = receiveNewViewModel.CommoditySourceTypeId;
+            receiveModel.ReceivedByStoreMan = receiveNewViewModel.ReceivedByStoreMan;
+            receiveModel.PurchaseOrder = receiveNewViewModel.PurchaseOrder;
+            receiveModel.SupplierName = receiveNewViewModel.SupplierName;
+            receiveModel.Remark = receiveNewViewModel.Remark;
+            receiveModel.ReceiptAllocationId = receiveNewViewModel.ReceiptAllocationId;
+            receiveModel.CurrentHub = receiveNewViewModel.CurrentHub;
+            receiveModel.UserProfileId = receiveNewViewModel.UserProfileId;
+            receiveModel.StoreId = receiveNewViewModel.StoreId;
+            receiveModel.StackNumber = receiveNewViewModel.StackNumber;
+            receiveModel.SourceDonorId = receiveNewViewModel.SourceDonorId;
+            receiveModel.ResponsibleDonorId = receiveNewViewModel.ResponsibleDonorId;
+
+
             foreach (var receiveDetailViewModel in receiveDetailsViewModels)
             {
                 ReceiveDetailsViewModel rdvm;
@@ -565,7 +601,7 @@ namespace Cats.Areas.Hub.Controllers
                 //List<ReceiveDetailsViewModel> receiveDetailsViewModels = GetReceiveDetailsViewModels(viewModel);
                 //viewModel.ReceiveDetailsViewModels = receiveDetailsViewModels;
 
-                //Save transaction 
+                
                 if (viewModel.ReceiveId != Guid.Empty)
                 {
                     //reverse the transaction
@@ -578,7 +614,7 @@ namespace Cats.Areas.Hub.Controllers
                 recieveUpdated =_transactionService.ReceiptTransaction(viewModel);
                 if (recieveUpdated && viewModel.ReceiveDetailsViewModels.Any())
                 {
-                    CreateCommoditiesFromReceive(viewModel.ReceiveDetailsViewModels, viewModel.ReceiveId);
+                    CreateCommoditiesFromReceive(viewModel.ReceiveDetailsViewModels, viewModel.ReceiveId,viewModel);
                 }
 
                 //var receiveID =
