@@ -188,7 +188,7 @@ namespace Cats.Areas.Procurement.Controllers
                         //_PaymentRequestservice.Create(request);
 
                         BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
-                                                                                        "ReciptPlanForLoan", createdstate);
+                                                                                        "TransporterBidPlan", createdstate);
                         if (bp != null)
                             transportbidplan.BusinessProcessID = bp.BusinessProcessID;
 
