@@ -5,6 +5,7 @@ using System.Web;
 using Cats.Areas.Procurement.Models;
 using Cats.Helpers;
 using Cats.Models;
+using Cats.Models.ViewModels;
 
 namespace Cats.ViewModelBinder
 {
@@ -38,10 +39,41 @@ namespace Cats.ViewModelBinder
                 transportOrderViewModel.StatusID = transportOrder.StatusID;
                 transportOrderViewModel.StartDate = transportOrder.StartDate.ToCTSPreferedDateFormat(datePref);
                 transportOrderViewModel.EndDate = transportOrder.EndDate.ToCTSPreferedDateFormat(datePref);
-                transportOrderViewModel.Status =transportOrder.StatusID.HasValue?
-                statuses.Find(t => t.StatusID == transportOrder.StatusID.Value).Description:string.Empty;
+                transportOrderViewModel.Status = transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.Name;//transportOrder.StatusID.HasValue?statuses.Find(t => t.StatusID == transportOrder.StatusID.Value).Description:string.Empty;
+                transportOrderViewModel.InitialStateFlowTemplates = BindFlowTemplateViewModel(transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates).ToList();
+                //requisition.IsDraft = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft";
+                transportOrderViewModel.BusinessProcessID = transportOrder.BusinessProcessID;
+                transportOrderViewModel.RejectStateID =
+                  transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(
+                      t => t.Name == "Reject").Select(t => t.FinalStateID).FirstOrDefault();
+                transportOrderViewModel.SignStateID =
+                     transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(
+                         t => t.Name == "Sign").Select(t => t.FinalStateID).FirstOrDefault();
+                transportOrderViewModel.ApproveStateID =
+                     transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(
+                         t => t.Name == "Approve").Select(t => t.FinalStateID).FirstOrDefault();
+
             }
             return transportOrderViewModel;
+        }
+        public static IEnumerable<FlowTemplateViewModel> BindFlowTemplateViewModel(IEnumerable<FlowTemplate> flowTemplates)
+        {
+            var flowTemplateViewModels = new List<FlowTemplateViewModel>();
+
+            foreach (var flowTemplate in flowTemplates)
+            {
+                var flowTemplateViewModel = new FlowTemplateViewModel();
+                flowTemplateViewModel.Name = flowTemplate.Name;
+                flowTemplateViewModel.FinalState = flowTemplate.FinalState.Name;
+                flowTemplateViewModel.FinalStateID = flowTemplate.FinalStateID;
+                flowTemplateViewModel.FlowTemplateID = flowTemplate.FlowTemplateID;
+                flowTemplateViewModel.InitialState = flowTemplate.InitialState.Name;
+                flowTemplateViewModel.InitialStateID = flowTemplate.InitialStateID;
+                flowTemplateViewModel.ParentProcessTemplate = flowTemplate.ParentProcessTemplate.Name;
+                flowTemplateViewModel.ParentProcessTemplateID = flowTemplate.ParentProcessTemplateID;
+                flowTemplateViewModels.Add(flowTemplateViewModel);
+            }
+            return flowTemplateViewModels;
         }
     }
 }

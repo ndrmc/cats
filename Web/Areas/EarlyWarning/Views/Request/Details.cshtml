@@ -5,6 +5,7 @@
 @using Cats.Helpers
 @using Cats.Security
 @using Cats.Models
+@using Cats.Models.ViewModels
 @using Cats.Services.Security
 @using Kendo.Mvc.UI
 
@@ -185,20 +186,18 @@
                     <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
                 </button>
                 <ul class="dropdown-menu pull-right">
-
                     @{
 
-                        var state = modelRequest.BusinessProcess.CurrentState.BaseStateTemplate;
+                        var state = modelRequest.CurrentStateNo;
                     }
 
-
-                    @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                    @foreach (FlowTemplateViewModel actions in state)
                     {
                         if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request) && actions.Name == "Approve")
                         {
                             <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , @modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                         }
-                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "FederalApproved")
+                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "Federal Approve")
                         {
                             <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                         }
@@ -206,7 +205,10 @@
                         {
                             <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                         }
-
+                        if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Close")
+                        {
+                            <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                        }
                     }
                     <li class="divider"></li>
                     @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
@@ -220,15 +222,15 @@
                 <button class="btn green dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis"></i> Action <i class="fa fa-angle-down"></i></button>
                 <ul class="dropdown-menu pull-right" style="-moz-min-width: 120px; -ms-min-width: 120px; -o-min-width: 120px; -webkit-min-width: 120px; min-width: 120px;">
                     @*<li><a id="btnAddFDP"  href="@Url.Action("AddBeneficary", "Request", new { id = modelRequest.RegionalRequestID })" >ADD FDP </a></li>*@
-                    @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Draft)
-                    {
+                   @if (modelRequest.StateId == 1 || modelRequest.StateId == 5)
+                   {
                         <li><a class="btn green-haze-stripe" href="@Url.Action("Edit", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Edit</a></li>
                         <li><a class="btn green-haze-stripe" href="@Url.Action("Allocation", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Allocation</a></li>
                         @*<li><a class="btn green-haze-stripe" href="@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID })">Approve</a></li>*@
                     if (modelRequest.Program == "Relief")
                     {
 
-                        <li>
+                        @*<li>
                             <a class="btn green-haze-stripe">
                                 @Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
                                                                      EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))
@@ -238,11 +240,11 @@
                             @Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
                                                                      @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)
                     </a>
-                </li>
+                </li>*@
                     }
                     else
                     {
-                        <li>
+                        @*<li>
                             <a class="btn green-haze-stripe">
                                 @Html.PSNPOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
                                                                      PsnpConstants.Operation.Approve_Request)
@@ -251,7 +253,7 @@
                             @Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
                                                                      RegionalConstants.Operation.Approve_regional_request)
                     </a>
-                </li>
+                </li>*@
                         }
 
 
@@ -494,39 +496,39 @@
             @*<div id='dialogDiv' class='modal hide fade in'>
                     <div id='dialogContent'></div>
                 </div>*@
-            <div class="portlet light bordered" style="display: block;">
-                <div class="portlet-title">
-                    <div class="caption font-green-sharp">
-                        <i class="fa fa-list font-green-sharp"></i>
-                        <span class="caption-subject bold uppercase"> @Html.Translate("Details")</span>
-                        <span class="caption-helper">  </span>
-                    </div>
-                    @*<div class="tools">
+<div class="portlet light bordered" style="display: block;">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="fa fa-list font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("Details")</span>
+            <span class="caption-helper">  </span>
+        </div>
+        @*<div class="tools">
                             <a href="#" class="collapse" data-original-title="" title=""></a>
                             <a href="javascript:;" class="remove" data-original-title="" title=""></a>
                         </div>*@
-                    <div class="actions">
-                        @*<a class="btn btn-circle btn-default btn-sm green-stripe" data-buttontype="btn_new_record" href="@Url.Action("New", "Request")"><i class="fa fa-plus-circle"></i> @Html.Translate("New Request")</a>*@
-                        <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
-                    </div>
-                </div>
-                <div class="portlet-body">
-                    <div class="table-responsive">
-                        @(Html.Kendo().Grid(Model)
+        <div class="actions">
+            @*<a class="btn btn-circle btn-default btn-sm green-stripe" data-buttontype="btn_new_record" href="@Url.Action("New", "Request")"><i class="fa fa-plus-circle"></i> @Html.Translate("New Request")</a>*@
+            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="table-responsive">
+            @(Html.Kendo().Grid(Model)
                   .Name("Grid")
                   .Columns(columns =>
                   {
 
                       foreach (System.Data.DataColumn column in Model.Columns)
                       {
-                          if (column.DataType == typeof(decimal))
+                          if (column.DataType == typeof (decimal))
                           {
-                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N2}").ClientGroupFooterTemplate("sum:#:sum#");
+                              columns.Bound(column.ColumnName).HtmlAttributes(new {align = "right"}).Format("{0:N2}").ClientGroupFooterTemplate("sum:#:sum#");
                               //.HeaderHtmlAttributes(new { @class = "cats-unit-pref-grid" })
                           }
-                          else if (column.DataType == typeof(int))
+                          else if (column.DataType == typeof (int))
                           {
-                              columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).ClientGroupFooterTemplate("<div style='float: right'>#= kendo.toString(sum, 'N2') #</div>").ClientFooterTemplate("Sum: #=sum#");
+                              columns.Bound(column.ColumnName).HtmlAttributes(new {align = "right"}).ClientGroupFooterTemplate("<div style='float: right'>#= kendo.toString(sum, 'N2') #</div>").ClientFooterTemplate("Sum: #=sum#");
                               ;
 
                           }
@@ -547,7 +549,7 @@
                   .DataSource(dataSource => dataSource
                       .Ajax().Group(a =>
                       {
-                          a.Add("Zone", typeof(string));
+                          a.Add("Zone", typeof (string));
                           //a.Add("Beneficiaries", typeof(int));
                           //a.Add("PlannedBeneficiaries", typeof(int));
                       })
@@ -571,10 +573,22 @@
 
                   )
 
-                        )
-                    </div>
-                </div>
+                  )
+        </div>
+    </div>
+</div>
+<div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id="modalHistoryLabel">Activity History</h4>
             </div>
+            <div class="modal-body" id="modalHistoryBody">History</div>
+
+        </div>
+    </div>
+</div>
             @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
             <div class="modal" id="cats-modal-reject">
                 <div class="modal-dialog ">

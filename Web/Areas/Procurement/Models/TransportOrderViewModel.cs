@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using Cats.Models.ViewModels;
 
 namespace Cats.Areas.Procurement.Models
 {
@@ -39,6 +40,11 @@ namespace Cats.Areas.Procurement.Models
         public string EndDate { get; set; }
 
         public string Status { get; set; }
+        public List<FlowTemplateViewModel> InitialStateFlowTemplates { get; set; }
+        public int BusinessProcessID { get; set; }
+        public int RejectStateID { get; set; }
+        public int SignStateID { get; set; }
+        public int ApproveStateID { get; set; }
     }
     public class TransportOrderApprovalViewModel
     {

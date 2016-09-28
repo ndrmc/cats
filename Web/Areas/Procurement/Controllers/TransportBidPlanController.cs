@@ -175,7 +175,7 @@ namespace Cats.Areas.Procurement.Controllers
                 var transportPlan =_transportBidPlanService.FindBy( m => m.Year == transportbidplan.Year && m.YearHalf == transportbidplan.YearHalf).FirstOrDefault();
                 if (transportPlan == null)
                 {
-                    int BP_PR = _applicationSettingService.getReciptPlanForLoanWorkflow();
+                    int BP_PR = _applicationSettingService.getBidPlanWorkflow();
                     if (BP_PR != 0)
                     {
                         BusinessProcessState createdstate = new BusinessProcessState
@@ -188,7 +188,7 @@ namespace Cats.Areas.Procurement.Controllers
                         //_PaymentRequestservice.Create(request);
 
                         BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
-                                                                                        "ReciptPlanForLoan", createdstate);
+                                                                                        "TransporterBidPlan", createdstate);
                         if (bp != null)
                             transportbidplan.BusinessProcessID = bp.BusinessProcessID;
 

@@ -37,5 +37,6 @@ namespace Cats.Services.Common
         int getTransportRequisitionWorkflow();
         int getDonationPlanHeaderWorkflow();
         int getGiftCertificateWorkflow();
+        int getBidPlanWorkflow();
     }
 }
