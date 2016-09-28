@@ -117,4 +117,4 @@ EXECUTE sp_xml_preparedocument @h OUTPUT, N'<Data>
 
 
 
-EXECUTE upgrade_old_data @h
+EXECUTE upgrade_transport_requisition_old_data @h
