@@ -225,17 +225,13 @@
 
         function promot_workflow(BusinessProcessID, nextstate, actionname, GiftCertificateID) {
             //alert(PaymentRequestID);
+            console.log("BusinessProcessID: " + BusinessProcessID);
+            console.log("nextstate: " + nextstate);
+            console.log("actionname: " + actionname);
             $('#ParentBusinessProcessID').val(BusinessProcessID);
             $('#stateID').val(nextstate);
             $('#modalPromotionLabel').html(actionname);
-            $('#TransporterChequeID').val(TransporterChequeID);
             $('#modalPromotion').modal();
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("Approve", "GiftCertificate")",
-                data: "{id:" + GiftCertificateID + "}",
-                dataType: json
-            });
         }
 
         function onApprove(e) {
