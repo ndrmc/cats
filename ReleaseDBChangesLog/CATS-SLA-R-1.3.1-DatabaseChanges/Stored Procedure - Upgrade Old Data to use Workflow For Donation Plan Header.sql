@@ -18,7 +18,7 @@ IF COL_LENGTH('dbo.DonationPlanHeader','BusinessProcessID') IS NULL
 BEGIN
 	ALTER TABLE [dbo].[DonationPlanHeader]
 	ADD BusinessProcessID INT NOT NULL
-	CONSTRAINT BP_Default_0 DEFAULT 0 WITH VALUES;
+	CONSTRAINT BP_Default_2 DEFAULT 0 WITH VALUES;
 END
 
 IF EXISTS(
