@@ -115,4 +115,4 @@ EXECUTE sp_xml_preparedocument @h OUTPUT, N'<Data>
 
 
 
-EXECUTE upgrade_old_data @h
+EXECUTE upgrade_donation_plan_header_old_data @h
