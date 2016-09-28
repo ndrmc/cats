@@ -237,55 +237,7 @@ namespace Cats.Areas.Logistics.Controllers
                 var businessProcess1 = _businessProcessService.FindById(loanReciptPlan.BusinessProcessID);
                 //var businessProcess = loanReciptPlan.BusinessProcess.CurrentState.CurrentStateBusinessProcesss.FirstOrDefault();
                 //if (businessProcess != null)
-                loan.InitialStateFlowTemplates = BindFlowTemplateViewModel(loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates).ToList();
-                //loan.BusinessProcess = businessProcess1;
-
-                        //new BusinessProcessClean
-                        //{
-                        //    BusinessProcessID = loanReciptPlan.BusinessProcessID,
-                        //    DocumentID = loanReciptPlan.BusinessProcess.DocumentID,
-                        //    DocumentType = loanReciptPlan.BusinessProcess.DocumentType,
-                        //    ProcessType =  loanReciptPlan.BusinessProcess.ProcessType,
-                        //    ProcessTypeID = loanReciptPlan.BusinessProcess.ProcessTypeID,
-                        //    CurrentState = new BusinessProcessState
-                        //    {
-                        //        BusinessProcessStateID= loanReciptPlan.BusinessProcess.CurrentState.BusinessProcessStateID,
-                        //        StateID= loanReciptPlan.BusinessProcess.CurrentState.StateID,
-                        //        BaseStateTemplate= new Cats.Models.StateTemplate
-                        //        {
-                        //           StateTemplateID = loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.StateTemplateID,
-                        //            Name= loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.Name,
-                        //            AllowedAccessLevel= loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.AllowedAccessLevel,
-                        //            StateType = loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.StateType,
-                        //            StateNo = loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.StateNo,
-                        //            ParentProcessTemplate= new ProcessTemplate()
-                        //            {
-                        //              ProcessTemplateID=  loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplate.ProcessTemplateID,
-                        //              Name = loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplate.Name,
-                        //              Description = loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplate.Description,
-                        //              GraphicsData = loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplate.GraphicsData
-                        //            } ,
-                        //            ParentProcessTemplateID = loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID,
-                        //            InitialStateFlowTemplates= loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates,
-                        //            FinalStateFlowTemplates= loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.FinalStateFlowTemplates
-                        //        }, 
-                        //        PerformedBy= loanReciptPlan.BusinessProcess.CurrentState.PerformedBy,
-                        //        DatePerformed= loanReciptPlan.BusinessProcess.CurrentState.DatePerformed,
-                        //        Comment= loanReciptPlan.BusinessProcess.CurrentState.Comment,
-                        //        AttachmentFile= loanReciptPlan.BusinessProcess.CurrentState.AttachmentFile,
-                        //        ParentBusinessProcess = loanReciptPlan.BusinessProcess.CurrentState.ParentBusinessProcess,
-
-                    //        CurrentStateBusinessProcesss =  new[] {new BusinessProcess
-                    //        {
-                    //            BusinessProcessID= businessProcess.BusinessProcessID,
-                    //            DocumentID = businessProcess.DocumentID,
-
-
-                    //        }}
-                    //    }, 
-                //CurrentStateID = loanReciptPlan.BusinessProcess.CurrentStateID
-
-                //        };
+                loan.InitialStateFlowTemplates = BindFlowTemplateViewModel(loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates).ToList();            
                 if (firstOrDefault != null) loan.Donor = firstOrDefault.Name;
                 //SourceHubName = loanReciptPlan.Hub.Name,
                 loan.RefeenceNumber = loanReciptPlan.ReferenceNumber;
@@ -296,7 +248,7 @@ namespace Cats.Areas.Logistics.Controllers
                 //loan.BusinessProcessID = loanReciptPlan.BusinessProcessID;
                 //loan.BusinessProcess = loanReciptPlan.BusinessProcess;
                 loan.CreatedDate = loanReciptPlan.CreatedDate.ToCTSPreferedDateFormat(datePref);
-                loan.Status = _commonService.GetStatusName(WORKFLOW.LocalPUrchase, loanReciptPlan.StatusID);
+                loan.Status = loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.Name;//
                 loan.IsFalseGRN = loanReciptPlan.IsFalseGRN;
 
                 list.Add(loan);

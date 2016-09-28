@@ -83,17 +83,25 @@
                 </button>
                 <ul class="dropdown-menu pull-right">
 
-                 
 
 
-                @foreach (FlowTemplateViewModel actions in Model.InitialStateFlowTemplates)
-                {
-                    if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transfer_plan) && actions.Name == "Approve")
+
+                    @foreach (FlowTemplateViewModel actions in Model.InitialStateFlowTemplates)
                     {
-                        <li class="edit_button"><a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , @Model.LoanReciptPlanID)" title="@actions.Name">@actions.Name</a></li>
-                    }
+                        if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transfer_plan) && actions.Name == "Approve")
+                        {
+                            <li class="edit_button"><a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , @Model.LoanReciptPlanID)" title="@actions.Name">@actions.Name</a></li>
+                        }
+                        if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transfer_plan) && actions.Name == "Sign")
+                        {
+                            <li class="edit_button"><a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , @Model.LoanReciptPlanID)" title="@actions.Name">@actions.Name</a></li>
+                        }
+                        if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transfer_plan) && actions.Name == "Close")
+                        {
+                            <li class="edit_button"><a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , @Model.LoanReciptPlanID)" title="@actions.Name">@actions.Name</a></li>
+                        }
 
-                }
+                    }
                     <li class="divider"></li>
                     @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
                 {*@
@@ -109,15 +117,15 @@
 
                 <ul class="dropdown-menu pull-right">
 
-                   
-                        @if (Model.StatusID == (int) LocalPurchaseStatus.Draft)
-                        {
-                            <li><a id="btnRecive" class="btn green-sharp-stripe" href="@Url.Action("ReciptPlan", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Recieve Plan")</a></li>
-                            <li><a id="btnEdit" class="btn green-sharp-stripe" href="@Url.Action("Edit", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Edit")</a></li>
-                            
-                           // <li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Approve")</a></li>
-                        }
-                    
+
+                    @if (Model.Status == "Draft")
+                    {
+                        <li><a id="btnRecive" class="btn green-sharp-stripe" href="@Url.Action("ReciptPlan", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Recieve Plan")</a></li>
+                        <li><a id="btnEdit" class="btn green-sharp-stripe" href="@Url.Action("Edit", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Edit")</a></li>
+
+                        // <li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Approve")</a></li>
+                    }
+
                 </ul>
             </div>
 
@@ -132,7 +140,7 @@
                         @Html.LabelFor(m => m.SiNumber, @Html.Translate("SI Number"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.SiNumber, new { disabled = true, @class = "form-control" })
+                        @Html.TextBoxFor(m => m.SiNumber, new {disabled = true, @class = "form-control"})
                         <span class="help-block">@Html.ValidationMessageFor(m => m.SiNumber)</span>
                     </div>
 
@@ -142,7 +150,7 @@
                         @Html.LabelFor(m => m.Donor, @Html.Translate("Loan Source"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.Donor, new { disabled = true, @class = "form-control" })
+                        @Html.TextBoxFor(m => m.Donor, new {disabled = true, @class = "form-control"})
                     </div>
                 </div>
 
@@ -154,7 +162,7 @@
                         @Html.LabelFor(m => m.ProgramID, @Html.Translate("Program"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.ProgramName, new { disabled = true, @class = "form-control" })
+                        @Html.TextBoxFor(m => m.ProgramName, new {disabled = true, @class = "form-control"})
                     </div>
                 </div>
                 <div class="form-group col-sm-6">
@@ -162,7 +170,7 @@
                         @Html.LabelFor(m => m.CommodityID, @Html.Translate("Commodity"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.CommodityName, new { disabled = true, @class = "form-control" })
+                        @Html.TextBoxFor(m => m.CommodityName, new {disabled = true, @class = "form-control"})
                     </div>
                 </div>
             </div>
@@ -193,7 +201,7 @@
                         @Html.LabelFor(m => m.ProjectCode, @Html.Translate("Project Code"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.ProjectCode, new { disabled = true, @class = "form-control" })
+                        @Html.TextBoxFor(m => m.ProjectCode, new {disabled = true, @class = "form-control"})
                     </div>
 
                 </div>
@@ -211,6 +219,18 @@
             </div>
         </div>
 
+    </div>
+</div>
+<div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id="modalHistoryLabel">Activity History</h4>
+            </div>
+            <div class="modal-body" id="modalHistoryBody">History</div>
+
+        </div>
     </div>
 </div>
 @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")

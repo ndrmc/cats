@@ -156,5 +156,10 @@ namespace Cats.Services.Common
         {
             return getIntValue("DonationPlanHeaderWorkflow");
         }
+
+        public int getBidPlanWorkflow()
+        {
+            return getIntValue("BidWinnerWorkflow");
+        }
     }  
 }
