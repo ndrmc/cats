@@ -452,7 +452,7 @@ namespace Cats.Areas.Logistics.Controllers
                 {
                     utilization.ActualBeneficairies = woredaStockDistribution.ActualBeneficairies;
                     utilization.FemaleLessThan5Years = woredaStockDistribution.FemaleLessThan5Years;
-                    utilization.FemaleBetween5And18Years = woredaStockDistribution.FemaleLessThan5Years;
+                    utilization.FemaleBetween5And18Years = woredaStockDistribution.FemaleBetween5And18Years;
                     utilization.FemaleAbove18Years = woredaStockDistribution.FemaleAbove18Years;
                     utilization.MaleLessThan5Years = woredaStockDistribution.MaleLessThan5Years;
                     utilization.MaleBetween5And18Years = woredaStockDistribution.MaleBetween5And18Years;

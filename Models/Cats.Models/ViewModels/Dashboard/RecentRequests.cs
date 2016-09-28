@@ -46,6 +46,7 @@ namespace Cats.Models.ViewModels.Dashboard
     {
         public string plan { get; set; }
         public string Woreda { get; set; }
+        public int Month { get; set; }
         public int Fdps { get; set; }
         public int status { get; set; }
 

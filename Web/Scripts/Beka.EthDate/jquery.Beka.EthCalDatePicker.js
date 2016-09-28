@@ -55,6 +55,12 @@
                             selected_date = null;
                         }
 
+                        if(selected_date!=null)
+                        if (selected_date.date.toString() == "NaN" || selected_date.month.toString() == "NaN" ||selected_date.year.toString() == "NaN")
+                        {
+                            selected_date = null;
+
+                        }
 
                         dateEditorValueChanged(selected_date,gregorian_date,this);
                     })

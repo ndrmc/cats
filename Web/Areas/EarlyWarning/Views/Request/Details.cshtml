@@ -495,14 +495,7 @@
                           .Groupable()
                            .DataSource(dataSource => dataSource
         .Ajax()
-         .Model(model =>
-         {
-             foreach (System.Data.DataColumn column in Model.Columns)
-             {
-
-                 model.Field(column.ColumnName, column.DataType);
-             }
-         }).Read(read =>
+         .Read(read =>
 
     read.Action("StatusGeneric", "Configuration")
     )

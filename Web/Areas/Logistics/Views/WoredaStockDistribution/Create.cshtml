@@ -13,6 +13,7 @@
 
 }
 
+
 <h4>Woreda Distribution Information </h4>
 @section leftBar
 {
@@ -20,7 +21,7 @@
 }
 @section Toolbar
 {
-    @*@if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_woreda_distribution))*@
+    if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_woreda_distribution))
     {
         <button id="SubmitButton" data-buttontype="btn_save" class="btn btn-default" data-loading-text="Saving...">Save</button>
         @*<a id="SaveButton" class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_create_utilization" title="Save"></a>
@@ -315,8 +316,7 @@
                           }
 
 
-
-                          if (datepref == "GC" || datepref == "gc")
+                          if (datepref == "GC"| datepref == "gc")
                           {
 
                               columns.Bound(p => p.DistributionEndDate).Width(100).Format("{0:MM-dd-yy}");
@@ -326,6 +326,7 @@
                           }
                           else
                           {
+
 
                               columns.Bound(p => p.DistributionEndDate).Format("{0:mm-dd-yy}").Hidden().
                                      ClientTemplate("  <input type='hidden'  id='WoredaDistributionDetailViewModels[#= index(data)#].DistributionEndDate'  name='WoredaDistributionDetailViewModels[#= index(data)#].DistributionEndDate'  value='#= DistributionEndDate #' />");
@@ -348,13 +349,8 @@
                           columns.Template(c => { }).Width(100).Title(Html.Translate("EndingBalance")).HtmlAttributes(new { @class = "calculated" }).ClientTemplate("<span class='rowCount EndingBalance' rowCount='#=rowCount#' nextRow='#=getRowNo(data)#'>#=TotalEndingBalance(data)# </span>" +
                               " <input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].EndingBalance' value='#= EndingBalance #' />");
 
-                          //columns.Bound(p => p.EndingBalance).Width(80).HtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
-                          //.ClientTemplate("<input type='hidden' name='WoredaDistributionDetailViewModels[#= index(data)#].EndingBalance' value='#= EndingBalance #' />");
-                          //// columns.Bound(p => p.DistributionStartDate);
-                          //// columns.Bound(p => p.DistributionEndDate);
 
                       })
-                      //.ToolBar(toolBar=>toolBar.Save())
                       .Editable(editable =>
                       {
                           if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_Distribution_Entry))
@@ -365,7 +361,6 @@
                       .Editable(edit => edit.Mode(GridEditMode.InCell))
 
                       .Scrollable()
-                      //.Selectable(t => t.Mode(GridSelectionMode.Single))
                       .Navigatable()
                       .HtmlAttributes(new { style = "height:350px;" })
 
@@ -377,9 +372,7 @@
                                                     .Batch(true)
                                                     .ServerOperation(false)
                                                     .Events(error => error.Error("error_handler"))
-                                                    //.Group(m => m.Add(t => t.CommodityName))
-                                                    // .Events(e=>e.RequestEnd("onRequestEnd"))
-                                                    // .ServerOperation(false)
+                   
                                                     .Model(model =>
                                                     {
                                                         model.Id(p => p.WoredaStockDistributionDetailID);
@@ -400,9 +393,6 @@
 
                                                     })
                                                     .ServerOperation(false)
-
-                      //.Read(read => read.Action("WoredaStockDetail_Read", "WoredaStockDistribution", new {woredaStockDistributionID =Model.WoredaStockDistributionID, woredaID=Model.WoredaID,planID=Model.PlanID,month=Model.Month}))
-                      //.Update(update => update.Action("UpdateWoredaDistribution", "WoredaStockDistribution"))
 
 
                       )
@@ -617,7 +607,7 @@
         var kdata = grid.dataSource.data();
         for (var i = 0; i < kdata.length; i++) {
             kdata[i].dirty = true;
-            if (dateprefJS == "GC" || dateprefJS == "gc") {
+          
                 var distributionStartDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionStartDate");
                 var distributionEndDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionEndDate");
                 var dsd = kendo.toString(kendo.parseDate(distributionStartDate.value), "MM/dd/yy");
@@ -626,7 +616,7 @@
                 kdata[i].DistributionEndDate = ded == null ? distributionEndDate.value : ded;
                 distributionStartDate.value = kdata[i].DistributionStartDate;
                 distributionEndDate.value = kdata[i].DistributionEndDate;
-            }
+        
         }
         return true;
     }
@@ -635,7 +625,7 @@
         $("#SubmitButton").click(function () {
 
             if (validateNoOfBeneficiaries() == true && validateDirectAndPublic() == true && save == true) {
-                //makeKendoDirty();
+                makeKendoDirty();
                 save = false;
                 $(this).button('loading');
                 $("#frm_create_utilization").submit();
@@ -722,7 +712,7 @@
 
             if (DistributionStartDatePrefShown != null)
                 DistributionStartDatePrefHidden.click(function (b) {
-                    var pickertop = DistributionStartDatePrefHidden.offset().top + DistributionStartDatePrefHidden.height() - 80;
+                    var pickertop = DistributionStartDatePrefHidden.offset().top + DistributionStartDatePrefHidden.height() - $("div[class^='ui-ethdatepicker']")["0"].clientHeight;
                     var pickerleft = DistributionStartDatePrefHidden.offset().left;
                     $("div[class^='ui-ethdatepicker']").css({ top: pickertop, left: pickerleft, position: 'fixed', 'z-index': '1' });
 
@@ -768,7 +758,7 @@
 
         if (DistributionEndDatePrefShown != null)
             DistributionEndDatePrefHidden.click(function (b) {
-                var pickertop = DistributionEndDatePrefHidden.offset().top + DistributionEndDatePrefHidden.height() - 80;
+                var pickertop = DistributionEndDatePrefHidden.offset().top + DistributionEndDatePrefHidden.height() - $("div[class^='ui-ethdatepicker']")["0"].clientHeight;
                 var pickerleft = DistributionEndDatePrefHidden.offset().left;
                 $("div[class^='ui-ethdatepicker']").css({ top: pickertop, left: pickerleft, position: 'fixed', 'z-index': '1' });
 
@@ -780,9 +770,9 @@
 
             var value = event.newDateEthiopian == null ? "" : event.newDateEthiopian.toString();
 
-            e.model.set('DistributionStartDatePref', value);
+            e.model.set('DistributionEndDatePref', value);
 
-            SetModelStartDatePref(value);
+            SetModelEndDatePref(value);
 
 
         });

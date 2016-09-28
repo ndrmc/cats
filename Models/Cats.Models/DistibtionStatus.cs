@@ -17,6 +17,7 @@ namespace Cats.Models
         public string RegionName { get; set; }
         public string WoredaName { get; set; }
         public int Status { get; set; }
+        public int Month { get; set; }
         public int RegionID { get; set; }
         public DateTime DistributionDate { get; set; }
 
