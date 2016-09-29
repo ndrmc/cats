@@ -1,7 +1,4 @@
 --Create CATS-1315
-
-use 
-CatsMaster
 go
 IF  NOT EXISTS (
   SELECT * 
@@ -97,10 +94,3 @@ BEGIN
 END
 GO
 GO
-
-SELECT * FROM  Applicationsetting
-wh
-SELECT * FROM ProcessTemplate 
-SELECT * FROM StateTemplate AS t WHERE t.ParentProcessTemplateId = 1004
-
-BEGIN TRANSACTION DELETE ProcessTemplate WHERE ProcessTemplateId = 1004 ROLLBACK TRANSACTION
