@@ -1,0 +1,3 @@
+
+ALTER TABLE dbo.HRD
+DROP COLUMN BusinessProcessId
