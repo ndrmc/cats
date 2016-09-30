@@ -589,45 +589,7 @@ namespace Cats.Areas.Hub.Controllers
                 //ViewBag.CommodityID = new SelectList(commodities, "CommodityID", "Name");
                 //var id = Guid.NewGuid();
                 DispatchViewModel dispatch;
-                if (dispatchviewmodel.GIN != null)
-                {
-                    Dispatch editdispatch = _dispatchService.GetDispatchByGIN(dispatchviewmodel.GIN);
-                    //id = Guid.Parse(editdispatch.DispatchAllocationID.ToString());
-                    dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(dispatchviewmodel.DispatchAllocationID, 0);
-                    dispatch.DispatchID = editdispatch.DispatchID;
-                    dispatch.GIN = editdispatch.GIN;
-                    DispatchDetail detail = editdispatch.DispatchDetails.FirstOrDefault();
-                    dispatch.QuantityInUnit = detail.DispatchedQuantityInUnit;
-                    dispatch.QuantityPerUnit = detail.DispatchedQuantityInMT * 10;
-                    dispatch.Quantity = detail.DispatchedQuantityInMT;
-                    dispatch.UnitID = detail.UnitID;
-                    dispatch.PlateNo_Prime = editdispatch.PlateNo_Prime;
-                    dispatch.PlateNo_Trailer = editdispatch.PlateNo_Trailer;
-                    dispatch.WeighBridgeTicketNumber = editdispatch.WeighBridgeTicketNumber;
-                    dispatch.DriverName = editdispatch.DriverName;
-                    dispatch.Remark = editdispatch.Remark;
-                    dispatch.DispatchedByStoreMan = editdispatch.DispatchedByStoreMan;
-                    dispatch.CommodityID = detail.CommodityID;
-                    dispatch.CommodityChildID = detail.CommodityChildID;
-                    dispatch.ShippingInstructionID = editdispatch.ShippingInstructionID;
-                    //dispatch.ShippingInstructionID=
-                    //dispatch.Year = editdispatch.PeriodYear;
-                    //dispatch.Month = editdispatch.PeriodMonth;
-                    //dispatch.Round = editdispatch.Round;
-                    //"nov 24 afternoon"
-                    dispatch.SINumber = _shippingInstructionService.FindById((int)dispatch.ShippingInstructionID).Value;
-                    if (dispatch.CommodityChildID != null)
-                    {
-                        dispatch.ChildCommodity = _commodityService.FindById((int)dispatch.CommodityChildID).Name;
-                    }
-                    dispatch.Unit = _unitService.FindById(dispatch.UnitID).Name;
-                }
-                else
-                {
-                    dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(dispatchviewmodel.DispatchAllocationID, 0);
-
-
-                }
+                dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(dispatchviewmodel.DispatchAllocationID, 0);
 
                 var fdp = _fdpService.Get(t => t.FDPID == dispatch.FDPID, null, "AdminUnit,AdminUnit.AdminUnit2,AdminUnit.AdminUnit2.AdminUnit2").FirstOrDefault();
                 dispatch.UserProfileID = UserProfile.UserProfileID;
