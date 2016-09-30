@@ -1,5 +1,4 @@
 ﻿@using Cats.Helpers
-@using Cats.Models
 @using Cats.Security
 @using Kendo.Mvc.UI
 @using NetSqlAzMan.Interfaces
@@ -105,64 +104,45 @@
 
                                     @if (item.Status == "Draft")
                                     {
-                                        @*@Html.EarlyWarningOperationButton(
-                                            @Url.Action("Approved", "GiftCertificate", new {id = item.GiftCertificateID}),
-                                            EarlyWarningConstants.Operation.Approve_Gift_Certeficate,
-                                            " <button type=\"button\" class=\"btn btn-xs btn-success\"><span class=\"fa fa-check\"></span> " + @Html.Translate("Approve") + " </button> ",
-                                            "btn-Approve-Gift",
-                                            "",
-                                            "btnApprove")*@
-
-                                    if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Approve_Gift_Certeficate), DateTime.Now)
-                                        == AuthorizationType.Allow)
-                                    {
-                                        <li class="edit_button">
-                                            <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.StatusID,'@item.Status',@item.GiftCertificateID)" title="Approve">Approve</a>
-                                        </li>
+                                        if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Approve_Gift_Certeficate), DateTime.Now)
+                                            == AuthorizationType.Allow && item.IsApprovable)
+                                        {
+                                            <li class="edit_button">
+                                                <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.ApprovedId,'Approve',@item.GiftCertificateID)" title="Approve">Approve</a>
+                                            </li>
                                         }
                                     }
 
                                     @if (item.Status == "Approved")
                                     {
-                                        @*@Html.EarlyWarningOperationButton(
-                                            @Url.Action("GenerateTemplate", new {id = item.GiftCertificateID}),
-                                            EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template, "<button type=\"button\" class=\"btn btn-xs btn-primary\"><span class=\"fa fa-print\"></span> " + @Html.Translate("Print") + " </button> ", "btn-Print-gift")*@
+                                        if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template), DateTime.Now)
+                                            == AuthorizationType.Allow)
+                                        {
+                                            <li class="edit_button">
+                                                <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.PrintedId,'Print',@item.GiftCertificateID)" title="Print">Print</a>
+                                            </li>
+                                        }
 
-                                    if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template), DateTime.Now)
-                                        == AuthorizationType.Allow)
-                                    {
-                                        <li class="edit_button">
-                                            <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.StatusID,'@item.Status',@item.GiftCertificateID)" title="Print">Print</a>
-                                        </li>
-                                    }
-
-                                    if (item.IsPrinted == false & item.AllowReject == false)
-                                    {
-                                        @*@Html.EarlyWarningOperationButton(
-                                            @Url.Action("Rejected", "GiftCertificate", new {id = item.GiftCertificateID}),
-                                            EarlyWarningConstants.Operation.Reject_GiftCertificate, " <button type=\"button\" class=\"btn btn-xs btn-danger\"><span class=\"fa fa-times\"></span> " + @Html.Translate("Reject") + " </button> ", "btn-Reject-Gift", "", "btnReject")*@
-
-                                    if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Reject_GiftCertificate), DateTime.Now)
-                                        == AuthorizationType.Allow)
-                                    {
-                                        <li class="edit_button">
-                                            <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.StatusID,'@item.Status',@item.GiftCertificateID)" title="Reject">Reject</a>
-                                        </li>
+                                        if (item.IsPrinted == false & item.AllowReject == false)
+                                        {
+                                            if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Reject_GiftCertificate), DateTime.Now)
+                                                == AuthorizationType.Allow)
+                                            {
+                                                <li class="edit_button">
+                                                    <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.RejectedId,'Reject',@item.GiftCertificateID)" title="Reject">Reject</a>
+                                                </li>
                                             }
                                         }
                                     }
 
                                     @if (item.Status == "Printed")
                                     {
-                                        @*@Html.EarlyWarningOperationButton(
-                                            @Url.Action("GenerateTemplate", new {id = item.GiftCertificateID}),
-                                            EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template, "<button type=\"button\" class=\"btn btn-xs btn-primary\"><span class=\"fa fa-print\"></span> " + @Html.Translate("Print") + " </button> ", "btn-Print-gift")*@
-                                    if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template), DateTime.Now)
+                                        if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template), DateTime.Now)
                                         == AuthorizationType.Allow)
-                                    {
-                                        <li class="edit_button">
-                                            <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.StatusID,'@item.Status',@item.GiftCertificateID)" title="Print">Print</a>
-                                        </li>
+                                        {
+                                            <li class="edit_button">
+                                                <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.PrintedId,'Print',@item.GiftCertificateID)" title="Print">Print</a>
+                                            </li>
                                         }
                                     }
 
@@ -170,16 +150,12 @@
                                     {
                                         if (item.IsPrinted == false & item.AllowReject == false)
                                         {
-                                            @*@Html.EarlyWarningOperationButton(
-                                                @Url.Action("Rejected", "GiftCertificate", new { id = item.GiftCertificateID }),
-                                                EarlyWarningConstants.Operation.Reject_GiftCertificate, " <button type=\"button\" class=\"btn btn-xs btn-danger\"><span class=\"fa fa-times\"></span> " + @Html.Translate("Reject") + " </button> ", "btn-Reject-Gift", "", "btnReject")*@
-
-                                    if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Reject_GiftCertificate), DateTime.Now)
-                                        == AuthorizationType.Allow)
-                                    {
-                                        <li class="edit_button">
-                                            <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.StatusID,'@item.Status',@item.GiftCertificateID)" title="Reject">Reject</a>
-                                        </li>
+                                            if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Reject_GiftCertificate), DateTime.Now)
+                                                == AuthorizationType.Allow)
+                                            {
+                                                <li class="edit_button">
+                                                    <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.RejectedId,'Reject',@item.GiftCertificateID)" title="Reject">Reject</a>
+                                                </li>
                                             }
                                         }
                                     }
@@ -216,6 +192,18 @@
 
     <div id="cats-modal"></div>
 
+    <div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 id="modalHistoryLabel">Activity History</h4>
+                </div>
+                <div class="modal-body" id="modalHistoryBody">History</div>
+            </div>
+        </div>
+    </div>
+
 
     @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml");
 
@@ -229,9 +217,16 @@
             console.log("nextstate: " + nextstate);
             console.log("actionname: " + actionname);
             $('#ParentBusinessProcessID').val(BusinessProcessID);
+            $('#GiftCertificateID').val(GiftCertificateID);
             $('#stateID').val(nextstate);
             $('#modalPromotionLabel').html(actionname);
             $('#modalPromotion').modal();
+            $.ajax({
+                type: "POST",
+                url: 'Url.Action("' + actionname + '", "GiftCertificate")',
+                data: JSON.stringify('{giftCertificateId:' + GiftCertificateID + '}'),
+                dataType: "json"
+            });
         }
 
         function onApprove(e) {

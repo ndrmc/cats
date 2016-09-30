@@ -185,8 +185,12 @@ namespace Cats.Areas.GiftCertificate.Models
         [Display(Name="Gift Date")]
         public string GiftDatePref { get; set; }
         public bool AllowReject { get; set; }
+        public bool IsApprovable { get; set; }
         public int SiId { get; set; }
         public string Status { get; set; }
+        public int RejectedId { get; set; }
+        public int ApprovedId { get; set; }
+        public int PrintedId { get; set; }
         public int BusinessProcessID { get; set; }
     }
 }

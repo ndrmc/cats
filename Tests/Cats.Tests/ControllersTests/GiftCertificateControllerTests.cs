@@ -30,7 +30,7 @@ namespace Cats.Tests.ControllersTests
         [SetUp]
         public void Init()
         {
-           
+
             var giftDetails = new List<GiftCertificateDetail>()
                                   {
                                       new GiftCertificateDetail
@@ -85,7 +85,7 @@ namespace Cats.Tests.ControllersTests
 
             var giftCertificateService = new Mock<IGiftCertificateService>();
             giftCertificateService.Setup(t => t.IsSINumberNewOrEdit(It.IsAny<string>(), It.IsAny<int>())).Returns(true);
-            giftCertificateService.Setup(t => t.Get(It.IsAny<Expression<Func<GiftCertificate,bool>>>(),It.IsAny<Func<IQueryable<GiftCertificate>,IOrderedQueryable<GiftCertificate>>>(),It.IsAny<string>())).Returns(gifts);
+            giftCertificateService.Setup(t => t.Get(It.IsAny<Expression<Func<GiftCertificate, bool>>>(), It.IsAny<Func<IQueryable<GiftCertificate>, IOrderedQueryable<GiftCertificate>>>(), It.IsAny<string>())).Returns(gifts);
             giftCertificateService.Setup(t => t.AddGiftCertificate(It.IsAny<GiftCertificate>())).Returns(true);
             var giftCertificateDetailService = new Mock<IGiftCertificateDetailService>();
             var transactionService = new Mock<ITransactionService>();
@@ -110,7 +110,7 @@ namespace Cats.Tests.ControllersTests
             UnitOfWork _unitOfWork = new UnitOfWork();
             var log = new Mock<ILog>();
 
-            var shippingInstruction = new List<ShippingInstruction> 
+            var shippingInstruction = new List<ShippingInstruction>
                 {
                     new ShippingInstruction { ShippingInstructionID = 1, Value = "40401/32664.23"},
                     new ShippingInstruction {ShippingInstructionID = 2, Value = "00020272"}
@@ -118,14 +118,16 @@ namespace Cats.Tests.ControllersTests
             var shippingInstructionService = new Mock<IShippingInstructionService>();
             shippingInstructionService.Setup(m => m.GetAllShippingInstruction()).Returns(shippingInstruction);
 
-       //     _giftCertificateController = new GiftCertificateController(giftCertificateService.Object, giftCertificateDetailService.Object, commonService.Object,
-         //                                transactionService.Object, letterTemplateService.Object, _unitOfWork, userAccountService.Object,shippingInstructionService.Object,log.Object,null);
-          //  _giftCertificateController.ControllerContext = controllerContext.Object; 
+
+            //     _giftCertificateController = new GiftCertificateController(giftCertificateService.Object, giftCertificateDetailService.Object, commonService.Object,
+            //                                transactionService.Object, letterTemplateService.Object, _unitOfWork, userAccountService.Object,shippingInstructionService.Object,log.Object,null);
+            //  _giftCertificateController.ControllerContext = controllerContext.Object; 
+
         }
 
         [TearDown]
         public void Dispose()
-        { _giftCertificateController.Dispose();}
+        { _giftCertificateController.Dispose(); }
 
         #endregion
 
