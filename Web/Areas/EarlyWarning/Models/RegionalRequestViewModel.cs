@@ -1,5 +1,6 @@
 ﻿using Cats.Models;
 using System;
+using Cats.Models.ViewModels;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -43,6 +44,7 @@ namespace Cats.Areas.EarlyWarning.Models
 
         public string RequestedBy { get; set; }
         public string ApprovedBy { get; set; }
-        public virtual BusinessProcess BusinessProcess { get; set; }
+        public List<FlowTemplateViewModel> CurrentStateNo { get; set; }
+        public int StateId { get; set; }
     }
 }

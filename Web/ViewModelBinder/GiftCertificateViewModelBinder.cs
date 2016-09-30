@@ -37,11 +37,28 @@ namespace Cats.ViewModelBinder
             giftCertificateViewModel.DModeOfTransport = giftCertificateModel.DModeOfTransport;
             giftCertificateViewModel.Donor = giftCertificateModel.Donor.Name;
             giftCertificateViewModel.StatusID = giftCertificateModel.StatusID;
+            giftCertificateViewModel.Status = giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.Name;
             giftCertificateViewModel.DeclarationNumber = giftCertificateModel.DeclarationNumber;
             giftCertificateViewModel.GiftDatePref=giftCertificateModel.GiftDate.ToCTSPreferedDateFormat(userPrefrence);
             giftCertificateViewModel.IsPrinted = giftCertificateModel.IsPrinted;
             giftCertificateViewModel.AllowReject = giftCertificateModel.Donor.DonationPlanHeaders.Count > 0; // default
+            giftCertificateViewModel.BusinessProcessID = giftCertificateModel.BusinessProcessID;
+            giftCertificateViewModel.IsApprovable = giftCertificateModel.GiftCertificateDetails.Count > 0;
+
+            giftCertificateViewModel.RejectedId = 
+                giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a => 
+                a.Name == "Reject").Select(s => s.FinalStateID).FirstOrDefault();
+
+            giftCertificateViewModel.ApprovedId =
+                giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>
+                a.Name == "Approve").Select(s => s.FinalStateID).FirstOrDefault();
+
+            giftCertificateViewModel.PrintedId =
+                giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>
+                a.Name == "Print").Select(s => s.FinalStateID).FirstOrDefault();
+
             var giftCertificateDetail = giftCertificateModel.GiftCertificateDetails.FirstOrDefault();
+
             if (giftCertificateDetail != null)
                 giftCertificateViewModel.CommodityTypeID = giftCertificateDetail.Commodity.CommodityTypeID;
             else

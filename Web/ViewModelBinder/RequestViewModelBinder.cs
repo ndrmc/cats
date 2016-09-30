@@ -6,6 +6,7 @@ using Cats.Areas.EarlyWarning.Models;
 using Cats.Helpers;
 using Cats.Models;
 using Cats.Models.Constant;
+using Cats.Models.ViewModels;
 
 namespace Cats.ViewModelBinder
 {
@@ -44,7 +45,7 @@ namespace Cats.ViewModelBinder
             //RequestDateEt = EthiopianDate.GregorianToEthiopian(regionalRequest.RequistionDate);
             regionalRequestViewModel.MonthName = RequestHelper.GetMonthList().Find(t => t.Id == regionalRequest.Month).Name;
             regionalRequest.Month = regionalRequest.Month;
-            regionalRequestViewModel.Status = statuses.Find(t => t.WorkflowID == (int)WORKFLOW.REGIONAL_REQUEST && t.StatusID == regionalRequest.Status).Description;
+            //regionalRequestViewModel.Status = statuses.Find(t => t.WorkflowID == (int)WORKFLOW.REGIONAL_REQUEST && t.StatusID == regionalRequest.Status).Description;
             // regionalRequestViewModel. RequistionDate = regionalRequest.RequistionDate;
             regionalRequestViewModel.StatusID = regionalRequest.Status;
             if (regionalRequest.Ration != null) regionalRequestViewModel.Ration = regionalRequest.Ration.RefrenceNumber;
@@ -57,10 +58,54 @@ namespace Cats.ViewModelBinder
             if (regionalRequest.UserProfile1 != null && regionalRequest.Status == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
                 regionalRequestViewModel.ApprovedBy = regionalRequest.UserProfile1.FirstName + " " +
                                                       regionalRequest.UserProfile1.LastName;
-                regionalRequestViewModel.BusinessProcess = regionalRequest.BusinessProcess;
+            regionalRequestViewModel.BusinessProcessID = regionalRequest.BusinessProcessID;
+            if (regionalRequest.BusinessProcess != null)
+            {
+                regionalRequestViewModel.Status = regionalRequest.BusinessProcess.CurrentState.BaseStateTemplate.Name;
+                regionalRequestViewModel.CurrentStateNo =
+                    BindFlowTemplateViewModel(
+                        regionalRequest.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates)
+                        .ToList();
+                regionalRequestViewModel.StateId =
+                    BindStateTemplateViewModel(regionalRequest.BusinessProcess.CurrentState.BaseStateTemplate.Name);
+            }
             return regionalRequestViewModel;
         }
 
+        public static int BindStateTemplateViewModel(string stateName)
+        {
+            if (stateName == "Draft")
+                return 1;
+            if (stateName == "Approved")
+                return 2;
+            if (stateName == "Closed")
+                return 3;
+            if (stateName == "FederalApproved")
+                return 4;
+            if (stateName == "Rejected")
+                return 5;
+
+            return 0;
+        }
+        public static IEnumerable<FlowTemplateViewModel> BindFlowTemplateViewModel(IEnumerable<FlowTemplate> flowTemplates)
+        {
+            var flowTemplateViewModels = new List<FlowTemplateViewModel>();
+
+            foreach (var flowTemplate in flowTemplates)
+            {
+                var flowTemplateViewModel = new FlowTemplateViewModel();
+                flowTemplateViewModel.Name = flowTemplate.Name;
+                flowTemplateViewModel.FinalState = flowTemplate.FinalState.Name;
+                flowTemplateViewModel.FinalStateID = flowTemplate.FinalStateID;
+                flowTemplateViewModel.FlowTemplateID = flowTemplate.FlowTemplateID;
+                flowTemplateViewModel.InitialState = flowTemplate.InitialState.Name;
+                flowTemplateViewModel.InitialStateID = flowTemplate.InitialStateID;
+                flowTemplateViewModel.ParentProcessTemplate = flowTemplate.ParentProcessTemplate.Name;
+                flowTemplateViewModel.ParentProcessTemplateID = flowTemplate.ParentProcessTemplateID;
+                flowTemplateViewModels.Add(flowTemplateViewModel);
+            }
+            return flowTemplateViewModels;
+        }
         public static RegionalRequest BindRegionalRequest(RegionalRequestViewModel regionalRequestViewModel, RegionalRequest request = null)
         {
             if (request == null) request = new RegionalRequest();

@@ -15,7 +15,19 @@
     ViewBag.PageTitle = Html.Translate("List Of Transport Orders");
     ViewBag.PageTitleDescription = "";
 }
+<style>
+    .action-link {
+        display: none;
+    }
 
+    .assign-code3 {
+        display: block;
+    }
+
+    .k-grid td {
+        overflow: visible;
+    }
+</style>
 @section Toolbar
 {
     @*<a data-buttontype="btn_new_record" class="btn green toolbar-btn " href="@Url.Action("TransportRequisitions","TransportOrder",new {Area="Procurement"})"></a>
@@ -82,7 +94,8 @@
 <div class="portlet light bordered bg-inverse">
     <div class="portlet-title">
         <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("List Of Transport Orders")</div>
-        <div class="tools"><a href="#" class="collapse" data-original-title="" title=""></a></div>
+        <div class="tools"><a href="#" class="collapse" data-original-title="" title=""></a>
+        </div>
         <div class="actions">
             @if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Add_new_transport_order))
             {
@@ -103,8 +116,7 @@
                     {
                         <li><a class="btn green-sharp-stripe" id="btnReverseRequsition" href="@Url.Action("RevertRequsitions", "TransportOrder", new {Area = "Procurement"})">@Html.Translate("Revert Requsitions")</a></li>
                     }
-                    @*<li><a href="#"></a></li>*@
-                </ul>
+                    @*<li><a href="#"></a></li>*@</ul>
 
             </div>
             <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
@@ -116,89 +128,87 @@
                 <div class="form-group form-md-line-input col-md-2">
                     <label class="col-md-4 control-label">@Html.Translate("Program")</label>
                     <div class="col-md-8">
-                        @Html.DropDownList("ProgramID", null, new { @class = "form-control" })
+                        @Html.DropDownList("ProgramID", null, new {@class = "form-control"})
                     </div>
                 </div>
                 <div class="form-group form-md-line-input col-md-2">
                     <label class="col-md-4 control-label">@Html.Translate("Status")</label>
                     <div class="col-md-8">
-                        @Html.DropDownList("StatusID", null, new { @class = "form-control" })
+                        @Html.DropDownList("StatusID", null, new {@class = "form-control"})
                     </div>
                 </div>
                 <div class="form-group form-md-line-input col-md-3">
                     <label class="col-md-4 control-label">@Html.Translate("Region")</label>
                     <div class="col-md-8">
-                        @Html.DropDownList("RegionID", null, new { @class = "form-control" })
+                        @Html.DropDownList("RegionID", null, new {@class = "form-control"})
                     </div>
                 </div>
             </div>
         </div>
         @(Html.Kendo().Grid<TransportOrderViewModel>().Name("Grid").Columns(columns =>
-    {
-        columns.Template(t => { }).Title("No").ClientTemplate(
-            "#= renderNumber(data) #").Width(25);
-        columns.Bound(to => to.ContractNumber).Title(@Html.Translate("Contract Number")).Width(140).ClientTemplate("<a href='" + Url.Action("OrderDetail", "TransportOrder", new {Area = "Procurement", id = "#=TransportOrderID#"}) + " '>#=ContractNumber#</a>  ").HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
-        //columns.Bound(to => to.TransportOrderNo).ClientTemplate("<a href='" + Url.Action("Details", "TransportOrder", new { Area = "Procurement", id = "#=TransportOrderID#" }) + " '>#=TransportOrderNo#</a>  ").HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;" });
-        columns.Bound(to => to.Transporter).Width(140).Title(@Html.Translate("Transporter"));
-        columns.Bound(to => to.BidDocumentNo).Width(65).Title(Html.Translate("Bid Document #")).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
-        //columns.Bound(to => to.OrderDateET).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
-        // columns.Bound(to => to.OrderExpiryDateET).Title(Html.Translate("Order Expiry Date")).Width(60).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;"});
-        columns.Bound(to => to.StartDate).Width(60).Title(Html.Translate("Start Date")).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;"});
-        columns.Bound(to => to.EndDate).Width(60).Title(Html.Translate("End Date")).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;"});
-        // columns.Bound(to => to.RequestedDispatchDateET).Title(Html.Translate("Requested Dispatch Date")).Width(60).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;"});
-        columns.Bound(to => to.TransportOrderNo).Title(Html.Translate("Transport Order No")).Width(80).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
-        ;
-        columns.Bound(to => to.Status).Title(Html.Translate("Status")).Width(45).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
-        ;
-        //columns.Command(p =>
-        //{
+          {
+              columns.Template(t => { }).Title("No").ClientTemplate(
+                  "#= renderNumber(data) #").Width(25);
+              columns.Bound(to => to.ContractNumber).Title(@Html.Translate("Contract Number")).Width(140).ClientTemplate("<a href='" + Url.Action("OrderDetail", "TransportOrder", new {Area = "Procurement", id = "#=TransportOrderID#"}) + " '>#=ContractNumber#</a>  ").HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
+              //columns.Bound(to => to.TransportOrderNo).ClientTemplate("<a href='" + Url.Action("Details", "TransportOrder", new { Area = "Procurement", id = "#=TransportOrderID#" }) + " '>#=TransportOrderNo#</a>  ").HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;" });
+              columns.Bound(to => to.Transporter).Width(140).Title(@Html.Translate("Transporter"));
+              columns.Bound(to => to.BidDocumentNo).Width(65).Title(Html.Translate("Bid Document #")).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
+              //columns.Bound(to => to.OrderDateET).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
+              // columns.Bound(to => to.OrderExpiryDateET).Title(Html.Translate("Order Expiry Date")).Width(60).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;"});
+              columns.Bound(to => to.StartDate).Width(60).Title(Html.Translate("Start Date")).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;"});
+              columns.Bound(to => to.EndDate).Width(60).Title(Html.Translate("End Date")).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;"});
+              // columns.Bound(to => to.RequestedDispatchDateET).Title(Html.Translate("Requested Dispatch Date")).Width(60).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;"});
+              columns.Bound(to => to.TransportOrderNo).Title(Html.Translate("Transport Order No")).Width(80).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
+              ;
+              columns.Bound(to => to.Status).Title(Html.Translate("Status")).Width(45).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
+              ;
+              //columns.Command(p =>
+              //{
 
-        //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transport_order))
-        //{
-        //    p.Custom("Approve").Click("onApprove");
-        //}
-        //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Sign_transport_order))
-        //{
-        //    p.Custom("Signed").Click("onSigned");
-        //}
-        //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Edit_transport_order))
-        //{
-        //    p.Custom("Edit").Click("onEdit");
-        //}
-        //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Revert_transport_order))
-        //{
-        //    p.Custom("Revert TO").Click("onRevert");
-        //}
-        //}).Width(100);
-        columns.Bound(trasportOrder => trasportOrder.Status).Title("Actions")
-             .ClientTemplate(
-             @"<div class='btn-group'>
-                <button type='button' id='workflow-#=RequisitionId#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
+              //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transport_order))
+              //{
+              //    p.Custom("Approve").Click("onApprove");
+              //}
+              //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Sign_transport_order))
+              //{
+              //    p.Custom("Signed").Click("onSigned");
+              //}
+              //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Edit_transport_order))
+              //{
+              //    p.Custom("Edit").Click("onEdit");
+              //}
+              //if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Revert_transport_order))
+              //{
+              //    p.Custom("Revert TO").Click("onRevert");
+              //}
+              //}).Width(100);
+              columns.Bound(trasportOrder => trasportOrder.Status).Title("Actions")
+                  .ClientTemplate(
+                      @"<div class='btn-group'>
+                <button type='button' id='workflow-#=TransportOrderID#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
                     <i class='fa fa-ellipsis-horizontal'></i>Workflow<i class='fa fa-angle-down'></i>
                 </button>
                 <ul class='dropdown-menu pull-right' style='overflow: visible;'>" +
-                 "# if ('data.Status' == 'Project Code Assigned') { #" +
-                     "# if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transport_order) + "' == 'true') { #" +
-                         "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=UncommitStateID#','Uncommit','#=TransportOrderID#')\" title='Reject Requisition'>Uncommit</a></li>" +
-                     " # } #" +
-                     "# if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Sign_transport_order) + "' == 'true') { #" +
-                         "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=ApproveStateID#','Approve','#=TransportOrderID#')\" title='Approve Requisition'>Approve</a></li>" +
-                     " # } #" +
-                 " # } #" +
-                  " # if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Edit_transport_order) + "' == 'true') { #" +
-                     "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
-                 " # } #" +
-                 " # if ('" + UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Revert_transport_order) + "' == 'true') { #" +
-                     "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
-                 " # } #" +
+                      "# if (Status == 'Approved') { #" +
+                      "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_transport_order).ToString() + "' == 'Approve_transport_order') { #" +
+                      "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=SignStateID#','Sign','#=TransportOrderID#')\" title='Sign Transport Order'>Sign</a></li>" +
+                      " # } #" + " # } #" +
+                      "# if (Status == 'Draft') { #" +
+                      "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_transport_order).ToString() + "' == 'Approve_transport_order') { #" +
+                      "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=ApproveStateID#','Approve','#=TransportOrderID#')\" title='Approve TransportOrder'>Approve</a></li>" +
+                      " # } #" + " # } #" +
 
-             "</ul></div>");
+                      " # if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_transport_order).ToString() + "' == 'Approve_transport_order') { #" +
+                      "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
+                      " # } #" +
+
+                      "</ul></div>");
 
 
-    })
+          })
 
               .Filterable()
-              .Sortable().TableHtmlAttributes(new {@class="table table-condensed"})
+              .Sortable().TableHtmlAttributes(new {@class = "table table-condensed"})
               .Events(e => e.DataBound("onDataBound"))
               .DataSource(dataSource => dataSource
                   .Ajax()
@@ -209,7 +219,20 @@
               )
     </div>
 </div>
-    <div>
+
+<div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id="modalHistoryLabel">Activity History</h4>
+            </div>
+            <div class="modal-body" id="modalHistoryBody">History</div>
+
+        </div>
+    </div>
+</div>
+<div>
         <hr/>
         @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
     </div>

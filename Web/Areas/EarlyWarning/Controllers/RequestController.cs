@@ -1217,10 +1217,13 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 GetAllRegionalRequest()
                 .OrderByDescending(m => m.RegionalRequestID) :
                 _regionalRequestService
-                .Get(m => m.RegionID == RegionID && m.ProgramId == ProgramID && m.Status == StatusID && m.RequistionDate >= DateFrom && m.RequistionDate <= DateTo);
+                .Get(m => m.RegionID == RegionID && m.ProgramId == ProgramID && m.RequistionDate >= DateFrom && m.RequistionDate <= DateTo);
+
             var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             var requestViewModels = RequestViewModelBinder.BindRegionalRequestListViewModel(requests, statuses, datePref);
+            //  var j = requestViewModels.FirstOrDefault().C
+            requestViewModels = requestViewModels.Where(t => t.StateId == StatusID);
             return Json(requestViewModels.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
