@@ -118,8 +118,8 @@ namespace Cats.Tests.ControllersTests
             var shippingInstructionService = new Mock<IShippingInstructionService>();
             shippingInstructionService.Setup(m => m.GetAllShippingInstruction()).Returns(shippingInstruction);
 
-            _giftCertificateController = new GiftCertificateController(giftCertificateService.Object, giftCertificateDetailService.Object, commonService.Object,
-                                         transactionService.Object, letterTemplateService.Object, _unitOfWork, userAccountService.Object,shippingInstructionService.Object,log.Object,null);
+            //_giftCertificateController = new GiftCertificateController(giftCertificateService.Object, giftCertificateDetailService.Object, commonService.Object,
+            //                             transactionService.Object, letterTemplateService.Object, _unitOfWork, userAccountService.Object,shippingInstructionService.Object,log.Object,null);
             _giftCertificateController.ControllerContext = controllerContext.Object; 
         }
 

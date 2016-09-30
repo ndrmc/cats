@@ -73,7 +73,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             ViewBag.Title = id == 1 ? "Draft Gift Certificates" : "Approved Gift Certificates";
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var gifts = _giftCertificateService.Get(null, null, "GiftCertificateDetails,Donor,GiftCertificateDetails.Detail,GiftCertificateDetails.Commodity");
+            var gifts = _giftCertificateService.Get(b => b.BusinessProcessID != 1, null, "GiftCertificateDetails,Donor,GiftCertificateDetails.Detail,GiftCertificateDetails.Commodity, BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate");
             var giftsViewModel = GiftCertificateViewModelBinder.BindListGiftCertificateViewModel(gifts.ToList(), datePref, true);
             var user = UserAccountHelper.GetUser(HttpContext.User.Identity.Name);
             var roles = _userAccountService.GetUserPermissions(user.UserName);
@@ -193,7 +193,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     ViewBag.Season = new SelectList(_seasonService.GetAllSeason(), "SeasonID", "Name");
                     //ViewBag.TypeOfNeed = new SelectList(_typeOfNeedAssessmentService.GetAllTypeOfNeedAssessment(),
                     //                                    "TypeOfNeedAssessmentID", "TypeOfNeedAssessment1");
-                    ViewBag.Error = "Gift Certificate Already Exists Please Change Plan Name or Region Name";
+                    ViewBag.Error = "Gift Certificate Already Exists Please Change Name";
                     ModelState.AddModelError("Errors", ViewBag.Error);
 
                     return View();
@@ -208,7 +208,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [HttpPost]
         public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
         {
-            var fileName = "";
+            var fileName = string.Empty;
             if (st.AttachmentFile.HasFile())
             {
                 //save the file
