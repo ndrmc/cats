@@ -935,6 +935,10 @@ namespace Cats.Areas.Hub.Controllers
 
                 return RedirectToAction("Index");
             }
+            else
+            {
+                ModelState.AddModelError("DispatchDetails", @"Please fill all the required fields.");
+            }
             //List<Models.DispatchDetailModel> details = GetSelectedCommodities(dispatchModel.JSONInsertedCommodities);
             //Session["SELCOM"] = details;
 

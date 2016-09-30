@@ -58,6 +58,7 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.DispatchDate, new { @class = "cats-datepicker2" })
+                    @Html.ValidationMessageFor(model => model.DispatchDate)
                 </div>
             </div>
 
@@ -67,6 +68,7 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.DispatchedByStoreMan)
+                    @Html.ValidationMessageFor(model => model.DispatchedByStoreMan)
                 </div>
             </div>
 
@@ -315,6 +317,7 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.DriverName)
+                    @Html.ValidationMessageFor(model => model.DriverName)
                 </div>
             </div>
 
@@ -325,6 +328,7 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.PlateNo_Prime)
+                    @Html.ValidationMessageFor(model => model.PlateNo_Prime)
                 </div>
             </div>
             <div class="control-group">
@@ -352,6 +356,7 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.WeighBridgeTicketNumber)
+                    @Html.ValidationMessageFor(model => model.WeighBridgeTicketNumber)
                 </div>
             </div>
             <div class="control-group">
@@ -360,6 +365,7 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.PlateNo_Trailer)
+                    @Html.ValidationMessageFor(model => model.PlateNo_Trailer)
                 </div>
                
             </div>

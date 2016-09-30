@@ -772,10 +772,13 @@ namespace Cats.Models.Hubs
         public string Remark { get; set; }
 
         public int Type { get; set; }
-         [Display(Name = "Quantity In Unit")]
+        [Display(Name = "Quantity In Unit")]
+        [Required(ErrorMessage = "Dispatched quantity in unit is a required field")]
         public decimal QuantityInUnit { get; set; }
+        [Required(ErrorMessage = "Dispatched quantity in quintal is a required field")]
         public decimal Quantity { get; set; }
         [Display(Name = "Unit")]
+        [Required(ErrorMessage = "Unit is a required field")]
         public int UnitID { get; set; }
         public string Unit { get; set; }
         
