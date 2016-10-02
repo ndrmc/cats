@@ -43,12 +43,14 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly IAdminUnitService _adminUnitService;
         private readonly ISeasonService _seasonService;
         private readonly ITypeOfNeedAssessmentService _typeOfNeedAssessmentService;
+        private readonly IStateTemplateService _stateTemplateService;
         public GiftCertificateController(IGiftCertificateService giftCertificateService, IGiftCertificateDetailService giftCertificateDetailService,
                                          ICommonService commonService, ITransactionService transactionService, ILetterTemplateService letterTemplateService,
                                          IUnitOfWork unitofwork, IUserAccountService userAccountService, IShippingInstructionService shippingInstructionService, ILog log, IApplicationSettingService applicationSettingService,
                                          IBusinessProcessService businessProcessService, IPlanService planService,
                                           IAdminUnitService adminUnitService, ISeasonService seasonService,
-                                          ITypeOfNeedAssessmentService typeOfNeedAssessmentService, IDonationPlanHeaderService donationPlanHeaderService)
+                                          ITypeOfNeedAssessmentService typeOfNeedAssessmentService, IDonationPlanHeaderService donationPlanHeaderService,
+                                          IStateTemplateService stateTemplateService)
         {
             _giftCertificateService = giftCertificateService;
             _giftCertificateDetailService = giftCertificateDetailService;
@@ -66,6 +68,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _adminUnitService = adminUnitService;
             _seasonService = seasonService;
             _typeOfNeedAssessmentService = typeOfNeedAssessmentService;
+            _stateTemplateService = stateTemplateService;
         }
 
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_Gift_Certificate_list)]
@@ -209,19 +212,23 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
         {
             var fileName = string.Empty;
+
             if (st.AttachmentFile.HasFile())
             {
                 //save the file
                 fileName = st.AttachmentFile.FileName;
                 var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+
                 if (System.IO.File.Exists(path))
                 {
                     var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
                     fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
                     path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
                 }
+
                 st.AttachmentFile.SaveAs(path);
             }
+
             var businessProcessState = new BusinessProcessState()
             {
                 StateID = st.StateID,
@@ -232,7 +239,28 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 ParentBusinessProcessID = st.ParentBusinessProcessID
             };
 
-            _businessProcessService.PromotWorkflow(businessProcessState);
+            var giftCertificate = _giftCertificateService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
+            string stateName = _stateTemplateService.FindById(st.StateID).Name;
+
+            if (giftCertificate != null)
+            {
+                int giftCertificateId = giftCertificate.GiftCertificateID;
+
+                if (stateName == "Draft" && OnReject(giftCertificateId))
+                {
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+
+                if (stateName == "Rejected" && OnReject(giftCertificateId))
+                {
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+
+                if (stateName == "Approved" && OnApprove(giftCertificateId))
+                {
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+            }
 
             if (statusId != null)
                 return RedirectToAction("Detail", "GiftCertificate", new { Area = "EarlyWarning", statusId });
@@ -378,8 +406,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             return View(GiftCertificateViewModelBinder.BindGiftCertificateViewModel(giftcertificate, datePref));
         }
-
-
+        
         [HttpPost, ActionName("Delete")]
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Delete_Gift_Certificate)]
         public ActionResult DeleteConfirmed(int id)
@@ -553,6 +580,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult LetterTemplate(int giftceritificateId)
         {
             ViewData["giftcertficateId"] = giftceritificateId;
+
             return View();
         }
 
@@ -560,7 +588,6 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult ShowLetterTemplates([DataSourceRequest] DataSourceRequest request)
         {
             return Json(_letterTemplateService.GetAllLetterTemplates().ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
-
         }
         public void ShowTemplate(string fileName, int giftCertificateId)
         {
@@ -569,54 +596,72 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 var template = new TemplateHelper(_unitofwork, _log);
                 string filePath = template.GenerateTemplate(giftCertificateId, 1, fileName); //here you have to send the name of the tempalte and the id of the giftcertificate
-
-
+                
                 Response.Clear();
                 Response.ContentType = "application/text";
                 Response.AddHeader("Content-Disposition", @"filename= " + fileName + ".docx");
                 Response.TransmitFile(filePath);
                 Response.End();
 
-                bool result = _transactionService.PrintedGiftCertificate(giftCertificateId);
-
-                var giftCertificate = _giftCertificateService.Get(t => t.GiftCertificateID == giftCertificateId, null,
-                    "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
-
-                if (giftCertificate != null && result)
-                {
-                    var approveFlowTemplate = giftCertificate.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Print");
-                    if (approveFlowTemplate != null)
-                    {
-                        var businessProcessState = new BusinessProcessState()
-                        {
-                            StateID = approveFlowTemplate.FinalStateID,
-                            PerformedBy = HttpContext.User.Identity.Name,
-                            DatePerformed = DateTime.Now,
-                            Comment = "GiftCertificate has been printed",
-                            //AttachmentFile = fileName,
-                            ParentBusinessProcessID = giftCertificate.BusinessProcessID
-                        };
-
-                        //_giftCertificateService.EditGiftCertificate(giftCertificate);
-                        _businessProcessService.PromotWorkflow(businessProcessState);
-                    }
-                }
-
+                var result = _transactionService.PrintedGiftCertificate(giftCertificateId);
             }
             catch (Exception ex)
             {
                 _log.Error(ex.Message.ToString(CultureInfo.InvariantCulture), ex.GetBaseException());
                 //System.IO.File.AppendAllText(@"c:\temp\errors.txt", " ShowTemplate : " + ex.Message.ToString(CultureInfo.InvariantCulture));
-
             }
-
-
         }
         protected override void Dispose(bool disposing)
         {
             _giftCertificateService.Dispose();
         }
 
+        #region Transaction process methods - these will be called upon workflow promotion
+
+        public bool OnApprove(int giftCertificateId)
+        {
+            return _transactionService.PostGiftCertificate(giftCertificateId);
+        }
+        public bool OnReject(int giftCertificateId)
+        {
+            var giftCertificate = _giftCertificateService.FindById(giftCertificateId);
+            int donationHeaderCount = _giftCertificateService.FindById(giftCertificateId).Donor.DonationPlanHeaders.Count;
+
+            if (donationHeaderCount > 0 || giftCertificate.IsPrinted) // if any approved or commited receipt plan is found under this giftcertificate, then don't revert 
+            {
+                return false;
+            }
+
+            var donations =
+             _donationPlanHeaderService.GetAllDonationPlanHeader()
+                 .Where(d => d.ShippingInstructionId == _giftCertificateService.FindById(giftCertificateId).ShippingInstructionID);
+
+            // find all receipt plans that are not commited or approved under this giftcertificate
+            // and revert them all
+            if (donationHeaderCount > 0)
+            {
+                foreach (var donation in donations.ToList())
+                {
+                    if (donation.IsCommited == true)
+                    {
+                        if (_donationPlanHeaderService.DeleteReceiptAllocation(donation))
+                        {
+                            donation.IsCommited = false;
+                            _donationPlanHeaderService.EditDonationPlanHeader(donation);
+                        }
+                    }
+                }
+            }
+
+            // now revert the giftcertificate itself
+            return _transactionService.RevertGiftCertificate(giftCertificateId);
+        }
+        public bool OnPrint(int giftCertificateId)
+        {
+            return true;
+        }
+
+        #endregion
 
         [HttpGet]
         public JsonResult AutoCompleteSiNumber(string term)
