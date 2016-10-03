@@ -20,7 +20,6 @@ using Cats.Models.ViewModels;
 using Cats.Security;
 using Cats.Services.Logistics;
 using log4net;
-using NetSqlAzMan.Providers;
 using GiftCertificateViewModel = Cats.Areas.GiftCertificate.Models.GiftCertificateViewModel;
 
 namespace Cats.Areas.EarlyWarning.Controllers
@@ -406,7 +405,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             return View(GiftCertificateViewModelBinder.BindGiftCertificateViewModel(giftcertificate, datePref));
         }
-        
+
         [HttpPost, ActionName("Delete")]
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Delete_Gift_Certificate)]
         public ActionResult DeleteConfirmed(int id)
@@ -596,7 +595,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 var template = new TemplateHelper(_unitofwork, _log);
                 string filePath = template.GenerateTemplate(giftCertificateId, 1, fileName); //here you have to send the name of the tempalte and the id of the giftcertificate
-                
+
                 Response.Clear();
                 Response.ContentType = "application/text";
                 Response.AddHeader("Content-Disposition", @"filename= " + fileName + ".docx");
@@ -635,6 +634,23 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var donations =
              _donationPlanHeaderService.GetAllDonationPlanHeader()
                  .Where(d => d.ShippingInstructionId == _giftCertificateService.FindById(giftCertificateId).ShippingInstructionID);
+
+            // find all receipt plans that are not commited or approved under this giftcertificate
+            // and revert them all
+            if (donationHeaderCount > 0)
+            {
+                foreach (var donation in donations.ToList())
+                {
+                    if (donation.IsCommited == true)
+                    {
+                        if (_donationPlanHeaderService.DeleteReceiptAllocation(donation))
+                        {
+                            donation.IsCommited = false;
+                            _donationPlanHeaderService.EditDonationPlanHeader(donation);
+                        }
+                    }
+                }
+            }
 
             // find all receipt plans that are not commited or approved under this giftcertificate
             // and revert them all
