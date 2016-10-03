@@ -76,7 +76,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             ViewBag.Title = id == 1 ? "Draft Gift Certificates" : "Approved Gift Certificates";
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var gifts = _giftCertificateService.Get(b => b.BusinessProcessID != 1, null, "GiftCertificateDetails,Donor,GiftCertificateDetails.Detail,GiftCertificateDetails.Commodity, BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate");
+            var gifts = _giftCertificateService.Get(null, null, "GiftCertificateDetails,Donor,GiftCertificateDetails.Detail,GiftCertificateDetails.Commodity, BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate");
             var giftsViewModel = GiftCertificateViewModelBinder.BindListGiftCertificateViewModel(gifts.ToList(), datePref, true);
             var user = UserAccountHelper.GetUser(HttpContext.User.Identity.Name);
             var roles = _userAccountService.GetUserPermissions(user.UserName);
