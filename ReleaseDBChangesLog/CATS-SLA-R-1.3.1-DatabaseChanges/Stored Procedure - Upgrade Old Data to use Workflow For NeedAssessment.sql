@@ -18,7 +18,7 @@ IF COL_LENGTH('EarlyWarning.NeedAssessment','BusinessProcessID') IS NULL
 BEGIN
 	ALTER TABLE [EarlyWarning].[NeedAssessment]
 	ADD BusinessProcessID INT NOT NULL
-	CONSTRAINT BP_Default_0 DEFAULT 0 WITH VALUES;
+	CONSTRAINT BP_Default_1 DEFAULT 0 WITH VALUES;
 END
 
 IF EXISTS(
