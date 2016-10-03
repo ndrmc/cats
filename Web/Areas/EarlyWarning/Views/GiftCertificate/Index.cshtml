@@ -56,10 +56,9 @@
                 </div>
                 <div class="text-right col-md-8">
 
-                    @Html.EarlyWarningOperationButton(
-                @Url.Action("Create", "GiftCertificate", new { Area = "EarlyWarning" }),
-                EarlyWarningConstants.Operation.New_Gift_Certificate, "<button type=\"button\" class=\"btn btn-success\"><span class=\"fa fa-plus\"></span> " + @Html.Translate("New Gift Certificate") + " </button>", "btn btn-success", "btn_new_record")
-
+                    @Html.EarlyWarningOperationButton(@Url.Action("Create", "GiftCertificate", new { Area = "EarlyWarning" }),
+                EarlyWarningConstants.Operation.New_Gift_Certificate, "<button type=\"button\" class=\"btn btn-success\"><span class=\"fa fa-plus\"></span> " +
+                @Html.Translate("New Gift Certificate") + " </button>", "btn btn-success", "btn_new_record")
 
                 </div>
 
@@ -86,12 +85,24 @@
                             @if (item.Status == "Draft")
                             {
                                 @Html.EarlyWarningOperationButton(
-                                          @Url.Action("Edit", new { id = item.GiftCertificateID }),
-                                          EarlyWarningConstants.Operation.Edit_Gift_Certificate, " <button type=\"button\" class=\"btn btn-xs btn-warning\"><span class=\"fa fa-pencil-square-o\"></span> " + @Html.Translate("Edit") + "</button> ")
+                                    @Url.Action("Edit", new { id = item.GiftCertificateID }),
+                                    EarlyWarningConstants.Operation.Edit_Gift_Certificate,
+                                    " <button type=\"button\" class=\"btn btn-xs btn-warning\"><span class=\"fa fa-pencil-square-o\"></span> " +
+                                    @Html.Translate("Edit") + "</button> ")
 
                                 @Html.EarlyWarningOperationButton(
-                                          @Url.Action("Detail", new { id = item.GiftCertificateID }),
-                                          EarlyWarningConstants.Operation.Edit_Gift_Certificate, " <button type=\"button\" class=\"btn btn-xs btn-primary\"><span class=\"fa fa-list\"></span>" + @Html.Translate("Detail") + " </button> ")
+                                    @Url.Action("Detail", new { id = item.GiftCertificateID }),
+                                    EarlyWarningConstants.Operation.Edit_Gift_Certificate,
+                                    " <button type=\"button\" class=\"btn btn-xs btn-primary\"><span class=\"fa fa-list\"></span>" +
+                                    @Html.Translate("Detail") + " </button> ")
+                            }
+                            else
+                            {
+                                @Html.EarlyWarningOperationButton(
+                                    @Url.Action("GenerateTemplate", new { id = item.GiftCertificateID }),
+                                    EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template,
+                                    "<button type=\"button\" class=\"btn btn-xs btn-primary\"><span class=\"fa fa-print\"></span> " +
+                                    @Html.Translate("Print") + " </button> ", "btn-Print-gift")
                             }
 
                             <div class='btn-group'>
@@ -102,7 +113,7 @@
 
                                 <ul class='dropdown-menu pull-right' style='overflow: visible;'>
 
-                                    @if (item.Status == "Draft")
+                                    @if (item.Status == "Draft" && item.IsApprovable)
                                     {
                                         if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Approve_Gift_Certeficate), DateTime.Now)
                                             == AuthorizationType.Allow && item.IsApprovable)
@@ -115,14 +126,6 @@
 
                                     @if (item.Status == "Approved")
                                     {
-                                        if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template), DateTime.Now)
-                                            == AuthorizationType.Allow)
-                                        {
-                                            <li class="edit_button">
-                                                <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.PrintedId,'Print',@item.GiftCertificateID)" title="Print">Print</a>
-                                            </li>
-                                        }
-
                                         if (item.IsPrinted == false & item.AllowReject == false)
                                         {
                                             if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Reject_GiftCertificate), DateTime.Now)
@@ -135,26 +138,15 @@
                                         }
                                     }
 
-                                    @if (item.Status == "Printed")
-                                    {
-                                        if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template), DateTime.Now)
-                                        == AuthorizationType.Allow)
-                                        {
-                                            <li class="edit_button">
-                                                <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.PrintedId,'Print',@item.GiftCertificateID)" title="Print">Print</a>
-                                            </li>
-                                        }
-                                    }
-
                                     @if (item.Status == "Rejected")
                                     {
                                         if (item.IsPrinted == false & item.AllowReject == false)
                                         {
-                                            if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Reject_GiftCertificate), DateTime.Now)
+                                            if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Approve_Gift_Certeficate), DateTime.Now)
                                                 == AuthorizationType.Allow)
                                             {
                                                 <li class="edit_button">
-                                                    <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.RejectedId,'Reject',@item.GiftCertificateID)" title="Reject">Reject</a>
+                                                    <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.ApprovedId,'Approve',@item.GiftCertificateID)" title="Approve">Approve</a>
                                                 </li>
                                             }
                                         }
