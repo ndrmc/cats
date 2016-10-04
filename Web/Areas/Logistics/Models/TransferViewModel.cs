@@ -36,6 +36,9 @@ namespace Cats.Areas.Logistics.Models
         public string SourceSwapName { get; set; }
         public int DestinationSwap { get; set; }
         public string DestinationSwapName { get; set; }
+        public string Status { get; set; }
+        public int ApprovedId { get; set; }
+        public int RejectedId { get; set; }
         public int BusinessProcessID { get; set; }
         public virtual BusinessProcess BusinessProcess { get; set; }
     }

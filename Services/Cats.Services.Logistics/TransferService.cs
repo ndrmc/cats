@@ -70,6 +70,7 @@ namespace Cats.Services.Logistics
                {
                    transfer.StatusID = (int) LocalPurchaseStatus.Approved;
                    _unitOfWork.TransferRepository.Edit(transfer);
+
                    var reciptAllocaltion = new ReceiptAllocation()
                    {
                        ReceiptAllocationID = Guid.NewGuid(),
@@ -85,6 +86,7 @@ namespace Cats.Services.Logistics
                        PartitionId = 0,
                        IsCommited = false
                    };
+
                    _unitOfWork.ReceiptAllocationReository.Add(reciptAllocaltion);
                    _unitOfWork.Save();
 

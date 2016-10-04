@@ -15,12 +15,14 @@ namespace Cats.Services.Common
         {
             this._unitOfWork = unitOfWork;
         }
+
         public bool AddApplicationSetting(ApplicationSetting item)
         {
             _unitOfWork.ApplicationSettingRepository.Add(item);
             _unitOfWork.Save();
             return true;
         }
+
         public bool UpdateApplicationSetting(ApplicationSetting item)
         {
             if (item == null) return false;
@@ -28,6 +30,7 @@ namespace Cats.Services.Common
             _unitOfWork.Save();
             return true;
         }
+
         public bool DeleteApplicationSetting(ApplicationSetting item)
         {
             if (item == null) return false;
@@ -35,25 +38,30 @@ namespace Cats.Services.Common
             _unitOfWork.Save();
             return true;
         }
+
         public bool DeleteById(int id)
         {
             var item = _unitOfWork.ApplicationSettingRepository.FindById(id);
             return DeleteApplicationSetting(item);
         }
+
         public ApplicationSetting FindById(int id)
         {
             return _unitOfWork.ApplicationSettingRepository.FindById(id);
         }
+
         public List<ApplicationSetting> GetAllApplicationSetting()
         {
             return _unitOfWork.ApplicationSettingRepository.GetAll();
 
         }
+
         public List<ApplicationSetting> FindBy(Expression<Func<ApplicationSetting, bool>> predicate)
         {
             return _unitOfWork.ApplicationSettingRepository.FindBy(predicate);
 
         }
+
         public string FindValue(string name)
         {
             List<ApplicationSetting> ret = FindBy(t => t.SettingName == name);
@@ -64,6 +72,7 @@ namespace Cats.Services.Common
             return "";
 
         }
+
         public void SetValue(string name, string value)
         {
             List<ApplicationSetting> ret = FindBy(t => t.SettingName == name);
@@ -73,10 +82,11 @@ namespace Cats.Services.Common
                 UpdateApplicationSetting(ret[0]);
                 return;
             }
-            ApplicationSetting apset = new ApplicationSetting { SettingName = name, SettingValue = value };
+            ApplicationSetting apset = new ApplicationSetting {SettingName = name, SettingValue = value};
             AddApplicationSetting(apset);
 
         }
+
         private int getIntValue(string name)
         {
             int val = 0;
@@ -84,25 +94,32 @@ namespace Cats.Services.Common
             {
                 val = Int32.Parse(FindValue(name));
             }
-            catch (Exception e) { }
+            catch (Exception e)
+            {
+            }
             return val;
         }
+
         public int getPSNPWorkflow()
         {
             return getIntValue("PSNPWorkflow");
         }
+
         public int getPaymentRequestWorkflow()
         {
             return getIntValue("TransporterPaymentRequestWorkflow");
         }
+
         public int getRegionalRequestWorkflow()
         {
             return getIntValue("RegionalRequestWorkflow");
         }
+
         public int getTransporterChequeWorkflow()
         {
             return getIntValue("TransporterChequeWorkflow");
         }
+
         public int getBidWinnerWorkflow()
         {
             return getIntValue("BidWinnerWorkflow");
@@ -117,26 +134,32 @@ namespace Cats.Services.Common
         {
             return getIntValue("NeedAssessmentPlanWorkflow");
         }
+
         public int getNeedAssessmentWorkflow()
         {
             return getIntValue("NeedAssessmentWorkflow");
         }
+
         public int getReliefRequisitionWorkflow()
         {
             return getIntValue("ReliefRequisitionWorkflow");
         }
+
         public int getTransportOrderWorkflow()
         {
             return getIntValue("TransportOrderWorkflow");
         }
+
         public int getHRDWorkflow()
         {
             return getIntValue("HRDWorkflow");
         }
+
         public int getReciptPlanForLoanWorkflow()
         {
             return getIntValue("ReciptPlanForLoanWorkflow");
         }
+
         public int GetLocalPurchaseReceiptPlanWorkflow()
         {
             return getIntValue("LocalPurchaseReceiptPlanWorkflow");
@@ -157,13 +180,20 @@ namespace Cats.Services.Common
             return getIntValue("DonationPlanHeaderWorkflow");
         }
 
+
         public int getGiftCertificateWorkflow()
         {
             return getIntValue("GiftCertificateWorkflow");
         }
+
         public int getBidPlanWorkflow()
         {
             return getIntValue("BidWinnerWorkflow");
         }
-    }  
+
+        public int getTransferReceiptPlanWorkflow()
+        {
+            return getIntValue("TranferReceiptPlanWorkflow");
+        }
+    }
 }
