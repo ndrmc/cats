@@ -81,26 +81,29 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (id == "")
                 plans =
                     _planService.Get(
-                        m => m.Program.Name == "Relief" && m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft"
-                        || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "AssessmentCreated",
-                        null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                        m =>
+                            m.Program.Name == "Relief" &&
+                            m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft"
+                            || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "AssessmentCreated",
+                        null,
+                        "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
                         .OrderByDescending(m => m.PlanID)
                         .ToList();
-                    //_planService.Get(
-                    //    m => m.Program.Name == "Relief" && (m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft" 
-                    //    || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "AssessmentCreated"),
-                    //    null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
-                    //    .OrderByDescending(m => m.PlanID)
-                    //    .ToList();
             else
                 plans =
                     _planService.Get(
-                        m => needAssessment.Contains(m.PlanID) && m.Program.Name == "Relief" && 
-                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == id, null,
+                        m => needAssessment.Contains(m.PlanID) && m.Program.Name == "Relief" &&
+                             m.BusinessProcess.CurrentState.BaseStateTemplate.Name == id, null,
                         "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
                         .OrderByDescending(m => m.PlanID)
                         .ToList();
 
+            foreach (var plan in plans)
+            {
+                var assessment = needAssessment as IList<int> ?? needAssessment.ToList();
+                if (assessment.Contains(plan.PlanID)) plan.NeedAssessmentCreated = true;
+                else plan.NeedAssessmentCreated = false;
+            }
             //Commented out as there is no need of model binding for the needs assessment plan
             //var statuses = _commonService.GetStatus(WORKFLOW.Plan);
             //var needAssesmentsViewModel = NeedAssessmentViewModelBinder.GetNeedAssessmentPlanInfo(plans, statuses);
