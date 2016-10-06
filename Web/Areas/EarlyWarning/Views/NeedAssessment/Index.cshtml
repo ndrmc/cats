@@ -86,7 +86,7 @@ Plans
                                                 <ul class="dropdown-menu pull-right">
                                                     @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
                                                     {
-                                                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "Approve")
+                                                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "Approve" && @item.NeedAssessmentCreated)
                                                         {
                                                             <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.PlanID)" title="@actions.Name">@actions.Name</a></li>
                                                         }
