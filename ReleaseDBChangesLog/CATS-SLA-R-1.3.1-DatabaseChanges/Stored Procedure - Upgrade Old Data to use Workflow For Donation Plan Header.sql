@@ -83,7 +83,7 @@ BEGIN
 
 
 			INSERT INTO BusinessProcessState 
-			VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'Donation Plan Header business process created by data migrator', NULL);
+			VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'Donation Plan Header business process created by data migrator', NULL,null);
 			SET @businessprocessstateid = SCOPE_IDENTITY();			
 
 			INSERT INTO BusinessProcess 
