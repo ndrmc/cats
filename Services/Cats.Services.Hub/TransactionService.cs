@@ -2069,6 +2069,8 @@ namespace Cats.Services.Hub
                 newDispatchAllocation.BidRefNo = tempDispatchAllocation.BidRefNo;
                 newDispatchAllocation.CommodityID = tempDispatchAllocation.CommodityID;
 
+                // This keeps track of DispatchAllocations newly created during SI change under their parent Dispatch Allocation
+                newDispatchAllocation.ParentDispatchAllocationID = tempDispatchAllocation.DispatchAllocationID;
 
                 newDispatchAllocation.DonorID = tempDispatchAllocation.DonorID;
                 newDispatchAllocation.FDPID = tempDispatchAllocation.FDPID;
