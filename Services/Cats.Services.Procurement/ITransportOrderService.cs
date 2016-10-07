@@ -59,7 +59,7 @@ namespace Cats.Services.Procurement
         void UpdateTransporterOrder(int transportorderId, int woredaId);
 
         decimal? CheckIfCommodityIsDipatchedToThisFdp(int fdpId, string bidNo, int transporterId, int transporrtOrderId,
-                                                     int commodityId);
+                                                     int commodityId, int requisitionID);
     }
 }
 
