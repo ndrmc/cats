@@ -1988,40 +1988,47 @@ namespace Cats.Services.Hub
                     transaction2.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
 
                     //int hubID2 = 0;
+                    //if (allocationDetail.AllocationType == daModel.TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
+                    //{
+                    //    var siCode = allocationDetail.Code.ToString();
+                    //    var shippingInstruction =
+                    //        _unitOfWorkNew.ShippingInstructionRepository.Get(t => t.Value == siCode).
+                    //            FirstOrDefault();
+                    //    if (shippingInstruction != null)
+                    //        transaction.ShippingInstructionID = shippingInstruction.ShippingInstructionID;
+
+                    //    //hubID2 =
+                    //    //    (int)
+                    //    //        _unitOfWorkNew.TransactionRepository.FindBy(
+                    //    //            m => m.ShippingInstructionID == allocationDetail.Code &&
+                    //    //                 m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+
+
+                    //}
+                    //else
+                    //{
+                    //    var detail = allocationDetail;
+                    //    var code = detail.Code.ToString();
+                    //    var projectCode =
+                    //        _unitOfWork.ProjectCodeRepository.Get(t => t.Value == code).
+                    //            FirstOrDefault();
+                    //    if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
+
+                    //    //hubID2 =
+                    //    //    (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
+                    //    //                                                       m.LedgerID == Ledger.Constants.GOODS_ON_HAND)
+                    //    //        .Select(m => m.HubID)
+                    //    //        .FirstOrDefault();
+
+                    //}
                     if (allocationDetail.AllocationType == daModel.TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
                     {
-                        var siCode = allocationDetail.Code.ToString();
-                        var shippingInstruction =
-                            _unitOfWorkNew.ShippingInstructionRepository.Get(t => t.Value == siCode).
-                                FirstOrDefault();
-                        if (shippingInstruction != null)
-                            transaction.ShippingInstructionID = shippingInstruction.ShippingInstructionID;
-
-                        //hubID2 =
-                        //    (int)
-                        //        _unitOfWorkNew.TransactionRepository.FindBy(
-                        //            m => m.ShippingInstructionID == allocationDetail.Code &&
-                        //                 m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
-
-
+                        transaction2.ShippingInstructionID = allocationDetail.Code;
                     }
                     else
                     {
-                        var detail = allocationDetail;
-                        var code = detail.Code.ToString();
-                        var projectCode =
-                            _unitOfWork.ProjectCodeRepository.Get(t => t.Value == code).
-                                FirstOrDefault();
-                        if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
-
-                        //hubID2 =
-                        //    (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
-                        //                                                       m.LedgerID == Ledger.Constants.GOODS_ON_HAND)
-                        //        .Select(m => m.HubID)
-                        //        .FirstOrDefault();
-
+                        transaction2.ProjectCodeID = allocationDetail.Code;
                     }
-
 
                     //if (hubID2 != 0)
                     //{
@@ -2085,6 +2092,7 @@ namespace Cats.Services.Hub
                 newDispatchAllocation.TransporterID = tempDispatchAllocation.TransporterID;
                 newDispatchAllocation.Unit = tempDispatchAllocation.Unit;
                 newDispatchAllocation.Year = tempDispatchAllocation.Year;
+                newDispatchAllocation.TransportOrderID = tempDispatchAllocation.TransportOrderID;
                 //newDispatchAllocation.DispatchAllocationID = Guid.Empty;
                 newDispatchAllocation.DispatchAllocationID = Guid.NewGuid();
                 _unitOfWork.DispatchAllocationRepository.Add(newDispatchAllocation);
@@ -2426,31 +2434,39 @@ namespace Cats.Services.Hub
                 transaction2.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
 
                 int hubID2 = 0;
+                //if (allocationDetail.AllocationType == daModel.TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
+                //{
+                //    var siCode = allocationDetail.Code.ToString();
+                //    var shippingInstruction =
+                //        _unitOfWorkNew.ShippingInstructionRepository.Get(t => t.Value == siCode).
+                //            FirstOrDefault();
+                //    if (shippingInstruction != null) transaction.ShippingInstructionID = shippingInstruction.ShippingInstructionID;
+
+                //    //hubID2=(int) _unitOfWorkNew.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code &&
+                //    //       m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+
+
+                //}
+                //else
+                //{
+                //    var detail = allocationDetail;
+                //    var code = detail.Code.ToString();
+                //    var projectCode =
+                //        _unitOfWorkNew.ProjectCodeRepository.Get(t => t.Value == code).
+                //            FirstOrDefault();
+                //    if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
+
+                //    //hubID2 = (int)_unitOfWorkNew.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code && 
+                //    //           m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+
+                //}
                 if (allocationDetail.AllocationType == daModel.TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
                 {
-                    var siCode = allocationDetail.Code.ToString();
-                    var shippingInstruction =
-                        _unitOfWorkNew.ShippingInstructionRepository.Get(t => t.Value == siCode).
-                            FirstOrDefault();
-                    if (shippingInstruction != null) transaction.ShippingInstructionID = shippingInstruction.ShippingInstructionID;
-
-                    //hubID2=(int) _unitOfWorkNew.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code &&
-                    //       m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
-
-
+                    transaction2.ShippingInstructionID = allocationDetail.Code;
                 }
                 else
                 {
-                    var detail = allocationDetail;
-                    var code = detail.Code.ToString();
-                    var projectCode =
-                        _unitOfWorkNew.ProjectCodeRepository.Get(t => t.Value == code).
-                            FirstOrDefault();
-                    if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
-
-                    //hubID2 = (int)_unitOfWorkNew.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code && 
-                    //           m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
-
+                    transaction2.ProjectCodeID = allocationDetail.Code;
                 }
                 transaction2.HubID = allocationDetail.HubID;
 

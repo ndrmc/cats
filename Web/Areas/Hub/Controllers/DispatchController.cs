@@ -485,7 +485,7 @@ namespace Cats.Areas.Hub.Controllers
                             CommodityID = prevdispatchdetail.CommodityID,
                             Quantity = prevdispatchdetail.DispatchedQuantityInMT,
                             QuantityInUnit = prevdispatchdetail.DispatchedQuantityInUnit,
-                            ShippingInstructionID = dispatchviewmodel.ShippingInstructionID,
+                            ShippingInstructionID = prevdispatch.ShippingInstructionID,
                             ProjectCodeID = dispatchviewmodel.ProjectCodeID,
                             PlanId = dispatchviewmodel.PlanId,
                             UnitID = dispatchviewmodel.UnitID,
