@@ -99,6 +99,7 @@
     <Compile Include="Mapping\DistributionByAgeDetailMap.cs" />-->
     <Compile Include="LoanReciptPlan.cs" />
     <Compile Include="LoanReciptPlanDetail.cs" />
+    <Compile Include="Mapping\DispatchAllocationMap.cs" />
     <Compile Include="Mapping\DonationPlanDetailMap.cs" />
     <Compile Include="Mapping\DonationPlanHeaderMap.cs" />
     <Compile Include="LocalPurchase.cs" />

@@ -42,6 +42,7 @@ namespace Cats.Models.Mapping
             this.Property(t => t.ShippingInstructionID).HasColumnName("ShippingInstructionID");
             this.Property(t => t.ProjectCodeID).HasColumnName("ProjectCodeID");
             this.Property(t => t.TransportOrderID).HasColumnName("TransportOrderID");
+            this.Property(t => t.IsClosed).HasColumnName("IsClosed");
             this.Property(t => t.ParentDispatchAllocationID).HasColumnName("ParentDispatchAllocationID");
 
             

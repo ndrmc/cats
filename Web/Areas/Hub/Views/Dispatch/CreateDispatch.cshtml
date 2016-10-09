@@ -79,22 +79,14 @@
                     @Html.LabelFor(model => model.SINumber)
                 </div>
                 <div class="controls">
-                    @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
-                    {
-                        @Html.TextBoxFor(model => model.SINumber, new { Disabled = true })                        
-                    }
-                    else
-                    {
-                        @(Html.Kendo().ComboBoxFor(m => m.ShippingInstructionID)
+                    @(Html.Kendo().ComboBoxFor(m => m.ShippingInstructionID)
                               .Placeholder("Select SI Number")
                               .DataTextField("SIcode")
                               .DataValueField("siCodeId")
                               .Filter(FilterType.Contains)
                               .DataSource(source => source.Read(read => read.Action("AvailableSI", "Dispatch",
                                   new { @reqDetailId = ViewBag.RequisitionDetailID, @siID = Model.ShippingInstructionID, @ComID = Model.CommodityID, @DaID = Model.DispatchAllocationID }))))
-                        @Html.ValidationMessageFor(model => model.ShippingInstructionID)
-                    }
-                    
+                    @Html.ValidationMessageFor(model => model.ShippingInstructionID)
                 </div>
 
             </div>
@@ -156,8 +148,6 @@
                     @Html.LabelFor(model => model.Commodity)
                 </div>
                 <div class="controls">
-                    
-                    
                     @Html.TextBoxFor(model => model.Commodity, new { Disabled = true })
                 </div>
             </div>
@@ -168,22 +158,14 @@
                 @Html.LabelFor(model => model.CommodityChildID)
             </div>
             <div class="controls">
-                @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
-                {
-                    @Html.TextBoxFor(model => model.ChildCommodity, new { Disabled = true })
-                }
-                else
-                {
-                    @(Html.Kendo().ComboBoxFor(m => m.CommodityChildID)
+                @(Html.Kendo().ComboBoxFor(m => m.CommodityChildID)
                           .Placeholder("Select Commodity")
                           .DataTextField("CommodityName")
                           .DataValueField("CommodityId")
                           .Filter(FilterType.Contains)
                           .DataSource(source => source.Read(read => read.Action("GetCommodities", "Dispatch", new { @dispatchAllocationId = Model.DispatchAllocationID }))))
 
-
-                    @Html.ValidationMessageFor(model => model.CommodityChildID)
-                }
+                @Html.ValidationMessageFor(model => model.CommodityChildID)
             </div>
         </div>       
             
@@ -193,21 +175,14 @@
                     @Html.LabelFor(model => model.UnitID)
                 </div>
                 <div class="controls">
-                    @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
-                    {
-                        @Html.TextBoxFor(model => model.Unit, new {Disabled = true})
-                    }
-                    else
-                    {
-                        @(Html.Kendo().ComboBoxFor(m => m.UnitID)
+                    @(Html.Kendo().ComboBoxFor(m => m.UnitID)
                               .Placeholder("Select Unit")
                               .DataTextField("Name")
                               .DataValueField("UnitId")
                               .Filter(FilterType.Contains)
                               .DataSource(source => source.Read(read => read.Action("GetUnities", "Dispatch")))
-                        )
-                        @Html.ValidationMessageFor(model => model.UnitID)
-                    }
+                    )
+                    @Html.ValidationMessageFor(model => model.UnitID)
                     
                 </div>
             </div>
@@ -218,7 +193,7 @@
                 <div class="controls">
                     @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
                     {
-                        @Html.TextBoxFor(model => model.QuantityInUnit, new {Disabled = true})
+                        @Html.TextBoxFor(model => model.QuantityInUnit)
                     }
                     else
                     {
@@ -234,7 +209,7 @@
                 <div class="controls">
                     @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
                     {
-                        @Html.TextBoxFor(model => model.QuantityPerUnit, new {Disabled = true})
+                        @Html.TextBoxFor(model => model.QuantityPerUnit)
                     }
                     else
                     {
@@ -249,7 +224,7 @@
                   <div class="controls">
                       @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
                       {
-                          @Html.TextBoxFor(model => model.Quantity, new {Disabled = true})
+                          @Html.TextBoxFor(model => model.Quantity)
                       }
                       else
                       {
