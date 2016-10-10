@@ -273,17 +273,20 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
     }
 
     $scope.onAllocatoinChange = function (index) {
-        var selectedAlloc ;
+        var selectedAlloc;
 
         for (var a in $scope.allocations) {
             if (index == $scope.allocations[a].Fdpid) {
                 selectedAlloc = $scope.allocations[a];
+
                 break;
-            }
         }
 
-        $scope.saveAllocation(selectedAlloc);
     }
+
+        $scope.saveAllocation(selectedAlloc);
+
+}
 
     $scope.onFdpChange = function (fdpData) {
         var selectedAlloc = "";
