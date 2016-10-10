@@ -145,7 +145,7 @@
     <Compile Include="Mapping\ContactMap.cs" />
     <Compile Include="Mapping\WoredaStockDistributionDetailMap.cs" />
     <Compile Include="Mapping\DeliveryDetailMap.cs" />
-    <Compile Include="Mapping\DispatchAllocationMap.cs" />
+ 
     <Compile Include="Mapping\DeliveryMap.cs" />
     <Compile Include="Mapping\WoredaStockDistributionMap.cs" />
     <Compile Include="Mapping\HrdDonorCoverageDetailMap.cs" />
