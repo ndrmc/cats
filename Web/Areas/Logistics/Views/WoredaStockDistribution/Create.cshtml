@@ -300,7 +300,7 @@
                           if (datepref == "GC" || datepref == "gc")
                           {
                               columns.Bound(p => p.DistributionStartDate).Width(100).Format("{0:MM-dd-yy}");
-                              columns.Bound(p => p.DistributionStartDate).Format("{0:mm-dd-yy}").ClientTemplate("  <input type='hidden'  id='WoredaDistributionDetailViewModels[#= index(data)#].DistributionStartDate'  name='WoredaDistributionDetailViewModels[#= index(data)#].DistributionStartDate'  value='#= DistributionStartDate #' />");
+                              columns.Bound(p => p.DistributionStartDate).Format("{0:mm-dd-yy}").Hidden().ClientTemplate("  <input type='hidden'  id='WoredaDistributionDetailViewModels[#= index(data)#].DistributionStartDate'  name='WoredaDistributionDetailViewModels[#= index(data)#].DistributionStartDate'  value='#= DistributionStartDate #' />");
                           }
                           else
                           {
@@ -312,7 +312,7 @@
                           if (datepref == "GC" || datepref == "gc")
                           {
                               columns.Bound(p => p.DistributionEndDate).Width(100).Format("{0:MM-dd-yy}");
-                              columns.Bound(p => p.DistributionEndDate).Format("{0:mm-dd-yy}")
+                              columns.Bound(p => p.DistributionEndDate).Format("{0:mm-dd-yy}").Hidden()
                                                            .ClientTemplate("<input  type='hidden'  id='WoredaDistributionDetailViewModels[#= index(data)#].DistributionEndDate'  name='WoredaDistributionDetailViewModels[#= index(data)#].DistributionEndDate'  value='#= DistributionEndDate #' />");
 
                           }
