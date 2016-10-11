@@ -103,6 +103,7 @@ namespace Cats.Areas.Regional.Controllers
             var requisitions = _reliefRequisitionService.FindBy(t => t.RegionID == regionID);
             var totalRequests = requests.Count();
             var currentPlan = _hrdService.FindBy(t => t.Status == 3).FirstOrDefault().PlanID;
+            var planName = _planService.FindById(currentPlan).PlanName; 
             var utilizations = _utilization.FindBy(t => t.PlanID == currentPlan);
             
             var sum18 = 0;
@@ -171,7 +172,7 @@ namespace Cats.Areas.Regional.Controllers
             d.Below5 = sum5;
             d.Female = female;
             d.Male = male;
-
+            d.AgeGroupPlanName = planName;
 
             var deliveryReconciles =
                 _deliveryReconcileService.GetAllDeliveryReconciles().Select(dr => dr.DispatchID).Distinct();

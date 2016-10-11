@@ -23,5 +23,8 @@ namespace Cats.Areas.Regional.Models
         public int Bet5And8 { get; set; }
         public int Female { get; set; }
         public int Male { get; set; }
+
+        public String AgeGroupPlanName { get; set; }
+            
     }
 }
