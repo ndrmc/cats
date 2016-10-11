@@ -80,7 +80,7 @@ BEGIN
 			SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Draft' );
 
 			INSERT INTO BusinessProcessState 
-			VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'Need Assessment business process created by data migrator', NULL);
+			VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'Need Assessment business process created by data migrator', NULL,NULL);
 			SET @businessprocessstateid = SCOPE_IDENTITY();			
 
 			INSERT INTO BusinessProcess 

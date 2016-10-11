@@ -200,7 +200,7 @@
                         <input class="flat-input txt_beneficiaries" type="number" onfocus="onGridInputFocus(this)" onchange="onAllocationBeneficiaryChange({{allocation.Fdpid}}) ng-model="allocation.Beneficiaries"/>
                     </td>*@
                     <td ng-show="allocation.showA">
-                        <input class="flat-input txt_beneficiaries" type="number" onfocus="onGridInputFocus(this)" min="0" oninput="validity.valid||(value='');" onchange="onAllocationBeneficiaryChange({{allocation.Fdpid}})" ng-model="allocation.Beneficiaries"/>
+                        <input class="flat-input txt_beneficiaries" type="number" onfocus="onGridInputFocus(this)" min="0" oninput="validity.valid||(value='');" onchange="onAllocationBeneficiaryChange({{allocation.Fdpid}})" ng-model="allocation.Beneficiaries" />
                     </td>
                     <td ng-show="allocation.showA"><button class="edit_button btn btn-danger" ng-click="deleteRequestedFDP($index)"><i class="icon-trash icon-white"></i> Delete</button></td>
 
@@ -213,7 +213,7 @@
                     <td><a ng-click="onFdpListShow('new')" id="fdp_selector_buttonnew" class="edit_button" href="#">{{newAllocation.FDP}}</a></td>
                     <!-- <td></td>-->
                     <td><input class="flat-input" ng-model="newAllocation.Beneficiaries" id="txtNewAllocationBeneficiaries" /></td>
-                    <td>
+                           <td>
                         <button class="edit_button btn btn-primary" ng-click="saveAllocation(newAllocation,true)"><i class="icon-ok icon-white"></i>Save</button>
                         <button class="edit_button btn" ng-click="onCreateAllocationCancel()"><i class="icon-trash icon-white"></i>Cancel</button>
 

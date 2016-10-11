@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,5 +39,7 @@ namespace Cats.Models
        public virtual ICollection<RegionalPSNPPlan> RegionalPSNPPlans { get; set; }
        public virtual ICollection<RegionalRequest> RegionalRequests { get; set; }
        public virtual BusinessProcess BusinessProcess { get; set; }
+       [NotMapped]
+       public bool NeedAssessmentCreated { get; set; }
     }
 }
