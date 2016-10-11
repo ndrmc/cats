@@ -87,6 +87,10 @@ BEGIN
 			VALUES ( @processid, 0, 'NeedAssessment', @businessprocessstateid, NULL);
 			SET @businessprocessid = SCOPE_IDENTITY();
 
+			UPDATE [dbo].[BusinessProcessState]
+			SET ParentBusinessProcessID=@businessprocessid
+			WHERE BusinessProcessStateID = @businessprocessstateid;
+
 			UPDATE [EarlyWarning].[NeedAssessment]
 			SET BusinessProcessID=@businessprocessid
 			WHERE NeedAID = @rowid;

@@ -90,6 +90,10 @@ BEGIN
 			VALUES ( @processid, 0, 'DonationPlanHeader', @businessprocessstateid, NULL);
 			SET @businessprocessid = SCOPE_IDENTITY();
 
+			UPDATE [dbo].[BusinessProcessState]
+			SET ParentBusinessProcessID=@businessprocessid
+			WHERE BusinessProcessStateID = @businessprocessstateid;
+
 			UPDATE [dbo].[DonationPlanHeader]
 			SET BusinessProcessID=@businessprocessid
 			WHERE DonationHeaderPlanID = @rowid;
