@@ -102,6 +102,10 @@ BEGIN
 			VALUES ( @processid, 0, 'ReliefRequisition', @businessprocessstateid, NULL);
 			SET @businessprocessid = SCOPE_IDENTITY();
 
+			UPDATE [dbo].[BusinessProcessState]
+			SET ParentBusinessProcessID=@businessprocessid
+			WHERE BusinessProcessStateID = @businessprocessstateid;
+
 			UPDATE [EarlyWarning].[ReliefRequisition]
 			SET BusinessProcessID=@businessprocessid
 			WHERE RequisitionID = @rowid;

@@ -92,6 +92,10 @@ BEGIN
 			VALUES ( @processid, 0, 'TransportRequisition', @businessprocessstateid, NULL);
 			SET @businessprocessid = SCOPE_IDENTITY();
 
+			UPDATE [dbo].[BusinessProcessState]
+			SET ParentBusinessProcessID=@businessprocessid
+			WHERE BusinessProcessStateID = @businessprocessstateid;
+
 			UPDATE [Logistics].[TransportRequisition]
 			SET BusinessProcessID=@businessprocessid
 			WHERE TransportRequisitionID = @rowid;
