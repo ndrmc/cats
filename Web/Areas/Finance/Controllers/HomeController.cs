@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Cats.Areas.EarlyWarning.Models;
 using Cats.Areas.Finance.Models;
 using Cats.Infrastructure;
 using Cats.Models;
@@ -15,9 +12,6 @@ using Cats.Services.Procurement;
 using Cats.Helpers;
 using IUserProfileService = Cats.Services.Administration.IUserProfileService;
 using Transporter = Cats.Models.Hubs.Transporter;
-using Cats.Helpers;
-using Cats.Services.Security;
-using Cats.Security;
 using Cats.Models.Constant;
 
 namespace Cats.Areas.Finance.Controllers
@@ -365,29 +359,29 @@ namespace Cats.Areas.Finance.Controllers
 
             List<PaymentRequestModel> userGroupedPaymentRequests = new List<PaymentRequestModel>();
 
-            foreach (var VARIABLE in groupedTransportRequest.OrderBy(p => p.PerformedBy))
+            foreach (var variable in groupedTransportRequest.OrderBy(p => p.PerformedBy))
             {
                 PaymentRequestModel prm;
 
-                if (userGroupedPaymentRequests.Exists(p => p.UserName == VARIABLE.PerformedBy))
+                if (userGroupedPaymentRequests.Exists(p => p.UserName == variable.PerformedBy))
                 {
-                    prm = userGroupedPaymentRequests.Find(u => u.UserName == VARIABLE.PerformedBy);
+                    prm = userGroupedPaymentRequests.Find(u => u.UserName == variable.PerformedBy);
                 }
                 else
                 {
-                    prm = new PaymentRequestModel { UserName = VARIABLE.PerformedBy };
+                    prm = new PaymentRequestModel { UserName = variable.PerformedBy };
 
                     userGroupedPaymentRequests.Add(prm);
                 }
 
-                if (VARIABLE.Approved != 0)
+                if (variable.Approved != 0)
                 {
-                    prm.Approved = VARIABLE.Approved;
+                    prm.Approved = variable.Approved;
                 }
 
-                else if (VARIABLE.Rejected != 0)
+                else if (variable.Rejected != 0)
                 {
-                    prm.Rejected = VARIABLE.Rejected;
+                    prm.Rejected = variable.Rejected;
                 }
             }
 
