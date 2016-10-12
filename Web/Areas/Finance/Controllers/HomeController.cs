@@ -343,19 +343,19 @@ namespace Cats.Areas.Finance.Controllers
                 join to in transportOrders
                     on tod.TransportOrderID equals to.TransportOrderID
                 join t in transporters
-                    on to.TransportOrderID equals t.TransporterID
+                    on to.TransporterID equals t.TransporterID
                 join tpr in transporterPaymentRequests
                     on to.TransportOrderID equals tpr.TransportOrderID
-                join au in adminUnits
-                    on t.Region equals au.AdminUnitID
-                where tpr.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2
+                //join au in adminUnits
+                //    on t.Region equals au.AdminUnitID
+                //where tpr.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2
                 select new
                 {
                     rr.RequisitionNo,
                     rr.Round,
                     to.TransportOrderNo,
                     t.Name,
-                    Region = au.Name,
+                    //Region = au.Name,
                     RegionId = t.Region,
                     StateNumber = tpr.BusinessProcess.CurrentState.BaseStateTemplate.StateNo
                 }).ToList();
@@ -363,7 +363,7 @@ namespace Cats.Areas.Finance.Controllers
             var groupedTransportRequest = (from pR in paymentRequest
                 group pR by new
                 {
-                    pR.Region,
+                    //pR.Region,
                     pR.Name,
                     pR.RegionId,
                     pR.RequisitionNo,
@@ -373,7 +373,7 @@ namespace Cats.Areas.Finance.Controllers
                 into gTrnsRqst
                 select new
                 {
-                    gTrnsRqst.Key.Region,
+                    //gTrnsRqst.Key.Region,
                     gTrnsRqst.Key.Name, // transporter name
                     //gTrnsRqst.Key.RegionId,
                     //gTrnsRqst.Key.RequisitionNo,
