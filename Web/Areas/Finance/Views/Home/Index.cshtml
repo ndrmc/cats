@@ -40,18 +40,16 @@
                                 <table class="table table-striped ">
                                     <thead>
                                         <tr>
-                                            <th style="text-align: right">User Name</th>
-                                            <th style="text-align: right">Approved</th>
-                                            <th style="text-align: right">Rejected</th>
-                                            <th></th>
+                                            <th style="text-align: left">User Name</th>
+                                            <th style="text-align: left">Approved</th>
+                                            <th style="text-align: left">Rejected</th>
                                         </tr>
                                     </thead>
                                     <tbody ng-cloak>
                                         <tr ng-repeat="req in RegionalRequestStatus">
-                                            <td style="text-align: right; margin-right: 0px">{{req.UserName}} </td>
-                                            @*<td style="text-align: right; margin-right: 0px">{{req.Name}} </td>*@
-                                            <td style="text-align: right; margin-right: 0px">{{req.Approved}} </td>
-                                            <td style="text-align: right; margin-right: 0px">{{req.Rejected}} </td>
+                                            <td style="text-align: left; margin-right: 0px">{{req.UserName}} </td>
+                                            <td style="text-align: left; margin-right: 0px">{{req.Approved}} </td>
+                                            <td style="text-align: left; margin-right: 0px">{{req.Rejected}} </td>
                                         </tr>
                                     </tbody>
                                 </table>
