@@ -452,7 +452,7 @@ namespace Cats.Areas.Logistics.Controllers
                 var count =
                     _reliefRequisitionDetailService.FindBy(
                         t => t.RequisitionID == transportRequisitionDetailViewModel.RequisitionID).Count;
-                transportRequisitionDetailViewModel.DestinationsCount = count;
+                        transportRequisitionDetailViewModel.DestinationsCount = count;
             }
             }
 

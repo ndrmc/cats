@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using Cats.Models;
 
 
 namespace Cats.Areas.Logistics.Models
@@ -12,7 +13,7 @@ namespace Cats.Areas.Logistics.Models
         public int TransportRequisitionID { get; set; }
 
         public int BusinessProcessID { get; set; }
-
+        public BusinessProcess BusinessProcess { get; set; }
         [Display(Name="No.")]
         public string TransportRequisitionNo { get; set; }
         
@@ -52,5 +53,7 @@ namespace Cats.Areas.Logistics.Models
         [Required(ErrorMessage = "Please select Bid")]
         public int BidId { get; set; }
         public List<TransportRequisitionDetailViewModel> TransportRequisitionDetailViewModels { get; set; }
+
+        public bool IsDraft { get; set; }
     }
 }

@@ -314,8 +314,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public JsonResult GetEarlyWarningRequiredNumbers()
         {
             var currentHrd = GetCurrentHrd();
-            var nationalBenficiaryNo = currentHrd.HRDDetails.Sum(m => m.NumberOfBeneficiaries);
-             var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID);
+            var nationalBenficiaryNo = currentHrd != null ? currentHrd.HRDDetails.Sum(m => m.NumberOfBeneficiaries) : 0;
+
+            var requests = _eWDashboardService.FindByRequest(m => m.PlanID == currentHrd.PlanID);
             var requistions = _eWDashboardService.GetAllReliefRequisition();
             //var totalCommodity = currentHrd.Ration.RationDetails.Sum(m => m.Amount);
             var regions = (from item in currentHrd.HRDDetails
