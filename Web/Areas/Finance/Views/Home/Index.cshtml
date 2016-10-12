@@ -13,7 +13,7 @@
 <!-- BEGIN COMPONENTS INDENTATION-->
 <div class="container">
     <div class="row ui-sortable" id="sortable_portlets" ng-app="myApp">
-     
+
         <!-- Begin Data entry status portlet-->
         <div class="col-md-12 column sortable">
             <div class="portlet portlet-sortable light bordered ui-sortable-handle" style="display: block;">
@@ -35,26 +35,23 @@
                 <div class="portlet-body" style="height: auto;">
                     <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto;">
                         <div class="scroller" style="overflow: hidden; width: auto;" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd" data-initialized="1">
-                           
+
                             <div class="table-responsive" ng-controller="FinanceHomeController">
                                 <table class="table table-striped ">
                                     <thead>
                                         <tr>
-                                            <th style="text-align: right">Region</th>
-                                            <th style="text-align: right">Round</th>
-                                            @*<th style="text-align: right">Requested Payments</th>*@
-                                            <th style="text-align: right">Allocated</th>
-                                            <th style="text-align: right">Collected</th>
+                                            <th style="text-align: right">User Name</th>
+                                            <th style="text-align: right">Approved</th>
+                                            <th style="text-align: right">Rejected</th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody ng-cloak>
                                         <tr ng-repeat="req in RegionalRequestStatus">
-                                            <td style="text-align: right; margin-right: 0px">{{req.Region}} </td>
+                                            <td style="text-align: right; margin-right: 0px">{{req.UserName}} </td>
                                             @*<td style="text-align: right; margin-right: 0px">{{req.Name}} </td>*@
-                                            <td style="text-align: right; margin-right: 0px">{{req.Round}} </td>
-                                            <td style="text-align: right; margin-right: 0px">{{req.Allocated}} </td>
-                                            <td style="text-align: right; margin-right: 0px">{{req.Collected}} </td>
+                                            <td style="text-align: right; margin-right: 0px">{{req.Approved}} </td>
+                                            <td style="text-align: right; margin-right: 0px">{{req.Rejected}} </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -66,7 +63,7 @@
                 </div>
             </div>
         </div>
-    <!-- End data entry status portlet-->
+        <!-- End data entry status portlet-->
 
         <div class="col-md-12 column sortable">
             <div class="portlet portlet-sortable light bordered ui-sortable-handle" style="display: block;">

@@ -15,6 +15,10 @@ using Cats.Services.Procurement;
 using Cats.Helpers;
 using IUserProfileService = Cats.Services.Administration.IUserProfileService;
 using Transporter = Cats.Models.Hubs.Transporter;
+using Cats.Helpers;
+using Cats.Services.Security;
+using Cats.Security;
+using Cats.Models.Constant;
 
 namespace Cats.Areas.Finance.Controllers
 {
@@ -301,10 +305,12 @@ namespace Cats.Areas.Finance.Controllers
                         .Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2, null, "BusinessProcess")
                         .OrderByDescending(t => t.TransporterPaymentRequestID);
             var transporterPaymentRequests = TransporterPaymentRequestViewModelBinder(list.ToList());
-            var requests = transporterPaymentRequests.GroupBy(ac => new {
+            var requests = transporterPaymentRequests.GroupBy(ac => new
+            {
                 ac.Transporter.Name,
                 ac.Commodity,
-                ac.Source }).Select(ac => new
+                ac.Source
+            }).Select(ac => new
             {
                 TransporterName = ac.Key.Name,
                 TransporterId = ac.FirstOrDefault().Transporter.TransporterID,
@@ -329,72 +335,70 @@ namespace Cats.Areas.Finance.Controllers
 
         public JsonResult GetRegionalRequestDataEntryStatus()
         {
-            List<ReliefRequisition> reliefRequisitions = _reliefRequisitionService.GetAllReliefRequisition();
-            List<TransportOrder> transportOrders = _transportOrderService.GetAllTransportOrder();
-            List<TransportOrderDetail> transportOrderDetails = _transportOrderDetailService.GetAllTransportOrderDetail();
             List<TransporterPaymentRequest> transporterPaymentRequests =
                 _transporterPaymentRequestService.GetAllTransporterPaymentRequest();
-            List<Transporter> transporters = _transporterService.GetAllTransporter();
-            List<Cats.Models.Hubs.AdminUnit> adminUnits = _iadminUnitService.GetAllAdminUnit();
 
-            var paymentRequest = (from rr in reliefRequisitions
-                join tod in transportOrderDetails
-                    on rr.RequisitionID equals tod.RequisitionID
-                join to in transportOrders
-                    on tod.TransportOrderID equals to.TransportOrderID
-                join t in transporters
-                    on to.TransporterID equals t.TransporterID
-                join tpr in transporterPaymentRequests
-                    on to.TransportOrderID equals tpr.TransportOrderID
-                //join au in adminUnits
-                //    on t.Region equals au.AdminUnitID
-                //where tpr.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2
-                select new
-                {
-                    rr.RequisitionNo,
-                    rr.Round,
-                    to.TransportOrderNo,
-                    t.Name,
-                    //Region = au.Name,
-                    RegionId = t.Region,
-                    StateNumber = tpr.BusinessProcess.CurrentState.BaseStateTemplate.StateNo
-                }).ToList();
+            var usersPerCaseTeam = _userProfileService.FindBy(c => c.CaseTeam == (int)UserType.CASETEAM.FINANCE);
+            var users = usersPerCaseTeam.Select(u => u.UserName);
+            var paymentRequests = (from tpr in transporterPaymentRequests
+                                   where
+                                         users.Contains(tpr.BusinessProcess.CurrentState.PerformedBy)
+                                   select new
+                                   {
+                                       StatusName = tpr.BusinessProcess.CurrentState.BaseStateTemplate.Name,
+                                       tpr.BusinessProcess.CurrentState.PerformedBy
+                                   });
 
-            var groupedTransportRequest = (from pR in paymentRequest
-                group pR by new
+            var groupedTransportRequest = (from pr in paymentRequests
+                                           group pr by new
+                                           {
+                                               pr.StatusName,
+                                               pr.PerformedBy
+                                           }
+                 into gTrnsRqst
+                                           select new
+                                           {
+                                               gTrnsRqst.Key.PerformedBy,
+                                               Approved = gTrnsRqst.Count(x => x.StatusName == "Approved by finance"),
+                                               Rejected = gTrnsRqst.Count(x => x.StatusName == "Closed")
+                                           }).ToList();
+
+            List<PaymentRequestModel> userGroupedPaymentRequests = new List<PaymentRequestModel>();
+
+            foreach (var VARIABLE in groupedTransportRequest.OrderBy(p => p.PerformedBy))
+            {
+                PaymentRequestModel prm;
+
+                if (userGroupedPaymentRequests.Exists(p => p.UserName == VARIABLE.PerformedBy))
                 {
-                    //pR.Region,
-                    pR.Name,
-                    pR.RegionId,
-                    pR.RequisitionNo,
-                    pR.Round,
-                    pR.StateNumber
+                    prm = userGroupedPaymentRequests.Find(u => u.UserName == VARIABLE.PerformedBy);
                 }
-                into gTrnsRqst
-                select new
+                else
                 {
-                    //gTrnsRqst.Key.Region,
-                    gTrnsRqst.Key.Name, // transporter name
-                    //gTrnsRqst.Key.RegionId,
-                    //gTrnsRqst.Key.RequisitionNo,
-                    gTrnsRqst.Key.Round,
-                    //gTrnsRqst.Key.StateNumber,
-                    Allocated = gTrnsRqst.Count(x => x.StateNumber != 2),
-                    Collected = gTrnsRqst.Count(x => x.StateNumber == 2)
-                }).ToList();
+                    prm = new PaymentRequestModel { UserName = VARIABLE.PerformedBy };
 
-            //List<RegionalRequestDataEntryStatusViewModel> regionalRequestDataEntryStatus =
-            //    transportOrders.Select(transportOrder => new RegionalRequestDataEntryStatusViewModel
-            //    {
-            //        Region = transportOrder.ContractNumber
-            //    }).ToList();
+                    userGroupedPaymentRequests.Add(prm);
+                }
 
-            //foreach (var tr in groupedTransportRequest)
-            //{
+                if (VARIABLE.Approved != 0)
+                {
+                    prm.Approved = VARIABLE.Approved;
+                }
 
-            //}
+                else if (VARIABLE.Rejected != 0)
+                {
+                    prm.Rejected = VARIABLE.Rejected;
+                }
+            }
 
-            return Json(groupedTransportRequest, JsonRequestBehavior.AllowGet);
+            return Json(userGroupedPaymentRequests, JsonRequestBehavior.AllowGet);
+        }
+
+        private class PaymentRequestModel
+        {
+            public string UserName { get; set; }
+            public int Approved { get; set; }
+            public int Rejected { get; set; }
         }
     }
 }
