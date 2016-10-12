@@ -43,6 +43,9 @@ namespace Cats.ViewModelBinder
                         transportRequisition.TransportRequisitionDetails.FirstOrDefault().ReliefRequisition.Month);
                 transportRequisitionViewModel.Round =transportRequisition.TransportRequisitionDetails.FirstOrDefault().ReliefRequisition.Round;
                 transportRequisitionViewModel.Date = DateTime.Now.ToCTSPreferedDateFormat(datePrefrence);
+                transportRequisitionViewModel.BusinessProcess = transportRequisition.BusinessProcess;
+                if (transportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft")
+                    transportRequisitionViewModel.IsDraft = true;
             }
             return transportRequisitionViewModel;
         }

@@ -93,14 +93,15 @@ BEGIN
 			ELSE IF (@status = 8)
 				SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'SiPc Allocation Approved' );
 			
-
-			INSERT INTO BusinessProcessState 
-			VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'Relief Requisition business process created by data migrator', NULL, NULL);
-			SET @businessprocessstateid = SCOPE_IDENTITY();			
-
 			INSERT INTO BusinessProcess 
 			VALUES ( @processid, 0, 'ReliefRequisition', @businessprocessstateid, NULL);
 			SET @businessprocessid = SCOPE_IDENTITY();
+
+			INSERT INTO BusinessProcessState 
+			VALUES ( @businessprocessid, @stateid, 'System: Data Migration', '2016-06-06', 'Relief Requisition business process created by data migrator', NULL, NULL);
+			SET @businessprocessstateid = SCOPE_IDENTITY();			
+
+			
 
 			UPDATE [dbo].[BusinessProcessState]
 			SET ParentBusinessProcessID=@businessprocessid
