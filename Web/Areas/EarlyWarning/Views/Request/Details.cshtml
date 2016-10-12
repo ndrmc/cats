@@ -264,10 +264,12 @@
 
                         <li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li>
                     }
-                    else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
+                    //else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
+                    //{
+                    else if (modelRequest.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved")
                     {
-                        if (modelRequest.Program == "Relief")
-                        {
+                    if (modelRequest.Program == "Relief")
+                    {
                             <li>
                                 <a class="btn green-haze-stripe">
                                     @Html.EarlyWarningOperationMenuItem(@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID }),

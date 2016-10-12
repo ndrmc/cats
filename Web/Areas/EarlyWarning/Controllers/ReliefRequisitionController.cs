@@ -18,6 +18,7 @@ using Cats.ViewModelBinder;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using System.Web.UI;
+using NUnit.Framework;
 using StateTemplate = Cats.Models.StateTemplate;
 
 namespace Cats.Areas.EarlyWarning.Controllers
@@ -272,9 +273,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [HttpGet]
         public ViewResult NewRequisiton(int id)
         {
-            var input = _reliefRequisitionService.GetRequisitionByRequestId(id).ToList();
+            var input = _reliefRequisitionService.GetRequisitionByRequestId(id);
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            
+            ViewBag.RequestId = id;
+            if (input == null) return View(new List<ReliefRequisitionNew>());
             foreach (var reliefRequisitionNew in input)
             {
                 if (reliefRequisitionNew.RequestedDate.HasValue)
@@ -283,8 +285,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     reliefRequisitionNew.RegionalRequestId = id;
                 }
                 reliefRequisitionNew.MonthName = RequestHelper.MonthName(reliefRequisitionNew.Month);
-            }
-            ViewBag.RequestId = id;
+            } 
             return View(input);
         }
 

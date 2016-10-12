@@ -105,7 +105,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var requests = _regionalRequestService.Get(t => t.Status == id, null, "AdminUnit,Program");
             var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
             var userPref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            return View(RequestViewModelBinder.BindRegionalRequestListViewModel(requests, statuses, userPref));
+            return View(RequestViewModelBinder.BindRegionalRequestListViewModel(requests, userPref));
         }
 
 
@@ -728,7 +728,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             RegionalRequest request =
                 _regionalRequestService.Get(t => t.RegionalRequestID == id, null, "AdminUnit,Program,Ration").FirstOrDefault();
             var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
-            var requestModelView = RequestViewModelBinder.BindRegionalRequestViewModel(request, statuses, datePref);
+            var requestModelView = RequestViewModelBinder.BindRegionalRequestViewModel(request, datePref);
 
             var adminUnits = _adminUnitService.FindBy(t => t.AdminUnitTypeID == 2 && t.AdminUnitID == request.RegionID);
             var woredasNotInHrd = new List<int>();
@@ -780,8 +780,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewBag.RequestID = id;
             var request =
                 _regionalRequestService.Get(t => t.RegionalRequestID == id, null, "AdminUnit,Program,Ration").FirstOrDefault();
-            var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
-            var requestModelView = RequestViewModelBinder.BindRegionalRequestViewModel(request, statuses, datePref);
+            //var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
+            var requestModelView = RequestViewModelBinder.BindRegionalRequestViewModel(request, datePref);
             var requestDetails = _regionalRequestDetailService.Get(t => t.RegionalRequestID == id);
             var requestDetailCommodities = (from item in requestDetails select item.RequestDetailCommodities).FirstOrDefault();
             if (requestDetailCommodities != null)
@@ -803,7 +803,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 return HttpNotFound();
             }
             var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
-            var requestModelView = RequestViewModelBinder.BindRegionalRequestViewModel(request, statuses, datePref);
+            var requestModelView = RequestViewModelBinder.BindRegionalRequestViewModel(request, datePref);
 
             var requestDetails = _regionalRequestDetailService.Get(t => t.RegionalRequestID == id, null, "RequestDetailCommodities,RequestDetailCommodities.Commodity").ToList();
             var dt = RequestViewModelBinder.TransposeData(requestDetails);
@@ -835,7 +835,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 ViewBag.program = "PSNP";
             }
             var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
-            var requestModelView = RequestViewModelBinder.BindRegionalRequestViewModel(request, statuses, datePref);
+            var requestModelView = RequestViewModelBinder.BindRegionalRequestViewModel(request, datePref);
 
 
             if (TempData["CustomError"] != null)
@@ -1204,26 +1204,81 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
 
             var requests = id == -1 ? _regionalRequestService.GetAllRegionalRequest().OrderByDescending(m => m.RegionalRequestID) : _regionalRequestService.Get(t => t.Status == id);
-            var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
+            //var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var requestViewModels = RequestViewModelBinder.BindRegionalRequestListViewModel(requests, statuses, datePref);
+            var requestViewModels = RequestViewModelBinder.BindRegionalRequestListViewModel(requests, datePref);
             return Json(requestViewModels.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Request_Search([DataSourceRequest] DataSourceRequest request, int RegionID, int ProgramID, int StatusID, DateTime DateFrom, DateTime DateTo)// SearchRequsetViewModel filter)
+        public ActionResult Request_Search([DataSourceRequest] DataSourceRequest request, int RegionID, int ProgramID,
+            int StatusID, DateTime DateFrom, DateTime DateTo) // SearchRequsetViewModel filter)
         {
-
-            var requests = StatusID == -1 ? _regionalRequestService.
-                GetAllRegionalRequest()
-                .OrderByDescending(m => m.RegionalRequestID) :
-                _regionalRequestService
-                .Get(m => m.RegionID == RegionID && m.ProgramId == ProgramID && m.RequistionDate >= DateFrom && m.RequistionDate <= DateTo);
-
+            IEnumerable<RegionalRequest> requests = null;
+            //requests = StatusID == -1
+            //    ? _regionalRequestService.GetAllRegionalRequest().OrderByDescending(m => m.RegionalRequestID)
+            //    : _regionalRequestService.Get(
+            //        m =>
+            //            m.RegionID == RegionID && m.ProgramId == ProgramID && m.RequistionDate >= DateFrom &&
+            //            m.RequistionDate <= DateTo);
+             
+            var requestViewModels = new List<RegionalRequestViewModel>();
+            if (StatusID == -1)
+            {
+                requests = _regionalRequestService.
+                    GetAllRegionalRequest()
+                    .OrderByDescending(m => m.RegionalRequestID);
+            }
+            else if (StatusID == 1)
+            {
+                requests = _regionalRequestService
+                    .Get(
+                        m =>
+                            m.RegionID == RegionID && m.ProgramId == ProgramID && m.RequistionDate >= DateFrom &&
+                            m.BusinessProcess.CurrentState.BaseStateTemplate.Name.Equals("Draft") &&
+                            m.RequistionDate <= DateTo);
+            }
+            else if (StatusID == 2)
+            {
+                requests = _regionalRequestService
+                    .Get(
+                        m =>
+                            m.RegionID == RegionID && m.ProgramId == ProgramID && m.RequistionDate >= DateFrom &&
+                            m.BusinessProcess.CurrentState.BaseStateTemplate.Name.Equals("Approved") &&
+                            m.RequistionDate <= DateTo);
+            }
+            else if (StatusID == 3)
+            {
+                requests = _regionalRequestService
+                    .Get(
+                        m =>
+                            m.RegionID == RegionID && m.ProgramId == ProgramID && m.RequistionDate >= DateFrom &&
+                            m.BusinessProcess.CurrentState.BaseStateTemplate.Name.Equals("Closed") &&
+                            m.RequistionDate <= DateTo);
+            }
+            else if (StatusID == 4)
+            {
+                requests = _regionalRequestService
+                    .Get(
+                        m =>
+                            m.RegionID == RegionID && m.ProgramId == ProgramID && m.RequistionDate >= DateFrom &&
+                            m.BusinessProcess.CurrentState.BaseStateTemplate.Name.Equals("FederalApproved") &&
+                            m.RequistionDate <= DateTo);
+            }
+            else if (StatusID == 5)
+            {
+                requests = _regionalRequestService
+                    .Get(
+                        m =>
+                            m.RegionID == RegionID && m.ProgramId == ProgramID && m.RequistionDate >= DateFrom &&
+                            m.BusinessProcess.CurrentState.BaseStateTemplate.Name.Equals("Rejected") &&
+                            m.RequistionDate <= DateTo);
+            }
             var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var requestViewModels = RequestViewModelBinder.BindRegionalRequestListViewModel(requests, statuses, datePref);
-            //  var j = requestViewModels.FirstOrDefault().C
-            requestViewModels = requestViewModels.Where(t => t.StateId == StatusID);
+            if (requests != null)
+            {
+                requestViewModels = RequestViewModelBinder.BindRegionalRequestListViewModel(requests, datePref).ToList();
+            }
             return Json(requestViewModels.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
