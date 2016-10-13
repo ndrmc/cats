@@ -199,7 +199,7 @@ namespace Cats.Services.Hub
 
             viewModel.CommoditySource = receiptAllocation.CommoditySource.Name;
             viewModel.CommoditySourceTypeId = receiptAllocation.CommoditySourceID;
-            viewModel.ReceiveDetailNewViewModels = new List<ReceiveDetailNewViewModel> { };
+            viewModel.ReceiveDetailNewViewModels = new List<ReceiveDetailNewViewModel>();
             return viewModel;
         }
 

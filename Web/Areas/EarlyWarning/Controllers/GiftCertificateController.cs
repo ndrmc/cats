@@ -587,7 +587,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult ShowLetterTemplates([DataSourceRequest] DataSourceRequest request)
         {
             return Json(_letterTemplateService.GetAllLetterTemplates().ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
-        }
+		}
         public void ShowTemplate(string fileName, int giftCertificateId)
         {
             // TODO: Make sure to use DI to get the template generator instance
@@ -596,7 +596,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 var template = new TemplateHelper(_unitofwork, _log);
                 string filePath = template.GenerateTemplate(giftCertificateId, 1, fileName); //here you have to send the name of the tempalte and the id of the giftcertificate
 
-                Response.Clear();
+				Response.Clear();
                 Response.ContentType = "application/text";
                 Response.AddHeader("Content-Disposition", @"filename= " + fileName + ".docx");
                 Response.TransmitFile(filePath);
@@ -608,8 +608,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 _log.Error(ex.Message.ToString(CultureInfo.InvariantCulture), ex.GetBaseException());
                 //System.IO.File.AppendAllText(@"c:\temp\errors.txt", " ShowTemplate : " + ex.Message.ToString(CultureInfo.InvariantCulture));
-            }
-        }
+          }
+}
         protected override void Dispose(bool disposing)
         {
             _giftCertificateService.Dispose();

@@ -151,12 +151,16 @@ namespace Cats.Services.Common
         {
             if (program == (int) Cats.Models.Constant.Programs.Releif)
             {
-                var result =
-                    _unitOfWork.ReliefRequisitionDetailRepository.FindBy(
-                        p =>
-                        p.ReliefRequisition.RegionalRequest.PlanID == planId && p.FDP.AdminUnitID == woredaId &&
-                        p.ReliefRequisition.Round == roundOrMonth).GroupBy(u=>u.RequisitionID).FirstOrDefault().Sum(u=>u.BenficiaryNo);
-  
+                
+                var firstOrDefault =
+                                  _unitOfWork.ReliefRequisitionDetailRepository.FindBy(
+                                      p =>
+                                      p.ReliefRequisition.RegionalRequest.PlanID == planId && p.FDP.AdminUnitID == woredaId &&
+                                      p.ReliefRequisition.Round == roundOrMonth).GroupBy(u => u.RequisitionID).FirstOrDefault();
+
+                int result = 0;
+                if (firstOrDefault != null) result =firstOrDefault.Sum(u => u.BenficiaryNo);
+
                 return result;
             }
             if (program == (int) Cats.Models.Constant.Programs.PSNP)

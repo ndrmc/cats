@@ -300,6 +300,7 @@ namespace Cats.Areas.Logistics.Controllers
             return Json(new { Url = redirectUrl });
 
         }
+         
 
         public JsonResult Load(string id)
         {
@@ -309,15 +310,23 @@ namespace Cats.Areas.Logistics.Controllers
             Cats.Models.GiftCertificate giftCertificate = null;
                 giftCertificate = _giftCertificateService.GetAllGiftCertificate().FirstOrDefault(d => d.ShippingInstruction.Value == id);
 
+                var parentCommodity = giftCertificate.GiftCertificateDetails[0].Commodity.Commodity2 != null ? giftCertificate.GiftCertificateDetails[0].Commodity.Commodity2.Name : String.Empty;
+                var childCommodity = giftCertificate.GiftCertificateDetails[0].Commodity.Name;
+
+                if (String.IsNullOrEmpty(parentCommodity))
+                {
+                    parentCommodity = childCommodity;
+                    childCommodity = String.Empty;
+
+                }
                 return giftCertificate != null ? Json(new
                 {
                     donorId = giftCertificate.Donor.Name,
                     programId = giftCertificate.Program.Name,
                     eta = giftCertificate.ETA,
                     quantity = giftCertificate.GiftCertificateDetails[0].WeightInMT,
-                    comodity = giftCertificate.GiftCertificateDetails[0].Commodity.Name,
-                    parentCommodityType = giftCertificate.GiftCertificateDetails[0].Commodity.Commodity2 != null ? giftCertificate.GiftCertificateDetails[0].Commodity.Commodity2.Name : "",
-
+                    parentCommodityType = parentCommodity,
+                    comodity = childCommodity,
                     commodityType = giftCertificate.GiftCertificateDetails[0].Commodity.CommodityType.Name
                 }, JsonRequestBehavior.AllowGet) : null;
 
@@ -331,8 +340,6 @@ namespace Cats.Areas.Logistics.Controllers
                 return null;
             }
         }
-
-
 
         private IEnumerable<DonationDetail> GetNewDonationDetail()
         {

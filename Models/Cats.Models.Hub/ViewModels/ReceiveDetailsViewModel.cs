@@ -28,7 +28,10 @@ namespace Cats.Models.Hubs.ViewModels
         public int? SiNumber { get; set; }
 
         [Display(Name = "Commodity")]
+     
         public int CommodityId { get; set; }
+         [Display(Name = "Commodity Name")]
+        public string CommodityName { get; set; }
 
         [Display(Name = "Sub Commodity")]
         public int CommodityChildID  { get; set; }
