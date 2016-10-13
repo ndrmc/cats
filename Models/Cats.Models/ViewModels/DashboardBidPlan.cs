@@ -17,5 +17,8 @@ namespace Cats.Models.ViewModels
 
         public int NumberOfHubAssignedWoredas { get; set; }
 
+        public string SelectedBidPlan { get; set; }
+
+
     }
 }

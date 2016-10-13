@@ -238,11 +238,11 @@
                     </div>
                     <div class="portlet-body">
                         <div class="table-responsive" style="overflow-x: hidden; min-height: 250px;">
-                            <div class="row form-horizontal ">
+                            @*<div class="row form-horizontal ">
                                 <div class="col-md-3 form-group">
                                     <label class="control-label col-md-6">User</label>
                                     <div class="col-md-5">
-                                        @*<select class="form-control" id="lgusers" ng-model="lguser" ng-options="u as u for u in lgusers"></select>*@
+                                     <select class="form-control" id="lgusers" ng-model="lguser" ng-options="u as u for u in lgusers"></select>
                                         <select id="lgusers" ng-model="lguser" class="form-control">
                                             <option ng-repeat="lguser in lgusers" value="{{lguser.UserProfileId}}">{{lguser.UserName}}</option>
                                         </select>
@@ -266,7 +266,7 @@
                                         <button type="button" class="btn green " ng-click="getBidPlanningIndicator()">Get</button>
                                     </div>
                                 </div>
-                            </div>
+                            </div>*@
                             <span class="loading-spnr-da bp-data-indicator-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class=""></span>
                             <div class="col-md-12">
                                 <table class="table table-striped table-checkable">
@@ -291,6 +291,8 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="col-md-12">* Only Warehouses assigned for Bid Plan "{{BidPlanName}}" are listed here.</div>
+
                             @*<div class="col-md-4" style="min-height: 250px;">
                                 <div class="portlet-content">
                                     <div id="containerPIE" class="chartWrap" draw-column-chart=""></div>
@@ -1420,6 +1422,7 @@
 
             $scope.DispatchAllocationIndicator = [];
             $scope.HrdName = "";
+            $scope.BidPlanName = "";
             $scope.TotalNumberOfEstimatedRequisitions = 0;
             $scope.TotalNumberOfApprovedRequisitions = 0;
             $scope.TotalNumberOfHubAllocatedRequisitions = 0;
@@ -1546,6 +1549,7 @@
                     .success(function (data, status, headers, config) {
                         $scope.BidPlanningIndicator = data;
                         $scope.TotalNumberOfWoredas = 0;
+                        $scope.BidPlanName = data[0].SelectedBidPlan;
                         $scope.TotalNumberOfHubAssignedWoredas = 0;
                         for (var i = 0; i < data.length; i++) {
                             $scope.TotalNumberOfWoredas += data[i].TotalNumberOfWoredas;
