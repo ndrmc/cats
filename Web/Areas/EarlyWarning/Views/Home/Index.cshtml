@@ -7,7 +7,7 @@
 @{
     ViewBag.Title = "Home";
 
-    Layout = "~/Views/Shared/_CATSLayout.cshtml";
+    DocumentFormat.OpenXml.Drawing.Charts.Layout = "~/Views/Shared/_CATSLayout.cshtml";
    
     const string pageName = "EarlyWarning.Index";
 }
@@ -898,7 +898,7 @@
             $scope.getRequestedInfo = function () {
                 $http.post("@Url.Action("GetRequestedInfo", "EWDashboard", new { Area = "EarlyWarning" })").success(onRequestedAmoutSuccess);
 
-        };
+            };
 
             $scope.getRegionalRequestDataEntryStatus = function() {
                 $http.post("@Url.Action("GetRegionalRequestDataEntryStatus", "EWDashboard", new { Area = "EarlyWarning" })").success(onRegionalRequestDataEntryStatus);

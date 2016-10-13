@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Cats.Areas.EarlyWarning.Models;
 using Cats.Areas.Finance.Models;
 using Cats.Infrastructure;
 using Cats.Models;
@@ -25,15 +22,18 @@ namespace Cats.Areas.Finance.Controllers
         private readonly ITransporterPaymentRequestService _transporterPaymentRequestService;
         private readonly IUserProfileService _userProfileService;
         private readonly IDispatchService _dispatchService;
+        private readonly IDispatchAllocationService _dispatchAllocationService;
         private readonly ITransportOrderDetailService _transportOrderDetailService;
         private readonly IBusinessProcessService _businessProcessService;
         private readonly ITransportOrderService _transportOrderService;
         private readonly IDeliveryService _deliveryService;
-        private readonly Services.Hub.IFDPService _ifdpService;
+        private readonly Services.Hub.IFDPService _fdpService;
         private readonly Services.Hub.IAdminUnitService _iadminUnitService;
         private readonly Services.Hub.ITransporterService _transporterService;
         private readonly IReliefRequisitionService _reliefRequisitionService;
-
+        private readonly IDispatchDetailService _disptDetailService;
+        private readonly Services.Hub.ICommodityService _commodityService;
+        private readonly Services.Hub.IHubService _hubService;
 
         public HomeController(ITransporterChequeService transporterChequeService,
             IUserProfileService userProfileService,
@@ -46,7 +46,11 @@ namespace Cats.Areas.Finance.Controllers
             Services.Hub.IFDPService ifdpService,
             Services.Hub.IAdminUnitService adminUnitService,
             Services.Hub.ITransporterService transporterService,
-            IReliefRequisitionService reliefRequisitionService)
+            IReliefRequisitionService reliefRequisitionService,
+            IDispatchAllocationService dispatchAllocationService,
+            IDispatchDetailService dispatchDetailService,
+            Services.Hub.ICommodityService commodityService,
+            Services.Hub.IHubService hubService)
         {
             _transporterChequeService = transporterChequeService;
             _userProfileService = userProfileService;
@@ -56,10 +60,14 @@ namespace Cats.Areas.Finance.Controllers
             _businessProcessService = businessProcessService;
             _transportOrderService = transportOrderService;
             _deliveryService = deliveryService;
-            _ifdpService = ifdpService;
+            _fdpService = ifdpService;
             _iadminUnitService = adminUnitService;
             _transporterService = transporterService;
             _reliefRequisitionService = reliefRequisitionService;
+            _dispatchAllocationService = dispatchAllocationService;
+            _disptDetailService = dispatchDetailService;
+            _commodityService = commodityService;
+            _hubService = hubService;
         }
 
         //
@@ -301,10 +309,12 @@ namespace Cats.Areas.Finance.Controllers
                         .Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2, null, "BusinessProcess")
                         .OrderByDescending(t => t.TransporterPaymentRequestID);
             var transporterPaymentRequests = TransporterPaymentRequestViewModelBinder(list.ToList());
-            var requests = transporterPaymentRequests.GroupBy(ac => new {
+            var requests = transporterPaymentRequests.GroupBy(ac => new
+            {
                 ac.Transporter.Name,
                 ac.Commodity,
-                ac.Source }).Select(ac => new
+                ac.Source
+            }).Select(ac => new
             {
                 TransporterName = ac.Key.Name,
                 TransporterId = ac.FirstOrDefault().Transporter.TransporterID,
@@ -338,50 +348,50 @@ namespace Cats.Areas.Finance.Controllers
             List<Cats.Models.Hubs.AdminUnit> adminUnits = _iadminUnitService.GetAllAdminUnit();
 
             var paymentRequest = (from rr in reliefRequisitions
-                join tod in transportOrderDetails
-                    on rr.RequisitionID equals tod.RequisitionID
-                join to in transportOrders
-                    on tod.TransportOrderID equals to.TransportOrderID
-                join t in transporters
-                    on to.TransportOrderID equals t.TransporterID
-                join tpr in transporterPaymentRequests
-                    on to.TransportOrderID equals tpr.TransportOrderID
-                join au in adminUnits
-                    on t.Region equals au.AdminUnitID
-                where tpr.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2
-                select new
-                {
-                    rr.RequisitionNo,
-                    rr.Round,
-                    to.TransportOrderNo,
-                    t.Name,
-                    Region = au.Name,
-                    RegionId = t.Region,
-                    StateNumber = tpr.BusinessProcess.CurrentState.BaseStateTemplate.StateNo
-                }).ToList();
+                                  join tod in transportOrderDetails
+                                      on rr.RequisitionID equals tod.RequisitionID
+                                  join to in transportOrders
+                                      on tod.TransportOrderID equals to.TransportOrderID
+                                  join t in transporters
+                                      on to.TransportOrderID equals t.TransporterID
+                                  join tpr in transporterPaymentRequests
+                                      on to.TransportOrderID equals tpr.TransportOrderID
+                                  join au in adminUnits
+                                      on t.Region equals au.AdminUnitID
+                                  where tpr.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2
+                                  select new
+                                  {
+                                      rr.RequisitionNo,
+                                      rr.Round,
+                                      to.TransportOrderNo,
+                                      t.Name,
+                                      Region = au.Name,
+                                      RegionId = t.Region,
+                                      StateNumber = tpr.BusinessProcess.CurrentState.BaseStateTemplate.StateNo
+                                  }).ToList();
 
             var groupedTransportRequest = (from pR in paymentRequest
-                group pR by new
-                {
-                    pR.Region,
-                    pR.Name,
-                    pR.RegionId,
-                    pR.RequisitionNo,
-                    pR.Round,
-                    pR.StateNumber
-                }
+                                           group pR by new
+                                           {
+                                               pR.Region,
+                                               pR.Name,
+                                               pR.RegionId,
+                                               pR.RequisitionNo,
+                                               pR.Round,
+                                               pR.StateNumber
+                                           }
                 into gTrnsRqst
-                select new
-                {
-                    gTrnsRqst.Key.Region,
-                    gTrnsRqst.Key.Name, // transporter name
-                    //gTrnsRqst.Key.RegionId,
-                    //gTrnsRqst.Key.RequisitionNo,
-                    gTrnsRqst.Key.Round,
-                    //gTrnsRqst.Key.StateNumber,
-                    Allocated = gTrnsRqst.Count(x => x.StateNumber != 2),
-                    Collected = gTrnsRqst.Count(x => x.StateNumber == 2)
-                }).ToList();
+                                           select new
+                                           {
+                                               gTrnsRqst.Key.Region,
+                                               gTrnsRqst.Key.Name, // transporter name
+                                                                   //gTrnsRqst.Key.RegionId,
+                                                                   //gTrnsRqst.Key.RequisitionNo,
+                                               gTrnsRqst.Key.Round,
+                                               //gTrnsRqst.Key.StateNumber,
+                                               Allocated = gTrnsRqst.Count(x => x.StateNumber != 2),
+                                               Collected = gTrnsRqst.Count(x => x.StateNumber == 2)
+                                           }).ToList();
 
             //List<RegionalRequestDataEntryStatusViewModel> regionalRequestDataEntryStatus =
             //    transportOrders.Select(transportOrder => new RegionalRequestDataEntryStatusViewModel
@@ -395,6 +405,88 @@ namespace Cats.Areas.Finance.Controllers
             //}
 
             return Json(groupedTransportRequest, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetTransporterPaymentRequest(int round, int takeTheFirst)
+        {
+            var transporters = _transporterService.GetAllTransporter();
+            var dispatches = _dispatchService.GetAllDispatch().Where(d => d.Round == round);
+            var transportOrderDetails = _transportOrderDetailService.GetAllTransportOrderDetail();
+            var transporterOrders = _transportOrderService.GetAllTransportOrder();
+            var dispatchAllocations = _dispatchAllocationService.GetAllDispatchAllocation();
+            var dispatchDetails = _disptDetailService.GetAllDispatchDetail();
+            var transporterPaymentRequests = _transporterPaymentRequestService.GetAllTransporterPaymentRequest().Where(p =>
+                    p.BusinessProcess.CurrentState.BaseStateTemplate.Name != "Closed");
+            var commodities = _commodityService.GetAllCommodity();
+            var fdps = _fdpService.GetAllFDP();
+            var hubs = _hubService.GetAllHub();
+
+            var filteredTransportPaymentRequests = (from d in dispatches
+                                                    join da in dispatchAllocations
+                                                        on d.DispatchAllocationID equals da.DispatchAllocationID
+                                                    join t in transporters
+                                                        on d.TransporterID equals t.TransporterID
+                                                    join tod in transportOrderDetails
+                                                        on d.FDPID equals tod.FdpID
+                                                    join to in transporterOrders
+                                                        on tod.TransportOrderID equals to.TransportOrderID
+                                                    join dd in dispatchDetails
+                                                        on d.DispatchID equals dd.DispatchID
+                                                    join tpr in transporterPaymentRequests
+                                                        on to.TransportOrderID equals tpr.TransportOrderID
+                                                    join c in commodities
+                                                        on tod.CommodityID equals c.CommodityID
+                                                    join fdp in fdps
+                                                        on d.FDPID equals fdp.FDPID
+                                                    join hub in hubs
+                                                        on d.HubID equals hub.HubID
+                                                    orderby d.DispatchDate
+                                                    select new
+                                                    {
+                                                        Transporter = t.Name,
+                                                        //PaymentRequest = tpr.ReferenceNo,
+                                                        Commodity = c.Name,
+                                                        Allocated = da.Amount,
+                                                        Dispatched = dd.DispatchedQuantityInMT,
+                                                        Discripancy = da.Amount - dd.DispatchedQuantityInMT,
+                                                        FDP = fdp.Name,
+                                                        Hub = hub.Name
+                                                    });
+
+            var groupedPaymentRequest = (from tpr in filteredTransportPaymentRequests
+                                         group tpr by new
+                                         {
+                                             tpr.Transporter,
+                                             tpr.Commodity,
+                                             //tpr.PaymentRequest,
+                                             tpr.FDP,
+                                             tpr.Hub
+                                         }
+                into gTrnsRqst
+                                         select new
+                                         {
+                                             gTrnsRqst.Key.Transporter,
+                                             gTrnsRqst.Key.Commodity,
+                                             //gTrnsRqst.Key.PaymentRequest,
+                                             gTrnsRqst.Key.FDP,
+                                             gTrnsRqst.Key.Hub,
+                                             Allocated = gTrnsRqst.Sum(x => x.Allocated),
+                                             Dispatched = gTrnsRqst.Sum(x => x.Dispatched),
+                                             Discripancy = gTrnsRqst.Sum(x => x.Discripancy)
+                                         }).Take(takeTheFirst).ToList();
+
+            return Json(groupedPaymentRequest, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetBidPlan() // Rounds/Cycle
+        {
+            var rounds = _dispatchService.GetAllDispatch().Select(r => new
+            {
+                round = r.Round,
+                id = r.Round
+            }).Distinct().OrderBy(o => o.round);
+
+            return Json(rounds, JsonRequestBehavior.AllowGet);
         }
     }
 }
