@@ -1,7 +1,7 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Data.Entity.ModelConfiguration;
 
-namespace Cats.Models.Hubs.Mapping
+namespace Cats.Models.Mapping
 {
     public class DispatchAllocationMap : EntityTypeConfiguration<DispatchAllocation>
     {
@@ -35,7 +35,7 @@ namespace Cats.Models.Hubs.Mapping
             this.Property(t => t.ContractStartDate).HasColumnName("ContractStartDate");
             this.Property(t => t.ContractEndDate).HasColumnName("ContractEndDate");
             this.Property(t => t.Beneficiery).HasColumnName("Beneficiery");
-            this.Property(t => t.Amount).HasColumnName("Amount").HasPrecision(18,4);
+            this.Property(t => t.Amount).HasColumnName("Amount").HasPrecision(18, 4);
             this.Property(t => t.Unit).HasColumnName("Unit");
             this.Property(t => t.TransporterID).HasColumnName("TransporterID");
             this.Property(t => t.FDPID).HasColumnName("FDPID");
@@ -45,28 +45,7 @@ namespace Cats.Models.Hubs.Mapping
             this.Property(t => t.IsClosed).HasColumnName("IsClosed");
             this.Property(t => t.ParentDispatchAllocationID).HasColumnName("ParentDispatchAllocationID");
 
-            // Relationships
-            this.HasRequired(t => t.Commodity)
-                .WithMany(t => t.DispatchAllocations)
-                .HasForeignKey(d => d.CommodityID);
-            this.HasRequired(t => t.FDP)
-                .WithMany(t => t.DispatchAllocations)
-                .HasForeignKey(d => d.FDPID);
-            this.HasOptional(t => t.Program)
-                .WithMany(t => t.DispatchAllocations)
-                .HasForeignKey(d => d.ProgramID);
-            this.HasRequired(t => t.Hub)
-                .WithMany(t => t.DispatchAllocations)
-                .HasForeignKey(d => d.HubID);
-            this.HasOptional(t => t.ProjectCode)
-                .WithMany(t => t.DispatchAllocations)
-                .HasForeignKey(d => d.ProjectCodeID);
-            this.HasOptional(t => t.ShippingInstruction)
-                .WithMany(t => t.DispatchAllocations)
-                .HasForeignKey(d => d.ShippingInstructionID);
-            this.HasOptional(t => t.Transporter)
-                .WithMany(t => t.DispatchAllocations)
-                .HasForeignKey(d => d.TransporterID);
+            
 
         }
     }

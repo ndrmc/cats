@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -137,6 +139,29 @@ namespace Cats.Services.Dashboard
             return status.ToList();
         }
 
+        public decimal GetRegionalNotReconcileDispatchAmount(int regionId)
+        {
+            var regionID = new SqlParameter("RegionID", SqlDbType.Int) { Value = regionId };
+            var result = this.ExecWithStoreProcedure("EXEC [dbo].[SPRegionalNotReconcileDispatchAmount] @regionID",
+                regionID);
+            return result.FirstOrDefault();
+        }
+
+        public IEnumerable<decimal> ExecWithStoreProcedure(string query, params object[] parameters)
+        {
+            var regionalNotReconcileDispatchAmount = new List<decimal>();
+            try
+            {
+                regionalNotReconcileDispatchAmount = _unitOfWork.Database.SqlQuery<decimal>(query, parameters).ToList();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return regionalNotReconcileDispatchAmount;
+        }
+        
+
         public List<object> GetRecentDispatches(int regionID)
         {
             var requisitions = new RecentDispatches();
@@ -159,7 +184,8 @@ namespace Cats.Services.Dashboard
         public List<DistibtionStatusView> GetDistributions(int regionID)
         {
             var r = new List<DistibtionStatusView>();
-            var distibtion = _unitOfWork.WoredaDistributionDashboardRepository.FindBy(t => t.RegionID == regionID).OrderByDescending(t=>t.DistributionDate).Take(10);
+
+            var distibtion = _unitOfWork.WoredaDistributionDashboardRepository.FindBy(t => t.RegionID == regionID).OrderByDescending(t => t.DistributionDate).Take(10);
           //  var requests = _unitOfWork.RegionalRequestRepository.FindBy(t => t.RegionID == regionID && t.PlanID == currentHRD.PlanID).OrderByDescending(t => t.RegionalRequestID).Take(5);
 
             foreach (var distiribution in distibtion)
@@ -168,6 +194,7 @@ namespace Cats.Services.Dashboard
                 {
                     plan = distiribution.PlanName,
                     Woreda = distiribution.WoredaName,
+                    Month = distiribution.Month,
                     Fdps = distiribution.FdpCount,
                     status = Convert.ToInt16(distiribution.Status) 
                    

@@ -21,7 +21,7 @@ namespace Cats.Services.Procurement
         private readonly IBusinessProcessService _businessProcessService;
         
 
-		public TransportOrderService(IUnitOfWork unitOfWork, ITransporterService transporterService, INotificationService notificationService, IBusinessProcessService businessProcessService)
+        public TransportOrderService(IUnitOfWork unitOfWork, ITransporterService transporterService, INotificationService notificationService, IBusinessProcessService businessProcessService)
         {
             this._unitOfWork = unitOfWork;
             this._transporterService = transporterService;
@@ -170,7 +170,7 @@ namespace Cats.Services.Procurement
 
         public IOrderedEnumerable<WoredaViewModelInTransReqWithoutWinner> GetWoredas(int zoneId, int transReqNo)
         {
-          var requisition =
+            var requisition =
                 _unitOfWork.TransReqWithoutTransporterRepository.FindBy(m => m.IsAssigned == false &&
                     m.ReliefRequisitionDetail.ReliefRequisition.ZoneID == zoneId &&
                     m.TransportRequisitionDetail.TransportRequisition.TransportRequisitionID == transReqNo).
@@ -342,12 +342,12 @@ namespace Cats.Services.Procurement
                         transportOrderDetail.RequisitionID = reliefRequisitionDetail.RequisitionID;
                         if (bidWinner != null) transportOrderDetail.BidID = bidWinner.BidID;
                         // divide Commodity amount equaly if there is more than one winner for the same woreda
-						if (transReq.noOfWinners > 1)
+                        if (transReq.noOfWinners > 1)
 
                             transportOrderDetail.QuantityQtl = (reliefRequisitionDetail.Amount / transReq.noOfWinners);
 
                         else
-                           transportOrderDetail.QuantityQtl = reliefRequisitionDetail.Amount;
+                            transportOrderDetail.QuantityQtl = reliefRequisitionDetail.Amount;
 	                        transportOrderDetail.TariffPerQtl = transReq.TariffPerQtl;
 	                        transportOrderDetail.SourceWarehouseID = transReq.HubID;
 	                        transportOrder.TransportOrderDetails.Add(transportOrderDetail);
@@ -391,7 +391,6 @@ namespace Cats.Services.Procurement
                 _unitOfWork.TransportRequisitionDetailRepository.Get(t => t.TransportRequisitionID == transportRequisitionId).ToList();
             foreach (var transportRequisitionDetail in transportRequisitionDetails)
             {
-               
                 var reliefRequisition = _unitOfWork.ReliefRequisitionRepository.Get(t => t.RequisitionID == transportRequisitionDetail.RequisitionID, null,
                             "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
                 var approveFlowTemplate = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Order");
@@ -449,7 +448,7 @@ namespace Cats.Services.Procurement
                 var transRequisDetailId = reliefRequisitionDetail.ReliefRequisition.TransportRequisitionDetails.First().TransportRequisitionDetailID;
                 var reqId = reliefRequisitionDetail.RequisitionID;
                 //var storeId = _unitOfWork.HubAllocationRepository.FindBy(t => t.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().StoreId;
-                var hubId = _unitOfWork.HubAllocationRepository.FindBy(t => t.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().HubID;//requi.HubAllocations.FirstOrDefault().HubID;
+                var hubId = _unitOfWork.SIPCAllocationRepository.FindBy(t => t.ReliefRequisitionDetail.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().HubID;//requi.HubAllocations.FirstOrDefault().HubID;
                 var sWarehouseID =
                     _unitOfWork.HubAllocationRepository.FindBy(
                         t => t.RequisitionID == reliefRequisitionDetail.RequisitionID)
@@ -467,7 +466,7 @@ namespace Cats.Services.Procurement
                 {
                     temp = (int)sWarehouseID;
                 }
-                var transportBidWinners = _transporterService.GetBidWinner(temp, woredaId, bidId);
+                var transportBidWinners = _transporterService.GetBidWinner(hubId, woredaId, bidId);
 
 
                 //_unitOfWork.BidWinnerRepository.Get(
@@ -607,7 +606,7 @@ namespace Cats.Services.Procurement
 
                 {
 
-                   var transportOrder = new TransportOrder();
+                    var transportOrder = new TransportOrder();
                     transportOrder.TransporterID = transporterID;
                     transportOrder.OrderDate = DateTime.Today;
                     transportOrder.StartDate = DateTime.Today;
@@ -726,7 +725,7 @@ namespace Cats.Services.Procurement
                     {
                         hubId.AddRange(transport);
                     }
-                   AddToNotification(transportOrder.TransportOrderID, transportOrder.TransportOrderNo, hubId);
+                    AddToNotification(transportOrder.TransportOrderID, transportOrder.TransportOrderNo, hubId);
                 }
                 catch
                 {
@@ -779,46 +778,85 @@ namespace Cats.Services.Procurement
                 var requisitionDetail =
                     _unitOfWork.ReliefRequisitionDetailRepository.Get(
                         t => t.RequisitionID == requisition.RequisitionID && t.FDPID == fdpId).FirstOrDefault();
+
                 
+
                 var sipc =
                    _unitOfWork.SIPCAllocationRepository.FindBy(
                        t => t.RequisitionDetailID == requisitionDetail.RequisitionDetailID);
                 foreach (var t in sipc)
                 {
-                    var dispatchAllocation = new DispatchAllocation();
-                    dispatchAllocation.DispatchAllocationID = Guid.NewGuid();
-                    dispatchAllocation.Beneficiery = requisitionDetail != null ? requisitionDetail.BenficiaryNo : 0;
-                    dispatchAllocation.Amount = t.AllocatedAmount;// transportOrderDetail.QuantityQtl;
-                    dispatchAllocation.BidRefNo = transportOrder.BidDocumentNo;
-                    dispatchAllocation.CommodityID = transportOrderDetail.CommodityID;
-                    dispatchAllocation.ContractEndDate = transportOrder.StartDate;
-                    dispatchAllocation.ContractEndDate = transportOrder.EndDate;
-                    dispatchAllocation.DonorID = transportOrderDetail.DonorID;
-                    dispatchAllocation.FDPID = transportOrderDetail.FdpID;
-                    dispatchAllocation.HubID = t.HubID;
-                    dispatchAllocation.TransporterID = transportOrder.TransporterID;
-                    // dispatchAllocation.IsClosed = false;
-                    dispatchAllocation.Month = requisition.Month;
-                    dispatchAllocation.Round = requisition.Round;
+                    /****** BEGIN: This Calculates the already dispatched amount of the FDP by former transporter if there is any **********/
+                    decimal sumOfdispatchedQty = 0.00M;
+                    var prevDispatchAllocation = _unitOfWork.DispatchAllocationRepository.FindBy(d => d.RequisitionId == requisition.RequisitionID && d.FDPID == fdpId && 
+                                                        d.ShippingInstructionID == t.Code && d.HubID == t.HubID).FirstOrDefault();
+                    
 
-                    dispatchAllocation.TransportOrderID = transportOrderId;
-                    dispatchAllocation.ProgramID = requisition.ProgramID;
-                    dispatchAllocation.RequisitionNo = requisition.RequisitionNo;
-                    dispatchAllocation.RequisitionId = requisition.RequisitionID;
-                    dispatchAllocation.PartitionId = 0;
+                    if (prevDispatchAllocation != null)
+                    {
+                        sumOfdispatchedQty = prevDispatchAllocation.Dispatches.Select(dispatch => dispatch?.DispatchDetails).Where(result => result?.Count > 0)
+                            .Aggregate(0.00M, (current1, result) => result.Aggregate(current1, (current, dispatchDetail) => current + dispatchDetail.RequestedQuantityInMT));
 
-                    //var si = sipc.Find(t => t.AllocationType == "SI");
-                    //if (si != null)
-                    //var pc = sipc.Find(t => t.AllocationType == "PC");
-                    //if (pc != null)
-                    if (t.AllocationType == "SI")
-                        dispatchAllocation.ShippingInstructionID = t.Code;
-                    else if (t.AllocationType == "PC")
-                        dispatchAllocation.ProjectCodeID = t.Code;
-                    //dispatchAllocation.Unit //i have no idea where to get it
-                    // dispatchAllocation.StoreID  //Would be set null and filled by user later
-                    //dispatchAllocation.Year= requisition.Year ; //Year is not available 
-                    _unitOfWork.DispatchAllocationRepository.Add(dispatchAllocation);
+                    //var prevDispatchAllocationChildren = _unitOfWork.DispatchAllocationRepository.FindBy(d=>d.ParentDispatchAllocationID == prevDispatchAllocation.DispatchAllocationID && 
+                        //                                    d.RequisitionId == requisition.RequisitionID && d.FDPID == fdpId && d.HubID == t.HubID).ToList();
+
+                        //if (prevDispatchAllocationChildren.Count > 0)
+                        //{
+                        //    foreach (var prevDispatchAllocationChild in prevDispatchAllocationChildren)
+                        //    {
+                        //        var orDefault = prevDispatchAllocationChild.Dispatches;
+                        //        foreach (var dispatch in orDefault)
+                        //        {
+                        //            var result =
+                        //                dispatch?.DispatchDetails;
+
+                        //            if (result?.Count > 0)
+                        //            {
+                        //                sumOfdispatchedQty = result.Aggregate(sumOfdispatchedQty, (current, dispatchDetail) => current + dispatchDetail.RequestedQuantityInMT);
+                        //            }
+                        //        }
+                        //    }
+                        //}
+                    }
+                    /****** END: This Calculates the already dispatched amount of the FDP by former transporter if there is any **********/
+                    if (t.AllocatedAmount - sumOfdispatchedQty > 0.1M)
+                    {
+                        var dispatchAllocation = new DispatchAllocation();
+                        dispatchAllocation.DispatchAllocationID = Guid.NewGuid();
+
+                        dispatchAllocation.Beneficiery = requisitionDetail != null ? requisitionDetail.BenficiaryNo : 0;
+                        dispatchAllocation.Amount = t.AllocatedAmount - sumOfdispatchedQty;// transportOrderDetail.QuantityQtl;
+                        dispatchAllocation.BidRefNo = transportOrder.BidDocumentNo;
+                        dispatchAllocation.CommodityID = transportOrderDetail.CommodityID;
+                        dispatchAllocation.ContractEndDate = transportOrder.StartDate;
+                        dispatchAllocation.ContractEndDate = transportOrder.EndDate;
+                        dispatchAllocation.DonorID = transportOrderDetail.DonorID;
+                        dispatchAllocation.FDPID = transportOrderDetail.FdpID;
+                        dispatchAllocation.HubID = t.HubID;
+                        dispatchAllocation.TransporterID = transportOrder.TransporterID;
+                        // dispatchAllocation.IsClosed = false;
+                        dispatchAllocation.Month = requisition.Month;
+                        dispatchAllocation.Round = requisition.Round;
+
+                        dispatchAllocation.TransportOrderID = transportOrderId;
+                        dispatchAllocation.ProgramID = requisition.ProgramID;
+                        dispatchAllocation.RequisitionNo = requisition.RequisitionNo;
+                        dispatchAllocation.RequisitionId = requisition.RequisitionID;
+                        dispatchAllocation.PartitionId = 0;
+
+                        //var si = sipc.Find(t => t.AllocationType == "SI");
+                        //if (si != null)
+                        //var pc = sipc.Find(t => t.AllocationType == "PC");
+                        //if (pc != null)
+                        if (t.AllocationType == "SI")
+                            dispatchAllocation.ShippingInstructionID = t.Code;
+                        else if (t.AllocationType == "PC")
+                            dispatchAllocation.ProjectCodeID = t.Code;
+                        //dispatchAllocation.Unit //i have no idea where to get it
+                        // dispatchAllocation.StoreID  //Would be set null and filled by user later
+                        //dispatchAllocation.Year= requisition.Year ; //Year is not available 
+                        _unitOfWork.DispatchAllocationRepository.Add(dispatchAllocation);
+                    }
                 }
             }
             transportOrder.StatusID = (int)TransportOrderStatus.Closed;
@@ -902,15 +940,13 @@ namespace Cats.Services.Procurement
             }
 
         }
-		public bool RevertRequsition(int requisitionID)
+        public bool RevertRequsition(int requisitionID)
 		{
    
 			var transportOrderDetails = _unitOfWork.TransportOrderDetailRepository.FindBy(m => m.RequisitionID == requisitionID).ToList();
 			if (transportOrderDetails.Count!=0)
 			{
 				var transportOrderIDs = transportOrderDetails.Select(m => m.TransportOrderID).Distinct();
-
-				var transportOrderDetailToDelete = new List<TransportOrderDetail>();
 				foreach (var transportOrderDetail in transportOrderDetails)
 				{
 					if (transportOrderDetail != null)
@@ -941,6 +977,7 @@ namespace Cats.Services.Procurement
 								hubAllocationtoDelete.Add(hubAllocation);
 							}
 
+                
 						}
 						// delete SIPC Allocation table
 						var requisitionDetails =
@@ -970,25 +1007,27 @@ namespace Cats.Services.Procurement
 													_unitOfWork.TransactionRepository.Delete(transaction);
 													_unitOfWork.Save();
 
+                        
 												}
 
-											}
+                            }
 										}
 
-										_unitOfWork.TransactionGroupRepository.Delete(transactionGroup);
+                                        _unitOfWork.TransactionGroupRepository.Delete(transactionGroup);
 										_unitOfWork.Save();
 
+                                    
 									}
 						  
 								}
 
-							}
+                            }
 				  
 						}
 						DeleteHubAllocations(hubAllocationtoDelete);
 					}
 
-					DeleteTransporRequsitionDetails(transportRequisitionToDelete);
+                    DeleteTransporRequsitionDetails(transportRequisitionToDelete);
 					foreach (var transportRequsition in _unitOfWork.TransportRequisitionRepository.FindBy(m => transportRequsitionIDs.Contains(m.TransportRequisitionID)))
 					{
 						if (transportRequsition.TransportRequisitionDetails.Count == 0)
@@ -996,10 +1035,10 @@ namespace Cats.Services.Procurement
 							_unitOfWork.TransportRequisitionRepository.Delete(transportRequsition);
 						}
 
-					}
+                    }
 				}
 
-				DeleteTransportOrderDetails(transportOrderDetailToDelete);
+                DeleteTransportOrderDetails(transportOrderDetailToDelete);
 				foreach (var transportOrder in _unitOfWork.TransportOrderRepository.FindBy(m=> transportOrderIDs.Contains(m.TransportOrderID)))
 				{
 					if (transportOrder.TransportOrderDetails.Count==0)
@@ -1014,8 +1053,7 @@ namespace Cats.Services.Procurement
 				return true;
 			}
 		
-
-			return false;
+		return false;
 		}
         public bool ReverseTransportOrder(int transportOrderID)
         {
@@ -1138,25 +1176,32 @@ namespace Cats.Services.Procurement
             _unitOfWork.Save();
         }
 
-        public decimal? CheckIfCommodityIsDipatchedToThisFdp(int fdpId, string bidNo, int transporterId, int transportOrderId, int commodityId)
+        public decimal? CheckIfCommodityIsDipatchedToThisFdp(int fdpId, string bidNo, int transporterId, int transportOrderId, int commodityId, int requisitionID)
         {
-            var firstOrDefault = _unitOfWork.DispatchAllocationRepository.FindBy(d => d.TransportOrderID == transportOrderId && d.TransporterID == transporterId && d.BidRefNo == bidNo && d.FDPID == fdpId && d.CommodityID == commodityId).FirstOrDefault();
-            if (firstOrDefault != null)
+            var dispatchAllocations = _unitOfWork.DispatchAllocationRepository.FindBy(d => d.TransportOrderID == transportOrderId && d.TransporterID == transporterId && 
+                                    d.BidRefNo == bidNo && d.FDPID == fdpId && d.CommodityID == commodityId && d.RequisitionId == requisitionID).ToList();
+            decimal sumOfdispatchedQty = 0.00M;
+            decimal sumOfAllocatedQty = 0.00M;
+            if (dispatchAllocations.Count > 0)
             {
-                decimal sumOfdispatchedQty = 0;
-                var orDefault = firstOrDefault.Dispatches;
-                foreach (var dispatch in orDefault)
+                foreach (var dispatchAllocation in dispatchAllocations)
                 {
-                    if (dispatch == null) continue;
-                    var result =
-                        dispatch.DispatchDetails;
-
-                    if (result.Count > 0)
+                    var orDefault = dispatchAllocation.Dispatches;
+                    foreach (var dispatch in orDefault)
                     {
-                        sumOfdispatchedQty = result.Aggregate(sumOfdispatchedQty, (current, dispatchDetail) => current + dispatchDetail.RequestedQuantityInMT);
+                        var result =
+                            dispatch?.DispatchDetails;
+                        
+                        if (result?.Count > 0)
+                        {
+                            sumOfdispatchedQty = result.Aggregate(sumOfdispatchedQty, (current, dispatchDetail) => current + dispatchDetail.RequestedQuantityInMT);
+                        }
                     }
+                    sumOfAllocatedQty += dispatchAllocation.Amount;
+                    dispatchAllocation.IsClosed = true;
+                    _unitOfWork.DispatchAllocationRepository.Edit(dispatchAllocation);
                 }
-                return firstOrDefault.Amount - sumOfdispatchedQty;
+                return sumOfAllocatedQty - sumOfdispatchedQty;
             }
             return null;
 

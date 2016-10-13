@@ -11,33 +11,33 @@
 @section Toolbar
 {
     <a class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frmCreate"></a>
-    <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("Index","Dispatch")"></a>
+      <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("Index","Dispatch")"></a>
 }
-@using (Html.BeginForm("CreateDispatch", "Dispatch", FormMethod.Post, new { id = "frmCreate" }))
+@using (Html.BeginForm("CreateDispatch","Dispatch",FormMethod.Post,new {id="frmCreate"}))
 {
-    @Html.HiddenFor(model => model.DispatchAllocationID)
-    @Html.HiddenFor(model => model.ProgramID)
-    @Html.HiddenFor(model => model.HubID)
-    @Html.HiddenFor(model => model.FDPID)
-    @Html.HiddenFor(model => model.TransporterID)
-    // @Html.HiddenFor(model=>model.UnitID)
-    @Html.HiddenFor(model => model.DispatchID)
-    @Html.HiddenFor(model => model.UserProfileID)
+    @Html.HiddenFor(model=>model.DispatchAllocationID)
+    @Html.HiddenFor(model=>model.ProgramID)
+    @Html.HiddenFor(model=>model.HubID)
+    @Html.HiddenFor(model=>model.FDPID)
+    @Html.HiddenFor(model=>model.TransporterID)
+   // @Html.HiddenFor(model=>model.UnitID)
+   @Html.HiddenFor(model=>model.DispatchID) 
+   @Html.HiddenFor(model=>model.UserProfileID)
     @Html.HiddenFor(model => model.SINumber)
-    @Html.HiddenFor(model => model.Region)
+     @Html.HiddenFor(model => model.Region)
     @Html.HiddenFor(model => model.Woreda)
-    @Html.HiddenFor(model => model.ProjectNumber)
-    @Html.HiddenFor(model => model.Zone)
-    @Html.HiddenFor(model => model.FDP)
-    @Html.HiddenFor(model => model.Commodity)
-    @Html.HiddenFor(model => model.RequisitionNo)
-    @Html.HiddenFor(model => model.RequisitionId)
-    @Html.HiddenFor(model => model.Year)
-    @Html.HiddenFor(model => model.Month)
+     @Html.HiddenFor(model => model.ProjectNumber)
+     @Html.HiddenFor(model => model.Zone)
+     @Html.HiddenFor(model => model.FDP)
+     @Html.HiddenFor(model => model.Commodity)
+     @Html.HiddenFor(model => model.RequisitionNo)
+     @Html.HiddenFor(model => model.RequisitionId)
+     @Html.HiddenFor(model => model.Year)
+     @Html.HiddenFor(model => model.Month)
     @Html.HiddenFor(model => model.Round)
-    @Html.HiddenFor(model => model.Transporter)
-    @Html.HiddenFor(model => model.BidNumber)
-    @Html.HiddenFor(model => model.CommodityID)
+     @Html.HiddenFor(model => model.Transporter)
+      @Html.HiddenFor(model => model.BidNumber)
+    @Html.HiddenFor(model=>model.CommodityID)
     <h6 class="page-header">Dispatch Header</h6>
     <div class="row-fluid panel-body form-horizontal">
 
@@ -48,7 +48,7 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.GIN)
-                    @Html.ValidationMessageFor(model => model.GIN)
+                    @Html.ValidationMessageFor(model=>model.GIN)
                 </div>
             </div>
 
@@ -58,6 +58,7 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.DispatchDate, new { @class = "cats-datepicker2" })
+                    @Html.ValidationMessageFor(model => model.DispatchDate)
                 </div>
             </div>
 
@@ -67,6 +68,7 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.DispatchedByStoreMan)
+                    @Html.ValidationMessageFor(model => model.DispatchedByStoreMan)
                 </div>
             </div>
 
@@ -74,7 +76,7 @@
         <div class="span4">
             <div class="control-group">
                 <div class="control-label">
-                    @Html.LabelFor(model => model.ShippingInstructionID)
+                    @Html.LabelFor(model => model.SINumber)
                 </div>
                 <div class="controls">
                     @(Html.Kendo().ComboBoxFor(m => m.ShippingInstructionID)
@@ -83,11 +85,8 @@
                               .DataValueField("siCodeId")
                               .Filter(FilterType.Contains)
                               .DataSource(source => source.Read(read => read.Action("AvailableSI", "Dispatch",
-                                    new { @reqDetailId = ViewBag.RequisitionDetailID, @siID = Model.ShippingInstructionID, @ComID = Model.CommodityID, @DaID = Model.DispatchAllocationID }))))
-
-
+                                  new { @reqDetailId = ViewBag.RequisitionDetailID, @siID = Model.ShippingInstructionID, @ComID = Model.CommodityID, @DaID = Model.DispatchAllocationID }))))
                     @Html.ValidationMessageFor(model => model.ShippingInstructionID)
-
                 </div>
 
             </div>
@@ -149,38 +148,33 @@
                     @Html.LabelFor(model => model.Commodity)
                 </div>
                 <div class="controls">
-
-
                     @Html.TextBoxFor(model => model.Commodity, new { Disabled = true })
                 </div>
             </div>
+        
 
-
-            <div class="control-group ">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.CommodityChildID)
-                </div>
-                <div class="controls">
-                    @(Html.Kendo().ComboBoxFor(m => m.CommodityChildID)
-                              .Placeholder("Select Commodity")
-                              .DataTextField("CommodityName")
-                              .DataValueField("CommodityId")
-                              .Filter(FilterType.Contains)
-                              .DataSource(source => source.Read(read => read.Action("GetCommodities", "Dispatch", new { @dispatchAllocationId = Model.DispatchAllocationID }))))
-
-
-                    @Html.ValidationMessageFor(model => model.CommodityChildID)
-
-                </div>
+        <div class="control-group ">
+            <div class="control-label">
+                @Html.LabelFor(model => model.CommodityChildID)
             </div>
+            <div class="controls">
+                @(Html.Kendo().ComboBoxFor(m => m.CommodityChildID)
+                          .Placeholder("Select Commodity")
+                          .DataTextField("CommodityName")
+                          .DataValueField("CommodityId")
+                          .Filter(FilterType.Contains)
+                          .DataSource(source => source.Read(read => read.Action("GetCommodities", "Dispatch", new { @dispatchAllocationId = Model.DispatchAllocationID }))))
 
+                @Html.ValidationMessageFor(model => model.CommodityChildID)
+            </div>
+        </div>       
+            
 
             <div class="control-group ">
                 <div class="control-label">
                     @Html.LabelFor(model => model.UnitID)
                 </div>
                 <div class="controls">
-
                     @(Html.Kendo().ComboBoxFor(m => m.UnitID)
                               .Placeholder("Select Unit")
                               .DataTextField("Name")
@@ -189,10 +183,7 @@
                               .DataSource(source => source.Read(read => read.Action("GetUnities", "Dispatch")))
                     )
                     @Html.ValidationMessageFor(model => model.UnitID)
-
-
-
-
+                    
                 </div>
             </div>
             <div class="control-group ">
@@ -200,24 +191,46 @@
                     @Html.LabelFor(model => model.QuantityInUnit)
                 </div>
                 <div class="controls">
-                    @Html.TextBoxFor(model => model.QuantityInUnit)
+                    @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
+                    {
+                        @Html.TextBoxFor(model => model.QuantityInUnit)
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.QuantityInUnit)
+                    }
+                    
                 </div>
             </div>
             <div class="control-group ">
                 <div class="control-label">
-                    @Html.LabelFor(model => model.QuantityPerUnit, "Quantity in Qtl")
+                    @Html.LabelFor(model => model.QuantityPerUnit,"Quantity in Qtl")
                 </div>
                 <div class="controls">
-                    @Html.TextBoxFor(model => model.QuantityPerUnit, new { @id = "txtQtl", @onchange = "onchangeevent();" })
+                    @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
+                    {
+                        @Html.TextBoxFor(model => model.QuantityPerUnit)
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.QuantityPerUnit, new { @id = "txtQtl", @onchange = "onchangeevent();" })
+                    }
                 </div>
             </div>
-            <div class="control-group ">
+              <div class="control-group ">
                 <div class="control-label">
-                    @Html.LabelFor(model => model.Quantity, "Quantity in MT")
+                    @Html.LabelFor(model => model.Quantity,"Quantity in MT")
                 </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.Quantity, new { @readonly = "readonly" })
-                </div>
+                  <div class="controls">
+                      @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
+                      {
+                          @Html.TextBoxFor(model => model.Quantity)
+                      }
+                      else
+                      {
+                          @Html.TextBoxFor(model => model.Quantity, new {@readonly = "readonly"})
+                      }
+                  </div>
             </div>
         </div>
         <div class="span4">
@@ -279,6 +292,7 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.DriverName)
+                    @Html.ValidationMessageFor(model => model.DriverName)
                 </div>
             </div>
 
@@ -289,6 +303,7 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.PlateNo_Prime)
+                    @Html.ValidationMessageFor(model => model.PlateNo_Prime)
                 </div>
             </div>
             <div class="control-group">
@@ -316,6 +331,7 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.WeighBridgeTicketNumber)
+                    @Html.ValidationMessageFor(model => model.WeighBridgeTicketNumber)
                 </div>
             </div>
             <div class="control-group">
@@ -324,15 +340,16 @@
                 </div>
                 <div class="controls">
                     @Html.TextBoxFor(model => model.PlateNo_Trailer)
+                    @Html.ValidationMessageFor(model => model.PlateNo_Trailer)
                 </div>
-
+               
             </div>
 
         </div>
         <div class="span4">
         </div>
     </div>
-
+   
 
 
 }
@@ -401,65 +418,65 @@
 
 </script>
 @*<script type="text/javascript">
+   
+    function CalculateQuantityMT() {
+       
+        var unit = $('#UnitID').val();
+        var quantityInUnit = $('#QuantityInUnit').val();
+        if (unit == 8) {
+            var quantity = quantityInUnit / 1000;
+            $('#Quantity').val(quantity);
+        }
+        if (unit == 9) {
+            var total = quantityInUnit / 100;
+            $('#Quantity').val(total);
+        }
+        
+    };
 
-        function CalculateQuantityMT() {
+    function CalculateQuantityQTL() {
 
-            var unit = $('#UnitID').val();
-            var quantityInUnit = $('#QuantityInUnit').val();
-            if (unit == 8) {
-                var quantity = quantityInUnit / 1000;
-                $('#Quantity').val(quantity);
+        var unit = $('#UnitID').val();
+        var quantityInUnit = $('#QuantityInUnit').val();
+        if (unit == 8) {
+            var quantity = quantityInUnit / 100;
+            $('#Quantity').val(quantity);
+        }
+        if (unit == 9) {
+            var total = quantityInUnit;
+            $('#Quantity').val(total);
+        }
+
+    };
+
+   
+    $(document).ready(function() {
+        var unitPreference = '@ViewBag.UnitPreference';
+        $('#UnitID').change(function () {
+            if (unitPreference = 'MT') {
+                CalculateQuantityMT();
             }
-            if (unit == 9) {
-                var total = quantityInUnit / 100;
-                $('#Quantity').val(total);
+            if (unitPreference = 'QTL') {
+                alert("here");
+                CalculateQuantityQTL();
             }
+            
 
-        };
-
-        function CalculateQuantityQTL() {
-
-            var unit = $('#UnitID').val();
-            var quantityInUnit = $('#QuantityInUnit').val();
-            if (unit == 8) {
-                var quantity = quantityInUnit / 100;
-                $('#Quantity').val(quantity);
-            }
-            if (unit == 9) {
-                var total = quantityInUnit;
-                $('#Quantity').val(total);
-            }
-
-        };
-
-
-        $(document).ready(function() {
-            var unitPreference = '@ViewBag.UnitPreference';
-            $('#UnitID').change(function () {
-                if (unitPreference = 'MT') {
+        });
+    });
+    $(document).ready(function () {
+        var unitPreference = '@ViewBag.UnitPreference';
+        alert(unitPreference);
+        $('#QuantityInUnit').change(function () {
+            if (unitPreference ='MT') {
+                
                     CalculateQuantityMT();
                 }
-                if (unitPreference = 'QTL') {
-                    alert("here");
-                    CalculateQuantityQTL();
+            if (unitPreference = 'QTL') {
+                alert("here");
+                CalculateQuantityQTL();
                 }
 
-
-            });
         });
-        $(document).ready(function () {
-            var unitPreference = '@ViewBag.UnitPreference';
-            alert(unitPreference);
-            $('#QuantityInUnit').change(function () {
-                if (unitPreference ='MT') {
-
-                        CalculateQuantityMT();
-                    }
-                if (unitPreference = 'QTL') {
-                    alert("here");
-                    CalculateQuantityQTL();
-                    }
-
-            });
-        });
-    </script>*@
+    });
+</script>*@

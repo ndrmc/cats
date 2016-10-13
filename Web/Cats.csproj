@@ -3487,6 +3487,8 @@
     <Content Include="Views\Shared\EditorTemplates\GuidTemplate.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\CommodityEditor.cshtml" />
     <Content Include="Views\Shared\_AdminUnitTreeForAllocation.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\WoredaStockDistrAmhDPEnd.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\WoredaStockDistrAmhDPStart.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -3771,7 +3773,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>3325</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:1789/</IISUrl>
+          <IISUrl>http://localhost:1787/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -187,7 +187,6 @@ namespace Cats.Areas.GiftCertificate.Models
         public bool AllowReject { get; set; }
         public bool IsApprovable { get; set; }
         public int SiId { get; set; }
-        public string Status { get; set; }
         public int RejectedId { get; set; }
         public int ApprovedId { get; set; }
         public int PrintedId { get; set; }

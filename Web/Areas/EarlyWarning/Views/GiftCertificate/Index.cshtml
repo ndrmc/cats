@@ -105,6 +105,11 @@
                                     @Html.Translate("Print") + " </button> ", "btn-Print-gift")
                             }
 
+                                            if (item.IsApprovable)
+                                            {
+                                                @Html.EarlyWarningOperationButton(
+                                                    @Url.Action("Approved", "GiftCertificate", new { id = item.GiftCertificateID }),
+                                                    EarlyWarningConstants.Operation.Approve_Gift_Certeficate, " <button type=\"button\" class=\"btn btn-xs btn-success\"><span class=\"fa fa-check\"></span> " + @Html.Translate("Approve") + " </button> ", "btn-Approve-Gift", "", "btnApprove")
                             <div class='btn-group'>
                                 <button type='button' id='workflow-#=RequisitionId#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
                                     <i class='fa fa-ellipsis-horizontal'>
@@ -121,6 +126,7 @@
                                             <li class="edit_button">
                                                 <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.ApprovedId,'Approve',@item.GiftCertificateID)" title="Approve">Approve</a>
                                             </li>
+                                            }
                                         }
                                     }
 
@@ -138,7 +144,7 @@
                                         }
                                     }
 
-                                    @if (item.Status == "Rejected")
+                                   @if (item.Status == "Rejected")
                                     {
                                         if (item.IsPrinted == false & item.AllowReject == false)
                                         {
@@ -161,7 +167,7 @@
 
                               ).Title(@Html.Translate("Action")).Width("200px");
 
-                      }
+}
                       ).DetailTemplate(detail =>
                           Html.Kendo().Grid(detail.GiftCertificateDetails).Name("GCDetails" + detail.GiftCertificateID)
                               .Columns(c =>

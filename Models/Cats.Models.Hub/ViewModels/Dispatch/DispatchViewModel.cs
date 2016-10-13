@@ -766,17 +766,22 @@ namespace Cats.Models.Hubs
         [Display(Name = "Sub Commodity")]
         public int? CommodityChildID { get; set; }
         public string Commodity { get; set; }
+        public string ChildCommodity { get; set; }
         [Display(Name = "Remark")]
         [UIHint("AmharicTextArea")]
         public string Remark { get; set; }
 
         public int Type { get; set; }
-         [Display(Name = "Quantity In Unit")]
+        [Display(Name = "Quantity In Unit")]
+        [Required(ErrorMessage = "Dispatched quantity in unit is a required field")]
         public decimal QuantityInUnit { get; set; }
+        [Required(ErrorMessage = "Dispatched quantity in quintal is a required field")]
         public decimal Quantity { get; set; }
         [Display(Name = "Unit")]
+        [Required(ErrorMessage = "Unit is a required field")]
         public int UnitID { get; set; }
-
+        public string Unit { get; set; }
+        
         public Guid DispatchAllocationID { get; set; }
         public int TransporterID { get; set; }
 
