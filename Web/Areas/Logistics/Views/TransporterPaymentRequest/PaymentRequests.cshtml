@@ -55,11 +55,11 @@
             $.ajax({
                 type: "POST",
                 url: finalurl, // replace with your actual controller and action
-                data: JSON.stringify({ transporterId: transporterId, refno: "", programname : "All"}),
+                data: JSON.stringify({ transporterId: transporterId, refno: refNo, programname : "All"}),
                 success: function(result) {
 
                     if (result == null || result == "") {
-                       // alert("Payement request is zero.");
+                        alert("Payement request is zero.");
                     } else {
                         //$('#result').html(result);
                         window.location.href = finalurl;

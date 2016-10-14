@@ -611,7 +611,8 @@ namespace Cats.Areas.Logistics.Controllers
             }
             else
             {
-                tpr = (programname == "All") ? TransporterPaymentRequestViewModelBinder(paymentRequests).Where(t => t.ReferenceNo.Contains(refno)).ToList() : TransporterPaymentRequestViewModelBinder(paymentRequests).Where(t => t.ReferenceNo.Contains(refno) && t.Program.Name == programname).ToList();
+                tpr = (programname == "All") ? TransporterPaymentRequestViewModelBinder(paymentRequests).Where(t => t.ReferenceNo.Contains(refno)).ToList() : 
+                    TransporterPaymentRequestViewModelBinder(paymentRequests).Where(t => t.ReferenceNo.Contains(refno) && t.Program.Name == programname).ToList();
             }
             var noRecords = tpr.Count(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Request Verified");
 
@@ -633,12 +634,13 @@ namespace Cats.Areas.Logistics.Controllers
                     FreightCharge = ac.Sum(s => s.FreightCharge),
                     ShortageBirrInWords = ac.Sum(s => s.ShortageBirr).ToNumWordsWrapper(),
                     FreightChargeInWords = Math.Round(ac.Sum(s => s.FreightCharge), 2).ToNumWordsWrapper(),
-                    NoRecords = noRecords
+                    NoRecords = noRecords,
+                    ReferenceNo = refno
                 } : null;
             });
             var req = requests.Where(m => m.TransporterId == transporterId).ToArray();
 
-            if (req.Sum(r => r.ShortageBirr) == 0) return null;
+            if (req.Sum(r => r.FreightCharge) == 0) return null;
 
             return req;
         }
