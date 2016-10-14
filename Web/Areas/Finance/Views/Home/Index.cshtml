@@ -63,6 +63,63 @@
         </div>
         <!-- End data entry status portlet-->
 
+        <div class="box box-solid box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Transporter </h3>
+                <div class="box-tools pull-right">
+                    <button data-widget="collapse" class="btn btn-primary btn-sm"><i class="fa fa-minus"></i></button>
+                    <button data-widget="remove" class="btn btn-primary btn-sm"><i class="fa fa-times"></i></button>
+                </div>
+
+            </div>
+
+            <div class="box-body table-responsive" style="display: block;" ng-controller="BidPlan">
+
+                <div class="row form-horizontal ">
+                    <div class="col-md-4 form-group">
+                        <div class="col-md-6">
+                            <select class="form-control" id="idroundid" ng-change="onChange(roundValue)" ng-model="roundValue" ng-options="r.round as r.round for r in rounds">
+                                <option value=''> Select Round </option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-md-line-input">
+                                <input type="text" class="form-control" id="takeFirstId" ng-model="search.transportOrderNo" value="10">
+                                <label for="serachto">See the first n records</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped ">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left">Transporter</th>
+                                @*<th style="text-align: left">Payment Request</th>*@
+                                <th style="text-align: left">Commodity</th>
+                                <th style="text-align: left">Allocated</th>
+                                <th style="text-align: left">Dispatched</th>
+                                <th style="text-align: left">Discripancy</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody ng-cloak>
+                            <tr ng-repeat="tpr in TransportPaymentRequests">
+                                <td style="text-align: left; margin-right: 0px">{{tpr.Transporter}} </td>
+                                @*<td style="text-align: left; margin-right: 0px">{{tpr.PaymentRequest}} </td>*@
+                                <td style="text-align: left; margin-right: 0px">{{tpr.Commodity}} </td>
+                                <td style="text-align: left; margin-right: 0px">{{tpr.Allocated}} </td>
+                                <td style="text-align: left; margin-right: 0px">{{tpr.Dispatched}} </td>
+                                <td style="text-align: left; margin-right: 0px">{{tpr.Discripancy}} </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+
         <div class="col-md-12 column sortable">
             <div class="portlet portlet-sortable light bordered ui-sortable-handle" style="display: block;">
                 <div class="portlet-title">
@@ -300,10 +357,37 @@
                 var state = url.State;
                 window.location = "@Url.Action("UpdateChequeStatus", "Home")" + "?transporterChequeId=" + url.transporterChequeId + "&status=" + (state + 1);
             };
-
         }
     ]);
 
+    myApp.controller('BidPlan', [
+       '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+           $scope.rounds = [];
+           $scope.reqParam = { round: 0, takeTheFirst: 10 };
+           $scope.TransportPaymentRequests = [];
+
+           var onTransportPaymentRequest = function (data) {
+               $scope.TransportPaymentRequests = data;
+           };
+
+           $http({ method: 'GET', url: '@Url.Action("GetBidPlan", "Home")' }).success(function (data, status, headers, config) { $scope.rounds = data; })
+               .error(function (data, status, headers, config) {
+
+               });
+
+           $scope.onChange = function (round) {
+               $scope.reqParam.round = round;
+               $scope.reqParam.takeTheFirst = $("#takeFirstId").val();
+
+               var takeTheFirst = $("#takeFirstId").val();
+
+               if (takeTheFirst === '' || takeTheFirst == null) {
+                   $scope.reqParam.takeTheFirst = 10;
+               }
+
+               $http.post("@Url.Action("GetTransporterPaymentRequest", "Home", new {Area = "Finance" })", $scope.reqParam).success(onTransportPaymentRequest);
+           };
+       }]);
 
 </script>
 
@@ -314,6 +398,13 @@
         var onRegionalRequestDataEntryStatus = function (data) {
             $scope.RegionalRequestStatus = data;
         }
+
+        @*$scope.TransporterPaymentRequests = function () {
+
+            $scope.reqParam.startDate = $("#txtDate1").val();
+
+            $http.post("@Url.Action("GetTransporterPaymentRequest", "Home", new {Area = "Finance" })", $scope.reqParam).success(onGiftCertificateSuccess);
+        };*@
 
         $scope.getRegionalRequestDataEntryStatus = function () {
             $http.post("@Url.Action("GetRegionalRequestDataEntryStatus", "Home", new { Area = "Finance" })").success(onRegionalRequestDataEntryStatus);

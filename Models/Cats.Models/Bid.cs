@@ -32,8 +32,8 @@ namespace Cats.Models
 
         public string RevertRemark { get; set; }
 
-      
-       #region Navigation Properties
+
+        #region Navigation Properties
 
         public virtual AdminUnit AdminUnit { get; set; }
         public Status Status { get; set; }
@@ -44,7 +44,5 @@ namespace Cats.Models
         public virtual ICollection<TransportBidQuotationHeader> TransportBidQuotationHeaders { get; set; }
         public virtual UserProfile UserProfile { get; set; }
         #endregion
-
-       
     }
 }
