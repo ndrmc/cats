@@ -12,7 +12,7 @@ namespace Cats.Models
 
         public UserProfile()
         {
-            this.Hrds=new List<HRD>();
+            this.Hrds = new List<HRD>();
             this.NeedAssessments = new List<NeedAssessment>();
             this.NeedAssessments1 = new List<NeedAssessment>();
             this.DonationPlanHeaders = new List<DonationPlanHeader>();
@@ -43,6 +43,7 @@ namespace Cats.Models
         public string Email { get; set; }
         public string DefaultTheme { get; set; }
         public int? PartitionId { get; set; }
+        public Nullable<int> CaseTeam { get; set; }
 
         public virtual ICollection<DonationPlanHeader> DonationPlanHeaders { get; set; }
 
@@ -61,7 +62,7 @@ namespace Cats.Models
         public virtual ICollection<RegionalRequest> RegionalRequests { get; set; }
         public virtual ICollection<RegionalRequest> RegionalRequests1 { get; set; }
         public virtual ICollection<Bid> Bids { get; set; }
-       
-        
+
+
     }
 }
