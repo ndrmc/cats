@@ -235,6 +235,8 @@ namespace Cats.Areas.Procurement.Controllers
                 ModelState.AddModelError("Success", TempData["CustomError2"].ToString());
             }
             ViewBag.ProgramID = new SelectList(_transportOrderService.GetPrograms(), "ProgramID", "Name");
+            
+            //var transportOrdre
             var transportOrderStatus = new List<RequestStatus>
                 {
                     new RequestStatus() {StatusID = 1, StatusName = "Draft"},
@@ -263,12 +265,37 @@ namespace Cats.Areas.Procurement.Controllers
         }
         public ActionResult TransportOrder_Read([DataSourceRequest] DataSourceRequest request, int id = 0,int programId=0,int regionId = 0)
         {
-            var transportRequistions = programId==0 ?_transportRequisitionService.GetTransportRequsitionDetails(): _transportRequisitionService.GetTransportRequsitionDetails(programId);
+            var stateName = string.Empty;
+            switch (id)
+            {
+                case 1:
+                    stateName = "Draft";
+                    break;
+                case 2:
+                    stateName = "Approved";
+                    break;
+                case 3:
+                    stateName = "Signed";
+                    break;
+                case 4:
+                    stateName = "Closed";
+                    break;
+                case 5:
+                    stateName = "Rejected";
+                    break;
+            }
+
+            var transportRequistions = programId == 0
+                ? _transportRequisitionService.GetTransportRequsitionDetails()
+                : _transportRequisitionService.GetTransportRequsitionDetails(programId);
              List<TransportOrder> transportRequisitionRegion;
             
             //var filteredTransportOrder=_transportOrderDetailService.FindBy(m=>m.RequisitionID=)
-            var transportOrders = id == 0 ? _transportOrderService.GetFilteredTransportOrder(transportRequistions, (int)TransportOrderStatus.Draft).OrderByDescending(m => m.TransportOrderID).ToList()
-                                          : _transportOrderService.GetFilteredTransportOrder(transportRequistions, id).ToList();
+            var transportOrders = id == 0
+                ? _transportOrderService.GetFilteredTransportOrder(transportRequistions, stateName)
+                    .OrderByDescending(m => m.TransportOrderID)
+                    .ToList()
+                : _transportOrderService.GetFilteredTransportOrder(transportRequistions, stateName).ToList();
 
 
             transportRequisitionRegion = regionId == 0
