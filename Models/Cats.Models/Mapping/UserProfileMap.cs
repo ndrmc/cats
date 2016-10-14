@@ -4,7 +4,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace Cats.Models.Mapping
 {
-   public  class UserProfileMap : EntityTypeConfiguration<UserProfile>
+    public class UserProfileMap : EntityTypeConfiguration<UserProfile>
     {
         public UserProfileMap()
         {
@@ -62,6 +62,8 @@ namespace Cats.Models.Mapping
             this.Property(t => t.IsAdmin)
               .IsRequired();
 
+            this.Property(t => t.CaseTeam).IsOptional();
+
             // Table & Column Mappings
             this.ToTable("UserProfile");
             this.Property(t => t.UserProfileID).HasColumnName("UserProfileID");
@@ -88,7 +90,8 @@ namespace Cats.Models.Mapping
             this.Property(t => t.IsAdmin).HasColumnName("IsAdmin");
             this.Property(t => t.TariffEntry).HasColumnName("TariffEntry");
             this.Property(t => t.PartitionId).HasColumnName("PartitionId");
-        
+            this.Property(t => t.CaseTeam).HasColumnName("CaseTeam");
+
         }
     }
- }
+}
