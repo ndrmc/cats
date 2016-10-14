@@ -20,7 +20,7 @@
                 <div class="portlet-title">
                     <div class="caption font-green-sharp">
                         <i class="fa fa-credit-card font-green-sharp"></i>
-                        <span class="caption-subject bold uppercase">Payment Request Process by User</span>
+                        <span class="caption-subject bold uppercase">Payment Request Processings by User</span>
                         <span class="caption-helper">  </span>
                     </div>
                     <div class="tools">
@@ -42,14 +42,14 @@
                                         <tr>
                                             <th style="text-align: left">User Name</th>
                                             <th style="text-align: left">Approved</th>
-                                            <th style="text-align: left">Rejected</th>
+                                            <th style="text-align: left">Closed</th>
                                         </tr>
                                     </thead>
                                     <tbody ng-cloak>
                                         <tr ng-repeat="req in RegionalRequestStatus">
                                             <td style="text-align: left; margin-right: 0px">{{req.UserName}} </td>
                                             <td style="text-align: left; margin-right: 0px">{{req.Approved}} </td>
-                                            <td style="text-align: left; margin-right: 0px">{{req.Rejected}} </td>
+                                            <td style="text-align: left; margin-right: 0px">{{req.Closed}} </td>
                                         </tr>
                                     </tbody>
                                 </table>

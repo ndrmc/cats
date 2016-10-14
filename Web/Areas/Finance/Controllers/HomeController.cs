@@ -381,7 +381,7 @@ namespace Cats.Areas.Finance.Controllers
 
                 else if (variable.Rejected != 0)
                 {
-                    prm.Rejected = variable.Rejected;
+                    prm.Closed = variable.Rejected;
                 }
             }
 
@@ -392,7 +392,7 @@ namespace Cats.Areas.Finance.Controllers
         {
             public string UserName { get; set; }
             public int Approved { get; set; }
-            public int Rejected { get; set; }
+            public int Closed { get; set; }
         }
     }
 }
