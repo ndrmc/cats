@@ -241,6 +241,10 @@ namespace Cats.Security
             {
                 return "Modify HRD";
             }
+            if ((operation == Operation.Modify_Approved_HRD))
+            {
+                return "Modify Approved HRD";
+            }
             if ((operation == Operation.New_Gift_Certificate))
             {
                 return "New Gift Certificate";
@@ -627,6 +631,10 @@ namespace Cats.Security
             /// Operation Modify HRD
             /// </summary>
             Modify_HRD,
+            /// <summary>
+            /// Operation Modify Approved HRD
+            /// </summary>
+            Modify_Approved_HRD,
             /// <summary>
             /// Operation New Gift Certificate
             /// </summary>

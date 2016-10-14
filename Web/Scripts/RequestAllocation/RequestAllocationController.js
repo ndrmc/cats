@@ -101,6 +101,7 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
             document.getElementById("activity_indicator").className = "pending-requests" + $scope.pendingRequests;
         }, 500);
     };
+ 
     $scope.fetchRequestAllocationData = function (id) {
         $scope.onRequestStart();
         $http.get($scope.ServerUrls.Allocation_Read, { params: { id: id } })
@@ -166,10 +167,10 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
         $('#newAllocationEdit').hide();
         $("#cmdAddAllocation").show();
     }
-    $scope.deleteRequestedFDP = function (index) {
-        var reqFDP = $scope.allocations[index];
+    $scope.deleteRequestedFDP = function (allocation) {
         $scope.onRequestStart();
-        $http.get($scope.ServerUrls.Allocation_Delete, { params: { id: reqFDP.RegionalRequestDetailID } })
+        var index = $scope.allocations.indexOf(allocation);
+        $http.get($scope.ServerUrls.Allocation_Delete, { params: { id: allocation.RegionalRequestDetailID } })
             .success(function (response, status, headers, config) {
                 $scope.allocations.splice(index, 1);
                 $scope.onRequestDone();
@@ -179,8 +180,6 @@ function RequestAllocationController($scope, $http, $timeout, $filter) {
                 alert("Error " + data2);
             });
 
-        //alert(reqFDP.RegionalRequestDetailID);
-        // Allocation_Destroy
     };
     $scope.saveAllocation = function (allocation, isNew) {
         $scope.onRequestStart();

@@ -27,21 +27,29 @@ namespace Cats.Services.Dashboard
                     _unitOfWork.AdminUnitRepository.Get(t => t.AdminUnitTypeID == (int)Models.Constant.AdminUnitType.Region);
 
             var regionsHubAssignment = new List<DashboardBidPlan>();
+            var currentBidPlan = _unitOfWork.TransportBidPlanRepository.GetAll().OrderByDescending(t => t.TransportBidPlanID).First();
+            
+           
             foreach (var region in regions)
             {
-                var currentBidPlan = _unitOfWork.TransportBidPlanRepository.GetAll().OrderByDescending(t => t.TransportBidPlanID).First();
+                var numberOfHubAssignedWoredas = _unitOfWork.TransportBidPlanDetailRepository.Get(
+                        t => t.Destination.AdminUnit2.AdminUnit2.AdminUnitID == region.AdminUnitID
+                             && t.BidPlanID == currentBidPlan.TransportBidPlanID, null,
+                        "Destination,Destination.AdminUnit2,Destination.AdminUnit2.AdminUnit2").Count()/2;
+                //The reason for deviding the count by two is transportation bid plan table entry is made one for PSNP and one for Relief
+
+                var numberOfWoredas =
+                             _unitOfWork.AdminUnitRepository.Get(
+                                 t => t.AdminUnitTypeID == (int)Models.Constant.AdminUnitType.Woreda
+                                      && t.AdminUnit2.AdminUnit2.AdminUnitID == region.AdminUnitID).Count();
                 var regionHubAssignment = new DashboardBidPlan
                 {
                     RegionId = region.AdminUnitID,
                     Region = region.Name,
-                    NumberOfWoredas =
-                        _unitOfWork.AdminUnitRepository.Get(
-                            t => t.AdminUnitTypeID == (int) Models.Constant.AdminUnitType.Woreda
-                                 && t.AdminUnit2.AdminUnit2.AdminUnitID == region.AdminUnitID).Count(),
-                    NumberOfHubAssignedWoredas = _unitOfWork.TransportBidPlanDetailRepository.Get(
-                        t => t.Destination.AdminUnit2.AdminUnit2.AdminUnitID == region.AdminUnitID
-                             && t.BidPlanID == currentBidPlan.TransportBidPlanID, null,
-                        "Destination,Destination.AdminUnit2,Destination.AdminUnit2.AdminUnit2").Count()
+                    NumberOfWoredas = numberOfWoredas,
+                    NumberOfHubAssignedWoredas = numberOfHubAssignedWoredas,
+                    SelectedBidPlan = currentBidPlan.ShortName
+
                 };
 
                 regionsHubAssignment.Add(regionHubAssignment);

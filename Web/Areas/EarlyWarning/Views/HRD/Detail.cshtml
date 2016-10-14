@@ -25,10 +25,18 @@ Plans
         <div class=" box box-primary ">
             <div class="box-body row">
                 <div class="text-right col-md-12">
-
-                    @Html.EarlyWarningOperationButton(
-                        @Url.Action("HRDDetail", "HRD", new { id = ViewBag.HRDID }),
-                        EarlyWarningConstants.Operation.Modify_HRD, "<button type=\"button\" class=\"btn btn-primary\"><span class=\"fa fa-list\"></span> HRD Detail</button>", "btn", "btn_edit")
+                    @if (ViewBag.HrdStatus == (int)Cats.Models.Constant.HRDStatus.Draft)
+                    {
+                        @Html.EarlyWarningOperationButton(
+                            @Url.Action("HRDDetail", "HRD", new {id = ViewBag.HRDID}),
+                            EarlyWarningConstants.Operation.Modify_HRD, "<button type=\"button\" class=\"btn btn-primary\"><span class=\"fa fa-list\"></span> HRD Detail</button>", "btn", "btn_edit")
+                    }
+                    else if(ViewBag.HrdStatus == (int)Cats.Models.Constant.HRDStatus.Approved)
+                    {
+                        @Html.EarlyWarningOperationButton(
+                            @Url.Action("HRDDetail", "HRD", new { id = ViewBag.HRDID }),
+                            EarlyWarningConstants.Operation.Modify_Approved_HRD, "<button type=\"button\" class=\"btn btn-primary\"><span class=\"fa fa-list\"></span> HRD Detail</button>", "btn", "btn_edit")
+                    }
                 </div>
 
                 <div class="col-md-12">

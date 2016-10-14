@@ -529,7 +529,7 @@ namespace Cats.Areas.Procurement.Controllers
                                     _transportOrderService.CheckIfCommodityIsDipatchedToThisFdp(
                                         transportOrderDetail.FdpID, transportOrderDetail.TransportOrder.BidDocumentNo,
                                         transportOrderDetail.TransportOrder.TransporterID,
-                                        transportOrderDetail.TransportOrderID, transportOrderDetail.CommodityID);
+                                        transportOrderDetail.TransportOrderID, transportOrderDetail.CommodityID, transportOrderDetail.RequisitionID);
 
                                 
 
@@ -617,7 +617,7 @@ namespace Cats.Areas.Procurement.Controllers
                                     _transportOrderService.CheckIfCommodityIsDipatchedToThisFdp(
                                         transportOrderDetail.FdpID, transportOrderDetail.TransportOrder.BidDocumentNo,
                                         transportOrderDetail.TransportOrder.TransporterID,
-                                        transportOrderDetail.TransportOrderID,transportOrderDetail.CommodityID);
+                                        transportOrderDetail.TransportOrderID,transportOrderDetail.CommodityID, transportOrderDetail.RequisitionID);
                                 if (qty == null)
                                 {
                                     var transportOrderDetailObj = new TransportOrderDetail

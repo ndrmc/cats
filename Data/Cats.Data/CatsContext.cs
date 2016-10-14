@@ -170,7 +170,6 @@ namespace Cats.Data
             modelBuilder.Configurations.Add(new DispatchDetailMap());
             modelBuilder.Configurations.Add(new OtherDispatchAllocationMap());
 
-
             modelBuilder.Configurations.Add(new DeliveryReconcileMap());
             modelBuilder.Configurations.Add(new DistibtionStatusMap());
             modelBuilder.Configurations.Add(new PaymentRequestMap());

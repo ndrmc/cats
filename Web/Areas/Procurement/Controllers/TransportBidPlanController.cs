@@ -303,21 +303,15 @@ namespace Cats.Areas.Procurement.Controllers
 
         public List<Cats.Areas.Procurement.Models.WarehouseProgramViewModel> GetWoredaWarehouseProgram(int BidPlanID, int WoredaID)
         {
-            //this._transportBidPlanDetailService.get
             List<TransportBidPlanDetail> bidDetails = _transportBidPlanDetailService.FindBy(t => t.BidPlanID == BidPlanID && t.DestinationID == WoredaID);
-            var planDetail = _transportBidPlanDetailService.FindBy(m =>m.BidPlanID == BidPlanID && m.DestinationID == WoredaID && m.ProgramID==1);
-            var hubs = (from hub in planDetail
-                        select new Cats.Models.Hub
-                            {
-                                HubID = hub.SourceID
 
-                            });
+            var planDetail = _transportBidPlanDetailService.FindBy(m =>m.BidPlanID == BidPlanID && m.DestinationID == WoredaID && m.ProgramID==1);
+
             List<WarehouseProgramViewModel> ret=
-               ( from hub in hubs
-                    select new WarehouseProgramViewModel
+               ( from planDetail_ in planDetail
+                 select new WarehouseProgramViewModel
                     {
-                        WarehouseID = hub.HubID,
-                        WarehouseName = hub.Name,
+                        WarehouseID = planDetail_.SourceID,
                         PSNP =0,
                         Relief=0,
                         BidPlanID=BidPlanID,
@@ -338,14 +332,16 @@ namespace Cats.Areas.Procurement.Controllers
                 if (filled.ContainsKey(hash_psnp))
                 {
                     TransportBidPlanDetail psnp = filled[hash_psnp];
+                    i.PSNP_ID = psnp.TransportBidPlanDetailID;
                     i.PSNP = psnp.Quantity;
                 }
                 if (filled.ContainsKey(hash_relief))
                 {
                     TransportBidPlanDetail releif = filled[hash_relief];
+                    i.Relief_ID = releif.TransportBidPlanDetailID;
                     i.Relief = releif.Quantity;
                 }
-              //  ret.Add(filled, i);// = i;
+            
             }
             return ret;
         }
@@ -442,31 +438,31 @@ namespace Cats.Areas.Procurement.Controllers
             return Json(new[] { warehouseAllocation }.ToDataSourceResult(request, ModelState));
         }
 
-        public ActionResult UpdateWarehouseSelectionAjax([DataSourceRequest] DataSourceRequest request, WarehouseProgramViewModel WarehouseAllocation)
+        public ActionResult UpdateWarehouseSelectionAjax([DataSourceRequest] DataSourceRequest request, WarehouseProgramViewModel WarehouseAllocation,
+                                                                                                      int transportBidPlanID, int selectedWoreda = 0)
         {
             if (WarehouseAllocation != null && ModelState.IsValid)
             {
-                List<TransportBidPlanDetail> inDb = _transportBidPlanDetailService.FindBy(w =>
-                                w.BidPlanID == WarehouseAllocation.BidPlanID
-                                && w.DestinationID == WarehouseAllocation.WoredaID
-                                && w.SourceID == WarehouseAllocation.WarehouseID
-                                );
+        
                 TransportBidPlanDetail psnp = new TransportBidPlanDetail
-                    {
-                        BidPlanID = WarehouseAllocation.BidPlanID,
-                        SourceID = WarehouseAllocation.WarehouseID,
-                        DestinationID = WarehouseAllocation.WoredaID,
-                        Quantity = WarehouseAllocation.PSNP,
+                {
+                    BidPlanID = transportBidPlanID,
+                    SourceID = WarehouseAllocation.WarehouseID,
+                    DestinationID = selectedWoreda,
+                    Quantity = WarehouseAllocation.PSNP,
+                    TransportBidPlanDetailID = WarehouseAllocation.PSNP_ID,
                         ProgramID=2
                     };
                 UpdateBidPlanDetail(psnp);
 
                 TransportBidPlanDetail relief = new TransportBidPlanDetail
                 {
-                    BidPlanID = WarehouseAllocation.BidPlanID,
+                    BidPlanID = transportBidPlanID,
                     SourceID = WarehouseAllocation.WarehouseID,
-                    DestinationID = WarehouseAllocation.WoredaID,
+                    DestinationID = selectedWoreda,
                     Quantity = WarehouseAllocation.Relief,
+                    TransportBidPlanDetailID = WarehouseAllocation.Relief_ID,
+                    
                     ProgramID = 1
                 };
                 UpdateBidPlanDetail(relief);
@@ -476,21 +472,18 @@ namespace Cats.Areas.Procurement.Controllers
         }
         public void UpdateBidPlanDetail(TransportBidPlanDetail bpd)
         {
-            List<TransportBidPlanDetail> inDb = _transportBidPlanDetailService.FindBy(w =>
-                                w.BidPlanID == bpd.BidPlanID
-                                && w.DestinationID == bpd.DestinationID
-                                && w.SourceID == bpd.SourceID
-                                && w.ProgramID == bpd.ProgramID
-                                );
-            if (inDb.Count <= 0)
+            TransportBidPlanDetail inDb  = _transportBidPlanDetailService.FindById(bpd.TransportBidPlanDetailID);
+
+            if (inDb==null)
             {
                 _transportBidPlanDetailService.AddTransportBidPlanDetail(bpd);
             }
             else
             {
-                TransportBidPlanDetail bpd_orignal = inDb[0];
-                bpd_orignal.Quantity = bpd.Quantity;
-                _transportBidPlanDetailService.UpdateTransportBidPlanDetail(bpd_orignal);
+                inDb.SourceID = bpd.SourceID;
+                inDb.DestinationID = bpd.DestinationID;
+                inDb.Quantity = bpd.Quantity;
+                _transportBidPlanDetailService.UpdateTransportBidPlanDetail(inDb);
             }
         }
         public ActionResult DeleteBidPlan(int id)
