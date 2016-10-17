@@ -58,22 +58,24 @@ ELSE IF (@status = 2)
 SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Approved' );
 ELSE IF (@status = 3)
 SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Published' );
-ELSE IF (@status = 4)
+ELSE IF (@status = 4 or @status = 5 or @status = 6 )
 SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Closed' );
 ELSE IF (@status = -1)
 SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Deleted' );
 
 ELSE
-
-SET IDENTITY_INSERT BusinessProcessState ON;
+SET IDENTITY_INSERT dbo.BusinessProcessState ON
 INSERT INTO BusinessProcessState
-VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'HRD business process created by data migrator', NULL);
-SET IDENTITY_INSERT BusinessProcessState OFF;
+VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'HRD business process created by data migrator', NULL,NULL);
 SET @businessprocessstateid = SCOPE_IDENTITY();
 
 INSERT INTO BusinessProcess
 VALUES ( @processid, 0, 'HRD', @businessprocessstateid, NULL);
 SET @businessprocessid = SCOPE_IDENTITY();
+
+	UPDATE [dbo].[BusinessProcessState]
+			SET ParentBusinessProcessID=@businessprocessid
+			WHERE BusinessProcessStateID = @businessprocessstateid;
 
 UPDATE [dbo].[HRD]
 SET BusinessProcessId=@businessprocessid

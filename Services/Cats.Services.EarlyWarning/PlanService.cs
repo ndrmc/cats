@@ -8,27 +8,27 @@ using Cats.Models.Constant;
 
 namespace Cats.Services.EarlyWarning
 {
-   public class PlanService:IPlanService
-   {
-       private IUnitOfWork _unitOfWork;
+    public class PlanService : IPlanService
+    {
+        private IUnitOfWork _unitOfWork;
 
-       public PlanService(IUnitOfWork unitOfWork)
-       {
-           _unitOfWork = unitOfWork;
-       }
-       public bool AddPlan(Plan plan)
-       {
-           _unitOfWork.PlanRepository.Add(plan);
-           _unitOfWork.Save();
-           return true;
+        public PlanService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+        public bool AddPlan(Plan plan)
+        {
+            _unitOfWork.PlanRepository.Add(plan);
+            _unitOfWork.Save();
+            return true;
         }
 
-       public bool DeletePlan(Plan plan)
+        public bool DeletePlan(Plan plan)
         {
             if (plan == null) return false;
             _unitOfWork.PlanRepository.Delete(plan);
-           _unitOfWork.Save();
-           return true;
+            _unitOfWork.Save();
+            return true;
         }
 
         public bool DeleteById(int id)
@@ -68,20 +68,20 @@ namespace Cats.Services.EarlyWarning
         }
         public void AddNeedAssessmentPlan(NeedAssessment needAssessment)
         {
-            var oldPlan = _unitOfWork.PlanRepository.FindBy(m => m.PlanName==needAssessment.Plan.PlanName).SingleOrDefault();
+            var oldPlan = _unitOfWork.PlanRepository.FindBy(m => m.PlanName == needAssessment.Plan.PlanName).SingleOrDefault();
             if (oldPlan == null)
             {
                 var program = _unitOfWork.ProgramRepository.FindBy(m => m.Name == "Relief");
                 var plan = new Plan
-                    {
-                        PlanName = needAssessment.Plan.PlanName,
-                        StartDate = needAssessment.Plan.StartDate,
-                        EndDate = needAssessment.Plan.EndDate,
-                        ProgramID = program.First().ProgramID,
-                        Program = _unitOfWork.ProgramRepository.FindBy(m=>m.Name=="Relief").FirstOrDefault()
-                        
-                    };
-                
+                {
+                    PlanName = needAssessment.Plan.PlanName,
+                    StartDate = needAssessment.Plan.StartDate,
+                    EndDate = needAssessment.Plan.EndDate,
+                    ProgramID = program.First().ProgramID,
+                    Program = _unitOfWork.ProgramRepository.FindBy(m => m.Name == "Relief").FirstOrDefault()
+
+                };
+
                 var savePlan = _unitOfWork.PlanRepository.Add(plan);
                 _unitOfWork.Save();
                 //if (!savePlan)
@@ -92,14 +92,14 @@ namespace Cats.Services.EarlyWarning
             }
             //return oldPlan;
         }
-       public List<Program> GetPrograms()
-       {
-           return _unitOfWork.ProgramRepository.GetAll();
-       }
-       public List<Program> GetNonReliefProgram()
-       {
-           return _unitOfWork.ProgramRepository.FindBy(m => m.ProgramID != 1);
-       }
+        public List<Program> GetPrograms()
+        {
+            return _unitOfWork.ProgramRepository.GetAll();
+        }
+        public List<Program> GetNonReliefProgram()
+        {
+            return _unitOfWork.ProgramRepository.FindBy(m => m.ProgramID != 1);
+        }
         public void Dispose()
         {
             _unitOfWork.Dispose();
@@ -129,7 +129,7 @@ namespace Cats.Services.EarlyWarning
         public void AddPlan(string planName, DateTime startDate, DateTime endDate)
         {
             var oldPlan = _unitOfWork.PlanRepository.FindBy(m => m.PlanName == planName).SingleOrDefault();
-            if(oldPlan == null)
+            if (oldPlan == null)
             {
                 var reliefProgram = _unitOfWork.ProgramRepository.FindBy(m => m.Name == "Relief").SingleOrDefault();
                 var plan = new Plan
@@ -139,7 +139,7 @@ namespace Cats.Services.EarlyWarning
                     EndDate = endDate,
                     Program = reliefProgram,
                     Status = (int)PlanStatus.Draft
-                    
+
                 };
                 _unitOfWork.PlanRepository.Add(plan);
                 _unitOfWork.Save();
@@ -148,24 +148,25 @@ namespace Cats.Services.EarlyWarning
         }
 
 
-        public void AddHRDPlan(string planName, DateTime startDate, DateTime endDate)
+        public void AddHRDPlan(string planName, DateTime startDate, DateTime endDate, int BusinessProcessID)
         {
-               var oldPlan = _unitOfWork.PlanRepository.FindBy(m => m.PlanName == planName).SingleOrDefault();
-               if (oldPlan == null)
-               {
-                   var reliefProgram = _unitOfWork.ProgramRepository.FindBy(m => m.Name == "Relief").SingleOrDefault();
-                   var plan = new Plan
-                       {
-                           PlanName = planName,
-                           StartDate = startDate,
-                           EndDate = endDate,
-                           Program = reliefProgram,
-                           Status = (int) PlanStatus.HRDCreated
+            var oldPlan = _unitOfWork.PlanRepository.FindBy(m => m.PlanName == planName).SingleOrDefault();
+            if (oldPlan == null)
+            {
+                var reliefProgram = _unitOfWork.ProgramRepository.FindBy(m => m.Name == "Relief").SingleOrDefault();
+                var plan = new Plan
+                {
+                    PlanName = planName,
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    Program = reliefProgram,
+                    Status = (int)PlanStatus.HRDCreated,
+                    BusinessProcessID = BusinessProcessID
 
-                       };
-                   _unitOfWork.PlanRepository.Add(plan);
-                   _unitOfWork.Save();
-               }
+                };
+                _unitOfWork.PlanRepository.Add(plan);
+                _unitOfWork.Save();
+            }
 
         }
 
@@ -192,61 +193,61 @@ namespace Cats.Services.EarlyWarning
         public void ChangePlanStatus(int planID)
         {
             var plan = _unitOfWork.PlanRepository.FindById(planID);
-            if(plan!=null)
+            if (plan != null)
             {
-                plan.Status = (int) PlanStatus.PSNPCreated;
+                plan.Status = (int)PlanStatus.PSNPCreated;
                 _unitOfWork.PlanRepository.Edit(plan);
                 _unitOfWork.Save();
             }
         }
-       public void AssessmentPlanStatus(Plan plan)
-       {
-           if (plan !=null)
-           {
-               plan.Status = (int)PlanStatus.AssessmentCreated;
-               _unitOfWork.PlanRepository.Edit(plan);
-               _unitOfWork.Save();
-           }
-       }
-     public  HRD GetHrd(int id)
-       {
-           return _unitOfWork.HRDRepository.FindBy(m => m.PlanID == id).FirstOrDefault();
-       }
-       //public void HRDPlanStatus(Plan plan)
-       //{
-       //    if (plan != null)
-       //    {
-       //        plan.Status = (int)PlanStatus.HRDCreated;
-       //        _unitOfWork.PlanRepository.Edit(plan);
-       //        _unitOfWork.Save();
-       //    }
-       //}
+        public void AssessmentPlanStatus(Plan plan)
+        {
+            if (plan != null)
+            {
+                plan.Status = (int)PlanStatus.AssessmentCreated;
+                _unitOfWork.PlanRepository.Edit(plan);
+                _unitOfWork.Save();
+            }
+        }
+        public HRD GetHrd(int id)
+        {
+            return _unitOfWork.HRDRepository.FindBy(m => m.PlanID == id).FirstOrDefault();
+        }
+        //public void HRDPlanStatus(Plan plan)
+        //{
+        //    if (plan != null)
+        //    {
+        //        plan.Status = (int)PlanStatus.HRDCreated;
+        //        _unitOfWork.PlanRepository.Edit(plan);
+        //        _unitOfWork.Save();
+        //    }
+        //}
 
 
-     public IEnumerable<HrdDonorCoverage> GetDonorCoverage(Expression<Func<HrdDonorCoverage, bool>> filter = null,
-                        Func<IQueryable<HrdDonorCoverage>, IOrderedQueryable<HrdDonorCoverage>> orderBy = null, string includeProperties = "")
-     {
-         return _unitOfWork.HrdDonorCoverageRepository.Get(filter, orderBy, includeProperties);
-     }
+        public IEnumerable<HrdDonorCoverage> GetDonorCoverage(Expression<Func<HrdDonorCoverage, bool>> filter = null,
+                           Func<IQueryable<HrdDonorCoverage>, IOrderedQueryable<HrdDonorCoverage>> orderBy = null, string includeProperties = "")
+        {
+            return _unitOfWork.HrdDonorCoverageRepository.Get(filter, orderBy, includeProperties);
+        }
 
-     public string FindHrdDonorCoverage(List<HrdDonorCoverage> hrdDonorCoverages, int fdpID)
-     {
-         var woredaID = _unitOfWork.FDPRepository.FindById(fdpID).AdminUnitID;
-         foreach (var hrdDonorCoverage in hrdDonorCoverages)
-         {
-             var donorCoverage =
-                 _unitOfWork.HrdDonorCoverageDetailRepository.FindBy(
-                     m => m.HRDDonorCoverageID == hrdDonorCoverage.HRDDOnorCoverageID && m.WoredaID == woredaID).FirstOrDefault();
-             if (donorCoverage != null)
-             {
-                 return donorCoverage.HrdDonorCoverage.Donor.Name;
-             }
-         }
-         //var donorCoverage=
-         //    _unitOfWork.HrdDonorCoverageDetailRepository.FindBy(
-         //        m => m.HRDDonorCoverageID == hrdCoverageID && m.WoredaID == woredaID).FirstOrDefault();
-         
-         return null;
-     }
-   }
+        public string FindHrdDonorCoverage(List<HrdDonorCoverage> hrdDonorCoverages, int fdpID)
+        {
+            var woredaID = _unitOfWork.FDPRepository.FindById(fdpID).AdminUnitID;
+            foreach (var hrdDonorCoverage in hrdDonorCoverages)
+            {
+                var donorCoverage =
+                    _unitOfWork.HrdDonorCoverageDetailRepository.FindBy(
+                        m => m.HRDDonorCoverageID == hrdDonorCoverage.HRDDOnorCoverageID && m.WoredaID == woredaID).FirstOrDefault();
+                if (donorCoverage != null)
+                {
+                    return donorCoverage.HrdDonorCoverage.Donor.Name;
+                }
+            }
+            //var donorCoverage=
+            //    _unitOfWork.HrdDonorCoverageDetailRepository.FindBy(
+            //        m => m.HRDDonorCoverageID == hrdCoverageID && m.WoredaID == woredaID).FirstOrDefault();
+
+            return null;
+        }
+    }
 }

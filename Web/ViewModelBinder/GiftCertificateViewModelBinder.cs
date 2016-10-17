@@ -55,9 +55,9 @@ namespace Cats.ViewModelBinder
                 giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>
                 a.Name == "Approve").Select(s => s.FinalStateID).FirstOrDefault();
 
-            giftCertificateViewModel.PrintedId =
-                giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>
-                a.Name == "Print").Select(s => s.FinalStateID).FirstOrDefault();
+            //giftCertificateViewModel.PrintedId =
+            //    giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>
+            //    a.Name == "Print").Select(s => s.FinalStateID).FirstOrDefault();
 
             var giftCertificateDetail = giftCertificateModel.GiftCertificateDetails.FirstOrDefault();
 
