@@ -434,13 +434,15 @@
                             .ToolBar(toolbar =>
                             {
                                 toolbar.Create();
-                                //toolbar.Save();
+ 
                             })
                             .Editable(editable => editable.Mode(Kendo.Mvc.UI.GridEditMode.InCell))
                     .Pageable()
                     .Selectable()
                     .Sortable()
-                    .Scrollable().Events(e=>e.Change("gridonDataBound"))
+                           .Events(x => x.Edit("onEdit"))
+                    .Events(e => e.Change("onChange"))
+                    .Scrollable()
                     //.Events(e=>e.Edit("OnEdit"))
                     .HtmlAttributes(new { style = "height:430px;" })
                             .DataSource(dataSource => dataSource
@@ -727,6 +729,145 @@
         });
     });
 
+
+    //#region Grid Unit Converter
+
+    $(document).ready(function () {
+
+        $("#grid").on("keydown", function (e) {
+
+            var grid = $("#grid").data("kendoGrid");
+            if (changedColumn >= 7) {
+                changeIndicator = true; //to apply unit conversion
+
+            }
+
+        });
+
+    });
+
+    var changeIndicator = false;
+    var changedColumn = -1;
+    var editedValue = -1;
+    var selectedRowModel = null;
+
+
+    function onUnitChange(e) {
+        try {
+            convertMeasuringUnit(selectedRowModel, changedColumn);
+        } catch (err)
+        { }
+    }
+
+    function onChange(arg) {
+
+        if (changeIndicator) {
+            convertMeasuringUnit(selectedRowModel, changedColumn);
+            changeIndicator = false;
+
+        }
+
+    }
+
+    function onEdit(e) {
+       
+
+        changedColumn = e.container[0].cellIndex;
+        selectedRowModel = e.model;
+        var selectedIndex = e.sender._data.indexOf(e.model);
+    }
+
+    function convertMeasuringUnit(model, changedColumn) {
+        var result = 0;
+        if (model == null) return;
+
+        if (changedColumn == 5)//Unit of measurment is changed
+        {
+            //change  sent and received in unit
+            result = converter(model.UnitId, model.SentQuantityInUnit);
+            if (result == -1) result = model.SentQuantityInMt;
+            model.SentQuantityInMt = result;
+
+            result = converter(model.UnitId, model.ReceivedQuantityInUnit);
+            if (result == -1) result = model.ReceivedQuantityInMt;
+            model.ReceivedQuantityInMt = result;
+
+
+        }
+        else if (changedColumn == 8)//SentQuantityInMt is changed
+        {
+            result = converterReverse(model.UnitId, model.SentQuantityInMt);
+            if (result == -1) result = model.SentQuantityInUnit;
+            model.SentQuantityInUnit = result;
+
+        }
+        else if (changedColumn == 7)//SentQuantityInUnit is changed
+        {
+            result = converter(model.UnitId, model.SentQuantityInUnit);
+            if (result == -1) result = model.SentQuantityInMt;
+            model.SentQuantityInMt = result;
+
+        }
+        else if (changedColumn == 10)//ReceivedQuantityInMt is changed
+        {
+            result = converterReverse(model.UnitId, model.ReceivedQuantityInMt);
+            if (result == -1) result = model.ReceivedQuantityInUnit;
+            model.ReceivedQuantityInUnit = result;
+
+        }
+        else if (changedColumn == 9)//ReceivedQuantityInUnit is changed
+        {
+            result = converter(model.UnitId, model.ReceivedQuantityInUnit);
+            if (result == -1) result = model.ReceivedQuantityInMt;
+            model.ReceivedQuantityInMt = result;
+
+
+        }
+        $("#grid").data("kendoGrid").refresh();
+
+    }
+    //if in UNIT value is changed
+    function converter(type, value) {
+
+        if (type == '1') {
+            return (value * (1 / 20)).toFixed(2);
+
+        }
+        else if (type == '8') {
+            return (value * (1 / 1000)).toFixed(2);
+
+        }
+        else if (type == '9') {
+            return (value * (1 / 10)).toFixed(2);
+
+        }
+
+        return -1;
+
+    }
+    //if in MT value is changed
+
+    function converterReverse(type, value) {
+
+        if (type == '1') {
+            return (value * (20)).toFixed(2);
+
+        }
+        else if (type == '8') {
+            return (value * (1000)).toFixed(2);
+
+        }
+        else if (type == '9') {
+            return (value * (10)).toFixed(2);
+
+        }
+
+        return -1;
+
+    }
+
+    //#endregion Grid Unit Converter
+
     //function index(dataItem) {
     //    var data = $("#ReceiveDetailGrid").data("kendoGrid").dataSource.data();
     //    return data.indexOf(dataItem);
@@ -751,13 +892,7 @@
         var allRowsJson = JSON.stringify(allRows);
         return allRowsJson;
     }
-
-
-    function onEdit(e) {
-        var selectedIndex = e.sender._data.indexOf(e.model);
-
-    }
-
+ 
     function makeKendoDirty() {
         var grid = $("#grid").data("kendoGrid");
         var kdata = grid.dataSource.data();
