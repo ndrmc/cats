@@ -2,64 +2,64 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Cats.Services.Common" GeneratedClassName="ApplicationSettings">
   <Profiles />
   <Settings>
-    <Setting Name="PSNPWorkflow" Type="System.String" Scope="User">
+    <Setting Name="PSNPWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">PSNPWorkflow</Value>
     </Setting>
-    <Setting Name="PaymentRequestWorkflow" Type="System.String" Scope="User">
+    <Setting Name="PaymentRequestWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">PaymentRequestWorkflow</Value>
     </Setting>
-    <Setting Name="TransporterChequeWorkflow" Type="System.String" Scope="User">
+    <Setting Name="TransporterChequeWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">TransporterChequeWorkflow</Value>
     </Setting>
-    <Setting Name="TransporterPaymentRequestWorkflow" Type="System.String" Scope="User">
+    <Setting Name="TransporterPaymentRequestWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">TransporterPaymentRequestWorkflow</Value>
     </Setting>
-    <Setting Name="DefaultRation" Type="System.String" Scope="User">
+    <Setting Name="DefaultRation" Type="System.String" Scope="Application">
       <Value Profile="(Default)">DefaultRation</Value>
     </Setting>
-    <Setting Name="HRDWorkflow" Type="System.String" Scope="User">
+    <Setting Name="HRDWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">HRDWorkflow</Value>
     </Setting>
-    <Setting Name="ReliefRequisitionWorkflow" Type="System.String" Scope="User">
+    <Setting Name="ReliefRequisitionWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">ReliefRequisitionWorkflow</Value>
     </Setting>
-    <Setting Name="LocalPurchaseReceiptPlanWorkflow" Type="System.String" Scope="User">
+    <Setting Name="LocalPurchaseReceiptPlanWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">LocalPurchaseReceiptPlanWorkflow</Value>
     </Setting>
-    <Setting Name="SwapWorkflow" Type="System.String" Scope="User">
+    <Setting Name="SwapWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">SwapWorkflow</Value>
     </Setting>
-    <Setting Name="RegionalRequestWorkflow" Type="System.String" Scope="User">
+    <Setting Name="RegionalRequestWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">RegionalRequestWorkflow</Value>
     </Setting>
-    <Setting Name="TransportOrderWorkflow" Type="System.String" Scope="User">
+    <Setting Name="TransportOrderWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">TransportOrderWorkflow</Value>
     </Setting>
-    <Setting Name="ReciptPlanForLoanWorkflow" Type="System.String" Scope="User">
+    <Setting Name="ReciptPlanForLoanWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">ReciptPlanForLoanWorkflow</Value>
     </Setting>
-    <Setting Name="BidPlanWorkflow" Type="System.String" Scope="User">
+    <Setting Name="BidPlanWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">BidPlanWorkflow</Value>
     </Setting>
-    <Setting Name="BidWinnerWorkflow" Type="System.String" Scope="User">
+    <Setting Name="BidWinnerWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">BidWinnerWorkflow</Value>
     </Setting>
-    <Setting Name="NeedAssessmentPlanWorkflow" Type="System.String" Scope="User">
+    <Setting Name="NeedAssessmentPlanWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">NeedAssessmentPlanWorkflow</Value>
     </Setting>
-    <Setting Name="NeedAssessmentWorkflow" Type="System.String" Scope="User">
+    <Setting Name="NeedAssessmentWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">NeedAssessmentWorkflow</Value>
     </Setting>
-    <Setting Name="TransportRequisitionWorkflow" Type="System.String" Scope="User">
+    <Setting Name="TransportRequisitionWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">TransportRequisitionWorkflow</Value>
     </Setting>
-    <Setting Name="DonationPlanHeaderWorkflow" Type="System.String" Scope="User">
+    <Setting Name="DonationPlanHeaderWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">DonationPlanHeaderWorkflow</Value>
     </Setting>
-    <Setting Name="GiftCertificateWorkflow" Type="System.String" Scope="User">
+    <Setting Name="GiftCertificateWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">GiftCertificateWorkflow</Value>
     </Setting>
-    <Setting Name="TranferReceiptPlanWorkflow" Type="System.String" Scope="User">
+    <Setting Name="TranferReceiptPlanWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">TranferReceiptPlanWorkflow</Value>
     </Setting>
   </Settings>
