@@ -19,6 +19,7 @@ using Kendo.Mvc.UI;
 using log4net;
 using Cats.Security;
 using Cats.Services.Common;
+using StateTemplate = Cats.Models.StateTemplate;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -27,6 +28,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         //
         // GET: /EarlyWarning/HRD/
         private IAdminUnitService _adminUnitService;
+        private readonly IStateTemplateService _stateTemplateService;
         private IHRDService _hrdService;
         private IRationService _rationService;
         private IHRDDetailService _hrdDetailService;
@@ -43,15 +45,17 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly Cats.Services.Transaction.ITransactionService _transactionService;
         private readonly IApplicationSettingService _applicationSettingService;
         private readonly IBusinessProcessService _businessProcessService;
+        private readonly IBusinessProcessStateService _businessProcessStateService;
         public HRDController(IAdminUnitService adminUnitService, IHRDService hrdService,
                              IRationService rationservice, IRationDetailService rationDetailService,
                              IHRDDetailService hrdDetailService, ICommodityService commodityService,
                              INeedAssessmentDetailService needAssessmentDetailService, INeedAssessmentHeaderService needAssessmentService,
-                             IWorkflowStatusService workflowStatusService, ISeasonService seasonService, 
-                             IUserAccountService userAccountService, ILog log,IPlanService planService, IHubService hubService, 
+                             IWorkflowStatusService workflowStatusService, ISeasonService seasonService,
+                             IUserAccountService userAccountService, ILog log, IPlanService planService, IHubService hubService,
                              ITransactionService transactionService,
                              IApplicationSettingService applicationSettingService,
-                             IBusinessProcessService businessProcessService)
+                             IStateTemplateService stateTemplateService,
+                             IBusinessProcessService businessProcessService, IBusinessProcessStateService paramBusinessProcessStateService)
         {
             _adminUnitService = adminUnitService;
             _hrdService = hrdService;
@@ -70,6 +74,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _transactionService = transactionService;
             _applicationSettingService = applicationSettingService;
             _businessProcessService = businessProcessService;
+            _stateTemplateService = stateTemplateService;
+            _businessProcessStateService = paramBusinessProcessStateService;
         }
 
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_HRD_list)]
@@ -98,7 +104,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewBag.SeasonID = hrd.Season.Name;
             ViewBag.Year = hrd.Year;
             ViewBag.HRDID = id;
-            if (ViewBag.Errors==1)
+            if (ViewBag.Errors == 1)
             {
                 ModelState.AddModelError("Errors", @"Woreda Already Existed in the HRD");
             }
@@ -119,17 +125,31 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewBag.TargetController = "HRD";
             return View(hrdsToDisplay);
         }
-        [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Old_HRD)]
         public ActionResult OldHRD()
         {
+            var hrds =
+                  _hrdService.Get(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published" || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Closed")
+                      .OrderByDescending(m => m.HRDID);
+            var hrdsToDisplay = GetHrds(hrds).ToList();
             ViewBag.TargetController = "HRD";
-            return View();
+            return View(hrdsToDisplay);
         }
+        [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Old_HRD)]
+        //public ActionResult OldHRD()
+        //{
+        //    ViewBag.TargetController = "HRD";
+        //    return View();
+        //}
 
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_Current_HRD)]
         public ActionResult CurrentHRDs()
         {
-            return View();
+            DateTime latestDate = _hrdService.Get(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").Max(m => m.PublishedDate); // status = 3
+            var hrds = _hrdService.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published" && m.PublishedDate == latestDate); //status = 3
+            //.OrderBy(m => m.PublishedDate);
+            ViewBag.TargetController = "HRD";
+            var hrdsToDisplay = GetHrds(hrds).ToList();
+            return View(hrdsToDisplay);
         }
 
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_HRD_list)]
@@ -183,7 +203,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             if (hrd != null)
             {
-                var detailsToDisplay = GetSummary(hrd,"Zone").ToList();
+                var detailsToDisplay = GetSummary(hrd, "Zone").ToList();
 
                 return Json(detailsToDisplay.ToDataSourceResult(request));
             }
@@ -246,6 +266,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             var hrds = _hrdService.Get(m => m.Status == 2).OrderByDescending(m => m.HRDID);
             var hrdsToDisplay = GetHrds(hrds).ToList();
+
             return Json(hrdsToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_Approved_HRD)]
@@ -254,8 +275,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             var hrds =
                 _hrdService.Get(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
-                    .OrderByDescending(m => m.HRDID); // status = 2 
+                    .OrderByDescending(m => m.HRDID); // status = 2
+            ViewBag.TargetController = "HRD";
             var hrdsToDisplay = GetHrds(hrds).ToList();
+
             return Json(hrdsToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -265,6 +288,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             DateTime latestDate = _hrdService.Get(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").Max(m => m.PublishedDate); // status = 3
             var hrds = _hrdService.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published" && m.PublishedDate == latestDate); //status = 3
             //.OrderBy(m => m.PublishedDate);
+            ViewBag.TargetController = "HRD";
             var hrdsToDisplay = GetHrds(hrds).ToList();
             return Json(hrdsToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         } //
@@ -277,23 +301,23 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     let ration = hrd.Ration
                     where ration != null
                     select new HRDViewModel
-                        {
-                            HRDID = hrd.HRDID,
-                            Season = hrd.Season.Name,
-                            Year = hrd.Year,
-                            Ration = ration.RefrenceNumber,
-                            CreatedDate = hrd.CreatedDate,
-                            CreatedBy = hrd.UserProfile.FirstName + " " + hrd.UserProfile.LastName,
-                            PublishedDate = hrd.PublishedDate,
-                            StatusID = hrd.Status,
-                            Status = hrd.BusinessProcess.CurrentState.BaseStateTemplate.Name,//_workflowStatusService.GetStatusName(WORKFLOW.HRD, hrd.Status.Value),
-                            CreatedDatePref = hrd.CreatedDate.ToCTSPreferedDateFormat(datePref),
-                            PublishedDatePref = hrd.PublishedDate.ToCTSPreferedDateFormat(datePref),
-                            Plan = hrd.Plan.PlanName,
-                            StartDate = hrd.Plan.StartDate.ToCTSPreferedDateFormat(datePref),
-                            EndDate = hrd.Plan.EndDate.ToCTSPreferedDateFormat(datePref),
-                            BusinessProcess = hrd.BusinessProcess,
-                            BusinessProcessID = hrd.BusinessProcessId
+                    {
+                        HRDID = hrd.HRDID,
+                        Season = hrd.Season.Name,
+                        Year = hrd.Year,
+                        Ration = ration.RefrenceNumber,
+                        CreatedDate = hrd.CreatedDate,
+                        CreatedBy = hrd.UserProfile.FirstName + " " + hrd.UserProfile.LastName,
+                        PublishedDate = hrd.PublishedDate,
+                        StatusID = hrd.Status,
+                        Status = hrd.BusinessProcess.CurrentState.BaseStateTemplate.Name,//_workflowStatusService.GetStatusName(WORKFLOW.HRD, hrd.Status.Value),
+                        CreatedDatePref = hrd.CreatedDate.ToCTSPreferedDateFormat(datePref),
+                        PublishedDatePref = hrd.PublishedDate.ToCTSPreferedDateFormat(datePref),
+                        Plan = hrd.Plan.PlanName,
+                        StartDate = hrd.Plan.StartDate.ToCTSPreferedDateFormat(datePref),
+                        EndDate = hrd.Plan.EndDate.ToCTSPreferedDateFormat(datePref),
+                        BusinessProcess = hrd.BusinessProcess,
+                        BusinessProcessID = hrd.BusinessProcessId
                     });
         }
 
@@ -326,11 +350,11 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var hrd = _hrdService.FindById(id);
             var hrdDetails = _hrdDetailService.Get(t => t.HRDID == id, null, "AdminUnit,AdminUnit.AdminUnit2,AdminUnit.AdminUnit2.AdminUnit2").ToList();
             var rationDetails = _rationDetailService.Get(t => t.RationID == hrd.RationID, null, "Commodity");
-            var dt = HRDViewModelBinder.TransposeDataSummary(hrdDetails, rationDetails,weightPref);
+            var dt = HRDViewModelBinder.TransposeDataSummary(hrdDetails, rationDetails, weightPref);
             return dt;
         }
 
-        private IEnumerable<RegionalSummaryViewModel> GetSummary(HRD hrd,string adminLevel="Region")
+        private IEnumerable<RegionalSummaryViewModel> GetSummary(HRD hrd, string adminLevel = "Region")
         {
             var details = hrd.HRDDetails;
             //var hrd = _hrdService.FindById(id);
@@ -343,24 +367,24 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewBag.Year = hrd.Year;
             var groupedTotal = from detail in details
                                group detail by detail.AdminUnit.AdminUnit2.AdminUnit2 into regionalDetail
-                                   select new
-                                   {
-                                       Region = regionalDetail.Key,
-                                       NumberOfBeneficiaries = regionalDetail.Sum(m => m.NumberOfBeneficiaries),
-                                       Duration = regionalDetail.Sum(m => (m.NumberOfBeneficiaries * m.DurationOfAssistance))
-                                   };
+                               select new
+                               {
+                                   Region = regionalDetail.Key,
+                                   NumberOfBeneficiaries = regionalDetail.Sum(m => m.NumberOfBeneficiaries),
+                                   Duration = regionalDetail.Sum(m => (m.NumberOfBeneficiaries * m.DurationOfAssistance))
+                               };
             if (adminLevel == "Zone")
             {
 
                 groupedTotal = from detail in details
-                                   group detail by detail.AdminUnit.AdminUnit2 into regionalDetail
-                                   select new
-                                   {
-                                       Region = regionalDetail.Key,
-                                       NumberOfBeneficiaries = regionalDetail.Sum(m => m.NumberOfBeneficiaries),
-                                       Duration = regionalDetail.Sum(m => (m.NumberOfBeneficiaries * m.DurationOfAssistance))
-                                   };
-               
+                               group detail by detail.AdminUnit.AdminUnit2 into regionalDetail
+                               select new
+                               {
+                                   Region = regionalDetail.Key,
+                                   NumberOfBeneficiaries = regionalDetail.Sum(m => m.NumberOfBeneficiaries),
+                                   Duration = regionalDetail.Sum(m => (m.NumberOfBeneficiaries * m.DurationOfAssistance))
+                               };
+
             }
             if (adminLevel == "Woreda")
             {
@@ -377,40 +401,40 @@ namespace Cats.Areas.EarlyWarning.Controllers
             }
             var cv = (from total in groupedTotal
                       select new RegionalSummaryViewModel
-                                 {
-                                     RegionName = total.Region.Name,
-                                     AdminUnitID = total.Region.AdminUnitID,
-                                     AdminUnitName = total.Region.Name,
-                                     NumberOfBeneficiaries = total.NumberOfBeneficiaries,
-                                     Cereal = cerealCoefficient*total.Duration/1000,
-                                     code = total.Region.code,
-                                     BlededFood = blendFoodCoefficient*total.Duration/1000,
-                                     Oil = oilCoefficient*total.Duration/1000,
-                                     Pulse = pulseCoefficient*total.Duration/1000
-                                 });
+                      {
+                          RegionName = total.Region.Name,
+                          AdminUnitID = total.Region.AdminUnitID,
+                          AdminUnitName = total.Region.Name,
+                          NumberOfBeneficiaries = total.NumberOfBeneficiaries,
+                          Cereal = cerealCoefficient * total.Duration / 1000,
+                          code = total.Region.code,
+                          BlededFood = blendFoodCoefficient * total.Duration / 1000,
+                          Oil = oilCoefficient * total.Duration / 1000,
+                          Pulse = pulseCoefficient * total.Duration / 1000
+                      });
             return cv;
         }
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_HRD_Detail)]
         public ActionResult Detail(int id)
         {
-          var preferedweight =  _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).PreferedWeightMeasurment;
-            
+            var preferedweight = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).PreferedWeightMeasurment;
+
             var hrd = _hrdService.Get(m => m.HRDID == id).FirstOrDefault();
             ViewBag.SeasonID = hrd.Season.Name;
             ViewBag.Year = hrd.Year;
             ViewBag.HRDID = id;
-            ViewBag.HrdStatus = hrd.Status; 
+            ViewBag.HrdStatus = hrd.Status;
             var dt = GetTransposedHRD(id, preferedweight);
             return View(dt);
         }
         private DataTable GetTransposedHRD(int id, string preferedweight)
         {
-           
+
 
             var hrd = _hrdService.FindById(id);
             var hrdDetails = _hrdDetailService.Get(t => t.HRDID == id, null, "AdminUnit,AdminUnit.AdminUnit2,AdminUnit.AdminUnit2.AdminUnit2").ToList();
             var rationDetails = _rationDetailService.Get(t => t.RationID == hrd.RationID, null, "Commodity");
-            var dt = HRDViewModelBinder.TransposeData(hrdDetails, rationDetails,preferedweight);
+            var dt = HRDViewModelBinder.TransposeData(hrdDetails, rationDetails, preferedweight);
             return dt;
         }
 
@@ -427,7 +451,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                         WoredaID = hrdDetail.WoredaID,
                         ZoneID = hrdDetail.AdminUnit.AdminUnit2.AdminUnitID,
                         Zone = hrdDetail.AdminUnit.AdminUnit2.Name,
-                        Region=hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.Name,
+                        Region = hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.Name,
                         RegionID = hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID,
 
                         Woreda = hrdDetail.AdminUnit.Name,
@@ -453,7 +477,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewBag.NeedAssessmentID = new SelectList(_needAssessmentService.GetAllNeedAssessmentHeader().Where(m => m.NeedAssessment.NeedAApproved == true), "NAHeaderId",
                                                       "NeedACreatedDate");
             ViewBag.PlanID = new SelectList(_hrdService.GetPlans(), "PlanID", "PlanName");
-            ViewBag.SeasonID = new SelectList(_seasonService.GetAllSeason(), "SeasonID", "Name",0);
+            ViewBag.SeasonID = new SelectList(_seasonService.GetAllSeason(), "SeasonID", "Name", 0);
             return View(hrd);
         }
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_Ration_List)]
@@ -461,13 +485,13 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
 
 
-            var ration = _rationService.Get(t => (bool) t.IsDefaultRation, null, "RationDetails").FirstOrDefault();
+            var ration = _rationService.Get(t => (bool)t.IsDefaultRation, null, "RationDetails").FirstOrDefault();
             var rationViewModel = (from item in ration.RationDetails
                                    select new
-                                              {
-                                                  _commodityService.FindById(item.CommodityID).Name,
-                                                  Value = item.Amount
-                                              });
+                                   {
+                                       _commodityService.FindById(item.CommodityID).Name,
+                                       Value = item.Amount
+                                   });
             return Json(rationViewModel, JsonRequestBehavior.AllowGet);
         }
 
@@ -514,12 +538,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.New_HRD)]
         public ActionResult Create(HRD hrd)
         {
-           
+
             var year = hrd.Year;
             var userID = _needAssessmentService.GetUserProfileId(HttpContext.User.Identity.Name);
-            var seasonID = hrd.SeasonID.HasValue ? hrd.SeasonID.Value:1;
+            var seasonID = hrd.SeasonID.HasValue ? hrd.SeasonID.Value : 1;
             var rationID = hrd.RationID;
-            
+
 
             var planName = hrd.Plan.PlanName;
             var startDate = hrd.Plan.StartDate;
@@ -529,8 +553,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (ModelState.IsValid)
             {
 
-                var existingPlan = _planService.FindBy(m => m.PlanName == planName && m.ProgramID==1).FirstOrDefault();
-                if (existingPlan!=null)
+                var existingPlan = _planService.FindBy(m => m.PlanName == planName && m.ProgramID == 1).FirstOrDefault();
+                if (existingPlan != null)
                 {
                     ModelState.AddModelError("Errors", @"HRD Name already Exists Please Change HRD Name");
                 }
@@ -538,7 +562,75 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 {
                     try
                     {
-                        _planService.AddHRDPlan(planName, firstDayOfTheMonth, endDate);
+                        int BP_PR_hrd = _applicationSettingService.getNeedAssessmentPlanWorkflow();
+                        if (BP_PR_hrd != 0)
+                        {
+                            var createdstate = new BusinessProcessState
+                            {
+                                DatePerformed = DateTime.Now,
+                                PerformedBy = User.Identity.Name,
+                                Comment = "HRD Created from HRD"
+
+                            };
+                            var bp = _businessProcessService.CreateBusinessProcess(BP_PR_hrd, 0,
+                                "HRD", createdstate);
+                            var state =
+                                bp.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(
+                                    t => t.Name == "Approve");
+                            var fList =
+                                _stateTemplateService
+                                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == bp.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Approved");
+
+
+                            if (fList != null)
+                            {
+                                var createdstate2 = new BusinessProcessState
+                                {
+                                    DatePerformed = DateTime.Now,
+                                    PerformedBy = User.Identity.Name,
+                                    Comment = "HRD Approved from HRD by System",
+                                    StateID = fList.StateTemplateID,
+                                    ParentBusinessProcessID = bp.BusinessProcessID
+                                };
+                                _businessProcessStateService.Add(createdstate2);
+                            }
+                            var sList =
+                                _stateTemplateService
+                                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == bp.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "AssessmentCreated");
+
+                            if (sList != null)
+                            {
+                                var createdstate3 = new BusinessProcessState
+                                {
+                                    DatePerformed = DateTime.Now,
+                                    PerformedBy = User.Identity.Name,
+                                    Comment = " Assessment Created from HRD by System",
+                                    StateID = sList.StateTemplateID,
+                                    ParentBusinessProcessID = bp.BusinessProcessID
+                                };
+                                _businessProcessStateService.Add(createdstate3);
+                            }
+                            var TList =
+                               _stateTemplateService
+                                   .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == bp.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "HRDCreated");
+
+                            if (TList != null)
+                            {
+                                var createdstate3 = new BusinessProcessState
+                                {
+                                    DatePerformed = DateTime.Now,
+                                    PerformedBy = User.Identity.Name,
+                                    Comment = " HRD Created by System",
+                                    StateID = TList.StateTemplateID,
+                                    ParentBusinessProcessID = bp.BusinessProcessID
+                                };
+                                _businessProcessStateService.Add(createdstate3);
+                                bp.CurrentState = createdstate3;
+                                _businessProcessService.Update(bp);
+                            }
+                            _planService.AddHRDPlan(planName, firstDayOfTheMonth, endDate, bp.BusinessProcessID);
+                        }
+
                         var plan = _planService.FindBy(m => m.PlanName == planName).FirstOrDefault();
                         var planID = plan.PlanID;
                         // Workflow Implementation
@@ -550,13 +642,13 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                 DatePerformed = DateTime.Now,
                                 PerformedBy = User.Identity.Name,
                                 Comment = "HRD Created"
-                            };                           
+                            };
                             var bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
                                 "HRD", createdstate);
 
                             if (bp != null)
 
-                                _hrdService.AddHRD(year, userID, seasonID, rationID, planID,bp.BusinessProcessID);
+                                _hrdService.AddHRD(year, userID, seasonID, rationID, planID, bp.BusinessProcessID);
                             return RedirectToAction("Index");
                         }
                     }
@@ -567,9 +659,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
                         ModelState.AddModelError("Errors", @"Unable To Create New HRD");
                         //ViewBag.Error = "HRD for this Season and Year already Exists";
                     }
-                
+
                 }
-                   
+
 
             }
 
@@ -627,21 +719,21 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var year = hrd.Year;
 
             var reportPath = Server.MapPath("~/Report/HRD/HRDSummaryByRegion.rdlc");
-            var reportData = (from item in GetSummary(hrd).ToList() 
+            var reportData = (from item in GetSummary(hrd).ToList()
                               select new
-                                  {
-                                      item.BlededFood,
-                                      item.Cereal, 
-                                      item.DurationOfAssistance,
-                                      item.HRDID,
-                                      item.NumberOfBeneficiaries,
-                                      item.Oil, 
-                                      item.Pulse, 
-                                      item.RegionName,
-                                      item.Total,
-                                      Season = season,
-                                      Year = year
-                                  });
+                              {
+                                  item.BlededFood,
+                                  item.Cereal,
+                                  item.DurationOfAssistance,
+                                  item.HRDID,
+                                  item.NumberOfBeneficiaries,
+                                  item.Oil,
+                                  item.Pulse,
+                                  item.RegionName,
+                                  item.Total,
+                                  Season = season,
+                                  Year = year
+                              });
 
             var dataSourceName = "hrdsummarybyregion";
             var result = ReportHelper.PrintReport(reportPath, reportData, dataSourceName);
@@ -673,7 +765,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             _hrdService.PublishHrd(id);
             var currentHrd = _hrdService.Get(m => m.Status == 3).FirstOrDefault();
-            if (currentHrd != null) _transactionService.PostHRDPlan(currentHrd,currentHrd.Ration);
+            if (currentHrd != null) _transactionService.PostHRDPlan(currentHrd, currentHrd.Ration);
             ViewBag.TargetController = "HRD";
             return RedirectToAction("ApprovedHRDs");
         }
@@ -745,17 +837,17 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     hrd.CreatedBY = userid;
                     var hrdDetails = (from detail in woredas
                                       select new HRDDetail
-                                          {
-                                              WoredaID = detail.AdminUnitID,
-                                              StartingMonth = dateCreated.Month,
-                                              NumberOfBeneficiaries =
+                                      {
+                                          WoredaID = detail.AdminUnitID,
+                                          StartingMonth = dateCreated.Month,
+                                          NumberOfBeneficiaries =
                                                   _needAssessmentDetailService.GetNeedAssessmentBeneficiaryNoFromPlan(
                                                       hrd.PlanID, detail.AdminUnitID),
-                                              DurationOfAssistance =
+                                          DurationOfAssistance =
                                                   _needAssessmentDetailService.GetNeedAssessmentMonthsFromPlan(
                                                       hrd.PlanID, detail.AdminUnitID)
 
-                                          }).ToList();
+                                      }).ToList();
 
                     hrd.HRDDetails = hrdDetails;
                     // Workflow Implementation
@@ -791,7 +883,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewBag.RationID = new SelectList(_rationService.GetAllRation(), "RationID", "RefrenceNumber");
             ViewBag.SeasonID = new SelectList(_seasonService.GetAllSeason(), "SeasonID", "Name");
             return View(hrd);
-            }
+        }
         public ActionResult HRDComaparison_Read([DataSourceRequest] DataSourceRequest request, int? firstHrd)
         {
             var hrdid = firstHrd ?? 0;
@@ -809,148 +901,149 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var hrdid = secondHrd ?? 0;
             var hrd = _hrdService.FindById(hrdid);
             var hrdToDisplay = CompareHRDSummary(hrd);
-            if (hrdToDisplay==null)
+            if (hrdToDisplay == null)
             {
                 var compareHrdViewModel = new List<CompareHrdViewModel>();
                 return Json(compareHrdViewModel.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
             }
             return Json(hrdToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
-        private IEnumerable<CompareHrdViewModel>  CompareHRDSummary(HRD hrd)
+        private IEnumerable<CompareHrdViewModel> CompareHRDSummary(HRD hrd)
         {
-            if (hrd!=null)
+            if (hrd != null)
             {
-                decimal totalBeneficary =1;
-                if ( hrd.HRDDetails.Sum(m => m.NumberOfBeneficiaries)>0)
+                decimal totalBeneficary = 1;
+                if (hrd.HRDDetails.Sum(m => m.NumberOfBeneficiaries) > 0)
                 {
                     totalBeneficary = hrd.HRDDetails.Sum(m => m.NumberOfBeneficiaries);
                 }
                 var groupedTotal = from detail in hrd.HRDDetails
-                               group detail by detail.AdminUnit.AdminUnit2.AdminUnit2 into regionalDetail
-                               select new
-                               {
-                                   Region = regionalDetail.Key,
-                                   NumberOfBeneficiaries = regionalDetail.Sum(m => m.NumberOfBeneficiaries)
-                               };
+                                   group detail by detail.AdminUnit.AdminUnit2.AdminUnit2 into regionalDetail
+                                   select new
+                                   {
+                                       Region = regionalDetail.Key,
+                                       NumberOfBeneficiaries = regionalDetail.Sum(m => m.NumberOfBeneficiaries)
+                                   };
                 return (from total in groupedTotal
-                              select new CompareHrdViewModel
-                                         {
-                                             Region = total.Region.Name,
-                                             BeneficiaryNumber = total.NumberOfBeneficiaries,
-                                             Percentage =(decimal) (total.NumberOfBeneficiaries*100.0) /totalBeneficary
-                                         });
+                        select new CompareHrdViewModel
+                        {
+                            Region = total.Region.Name,
+                            BeneficiaryNumber = total.NumberOfBeneficiaries,
+                            Percentage = (decimal)(total.NumberOfBeneficiaries * 100.0) / totalBeneficary
+                        });
             }
             return null;
         }
-       public PartialViewResult DateInterval(int ? duration, DateTime startDate)
-       {
-           if ( duration != null)
-           {
-               var firstDayOfTheMonth = startDate.AddDays(1 - startDate.Day);
-               var dateInterval = new DurationViewModel()
-                   {
-                       StartDateGC = firstDayOfTheMonth.ToCTSPreferedDateFormat("GC"),
-                       EndDateGC = firstDayOfTheMonth.AddMonths((int)duration).AddDays(-1).ToCTSPreferedDateFormat("GC"),
-                       StartDateEC = firstDayOfTheMonth.ToCTSPreferedDateFormat("EC"),
-                       EndDateEC = firstDayOfTheMonth.AddMonths((int)duration).ToCTSPreferedDateFormat("EC")
-
-                   };
-               return PartialView(dateInterval);
-           }
-           return PartialView(new DurationViewModel()
-               {
-                   StartDateGC = DateTime.Now.AddDays(1 - DateTime.Now.Day).ToCTSPreferedDateFormat("GC"),
-                   StartDateEC = DateTime.Now.AddDays(1 - DateTime.Now.Day).ToCTSPreferedDateFormat("EC"),
-                   EndDateGC = null,
-                   EndDateEC = null
-               });
-       }
-     public ActionResult AddWoreda(int id)
-     {
-         var hrd = _hrdService.FindById(id);
-         if (hrd==null)
-         {
-             return HttpNotFound();
-         }
-         ViewBag.RegionID = new SelectList(_adminUnitService.GetRegions(), "AdminUnitID", "Name");
-         ViewBag.ZoneID = new SelectList(_adminUnitService.FindBy(m => m.AdminUnitTypeID == 3), "AdminUnitID", "Name");
-         ViewBag.WoredaID = new SelectList(_adminUnitService.FindBy(m => m.AdminUnitTypeID == 4), "AdminUnitID", "Name");
-         ViewBag.SourceWarehouseID = new SelectList(_hubService.GetAllHub(), "HubID", "Name");
-         var addWoredaViewModel = new HrdAddWoredaViewModel();
-         addWoredaViewModel.HRDID = id;
-         addWoredaViewModel.StartingMonth = hrd.Plan.StartDate.Month;
-         return PartialView(addWoredaViewModel);
-     }
-    [HttpPost]
-    public ActionResult AddWoreda(HrdAddWoredaViewModel addWoredaViewModel)
-    {
-        if (ModelState.IsValid)
+        public PartialViewResult DateInterval(int? duration, DateTime startDate)
         {
-            try
+            if (duration != null)
             {
-                var detail = GetDetail(addWoredaViewModel);
- 
-                if(_hrdDetailService.AddWoreda(detail))
-                return RedirectToAction("HRDDetail", new { id = addWoredaViewModel.HRDID});
-                ViewBag.Errors = 1;
-                return RedirectToAction("HRDDetail", new { id = addWoredaViewModel.HRDID });
-                   
-            }
-            catch (Exception ex)
-            {
-                var log = new Logger();
-                log.LogAllErrorsMesseges(ex, _log);
-               
-            }
+                var firstDayOfTheMonth = startDate.AddDays(1 - startDate.Day);
+                var dateInterval = new DurationViewModel()
+                {
+                    StartDateGC = firstDayOfTheMonth.ToCTSPreferedDateFormat("GC"),
+                    EndDateGC = firstDayOfTheMonth.AddMonths((int)duration).AddDays(-1).ToCTSPreferedDateFormat("GC"),
+                    StartDateEC = firstDayOfTheMonth.ToCTSPreferedDateFormat("EC"),
+                    EndDateEC = firstDayOfTheMonth.AddMonths((int)duration).ToCTSPreferedDateFormat("EC")
 
+                };
+                return PartialView(dateInterval);
+            }
+            return PartialView(new DurationViewModel()
+            {
+                StartDateGC = DateTime.Now.AddDays(1 - DateTime.Now.Day).ToCTSPreferedDateFormat("GC"),
+                StartDateEC = DateTime.Now.AddDays(1 - DateTime.Now.Day).ToCTSPreferedDateFormat("EC"),
+                EndDateGC = null,
+                EndDateEC = null
+            });
         }
-       
-        return PartialView(addWoredaViewModel);
-    }
-    private HRDDetail GetDetail(HrdAddWoredaViewModel addWoreda)
-    {
-        var detail = new HRDDetail()
+        public ActionResult AddWoreda(int id)
         {
-           HRDID=addWoreda.HRDID,
-           WoredaID = addWoreda.WoredaID,
-           DurationOfAssistance = addWoreda.Duration,
-           NumberOfBeneficiaries = addWoreda.Beneficiary,
-           StartingMonth = addWoreda.StartingMonth
-        };
-        return detail;
-    }
-    public JsonResult GetAdminUnits(int id)
-    {
-        var hrd = _hrdService.FindById(id);
-        var r = (from region in _adminUnitService.GetRegions()
-                 select new
-                 {
+            var hrd = _hrdService.FindById(id);
+            if (hrd == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.RegionID = new SelectList(_adminUnitService.GetRegions(), "AdminUnitID", "Name");
+            ViewBag.ZoneID = new SelectList(_adminUnitService.FindBy(m => m.AdminUnitTypeID == 3), "AdminUnitID", "Name");
+            ViewBag.WoredaID = new SelectList(_adminUnitService.FindBy(m => m.AdminUnitTypeID == 4), "AdminUnitID", "Name");
+            ViewBag.SourceWarehouseID = new SelectList(_hubService.GetAllHub(), "HubID", "Name");
+            var addWoredaViewModel = new HrdAddWoredaViewModel();
+            addWoredaViewModel.HRDID = id;
+            addWoredaViewModel.StartingMonth = hrd.Plan.StartDate.Month;
+            return PartialView(addWoredaViewModel);
+        }
+        [HttpPost]
+        public ActionResult AddWoreda(HrdAddWoredaViewModel addWoredaViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var detail = GetDetail(addWoredaViewModel);
 
-                     RegionID = region.AdminUnitID,
-                     RegionName = region.Name,
-                     Zones = from zone in _adminUnitService.GetZones(region.AdminUnitID)
-                             select new
-                             {
-                                 ZoneID = zone.AdminUnitID,
-                                 ZoneName = zone.Name,
-                                 Woredas = from woreda in _adminUnitService.GetWoreda(zone.AdminUnitID)
-                                           from detail in hrd.HRDDetails
-                                           where woreda.AdminUnitID!=detail.WoredaID
-                                           select new
-                                           {
-                                               WoredaID = woreda.AdminUnitID,
-                                               WoredaName = woreda.Name
-                                           }
-                             }
-                 }
-                );
-        return Json(r, JsonRequestBehavior.AllowGet);
-    }
+                    if (_hrdDetailService.AddWoreda(detail))
+                        return RedirectToAction("HRDDetail", new { id = addWoredaViewModel.HRDID });
+                    ViewBag.Errors = 1;
+                    return RedirectToAction("HRDDetail", new { id = addWoredaViewModel.HRDID });
+
+                }
+                catch (Exception ex)
+                {
+                    var log = new Logger();
+                    log.LogAllErrorsMesseges(ex, _log);
+
+                }
+
+            }
+
+            return PartialView(addWoredaViewModel);
+        }
+        private HRDDetail GetDetail(HrdAddWoredaViewModel addWoreda)
+        {
+            var detail = new HRDDetail()
+            {
+                HRDID = addWoreda.HRDID,
+                WoredaID = addWoreda.WoredaID,
+                DurationOfAssistance = addWoreda.Duration,
+                NumberOfBeneficiaries = addWoreda.Beneficiary,
+                StartingMonth = addWoreda.StartingMonth
+            };
+            return detail;
+        }
+        public JsonResult GetAdminUnits(int id)
+        {
+            var hrd = _hrdService.FindById(id);
+            var r = (from region in _adminUnitService.GetRegions()
+                     select new
+                     {
+
+                         RegionID = region.AdminUnitID,
+                         RegionName = region.Name,
+                         Zones = from zone in _adminUnitService.GetZones(region.AdminUnitID)
+                                 select new
+                                 {
+                                     ZoneID = zone.AdminUnitID,
+                                     ZoneName = zone.Name,
+                                     Woredas = from woreda in _adminUnitService.GetWoreda(zone.AdminUnitID)
+                                               from detail in hrd.HRDDetails
+                                               where woreda.AdminUnitID != detail.WoredaID
+                                               select new
+                                               {
+                                                   WoredaID = woreda.AdminUnitID,
+                                                   WoredaName = woreda.Name
+                                               }
+                                 }
+                     }
+                    );
+            return Json(r, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
         public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
         {
             var fileName = "";
+            int closeStateID = 0;
             if (st.AttachmentFile.HasFile())
             {
                 //save the file
@@ -964,6 +1057,18 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 }
                 st.AttachmentFile.SaveAs(path);
             }
+            int BP_PR = _applicationSettingService.getHRDWorkflow();
+            var firstOrDefault = _stateTemplateService
+                .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == BP_PR && s.Name == "Closed");
+            if (firstOrDefault != null)
+                closeStateID = firstOrDefault.StateTemplateID;
+
+            var previousHRd = _hrdService.Get(h => h.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published", null,
+                "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+
+
+
+
             var businessProcessState = new BusinessProcessState()
             {
                 StateID = st.StateID,
@@ -973,11 +1078,33 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 AttachmentFile = fileName,
                 ParentBusinessProcessID = st.ParentBusinessProcessID
             };
-            
-            _businessProcessService.PromotWorkflow(businessProcessState);
+            var hrdSelected = _hrdService.FindBy(b => b.BusinessProcessId == st.ParentBusinessProcessID).FirstOrDefault();
+
+            string stateName = _stateTemplateService.FindById(st.StateID).Name;
+            if (stateName == "Published")
+            {
+                if (previousHRd != null)
+                {
+                    var businessProcessStateOld = new BusinessProcessState()
+                    {
+                        StateID = closeStateID,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "HRD closed by system on Changed Current HRD ",
+                        AttachmentFile = fileName,
+                        ParentBusinessProcessID = previousHRd.BusinessProcessId
+                    };
+                    if (_businessProcessService.PromotWorkflow(businessProcessStateOld))
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+                else
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+            }
+            else
+                _businessProcessService.PromotWorkflow(businessProcessState);
             if (statusId != null)
-                return RedirectToAction("ApproveHRD", "HRD", new {Area = "EarlyWarning", statusId});
-            return RedirectToAction("Index", "HRD", new {Area = "EarlyWarning"});
+                return RedirectToAction("ApproveHRD", "HRD", new { Area = "EarlyWarning", statusId });
+            return RedirectToAction("Index", "HRD", new { Area = "EarlyWarning" });
         }
 
         public static string GetRandomAlphaNumeric(int length)
