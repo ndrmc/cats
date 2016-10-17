@@ -124,113 +124,112 @@
                     )
                 </div>*@
 
-            <div class="col-md-12">
-                <div class="table-responsive">
-                    <table class="table table-striped table-condensed">
-                        <thead>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-condensed" style="margin-bottom: 120px;">
+                    <thead>
+                        <tr>
+                            <th>SI Number</th>
+                            <th>Source Hub</th>
+                            <th>Program</th>
+                            <th>Commodity</th>
+                            <th>Commodity Source</th>
+                            <th>Quantity in MT</th>
+                            <th>Created Date</th>
+                            <th>Destination hub</th>
+                            <th>Status Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (TransferViewModel item in Model)
+                        {
+                            index++;
+
                             <tr>
-                                <th>SI Number</th>
-                                <th>Source Hub</th>
-                                <th>Program</th>
-                                <th>Commodity</th>
-                                <th>Commodity Source</th>
-                                <th>Quantity in MT</th>
-                                <th>Created Date</th>
-                                <th>Destination hub</th>
-                                <th>Status Name</th>
+                                <td>
+                                    @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Transfer_plan_link) == "Transfer_plan_link")
+                                    {
+                                        <a href='@Url.Action("Detail", "Transfer", new {id = @item.TransferID})'>@item.SiNumber</a>
+                                    }
+                                </td>
+                                <td>
+                                    @item.SourceHubName
+                                </td>
+                                <td>
+                                    @item.Program
+                                </td>
+                                <td>
+                                    @item.Commodity
+                                </td>
+                                <td>
+                                    @item.CommoditySource
+                                </td>
+                                <td>
+                                    @item.Quantity
+                                </td>
+                                <td>
+                                    @item.CreatedDate
+                                </td>
+                                <td>
+                                    @item.DestinationHubName
+                                </td>
+                                <td>
+                                    @item.Status
+                                </td>
+
+                                <td>
+                                    &nbsp;
+                                    <div class="btn-group">
+                                        <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
+                                            <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
+                                        </button>
+                                        <ul class="dropdown-menu pull-right">
+
+                                            @if (item.Status == "Draft")
+                                            {
+                                                <li class="edit_button">
+                                                    <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.ApprovedId,'Approve',@item.TransferID)" title="Approve">Approve</a>
+                                                </li>
+                                            }
+
+                                            @if (item.Status == "Approved")
+                                            {
+                                                <li class="edit_button">
+                                                    <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.RejectedId,'Reject',@item.TransferID)" title="Reject">Reject</a>
+                                                </li>
+                                            }
+
+                                            @if (item.Status == "Rejected")
+                                            {
+                                                <li class="edit_button">
+                                                    <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.ApprovedId,'Approve',@item.TransferID)" title="Approve">Approve</a>
+                                                </li>
+                                            }
+                                            @*@foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                                                {
+                                                    <li class="edit_button">
+                                                        <a href="javascript:promot_workflow(@item.BusinessProcessID,
+                                                           @actions.FinalStateID,'@actions.Name',
+                                                           @item.TransferID)" title="@actions.Name">@actions.Name</a>
+                                                    </li>
+
+                                                    <li class="edit_button">
+                                                        <a href="javascript:promot_workflow(@item.BusinessProcessID,
+                                                           @actions.FinalStateID,'@actions.Name',
+                                                           @item.TransferID)" title="@actions.Name">@actions.Name</a>
+                                                    </li>
+                                                }*@
+                                            <li class="divider"></li>
+
+                                            <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
+
+                                        </ul>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (TransferViewModel item in Model)
-                            {
-                                index++;
-                                
-                                <tr>
-                                    <td>
-                                        @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Transfer_plan_link) == "Transfer_plan_link")
-                                        {
-                                            <a href='Url.Action("Detail", "Transfer", new {id = @item.TransferID})'>@item.SiNumber</a>
-                                        }
-                                    </td>
-                                    <td>
-                                        @item.SourceHubName
-                                    </td>
-                                    <td>
-                                        @item.Program
-                                    </td>
-                                    <td>
-                                        @item.Commodity
-                                    </td>
-                                    <td>
-                                        @item.CommoditySource
-                                    </td>
-                                    <td>
-                                        @item.Quantity
-                                    </td>
-                                    <td>
-                                        @item.CreatedDate
-                                    </td>
-                                    <td>
-                                        @item.DestinationHubName
-                                    </td>
-                                    <td>
-                                        @item.Status
-                                    </td>
-
-                                    <td>
-                                        &nbsp;
-                                        <div class="btn-group">
-                                            <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
-                                                <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
-                                            </button>
-                                            <ul class="dropdown-menu pull-right">
-
-                                                @if (item.Status == "Draft")
-                                                {
-                                                    <li class="edit_button">
-                                                        <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.ApprovedId,'Approve',@item.TransferID)" title="Approve">Approve</a>
-                                                    </li>
-                                                }
-
-                                                @if (item.Status == "Approved")
-                                                {
-                                                    <li class="edit_button">
-                                                        <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.RejectedId,'Reject',@item.TransferID)" title="Reject">Reject</a>
-                                                    </li>
-                                                }
-
-                                                @if (item.Status == "Rejected")
-                                                {
-                                                    <li class="edit_button">
-                                                        <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.ApprovedId,'Approve',@item.TransferID)" title="Approve">Approve</a>
-                                                    </li>
-                                                }
-                                                @*@foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
-                                                    {
-                                                        <li class="edit_button">
-                                                            <a href="javascript:promot_workflow(@item.BusinessProcessID,
-                                                               @actions.FinalStateID,'@actions.Name',
-                                                               @item.TransferID)" title="@actions.Name">@actions.Name</a>
-                                                        </li>
-
-                                                        <li class="edit_button">
-                                                            <a href="javascript:promot_workflow(@item.BusinessProcessID,
-                                                               @actions.FinalStateID,'@actions.Name',
-                                                               @item.TransferID)" title="@actions.Name">@actions.Name</a>
-                                                        </li>
-                                                    }*@
-                                                <li class="divider"></li>
-
-                                                <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
-
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

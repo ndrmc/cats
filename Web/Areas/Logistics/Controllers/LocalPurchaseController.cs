@@ -31,10 +31,12 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly ICommodityService _commodityService;
         private readonly IApplicationSettingService _applicationSettingService;
         private readonly IBusinessProcessService _businessProcessService;
+        private readonly IStateTemplateService _stateTemplateService;
         public LocalPurchaseController(ILocalPurchaseService localPurchaseService, ICommonService commonService,
             ILocalPurchaseDetailService localPurchaseDetailService,
             IGiftCertificateService giftCertificateService, IShippingInstructionService shippingInstructionService,
-            ICommodityService commodityService, IApplicationSettingService applicationSettingService,IBusinessProcessService businessProcessService)
+            ICommodityService commodityService, IApplicationSettingService applicationSettingService, IBusinessProcessService businessProcessService,
+            IStateTemplateService stateTemplateService)
         {
             _localPurchaseService = localPurchaseService;
             _commonService = commonService;
@@ -44,18 +46,19 @@ namespace Cats.Areas.Logistics.Controllers
             _commodityService = commodityService;
             _applicationSettingService = applicationSettingService;
             _businessProcessService = businessProcessService;
+            _stateTemplateService = stateTemplateService;
         }
 
         public ActionResult Index()
         {
             if (TempData["success"] != null)
                 ModelState.AddModelError("Success", TempData["success"].ToString());
-            if (TempData["Reverted"]!=null)
+            if (TempData["Reverted"] != null)
                 ModelState.AddModelError("Success", TempData["Reverted"].ToString());
-            else if (TempData["Received"]!=null)
-                ModelState.AddModelError("Errors",TempData["Received"].ToString());
-            else if (TempData["Error"]!=null)
-                ModelState.AddModelError("Errors",TempData["Error"].ToString());
+            else if (TempData["Received"] != null)
+                ModelState.AddModelError("Errors", TempData["Received"].ToString());
+            else if (TempData["Error"] != null)
+                ModelState.AddModelError("Errors", TempData["Error"].ToString());
 
             ViewBag.TargetController = "LocalPurchase";
             return View();
@@ -64,23 +67,23 @@ namespace Cats.Areas.Logistics.Controllers
         {
             PopulateLookUps();
             var localpurchase = new LocalPurchaseWithDetailViewModel
-                {
-                    CommoditySource=_commonService.GetCommditySourceName(3),//commodity source for local purchase
-                    LocalPurchaseDetailViewModels = GetNewLocalPurchaseDetail()
-                };
+            {
+                CommoditySource = _commonService.GetCommditySourceName(3),//commodity source for local purchase
+                LocalPurchaseDetailViewModels = GetNewLocalPurchaseDetail()
+            };
             return View(localpurchase);
 
         }
         public ActionResult Details(int id)
         {
             var localPurchase = _localPurchaseService.FindById(id);
-            var parentCommodityID = _commodityService.Get(m => m.CommodityID ==localPurchase.CommodityID).FirstOrDefault().ParentID;
-            ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name",localPurchase.ProgramID);
+            var parentCommodityID = _commodityService.Get(m => m.CommodityID == localPurchase.CommodityID).FirstOrDefault().ParentID;
+            ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name", localPurchase.ProgramID);
             ViewBag.CommodityID = new SelectList(_commodityService.FindBy(m => m.ParentID == parentCommodityID), "CommodityID", "Name", localPurchase.CommodityID);
             ViewBag.CommodityTypeID = new SelectList(_commonService.GetCommodityTypes(), "CommodityTypeID", "Name");
-            ViewBag.DonorID = new SelectList(_commonService.GetDonors(), "DonorID", "Name",localPurchase.DonorID);
-            
-            if (localPurchase!=null)
+            ViewBag.DonorID = new SelectList(_commonService.GetDonors(), "DonorID", "Name", localPurchase.DonorID);
+
+            if (localPurchase != null)
             {
                 var localPurchaseWithDetailViewModel = new LocalPurchaseWithDetailViewModel()
                 {
@@ -150,13 +153,13 @@ namespace Cats.Areas.Logistics.Controllers
                     {
                         var si = AddSiNumber(localPurchaseWithDetailViewModel.SINumber);
                         if (si != -1 && bp != null)
-                            SaveNewLocalPurchase(localPurchaseWithDetailViewModel, si,bp.BusinessProcessID); // second in doation table
+                            SaveNewLocalPurchase(localPurchaseWithDetailViewModel, si, bp.BusinessProcessID); // second in doation table
                     }
                     TempData["success"] = "Local Purchase Sucessfully Saved";
                     return RedirectToAction("Index");
                 }
             }
-            ModelState.AddModelError("Errors", @"Total Allocated Amount Can't Exceed Planned Quantity"); 
+            ModelState.AddModelError("Errors", @"Total Allocated Amount Can't Exceed Planned Quantity");
             PopulateLookUps();
             return View(localPurchaseWithDetailViewModel);
         }
@@ -168,7 +171,7 @@ namespace Cats.Areas.Logistics.Controllers
             int resultInt = siList.Max() + 1;
             return Json("LP-" + resultInt, JsonRequestBehavior.AllowGet);
         }
-        private bool SaveNewLocalPurchase(LocalPurchaseWithDetailViewModel localPurchaseWithDetailViewModel, int sippingInstractionID, int businessProcessId )
+        private bool SaveNewLocalPurchase(LocalPurchaseWithDetailViewModel localPurchaseWithDetailViewModel, int sippingInstractionID, int businessProcessId)
         {
             try
             {
@@ -191,12 +194,12 @@ namespace Cats.Areas.Logistics.Controllers
 
                 foreach (var localPurchaseDetail in localPurchaseWithDetailViewModel.LocalPurchaseDetailViewModels
                     .Select(localPurchaseDetail => new LocalPurchaseDetail()
-                {
-                    HubID = localPurchaseDetail.HubID,
-                    AllocatedAmount = localPurchaseDetail.AllocatedAmonut,
-                    RecievedAmount = localPurchaseDetail.RecievedAmonut,
-                    LocalPurchase = localPurchase
-                }))
+                    {
+                        HubID = localPurchaseDetail.HubID,
+                        AllocatedAmount = localPurchaseDetail.AllocatedAmonut,
+                        RecievedAmount = localPurchaseDetail.RecievedAmonut,
+                        LocalPurchase = localPurchase
+                    }))
                 {
                     _localPurchaseDetailService.AddLocalPurchaseDetail(localPurchaseDetail);
                 }
@@ -210,7 +213,7 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult UpdateLocalPurchase(LocalPurchaseWithDetailViewModel localPurchaseDetailViewModel)
         {
             var localPurchase = _localPurchaseService.FindById(localPurchaseDetailViewModel.LocalPurchaseID);
-            if (localPurchase != null && localPurchaseDetailViewModel.LocalPurchaseDetailViewModels.Sum(m=>m.AllocatedAmonut) <= localPurchase.Quantity)
+            if (localPurchase != null && localPurchaseDetailViewModel.LocalPurchaseDetailViewModels.Sum(m => m.AllocatedAmonut) <= localPurchase.Quantity)
             {
                 localPurchase.CommodityID = localPurchaseDetailViewModel.CommodityID;
                 localPurchase.DonorID = localPurchaseDetailViewModel.DonorID;
@@ -225,7 +228,7 @@ namespace Cats.Areas.Logistics.Controllers
                 foreach (var localPurchaseDetail in localPurchaseDetailViewModel.LocalPurchaseDetailViewModels)
                 {
                     var detail = _localPurchaseDetailService.FindById(localPurchaseDetail.LocalPurchaseDetailID);
-                    if (detail!=null)
+                    if (detail != null)
                     {
                         detail.AllocatedAmount = localPurchaseDetail.AllocatedAmonut;
                         _localPurchaseDetailService.EditLocalPurchaseDetail(detail);
@@ -234,7 +237,7 @@ namespace Cats.Areas.Logistics.Controllers
                 }
                 TempData["success"] = "Local Purchase Sucessfully Updated";
                 //ModelState.AddModelError("Success", @"Local Purchase Sucessfully Updated");
-                return RedirectToAction("Details", new {id = localPurchase.LocalPurchaseID});
+                return RedirectToAction("Details", new { id = localPurchase.LocalPurchaseID });
             }
             TempData["CustomError"] = "Total Allocated Amount Can't Exceed Planned Quantity";
             return RedirectToAction("Details", new { id = localPurchaseDetailViewModel.LocalPurchaseID });
@@ -245,7 +248,7 @@ namespace Cats.Areas.Logistics.Controllers
             var localPurchseToDisplay = GetLocalPurchase(localPurchase);
             return Json(localPurchseToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
-        public ActionResult HubsLocalPurchaseDetail_Read([DataSourceRequest] DataSourceRequest request,int localPurchaseID)
+        public ActionResult HubsLocalPurchaseDetail_Read([DataSourceRequest] DataSourceRequest request, int localPurchaseID)
         {
             var localPurchaseDetail = _localPurchaseDetailService.FindBy(m => m.LocalPurchaseID == localPurchaseID);
             if (localPurchaseDetail.Count != 0)
@@ -260,73 +263,73 @@ namespace Cats.Areas.Logistics.Controllers
         {
             return (from localPurchaseDetail in localPurchaseDetails
                     select new LocalPurchaseDetailViewModel
-                        {
-                            LocalPurchaseDetailID = localPurchaseDetail.LocalPurchaseDetailID,
-                            LocalPurchaseID = localPurchaseDetail.LocalPurchaseID,
-                            HubID = localPurchaseDetail.HubID,
-                            HubName = localPurchaseDetail.Hub.Name,
-                            AllocatedAmonut = localPurchaseDetail.AllocatedAmount,
-                            RecievedAmonut = localPurchaseDetail.RecievedAmount,
-                            RemainingAmonut = _localPurchaseService.GetRemainingAmount(localPurchaseDetail.LocalPurchaseID)
-                            
-                        });
+                    {
+                        LocalPurchaseDetailID = localPurchaseDetail.LocalPurchaseDetailID,
+                        LocalPurchaseID = localPurchaseDetail.LocalPurchaseID,
+                        HubID = localPurchaseDetail.HubID,
+                        HubName = localPurchaseDetail.Hub.Name,
+                        AllocatedAmonut = localPurchaseDetail.AllocatedAmount,
+                        RecievedAmonut = localPurchaseDetail.RecievedAmount,
+                        RemainingAmonut = _localPurchaseService.GetRemainingAmount(localPurchaseDetail.LocalPurchaseID)
+
+                    });
 
         }
         private IEnumerable<LocalPurchaseViewModel> GetLocalPurchase(IEnumerable<LocalPurchase> localPurchases)
         {
             return (from localPurchase in localPurchases
-                let status =
-                    localPurchase.BusinessProcess.CurrentState != null
-                        ? localPurchase.BusinessProcess.CurrentState.BaseStateTemplate.Name
-                        : _commonService.GetStatusName(WORKFLOW.LocalPUrchase, localPurchase.StatusID)
-                select new LocalPurchaseViewModel
-                {
-                    LocalPurchaseID = localPurchase.LocalPurchaseID,
-                    CommodityID = localPurchase.CommodityID,
-                    Commodity = localPurchase.Commodity.Name,
-                    ProgramID = localPurchase.ProgramID,
-                    Program = localPurchase.Program.Name,
-                    DonorID = localPurchase.DonorID,
-                    DonorName = localPurchase.Donor.Name,
-                    SupplierName = localPurchase.SupplierName,
-                    ReferenceNumber = localPurchase.ReferenceNumber,
-                    SiNumber = localPurchase.ShippingInstruction.Value,
-                    Quantity = localPurchase.Quantity,
-                    ProjectCode = localPurchase.ProjectCode,
-                    Status = status,
-                    //CreatedDate = localPurchase.DateCreated,                     
-                });
+                    let status =
+                        localPurchase.BusinessProcess.CurrentState != null
+                            ? localPurchase.BusinessProcess.CurrentState.BaseStateTemplate.Name
+                            : _commonService.GetStatusName(WORKFLOW.LocalPUrchase, localPurchase.StatusID)
+                    select new LocalPurchaseViewModel
+                    {
+                        LocalPurchaseID = localPurchase.LocalPurchaseID,
+                        CommodityID = localPurchase.CommodityID,
+                        Commodity = localPurchase.Commodity.Name,
+                        ProgramID = localPurchase.ProgramID,
+                        Program = localPurchase.Program.Name,
+                        DonorID = localPurchase.DonorID,
+                        DonorName = localPurchase.Donor.Name,
+                        SupplierName = localPurchase.SupplierName,
+                        ReferenceNumber = localPurchase.ReferenceNumber,
+                        SiNumber = localPurchase.ShippingInstruction.Value,
+                        Quantity = localPurchase.Quantity,
+                        ProjectCode = localPurchase.ProjectCode,
+                        Status = status,
+                        //CreatedDate = localPurchase.DateCreated,                     
+                    });
         }
 
         private IEnumerable<LocalPurchaseDetailViewModel> GetNewLocalPurchaseDetail()
         {
-            var hubs = _localPurchaseService.GetAllHub().Where(m=>m.HubOwnerID==1);
+            var hubs = _localPurchaseService.GetAllHub().Where(m => m.HubOwnerID == 1);
             return (from hub in hubs
                     select new LocalPurchaseDetailViewModel
-                        {
-                            HubID = hub.HubID,
-                            HubName = hub.Name,
-                            AllocatedAmonut = 0,
-                            RecievedAmonut = 0
-                        });
+                    {
+                        HubID = hub.HubID,
+                        HubName = hub.Name,
+                        AllocatedAmonut = 0,
+                        RecievedAmonut = 0
+                    });
         }
         public JsonResult GetGiftCertificateInfo(string siNumber)
         {
             var giftCertificate = _giftCertificateService.FindBy(m => m.ShippingInstruction.Value == siNumber).FirstOrDefault();
-            if (giftCertificate!=null)
+            if (giftCertificate != null)
             {
                 var giftDetail = (from detail in giftCertificate.GiftCertificateDetails
                                   select new LocalPurchaseFromGiftCertificateInfo
-                                      {
-                                          GiftCertificateID = detail.GiftCertificateID,
-                                          CommodityID = detail.CommodityID,
-                                          CommodityName = detail.Commodity.Name,
-                                          ProgramName = giftCertificate.Program.Name,
-                                          DonorID = giftCertificate.DonorID,
-                                          DonorName = giftCertificate.Donor.Name,
-                                          QuantityInMT = detail.WeightInMT,
-                                          CommoditySource = "Local Purchase"
-                                      });
+                                  {
+                                      GiftCertificateID = detail.GiftCertificateID,
+                                      CommodityID = detail.CommodityID,
+                                      CommodityName = detail.Commodity.Name,
+                                      ProgramName = giftCertificate.Program.Name,
+                                      DonorID = giftCertificate.DonorID,
+                                      DonorName = giftCertificate.Donor.Name,
+                                      QuantityInMT = detail.WeightInMT,
+                                      CommoditySource = "Local Purchase"
+                                  });
                 return Json(giftDetail, JsonRequestBehavior.AllowGet);
             }
             return null;
@@ -388,11 +391,11 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult Approve(int id)
         {
             var localPurchase = _localPurchaseService.FindById(id);
-            if (localPurchase!=null)
+            if (localPurchase != null)
             {
                 //localPurchase.StatusID = (int) LocalPurchaseStatus.Approved;
                 _localPurchaseService.Approve(localPurchase);
-                return RedirectToAction("Details", new {id = localPurchase.LocalPurchaseID});
+                return RedirectToAction("Details", new { id = localPurchase.LocalPurchaseID });
             }
             return RedirectToAction("Index");
         }
@@ -408,28 +411,28 @@ namespace Cats.Areas.Logistics.Controllers
         {
             var localPurchase = _localPurchaseService.FindById(id);
 
-                if (localPurchase != null)
+            if (localPurchase != null)
+            {
+                switch (localPurchase.StatusID)
                 {
-                    switch (localPurchase.StatusID)
-                    {
-                        case (int)LocalPurchaseStatus.Approved:
-                            if (!_localPurchaseService.DelteLocalPurchaseAllocation(localPurchase))
-                            {
-                                TempData["Received"] = "local Purchase can not be Deleted. It has already been Received!";
-                                return RedirectToAction("Index");
-                            }
-                            
-                            _localPurchaseService.DeleteLocalPurchae(localPurchase);
-                            break;
-                        case (int)LocalPurchaseStatus.Draft:
-                            {
-                               _localPurchaseService.DeleteLocalPurchae(localPurchase);
-                                return RedirectToAction("Index");
-                            }
+                    case (int)LocalPurchaseStatus.Approved:
+                        if (!_localPurchaseService.DelteLocalPurchaseAllocation(localPurchase))
+                        {
+                            TempData["Received"] = "local Purchase can not be Deleted. It has already been Received!";
+                            return RedirectToAction("Index");
+                        }
 
-                    }
+                        _localPurchaseService.DeleteLocalPurchae(localPurchase);
+                        break;
+                    case (int)LocalPurchaseStatus.Draft:
+                        {
+                            _localPurchaseService.DeleteLocalPurchae(localPurchase);
+                            return RedirectToAction("Index");
+                        }
+
                 }
-                return RedirectToAction("Index");
+            }
+            return RedirectToAction("Index");
         }
 
         public ActionResult Revert(int id)
@@ -438,12 +441,12 @@ namespace Cats.Areas.Logistics.Controllers
 
             if (localPurchase != null)
             {
-               if( !_localPurchaseService.DelteLocalPurchaseAllocation(localPurchase))
-               {
-                   TempData["Received"] = "local Purchase can not be Reverted. It has already been Received!";
-                   return RedirectToAction("Index");
-               }
-                localPurchase.StatusID = (int) LocalPurchaseStatus.Draft;
+                if (!_localPurchaseService.DelteLocalPurchaseAllocation(localPurchase))
+                {
+                    TempData["Received"] = "local Purchase can not be Reverted. It has already been Received!";
+                    return RedirectToAction("Index");
+                }
+                localPurchase.StatusID = (int)LocalPurchaseStatus.Draft;
                 _localPurchaseService.EditLocalPurchase(localPurchase);
                 TempData["Reverted"] = "Local purchase is Reverted to Draft";
                 return RedirectToAction("Index");
@@ -478,8 +481,17 @@ namespace Cats.Areas.Logistics.Controllers
                 AttachmentFile = fileName,
                 ParentBusinessProcessID = st.ParentBusinessProcessID
             };
+            var localPurchase = _localPurchaseService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
 
-            _businessProcessService.PromotWorkflow(businessProcessState);
+            //var transfer = _transferService.FindById(id);
+            string stateName = _stateTemplateService.FindById(st.StateID).Name;
+            if (stateName == "Approved" && localPurchase != null)
+            {
+                //localPurchase.StatusID = (int) LocalPurchaseStatus.Approved;
+                if (_localPurchaseService.Approve(localPurchase))
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+            }
+
             if (statusId != null)
                 return RedirectToAction("Index", "LocalPurchase", new { Area = "Logistics", statusId });
             return RedirectToAction("Index", "LocalPurchase", new { Area = "Logistics" });

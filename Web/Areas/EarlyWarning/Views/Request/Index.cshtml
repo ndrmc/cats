@@ -11,7 +11,7 @@
     //Layout = "~/Views/Shared/_CATSLayout.cshtml";
     var user = UserAccountHelper.GetUser(HttpContext.Current.User.Identity.Name);
     Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
-    ViewBag.PageTitle = (ViewBag.program == "PSNP")? "Regional PSNP Requests" : "Regional Relief Requests";
+    ViewBag.PageTitle = (ViewBag.program == "PSNP") ? "Regional PSNP Requests" : "Regional Relief Requests";
     ViewBag.PageTitleDescription = "";
 }
 
@@ -59,13 +59,13 @@
             <a href="javascript:;" class="remove" data-original-title="" title=""></a>
         </div>
         <div class="actions">
-            @if(UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_request)
+            @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Add_new_request)
                 || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_regional_request)
                 || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Add_Request))
             {
-                <a href = "@Url.Action("New", "Request", new { Area = "EarlyWarning" })" class="btn" data-buttontype="btn_new_record"><button type = "button" class="btn btn-success"><i class="fa fa - plus - circle"></i>New Request</button></a>
+                <a href="@Url.Action("New", "Request", new { Area = "EarlyWarning" })" class="btn" data-buttontype="btn_new_record"><button type="button" class="btn btn-success"><i class="fa fa - plus - circle"></i>New Request</button></a>
             }
-            
+
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
         </div>
     </div>
@@ -76,69 +76,69 @@
             @(Html.Kendo().Grid<RegionalRequestViewModel>()
     .Name("RequestListGrid")
     .Columns(columns =>
-                 {
-                columns.Template(t => { }).Title("No").ClientTemplate("#= renderNumber(data) #").Width(50);
-                columns.Bound(request => request.ReferenceNumber).ClientTemplate
-                    ("<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>#=ReferenceNumber#</a>").Width(160);
-                columns.Bound(request => request.Region).Width(100);
-                columns.Bound(request => request.Year).Width(70);
-                columns.Bound(request => request.MonthName).Title(Html.Translate("Month")).Width(70);
-                if (Model.ProgramID == 1)
-                {
-                    columns.Bound(request => request.Round).Width(50).Title(Html.Translate("Round"));
-                }
-                columns.Bound(request => request.Program).Width(160);
-                columns.Bound(request => request.RequestDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).Width(160);
-                columns.Bound(request => request.Status).Template(
+    {
+    columns.Template(t => { }).Title("No").ClientTemplate("#= renderNumber(data) #").Width(50);
+    columns.Bound(request => request.ReferenceNumber).ClientTemplate
+        ("<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>#=ReferenceNumber#</a>").Width(160);
+    columns.Bound(request => request.Region).Width(100);
+    columns.Bound(request => request.Year).Width(70);
+    columns.Bound(request => request.MonthName).Title(Html.Translate("Month")).Width(70);
+    if (Model.ProgramID == 1)
+    {
+        columns.Bound(request => request.Round).Width(50).Title(Html.Translate("Round"));
+    }
+    columns.Bound(request => request.Program).Width(160);
+    columns.Bound(request => request.RequestDate).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" }).Width(160);
+    columns.Bound(request => request.Status).Template(
 
 
-            @<text>
-                @if (item.StatusID == (int)RegionalRequestStatus.Draft)
-                {
-                    if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request)
-                        || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Approve_Request)
-                        || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Approve_regional_request))
-                    {
-                        @Html.ActionLink("Approve", "ApproveRequest", "Request", new {Area = "EarlyWarning", id = @item.RegionalRequestID})
-                    }
-                }
-                else
+        @<text>
+            @if (item.StatusID == (int)RegionalRequestStatus.Draft)
                 {
                     if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request)
                         || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Approve_Request)
                         || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Approve_regional_request))
                     {
-                        @item.Status
-                        @Html.ActionLink("Approve", "ApproveRequest", "Request", new {Area = "EarlyWarning", id = @item.RegionalRequestID})
-                    }
+                    @Html.ActionLink("Approve", "ApproveRequest", "Request", new { Area = "EarlyWarning", id = @item.RegionalRequestID })
                 }
-            </text>);
-                     columns.Bound(request => request.PlanId).Title(
-                         Html.Translate("Action"))
-                         .ClientTemplate("# if (StatusID == 1 || StatusID==5) { #" +
-                                    "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; " +
-                                 "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Request_Allocation) + "' == 'True'" +
-                                 " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Request_Allocation) + "' == 'True'" +
-                                " || '" + UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Request_Allocation) + "' == 'True') { #" +
-                                    "<a href='" + Url.Action("Allocation", "Request", new { id = "#=RegionalRequestID#" }) + " '>Allocate</a>  " +
-                                 "# } #" +
-                                 "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Delete_Request) + "' == 'True'" +
-                                 " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Delete_Request) + "' == 'True'" +
-                                " || '" + UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Delete_Request) + "' == 'True') { #" +
-                                    "<a onclick=\"return confirmDelete()\" href='" + Url.Action("Delete", "Request", new { id = "#=RegionalRequestID#" }) + " '>Delete</a>  " +
-                                 "# } #" +
-                                 "# } else { #" +
-                                   "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; "+
-                                "# } #");
+            }
+            else
+            {
+                if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request)
+                    || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Approve_Request)
+                    || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Approve_regional_request))
+                {
+                    @item.Status
+                    @Html.ActionLink("Approve", "ApproveRequest", "Request", new { Area = "EarlyWarning", id = @item.RegionalRequestID })
+                }
+            }
+        </text>);
+        columns.Bound(request => request.PlanId).Title(
+            Html.Translate("Action"))
+            .ClientTemplate("# if (StatusID == 1 || StatusID==5 ) { #" +
+                       "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; " +
+                    "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Request_Allocation) + "' == 'True'" +
+                    " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Request_Allocation) + "' == 'True'" +
+                   " || '" + UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Request_Allocation) + "' == 'True') { #" +
+                       "<a href='" + Url.Action("Allocation", "Request", new { id = "#=RegionalRequestID#" }) + " '>Allocate</a>  " +
+                    "# } #" +
+                    "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Delete_Request) + "' == 'True'" +
+                    " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Delete_Request) + "' == 'True'" +
+                   " || '" + UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Delete_Request) + "' == 'True') { #" +
+                       "<a onclick=\"return confirmDelete()\" href='" + Url.Action("Delete", "Request", new { id = "#=RegionalRequestID#" }) + " '>Delete</a>  " +
+                    "# } #" +
+                    "# } else { #" +
+                      "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; " +
+                   "# } #");
 
-                        })
+    })
                                     .Sortable()
                                     .Scrollable()
                                     .HtmlAttributes(new { style = "height:430px;" })
                                     .Events(ev => ev.DataBound("resetRowNumber"))
                                     .DataSource(dataSource => dataSource
                                         .Ajax()
-                                        //.PageSize(20)
+                                            //.PageSize(20)
 
                                             .Model(model =>
                                             {

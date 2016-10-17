@@ -31,22 +31,25 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IBusinessProcessService _businessProcessService;
         private readonly IApplicationSettingService _applicationSettingService;
         private ILog _log;
-        
-        public SwapController(ITransferService transferService,ICommonService commonService,IUserAccountService userAccountService,
-                                  ICommodityService commodityService,ILog log,IBusinessProcessService businessProcessService,IApplicationSettingService applicationSettingService)
+        private readonly IStateTemplateService _stateTemplateService;
+
+        public SwapController(ITransferService transferService, ICommonService commonService, IUserAccountService userAccountService,
+                                  ICommodityService commodityService, ILog log, IBusinessProcessService businessProcessService, IApplicationSettingService applicationSettingService,
+                                  IStateTemplateService stateTemplateService)
         {
             _transferService = transferService;
             _commonService = commonService;
             _userAccountService = userAccountService;
             _commodityService = commodityService;
-            _log = log;;
+            _log = log; ;
             _businessProcessService = businessProcessService;
             _applicationSettingService = applicationSettingService;
+            _stateTemplateService = stateTemplateService;
         }
 
         public ActionResult Index()
         {
-            
+
             return View();
         }
         public ActionResult Create()
@@ -55,10 +58,10 @@ namespace Cats.Areas.Logistics.Controllers
             transfer.CommoditySource = _commonService.GetCommditySourceName(9);//commodity source for Swap
             ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name");
             ViewBag.SourceHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name");
-            ViewBag.CommodityID = new SelectList(_commonService.GetCommodities(t=>t.ParentID!=null), "CommodityID", "Name");
+            ViewBag.CommodityID = new SelectList(_commonService.GetCommodities(t => t.ParentID != null), "CommodityID", "Name");
             ViewBag.ParentCommodityID = new SelectList(_commonService.GetCommodities(t => t.ParentID == null), "CommodityID", "Name");
             ViewBag.CommodityTypeID = new SelectList(_commonService.GetCommodityTypes(), "CommodityTypeID", "Name");
-            
+
             ViewBag.DestinationHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name");
 
             ViewBag.SourceSwap = new SelectList(_commonService.GetAllHubs(), "HubID", "Name");
@@ -98,64 +101,64 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult Edit(int id)
         {
             var transfer = _transferService.FindById(id);
-            if (transfer==null)
+            if (transfer == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name",transfer.ProgramID);
-            ViewBag.SourceHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name",transfer.SourceHubID);
-            ViewBag.CommodityID = new SelectList(_commonService.GetCommodities(), "CommodityID", "Name",transfer.CommodityID);
+            ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name", transfer.ProgramID);
+            ViewBag.SourceHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.SourceHubID);
+            ViewBag.CommodityID = new SelectList(_commonService.GetCommodities(), "CommodityID", "Name", transfer.CommodityID);
             ViewBag.CommodityTypeID = new SelectList(_commonService.GetCommodityTypes(), "CommodityTypeID", "Name");
-            ViewBag.DestinationHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name",transfer.DestinationHubID);
-            ViewBag.CommoditySourceID = new SelectList(_commonService.GetCommoditySource(), "CommoditySourceID", "Name",transfer.CommoditySourceID);
+            ViewBag.DestinationHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.DestinationHubID);
+            ViewBag.CommoditySourceID = new SelectList(_commonService.GetCommoditySource(), "CommoditySourceID", "Name", transfer.CommoditySourceID);
             ViewBag.DestinationSwap = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.DestinationSwap);
             ViewBag.SourceSwap = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.SourceSwap);
 
             return View(transfer);
         }
 
-       [HttpPost]
+        [HttpPost]
         public ActionResult Edit(Transfer transfer)
-       {
-          
-           if(ModelState.IsValid && transfer!=null)
-           {
-               transfer.CommoditySourceID = 9;//Commodity Source for Swao
-               _transferService.EditTransfer(transfer);
-               return RedirectToAction("detail", new {id = transfer.TransferID});
-           }
-           ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name", transfer.ProgramID);
-           ViewBag.SourceHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.SourceHubID);
-           ViewBag.CommodityID = new SelectList(_commonService.GetCommodities(), "CommodityID", "Name", transfer.CommodityID);
-           ViewBag.CommodityTypeID = new SelectList(_commonService.GetCommodityTypes(), "CommodityTypeID", "Name");
-           ViewBag.DestinationHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.DestinationHubID);
-           ViewBag.CommoditySourceID = new SelectList(_commonService.GetCommoditySource(), "CommoditySourceID", "Name", transfer.CommoditySourceID);
-           return View(transfer);
-       }
+        {
+
+            if (ModelState.IsValid && transfer != null)
+            {
+                transfer.CommoditySourceID = 9;//Commodity Source for Swao
+                _transferService.EditTransfer(transfer);
+                return RedirectToAction("detail", new { id = transfer.TransferID });
+            }
+            ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name", transfer.ProgramID);
+            ViewBag.SourceHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.SourceHubID);
+            ViewBag.CommodityID = new SelectList(_commonService.GetCommodities(), "CommodityID", "Name", transfer.CommodityID);
+            ViewBag.CommodityTypeID = new SelectList(_commonService.GetCommodityTypes(), "CommodityTypeID", "Name");
+            ViewBag.DestinationHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.DestinationHubID);
+            ViewBag.CommoditySourceID = new SelectList(_commonService.GetCommoditySource(), "CommoditySourceID", "Name", transfer.CommoditySourceID);
+            return View(transfer);
+        }
         private Transfer GetTransfer(TransferViewModel transferViewModel)
         {
-               var transfer = new Transfer()
-                {
-                  ShippingInstructionID=_commonService.GetShippingInstruction(transferViewModel.SiNumber),
-                  SourceHubID=transferViewModel.SourceHubID,
-                  ProgramID=transferViewModel.ProgramID,
-                  CommoditySourceID=9,
-                  CommodityID =transferViewModel.CommodityID,
-                  DestinationHubID =transferViewModel.DestinationHubID,
-                  ProjectCode=transferViewModel.ProjectCode,
-                  Quantity=transferViewModel.Quantity,
-                  CreatedDate=DateTime.Today,
-                  ReferenceNumber=transferViewModel.ReferenceNumber,
-                  StatusID=(int)LocalPurchaseStatus.Draft,
-                  SourceSwap=transferViewModel.SourceSwap,
-                  DestinationSwap=transferViewModel.DestinationSwap
-                };
+            var transfer = new Transfer()
+            {
+                ShippingInstructionID = _commonService.GetShippingInstruction(transferViewModel.SiNumber),
+                SourceHubID = transferViewModel.SourceHubID,
+                ProgramID = transferViewModel.ProgramID,
+                CommoditySourceID = 9,
+                CommodityID = transferViewModel.CommodityID,
+                DestinationHubID = transferViewModel.DestinationHubID,
+                ProjectCode = transferViewModel.ProjectCode,
+                Quantity = transferViewModel.Quantity,
+                CreatedDate = DateTime.Today,
+                ReferenceNumber = transferViewModel.ReferenceNumber,
+                StatusID = (int)LocalPurchaseStatus.Draft,
+                SourceSwap = transferViewModel.SourceSwap,
+                DestinationSwap = transferViewModel.DestinationSwap
+            };
             return transfer;
         }
         public ActionResult Detail(int id)
         {
             var transfer = _transferService.FindById(id);
-            if (transfer==null)
+            if (transfer == null)
             {
                 return HttpNotFound();
             }
@@ -172,33 +175,34 @@ namespace Cats.Areas.Logistics.Controllers
             var transferToDisplay = GetAllTransfers(transfer);
             return Json(transferToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
-        public IEnumerable<TransferViewModel>  GetAllTransfers (IEnumerable<Transfer> transfers)
+        public IEnumerable<TransferViewModel> GetAllTransfers(IEnumerable<Transfer> transfers)
         {
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            return (from transfer in transfers where transfer.CommoditySourceID==9
+            return (from transfer in transfers
+                    where transfer.CommoditySourceID == 9
                     select new TransferViewModel
-                        {
-                            TransferID = transfer.TransferID,
-                            SiNumber = transfer.ShippingInstruction.Value,
-                            CommodityID = transfer.CommodityID,
-                            Commodity = transfer.Commodity.Name,
-                            CommoditySource = transfer.CommoditySource.Name,
-                            Program = transfer.Program.Name,
-                            SourceHubID = transfer.SourceHubID,
-                            SourceHubName = transfer.Hub.Name,
-                            Quantity = transfer.Quantity,
-                            DestinationHubID = transfer.DestinationHubID,
-                            DestinationHubName = transfer.Hub1.Name,
-                            CreatedDate = transfer.CreatedDate.ToCTSPreferedDateFormat(datePref),
-                            StatusName = _commonService.GetStatusName(WORKFLOW.LocalPUrchase, transfer.StatusID),
-                            
-                            DestinationSwap= (int)transfer.DestinationSwap,
-                            DestinationSwapName= transfer.Hub3.Name,
-                            
-                            SourceSwap=(int)transfer.SourceSwap,
-                            SourceSwapName=transfer.Hub2.Name,
+                    {
+                        TransferID = transfer.TransferID,
+                        SiNumber = transfer.ShippingInstruction.Value,
+                        CommodityID = transfer.CommodityID,
+                        Commodity = transfer.Commodity.Name,
+                        CommoditySource = transfer.CommoditySource.Name,
+                        Program = transfer.Program.Name,
+                        SourceHubID = transfer.SourceHubID,
+                        SourceHubName = transfer.Hub.Name,
+                        Quantity = transfer.Quantity,
+                        DestinationHubID = transfer.DestinationHubID,
+                        DestinationHubName = transfer.Hub1.Name,
+                        CreatedDate = transfer.CreatedDate.ToCTSPreferedDateFormat(datePref),
+                        StatusName = transfer.BusinessProcess.CurrentState.BaseStateTemplate.Name, //_commonService.GetStatusName(WORKFLOW.LocalPUrchase, transfer.StatusID),
 
-                        }
+                        DestinationSwap = (int)transfer.DestinationSwap,
+                        DestinationSwapName = transfer.Hub3.Name,
+
+                        SourceSwap = (int)transfer.SourceSwap,
+                        SourceSwapName = transfer.Hub2.Name,
+
+                    }
                    );
         }
         public JsonResult GetGiftCertificates()
@@ -207,22 +211,22 @@ namespace Cats.Areas.Logistics.Controllers
 
             var giftCertificate = (from gift in _commonService.GetAllGiftCertificates()
                                    select gift.ShippingInstruction.Value).ToList();
-                                  // .Except(
-                                       //from allocated in _receiptAllocationService.GetAllReceiptAllocation()
-                                       //select allocated.SINumber).ToList();
+            // .Except(
+            //from allocated in _receiptAllocationService.GetAllReceiptAllocation()
+            //select allocated.SINumber).ToList();
 
             return Json(giftCertificate, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Approve(int id)
         {
             var transfer = _transferService.FindById(id);
-            if (transfer!=null)
+            if (transfer != null)
             {
-               
+
                 try
                 {
-                 
-                    if ( _transferService.CreateRequisitonForTransfer(transfer))
+
+                    if (_transferService.CreateRequisitonForTransfer(transfer))
                     {
                         _transferService.Approve(transfer);
                         return RedirectToAction("Detail", new { id = transfer.TransferID });
@@ -235,11 +239,11 @@ namespace Cats.Areas.Logistics.Controllers
                     var log = new Logger();
                     log.LogAllErrorsMesseges(exception, _log);
                     ModelState.AddModelError("Errors", @"Unable to Approve the given Transfer");
-                   
+
                 }
-               
+
             }
-            ModelState.AddModelError("Errors",@"Unable to Approve the given Transfer");
+            ModelState.AddModelError("Errors", @"Unable to Approve the given Transfer");
             return RedirectToAction("Index");
         }
 
@@ -247,7 +251,7 @@ namespace Cats.Areas.Logistics.Controllers
         {
             var parentCommodities =
                 _commodityService.Get(t => t.ParentID == null && t.CommodityTypeID == commodityTypeID);
-            if (parentCommodities!=null)
+            if (parentCommodities != null)
             {
                 var parentCommoditiesSelectList = new SelectList(parentCommodities.ToList(), "CommodityID", "Name", editModval);
                 return Json(parentCommoditiesSelectList, JsonRequestBehavior.AllowGet);
@@ -294,8 +298,31 @@ namespace Cats.Areas.Logistics.Controllers
                 AttachmentFile = fileName,
                 ParentBusinessProcessID = st.ParentBusinessProcessID
             };
+            var transfer = _transferService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
 
-            _businessProcessService.PromotWorkflow(businessProcessState);
+            //var transfer = _transferService.FindById(id);
+            string stateName = _stateTemplateService.FindById(st.StateID).Name;
+            if (stateName == "Approved" && transfer != null)
+            {
+                if (_transferService.CreateRequisitonForTransfer(transfer))
+                {
+                    _transferService.Approve(transfer);
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+
+                }
+                else
+                {
+                    TempData["CustomError"] = @"Unable to Approve the given Transfer(Free Stock may not be available with this SI number)";
+                    return RedirectToAction("Detail", new { id = transfer.TransferID });
+                }
+
+
+            }
+            else
+            {
+                _businessProcessService.PromotWorkflow(businessProcessState);
+            }
+
             if (statusId != null)
                 return RedirectToAction("Index", "Swap", new { Area = "Logistics", statusId });
             return RedirectToAction("Index", "Swap", new { Area = "Logistics" });

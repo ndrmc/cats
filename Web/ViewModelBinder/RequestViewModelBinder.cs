@@ -13,7 +13,7 @@ namespace Cats.ViewModelBinder
     public class RequestViewModelBinder
     {
         public static IEnumerable<RegionalRequestViewModel> BindRegionalRequestListViewModel(
-          IEnumerable<RegionalRequest> requests, string userPreference)
+          IEnumerable<RegionalRequest> requests, List<WorkflowStatus> statuses, string userPreference)
         {
             var requestsViewModel = new List<RegionalRequestViewModel>();
             foreach (var regionalRequest in requests)
@@ -24,7 +24,7 @@ namespace Cats.ViewModelBinder
             return requestsViewModel;
         }
 
-        public static RegionalRequestViewModel BindRegionalRequestViewModel(RegionalRequest regionalRequest,  string userPrefrence)
+        public static RegionalRequestViewModel BindRegionalRequestViewModel(RegionalRequest regionalRequest, string userPrefrence)
         {
             var regionalRequestViewModel = new RegionalRequestViewModel();
 
@@ -51,8 +51,9 @@ namespace Cats.ViewModelBinder
             if (regionalRequest.Ration != null) regionalRequestViewModel.Ration = regionalRequest.Ration.RefrenceNumber;
             regionalRequestViewModel.RationID = regionalRequest.RationID;
             regionalRequestViewModel.Year = regionalRequest.Year;
+            //regionalRequestViewModel.IsApprovable = Request 
             regionalRequestViewModel.PlanId = regionalRequest.PlanID;
-            regionalRequestViewModel.BusinessProcess = regionalRequest.BusinessProcess;
+            // regionalRequestViewModel.BusinessProcess = regionalRequest.BusinessProcess;
             if (regionalRequest.UserProfile != null)
                 regionalRequestViewModel.RequestedBy = regionalRequest.UserProfile.FirstName + " " +
                                                        regionalRequest.UserProfile.LastName;
