@@ -108,10 +108,12 @@ namespace Cats.Helpers
             return html;
         }
         public static string ReportList()
+    
         {
             var html = string.Empty;
             var userName = System.Configuration.ConfigurationManager.AppSettings["CatsReportUserName"];
             var password = System.Configuration.ConfigurationManager.AppSettings["CatsReportPassword"];
+            var domain = System.Configuration.ConfigurationManager.AppSettings["CatsReportServerURL"];
             var user = (UserIdentity)HttpContext.Current.User.Identity;
             var role = UserRoleHelper.GetUserRole(user.Profile.UserName);
             var lang = user.Profile.LanguageCode;
