@@ -31,6 +31,7 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IBusinessProcessService _businessProcessService;
         private ILog _log;
         private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IStateTemplateService _stateTemplateService;
 
         public TransferController(ITransferService transferService,
             ICommonService commonService,
@@ -38,7 +39,7 @@ namespace Cats.Areas.Logistics.Controllers
                                   ICommodityService commodityService,
                                   ILog log,
                                    IBusinessProcessService businessProcessService,
-                                   IApplicationSettingService applicationSettingService)
+                                   IApplicationSettingService applicationSettingService, IStateTemplateService stateTemplateService)
         {
             _transferService = transferService;
             _commonService = commonService;
@@ -47,6 +48,7 @@ namespace Cats.Areas.Logistics.Controllers
             _log = log;
             _businessProcessService = businessProcessService;
             _applicationSettingService = applicationSettingService;
+            _stateTemplateService = stateTemplateService;
         }
 
         public ActionResult Index()
@@ -331,7 +333,18 @@ namespace Cats.Areas.Logistics.Controllers
                 ParentBusinessProcessID = st.ParentBusinessProcessID
             };
 
-            _businessProcessService.PromotWorkflow(businessProcessState);
+            var transfer = _transferService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
+            string stateName = _stateTemplateService.FindById(st.StateID).Name;
+
+            if (transfer != null)
+            {
+                int transferId = transfer.TransferID;
+
+                if (stateName == "Approved" && OnApprove(transferId))
+                {
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+            }
 
             if (statusId != null)
                 return RedirectToAction("Detail", "Transfer", new { Area = "Logistics", statusId });
@@ -350,6 +363,41 @@ namespace Cats.Areas.Logistics.Controllers
 
             return result;
         }
+
+        #region
+
+        private bool OnApprove(int transferId)
+        {
+            var transfer = _transferService.FindById(transferId);
+
+            if (transfer != null)
+            {
+                try
+                {
+                    if (_transferService.CreateRequisitonForTransfer(transfer))
+                    {
+                        _transferService.Approve(transfer);
+
+                        return true;
+                    }
+
+                    TempData["CustomError"] = @"Unable to Approve the given Transfer(Free Stock may not be available with this SI number)";
+
+                    return false;
+                }
+                catch (Exception exception)
+                {
+                    var log = new Logger();
+                    log.LogAllErrorsMesseges(exception, _log);
+                    ModelState.AddModelError("Errors", @"Unable to Approve the given Transfer");
+                }
+            }
+
+            ModelState.AddModelError("Errors", @"Unable to Approve the given Transfer");
+            return false;
+        }
+
+        #endregion
 
     }
 }

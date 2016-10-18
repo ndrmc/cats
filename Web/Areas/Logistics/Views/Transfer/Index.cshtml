@@ -78,10 +78,9 @@
                 </div>*@
             <div class="actions">
                 @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Add_new_transfer_plan).ToString() == "Add_new_transfer_plan")
-            {
+                {
                     <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn green" href="@Url.Action("Create", "Transfer")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
                 }
-                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
             </div>
         </div>
         <div class="portlet-body">
@@ -144,12 +143,19 @@
                             @foreach (TransferViewModel item in Model)
                             {
                                 index++;
-                                
+
                                 <tr>
                                     <td>
                                         @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Transfer_plan_link) == "Transfer_plan_link")
                                         {
-                                            <a href='Url.Action("Detail", "Transfer", new {id = @item.TransferID})'>@item.SiNumber</a>
+                                            if (item.Status != "Approved")
+                                            {
+                                                <a id="btnEdit" class="btn green-sharp-stripe" href="@Url.Action("Edit", "Transfer", new {id = item.TransferID})">@Html.Translate(item.SiNumber)</a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <a id="btnEdit">@Html.Translate(item.SiNumber)</a>
                                         }
                                     </td>
                                     <td>
@@ -375,3 +381,29 @@
             margin: 5px 0;
         }
     </style>
+
+    <script type="text/javascript">
+        $(function () {
+
+            //Optional: turn the chache off
+            $.ajaxSetup({ cache: false });
+
+            $("#btnEdit").click(function () {
+
+                // alert("");
+                $('#dialogContent').load(this.href, function () {
+                    $('#dialogDiv').modal({
+                        backdrop: 'static',
+                        keyboard: true
+                    }, 'show');
+                    //bindForm(this);
+                    $(".modal-dialog").removeClass("modal-sm").addClass("modal-lg");
+                });
+                return false;
+            });
+
+        });
+    </script>
+    <div id='dialogDiv' class='modal fade'>
+        <div id='dialogContent'></div>
+    </div>
