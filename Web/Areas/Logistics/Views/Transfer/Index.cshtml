@@ -35,32 +35,33 @@
             $("body").removeClass("busy");
         }
     </script>
-    <script type="text/javascript">
-        $(function () {
+    @*<script type="text/javascript">
+            $(function () {
 
-            //Optional: turn the chache off
-            //$.ajaxSetup({ cache: false });
+                //Optional: turn the chache off
+                //$.ajaxSetup({ cache: false });
 
-            $('#btnAddReciptPlan').click(function () {
+                $('#btnAddReciptPlan').click(function () {
 
-                // alert("");
-                loadWaitModal();
-                $('#dialogContent').load(this.href, function () {
-                    $('#dialogDiv').modal({
-                        backdrop: 'static',
-                        keyboard: true
-                    }, 'show');
-                    //bindForm(this);
-                    $(".modal-dialog").removeClass("modal-sm").addClass("modal-lg");
+                    // alert("");
+                    loadWaitModal();
+                    $('#dialogContent').load(this.href, function () {
+                        $('#dialogDiv').modal({
+                            backdrop: 'static',
+                            keyboard: true
+                        }, 'show');
+                        //bindForm(this);
+                        $(".modal-dialog").removeClass("modal-sm").addClass("modal-lg");
+                    });
+                    unloadWaitModal();
+                    return false;
                 });
-                unloadWaitModal();
-                return false;
+
             });
+        </script>*@
 
-        });
-    </script>
 
-    <div id='dialogDiv' class='modal fade in'>
+    <div id='dialogDiv' class='modal fade'>
         <div id='dialogContent'></div>
     </div>
 
@@ -84,44 +85,6 @@
             </div>
         </div>
         <div class="portlet-body">
-            @*<div class="table-responsive">
-                    @(Html.Kendo().Grid<TransferViewModel>()
-                              .Name("grid")
-                              .Columns(columns =>
-                              {
-                                  if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Transfer_plan_link).ToString() == "Transfer_plan_link")
-                                  {
-                                      columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "Transfer", new { id = "#=TransferID#" }) + " '>#=SiNumber#</a>  ");
-                                  }
-                                  columns.Bound(m => m.SourceHubName).Width(200).Title(@Html.Translate("Source Hub"));
-                                  columns.Bound(m => m.Program).Title(@Html.Translate("Program"));
-                                  columns.Bound(m => m.Commodity).Width(200).Title(@Html.Translate("Commodity"));
-                                  columns.Bound(m => m.CommoditySource).Width(100).Title(@Html.Translate("Commodity Source"));
-                                  columns.Bound(m => m.Quantity).HtmlAttributes(new { align = "right" }).Title(@Html.Translate("Quantity in MT"));
-                                  columns.Bound(m => m.CreatedDate).Title(@Html.Translate("Created Date"));
-                                  columns.Bound(m => m.DestinationHubName).Title(@Html.Translate("Destination hub"));
-                                  columns.Bound(m => m.StatusName).Title(@Html.Translate("Status Name"));
-                                  if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Transfer_Plan).ToString() == "Delete_Transfer_Plan")
-                                  {
-                                      columns.Command(p => p.Custom("Delete").Click("OnDelete")).Width(250);
-                                  }
-
-                              }
-
-                              )
-
-                              .Navigatable()
-                              .Events(e => e.DataBound("onDataBound"))
-                              .HtmlAttributes(new { style = "height:100%;" })
-                              .TableHtmlAttributes(new { @class = "table table-condensed" })
-                              .DataSource(dataSource => dataSource
-                                  .Ajax()
-                                  .Model(model => model.Id(m => m.TransferID))
-                                  .Read(read => read.Action("Transfer_Read", "Transfer"))
-                              //.Update(update => update.Action("Commodity_Update", "Request"))
-                              )
-                    )
-                </div>*@
 
             <div class="col-md-12">
                 <div class="table-responsive">
@@ -137,6 +100,7 @@
                                 <th>Created Date</th>
                                 <th>Destination hub</th>
                                 <th>Status Name</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -150,12 +114,12 @@
                                         {
                                             if (item.Status != "Approved")
                                             {
-                                                <a id="btnEdit" class="btn green-sharp-stripe" href="@Url.Action("Edit", "Transfer", new {id = item.TransferID})">@Html.Translate(item.SiNumber)</a>
+                                                <a href="javascript:onEdit(@item.TransferID)">@Html.Translate(item.SiNumber)</a>
                                             }
                                         }
                                         else
                                         {
-                                            <a id="btnEdit">@Html.Translate(item.SiNumber)</a>
+                                            <a onclick="OnEdit(@item.TransferID)" class="btn green-sharp-stripe">@Html.Translate(item.SiNumber)</a>
                                         }
                                     </td>
                                     <td>
@@ -181,6 +145,12 @@
                                     </td>
                                     <td>
                                         @item.Status
+                                    </td>
+                                    <td>
+                                        @if (item.Status == "Draft" || item.Status == "Rejected")
+                                        {
+                                            @*<a id="btnDelete" onclick="OnDelete(@item.TransferID)">@Html.Translate("Delete")</a>*@
+                                        }
                                     </td>
 
                                     <td>
@@ -211,20 +181,7 @@
                                                         <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.ApprovedId,'Approve',@item.TransferID)" title="Approve">Approve</a>
                                                     </li>
                                                 }
-                                                @*@foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
-                                                    {
-                                                        <li class="edit_button">
-                                                            <a href="javascript:promot_workflow(@item.BusinessProcessID,
-                                                               @actions.FinalStateID,'@actions.Name',
-                                                               @item.TransferID)" title="@actions.Name">@actions.Name</a>
-                                                        </li>
 
-                                                        <li class="edit_button">
-                                                            <a href="javascript:promot_workflow(@item.BusinessProcessID,
-                                                               @actions.FinalStateID,'@actions.Name',
-                                                               @item.TransferID)" title="@actions.Name">@actions.Name</a>
-                                                        </li>
-                                                    }*@
                                                 <li class="divider"></li>
 
                                                 <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
@@ -271,7 +228,9 @@
         </div>
     </div>
 
-    @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml");
+@Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml");
+                      @Html.Partial("~/Areas/Logistics/Views/Transfer/_Edit.cshtml");
+
 
     <script type="text/javascript">
 
@@ -303,73 +262,88 @@
                 }
             );
         }
+        
     </script>
 
-    <script>
-        function onDataBound(e) {
-            //alert("show");
-            var grid = $("#grid").data("kendoGrid");
-            var gridData = grid.dataSource.view();
-            //alert(gridData.length);
-            for (var i = 0; i < gridData.length; i++) {
-                var currentUid = gridData[i].uid;
-                //alert(gridData[i].Status);
-                if (gridData[i].StatusName == "Approved") {
-                    var currentRow = grid.table.find("tr[data-uid='" + currentUid + "']");
-                    var deleteButton = $(currentRow).find(".k-grid-Delete");
-                    deleteButton.hide();
+<script>
+    
+    function OnEdit(transferId) {
+      //  $('#ParentBusinessProcessID').val(BusinessProcessID);
+        $('#TransferID').val(JSON.stringify('{transferId:' + transferId + '}'));
+     //   $('#stateID').val(nextstate);
+       
+        $('#modal-dialog-Edit').modal();
+        $.ajax({
+            type: "POST",
+            url: 'Url.Action("Delete", "Transfer")',
+            data: JSON.stringify('{transferId:' + transferId + '}'),
+            dataType: "json"
+        });
+        
 
-                }
+    }
+    function onDataBound(e) {
+        //alert("show");
+        var grid = $("#grid").data("kendoGrid");
+        var gridData = grid.dataSource.view();
+        //alert(gridData.length);
+        for (var i = 0; i < gridData.length; i++) {
+            var currentUid = gridData[i].uid;
+            //alert(gridData[i].Status);
+            if (gridData[i].StatusName == "Approved") {
+                var currentRow = grid.table.find("tr[data-uid='" + currentUid + "']");
+                var deleteButton = $(currentRow).find(".k-grid-Delete");
+                deleteButton.hide();
+
             }
         }
+    }
 
 
-        function OnDelete(e) {
-            e.preventDefault();
+    function OnDelete(transferId) {
+        //e.preventDefault();
 
-            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-            wnd.center().open();
+        wnd.center().open();
 
-            $("#yes").click(function () {
+        $("#yes").click(function () {
 
-                window.location = "@Url.Action("Delete", "Transfer")" + "/" + dataItem.TransferID;
-                wnd.close();
-            });
-
-            $("#no").click(function () {
-                window.wnd.close();
-            });
-        }
-
-        var wnd;
-        $(document).ready(function () {
-            wnd = $("#modalWindow").kendoWindow({
-                title: "Delete confirmation",
-                modal: true,
-                visible: false,
-                resizable: false
-                //width: 300
-            }).data("kendoWindow");
+            window.location = "@Url.Action("Delete", "Transfer")" + "/" + transferId;
+            wnd.close();
         });
 
-        var myApp = angular.module('transferApp', []);
-
-        myApp.controller('transferController', function ($scope, $http) {
-            $scope.hrds = [];
-
-            $scope.onRequestsSuccess = function (data) {
-                $scope.hrds = data;
-
-            };
-
-            $scope.getHrd = function () {
-                $http.post("@Url.Action("Transfer_Read", "Transfer", new {Area = "Logistics"})").success(onRequestsSuccess);
-            };
-
-            //$scope.getHrd();
+        $("#no").click(function () {
+            window.wnd.close();
         });
+    };
 
-    </script>
+    var wnd;
+    $(document).ready(function () {
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Delete confirmation",
+            modal: true,
+            visible: false,
+            resizable: false
+            //width: 300
+        }).data("kendoWindow");
+    });
+
+    var myApp = angular.module('transferApp', []);
+
+    myApp.controller('transferController', function ($scope, $http) {
+        $scope.hrds = [];
+
+        $scope.onRequestsSuccess = function (data) {
+            $scope.hrds = data;
+
+        };
+
+        $scope.getHrd = function () {
+            $http.post("@Url.Action("Transfer_Read", "Transfer", new {Area = "Logistics"})").success(onRequestsSuccess);
+        };
+
+    });
+
+</script>
 
     <style>
         .k-window-titlebar {
@@ -404,6 +378,3 @@
 
         });
     </script>
-    <div id='dialogDiv' class='modal fade'>
-        <div id='dialogContent'></div>
-    </div>
