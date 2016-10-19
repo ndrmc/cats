@@ -35,7 +35,7 @@
             $("body").removeClass("busy");
         }
     </script>
-    @*<script type="text/javascript">
+    <script type="text/javascript">
             $(function () {
 
                 //Optional: turn the chache off
@@ -58,7 +58,7 @@
                 });
 
             });
-        </script>*@
+        </script>
 
 
     <div id='dialogDiv' class='modal fade'>
@@ -114,12 +114,12 @@
                                         {
                                             if (item.Status != "Approved")
                                             {
-                                                <a href="javascript:onEdit(@item.TransferID)">@Html.Translate(item.SiNumber)</a>
+                                                <a onclick="onEdit(@item.TransferID)">@Html.Translate(item.SiNumber)</a>
                                             }
-                                        }
-                                        else
-                                        {
-                                            <a onclick="OnEdit(@item.TransferID)" class="btn green-sharp-stripe">@Html.Translate(item.SiNumber)</a>
+                                            else
+                                            {
+                                                @Html.Translate(item.SiNumber)
+                                            }
                                         }
                                     </td>
                                     <td>
@@ -149,7 +149,7 @@
                                     <td>
                                         @if (item.Status == "Draft" || item.Status == "Rejected")
                                         {
-                                            @*<a id="btnDelete" onclick="OnDelete(@item.TransferID)">@Html.Translate("Delete")</a>*@
+                                            <a id="btnDelete" onclick="OnDelete(@item.TransferID)">@Html.Translate("Delete")</a>
                                         }
                                     </td>
 
@@ -229,7 +229,7 @@
     </div>
 
 @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml");
-                      @Html.Partial("~/Areas/Logistics/Views/Transfer/_Edit.cshtml");
+                      @*@Html.Partial("~/Areas/Logistics/Views/Transfer/_Edit.cshtml");*@
 
 
     <script type="text/javascript">
@@ -266,22 +266,8 @@
     </script>
 
 <script>
-    
-    function OnEdit(transferId) {
-      //  $('#ParentBusinessProcessID').val(BusinessProcessID);
-        $('#Transfer').val(JSON.stringify('{transferId:' + transferId + '}'));
-     //   $('#stateID').val(nextstate);
-       
-        $('#modal-dialog-Edit').modal();
-        $.ajax({
-            type: "POST",
-            url: 'Url.Action("Delete", "Transfer")',
-            data: JSON.stringify('{transferId:' + transferId + '}'),
-            dataType: "json"
-        });
-        
 
-    }
+   
     function onDataBound(e) {
         //alert("show");
         var grid = $("#grid").data("kendoGrid");
@@ -293,12 +279,11 @@
             if (gridData[i].StatusName == "Approved") {
                 var currentRow = grid.table.find("tr[data-uid='" + currentUid + "']");
                 var deleteButton = $(currentRow).find(".k-grid-Delete");
-                deleteButton.hide();
 
+                deleteButton.hide();
             }
         }
     }
-
 
     function OnDelete(transferId) {
         //e.preventDefault();
@@ -342,6 +327,20 @@
         };
 
     });
+
+    function onEdit(transferId) {
+       
+        var url = '@Url.Action("Edit", "Transfer")?id=' + transferId;
+
+        $('#dialogContent').load(url, function () {
+            $('#dialogDiv').modal({
+                backdrop: 'static',
+                keyboard: true
+            }, 'show');
+           
+            $(".modal-dialog").removeClass("modal-sm").addClass("modal-lg");
+        });
+    }
 
 </script>
 

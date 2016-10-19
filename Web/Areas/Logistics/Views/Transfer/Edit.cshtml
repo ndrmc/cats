@@ -5,7 +5,7 @@
     const string pageName = "Logistics.Transfer.Edit";
 }
 
-<div class="modal-dialog" id="modal-dialog-Edit">
+<div class="modal-dialog">
     <div class="modal-content">
 
 
@@ -21,6 +21,7 @@
             @Html.HiddenFor(m => m.StatusID)
             @Html.HiddenFor(m => m.ShippingInstructionID)
             @Html.HiddenFor(m => m.CreatedDate)
+            @Html.HiddenFor(m => m.BusinessProcessID)
             <div class="modal-body form-horizontal">
                 <div class="row">
                     <div class="form-group col-sm-6">

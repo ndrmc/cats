@@ -142,12 +142,12 @@ namespace Cats.Areas.Logistics.Controllers
         [HttpPost]
         public ActionResult Edit(Transfer transfer)
         {
-
             if (ModelState.IsValid && transfer != null)
             {
                 transfer.CommoditySourceID = 5;//Commodity Source for transfer
                 _transferService.EditTransfer(transfer);
-                return RedirectToAction("detail", new { id = transfer.TransferID });
+
+                return RedirectToAction("Index");
             }
             ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name", transfer.ProgramID);
             ViewBag.SourceHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.SourceHubID);
@@ -297,8 +297,7 @@ namespace Cats.Areas.Logistics.Controllers
                 if (transfer.StatusID == (int)TransferStatus.Draft)
                 {
                     _transferService.DeleteTransfer(transfer);
-                    return RedirectToAction("Index", "Transfer");
-
+                    return RedirectToAction("Index");
                 }
 
             }
