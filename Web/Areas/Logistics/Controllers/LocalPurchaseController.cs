@@ -32,6 +32,7 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IApplicationSettingService _applicationSettingService;
         private readonly IBusinessProcessService _businessProcessService;
         private readonly IStateTemplateService _stateTemplateService;
+
         public LocalPurchaseController(ILocalPurchaseService localPurchaseService, ICommonService commonService,
             ILocalPurchaseDetailService localPurchaseDetailService,
             IGiftCertificateService giftCertificateService, IShippingInstructionService shippingInstructionService,

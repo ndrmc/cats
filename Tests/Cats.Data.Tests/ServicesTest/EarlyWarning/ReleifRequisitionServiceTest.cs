@@ -105,7 +105,7 @@ namespace Cats.Data.Tests.ServicesTest.EarlyWarning
 
             //Now our UnitOfWork is ready to be injected to the service
             //Here we inject UnitOfWork to constractor of our service
-            var relifRequistionService = new ReliefRequisitionService(mockUnitOfWork.Object, null, null);
+            var relifRequistionService = new ReliefRequisitionService(mockUnitOfWork.Object, null, null, null, null);
 
 
             //Act
@@ -114,7 +114,7 @@ namespace Cats.Data.Tests.ServicesTest.EarlyWarning
 
             //Assert
 
-            Assert.AreEqual(expectedRequistionList.Count, requisitonList.Count );
+            Assert.AreEqual(expectedRequistionList.Count, requisitonList.Count);
 
 
         }
@@ -199,7 +199,7 @@ namespace Cats.Data.Tests.ServicesTest.EarlyWarning
 
             //Now our UnitOfWork is ready to be injected to the service
             //Here we inject UnitOfWork to constractor of our service
-            var relifRequistionService = new ReliefRequisitionService(mockUnitOfWork.Object,null,null);
+            var relifRequistionService = new ReliefRequisitionService(mockUnitOfWork.Object, null, null, null, null);
 
 
             //Act
@@ -210,7 +210,7 @@ namespace Cats.Data.Tests.ServicesTest.EarlyWarning
             //Assert
 
             Assert.AreEqual(expectedRequistion.RequisitionID, actualRequistion.RequisitionID);
-            Assert.AreSame(expectedRequistion,actualRequistion);
+            Assert.AreSame(expectedRequistion, actualRequistion);
 
 
         }

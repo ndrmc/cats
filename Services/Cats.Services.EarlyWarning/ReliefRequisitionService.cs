@@ -21,12 +21,18 @@ namespace Cats.Services.EarlyWarning
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBusinessProcessService _businessProcessService;
         private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IStateTemplateService _stateTemplateService;
+        private readonly IBusinessProcessStateService _businessProcessStateService;
 
-        public ReliefRequisitionService(IUnitOfWork unitOfWork, IApplicationSettingService applicationSettingService, IBusinessProcessService businessProcessService)
+        public ReliefRequisitionService(IUnitOfWork unitOfWork, IApplicationSettingService applicationSettingService, IBusinessProcessService businessProcessService,
+                IStateTemplateService stateTemplateService,
+                             IBusinessProcessStateService paramBusinessProcessStateService)
         {
             this._unitOfWork = unitOfWork;
             _applicationSettingService = applicationSettingService;
             _businessProcessService = businessProcessService;
+            _stateTemplateService = stateTemplateService;
+            _businessProcessStateService = paramBusinessProcessStateService;
         }
 
         #region Default Service Implementation
@@ -141,16 +147,34 @@ namespace Cats.Services.EarlyWarning
         {
             //Check if Requisition is created from this request
             //
-            var sample = _unitOfWork.RegionalRequestRepository.Get(t => t.RegionalRequestID == requestId);
+
             var regionalRequest = _unitOfWork.RegionalRequestRepository.Get(t => t.RegionalRequestID == requestId && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved", null, "RegionalRequestDetails,BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
             if (regionalRequest == null) return null;
 
             var reliefRequistions = CreateRequistionFromRequest(regionalRequest, user);
             //if (reliefRequistions.Count < 1)
             //    return GetRequisitionByRequestId(requestId);
+
             AddReliefRequisions(reliefRequistions);
-            regionalRequest.Status = (int)RegionalRequestStatus.Closed;
-            _unitOfWork.Save();
+            var sList =
+                               _stateTemplateService
+                                     .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == regionalRequest.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Closed");
+
+            if (sList != null)
+            {
+                var createdstate3 = new BusinessProcessState
+                {
+                    DatePerformed = DateTime.Now,
+                    PerformedBy = user,
+                    Comment = " Regional Request Closed by System",
+                    StateID = sList.StateTemplateID,
+                    ParentBusinessProcessID = regionalRequest.BusinessProcessID
+                };
+                //_businessProcessStateService.Add(createdstate3);
+                _businessProcessService.PromotWorkflow(createdstate3);
+            }
+            //regionalRequest.Status = (int)RegionalRequestStatus.Closed;
+            //_unitOfWork.Save();
 
             foreach (var item in reliefRequistions)
             {
