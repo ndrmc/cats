@@ -16,7 +16,7 @@ From SysObjects Inner Join
 On Tab.[ID] = Sysobjects.[Parent_Obj] 
 Inner Join sysconstraints On sysconstraints.Constid = Sysobjects.[ID] 
 Inner Join SysColumns Col On Col.[ColID] = sysconstraints.[ColID] And Col.[ID] = Tab.[ID]
-where [Tab].[Name] = 'Transfer' and SysObjects.[Name] like 'DF__TranferRecei__Busin%'
+where [Tab].[Name] = 'Transfer' and SysObjects.[Name] like 'DF__Transfer%'
 order by [Tab].[Name]) 
 EXEC('ALTER TABLE [dbo].[Transfer] DROP CONSTRAINT ' + @constraintName)
 

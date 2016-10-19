@@ -1,20 +1,10 @@
-if not exists (select
-                     column_name
-               from
-                     INFORMATION_SCHEMA.columns
-               where
-                     table_name = '[dbo].[Transfer]'
-                     and column_name = '[BusinessProcessId]')
-    alter table [dbo].[Transfer] add [BusinessProcessId] int
-
-	go
 
  BEGIN TRANSACTION
  declare @ProcessTemplateID  int;
-IF  EXISTS (SELECT * FROM [dbo].[ProcessTemplate] WHERE [Name] = 'Transfer') 
+IF  EXISTS (SELECT * FROM [dbo].[ProcessTemplate] WHERE [Name] = 'TransferReceiptPlan') 
 BEGIN
 Select @ProcessTemplateID =  ProcessTemplateID  FROM [dbo].[ProcessTemplate]
-where [Name] = 'Transfer'
+where [Name] = 'TransferReceiptPlan'
 
 DECLARE @rowid int, @currentStateID int;
 
@@ -44,7 +34,7 @@ IF (@@FETCH_STATUS <> -2)
 BEGIN 
 
 DECLARE @status int, @businessprocessid int, @businessprocessstateid int, @stateid int;
-SET @status = ( SELECT [StatusID] FROM Transfer WHERE TransferId  = @rowid );
+SET @status = ( SELECT [StatusID] FROM Transfer WHERE TransferID  = @rowid );
 IF (@status = 1) 
 SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @ProcessTemplateID AND Name = 'Draft' );
 ELSE IF (@status = 2)
@@ -62,7 +52,7 @@ INSERT INTO BusinessProcess ([ProcessTypeID]
            ,[DocumentID]
            ,[DocumentType]
            ,[CurrentStateID])
-VALUES ( @ProcessTemplateID, 0, 'TransferWorkflow', @currentStateID);
+VALUES ( @ProcessTemplateID, 0, 'TransferReceiptPlan', @currentStateID);
 SET IDENTITY_INSERT BusinessProcess OFF;
 SET @businessprocessid = SCOPE_IDENTITY();
 UPDATE BusinessProcessState
