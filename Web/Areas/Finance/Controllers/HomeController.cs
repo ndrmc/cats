@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Cats.Areas.Finance.Models;
@@ -407,7 +408,7 @@ namespace Cats.Areas.Finance.Controllers
             return Json(groupedTransportRequest, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetTransporterPaymentRequest(int round, int takeTheFirst)
+        public JsonResult GetTransporterPaymentRequest(int round, int takeTheFirst, DateTime startDate, DateTime endDate)
         {
             var transporters = _transporterService.GetAllTransporter();
             var dispatches = _dispatchService.GetAllDispatch().Where(d => d.Round == round);
@@ -440,6 +441,7 @@ namespace Cats.Areas.Finance.Controllers
                                                         on d.FDPID equals fdp.FDPID
                                                     join hub in hubs
                                                         on d.HubID equals hub.HubID
+                                                    where d.DispatchDate >= startDate && d.DispatchDate <= endDate
                                                     orderby d.DispatchDate
                                                     select new
                                                     {
