@@ -194,10 +194,11 @@
                         {
                             <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                         }
-                        if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Close")
-                        {
-                            <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
-                        }
+                        //close hiden b/c reginal request closed on cretation of requestion not by the user
+                        @*if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Close")
+                            {
+                                <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                            }*@
                     }
                     <li class="divider"></li>
                     @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
@@ -322,32 +323,32 @@
                         {
                             <li><a class="btn green-haze-stripe" href="@Url.Action("Allocation", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Allocation</a></li>
                         }
-                        if (modelRequest.Program == "Relief")
-                        {
-                            <li>
-                                <a class="btn green-haze-stripe">
-                                    @Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))
-                                </a>
-                                <a class="btn green-haze-stripe">
-                                    @Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)
-                                </a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li>
-                                <a class="btn green-haze-stripe">
-                                    @Html.PSNPOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     PsnpConstants.Operation.Approve_Request)
-                                </a>
-                                <a class="btn green-haze-stripe">
-                                    @Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     RegionalConstants.Operation.Approve_regional_request)
-                                </a>
-                            </li>
-                        }
+                        @*if (modelRequest.Program == "Relief")
+                            {
+                                <li>
+                                    <a class="btn green-haze-stripe">
+                                        @Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                         EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))
+                                    </a>
+                                    <a class="btn green-haze-stripe">
+                                        @Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                         @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a class="btn green-haze-stripe">
+                                        @Html.PSNPOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                         PsnpConstants.Operation.Approve_Request)
+                                    </a>
+                                    <a class="btn green-haze-stripe">
+                                        @Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                         RegionalConstants.Operation.Approve_regional_request)
+                                    </a>
+                                </li>
+                            }*@
                         @*<li><a class="btn green-haze-stripe" href="@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID })">Approve</a></li>*@
                     }
                 </ul>

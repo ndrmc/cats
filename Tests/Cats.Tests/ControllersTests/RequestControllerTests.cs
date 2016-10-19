@@ -45,9 +45,9 @@ namespace Cats.Tests.ControllersTests
                                                          RequestCommodityID = 1,
                                                          RegionalRequestDetailID = 1,
                                                          Commodity=new Commodity(){CommodityID=1,Name="CSB"}
-                                                         
+
                                                      },
-                                                
+
                                              };
             var regionalRequests = new List<RegionalRequest>()
                                        {
@@ -71,7 +71,7 @@ namespace Cats.Tests.ControllersTests
                                                    Program = new Program(){
                                                    Name="Program1",
                                                    ProgramID = 1
-                                                   
+
                                                    },
                                                    AdminUnit=new AdminUnit
                                                                  {
@@ -82,7 +82,7 @@ namespace Cats.Tests.ControllersTests
                                                                             {
                                                                                 RationID=1,
                                                                                 RefrenceNumber="RE1",
-                                                                                
+
                                                                             },
                                                    RegionalRequestDetails = new List<RegionalRequestDetail>
                                                                                 {
@@ -115,11 +115,11 @@ namespace Cats.Tests.ControllersTests
 
                                        };
 
-         //   regionalRequests[0].RegionalRequestDetails.First().RequestDetailCommodities = requestDetailCommodity;
+            //   regionalRequests[0].RegionalRequestDetails.First().RequestDetailCommodities = requestDetailCommodity;
 
 
 
-           
+
             var adminUnit = new List<AdminUnit>()
                                 {
                                     new AdminUnit
@@ -132,7 +132,7 @@ namespace Cats.Tests.ControllersTests
                 {
                     new Plan {PlanID = 1,PlanName = "Plan1",ProgramID = 1,StartDate = new DateTime(12/12/12),EndDate =new DateTime(12/12/12) }
                 };
-               var _status = new List<Cats.Models.WorkflowStatus>()
+            var _status = new List<Cats.Models.WorkflowStatus>()
                               {
                                   new WorkflowStatus()
                                       {
@@ -155,20 +155,20 @@ namespace Cats.Tests.ControllersTests
                               };
 
 
-               var userAccountService = new Mock<IUserAccountService>();
-               userAccountService.Setup(t => t.GetUserInfo(It.IsAny<string>())).Returns(new UserInfo()
-               {
-                   UserName = "x",
-                   DatePreference = "en",
-                   PreferedWeightMeasurment = "mt",
-                   UserProfileID = 80
-               });
+            var userAccountService = new Mock<IUserAccountService>();
+            userAccountService.Setup(t => t.GetUserInfo(It.IsAny<string>())).Returns(new UserInfo()
+            {
+                UserName = "x",
+                DatePreference = "en",
+                PreferedWeightMeasurment = "mt",
+                UserProfileID = 80
+            });
 
-               var transactionService = new Mock<Cats.Services.Transaction.ITransactionService>();
+            var transactionService = new Mock<Cats.Services.Transaction.ITransactionService>();
 
-             
 
-            
+
+
 
             var commonService = new Mock<ICommonService>();
             commonService.Setup(t => t.GetAminUnits(It.IsAny<Expression<Func<AdminUnit, bool>>>(),
@@ -198,21 +198,21 @@ namespace Cats.Tests.ControllersTests
                           });
             mockRegionalRequestService.Setup(t => t.FindById(It.IsAny<int>())).Returns(
                 (int requestId) => regionalRequests.Find(t => t.RegionalRequestID == requestId));
-            mockRegionalRequestService.Setup(t => t.ApproveRequest(It.IsAny<int>(),It.IsAny<UserInfo>() )).Returns((int reqId, UserInfo user) =>
-                                                                                                 {
-                                                                                                     regionalRequests.
-                                                                                                         Find
-                                                                                                         (t =>
-                                                                                                          t.
-                                                                                                              RegionalRequestID
-                                                                                                          == reqId).
-                                                                                                         Status
-                                                                                                         =
-                                                                                                         (int)
-                                                                                                         RegionalRequestStatus
-                                                                                                             .Approved;
-                                                                                                     return true;
-                                                                                                 });
+            mockRegionalRequestService.Setup(t => t.ApproveRequest(It.IsAny<int>(), It.IsAny<UserInfo>())).Returns((int reqId, UserInfo user) =>
+            {
+                regionalRequests.
+                    Find
+                    (t =>
+                     t.
+                         RegionalRequestID
+                     == reqId).
+                    Status
+                    =
+                    (int)
+                    RegionalRequestStatus
+                        .Approved;
+                return true;
+            });
             mockRegionalRequestService.Setup(t => t.AddRegionalRequest(It.IsAny<RegionalRequest>())).Returns(
                 (RegionalRequest rRequest) =>
                 {
@@ -221,8 +221,8 @@ namespace Cats.Tests.ControllersTests
                 });
             mockRegionalRequestService.Setup(t => t.GetAllRegionalRequest()).Returns(regionalRequests);
             mockRegionalRequestService.Setup(t => t.PlanToRequest(It.IsAny<HRDPSNPPlan>())).Returns(new HRDPSNPPlanInfo()
-                                                                                                        {
-                                                                                                            BeneficiaryInfos
+            {
+                BeneficiaryInfos
                                                                                                                 =
                                                                                                                 new List
                                                                                                                 <
@@ -247,55 +247,55 @@ namespace Cats.Tests.ControllersTests
                                                                                                                             }
                                                                                                                     }
                                                                                                             ,
-                                                                                                            HRDPSNPPlan
+                HRDPSNPPlan
                                                                                                                 =
                                                                                                                 new HRDPSNPPlan
-                                                                                                                    {
-                                                                                                                        DonorID
+                                                                                                                {
+                                                                                                                    DonorID
                                                                                                                             =
                                                                                                                             1,
-                                                                                                                        Month
+                                                                                                                    Month
                                                                                                                             =
                                                                                                                             1,
-                                                                                                                        PlanID
+                                                                                                                    PlanID
                                                                                                                             =
                                                                                                                             1,
-                                                                                                                        ProgramID
+                                                                                                                    ProgramID
                                                                                                                             =
                                                                                                                             1,
-                                                                                                                        PSNPPlanID
+                                                                                                                    PSNPPlanID
                                                                                                                             =
                                                                                                                             1,
-                                                                                                                        RationID
+                                                                                                                    RationID
                                                                                                                             =
                                                                                                                             1,
-                                                                                                                        RegionID
+                                                                                                                    RegionID
                                                                                                                             =
                                                                                                                             1,
-                                                                                                                        Round
+                                                                                                                    Round
                                                                                                                             =
                                                                                                                             1,
-                                                                                                                        SeasonID
+                                                                                                                    SeasonID
                                                                                                                             =
                                                                                                                             1,
-                                                                                                                        Year
+                                                                                                                    Year
                                                                                                                             =
                                                                                                                             1
-                                                                                                                    }
-                                                                                                        });
+                                                                                                                }
+            });
             var mockAdminUnitService = new Mock<IAdminUnitService>();
             mockAdminUnitService.Setup(t => t.FindBy(It.IsAny<Expression<Func<AdminUnit, bool>>>())).Returns(adminUnit);
 
             mockAdminUnitService.Setup(t => t.GetRegions()).Returns(adminUnit);
 
             var workflowService = new Mock<IWorkflowStatusService>();
-         
+
             workflowService.Setup(t => t.GetStatus(It.IsAny<Cats.Models.Constant.WORKFLOW>())).Returns(_status);
             workflowService.Setup(t => t.GetStatusName(It.IsAny<Cats.Models.Constant.WORKFLOW>(), It.IsAny<int>())).
                 Returns((Cats.Models.Constant.WORKFLOW workflow, int statusId) =>
-                            {
-                                return _status.Find(t => t.StatusID == statusId && t.WorkflowID == (int)workflow).Description;
-                            });
+                {
+                    return _status.Find(t => t.StatusID == statusId && t.WorkflowID == (int)workflow).Description;
+                });
 
             commonService.Setup(t => t.GetPrograms(It.IsAny<Expression<Func<Program, bool>>>(),
                       It.IsAny<Func<IQueryable<Program>, IOrderedQueryable<Program>>>(),
@@ -304,7 +304,7 @@ namespace Cats.Tests.ControllersTests
                                                                          new Program()
                                                                              {ProgramID = 1, Description = "Relief"}
                                                                      });
-            
+
             commonService.Setup(t => t.GetRations(It.IsAny<Expression<Func<Ration, bool>>>(),
                       It.IsAny<Func<IQueryable<Ration>, IOrderedQueryable<Ration>>>(),
                       It.IsAny<string>())).Returns(new List<Ration>()
@@ -336,7 +336,7 @@ namespace Cats.Tests.ControllersTests
             commonService.Setup(t => t.GetCommodities(It.IsAny<Expression<Func<Commodity, bool>>>(),
                       It.IsAny<Func<IQueryable<Commodity>, IOrderedQueryable<Commodity>>>(),
                       It.IsAny<string>())).Returns(new List<Commodity>() { new Commodity { CommodityID = 1, Name = "CSB" } });
-          
+
             var hrds = new List<HRD>
                           {
                               new HRD()
@@ -381,7 +381,7 @@ namespace Cats.Tests.ControllersTests
                 t =>
                 t.Get(It.IsAny<Expression<Func<HRD, bool>>>(), It.IsAny<Func<IQueryable<HRD>, IOrderedQueryable<HRD>>>(),
                       It.IsAny<string>())).Returns(hrds);
-           
+
             var log = new Mock<ILog>();
             log.Setup(t => t.Error(It.IsAny<object>()));
 
@@ -392,16 +392,16 @@ namespace Cats.Tests.ControllersTests
             var Notification = new Mock<INotificationService>();
             var userProfile = new Mock<IUserProfileService>();
             _requestController = new RequestController(
-                mockRegionalRequestService.Object, 
+                mockRegionalRequestService.Object,
                 fdpService.Object, requestDetailService.Object,
                 commonService.Object, hrdService.Object,
                 appService.Object, userAccountService.Object,
-                log.Object, hrdServiceDetail.Object, 
+                log.Object, hrdServiceDetail.Object,
                 RegionalPSNPPlanDetailService.Object,
-                RegionalPSNPPlanService.Object, null, null, null, transactionService.Object, Notification.Object, userProfile.Object, null, null,null);
-               _requestController.ControllerContext = controllerContext.Object; 
-         
-     
+                RegionalPSNPPlanService.Object, null, null, null, transactionService.Object, Notification.Object, userProfile.Object, null, null, null);
+            _requestController.ControllerContext = controllerContext.Object;
+
+
         }
 
         [TearDown]
@@ -426,7 +426,7 @@ namespace Cats.Tests.ControllersTests
         public void CanApproveDraftRequest()
         {
 
-           //Act
+            //Act
             _requestController.ApproveRequest(1);
             var noCommdodityOrBeneficiary = _requestController.CheckBeneficiaryNoAndCommodity(1);
 
@@ -448,7 +448,7 @@ namespace Cats.Tests.ControllersTests
 
             //Assert
             Assert.IsInstanceOf<RegionalRequest>(result.Model);
-//            Assert.AreEqual(1, regionalRequest.RegionalRequestID);
+            //            Assert.AreEqual(1, regionalRequest.RegionalRequestID);
 
         }
 
@@ -530,9 +530,9 @@ namespace Cats.Tests.ControllersTests
             var result = (JsonResult)_requestController.Request_Read(request);
              * */
             //Assert
-          //  Assert.IsInstanceOf<JsonResult>(result);
+            //  Assert.IsInstanceOf<JsonResult>(result);
             Assert.AreEqual(1, ProgramId);
-           
+
 
         }
         [Test]
@@ -543,7 +543,7 @@ namespace Cats.Tests.ControllersTests
             request.Page = 1;
             request.PageSize = 5;
 
-            var result = (JsonResult)_requestController.Request_Read(request,-1);
+            var result = (JsonResult)_requestController.Request_Read(request, -1);
 
             //Assert
             Assert.IsNotNull(result);
@@ -584,21 +584,21 @@ namespace Cats.Tests.ControllersTests
             //Arrange
 
             var request = new RegionalRequest
-                                      {
-                                          ProgramId = 1
+            {
+                ProgramId = 1
                                           ,
-                                          Month = 1
+                Month = 1
                                           ,
-                                          RegionID = 2
+                RegionID = 2
                                           ,
-                                          RegionalRequestID = 1
+                RegionalRequestID = 1
                                           ,
-                                          RequistionDate = DateTime.Parse("7/3/2013")
+                RequistionDate = DateTime.Parse("7/3/2013")
                                           ,
-                                          Year = DateTime.Today.Year
+                Year = DateTime.Today.Year
                                           ,
-                                          Status = 1,
-                                      };
+                Status = 1,
+            };
 
 
             //Act
@@ -607,7 +607,7 @@ namespace Cats.Tests.ControllersTests
             //Assert
 
             Assert.IsInstanceOf<RedirectToRouteResult>(result);
-//            Assert.AreEqual(2, ((RegionalRequest)result2.Model).RegionID);
+            //            Assert.AreEqual(2, ((RegionalRequest)result2.Model).RegionID);
 
         }
 
