@@ -143,7 +143,7 @@ namespace Cats.Tests.ControllersTests
             t =>
             t.GetCommoditySource()).Returns(new List<CommoditySource>() { new CommoditySource() { CommoditySourceID = 1, Name = "Loan" } });
 
-            _reciptPlanForLoanController = new ReciptPlanForLoanController(loanService.Object, commonService.Object, loanDetailService.Object, userAccountService.Object,commodityService.Object,null, null);
+            _reciptPlanForLoanController = new ReciptPlanForLoanController(loanService.Object, commonService.Object, loanDetailService.Object, userAccountService.Object,commodityService.Object,null, null,null);
             _reciptPlanForLoanController.ControllerContext = controllerContext.Object;
         }
         [TearDown]
