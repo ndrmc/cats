@@ -171,7 +171,10 @@ namespace Cats.Areas.Logistics.Controllers
         }
         public ActionResult Transfer_Read([DataSourceRequest] DataSourceRequest request)
         {
-            var transfer = _transferService.GetAllTransfer().OrderByDescending(m => m.TransferID);
+            var transfer =
+                _transferService.Get(null, null,
+                    "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                    .OrderByDescending(m => m.TransferID);
             var transferToDisplay = GetAllTransfers(transfer);
             return Json(transferToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -299,7 +302,7 @@ namespace Cats.Areas.Logistics.Controllers
                 ParentBusinessProcessID = st.ParentBusinessProcessID
             };
             var transfer = _transferService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
-
+            
             //var transfer = _transferService.FindById(id);
             string stateName = _stateTemplateService.FindById(st.StateID).Name;
             if (stateName == "Approved" && transfer != null)
