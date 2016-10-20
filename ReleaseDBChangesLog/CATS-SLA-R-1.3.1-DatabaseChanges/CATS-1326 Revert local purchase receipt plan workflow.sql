@@ -2,8 +2,8 @@
 IF   EXISTS (
   SELECT * 
   FROM   sys.columns 
-  WHERE  object_id = OBJECT_ID(N'[dbo].[HRD]') 
-         AND name = 'BusinessProcessId'
+  WHERE  object_id = OBJECT_ID(N'[dbo].[LocalPurchase]') 
+         AND name = 'BusinessProcessID'
 )
  
  BEGIN
@@ -15,21 +15,21 @@ From SysObjects Inner Join
 On Tab.[ID] = Sysobjects.[Parent_Obj] 
 Inner Join sysconstraints On sysconstraints.Constid = Sysobjects.[ID] 
 Inner Join SysColumns Col On Col.[ColID] = sysconstraints.[ColID] And Col.[ID] = Tab.[ID]
-where [Tab].[Name] = 'HRD' and SysObjects.[Name] like 'DF__hrd__Busin%'
+where [Tab].[Name] = 'LocalPurchase' and SysObjects.[Name] like 'DF__LocalPurc__Busin%'
 order by [Tab].[Name]) 
-EXEC('ALTER TABLE [dbo].[HRD] DROP CONSTRAINT ' + @constraintName)
+EXEC('ALTER TABLE [dbo].[LocalPurchase] DROP CONSTRAINT ' + @constraintName)
 
 alter table 
-[dbo].[HRD]
-DROP COLUMN   [BusinessProcessId]
+[dbo].[LocalPurchase]
+DROP COLUMN   [BusinessProcessID]
  END
  IF(@@error <> 0)
 ROLLBACK /* Rollback of the transaction */
  declare @ProcessTemplateID  int;
-IF  EXISTS (SELECT * FROM [dbo].[ProcessTemplate] WHERE [Name] = 'HRD') 
+IF  EXISTS (SELECT * FROM [dbo].[ProcessTemplate] WHERE [Name] = 'Local Purchase Receipt Plan') 
 BEGIN
 Select @ProcessTemplateID =  ProcessTemplateID  FROM [dbo].[ProcessTemplate]
-where [Name] = 'HRD'
+where [Name] = 'Local Purchase Receipt Plan'
 Delete from [dbo].[BusinessProcess]
 where [ProcessTypeID] = @ProcessTemplateID
 delete from [dbo].[BusinessProcessState]

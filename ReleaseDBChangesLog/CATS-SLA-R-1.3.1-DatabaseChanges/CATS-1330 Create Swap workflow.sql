@@ -53,7 +53,7 @@ BEGIN
            ,[StateType]
            )
      VALUES
-           ( @id,'Draft',0,0,1 )  select @draft = Scope_Identity()
+           ( @id,'Draft',0,0,0 )  select @draft = Scope_Identity()
 		   INSERT INTO [dbo].[StateTemplate]
            ([ParentProcessTemplateID] ,[Name],[AllowedAccessLevel],[StateNo]
            ,[StateType]

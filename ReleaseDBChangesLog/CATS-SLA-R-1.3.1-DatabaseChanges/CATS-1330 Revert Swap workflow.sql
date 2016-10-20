@@ -2,8 +2,8 @@
 IF   EXISTS (
   SELECT * 
   FROM   sys.columns 
-  WHERE  object_id = OBJECT_ID(N'[dbo].[HRD]') 
-         AND name = 'BusinessProcessId'
+  WHERE  object_id = OBJECT_ID(N'[dbo].[Transfer]') 
+         AND name = 'BusinessProcessID'
 )
  
  BEGIN
@@ -15,21 +15,21 @@ From SysObjects Inner Join
 On Tab.[ID] = Sysobjects.[Parent_Obj] 
 Inner Join sysconstraints On sysconstraints.Constid = Sysobjects.[ID] 
 Inner Join SysColumns Col On Col.[ColID] = sysconstraints.[ColID] And Col.[ID] = Tab.[ID]
-where [Tab].[Name] = 'HRD' and SysObjects.[Name] like 'DF__hrd__Busin%'
+where [Tab].[Name] = 'Transfer' and SysObjects.[Name] like 'DF__Transfer__Busin%'
 order by [Tab].[Name]) 
-EXEC('ALTER TABLE [dbo].[HRD] DROP CONSTRAINT ' + @constraintName)
+EXEC('ALTER TABLE [dbo].[Transfer] DROP CONSTRAINT ' + @constraintName)
 
 alter table 
-[dbo].[HRD]
-DROP COLUMN   [BusinessProcessId]
+[dbo].[Transfer]
+DROP COLUMN   [BusinessProcessID]
  END
  IF(@@error <> 0)
 ROLLBACK /* Rollback of the transaction */
  declare @ProcessTemplateID  int;
-IF  EXISTS (SELECT * FROM [dbo].[ProcessTemplate] WHERE [Name] = 'HRD') 
+IF  EXISTS (SELECT * FROM [dbo].[ProcessTemplate] WHERE [Name] = 'Swap') 
 BEGIN
 Select @ProcessTemplateID =  ProcessTemplateID  FROM [dbo].[ProcessTemplate]
-where [Name] = 'HRD'
+where [Name] = 'Swap'
 Delete from [dbo].[BusinessProcess]
 where [ProcessTypeID] = @ProcessTemplateID
 delete from [dbo].[BusinessProcessState]
