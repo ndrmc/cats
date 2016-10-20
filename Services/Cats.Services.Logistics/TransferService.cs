@@ -6,6 +6,7 @@ using Cats.Data.UnitWork;
 using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Services.Common;
+using Cats.Services.EarlyWarning;
 using Cats.Services.Transaction;
 
 
@@ -15,13 +16,20 @@ namespace Cats.Services.Logistics
     public class TransferService:ITransferService
    {
        private readonly  IUnitOfWork _unitOfWork;
-      
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IStateTemplateService _stateTemplateService;
+        private readonly IBusinessProcessService _businessProcessService;
 
-       public TransferService(IUnitOfWork unitOfWork)
-       {
-           this._unitOfWork = unitOfWork;
-       }
-       #region Default Service Implementation
+        public TransferService(IUnitOfWork unitOfWork, IApplicationSettingService applicationSettingService,
+            IStateTemplateService stateTemplateService, IBusinessProcessService businessProcessService)
+        {
+            _unitOfWork = unitOfWork;
+            _applicationSettingService = applicationSettingService;
+            _stateTemplateService = stateTemplateService;
+            _businessProcessService = businessProcessService;
+        }
+
+        #region Default Service Implementation
        public bool AddTransfer(Transfer transfer)
        {
            _unitOfWork.TransferRepository.Add(transfer);
@@ -95,7 +103,60 @@ namespace Cats.Services.Logistics
                }
            return false;
        }
-       public bool CreateRequisitonForTransfer(Transfer transfer)
+        public bool ApproveSwap(Transfer transfer,string username)
+        {
+            if (transfer != null)
+            {
+                var processTemplate = _applicationSettingService.FindBy(t => t.SettingName == "LocalPurchaseReceiptPlanWorkflow").FirstOrDefault();
+                var processTemplateId = int.Parse(processTemplate.SettingValue);
+                var processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
+                var stateTemplate = processStates.FirstOrDefault(t => t.Name == "Approved");
+
+                if (stateTemplate == null) return false;
+
+                var businessProcessState = new BusinessProcessState()
+                {
+                    StateID = stateTemplate.StateTemplateID,
+                    PerformedBy = username,
+                    DatePerformed = DateTime.Now,
+                    Comment = "local purchase approved",
+                    //AttachmentFile = fileName,
+                    ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
+                };
+                BusinessProcess bp = _businessProcessService.CreateBusinessProcess(
+                    stateTemplate.ParentProcessTemplateID, 0, "LocalPurchaseReceiptPlanWorkflow", businessProcessState);
+
+                if (bp == null) return false;
+
+                transfer.StatusID = (int)LocalPurchaseStatus.Approved;
+                transfer.BusinessProcessID = bp.BusinessProcessID;
+                _unitOfWork.TransferRepository.Edit(transfer);
+
+                var reciptAllocaltion = new ReceiptAllocation()
+                {
+                    ReceiptAllocationID = Guid.NewGuid(),
+                    ProgramID = transfer.ProgramID,
+                    CommodityID = transfer.CommodityID,
+                    ETA = transfer.CreatedDate,
+                    SINumber = transfer.ShippingInstruction.Value,
+                    QuantityInMT = transfer.Quantity,
+                    HubID = transfer.DestinationHubID,
+                    CommoditySourceID = transfer.CommoditySourceID,
+                    ProjectNumber = transfer.ProjectCode,
+                    SourceHubID = transfer.SourceHubID,
+                    PartitionId = 0,
+                    IsCommited = false
+                };
+
+                _unitOfWork.ReceiptAllocationReository.Add(reciptAllocaltion);
+                _unitOfWork.Save();
+
+                return true;
+
+            }
+            return false;
+        }
+        public bool CreateRequisitonForTransfer(Transfer transfer)
        {
            if (transfer != null)
            {
@@ -148,16 +209,43 @@ namespace Cats.Services.Logistics
                    //relifRequisition.RequisitionNo = String.Format("REQ-{0}", relifRequisition.RequisitionID);
                    relifRequisition.RequisitionNo = transfer.ReferenceNumber;
                    relifRequisition.Status = (int)ReliefRequisitionStatus.HubAssigned;
-                   if(transfer.Commodity.ParentID==null)
+
+                    var processTemplate = _applicationSettingService.FindBy(t => t.SettingName == "ReliefRequisitionWorkflow").FirstOrDefault();
+                    var processTemplateId = int.Parse(processTemplate.SettingValue);
+                    var processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
+                    var stateTemplate = processStates.FirstOrDefault(t => t.Name == "Hub Assigned");
+
+                   if (stateTemplate == null) return false;
+
+                   var businessProcessState = new BusinessProcessState()
                    {
-                       availableSINumbers = GetFreeSICodesByCommodity(transfer.SourceHubID, transfer.CommodityID);
+                       StateID = stateTemplate.StateTemplateID,
+                       PerformedBy = "",
+                       DatePerformed = DateTime.Now,
+                       Comment = "Requisition hub assigned",
+                       //AttachmentFile = fileName,
+                       ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
+                   };
+                   BusinessProcess bp = _businessProcessService.CreateBusinessProcess(
+                       stateTemplate.ParentProcessTemplateID, 0, "ReliefRequisitionWorkflow", businessProcessState);
+
+                   if (bp == null) return false;
+                   relifRequisition.BusinessProcessID = bp.BusinessProcessID;
+
+                    if (transfer.Commodity.ParentID==null)
+                   {
+                       availableSINumbers = GetFreeSICodesByCommodity(transfer.SourceHubID, transfer.CommodityID,
+                           transfer.ShippingInstructionID, transfer.Quantity);
                    }
                    else
                    {
-                       availableSINumbers = GetFreeSICodesByCommodityChild(transfer.SourceHubID, transfer.CommodityID);
+                       availableSINumbers = GetFreeSICodesByCommodityChild(transfer.SourceHubID, transfer.CommodityID,
+                           transfer.ShippingInstructionID, transfer.Quantity);
                    }
-                  
-                   var siNumberExist = availableSINumbers.Any(availableShippingCode => availableShippingCode.siCodeId == transfer.ShippingInstructionID);
+
+                   var siNumberExist =
+                       availableSINumbers.Any(
+                           availableShippingCode => availableShippingCode.siCodeId == transfer.ShippingInstructionID);
 
                    if (!siNumberExist)
                    {
@@ -188,7 +276,15 @@ namespace Cats.Services.Logistics
            }
            return false;
        }
-       private bool PostSIAllocation(int requisitionID, int commoditySource=5)
+
+        public IEnumerable<Transfer> Get(Expression<Func<Transfer, bool>> filter = null,
+            Func<IQueryable<Transfer>, IOrderedQueryable<Transfer>> orderBy = null,
+            string includeProperties = "")
+        {
+            return _unitOfWork.TransferRepository.Get(filter, orderBy, includeProperties);
+        }
+
+        private bool PostSIAllocation(int requisitionID, int commoditySource=5)
        {
            var allocationDetails = _unitOfWork.SIPCAllocationRepository.Get(t => t.ReliefRequisitionDetail.RequisitionID == requisitionID);
            if (allocationDetails == null) return false;
@@ -327,13 +423,14 @@ namespace Cats.Services.Logistics
            //return result;
            return true;
        }
-       private List<LedgerService.AvailableShippingCodes> GetFreeSICodesByCommodity(int hubId, int commodityId)
+       private List<LedgerService.AvailableShippingCodes> GetFreeSICodesByCommodity(int hubId, int commodityId,int shippingInstructionId,decimal quantity)
        {
            var hubs = _unitOfWork.HubAllocationRepository.GetAll().Select(m => m.HubID).Distinct();
            var listHubs = string.Join(", ", from item in hubs select item);
            String HubFilter = (hubId > 0) ? string.Format(" And HubID IN ({0},{1},{2})", 1, 2, 3) : "";
 
-           String query = String.Format(@"SELECT SOH.QuantityInMT - ABS(ISNULL(Commited.QuantityInMT, 0)) as amount, SOH.ShippingInstructionID siCodeId, ShippingInstruction.Value SIcode, SOH.HubID as HubId, Hub.Name HubName 
+           String query =
+               String.Format(@"SELECT SOH.QuantityInMT - ABS(ISNULL(Commited.QuantityInMT, 0)) as amount, SOH.ShippingInstructionID siCodeId, ShippingInstruction.Value SIcode, SOH.HubID as HubId, Hub.Name HubName 
                                                         from (SELECT SUM(QuantityInMT) QuantityInMT , ShippingInstructionID, HubID from [Transaction] 
 					                                        WHERE LedgerID = {0} and CommodityID = {2} and HubID IN({3})
 					                                        GROUP BY HubID, ShippingInstructionID) AS SOH
@@ -346,35 +443,42 @@ namespace Cats.Services.Logistics
                                                 JOIN Hub
                                                     ON Hub.HubID = SOH.HubID
                                                 WHERE 
-                                                 SOH.QuantityInMT - ISNULL(Commited.QuantityInMT, 0) > 0    
-                                                ", Ledger.Constants.GOODS_ON_HAND, Ledger.Constants.COMMITED_TO_FDP, commodityId, hubId);
+                                                 Commited.ShippingInstructionID ={4} and SOH.QuantityInMT - ISNULL(Commited.QuantityInMT, 0) >= {5}    
+                                                ", Ledger.Constants.GOODS_ON_HAND, Ledger.Constants.COMMITED_TO_FDP,
+                   commodityId, hubId, shippingInstructionId, quantity);
 
            var availableShippingCodes = _unitOfWork.Database.SqlQuery<LedgerService.AvailableShippingCodes>(query);
 
            return availableShippingCodes.ToList();
        }
 
-       private List<LedgerService.AvailableShippingCodes> GetFreeSICodesByCommodityChild(int hubId, int commodityId)
+       private List<LedgerService.AvailableShippingCodes> GetFreeSICodesByCommodityChild(int hubId, int commodityId, int shippingInstructionId, decimal quantity)
        {
            var hubs = _unitOfWork.HubAllocationRepository.GetAll().Select(m => m.HubID).Distinct();
            var listHubs = string.Join(", ", from item in hubs select item);
            String HubFilter = (hubId > 0) ? string.Format(" And HubID IN ({0},{1},{2})", 1, 2, 3) : "";
 
-           String query = String.Format(@"SELECT SOH.QuantityInMT - ABS(ISNULL(Commited.QuantityInMT, 0)) as amount, SOH.ShippingInstructionID siCodeId, ShippingInstruction.Value SIcode, SOH.HubID as HubId, Hub.Name HubName 
+           String query =
+               $@"SELECT SOH.QuantityInMT - ABS(ISNULL(Commited.QuantityInMT, 0)) as amount, SOH.ShippingInstructionID siCodeId, ShippingInstruction.Value SIcode, SOH.HubID as HubId, Hub.Name HubName 
                                                         from (SELECT SUM(QuantityInMT) QuantityInMT , ShippingInstructionID, HubID from [Transaction] 
-					                                        WHERE LedgerID = {0} and CommodityChildID = {2} and HubID IN({3})
+					                                        WHERE LedgerID = {
+                   Ledger.Constants.GOODS_ON_HAND} and CommodityChildID = {commodityId} and HubID = {hubId
+                   }
 					                                        GROUP BY HubID, ShippingInstructionID) AS SOH
 	                                            LEFT JOIN (SELECT SUM(QuantityInMT) QuantityInMT, ShippingInstructionID, HubID from [Transaction]
-					                                        WHERE LedgerID = {1} and CommodityChildID = {2} and HubID IN ({3})
+					                                        WHERE LedgerID = {
+                   Ledger.Constants.COMMITED_TO_FDP} and CommodityChildID = {commodityId} and HubID ={hubId
+                   }              
 					                                        GROUP By HubID, ShippingInstructionID) AS Commited	
 		                                            ON SOH.ShippingInstructionID = Commited.ShippingInstructionID and SOH.HubId = Commited.HubId
 	                                            JOIN ShippingInstruction 
 		                                            ON SOH.ShippingInstructionID = ShippingInstruction.ShippingInstructionID 
                                                 JOIN Hub
                                                     ON Hub.HubID = SOH.HubID
-                                                WHERE 
-                                                 SOH.QuantityInMT - ISNULL(Commited.QuantityInMT, 0) > 0    
-                                                ", Ledger.Constants.GOODS_ON_HAND, Ledger.Constants.COMMITED_TO_FDP, commodityId, hubId);
+                                                WHERE  SOH.QuantityInMT - ISNULL(Commited.QuantityInMT, 0) >= {quantity
+                   } ";
+                                             
+                  
 
            var availableShippingCodes = _unitOfWork.Database.SqlQuery<LedgerService.AvailableShippingCodes>(query);
 
