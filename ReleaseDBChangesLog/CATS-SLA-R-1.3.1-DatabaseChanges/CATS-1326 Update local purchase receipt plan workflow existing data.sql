@@ -61,7 +61,7 @@ ELSE
 
 SET IDENTITY_INSERT BusinessProcessState ON;
 INSERT INTO BusinessProcessState
-VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'Local purchase business process created by data migrator', NULL);
+VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'Local purchase business process created by data migrator', NULL,NULL);
 SET IDENTITY_INSERT BusinessProcessState OFF;
 SET @businessprocessstateid = SCOPE_IDENTITY();
 
@@ -69,6 +69,10 @@ SET @businessprocessstateid = SCOPE_IDENTITY();
 INSERT INTO BusinessProcess
 VALUES ( @processid, 0, 'Local Purchase', @businessprocessstateid, NULL);
 SET @businessprocessid = SCOPE_IDENTITY();
+
+UPDATE dbo.BusinessProcessState
+SET ParentBusinessProcessID = @businessprocessid
+where BusinessProcessStateID = @businessprocessstateid
 
 UPDATE [dbo].[LocalPurchase]
 SET BusinessProcessId=@businessprocessid
