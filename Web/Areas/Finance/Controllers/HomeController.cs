@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Cats.Areas.Finance.Models;
@@ -10,6 +11,7 @@ using Cats.Services.Hub;
 using Cats.Services.Logistics;
 using Cats.Services.Procurement;
 using Cats.Helpers;
+using Cats.Models.Hubs;
 using IUserProfileService = Cats.Services.Administration.IUserProfileService;
 using Transporter = Cats.Models.Hubs.Transporter;
 using Cats.Models.Constant;
@@ -35,6 +37,7 @@ namespace Cats.Areas.Finance.Controllers
         private readonly IDispatchDetailService _disptDetailService;
         private readonly Services.Hub.ICommodityService _commodityService;
         private readonly Services.Hub.IHubService _hubService;
+        private readonly Services.Hub.IVWDdispatchAllocationDistributionService _dispatchAllocationDistributionService;
 
         public HomeController(ITransporterChequeService transporterChequeService,
             IUserProfileService userProfileService,
@@ -51,7 +54,8 @@ namespace Cats.Areas.Finance.Controllers
             IDispatchAllocationService dispatchAllocationService,
             IDispatchDetailService dispatchDetailService,
             Services.Hub.ICommodityService commodityService,
-            Services.Hub.IHubService hubService)
+            Services.Hub.IHubService hubService,
+            Services.Hub.IVWDdispatchAllocationDistributionService vwDdispatchAllocationDistributionService)
         {
             _transporterChequeService = transporterChequeService;
             _userProfileService = userProfileService;
@@ -69,6 +73,7 @@ namespace Cats.Areas.Finance.Controllers
             _disptDetailService = dispatchDetailService;
             _commodityService = commodityService;
             _hubService = hubService;
+            _dispatchAllocationDistributionService = vwDdispatchAllocationDistributionService;
         }
 
         //
@@ -400,75 +405,24 @@ namespace Cats.Areas.Finance.Controllers
             return Json(userGroupedPaymentRequests, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetTransporterPaymentRequest(int round, int takeTheFirst)
+        public JsonResult GetTransporterPaymentRequest(DateTime startDate, DateTime endDate, int takeTheFirst, int round)
         {
-            var transporters = _transporterService.GetAllTransporter();
-            var dispatches = _dispatchService.GetAllDispatch().Where(d => d.Round == round);
-            var transportOrderDetails = _transportOrderDetailService.GetAllTransportOrderDetail();
-            var transporterOrders = _transportOrderService.GetAllTransportOrder();
-            var dispatchAllocations = _dispatchAllocationService.GetAllDispatchAllocation();
-            var dispatchDetails = _disptDetailService.GetAllDispatchDetail();
-            var transporterPaymentRequests = _transporterPaymentRequestService.GetAllTransporterPaymentRequest().Where(p =>
-                    p.BusinessProcess.CurrentState.BaseStateTemplate.Name != "Closed");
-            var commodities = _commodityService.GetAllCommodity();
-            var fdps = _fdpService.GetAllFDP();
-            var hubs = _hubService.GetAllHub();
+            List<VWDdispatchAllocationDistribution> dispatchedAllocations =
+               _dispatchAllocationDistributionService.GetAllDispatchAllocationDistribution();
 
-            var filteredTransportPaymentRequests = (from d in dispatches
-                                                    join da in dispatchAllocations
-                                                        on d.DispatchAllocationID equals da.DispatchAllocationID
-                                                    join t in transporters
-                                                        on d.TransporterID equals t.TransporterID
-                                                    join tod in transportOrderDetails
-                                                        on d.FDPID equals tod.FdpID
-                                                    join to in transporterOrders
-                                                        on tod.TransportOrderID equals to.TransportOrderID
-                                                    join dd in dispatchDetails
-                                                        on d.DispatchID equals dd.DispatchID
-                                                    join tpr in transporterPaymentRequests
-                                                        on to.TransportOrderID equals tpr.TransportOrderID
-                                                    join c in commodities
-                                                        on tod.CommodityID equals c.CommodityID
-                                                    join fdp in fdps
-                                                        on d.FDPID equals fdp.FDPID
-                                                    join hub in hubs
-                                                        on d.HubID equals hub.HubID
-                                                    orderby d.DispatchDate
-                                                    select new
-                                                    {
-                                                        Transporter = t.Name,
-                                                        //PaymentRequest = tpr.ReferenceNo,
-                                                        Commodity = c.Name,
-                                                        Allocated = da.Amount,
-                                                        Dispatched = dd.DispatchedQuantityInMT,
-                                                        Discripancy = da.Amount - dd.DispatchedQuantityInMT,
-                                                        FDP = fdp.Name,
-                                                        Hub = hub.Name
-                                                    });
+            var filteredDistributions = (from da in dispatchedAllocations
+                where da.DispatchDate >= startDate && da.DispatchDate <= endDate
+                select new
+                {
+                    da.Transporter,
+                    da.Commodity,
+                    da.AllocatedAmount,
+                    da.DispatchedAmount,
+                    da.DispatchDate,
+                    da.Diff1
+                }).ToList();
 
-            var groupedPaymentRequest = (from tpr in filteredTransportPaymentRequests
-                                         group tpr by new
-                                         {
-                                             tpr.Transporter,
-                                             tpr.Commodity,
-                                             //tpr.PaymentRequest,
-                                             tpr.FDP,
-                                             tpr.Hub
-                                         }
-                into gTrnsRqst
-                                         select new
-                                         {
-                                             gTrnsRqst.Key.Transporter,
-                                             gTrnsRqst.Key.Commodity,
-                                             //gTrnsRqst.Key.PaymentRequest,
-                                             gTrnsRqst.Key.FDP,
-                                             gTrnsRqst.Key.Hub,
-                                             Allocated = gTrnsRqst.Sum(x => x.Allocated),
-                                             Dispatched = gTrnsRqst.Sum(x => x.Dispatched),
-                                             Discripancy = gTrnsRqst.Sum(x => x.Discripancy)
-                                         }).Take(takeTheFirst).ToList();
-
-            return Json(groupedPaymentRequest, JsonRequestBehavior.AllowGet);
+            return Json(filteredDistributions, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetBidPlan() // Rounds/Cycle

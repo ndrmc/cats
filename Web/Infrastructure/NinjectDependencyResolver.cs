@@ -336,6 +336,7 @@ namespace Cats.Infrastructure
             kernel.Bind<Cats.Services.Hub.IVWReceiptAllocationAggregateService>().To<Cats.Services.Hub.VWReceiptAllocationAggregateService>();
             //kernel.Bind<Cats.Services.Hub.Interfaces.IStockStatusService>().To<Cats.Services.Hub.DetailService>();
 
+            kernel.Bind<Cats.Services.Hub.IVWDdispatchAllocationDistributionService>().To<Cats.Services.Hub.VWDdispatchAllocationDistributionService>();
         }
     }
 }

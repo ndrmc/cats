@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Cats.Helpers
+@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
     const string PAGE_NAME = "Logistics.Index";
@@ -12,7 +13,7 @@
 }
 <!-- BEGIN COMPONENTS INDENTATION-->
 <div class="container">
-    <div class="row ui-sortable" id="sortable_portlets" ng-app="myApp">
+    <div class="row ui-sortable" id="sortable_portlets1" ng-app="myApp">
 
         <!-- Begin Data entry status portlet-->
         <div class="col-md-12 column sortable">
@@ -61,62 +62,87 @@
                 </div>
             </div>
         </div>
-        <!-- End data entry status portlet-->
-
-        <div class="box box-solid box-primary">
-            <div class="box-header">
-                <h3 class="box-title">Transporter </h3>
-                <div class="box-tools pull-right">
-                    <button data-widget="collapse" class="btn btn-primary btn-sm"><i class="fa fa-minus"></i></button>
-                    <button data-widget="remove" class="btn btn-primary btn-sm"><i class="fa fa-times"></i></button>
-                </div>
-
-            </div>
-
-            <div class="box-body table-responsive" style="display: block;" ng-controller="BidPlan">
-
-                <div class="row form-horizontal ">
-                    <div class="col-md-4 form-group">
-                        <div class="col-md-6">
-                            <select class="form-control" id="idroundid" ng-change="onChange(roundValue)" ng-model="roundValue" ng-options="r.round as r.round for r in rounds">
-                                <option value=''> Select Round </option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input">
-                                <input type="text" class="form-control" id="takeFirstId" ng-model="search.transportOrderNo" value="10">
-                                <label for="serachto">See the first n records</label>
-                            </div>
-                        </div>
+    <!-- End data entry status portlet-->
+    <div class="col-md-12 column " ng-controller="BidPlan">
+        
+            <div class="portlet light bordered ">
+                <div class="portlet-title">
+                    <div class="caption font-green-sharp"><i class="fa fa-car font-green-sharp"></i> @Html.Translate("Transporter Dispatch Allocation Distribution")</div>
+                    <div class="tools">
+                        <a href="#" class="collapse" data-original-title="" title=""></a>
+                    </div>
+                    <div class="actions">
+                        <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
                     </div>
                 </div>
-
-                <div class="table-responsive">
-                    <table class="table table-striped ">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left">Transporter</th>
-                                @*<th style="text-align: left">Payment Request</th>*@
-                                <th style="text-align: left">Commodity</th>
-                                <th style="text-align: left">Allocated</th>
-                                <th style="text-align: left">Dispatched</th>
-                                <th style="text-align: left">Discripancy</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody ng-cloak>
-                            <tr ng-repeat="tpr in TransportPaymentRequests">
-                                <td style="text-align: left; margin-right: 0px">{{tpr.Transporter}} </td>
-                                @*<td style="text-align: left; margin-right: 0px">{{tpr.PaymentRequest}} </td>*@
-                                <td style="text-align: left; margin-right: 0px">{{tpr.Commodity}} </td>
-                                <td style="text-align: left; margin-right: 0px">{{tpr.Allocated}} </td>
-                                <td style="text-align: left; margin-right: 0px">{{tpr.Dispatched}} </td>
-                                <td style="text-align: left; margin-right: 0px">{{tpr.Discripancy}} </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="portlet-body">
+                    <div class="table-responsive" style="overflow-x: hidden; min-height: 250px;">
+                        <div class="row form-horizontal ">
+                            <div class="col-md-3 form-group">
+                                <label class="control-label col-md-6">Start Date</label>
+                                <div class="col-md-6">
+                                    <input id="startDate" class="cats-datepicker2  form-control" type="text" placeholder="mm/dd/yyyy">
+                                </div>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label class="control-label col-md-6">End Date</label>
+                                <div class="col-md-6">
+                                    <input id="endDate" class="cats-datepicker2 form-control" type="text" placeholder="mm/dd/yyyy">
+                                </div>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label class="control-label col-md-4">Round</label>
+                                <div class="col-md-8">
+                                    <select class="form-control" id="idroundid" ng-change="onChange(roundValue)" ng-model="roundValue" ng-options="r.round as r.round for r in rounds">
+                                        <option value=''> Select Round </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <!--<label class="control-label col-md-8">Enter number of records to view</label>-->
+                                <div class="col-md-12">
+                                    <input type="text" placeholder="Enter number of records to view" class="form-control" id="takeFirstId" ng-model="search.transportOrderNo" value="10">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped ">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left">Transporter</th>
+                                            @*<th style="text-align: left">Payment Request</th>*@
+                                            <th style="text-align: left">Commodity</th>
+                                            <th style="text-align: left">Allocated</th>
+                                            <th style="text-align: left">Dispatched</th>
+                                            <th style="text-align: left">Discripancy</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-cloak>
+                                        <tr ng-repeat="tpr in TransportPaymentRequests">
+                                            <td style="text-align: left; margin-right: 0px">{{tpr.Transporter}} </td>
+                                            @*<td style="text-align: left; margin-right: 0px">{{tpr.PaymentRequest}} </td>*@
+                                            <td style="text-align: left; margin-right: 0px">{{tpr.Commodity}} </td>
+                                            <td style="text-align: left; margin-right: 0px">{{tpr.AllocatedAmount}} </td>
+                                            <td style="text-align: left; margin-right: 0px">{{tpr.DispatchedAmount}} </td>
+                                            <td style="text-align: left; margin-right: 0px">{{tpr.Diff1}} </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                      
+                    </div>
                 </div>
             </div>
+       
+    </div>
+
+    <div class="box box-solid box-primary">
+         
+
+            
             <!-- /.box-body -->
         </div>
 
@@ -327,7 +353,7 @@
 
             $scope.paymentRequestForDashboard = {};
             $scope.paymentRequestBeingProcessed = {};
-            $http({ method: 'GET', url: '@Url.Action("PaymentRequestForDashboard", "Home")' }).success(function (data, status, headers, config) {
+            @*$http({ method: 'GET', url: '@Url.Action("PaymentRequestForDashboard", "Home")' }).success(function (data, status, headers, config) {
                 console.log(data);
                 $scope.paymentRequestForDashboard = data;
                 $scope.viewPaymentDetail = function (item) {
@@ -335,7 +361,7 @@
                     var id = item.TransporterId;
                     window.open("@Url.Action("PaymentRequests", "ValidatedPaymentRequest")" + "?transporterID=" + id, "_blank");
                 };
-            });
+            });*@
             $http({ method: 'GET', url: '@Url.Action("PaymentRequestBeingProcessed", "Home")' }).success(function (data, status, headers, config) {
                 console.log(data);
                 $scope.paymentRequestBeingProcessed = data;
@@ -363,7 +389,7 @@
     myApp.controller('BidPlan', [
        '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
            $scope.rounds = [];
-           $scope.reqParam = { round: 0, takeTheFirst: 10 };
+           $scope.reqParam = { startDate: new Date(), endDate: new Date(), round: 0, takeTheFirst: 10 };
            $scope.TransportPaymentRequests = [];
 
            var onTransportPaymentRequest = function (data) {
@@ -380,6 +406,8 @@
                $scope.reqParam.takeTheFirst = $("#takeFirstId").val();
 
                var takeTheFirst = $("#takeFirstId").val();
+               $scope.reqParam.startDate = $("#startDate").val();
+               $scope.reqParam.endDate = $("#endDate").val();
 
                if (takeTheFirst === '' || takeTheFirst == null) {
                    $scope.reqParam.takeTheFirst = 10;
