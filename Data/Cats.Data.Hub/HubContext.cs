@@ -97,6 +97,7 @@ namespace Cats.Data.Hub
         public DbSet<VWReceiptAllocationAggregate> VWReceiptAllocationAggregate { get; set; }
 
         public DbSet<VWDispatchAllocation> VWDispatchAllocation { get; set; }
+        public DbSet<VWDdispatchAllocationDistribution> VwDdispatchAllocationDistributions { get; set; }
         #endregion
 
 
@@ -170,6 +171,7 @@ namespace Cats.Data.Hub
             modelBuilder.Configurations.Add(new VWTransferredStockMap());
             modelBuilder.Configurations.Add(new VWReceiptAllocationAggregateMap());
             modelBuilder.Configurations.Add(new VWDispatchAllocationMap());
+            modelBuilder.Configurations.Add(new VWDdispatchAllocationDistributionMap());
 
 
 

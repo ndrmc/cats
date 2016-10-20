@@ -64,7 +64,7 @@ namespace Cats.Data.Hub
         private IGenericRepository<ReceiveDetail> _ReceiveDetailRepository = null;
         private IGenericRepository<ReleaseNote> _ReleaseNoteRepository = null;
         private IGenericRepository<Role> _RoleRepository = null;
-        private IGenericRepository<SessionAttempt> _SessionAttemptRepository = null; 
+        private IGenericRepository<SessionAttempt> _SessionAttemptRepository = null;
         private IGenericRepository<SessionHistory> _SessionHistoryRepository = null;
         private IGenericRepository<Setting> _SettingRepository = null;
         private IGenericRepository<ShippingInstruction> _ShippingInstructionRepository = null;
@@ -85,44 +85,44 @@ namespace Cats.Data.Hub
         #endregion
 
         #region Property
-       public  IGenericRepository< Account> AccountRepository
+        public IGenericRepository<Account> AccountRepository
         {
             get { return this._AccountRepository ?? (this._AccountRepository = new GenericRepository<Account>(_context)); }
-           
+
         }
 
-      
-       public  IGenericRepository<Adjustment>AdjustmentRepository 
+
+        public IGenericRepository<Adjustment> AdjustmentRepository
         {
 
 
             get { return this._AdjustmentRepository ?? (this._AdjustmentRepository = new GenericRepository<Adjustment>(_context)); }
-            
-      
+
+
         }
 
-       
-       public  IGenericRepository<AdjustmentReason>AdjustmentReasonRepository 
+
+        public IGenericRepository<AdjustmentReason> AdjustmentReasonRepository
         {
 
 
             get { return this._AdjustmentReasonRepository ?? (this._AdjustmentReasonRepository = new GenericRepository<AdjustmentReason>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<AdminUnit>AdminUnitRepository 
+
+        public IGenericRepository<AdminUnit> AdminUnitRepository
         {
 
 
             get { return this._AdminUnitRepository ?? (this._AdminUnitRepository = new GenericRepository<AdminUnit>(_context)); }
 
-      
+
         }
 
-   
-       public  IGenericRepository<AdminUnitType>AdminUnitTypeRepository 
+
+        public IGenericRepository<AdminUnitType> AdminUnitTypeRepository
         {
 
 
@@ -130,17 +130,17 @@ namespace Cats.Data.Hub
 
         }
 
-        
-       public  IGenericRepository<Audit>AuditRepository
-       {
 
-           get { return this._AuditRepository ?? (this._AuditRepository = new GenericRepository<Audit>(_context)); }
+        public IGenericRepository<Audit> AuditRepository
+        {
 
-      
+            get { return this._AuditRepository ?? (this._AuditRepository = new GenericRepository<Audit>(_context)); }
+
+
         }
 
-   
-       public  IGenericRepository<Commodity>CommodityRepository 
+
+        public IGenericRepository<Commodity> CommodityRepository
         {
 
 
@@ -148,573 +148,580 @@ namespace Cats.Data.Hub
 
         }
 
-       
-       public  IGenericRepository<CommodityGrade>CommodityGradeRepository 
+
+        public IGenericRepository<CommodityGrade> CommodityGradeRepository
         {
 
 
             get { return this._CommodityGradeRepository ?? (this._CommodityGradeRepository = new GenericRepository<CommodityGrade>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<CommoditySource>CommoditySourceRepository 
+
+        public IGenericRepository<CommoditySource> CommoditySourceRepository
         {
 
 
             get { return this._CommoditySourceRepository ?? (this._CommoditySourceRepository = new GenericRepository<CommoditySource>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<CommodityType>CommodityTypeRepository 
+
+        public IGenericRepository<CommodityType> CommodityTypeRepository
         {
 
 
             get { return this._CommodityTypeRepository ?? (this._CommodityTypeRepository = new GenericRepository<CommodityType>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<Contact>ContactRepository 
+
+        public IGenericRepository<Contact> ContactRepository
         {
 
 
             get { return this._ContactRepository ?? (this._ContactRepository = new GenericRepository<Contact>(_context)); }
 
 
-      
+
         }
 
-        
-       public  IGenericRepository<Detail>DetailRepository 
+
+        public IGenericRepository<Detail> DetailRepository
         {
 
 
             get { return this._DetailRepository ?? (this._DetailRepository = new GenericRepository<Detail>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<Dispatch>DispatchRepository 
+
+        public IGenericRepository<Dispatch> DispatchRepository
         {
 
 
             get { return this._DispatchRepository ?? (this._DispatchRepository = new GenericRepository<Dispatch>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<DispatchAllocation>DispatchAllocationRepository 
+
+        public IGenericRepository<DispatchAllocation> DispatchAllocationRepository
         {
 
 
             get { return this._DispatchAllocationRepository ?? (this._DispatchAllocationRepository = new GenericRepository<DispatchAllocation>(_context)); }
 
-      
+
         }
 
-      
-       public  IGenericRepository<DispatchDetail>DispatchDetailRepository
-       {
 
-           get { return this._DispatchDetailRepository ?? (this._DispatchDetailRepository = new GenericRepository<DispatchDetail>(_context)); }
+        public IGenericRepository<DispatchDetail> DispatchDetailRepository
+        {
 
-      
+            get { return this._DispatchDetailRepository ?? (this._DispatchDetailRepository = new GenericRepository<DispatchDetail>(_context)); }
+
+
         }
 
-       
-       public  IGenericRepository<Donor>DonorRepository 
+
+        public IGenericRepository<Donor> DonorRepository
         {
 
 
             get { return this._DonorRepository ?? (this._DonorRepository = new GenericRepository<Donor>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<FDP>FDPRepository 
+
+        public IGenericRepository<FDP> FDPRepository
         {
 
 
             get { return this._FDPRepository ?? (this._FDPRepository = new GenericRepository<FDP>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<ForgetPasswordRequest>ForgetPasswordRequestRepository 
+
+        public IGenericRepository<ForgetPasswordRequest> ForgetPasswordRequestRepository
         {
 
 
             get { return this._ForgetPasswordRequestRepository ?? (this._ForgetPasswordRequestRepository = new GenericRepository<ForgetPasswordRequest>(_context)); }
 
-      
+
         }
 
-      
-       public  IGenericRepository<GiftCertificate>GiftCertificateRepository 
+
+        public IGenericRepository<GiftCertificate> GiftCertificateRepository
         {
 
 
             get { return this._GiftCertificateRepository ?? (this._GiftCertificateRepository = new GenericRepository<GiftCertificate>(_context)); }
 
-      
+
         }
 
-    
-       public  IGenericRepository<GiftCertificateDetail>GiftCertificateDetailRepository 
+
+        public IGenericRepository<GiftCertificateDetail> GiftCertificateDetailRepository
         {
 
 
             get { return this._GiftCertificateDetailRepository ?? (this._GiftCertificateDetailRepository = new GenericRepository<GiftCertificateDetail>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<Models.Hubs.Hub> HubRepository 
+
+        public IGenericRepository<Models.Hubs.Hub> HubRepository
         {
 
 
             get { return this._HubRepository ?? (this._HubRepository = new GenericRepository<Models.Hubs.Hub>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<HubOwner>HubOwnerRepository 
+
+        public IGenericRepository<HubOwner> HubOwnerRepository
         {
 
 
             get { return this._HubOwnerRepository ?? (this._HubOwnerRepository = new GenericRepository<HubOwner>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<HubSetting>HubSettingRepository 
+
+        public IGenericRepository<HubSetting> HubSettingRepository
         {
 
 
             get { return this._HubSettingRepository ?? (this._HubSettingRepository = new GenericRepository<HubSetting>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<HubSettingValue>HubSettingValueRepository 
+
+        public IGenericRepository<HubSettingValue> HubSettingValueRepository
         {
 
 
             get { return this._HubSettingValueRepository ?? (this._HubSettingValueRepository = new GenericRepository<HubSettingValue>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<InternalMovement>InternalMovementRepository 
+
+        public IGenericRepository<InternalMovement> InternalMovementRepository
         {
 
 
             get { return this._InternalMovementRepository ?? (this._InternalMovementRepository = new GenericRepository<InternalMovement>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<Ledger>LedgerRepository 
+
+        public IGenericRepository<Ledger> LedgerRepository
         {
 
 
             get { return this._LedgerRepository ?? (this._LedgerRepository = new GenericRepository<Ledger>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<LedgerType>LedgerTypeRepository 
+
+        public IGenericRepository<LedgerType> LedgerTypeRepository
         {
 
 
             get { return this._LedgerTypeRepository ?? (this._LedgerTypeRepository = new GenericRepository<LedgerType>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<LetterTemplate>LetterTemplateRepository 
+
+        public IGenericRepository<LetterTemplate> LetterTemplateRepository
         {
 
 
             get { return this._LetterTemplateRepository ?? (this._LetterTemplateRepository = new GenericRepository<LetterTemplate>(_context)); }
 
-      
+
         }
 
-     
-       public  IGenericRepository<Master>MasterRepository 
+
+        public IGenericRepository<Master> MasterRepository
         {
 
 
             get { return this._MasterRepository ?? (this._MasterRepository = new GenericRepository<Master>(_context)); }
 
-      
+
         }
 
-     
-       public  IGenericRepository<OtherDispatchAllocation>OtherDispatchAllocationRepository 
+
+        public IGenericRepository<OtherDispatchAllocation> OtherDispatchAllocationRepository
         {
 
 
             get { return this._OtherDispatchAllocationRepository ?? (this._OtherDispatchAllocationRepository = new GenericRepository<OtherDispatchAllocation>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<Partition>PartitionRepository 
+
+        public IGenericRepository<Partition> PartitionRepository
         {
 
 
             get { return this._PartitionRepository ?? (this._PartitionRepository = new GenericRepository<Partition>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<Period>PeriodRepository 
+
+        public IGenericRepository<Period> PeriodRepository
         {
 
 
             get { return this._PeriodRepository ?? (this._PeriodRepository = new GenericRepository<Period>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<Program>ProgramRepository 
+
+        public IGenericRepository<Program> ProgramRepository
         {
 
 
             get { return this._ProgramRepository ?? (this._ProgramRepository = new GenericRepository<Program>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<ProjectCode>ProjectCodeRepository 
+
+        public IGenericRepository<ProjectCode> ProjectCodeRepository
         {
 
 
             get { return this._ProjectCodeRepository ?? (this._ProjectCodeRepository = new GenericRepository<ProjectCode>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<ReceiptAllocation>ReceiptAllocationRepository 
+
+        public IGenericRepository<ReceiptAllocation> ReceiptAllocationRepository
         {
 
 
             get { return this._ReceiptAllocationRepository ?? (this._ReceiptAllocationRepository = new GenericRepository<ReceiptAllocation>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<Receive>ReceiveRepository 
+
+        public IGenericRepository<Receive> ReceiveRepository
         {
 
 
             get { return this._ReceiveRepository ?? (this._ReceiveRepository = new GenericRepository<Receive>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<ReceiveDetail>ReceiveDetailRepository 
+
+        public IGenericRepository<ReceiveDetail> ReceiveDetailRepository
         {
 
 
             get { return this._ReceiveDetailRepository ?? (this._ReceiveDetailRepository = new GenericRepository<ReceiveDetail>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<ReleaseNote>ReleaseNoteRepository 
+
+        public IGenericRepository<ReleaseNote> ReleaseNoteRepository
         {
 
 
             get { return this._ReleaseNoteRepository ?? (this._ReleaseNoteRepository = new GenericRepository<ReleaseNote>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<Role>RoleRepository 
+
+        public IGenericRepository<Role> RoleRepository
         {
 
 
             get { return this._RoleRepository ?? (this._RoleRepository = new GenericRepository<Role>(_context)); }
 
-      
+
         }
 
-      
-       public  IGenericRepository<SessionAttempt>SessionAttemptRepository 
+
+        public IGenericRepository<SessionAttempt> SessionAttemptRepository
         {
 
 
             get { return this._SessionAttemptRepository ?? (this._SessionAttemptRepository = new GenericRepository<SessionAttempt>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<SessionHistory>SessionHistoryRepository 
+
+        public IGenericRepository<SessionHistory> SessionHistoryRepository
         {
 
 
             get { return this._SessionHistoryRepository ?? (this._SessionHistoryRepository = new GenericRepository<SessionHistory>(_context)); }
 
-      
+
         }
 
-      
-       public  IGenericRepository<Setting>SettingRepository 
+
+        public IGenericRepository<Setting> SettingRepository
         {
 
 
             get { return this._SettingRepository ?? (this._SettingRepository = new GenericRepository<Setting>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<ShippingInstruction>ShippingInstructionRepository 
+
+        public IGenericRepository<ShippingInstruction> ShippingInstructionRepository
         {
 
 
             get { return this._ShippingInstructionRepository ?? (this._ShippingInstructionRepository = new GenericRepository<ShippingInstruction>(_context)); }
 
-      
-        }
-     
 
-       public  IGenericRepository<SMS>SMSRepository 
+        }
+
+
+        public IGenericRepository<SMS> SMSRepository
         {
 
 
             get { return this._SMSRepository ?? (this._SMSRepository = new GenericRepository<SMS>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<StackEvent>StackEventRepository 
+
+        public IGenericRepository<StackEvent> StackEventRepository
         {
 
 
             get { return this._StackEventRepository ?? (this._StackEventRepository = new GenericRepository<StackEvent>(_context)); }
 
-      
+
         }
 
-      
-       public  IGenericRepository<StackEventType>StackEventTypeRepository 
+
+        public IGenericRepository<StackEventType> StackEventTypeRepository
         {
 
 
             get { return this._StackEventTypeRepository ?? (this._StackEventTypeRepository = new GenericRepository<StackEventType>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<Store>StoreRepository 
+
+        public IGenericRepository<Store> StoreRepository
         {
 
 
             get { return this._StoreRepository ?? (this._StoreRepository = new GenericRepository<Store>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<Transaction>TransactionRepository 
+
+        public IGenericRepository<Transaction> TransactionRepository
         {
 
 
             get { return this._TransactionRepository ?? (this._TransactionRepository = new GenericRepository<Transaction>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<TransactionGroup>TransactionGroupRepository 
+
+        public IGenericRepository<TransactionGroup> TransactionGroupRepository
         {
 
 
             get { return this._TransactionGroupRepository ?? (this._TransactionGroupRepository = new GenericRepository<TransactionGroup>(_context)); }
 
-      
+
         }
 
-    
-       public  IGenericRepository<Translation>TranslationRepository 
+
+        public IGenericRepository<Translation> TranslationRepository
         {
 
 
             get { return this._TranslationRepository ?? (this._TranslationRepository = new GenericRepository<Translation>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<Transporter>TransporterRepository 
+
+        public IGenericRepository<Transporter> TransporterRepository
         {
 
 
             get { return this._TransporterRepository ?? (this._TransporterRepository = new GenericRepository<Transporter>(_context)); }
 
-      
+
         }
 
-    
-       public  IGenericRepository<Unit>UnitRepository 
+
+        public IGenericRepository<Unit> UnitRepository
         {
 
 
             get { return this._UnitRepository ?? (this._UnitRepository = new GenericRepository<Unit>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<UserHub>UserHubRepository 
+
+        public IGenericRepository<UserHub> UserHubRepository
         {
 
 
             get { return this._UserHubRepository ?? (this._UserHubRepository = new GenericRepository<UserHub>(_context)); }
 
-      
+
         }
 
-        
-       public  IGenericRepository<UserProfile>UserProfileRepository 
+
+        public IGenericRepository<UserProfile> UserProfileRepository
         {
 
 
             get { return this._UserProfileRepository ?? (this._UserProfileRepository = new GenericRepository<UserProfile>(_context)); }
 
-      
+
         }
 
-       
-       public  IGenericRepository<UserRole>UserRoleRepository 
+
+        public IGenericRepository<UserRole> UserRoleRepository
         {
 
 
             get { return this._UserRoleRepository ?? (this._UserRoleRepository = new GenericRepository<UserRole>(_context)); }
 
-      
+
         }
 
         #endregion
-       #region Methods
-       public void Save()
-       {
-           //_context.SaveChanges();
-           try
-           {
-               _context.SaveChanges();
-           }
-           catch (System.Data.Entity.Validation.DbEntityValidationException e)
-           {
-               //var outputLines = new List<string>();
-               //foreach (var eve in e.EntityValidationErrors)
-               //{
-               //    outputLines.Add(string.Format(
-               //        "{0}: Entity of type \"{1}\" in state \"{2}\" has the following validation errors:",
-               //        DateTime.Now, eve.Entry.Entity.GetType().Name, eve.Entry.State));
-               //    outputLines.AddRange(eve.ValidationErrors.Select(ve => string.Format("- Property: \"{0}\", Error: \"{1}\"", ve.PropertyName, ve.ErrorMessage)));
-               //}
-               //// System.IO.File.AppendAllLines(@"c:\temp\errors.txt", outputLines);
-               for (var eCurrent = e; eCurrent != null; eCurrent = (DbEntityValidationException)eCurrent.InnerException)
-               {
-                   foreach (var eve in eCurrent.EntityValidationErrors)
-                   {
-                       Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-                           eve.Entry.Entity.GetType().Name, eve.Entry.State);
+        #region Methods
+        public void Save()
+        {
+            //_context.SaveChanges();
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (System.Data.Entity.Validation.DbEntityValidationException e)
+            {
+                //var outputLines = new List<string>();
+                //foreach (var eve in e.EntityValidationErrors)
+                //{
+                //    outputLines.Add(string.Format(
+                //        "{0}: Entity of type \"{1}\" in state \"{2}\" has the following validation errors:",
+                //        DateTime.Now, eve.Entry.Entity.GetType().Name, eve.Entry.State));
+                //    outputLines.AddRange(eve.ValidationErrors.Select(ve => string.Format("- Property: \"{0}\", Error: \"{1}\"", ve.PropertyName, ve.ErrorMessage)));
+                //}
+                //// System.IO.File.AppendAllLines(@"c:\temp\errors.txt", outputLines);
+                for (var eCurrent = e; eCurrent != null; eCurrent = (DbEntityValidationException)eCurrent.InnerException)
+                {
+                    foreach (var eve in eCurrent.EntityValidationErrors)
+                    {
+                        Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                            eve.Entry.Entity.GetType().Name, eve.Entry.State);
 
-                       StringBuilder errorMsg = new StringBuilder(String.Empty);
-                       var s = string.Format("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:", eve.Entry.Entity.GetType().Name, eve.Entry.State);
-                       errorMsg.Append(s);
+                        StringBuilder errorMsg = new StringBuilder(String.Empty);
+                        var s = string.Format("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:", eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                        errorMsg.Append(s);
 
-                       foreach (var ve in eve.ValidationErrors)
-                       {
-                           errorMsg.Append(string.Format("- Property: \"{0}\", Error: \"{1}\"", ve.PropertyName, ve.ErrorMessage));
-                           _log.Error(errorMsg, eCurrent.GetBaseException());
-                       }
-                   }
-               }
-               throw;
-           }
-       }
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            errorMsg.Append(string.Format("- Property: \"{0}\", Error: \"{1}\"", ve.PropertyName, ve.ErrorMessage));
+                            _log.Error(errorMsg, eCurrent.GetBaseException());
+                        }
+                    }
+                }
+                throw;
+            }
+        }
 
-       private bool disposed = false;
+        private bool disposed = false;
 
-        
+
         protected virtual void Dispose(bool disposing)
-       {
-           if (!this.disposed)
-           {
-               if (disposing)
-               {
-                   _context.Dispose();
-               }
-           }
-           this.disposed = true;
-       }
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
 
 
-       public void Dispose()
-       {
-           Dispose(true);
-           GC.SuppressFinalize(this);
-       }
-       #endregion
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
 
-       public Database Database { get { return _context.Database; } }
+        public Database Database { get { return _context.Database; } }
 
-        
+
 
         public IReportRepository ReportRepository
-       {
-           get { return this._reportRepository ?? (this._reportRepository = new ReportRepository(_context)); }
-       }
+        {
+            get { return this._reportRepository ?? (this._reportRepository = new ReportRepository(_context)); }
+        }
 
 
-       private IGenericRepository<ErrorLog> errorLogRepository;
+        private IGenericRepository<ErrorLog> errorLogRepository;
 
-       public IGenericRepository<ErrorLog> ErrorLogRepository
-       {
+        public IGenericRepository<ErrorLog> ErrorLogRepository
+        {
 
-           get { return this.errorLogRepository ?? (this.errorLogRepository = new GenericRepository<ErrorLog>(_context)); }
+            get { return this.errorLogRepository ?? (this.errorLogRepository = new GenericRepository<ErrorLog>(_context)); }
 
-       }
+        }
         private IGenericRepository<VWReceiptAllocationAggregate> vwReceiptAllocationAggregateRepository = null;
         public IGenericRepository<VWReceiptAllocationAggregate> VWReceiptAllocationAggregateRepository
         {
             get { return this.vwReceiptAllocationAggregateRepository ?? (this.vwReceiptAllocationAggregateRepository = new GenericRepository<VWReceiptAllocationAggregate>(_context)); }
+        }
+
+        private IGenericRepository<VWDdispatchAllocationDistribution> vwDispatchAllocationDistribuition = null;
+
+        public IGenericRepository<VWDdispatchAllocationDistribution> VwDispatchAllocationDistribuition
+        {
+            get { return this.vwDispatchAllocationDistribuition ?? (this.vwDispatchAllocationDistribuition = new GenericRepository<VWDdispatchAllocationDistribution>(_context)); }
         }
 
         private IGenericRepository<VWDispatchAllocation> vwDispatchAllocationRepository = null;
@@ -725,12 +732,11 @@ namespace Cats.Data.Hub
 
 
         private IGenericRepository<VWCommodityReceived> vwCommodityReceived = null;
-       public IGenericRepository<VWCommodityReceived> VWCommodityReceived
-       {
-           get { return this.vwCommodityReceived ?? (this.vwCommodityReceived = new GenericRepository<VWCommodityReceived>(_context)); }
-       }
+        public IGenericRepository<VWCommodityReceived> VWCommodityReceived
+        {
+            get { return this.vwCommodityReceived ?? (this.vwCommodityReceived = new GenericRepository<VWCommodityReceived>(_context)); }
+        }
 
-        
 
 
         private IGenericRepository<VWDispatchCommodity> vwDispatchCommodity = null;
@@ -745,23 +751,23 @@ namespace Cats.Data.Hub
         }
 
         private IGenericRepository<VWCarryOver> vwCarryOver = null;
-       public IGenericRepository<VWCarryOver> VWCarryOver
-       {
-           get { return this.vwCarryOver ?? (this.vwCarryOver = new GenericRepository<VWCarryOver>(_context)); }
-       }
+        public IGenericRepository<VWCarryOver> VWCarryOver
+        {
+            get { return this.vwCarryOver ?? (this.vwCarryOver = new GenericRepository<VWCarryOver>(_context)); }
+        }
 
-       private IGenericRepository<VWFreePhysicalStock> vwFreePhysicalStock = null;
-       public IGenericRepository<VWFreePhysicalStock> VWFreePhysicalStock
-       {
-           get { return this.vwFreePhysicalStock ?? (this.vwFreePhysicalStock = new GenericRepository<VWFreePhysicalStock>(_context)); }
-       }
-       private IGenericRepository<VWTransferredStock> vwTransferredStock = null;
-       public IGenericRepository<VWTransferredStock> VWTransferredStock
-       {
-           get { return this.vwTransferredStock ?? (this.vwTransferredStock = new GenericRepository<VWTransferredStock>(_context)); }
+        private IGenericRepository<VWFreePhysicalStock> vwFreePhysicalStock = null;
+        public IGenericRepository<VWFreePhysicalStock> VWFreePhysicalStock
+        {
+            get { return this.vwFreePhysicalStock ?? (this.vwFreePhysicalStock = new GenericRepository<VWFreePhysicalStock>(_context)); }
+        }
+        private IGenericRepository<VWTransferredStock> vwTransferredStock = null;
+        public IGenericRepository<VWTransferredStock> VWTransferredStock
+        {
+            get { return this.vwTransferredStock ?? (this.vwTransferredStock = new GenericRepository<VWTransferredStock>(_context)); }
 
-       }
-      
+        }
+
     }
 }
 

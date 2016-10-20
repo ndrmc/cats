@@ -100,6 +100,7 @@
     <Compile Include="Mapping\VWDispatchAllocationMap.cs" />
     <Compile Include="Mapping\VWFreePhysicalStockMap.cs" />
     <Compile Include="Mapping\VWReceiptAllocationAggregateMap.cs" />
+    <Compile Include="Mapping\VWDdispatchAllocationDistributionMap.cs" />
     <Compile Include="StockAdjustmentViewModel.cs" />
     <Compile Include="SummaryFreeAndPhysicalStockModel.cs" />
     <Compile Include="Mapping\VWTransferredStockMap.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="ViewModels\ReceiveViewModelDto.cs" />
     <Compile Include="VWDispatchAllocation.cs" />
     <Compile Include="VWReceiptAllocationAggregate.cs" />
+    <Compile Include="VWDdispatchAllocationDistribution.cs" />
     <Compile Include="VWTransferredStock.cs" />
     <Compile Include="VWCarryOver.cs" />
     <Compile Include="Detail.cs" />

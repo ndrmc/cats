@@ -6,241 +6,242 @@ using Cats.Models.Hubs;
 namespace Cats.Data.Hub.UnitWork
 {
 
-		public interface IUnitOfWork:IDisposable
-        {
-            #region Old Unit of work
+    public interface IUnitOfWork : IDisposable
+    {
+        #region Old Unit of work
 
-           // IAccountRepository Account { get; set; }
-                   
-           //IAdjustmentRepository Adjustment { get; set; }
-                   
-           //IAdjustmentReasonRepository AdjustmentReason { get; set; }
-                   
-           //IAdminUnitRepository AdminUnit { get; set; }
-                   
-           //IAdminUnitTypeRepository AdminUnitType { get; set; }
-                   
-           //IAuditRepository Audit { get; set; }
-                   
-           //ICommodityRepository Commodity { get; set; }
-                   
-           //ICommodityGradeRepository CommodityGrade { get; set; }
-                   
-           //ICommoditySourceRepository CommoditySource { get; set; }
-                   
-           //ICommodityTypeRepository CommodityType { get; set; }
-                   
-           //IContactRepository Contact { get; set; }
-                   
-           //IDetailRepository Detail { get; set; }
-                   
-           //IDispatchRepository Dispatch { get; set; }
-                   
-           //IDispatchAllocationRepository DispatchAllocation { get; set; }
-                   
-           //IDispatchDetailRepository DispatchDetail { get; set; }
-                   
-           //IDonorRepository Donor { get; set; }
-                   
-           //IFDPRepository FDP { get; set; }
-                   
-           //IForgetPasswordRequestRepository ForgetPasswordRequest { get; set; }
-                   
-           //IGiftCertificateRepository GiftCertificate { get; set; }
-                   
-           //IGiftCertificateDetailRepository GiftCertificateDetail { get; set; }
-                   
-           //IHubRepository Hub { get; set; }
-                   
-           //IHubOwnerRepository HubOwner { get; set; }
-                   
-           //IHubSettingRepository HubSetting { get; set; }
-                   
-           //IHubSettingValueRepository HubSettingValue { get; set; }
-                   
-           //IInternalMovementRepository InternalMovement { get; set; }
-                   
-           //ILedgerRepository Ledger { get; set; }
-                   
-           //ILedgerTypeRepository LedgerType { get; set; }
-                   
-           //ILetterTemplateRepository LetterTemplate { get; set; }
-                   
-           //IMasterRepository Master { get; set; }
-                   
-           //IOtherDispatchAllocationRepository OtherDispatchAllocation { get; set; }
-                   
-           //IPartitionRepository Partition { get; set; }
-                   
-           //IPeriodRepository Period { get; set; }
-                   
-           //IProgramRepository Program { get; set; }
-                   
-           //IProjectCodeRepository ProjectCode { get; set; }
-                   
-           //IReceiptAllocationRepository ReceiptAllocation { get; set; }
-                   
-           //IReceiveRepository Receive { get; set; }
-                   
-           //IReceiveDetailRepository ReceiveDetail { get; set; }
-                   
-           //IReleaseNoteRepository ReleaseNote { get; set; }
-                   
-           //IRoleRepository Role { get; set; }
-                   
-           //ISessionAttemptRepository SessionAttempt { get; set; }
-                   
-           //ISessionHistoryRepository SessionHistory { get; set; }
-                   
-           //ISettingRepository Setting { get; set; }
-                   
-           //IShippingInstructionRepository ShippingInstruction { get; set; }
-                   
-           //ISMSRepository SMS { get; set; }
-                   
-           //IStackEventRepository StackEvent { get; set; }
-                   
-           //IStackEventTypeRepository StackEventType { get; set; }
-                   
-           //IStoreRepository Store { get; set; }
-                   
-           //ITransactionRepository Transaction { get; set; }
-                   
-           //ITransactionGroupRepository TransactionGroup { get; set; }
-                   
-           //ITranslationRepository Translation { get; set; }
-                   
-           //ITransporterRepository Transporter { get; set; }
-                   
-           //IUnitRepository Unit { get; set; }
-                   
-           //IUserHubRepository UserHub { get; set; }
-                   
-           //IUserProfileRepository UserProfile { get; set; }
-                   
-           //IUserRoleRepository UserRole { get; set; }
-            #endregion
+        // IAccountRepository Account { get; set; }
 
-            Database Database { get; }
-		    void Save();
+        //IAdjustmentRepository Adjustment { get; set; }
 
-            IGenericRepository<Account> AccountRepository { get; }
+        //IAdjustmentReasonRepository AdjustmentReason { get; set; }
 
-            IGenericRepository< Adjustment> AdjustmentRepository { get; }
+        //IAdminUnitRepository AdminUnit { get; set; }
 
-            IGenericRepository< AdjustmentReason > AdjustmentReasonRepository{ get; }
+        //IAdminUnitTypeRepository AdminUnitType { get; set; }
 
-            IGenericRepository<AdminUnit> AdminUnitRepository  { get; }
+        //IAuditRepository Audit { get; set; }
 
-            IGenericRepository< AdminUnitType> AdminUnitTypeRepository { get; }
+        //ICommodityRepository Commodity { get; set; }
 
-            IGenericRepository< Audit > AuditRepository{ get; }
+        //ICommodityGradeRepository CommodityGrade { get; set; }
 
-            IGenericRepository< Commodity>CommodityRepository { get; }
+        //ICommoditySourceRepository CommoditySource { get; set; }
 
-            IGenericRepository< CommodityGrade> CommodityGradeRepository { get; }
+        //ICommodityTypeRepository CommodityType { get; set; }
 
-            IGenericRepository< CommoditySource > CommoditySourceRepository{ get; }
+        //IContactRepository Contact { get; set; }
 
-            IGenericRepository< CommodityType> CommodityTypeRepository { get; }
+        //IDetailRepository Detail { get; set; }
 
-            IGenericRepository< Contact > ContactRepository{ get; }
+        //IDispatchRepository Dispatch { get; set; }
 
-            IGenericRepository< Detail > DetailRepository{ get; }
+        //IDispatchAllocationRepository DispatchAllocation { get; set; }
 
-            IGenericRepository< Dispatch> DispatchRepository { get; }
+        //IDispatchDetailRepository DispatchDetail { get; set; }
 
-            IGenericRepository< DispatchAllocation > DispatchAllocationRepository{ get; }
+        //IDonorRepository Donor { get; set; }
 
-            IGenericRepository<DispatchDetail > DispatchDetailRepository { get; }
+        //IFDPRepository FDP { get; set; }
 
-            IGenericRepository<Donor > DonorRepository { get; }
+        //IForgetPasswordRequestRepository ForgetPasswordRequest { get; set; }
 
-            IGenericRepository< FDP> FDPRepository { get; }
+        //IGiftCertificateRepository GiftCertificate { get; set; }
 
-            IGenericRepository< ForgetPasswordRequest >ForgetPasswordRequestRepository{ get; }
+        //IGiftCertificateDetailRepository GiftCertificateDetail { get; set; }
 
-            IGenericRepository< GiftCertificate> GiftCertificateRepository { get; }
+        //IHubRepository Hub { get; set; }
 
-            IGenericRepository<GiftCertificateDetail >GiftCertificateDetailRepository { get; }
+        //IHubOwnerRepository HubOwner { get; set; }
 
-            IGenericRepository< Models.Hubs.Hub > HubRepository{ get; }
+        //IHubSettingRepository HubSetting { get; set; }
 
-            IGenericRepository<HubOwner> HubOwnerRepository  { get; }
+        //IHubSettingValueRepository HubSettingValue { get; set; }
 
-            IGenericRepository< HubSetting > HubSettingRepository{ get; }
+        //IInternalMovementRepository InternalMovement { get; set; }
 
-            IGenericRepository< HubSettingValue> HubSettingValueRepository { get; }
+        //ILedgerRepository Ledger { get; set; }
 
-            IGenericRepository< InternalMovement > InternalMovementRepository{ get; }
+        //ILedgerTypeRepository LedgerType { get; set; }
 
-            IGenericRepository< Ledger > LedgerRepository{ get; }
+        //ILetterTemplateRepository LetterTemplate { get; set; }
 
-            IGenericRepository< LedgerType > LedgerTypeRepository{ get; }
+        //IMasterRepository Master { get; set; }
 
-            IGenericRepository< LetterTemplate > LetterTemplateRepository{ get; }
+        //IOtherDispatchAllocationRepository OtherDispatchAllocation { get; set; }
 
-            IGenericRepository< Master> MasterRepository { get; }
+        //IPartitionRepository Partition { get; set; }
 
-            IGenericRepository< OtherDispatchAllocation > OtherDispatchAllocationRepository{ get; }
+        //IPeriodRepository Period { get; set; }
 
-            IGenericRepository<Partition>PartitionRepository  { get; }
+        //IProgramRepository Program { get; set; }
 
-            IGenericRepository<Period>PeriodRepository  { get; }
+        //IProjectCodeRepository ProjectCode { get; set; }
 
-            IGenericRepository< Program>ProgramRepository { get; }
+        //IReceiptAllocationRepository ReceiptAllocation { get; set; }
 
-            IGenericRepository< ProjectCode > ProjectCodeRepository{ get; }
+        //IReceiveRepository Receive { get; set; }
 
-            IGenericRepository< ReceiptAllocation > ReceiptAllocationRepository{ get; }
+        //IReceiveDetailRepository ReceiveDetail { get; set; }
 
-            IGenericRepository< Receive >ReceiveRepository{ get; }
+        //IReleaseNoteRepository ReleaseNote { get; set; }
 
-            IGenericRepository< ReceiveDetail > ReceiveDetailRepository{ get; }
+        //IRoleRepository Role { get; set; }
 
-            IGenericRepository< ReleaseNote > ReleaseNoteRepository{ get; }
+        //ISessionAttemptRepository SessionAttempt { get; set; }
 
-            IGenericRepository< Role > RoleRepository{ get; }
+        //ISessionHistoryRepository SessionHistory { get; set; }
 
-            IGenericRepository< SessionAttempt > SessionAttemptRepository{ get; }
+        //ISettingRepository Setting { get; set; }
 
-            IGenericRepository< SessionHistory > SessionHistoryRepository{ get; }
+        //IShippingInstructionRepository ShippingInstruction { get; set; }
 
-            IGenericRepository< Setting > SettingRepository{ get; }
+        //ISMSRepository SMS { get; set; }
 
-            IGenericRepository< ShippingInstruction> ShippingInstructionRepository { get; }
+        //IStackEventRepository StackEvent { get; set; }
 
-            IGenericRepository< SMS> SMSRepository { get; }
+        //IStackEventTypeRepository StackEventType { get; set; }
 
-            IGenericRepository< StackEvent> StackEventRepository { get; }
+        //IStoreRepository Store { get; set; }
 
-            IGenericRepository< StackEventType>StackEventTypeRepository { get; }
+        //ITransactionRepository Transaction { get; set; }
 
-            IGenericRepository< Store > StoreRepository{ get; }
+        //ITransactionGroupRepository TransactionGroup { get; set; }
 
-            IGenericRepository< Transaction> TransactionRepository { get; }
+        //ITranslationRepository Translation { get; set; }
 
-            IGenericRepository< TransactionGroup > TransactionGroupRepository{ get; }
+        //ITransporterRepository Transporter { get; set; }
 
-            IGenericRepository< Translation > TranslationRepository{ get; }
+        //IUnitRepository Unit { get; set; }
 
-            IGenericRepository< Transporter >TransporterRepository{ get; }
+        //IUserHubRepository UserHub { get; set; }
 
-            IGenericRepository< Unit >UnitRepository{ get; }
+        //IUserProfileRepository UserProfile { get; set; }
 
-            IGenericRepository< UserHub >UserHubRepository{ get; }
+        //IUserRoleRepository UserRole { get; set; }
+        #endregion
 
-            IGenericRepository< UserProfile >UserProfileRepository{ get; }
+        Database Database { get; }
+        void Save();
 
-            IGenericRepository<UserRole> UserRoleRepository { get; }
-		  IReportRepository ReportRepository { get; }
-		    IGenericRepository<ErrorLog> ErrorLogRepository { get; }
-            IGenericRepository<VWCommodityReceived> VWCommodityReceived { get; }
-            IGenericRepository<VWCarryOver> VWCarryOver { get; }
-		    IGenericRepository<VWFreePhysicalStock> VWFreePhysicalStock { get; }
-            IGenericRepository<VWDispatchCommodity> VWDispatchCommodity { get; } 
-            IGenericRepository<VWTransferredStock> VWTransferredStock { get; }
-            IGenericRepository<VWReceiptAllocationAggregate> VWReceiptAllocationAggregateRepository { get; }
-        }
+        IGenericRepository<Account> AccountRepository { get; }
+
+        IGenericRepository<Adjustment> AdjustmentRepository { get; }
+
+        IGenericRepository<AdjustmentReason> AdjustmentReasonRepository { get; }
+
+        IGenericRepository<AdminUnit> AdminUnitRepository { get; }
+
+        IGenericRepository<AdminUnitType> AdminUnitTypeRepository { get; }
+
+        IGenericRepository<Audit> AuditRepository { get; }
+
+        IGenericRepository<Commodity> CommodityRepository { get; }
+
+        IGenericRepository<CommodityGrade> CommodityGradeRepository { get; }
+
+        IGenericRepository<CommoditySource> CommoditySourceRepository { get; }
+
+        IGenericRepository<CommodityType> CommodityTypeRepository { get; }
+
+        IGenericRepository<Contact> ContactRepository { get; }
+
+        IGenericRepository<Detail> DetailRepository { get; }
+
+        IGenericRepository<Dispatch> DispatchRepository { get; }
+
+        IGenericRepository<DispatchAllocation> DispatchAllocationRepository { get; }
+
+        IGenericRepository<DispatchDetail> DispatchDetailRepository { get; }
+
+        IGenericRepository<Donor> DonorRepository { get; }
+
+        IGenericRepository<FDP> FDPRepository { get; }
+
+        IGenericRepository<ForgetPasswordRequest> ForgetPasswordRequestRepository { get; }
+
+        IGenericRepository<GiftCertificate> GiftCertificateRepository { get; }
+
+        IGenericRepository<GiftCertificateDetail> GiftCertificateDetailRepository { get; }
+
+        IGenericRepository<Models.Hubs.Hub> HubRepository { get; }
+
+        IGenericRepository<HubOwner> HubOwnerRepository { get; }
+
+        IGenericRepository<HubSetting> HubSettingRepository { get; }
+
+        IGenericRepository<HubSettingValue> HubSettingValueRepository { get; }
+
+        IGenericRepository<InternalMovement> InternalMovementRepository { get; }
+
+        IGenericRepository<Ledger> LedgerRepository { get; }
+
+        IGenericRepository<LedgerType> LedgerTypeRepository { get; }
+
+        IGenericRepository<LetterTemplate> LetterTemplateRepository { get; }
+
+        IGenericRepository<Master> MasterRepository { get; }
+
+        IGenericRepository<OtherDispatchAllocation> OtherDispatchAllocationRepository { get; }
+
+        IGenericRepository<Partition> PartitionRepository { get; }
+
+        IGenericRepository<Period> PeriodRepository { get; }
+
+        IGenericRepository<Program> ProgramRepository { get; }
+
+        IGenericRepository<ProjectCode> ProjectCodeRepository { get; }
+
+        IGenericRepository<ReceiptAllocation> ReceiptAllocationRepository { get; }
+
+        IGenericRepository<Receive> ReceiveRepository { get; }
+
+        IGenericRepository<ReceiveDetail> ReceiveDetailRepository { get; }
+
+        IGenericRepository<ReleaseNote> ReleaseNoteRepository { get; }
+
+        IGenericRepository<Role> RoleRepository { get; }
+
+        IGenericRepository<SessionAttempt> SessionAttemptRepository { get; }
+
+        IGenericRepository<SessionHistory> SessionHistoryRepository { get; }
+
+        IGenericRepository<Setting> SettingRepository { get; }
+
+        IGenericRepository<ShippingInstruction> ShippingInstructionRepository { get; }
+
+        IGenericRepository<SMS> SMSRepository { get; }
+
+        IGenericRepository<StackEvent> StackEventRepository { get; }
+
+        IGenericRepository<StackEventType> StackEventTypeRepository { get; }
+
+        IGenericRepository<Store> StoreRepository { get; }
+
+        IGenericRepository<Transaction> TransactionRepository { get; }
+
+        IGenericRepository<TransactionGroup> TransactionGroupRepository { get; }
+
+        IGenericRepository<Translation> TranslationRepository { get; }
+
+        IGenericRepository<Transporter> TransporterRepository { get; }
+
+        IGenericRepository<Unit> UnitRepository { get; }
+
+        IGenericRepository<UserHub> UserHubRepository { get; }
+
+        IGenericRepository<UserProfile> UserProfileRepository { get; }
+
+        IGenericRepository<UserRole> UserRoleRepository { get; }
+        IReportRepository ReportRepository { get; }
+        IGenericRepository<ErrorLog> ErrorLogRepository { get; }
+        IGenericRepository<VWCommodityReceived> VWCommodityReceived { get; }
+        IGenericRepository<VWCarryOver> VWCarryOver { get; }
+        IGenericRepository<VWFreePhysicalStock> VWFreePhysicalStock { get; }
+        IGenericRepository<VWDispatchCommodity> VWDispatchCommodity { get; }
+        IGenericRepository<VWTransferredStock> VWTransferredStock { get; }
+        IGenericRepository<VWReceiptAllocationAggregate> VWReceiptAllocationAggregateRepository { get; }
+        IGenericRepository<VWDdispatchAllocationDistribution> VwDispatchAllocationDistribuition { get; }
+    }
 }
 
