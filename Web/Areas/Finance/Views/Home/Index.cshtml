@@ -353,7 +353,7 @@
 
             $scope.paymentRequestForDashboard = {};
             $scope.paymentRequestBeingProcessed = {};
-            @*$http({ method: 'GET', url: '@Url.Action("PaymentRequestForDashboard", "Home")' }).success(function (data, status, headers, config) {
+            $http({ method: 'GET', url: '@Url.Action("PaymentRequestForDashboard", "Home")' }).success(function (data, status, headers, config) {
                 console.log(data);
                 $scope.paymentRequestForDashboard = data;
                 $scope.viewPaymentDetail = function (item) {
@@ -361,7 +361,7 @@
                     var id = item.TransporterId;
                     window.open("@Url.Action("PaymentRequests", "ValidatedPaymentRequest")" + "?transporterID=" + id, "_blank");
                 };
-            });*@
+            });
             $http({ method: 'GET', url: '@Url.Action("PaymentRequestBeingProcessed", "Home")' }).success(function (data, status, headers, config) {
                 console.log(data);
                 $scope.paymentRequestBeingProcessed = data;
