@@ -204,7 +204,7 @@ namespace Cats.Areas.Logistics.Controllers
 
                         SourceSwap = (int)transfer.SourceSwap,
                         SourceSwapName = transfer.Hub2.Name,
-
+                        ReferenceNumber = transfer.ReferenceNumber,
                     }
                    );
         }
@@ -309,17 +309,14 @@ namespace Cats.Areas.Logistics.Controllers
             {
                 if (_transferService.CreateRequisitonForTransfer(transfer))
                 {
-                    _transferService.Approve(transfer);
+                    _transferService.ApproveSwap(transfer, HttpContext.User.Identity.Name);
                     _businessProcessService.PromotWorkflow(businessProcessState);
-
                 }
                 else
                 {
                     TempData["CustomError"] = @"Unable to Approve the given Transfer(Free Stock may not be available with this SI number)";
                     return RedirectToAction("Detail", new { id = transfer.TransferID });
                 }
-
-
             }
             else
             {
