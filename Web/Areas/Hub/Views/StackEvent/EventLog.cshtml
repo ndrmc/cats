@@ -7,7 +7,7 @@
     <div style="margin-bottom:20px;">
         <input type="button" value="Add New Event" class="t-button"  id="addNewEvent"/>
     </div>
-    @if (HubConstants.isValidOperation(HubConstants.Operation.Add_new_event).ToString() == "Add_new_event")
+    @if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Add_new_event) )
     {
 @{ Html.Telerik().Window()
             .Name("AddNewEventWindow")

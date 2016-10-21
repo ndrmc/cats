@@ -9,12 +9,12 @@
 @Html.Partial("DisplayHub")
 
 
-    @if (HubConstants.isValidOperation(HubConstants.Operation.Record_new_loss).ToString() == "Record_new_loss")
+    @if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Record_new_loss) )
     {
         <p>
         List of loss and adjustment in your current wearehouse, to add new loss or adjustment record click @Html.ActionLink("Record new Loss", "CreateLoss", "LossesAndAdjustments")<p>
             }
-          @if (HubConstants.isValidOperation(HubConstants.Operation.Record_new_adjustment).ToString() == "Record_new_adjustment")
+          @if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Record_new_adjustment) )
         { 
                <p>
             or @Html.ActionLink("Record new Adjustment", "CreateAdjustment", "LossesAndAdjustments") respectively

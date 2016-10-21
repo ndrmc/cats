@@ -332,6 +332,27 @@ namespace Cats.Helpers
             return false;
         }
 
+
+        public static bool HubOperationCheck(HubConstants.Operation operationHub)
+        {
+            
+            var hubConstants = new HubConstants();
+            var hubCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.Hub);
+
+            
+            if (null == hubCache)
+            {
+                Signout();
+                return false;
+            }
+
+            if (hubCache.CheckAccess(hubConstants.ItemName(operationHub), DateTime.Now) == AuthorizationType.Allow)
+            {
+                return true;
+            }
+            return false;
+        }
+      
         public static bool ProcurementOperationCheck(ProcurementConstants.Operation operationProcurement)
         {
             //return MvcHtmlString.Create(@"<a data-buttontype=" + dataButtontype + "  class=" + ccsClass + " href=" + url + ">" + text + "</a>");

@@ -272,28 +272,28 @@
 
         col =>
         {
-           
 
-                col.Bound(dis => dis.DispatchAllocationID).
-                ClientTemplate("<div style='min-width:120px'>" +
-                               "<# if ('" + HubConstants.isValidOperation(HubConstants.Operation.New_dispatch_to_FDPs).ToString() + "'== 'New_dispatch_to_FDPs') {#>" +
-                               "<a href='" + @Url.Action("CreateDispatch", "Dispatch", new {@allocationId = "<#= DispatchAllocationID #>", @type = "<#= 1 #>"})
-                               + "' >" + @Html.Translate("Dispatch") + "</a>  <span>   </span>  " +
-                               "<#}#>" +
-                               "<# if ('" + HubConstants.isValidOperation(HubConstants.Operation.Edit_dispatch_to_FDPs).ToString() + "'== 'Edit_dispatch_to_FDPs') {#>" +
-                               "<a href='#' onclick='EditFDPAllocation(\"<#= DispatchAllocationID #>\")'"
-                               + "' >" + @Html.Translate("Edit") + "</a>"
-                               + "<span> </span>"
-                               + "<#}#>"
-                               + "<# if (!IsClosed  ) {#>"
-                               + "<# if ('" + HubConstants.isValidOperation(HubConstants.Operation.Close_dispatch_plan_to_FDPs).ToString() + "'== 'Close_dispatch_plan_to_FDPs') {#>" +
-                               "<a href='#' onclick='ClosePlanById(\"<#= DispatchAllocationID #>\")' >" + @Html.Translate("Close") + "</a>" + "<#}#>" +
-                               " <#} else {#>"
-                               + " <#}#>"
-                               + "<span>  </span></div>"
 
-                ).Title("Action");
-            
+            col.Bound(dis => dis.DispatchAllocationID).
+            ClientTemplate("<div style='min-width:120px'>" +
+                           "<# if (" + Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.New_dispatch_to_FDPs) +") {#>" +
+                           "<a href='" + @Url.Action("CreateDispatch", "Dispatch", new {@allocationId = "<#= DispatchAllocationID #>", @type = "<#= 1 #>"})
+                           + "' >" + @Html.Translate("Dispatch") + "</a>  <span>   </span>  " +
+                           "<#}#>" +
+                           "<# if (" + Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Edit_dispatch_to_FDPs)+") {#>" +
+                           "<a href='#' onclick='EditFDPAllocation(\"<#= DispatchAllocationID #>\")'"
+                           + "' >" + @Html.Translate("Edit") + "</a>"
+                           + "<span> </span>"
+                           + "<#}#>"
+                           + "<# if (!IsClosed  ) {#>"
+                           + "<# if (" + Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Close_dispatch_plan_to_FDPs)+") {#>" +
+                           "<a href='#' onclick='ClosePlanById(\"<#= DispatchAllocationID #>\")' >" + @Html.Translate("Close") + "</a>" + "<#}#>" +
+                           " <#} else {#>"
+                           + " <#}#>"
+                           + "<span>  </span></div>"
+
+            ).Title("Action");
+
             col.Bound(modelItem => modelItem.BidRefNo).HtmlAttributes(new { onclick = "return loadForm(this)" }).Title("BidRef #").Width(50);
             col.Bound(modelitem => modelitem.RequisitionNo).Title(Html.Translate("Req #")).Width(100);
 

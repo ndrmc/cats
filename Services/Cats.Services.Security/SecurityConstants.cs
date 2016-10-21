@@ -2271,20 +2271,7 @@ namespace Cats.Security
         /// </summary>
         /// <param name="operation">The operation.</param>
         /// <returns>The Operation Name.</returns>
-        public static string isValidOperation(HubConstants.Operation operation)
-        {
-            var constants = new HubConstants();
-            string acces = "";
-            var ewCache
-             = (UserPermissionCache)HttpContext.Current.Session["HUB_PERMISSIONS"];
-            if (ewCache == null)
-                return "";
-            if (ewCache.CheckAccess(constants.ItemName(operation), DateTime.Now) == AuthorizationType.Allow)
-            {
-                acces = operation.ToString();
-            }
-            return acces;
-        }
+  
         public virtual string ItemName(Operation operation)
         {
             if ((operation == Operation.Add_new_event))
@@ -2785,8 +2772,9 @@ namespace Cats.Security
             /// </summary>
             View_transportation_report,
         }
+       
         #endregion
-    
+
     }
     #endregion
     #region Region Security Constants
