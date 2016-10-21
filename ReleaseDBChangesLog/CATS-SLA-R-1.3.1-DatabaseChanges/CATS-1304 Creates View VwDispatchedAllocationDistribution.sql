@@ -1,7 +1,7 @@
-USE [CatsDrmfss]
+USE [CatsDrmfssNew]
 GO
 
-/****** Object:  View [dbo].[VWDispatchAllocationDistribution]    Script Date: 10/20/2016 12:37:59 PM ******/
+/****** Object:  View [dbo].[VWDispatchAllocationDistribution]    Script Date: 10/21/2016 10:40:22 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -11,7 +11,7 @@ GO
 CREATE VIEW [dbo].[VWDispatchAllocationDistribution]
 AS
 SELECT        Procurement.Transporter.Name AS Transporter, dbo.Commodity.Name AS Commodity, dbo.Dispatch.DispatchDate, SUM(dbo.DispatchAllocation.Amount) AS AllocatedAmount, 
-                         SUM(dbo.DispatchDetail.RequestedQuantityInMT) AS DispatchedAmount, SUM(dbo.DispatchAllocation.Amount) - SUM(dbo.DispatchDetail.RequestedQuantityInMT) AS Diff1
+                         SUM(dbo.DispatchDetail.RequestedQuantityInMT) AS DispatchedAmount, SUM(dbo.DispatchDetail.RequestedQuantityInMT) - SUM(dbo.DeliveryDetail.ReceivedQuantity) AS Diff1
 FROM            dbo.TransporterPaymentRequest INNER JOIN
                          dbo.DispatchDetail INNER JOIN
                          Procurement.TransportOrder INNER JOIN
@@ -20,7 +20,10 @@ FROM            dbo.TransporterPaymentRequest INNER JOIN
                          dbo.Dispatch ON dbo.DispatchAllocation.DispatchAllocationID = dbo.Dispatch.DispatchAllocationID ON Procurement.Transporter.TransporterID = dbo.Dispatch.TransporterID INNER JOIN
                          Procurement.TransportOrderDetail ON dbo.Dispatch.FDPID = Procurement.TransportOrderDetail.FdpID ON Procurement.TransportOrder.TransportOrderID = Procurement.TransportOrderDetail.TransportOrderID ON 
                          dbo.DispatchDetail.DispatchID = dbo.Dispatch.DispatchID ON dbo.TransporterPaymentRequest.TransportOrderID = Procurement.TransportOrder.TransportOrderID INNER JOIN
-                         dbo.Commodity ON Procurement.TransportOrderDetail.CommodityID = dbo.Commodity.CommodityID
+                         dbo.Commodity ON Procurement.TransportOrderDetail.CommodityID = dbo.Commodity.CommodityID INNER JOIN
+                         dbo.Delivery ON dbo.TransporterPaymentRequest.DeliveryID = dbo.Delivery.DeliveryID INNER JOIN
+                         dbo.DeliveryDetail ON dbo.Delivery.DeliveryID = dbo.DeliveryDetail.DeliveryID AND dbo.Delivery.DeliveryID = dbo.DeliveryDetail.DeliveryID AND dbo.Delivery.DeliveryID = dbo.DeliveryDetail.DeliveryID AND 
+                         dbo.Delivery.DeliveryID = dbo.DeliveryDetail.DeliveryID
 GROUP BY Procurement.Transporter.Name, dbo.Commodity.Name, dbo.Dispatch.DispatchDate
 
 GO
@@ -30,7 +33,7 @@ Begin DesignProperties =
    Begin PaneConfigurations = 
       Begin PaneConfiguration = 0
          NumPanes = 4
-         Configuration = "(H (1[16] 4[46] 2[21] 3) )"
+         Configuration = "(H (1[59] 4[6] 2[22] 3) )"
       End
       Begin PaneConfiguration = 1
          NumPanes = 3
@@ -88,7 +91,7 @@ Begin DesignProperties =
          NumPanes = 1
          Configuration = "(V (2))"
       End
-      ActivePaneConfig = 0
+      ActivePaneConfig = 2
    End
    Begin DiagramPane = 
       Begin Origin = 
@@ -98,13 +101,13 @@ Begin DesignProperties =
       Begin Tables = 
          Begin Table = "TransporterPaymentRequest"
             Begin Extent = 
-               Top = 176
-               Left = 792
-               Bottom = 306
-               Right = 1042
+               Top = 296
+               Left = 694
+               Bottom = 426
+               Right = 944
             End
             DisplayFlags = 280
-            TopColumn = 0
+            TopColumn = 3
          End
          Begin Table = "DispatchDetail"
             Begin Extent = 
@@ -159,25 +162,45 @@ Begin DesignProperties =
          Begin Table = "TransportOrderDetail (Procurement)"
             Begin Extent = 
                Top = 220
-               Left = 224
-    ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VWDispatchAllocationDistribution'
+               Left = 245
+      ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VWDispatchAllocationDistribution'
 GO
 
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'           Bottom = 339
-               Right = 458
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'         Bottom = 340
+               Right = 479
             End
             DisplayFlags = 280
-            TopColumn = 9
+            TopColumn = 12
          End
          Begin Table = "Commodity"
             Begin Extent = 
-               Top = 318
-               Left = 513
-               Bottom = 448
-               Right = 703
+               Top = 365
+               Left = 5
+               Bottom = 495
+               Right = 195
             End
             DisplayFlags = 280
             TopColumn = 0
+         End
+         Begin Table = "Delivery"
+            Begin Extent = 
+               Top = 345
+               Left = 438
+               Bottom = 475
+               Right = 670
+            End
+            DisplayFlags = 280
+            TopColumn = 20
+         End
+         Begin Table = "DeliveryDetail"
+            Begin Extent = 
+               Top = 440
+               Left = 210
+               Bottom = 570
+               Right = 408
+            End
+            DisplayFlags = 280
+            TopColumn = 2
          End
       End
    End
@@ -199,6 +222,7 @@ EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'           Bo
       End
    End
    Begin CriteriaPane = 
+      PaneHidden = 
       Begin ColumnWidths = 12
          Column = 1440
          Alias = 900
