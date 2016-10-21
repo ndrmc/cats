@@ -96,6 +96,10 @@
                         {
                             <li class="edit_button"><a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , @Model.LoanReciptPlanID)" title="@actions.Name">@actions.Name</a></li>
                         }
+                        if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Revert_Donation) && actions.Name == "Reject")
+                        {
+                            <li class="edit_button"><a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , @Model.LoanReciptPlanID)" title="@actions.Name">@actions.Name</a></li>
+                        }
                         if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Approve_transfer_plan) && actions.Name == "Close")
                         {
                             <li class="edit_button"><a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , @Model.LoanReciptPlanID)" title="@actions.Name">@actions.Name</a></li>
@@ -104,7 +108,7 @@
                     }
                     <li class="divider"></li>
                     @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
-                {*@
+                        {*@
                     <li class="edit_button"><a href="javascript:workflow_history(@Model.BusinessProcessID)"> History </a></li>
                     @*}*@
                 </ul>
@@ -118,7 +122,7 @@
                 <ul class="dropdown-menu pull-right">
 
 
-                    @if (Model.Status == "Draft")
+                    @if (Model.Status == "Draft" || Model.Status == "Rejected")
                     {
                         <li><a id="btnRecive" class="btn green-sharp-stripe" href="@Url.Action("ReciptPlan", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Recieve Plan")</a></li>
                         <li><a id="btnEdit" class="btn green-sharp-stripe" href="@Url.Action("Edit", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Edit")</a></li>
@@ -140,7 +144,7 @@
                         @Html.LabelFor(m => m.SiNumber, @Html.Translate("SI Number"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.SiNumber, new {disabled = true, @class = "form-control"})
+                        @Html.TextBoxFor(m => m.SiNumber, new { disabled = true, @class = "form-control" })
                         <span class="help-block">@Html.ValidationMessageFor(m => m.SiNumber)</span>
                     </div>
 
@@ -150,7 +154,7 @@
                         @Html.LabelFor(m => m.Donor, @Html.Translate("Loan Source"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.Donor, new {disabled = true, @class = "form-control"})
+                        @Html.TextBoxFor(m => m.Donor, new { disabled = true, @class = "form-control" })
                     </div>
                 </div>
 
@@ -162,7 +166,7 @@
                         @Html.LabelFor(m => m.ProgramID, @Html.Translate("Program"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.ProgramName, new {disabled = true, @class = "form-control"})
+                        @Html.TextBoxFor(m => m.ProgramName, new { disabled = true, @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group col-sm-6">
@@ -170,7 +174,7 @@
                         @Html.LabelFor(m => m.CommodityID, @Html.Translate("Commodity"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.CommodityName, new {disabled = true, @class = "form-control"})
+                        @Html.TextBoxFor(m => m.CommodityName, new { disabled = true, @class = "form-control" })
                     </div>
                 </div>
             </div>
@@ -181,7 +185,7 @@
                         @Html.LabelFor(m => m.CommoditySourceID, @Html.Translate("Commodity Source"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.CommoditySourceName, new {disabled = true, @class = "form-control"})
+                        @Html.TextBoxFor(m => m.CommoditySourceName, new { disabled = true, @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group col-sm-6">
@@ -189,7 +193,7 @@
                         @Html.LabelFor(m => m.RefeenceNumber, @Html.Translate("Reference Number"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.RefeenceNumber, new {disabled = true, @class = "form-control"})
+                        @Html.TextBoxFor(m => m.RefeenceNumber, new { disabled = true, @class = "form-control" })
                     </div>
                 </div>
 
@@ -201,7 +205,7 @@
                         @Html.LabelFor(m => m.ProjectCode, @Html.Translate("Project Code"))
                     </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(m => m.ProjectCode, new {disabled = true, @class = "form-control"})
+                        @Html.TextBoxFor(m => m.ProjectCode, new { disabled = true, @class = "form-control" })
                     </div>
 
                 </div>
@@ -211,7 +215,7 @@
                             @Html.LabelFor(m => m.Quantity, @Html.Translate("Quantity in MT"))
                         </div>
                         <div class="col-sm-6">
-                            @Html.TextBoxFor(m => m.Quantity, new {disabled = true, @class = "form-control"})
+                            @Html.TextBoxFor(m => m.Quantity, new { disabled = true, @class = "form-control" })
                         </div>
                     </div>
                 </div>
@@ -255,19 +259,19 @@
             @(Html.Kendo().Grid<LoanReciptPlanWithDetailViewModel>()
               .Name("grid")
               .Columns(columns =>
+              {
+                  columns.Bound(m => m.MemoRefrenceNumber).Width(100).Title(@Html.Translate("Memo Reference number"));
+                  columns.Bound(m => m.HubName).Title(@Html.Translate("Hub")).Width(100);
+                  columns.Bound(m => m.CreatedDate).Title(Html.Translate("Recieved Date")).Width(100);
+                  columns.Bound(m => m.Amount).Width(100).Title(@Html.Translate("Recieving Amount")).HtmlAttributes(new { align = "right" });
+                  columns.Bound(m => m.Remaining).Width(100).Title(@Html.Translate("Remaining")).HtmlAttributes(new { align = "right" });
+                  // columns.Bound(m => m.Remaining).ClientFooterTemplate("Total in Birr <b>:#=kendo.format('{0:N}', sum)#</b>").Format("{0:N}");
+                  if (Model.StatusID == (int)LocalPurchaseStatus.Draft)
                   {
-                      columns.Bound(m => m.MemoRefrenceNumber).Width(100).Title(@Html.Translate("Memo Reference number"));
-                      columns.Bound(m => m.HubName).Title(@Html.Translate("Hub")).Width(100);
-                      columns.Bound(m => m.CreatedDate).Title(Html.Translate("Recieved Date")).Width(100);
-                      columns.Bound(m => m.Amount).Width(100).Title(@Html.Translate("Recieving Amount")).HtmlAttributes(new { align = "right" });
-                      columns.Bound(m => m.Remaining).Width(100).Title(@Html.Translate("Remaining")).HtmlAttributes(new { align = "right" });
-                      // columns.Bound(m => m.Remaining).ClientFooterTemplate("Total in Birr <b>:#=kendo.format('{0:N}', sum)#</b>").Format("{0:N}");
-                      if (Model.StatusID == (int)LocalPurchaseStatus.Draft)
-                      {
-                          columns.Command(destroy => destroy.Destroy().HtmlAttributes(new {align = "center"})).Width(100).Title(Html.Translate("Delete"));
-                      }
-
+                      columns.Command(destroy => destroy.Destroy().HtmlAttributes(new { align = "center" })).Width(100).Title(Html.Translate("Delete"));
                   }
+
+              }
 
               )
 
@@ -280,8 +284,8 @@
                                             .Group(t => t.Add(m => m.HubName))
                                             .Model(model => model.Id(m => m.LoanReciptPlanDetailID))
                                             .Read(read => read.Action("LoanReciptPlanDetail_Read", "ReciptPlanForLoan", new { loanReciptPlanID = Model.LoanReciptPlanID }))
-                                            .Destroy(destroy => destroy.Action("LoanReciptPlanDetail_Delete", "ReciptPlanForLoan" ))
-                    //.Update(update => update.Action("Commodity_Update", "Request"))
+                                            .Destroy(destroy => destroy.Action("LoanReciptPlanDetail_Delete", "ReciptPlanForLoan"))
+              //.Update(update => update.Action("Commodity_Update", "Request"))
               )
             )
 
@@ -296,7 +300,7 @@
         $('#modalPromotionLabel').html(actionname);
         $('#LoanReciptPlanID').val(LoanReciptPlanID);
         $('#modalPromotion').modal();
-       
+
     }
     function workflow_history(BusinessProcessID) {
         $('#modalHistory').modal();

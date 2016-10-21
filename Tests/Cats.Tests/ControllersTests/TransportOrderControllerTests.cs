@@ -313,7 +313,7 @@ namespace Cats.Tests.ControllersTests
             _transportOrderController = new TransportOrderController(mockTransportOrderService.Object, mockTransportRequisitionService.Object,
                                                                      workflowStatusService.Object, logService.Object,
                                                                      transReqWithoutTransporterService.Object, transporterOrderDetailService.Object,
-                                                                     adminUnitService.Object, transporterService.Object, transportBidQuotationService.Object,null,null, null);
+                                                                     adminUnitService.Object, transporterService.Object, transportBidQuotationService.Object,null,null, null,null);
             //var transporterOrderDetailService = new Mock<ITransportOrderDetailService>();
             //transporterOrderDetailService.Setup(m => m.GetAllTransportOrderDetail()).Returns(transporterOrderDetail);
             //_transportOrderController = new TransportOrderController(mockTransportOrderService.Object, mockTransportRequisitionService.Object,

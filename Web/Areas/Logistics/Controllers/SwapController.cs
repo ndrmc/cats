@@ -171,7 +171,10 @@ namespace Cats.Areas.Logistics.Controllers
         }
         public ActionResult Transfer_Read([DataSourceRequest] DataSourceRequest request)
         {
-            var transfer = _transferService.GetAllTransfer().OrderByDescending(m => m.TransferID);
+            var transfer =
+                _transferService.Get(null, null,
+                    "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                    .OrderByDescending(m => m.TransferID);
             var transferToDisplay = GetAllTransfers(transfer);
             return Json(transferToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -201,7 +204,7 @@ namespace Cats.Areas.Logistics.Controllers
 
                         SourceSwap = (int)transfer.SourceSwap,
                         SourceSwapName = transfer.Hub2.Name,
-
+                        ReferenceNumber = transfer.ReferenceNumber,
                     }
                    );
         }
@@ -299,24 +302,21 @@ namespace Cats.Areas.Logistics.Controllers
                 ParentBusinessProcessID = st.ParentBusinessProcessID
             };
             var transfer = _transferService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
-
+            
             //var transfer = _transferService.FindById(id);
             string stateName = _stateTemplateService.FindById(st.StateID).Name;
             if (stateName == "Approved" && transfer != null)
             {
                 if (_transferService.CreateRequisitonForTransfer(transfer))
                 {
-                    _transferService.Approve(transfer);
+                    _transferService.ApproveSwap(transfer, HttpContext.User.Identity.Name);
                     _businessProcessService.PromotWorkflow(businessProcessState);
-
                 }
                 else
                 {
                     TempData["CustomError"] = @"Unable to Approve the given Transfer(Free Stock may not be available with this SI number)";
                     return RedirectToAction("Detail", new { id = transfer.TransferID });
                 }
-
-
             }
             else
             {

@@ -1,4 +1,4 @@
-BEGIN TRANSACTION
+ BEGIN TRANSACTION
 IF   EXISTS (
   SELECT * 
   FROM   sys.columns 
@@ -7,8 +7,7 @@ IF   EXISTS (
 )
  
  BEGIN
- 
-declare  @constraintName varchar(60);
+ declare  @constraintName varchar(60);
 SET @constraintName =   (Select top 1   SysObjects.[Name] As [Constraint Name] 
        
 From SysObjects Inner Join 
@@ -16,7 +15,7 @@ From SysObjects Inner Join
 On Tab.[ID] = Sysobjects.[Parent_Obj] 
 Inner Join sysconstraints On sysconstraints.Constid = Sysobjects.[ID] 
 Inner Join SysColumns Col On Col.[ColID] = sysconstraints.[ColID] And Col.[ID] = Tab.[ID]
-where [Tab].[Name] = 'Transfer' and SysObjects.[Name] like 'DF__Transfer%'
+where [Tab].[Name] = 'Transfer' and SysObjects.[Name] like 'DF__Transfer__Busin%'
 order by [Tab].[Name]) 
 EXEC('ALTER TABLE [dbo].[Transfer] DROP CONSTRAINT ' + @constraintName)
 
@@ -27,10 +26,10 @@ DROP COLUMN   [BusinessProcessID]
  IF(@@error <> 0)
 ROLLBACK /* Rollback of the transaction */
  declare @ProcessTemplateID  int;
-IF  EXISTS (SELECT * FROM [dbo].[ProcessTemplate] WHERE [Name] = 'TransferReceiptPlan') 
+IF  EXISTS (SELECT * FROM [dbo].[ProcessTemplate] WHERE [Name] = 'Swap') 
 BEGIN
 Select @ProcessTemplateID =  ProcessTemplateID  FROM [dbo].[ProcessTemplate]
-where [Name] = 'TransferReceiptPlan'
+where [Name] = 'Swap'
 Delete from [dbo].[BusinessProcess]
 where [ProcessTypeID] = @ProcessTemplateID
 delete from [dbo].[BusinessProcessState]

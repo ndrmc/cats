@@ -31,7 +31,8 @@ BEGIN
 		   )
 		declare @id int  
 		declare @draft int 
-		declare @Approve int 
+		declare @Approve int
+		declare @Rejected int 
 		declare @signed int 
 		declare @closed int  
 		select @id = Scope_Identity()  
@@ -55,19 +56,24 @@ BEGIN
            )
      VALUES
 		   ( @id,'Approved',0,1,1 )  select @Approve = Scope_Identity()
-		   		   
 		    INSERT INTO [dbo].[StateTemplate]
            ([ParentProcessTemplateID] ,[Name],[AllowedAccessLevel],[StateNo]
            ,[StateType]
            )
      VALUES
-		   ( @id,'Signed',0,1,1 )  select @signed = Scope_Identity()   
+		   ( @id,'Rejected',0,2,1 )  select @Rejected = Scope_Identity() 		   
+		    INSERT INTO [dbo].[StateTemplate]
+           ([ParentProcessTemplateID] ,[Name],[AllowedAccessLevel],[StateNo]
+           ,[StateType]
+           )
+     VALUES
+		   ( @id,'Signed',0,2,1 )  select @signed = Scope_Identity()   
      INSERT INTO [dbo].[StateTemplate]
            ([ParentProcessTemplateID] ,[Name],[AllowedAccessLevel],[StateNo]
            ,[StateType]
            )
      VALUES
-		   ( @id,'Closed',0,1,1 )  select @closed = Scope_Identity() 
+		   ( @id,'Closed',0,3,1 )  select @closed = Scope_Identity() 
 
 		   INSERT INTO [dbo].[FlowTemplate]
            ([ParentProcessTemplateID]
@@ -77,7 +83,9 @@ BEGIN
            )
      VALUES
            (@id ,@draft,@Approve,'Approve'),
-		    (@id ,@Approve,@signed,'Sign'),
+		   (@id ,@Rejected,@Approve,'Approve'),
+		   (@id ,@Approve,@Rejected,'Reject'),
+		   (@id ,@Approve,@signed,'Sign'),
 		   (@id ,@signed,@closed,'Close')
 		   
 		

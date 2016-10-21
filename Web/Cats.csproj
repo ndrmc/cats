@@ -2754,6 +2754,7 @@
     <Content Include="Areas\Settings\Views\Users\ForgetPassword.cshtml" />
     <Content Include="Areas\Settings\Views\Users\ForgetPasswordRequest.cshtml" />
     <Content Include="Areas\WorkflowManager\Views\BusinessProcess\Details.cshtml" />
+    <Content Include="Areas\Logistics\Views\Transfer\_Edit.cshtml" />
     <None Include="dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>dataset.Designer.cs</LastGenOutput>

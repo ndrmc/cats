@@ -64,6 +64,7 @@
                     <option value="All">All</option>
                     <option value="Draft">Draft</option>
                     <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
                     <option value="Signed">Signed</option>
                     <option value="Closed">Closed</option>
                     <option value="Failed">Failed</option>
@@ -81,28 +82,28 @@
 
 
 
-        <div class="portlet light bordered">
-            <div class="portlet-title">
-                <div class="caption font-green-sharp">
-                    <i class="fa fa-list font-green-sharp"></i>
-                    <span class="caption-subject bold uppercase"> @Html.Translate("List of Receipt Plan From Loan")</span>
-                    <span class="caption-helper">  </span>
-                </div>
-                @*<div class="tools">
-                        <a href="#" class="collapse" data-original-title="" title=""></a>
-                        <a href="javascript:;" class="remove" data-original-title="" title=""></a>
-                    </div>*@
-                <div class="actions">
-                    @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Recive_Plan_For_Loan_Create).ToString() == "Recive_Plan_For_Loan_Create")
-                    {
-                        <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn green" href="@Url.Action("Create", "ReciptPlanForLoan")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
-                    }
-                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
-                </div>
-            </div>
-            <div class="portlet-body">
-                <div class="table-responsive">
-                    @(Html.Kendo().Grid<LoanReciptPlanViewModel>()
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="fa fa-list font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("List of Receipt Plan From Loan")</span>
+            <span class="caption-helper">  </span>
+        </div>
+        @*<div class="tools">
+                <a href="#" class="collapse" data-original-title="" title=""></a>
+                <a href="javascript:;" class="remove" data-original-title="" title=""></a>
+            </div>*@
+        <div class="actions">
+            @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Recive_Plan_For_Loan_Create).ToString() == "Recive_Plan_For_Loan_Create")
+            {
+                <a id="btnAddReciptPlan" data-buttontype="btn_new_record" class="btn green" href="@Url.Action("Create", "ReciptPlanForLoan")"><i class="fa fa-plus"></i> @Html.Translate("Create New")</a>
+            }
+            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="table-responsive">
+            @(Html.Kendo().Grid<LoanReciptPlanViewModel>()
                   .Name("grid")
 
                   .Sortable()
@@ -113,7 +114,7 @@
                   {
                       if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Recive_Plan_For_Loan_SI_View).ToString() == "Recive_Plan_For_Loan_SI_View")
                       {
-                          columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "ReciptPlanForLoan", new {id = "#=LoanReciptPlanID#"}) + " '>#=SiNumber#</a>  ").Width(100);
+                          columns.Bound(m => m.SiNumber).Title(@Html.Translate("SI Number")).ClientTemplate("<a href='" + Url.Action("Detail", "ReciptPlanForLoan", new { id = "#=LoanReciptPlanID#" }) + " '>#=SiNumber#</a>  ").Width(100);
                       }
                       columns.Bound(m => m.Donor).Width(200).Title(@Html.Translate("Donor")).Width(100);
                       columns.Bound(m => m.ProgramName).Title(@Html.Translate("Program")).Width(100);
@@ -126,10 +127,10 @@
                       columns.Bound(m => m.Status).Title(Html.Translate("Status")).Width(100);
                       columns.Command(p =>
                       {
-                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() == "Revert_Donation")
-                      {
-                          p.Custom("Revert").Click("OnRevert");
-                      }
+                          //if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() == "Revert_Donation")
+                          //{
+                          //    p.Custom("Revert").Click("OnRevert");
+                          //}  Revert comment b/c it includded on the work flow
                           if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() == "Delete_Donation")
                           {
                               p.Custom("Delete").Click("OnDelete");
@@ -155,80 +156,80 @@
 
                   )
                   .Resizable(resize => resize.Columns(true))
-                    )
-                </div>
-            </div>
+            )
         </div>
+    </div>
+</div>
 
-        <script id="template" type="text/kendo-tmpl">
+<script id="template" type="text/kendo-tmpl">
 
-            @(Html.Kendo().Grid<LoanReciptPlanWithDetailViewModel>()
+    @(Html.Kendo().Grid<LoanReciptPlanWithDetailViewModel>()
               .Name("grid_#=LoanReciptPlanID#")
               .Columns(columns =>
-                  {
-                      columns.Bound(m => m.MemoRefrenceNumber).Title(@Html.Translate("Memo Reference number"));
-                      columns.Bound(m => m.HubName).Title(@Html.Translate("Hub"));
-                      columns.Bound(m => m.CreatedDate).Title(Html.Translate("Recieved Date"));
-                      columns.Bound(m => m.Amount).Width(200).Title(@Html.Translate("Recieving Amount")).HtmlAttributes(new { align = "right" });
-                      columns.Bound(m => m.Remaining).Width(200).Title(@Html.Translate("Remaining")).HtmlAttributes(new { align = "right" });
-                      // columns.Bound(m => m.Remaining).ClientFooterTemplate("Total in Birr <b>:#=kendo.format('{0:N}', sum)#</b>").Format("{0:N}");
+              {
+                  columns.Bound(m => m.MemoRefrenceNumber).Title(@Html.Translate("Memo Reference number"));
+                  columns.Bound(m => m.HubName).Title(@Html.Translate("Hub"));
+                  columns.Bound(m => m.CreatedDate).Title(Html.Translate("Recieved Date"));
+                  columns.Bound(m => m.Amount).Width(200).Title(@Html.Translate("Recieving Amount")).HtmlAttributes(new { align = "right" });
+                  columns.Bound(m => m.Remaining).Width(200).Title(@Html.Translate("Remaining")).HtmlAttributes(new { align = "right" });
+                  // columns.Bound(m => m.Remaining).ClientFooterTemplate("Total in Birr <b>:#=kendo.format('{0:N}', sum)#</b>").Format("{0:N}");
 
-                  }
+              }
 
               )
 
 
             .Pageable()
-                    ////.TableHtmlAttributes(new { @class = "table table-condensed" })
+              ////.TableHtmlAttributes(new { @class = "table table-condensed" })
               .HtmlAttributes(new { style = "height 60px;" })
               .DataSource(dataSource => dataSource
                                             .Ajax()
                                             .Group(t => t.Add(m => m.HubName))
                                             .Model(model => model.Id(m => m.LoanReciptPlanDetailID))
                                             .Read(read => read.Action("LoanReciptPlanDetail_Read", "ReciptPlanForLoan", new { loanReciptPlanID = "#=LoanReciptPlanID#" }))
-                    //.Update(update => update.Action("Commodity_Update", "Request"))
+              //.Update(update => update.Action("Commodity_Update", "Request"))
               )
                 .ToClientTemplate()
-            )
-        </script>
-        <div id='dialogDivSmall' class='modal fade in'>
-            <div id='dialogContentSmall'></div>
-        </div>
-        @*<script>
-                function Edit(e) {
-                    e.preventDefault();
+    )
+</script>
+<div id='dialogDivSmall' class='modal fade in'>
+    <div id='dialogContentSmall'></div>
+</div>
+@*<script>
+        function Edit(e) {
+            e.preventDefault();
 
-                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                    var url = "@Url.Action("Edit", "ReciptPlanForLoan")" + "/" + dataItem.LoanReciptPlanID;
-                    $('#dialogContent').load(url, function () {
-                        $('#dialogDiv').modal({
-                            backdrop: 'static',
-                            keyboard: true
-                        }, 'show');
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var url = "@Url.Action("Edit", "ReciptPlanForLoan")" + "/" + dataItem.LoanReciptPlanID;
+            $('#dialogContent').load(url, function () {
+                $('#dialogDiv').modal({
+                    backdrop: 'static',
+                    keyboard: true
+                }, 'show');
 
-                    });
-                    return false;
+            });
+            return false;
 
-                }
+        }
 
-                function Recieve(e) {
-                    e.preventDefault();
+        function Recieve(e) {
+            e.preventDefault();
 
-                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                    var url = "@Url.Action("ReciptPlan", "ReciptPlanForLoan")" + "/" + dataItem.LoanReciptPlanID;
-                    $('#dialogContentSmall').load(url, function () {
-                        $('#dialogDivSmall').modal({
-                            backdrop: 'static',
-                            keyboard: true
-                        }, 'show');
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var url = "@Url.Action("ReciptPlan", "ReciptPlanForLoan")" + "/" + dataItem.LoanReciptPlanID;
+            $('#dialogContentSmall').load(url, function () {
+                $('#dialogDivSmall').modal({
+                    backdrop: 'static',
+                    keyboard: true
+                }, 'show');
 
-                    });
-                    return false;
-                }
-            </script>*@
+            });
+            return false;
+        }
+    </script>*@
 
 
-        <script>
+<script>
 
             function onDataBound(e) {
                 //alert("show");
@@ -282,18 +283,18 @@
                 });
             }
 
-        </script>
+</script>
 
-        <div id="modalWindow">
-            <div class="alert-warning">
-                <strong>Warning! </strong>Are You Sure You Want to Delete this Loan?
-            </div><hr />
-            <div class="pull-right">
-                <button id="yes" class="btn green">Yes</button>
-                <button id="no" class="btn red">No</button>
-            </div>
-        </div>
-        <script>
+<div id="modalWindow">
+    <div class="alert-warning">
+        <strong>Warning! </strong>Are You Sure You Want to Delete this Loan?
+    </div><hr />
+    <div class="pull-right">
+        <button id="yes" class="btn green">Yes</button>
+        <button id="no" class="btn red">No</button>
+    </div>
+</div>
+<script>
             var wnd;
             $(document).ready(function () {
                 wnd = $("#modalWindow").kendoWindow({
@@ -304,18 +305,18 @@
                     //width: 300
                 }).data("kendoWindow");
             });
-        </script>
+</script>
 
-        <div id="modalWindowRevert">
-            <div>
-                <strong>Warning! </strong>Are You Sure You Want to Revert this Loan ?
-            </div><hr />
-            <div class="pull-right">
-                <button id="yesRevert" class="k-button">Yes</button>
-                <button id="noRevert" class="k-button">No</button>
-            </div>
-        </div>
-        <script>
+<div id="modalWindowRevert">
+    <div>
+        <strong>Warning! </strong>Are You Sure You Want to Revert this Loan ?
+    </div><hr />
+    <div class="pull-right">
+        <button id="yesRevert" class="k-button">Yes</button>
+        <button id="noRevert" class="k-button">No</button>
+    </div>
+</div>
+<script>
             var wndRevert;
             $(document).ready(function () {
                 wndRevert = $("#modalWindowRevert").kendoWindow({
@@ -326,17 +327,17 @@
                     // width: 300
                 }).data("kendoWindow");
             });
-        </script>
-        <style>
-            .k-window-titlebar {
-                margin-top: -30px;
-                height: 30px;
-            }
+</script>
+<style>
+    .k-window-titlebar {
+        margin-top: -30px;
+        height: 30px;
+    }
 
-            hr {
-                margin: 5px 0;
-            }
-        </style>
+    hr {
+        margin: 5px 0;
+    }
+</style>
 <script type="text/javascript">
     function searchGrid() {
         var gridListFilter = { filters: [] };
