@@ -411,7 +411,7 @@ namespace Cats.Areas.Finance.Controllers
                _dispatchAllocationDistributionService.GetAllDispatchAllocationDistribution();
 
             var filteredDistributions = (from da in dispatchedAllocations
-                where da.DispatchDate >= startDate && da.DispatchDate <= endDate
+                where da.Round == round && da.DispatchDate >= startDate && da.DispatchDate <= endDate
                 select new
                 {
                     da.Transporter,

@@ -4,7 +4,8 @@ namespace Cats.Models.Hubs
 {
     public class VWDdispatchAllocationDistribution
     {
-       public string Transporter { get; set; }
+        public string Transporter { get; set; }
+        public int Round { get; set; }
         public string Commodity { get; set; }
         public DateTime DispatchDate { get; set; }
         public decimal AllocatedAmount { get; set; }
