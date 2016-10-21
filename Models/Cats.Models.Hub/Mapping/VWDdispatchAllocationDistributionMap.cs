@@ -42,7 +42,7 @@ namespace Cats.Models.Hubs.Mapping
             this.ToTable("VWDispatchAllocationDistribution");
 
             this.Property(t => t.Transporter).HasColumnName("Transporter");
-            this.Property(t => t.Transporter).HasColumnName("Round");
+            this.Property(t => t.Round).HasColumnName("Round");
             this.Property(t => t.Commodity).HasColumnName("Commodity");
             //this.Property(t => t.Hub).HasColumnName("Hub");
             //this.Property(t => t.Fdp).HasColumnName("FDP");
