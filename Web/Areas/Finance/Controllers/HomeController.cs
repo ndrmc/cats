@@ -427,7 +427,7 @@ namespace Cats.Areas.Finance.Controllers
                     da.DispatchedAmount,
                     da.DispatchDate,
                     da.Diff1
-                }).ToList();
+                }).Take(takeTheFirst).ToList();
 
             return Json(filteredDistributions, JsonRequestBehavior.AllowGet);
         }
