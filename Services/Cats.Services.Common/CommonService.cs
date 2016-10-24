@@ -138,8 +138,11 @@ namespace Cats.Services.Common
                         psnpPlanID.Contains(m.PlanID) && m.ProgramID == programID &&
                         m.Status == (int) PlanStatus.PSNPCreated);
             }
+            //var planId =
+            //    _unitOfWork.HRDRepository.FindBy(m => m.Status == (int) HRDStatus.Published).Select(m => m.PlanID).
+            //        Distinct();
             var planId =
-                _unitOfWork.HRDRepository.FindBy(m => m.Status == (int) HRDStatus.Published).Select(m => m.PlanID).
+                  _unitOfWork.HRDRepository.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").Select(m => m.PlanID).
                     Distinct();
             return
                 _unitOfWork.PlanRepository.FindBy(
