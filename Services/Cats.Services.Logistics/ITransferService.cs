@@ -19,11 +19,14 @@ namespace Cats.Services.Logistics
        List<Transfer> GetAllTransfer();
        List<Transfer> FindBy(Expression<Func<Transfer, bool>> predicate);
        bool Approve(Transfer transfer);
+       bool ApproveSwap(Transfer transfer, string username);
        bool CreateRequisitonForTransfer(Transfer transfer);
-      
+      IEnumerable<Transfer> Get(
+      Expression<Func<Transfer, bool>> filter = null,
+      Func<IQueryable<Transfer>, IOrderedQueryable<Transfer>> orderBy = null,
+      string includeProperties = "");
 
-
-   }
+    }
 }
 
           

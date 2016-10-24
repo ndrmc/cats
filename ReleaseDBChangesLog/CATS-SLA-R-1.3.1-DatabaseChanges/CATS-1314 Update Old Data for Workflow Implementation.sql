@@ -1,6 +1,3 @@
-ALTER TABLE  [dbo].[GiftCertificate]
-ADD [BusinessProcessId] int NULL
-
  BEGIN TRANSACTION
  declare @ProcessTemplateID  int;
 IF  EXISTS (SELECT * FROM [dbo].[ProcessTemplate] WHERE [Name] = 'GiftCertificate') 

@@ -26,7 +26,7 @@
 }
 
 <p>
-    @if (HubConstants.isValidOperation(HubConstants.Operation.Create_new_starting_balance).ToString() == "Create_new_starting_balance")
+    @if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Create_new_starting_balance) )
     {
     <a href="#" onclick="CreateStartingBalance()">@Html.Translate("Create New Starting Balance")</a>
 }

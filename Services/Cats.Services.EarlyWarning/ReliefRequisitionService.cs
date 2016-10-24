@@ -21,12 +21,18 @@ namespace Cats.Services.EarlyWarning
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBusinessProcessService _businessProcessService;
         private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IStateTemplateService _stateTemplateService;
+        private readonly IBusinessProcessStateService _businessProcessStateService;
 
-        public ReliefRequisitionService(IUnitOfWork unitOfWork, IApplicationSettingService applicationSettingService, IBusinessProcessService businessProcessService)
+        public ReliefRequisitionService(IUnitOfWork unitOfWork, IApplicationSettingService applicationSettingService, IBusinessProcessService businessProcessService,
+                IStateTemplateService stateTemplateService,
+                             IBusinessProcessStateService paramBusinessProcessStateService)
         {
             this._unitOfWork = unitOfWork;
             _applicationSettingService = applicationSettingService;
             _businessProcessService = businessProcessService;
+            _stateTemplateService = stateTemplateService;
+            _businessProcessStateService = paramBusinessProcessStateService;
         }
 
         #region Default Service Implementation
@@ -83,50 +89,50 @@ namespace Cats.Services.EarlyWarning
 
         #endregion
 
-       
-        
+
+
         public List<RegionalRequisitionsSummary> GetRequisitionsSentToLogistics()
         {
-          //var app3 = _unitOfWork.ReliefRequisitionRepository.FindBy(r => r.Status == 3); 
-          
-          var app = _unitOfWork.ReliefRequisitionRepository.FindBy(t => t.Status >= 2 );
-          var ds =
-                (
-                    from a in app
-                    group a by new { a.RegionID,a.AdminUnit.Name} into regionalRequistions
-                    select new
-                    {
-                        regionalRequistions.Key.Name,
-                        ProgramBased = from a in regionalRequistions
-                                        group a by new {a.ProgramID,a.Program} into final
-                                        select new 
-                                        RegionalRequisitionsSummary()
-                                        {
-                                            RegionID = regionalRequistions.Key.RegionID,
-                                            RegionName = regionalRequistions.Key.Name,
-                                            DateLastModified = regionalRequistions.Select(d=>d.ApprovedDate).Last(),
-                                            NumberOfHubUnAssignedRequisitions = 
-                                            _unitOfWork.ReliefRequisitionRepository.FindBy(s => (s.RegionID == regionalRequistions.Key.RegionID && s.ProgramID == final.Key.ProgramID && s.Status==2)).Count,
-                                            NumberOfTotalRequisitions = regionalRequistions.Count(p=>p.ProgramID == final.Key.ProgramID),
-                                            ProgramType = final.Key.Program.Name
-                                            //Percentage = (NumberOfHubAssignedRequisitions / regionalRequistions.Count()) * 100,
-                                        }
-                    }
-                );
+            //var app3 = _unitOfWork.ReliefRequisitionRepository.FindBy(r => r.Status == 3); 
+
+            var app = _unitOfWork.ReliefRequisitionRepository.FindBy(t => t.Status >= 2);
+            var ds =
+                  (
+                      from a in app
+                      group a by new { a.RegionID, a.AdminUnit.Name } into regionalRequistions
+                      select new
+                      {
+                          regionalRequistions.Key.Name,
+                          ProgramBased = from a in regionalRequistions
+                                         group a by new { a.ProgramID, a.Program } into final
+                                         select new
+                                       RegionalRequisitionsSummary()
+                                         {
+                                             RegionID = regionalRequistions.Key.RegionID,
+                                             RegionName = regionalRequistions.Key.Name,
+                                             DateLastModified = regionalRequistions.Select(d => d.ApprovedDate).Last(),
+                                             NumberOfHubUnAssignedRequisitions =
+                                           _unitOfWork.ReliefRequisitionRepository.FindBy(s => (s.RegionID == regionalRequistions.Key.RegionID && s.ProgramID == final.Key.ProgramID && s.Status == 2)).Count,
+                                             NumberOfTotalRequisitions = regionalRequistions.Count(p => p.ProgramID == final.Key.ProgramID),
+                                             ProgramType = final.Key.Program.Name
+                                           //Percentage = (NumberOfHubAssignedRequisitions / regionalRequistions.Count()) * 100,
+                                       }
+                      }
+                  );
 
             return (from d in ds
                     from e in d.ProgramBased
                     select new RegionalRequisitionsSummary()
-                        {
-                            RegionID = e.RegionID,
-                            RegionName = e.RegionName,
-                            DateLastModified = e.DateLastModified,
-                            NumberOfHubUnAssignedRequisitions = e.NumberOfHubUnAssignedRequisitions,
-                            NumberOfTotalRequisitions = e.NumberOfTotalRequisitions,
-                            ProgramType = e.ProgramType,
-                            Percentage = e.NumberOfHubUnAssignedRequisitions / e.NumberOfTotalRequisitions * 100
-                            //Percentage
-                        }).ToList();
+                    {
+                        RegionID = e.RegionID,
+                        RegionName = e.RegionName,
+                        DateLastModified = e.DateLastModified,
+                        NumberOfHubUnAssignedRequisitions = e.NumberOfHubUnAssignedRequisitions,
+                        NumberOfTotalRequisitions = e.NumberOfTotalRequisitions,
+                        ProgramType = e.ProgramType,
+                        Percentage = e.NumberOfHubUnAssignedRequisitions / e.NumberOfTotalRequisitions * 100
+                        //Percentage
+                    }).ToList();
         }
 
         public void AddReliefRequisions(List<ReliefRequisition> reliefRequisitions)
@@ -141,24 +147,43 @@ namespace Cats.Services.EarlyWarning
         {
             //Check if Requisition is created from this request
             //
-            var regionalRequest = _unitOfWork.RegionalRequestRepository.Get(t => t.RegionalRequestID == requestId && t.Status == (int)RegionalRequestStatus.Approved  , null, "RegionalRequestDetails").FirstOrDefault();
+
+            var regionalRequest = _unitOfWork.RegionalRequestRepository.Get(t => t.RegionalRequestID == requestId && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved", null, "RegionalRequestDetails,BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
             if (regionalRequest == null) return null;
-            
+
             var reliefRequistions = CreateRequistionFromRequest(regionalRequest, user);
             //if (reliefRequistions.Count < 1)
             //    return GetRequisitionByRequestId(requestId);
+
             AddReliefRequisions(reliefRequistions);
-            regionalRequest.Status = (int)RegionalRequestStatus.Closed;
-            _unitOfWork.Save();
-            
+            var sList =
+                               _stateTemplateService
+                                     .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == regionalRequest.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Closed");
+
+            if (sList != null)
+            {
+                var createdstate3 = new BusinessProcessState
+                {
+                    DatePerformed = DateTime.Now,
+                    PerformedBy = user,
+                    Comment = " Regional Request Closed by System",
+                    StateID = sList.StateTemplateID,
+                    ParentBusinessProcessID = regionalRequest.BusinessProcessID
+                };
+                //_businessProcessStateService.Add(createdstate3);
+                _businessProcessService.PromotWorkflow(createdstate3);
+            }
+            //regionalRequest.Status = (int)RegionalRequestStatus.Closed;
+            //_unitOfWork.Save();
+
             foreach (var item in reliefRequistions)
             {
                 item.RequisitionNo = String.Format("REQ-{0}", item.RequisitionID);
             }
             _unitOfWork.Save();
-            return  GetRequisitionByRequestId(requestId);
+            return GetRequisitionByRequestId(requestId);
         }
-       
+
         public ReliefRequisition GenerateRequisition(RegionalRequest regionalRequest, List<RegionalRequestDetail> regionalRequestDetails, int commodityId, int zoneId, string user)
         {
             var relifRequisition = new ReliefRequisition()
@@ -171,7 +196,7 @@ namespace Cats.Services.EarlyWarning
                 CommodityID = commodityId,
                 RequestedDate = regionalRequest.RequistionDate,
                 RationID = regionalRequest.RationID
-                
+
                 //TODO:Please find another way how to specify Requistion No
                 ,
                 RequisitionNo = Guid.NewGuid().ToString(),
@@ -231,7 +256,7 @@ namespace Cats.Services.EarlyWarning
                 relifRequistionDetail.BenficiaryNo = regionalRequestDetail.Beneficiaries;
                 relifRequistionDetail.CommodityID = commodity.CommodityID;
                 relifRequistionDetail.Amount = commodity.Amount + contengency;
-                
+
                 relifRequisition.ReliefRequisitionDetails.Add(relifRequistionDetail);
             }
             return relifRequisition;
@@ -244,32 +269,32 @@ namespace Cats.Services.EarlyWarning
             //Assumtions Here is ColumnName of the request detail match with commodity name 
             var requestDetails =
                 _unitOfWork.RegionalRequestDetailRepository.Get(
-                    t => t.RegionalRequestID == regionalRequest.RegionalRequestID && t.Beneficiaries > 0,null,"FDP.AdminUnit");
-          
+                    t => t.RegionalRequestID == regionalRequest.RegionalRequestID && t.Beneficiaries > 0, null, "FDP.AdminUnit");
+
             var reliefRequisitions = new List<ReliefRequisition>();
 
             var zones = GetZonesFoodRequested(regionalRequest.RegionalRequestID);
-          
+
             foreach (var zone in zones)
             {
                 var zoneId = zone.HasValue ? zone.Value : -1;
                 if (zoneId == -1) continue;
                 var zoneRequestDetails = (from item in requestDetails where item.Fdp.AdminUnit.ParentID == zoneId select item).ToList();
-                if(zoneRequestDetails.Count < 1) continue;
+                if (zoneRequestDetails.Count < 1) continue;
 
                 var requestDetail = zoneRequestDetails.FirstOrDefault();
-                if(requestDetail==null) continue;
+                if (requestDetail == null) continue;
 
-                var requestCommodity=
-                    (from item in requestDetail.RequestDetailCommodities select item.CommodityID ).ToList();
-                if (requestCommodity.Count<1) continue;
+                var requestCommodity =
+                    (from item in requestDetail.RequestDetailCommodities select item.CommodityID).ToList();
+                if (requestCommodity.Count < 1) continue;
 
                 foreach (var commodityId in requestCommodity)
                 {
-                    reliefRequisitions.Add(GenerateRequisition(regionalRequest, zoneRequestDetails,commodityId, zoneId, user));
+                    reliefRequisitions.Add(GenerateRequisition(regionalRequest, zoneRequestDetails, commodityId, zoneId, user));
                 }
-               
-               
+
+
             }
 
             return reliefRequisitions;
@@ -307,7 +332,7 @@ namespace Cats.Services.EarlyWarning
 
 
 
-        public bool AssignRequisitonNo(Dictionary<int , string> requisitionNumbers )
+        public bool AssignRequisitonNo(Dictionary<int, string> requisitionNumbers)
         {
 
             foreach (var requisitonNumber in requisitionNumbers)
@@ -315,11 +340,11 @@ namespace Cats.Services.EarlyWarning
                 var requisition = _unitOfWork.ReliefRequisitionRepository.FindById(requisitonNumber.Key);
                 requisition.RequisitionNo = requisitonNumber.Value;
             }
-            _unitOfWork.Save();         
+            _unitOfWork.Save();
             return true;
         }
 
-        public IEnumerable<ReliefRequisitionNew>  GetRequisitionByRequestId(int requestId)
+        public IEnumerable<ReliefRequisitionNew> GetRequisitionByRequestId(int requestId)
         {
             var reliefRequistions =
                _unitOfWork.ReliefRequisitionRepository.Get(t => t.RegionalRequestID == requestId, null, "Program,AdminUnit1,AdminUnit.AdminUnit2,Commodity").ToList();
@@ -354,7 +379,7 @@ namespace Cats.Services.EarlyWarning
         }
 
 
-        public bool EditAllocatedAmount(Dictionary<int,decimal> allocations )
+        public bool EditAllocatedAmount(Dictionary<int, decimal> allocations)
         {
 
             foreach (var alloction in allocations)
@@ -364,7 +389,7 @@ namespace Cats.Services.EarlyWarning
                 requisitionDetail.Amount = alloction.Value;
             }
 
-           _unitOfWork.Save();
+            _unitOfWork.Save();
 
             return true;
         }

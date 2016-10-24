@@ -9,7 +9,7 @@
 
 
 @Html.Partial("DisplayHub")
-                      @if (HubConstants.isValidOperation(HubConstants.Operation.New_internal_movement).ToString() == "New_internal_movement")
+                      @if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.New_internal_movement) )
                       {
 <p>
 

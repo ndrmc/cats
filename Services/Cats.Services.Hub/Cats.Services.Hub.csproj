@@ -139,6 +139,7 @@
     <Compile Include="Interfaces\IUserHubService.cs" />
     <Compile Include="Interfaces\IUserProfileService.cs" />
     <Compile Include="Interfaces\IUserRoleService.cs" />
+    <Compile Include="IVWDdispatchAllocationDistributionService.cs" />
     <Compile Include="IVWReceiptAllocationAggregateService.cs" />
     <Compile Include="LedgerService.cs" />
     <Compile Include="LedgerTypeService.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="UserHubService.cs" />
     <Compile Include="UserProfileService.cs" />
     <Compile Include="UserRoleService.cs" />
+    <Compile Include="VWDdispatchAllocationDistributionService.cs" />
     <Compile Include="VWReceiptAllocationAggregateService.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -73,7 +73,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_Gift_Certificate_list)]
         public ActionResult Index(int id = 1)
         {
-            ViewBag.Title = id == 1 ? "Draft Gift Certificates" : "Approved Gift Certificates";
+            ViewBag.Title = "Gift Certificates";
+
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             var gifts = _giftCertificateService.Get(null, null, "GiftCertificateDetails,Donor,GiftCertificateDetails.Detail,GiftCertificateDetails.Commodity, BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate");
             var giftsViewModel = GiftCertificateViewModelBinder.BindListGiftCertificateViewModel(gifts.ToList(), datePref, true);

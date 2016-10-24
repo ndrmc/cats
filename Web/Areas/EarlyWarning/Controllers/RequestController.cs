@@ -54,6 +54,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly INotificationService _notificationService;
         private readonly IUserProfileService _userProfileService;
         private IReasonService _reasonService;
+        private readonly IStateTemplateService _stateTemplateService;
         public RequestController(IRegionalRequestService reliefRequistionService,
                                 IFDPService fdpService,
                                 IRegionalRequestDetailService reliefRequisitionDetailService,
@@ -67,8 +68,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                 IRegionalPSNPPlanService RegionalPSNPPlanService,
             IAdminUnitService adminUnitService,
             IPlanService planService,
-            IIDPSReasonTypeServices idpsReasonTypeServices, ITransactionService transactionService, INotificationService notificationService, 
-            IUserProfileService userProfileService, IReasonService reasonService, IBusinessProcessService businessProcessService )
+            IIDPSReasonTypeServices idpsReasonTypeServices, ITransactionService transactionService, INotificationService notificationService,
+            IUserProfileService userProfileService, IReasonService reasonService, IBusinessProcessService businessProcessService, IStateTemplateService stateTemplateService)
         {
             _regionalRequestService = reliefRequistionService;
             _fdpService = fdpService;
@@ -89,6 +90,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _userProfileService = userProfileService;
             _reasonService = reasonService;
             _businessProcessService = businessProcessService;
+            _stateTemplateService = stateTemplateService;
         }
         public ActionResult RegionalRequestsPieChart()
         {
@@ -105,7 +107,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var requests = _regionalRequestService.Get(t => t.Status == id, null, "AdminUnit,Program");
             var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
             var userPref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            return View(RequestViewModelBinder.BindRegionalRequestListViewModel(requests, userPref));
+            return View(RequestViewModelBinder.BindRegionalRequestListViewModel(requests, statuses, userPref));
         }
 
 
@@ -147,12 +149,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 : _applicationSettingService.getDefaultRation();
             regionalRequest.Round = hrdpsnpPlanInfo.HRDPSNPPlan.Round;
             regionalRequest.RegionalRequestDetails = (from item in hrdpsnpPlanInfo.BeneficiaryInfos
-                where item.Selected == false
-                select new RegionalRequestDetail
-                {
-                    Beneficiaries = item.Beneficiaries,
-                    Fdpid = item.FDPID
-                }).ToList();
+                                                      where item.Selected == false
+                                                      select new RegionalRequestDetail
+                                                      {
+                                                          Beneficiaries = item.Beneficiaries,
+                                                          Fdpid = item.FDPID
+                                                      }).ToList();
             // Add an application ssetting in database and service for the document workflow
             int BP_PR = _applicationSettingService.getRegionalRequestWorkflow();
 
@@ -180,31 +182,31 @@ namespace Cats.Areas.EarlyWarning.Controllers
             UserProfile user = _userProfileService.GetUser(User.Identity.Name);
 
             var regionalRequest = new RegionalRequest
-                                      {
-                                          Status = (int)RegionalRequestStatus.Draft,
-                                          RequistionDate = DateTime.Today,
-                                          Year = DateTime.Now.Year,
-                                          PlanID = planid,
-                                          Season = 1,
-                                          Month = DateTime.Now.Month,
-                                          RegionID = regionId,
-                                          ProgramId = programId,
-                                          DonorID = null,
-                                          RequestedBy = user.UserProfileID,
-                                          RationID = hrdpsnpPlanInfo.HRDPSNPPlan.RationID.HasValue ? hrdpsnpPlanInfo.HRDPSNPPlan.RationID.Value : _applicationSettingService.getDefaultRation(),
-                                          Round = null,
-                                          IDPSReasonType = reasonTypeID,
-                                          RegionalRequestDetails = (from item in hrdpsnpPlanInfo.BeneficiaryInfos
-                                                                    where item.Selected == false
-                                                                    select new RegionalRequestDetail()
-                                                                               {
-                                                                                   Beneficiaries = item.Beneficiaries,
-                                                                                   Fdpid = item.FDPID
-                                                                               }).ToList()
-                                      };
+            {
+                Status = (int)RegionalRequestStatus.Draft,
+                RequistionDate = DateTime.Today,
+                Year = DateTime.Now.Year,
+                PlanID = planid,
+                Season = 1,
+                Month = DateTime.Now.Month,
+                RegionID = regionId,
+                ProgramId = programId,
+                DonorID = null,
+                RequestedBy = user.UserProfileID,
+                RationID = hrdpsnpPlanInfo.HRDPSNPPlan.RationID.HasValue ? hrdpsnpPlanInfo.HRDPSNPPlan.RationID.Value : _applicationSettingService.getDefaultRation(),
+                Round = null,
+                IDPSReasonType = reasonTypeID,
+                RegionalRequestDetails = (from item in hrdpsnpPlanInfo.BeneficiaryInfos
+                                          where item.Selected == false
+                                          select new RegionalRequestDetail()
+                                          {
+                                              Beneficiaries = item.Beneficiaries,
+                                              Fdpid = item.FDPID
+                                          }).ToList()
+            };
             // Add an application ssetting in database and service for the document workflow
             int BP_PR = _applicationSettingService.getRegionalRequestWorkflow();
-           
+
             // Check if BP_PR is not null
             BusinessProcessState createdstate = new BusinessProcessState
             {
@@ -216,7 +218,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "RegionalRequest", createdstate);
             if (bp != null)
                 regionalRequest.BusinessProcessID = bp.BusinessProcessID;
-                _regionalRequestService.AddRegionalRequest(regionalRequest);
+            _regionalRequestService.AddRegionalRequest(regionalRequest);
 
             return regionalRequest;
         }
@@ -246,11 +248,32 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 AttachmentFile = fileName,
                 ParentBusinessProcessID = st.ParentBusinessProcessID
             };
-            _businessProcessService.PromotWorkflow(businessProcessState);
+
+            string stateName = _stateTemplateService.FindById(st.StateID).Name;
+            if (stateName == "Approved")
+            {
+                var reginalRequest = _regionalRequestService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
+                if (reginalRequest != null)
+                {
+                    int id = reginalRequest.RegionalRequestID;
+                    if (!CheckBeneficiaryNoAndCommodity(id))
+                    {
+                        TempData["msg"] = "Request can not be Approved. No Beneficiary number or No Commodity is allocated!";
+                        return RedirectToAction("Details", new { id = id });
+                    }
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+
+            }
+            else
+            {
+                _businessProcessService.PromotWorkflow(businessProcessState);
+            }
+
             if (statusId != null)
                 return RedirectToAction("Details", "Request", new { Area = "EarlyWarning", statusId });
-           
-            return   RedirectToAction("Index");
+
+            return RedirectToAction("Index");
         }
         public static string GetRandomAlphaNumeric(int length)
         {
@@ -281,13 +304,13 @@ namespace Cats.Areas.EarlyWarning.Controllers
                             new SelectList(
                                 _commonService.GetPrograms()
                                     .Where(
-                                        p => p.ProgramID == (int) Programs.Releif || p.ProgramID == (int) Programs.IDPS)
+                                        p => p.ProgramID == (int)Programs.Releif || p.ProgramID == (int)Programs.IDPS)
                                     .Take(2), "ProgramID", "Name");
                         break;
                     case 2: //PSNP
                         ViewBag.ProgramId =
                             new SelectList(
-                                _commonService.GetPrograms().Where(p => p.ProgramID == (int) Programs.PSNP).Take(2),
+                                _commonService.GetPrograms().Where(p => p.ProgramID == (int)Programs.PSNP).Take(2),
                                 "ProgramID", "Name");
                         ViewBag.program = "PSNP";
                         break;
@@ -416,12 +439,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 var file = Request.Files[i];
                 var reasonDetail = Request.Form[i];
-               
+
                 // reasonDetail;
-                
+
                 if (file == null) continue;
                 var fileName = Path.GetFileName(file.FileName);
-                
+
                 var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
                 file.SaveAs(path);
                 attachment = path;
@@ -432,13 +455,13 @@ namespace Cats.Areas.EarlyWarning.Controllers
             saveReason.CommentedBy = user.UserProfileID;
             saveReason.CommentedDate = DateTime.Now;
             saveReason.EditedDate = DateTime.Now;
-            saveReason.Status= "Reject";
-            saveReason.Attachment = attachment; 
+            saveReason.Status = "Reject";
+            saveReason.Attachment = attachment;
             _reasonService.AddReason(saveReason);
             _regionalRequestService.RejectRequest(Convert.ToInt32(Request.Form["RegionalRequestID"]), user);
             return RedirectToAction("Index");
         }
-       
+
         [HttpPost]
         public ActionResult New(HRDPSNPPlan hrdpsnpPlan, FormCollection formCollection)
         {
@@ -490,20 +513,20 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
                     //if (exisiting == 0)
                     //{
-                        RegionalRequest req = CretaeRegionalRequest(psnphrdPlanInfo);
-                        var model = getRequestDetai(req.RegionalRequestID);
-                        ViewBag.message = "Request Created";
-                        //RedirectToAction(@)
-                        try
-                        {
-                            SendNotification(req);
-                        }
-                        catch (Exception)
-                        {
+                    RegionalRequest req = CretaeRegionalRequest(psnphrdPlanInfo);
+                    var model = getRequestDetai(req.RegionalRequestID);
+                    ViewBag.message = "Request Created";
+                    //RedirectToAction(@)
+                    try
+                    {
+                        SendNotification(req);
+                    }
+                    catch (Exception)
+                    {
 
 
-                        }
-                        return RedirectToAction("Details" + "/" + req.RegionalRequestID);
+                    }
+                    return RedirectToAction("Details" + "/" + req.RegionalRequestID);
                     //}
                     //else
                     //{
@@ -531,7 +554,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                          "/EarlyWarning/Request/IndexFromNotification?recordId=" + regionalRequest.RegionalRequestID;
                         return;
                     }
-                    destinationURl = 
+                    destinationURl =
                                      "/EarlyWarning/Request/IndexFromNotification?recordId=" + regionalRequest.RegionalRequestID;
 
                     _notificationService.AddNotificationForEarlyWaringFromRegions(destinationURl,
@@ -574,12 +597,14 @@ namespace Cats.Areas.EarlyWarning.Controllers
             Plan plan = null;
             int id;
             if (!int.TryParse(collection["RegionId"].ToString(CultureInfo.InvariantCulture), out id))
-            {               
+            {
+                ViewBag.msg = @"Region is Required.";
                 ModelState.AddModelError("Errors", @"The data is invalid.");
                 return RedirectToAction("NewIdps"); // if region id has null value
             }
             if (id == 0 || (hrdpsnpPlan.RationID == null))
             {
+                ViewBag.msg = @"Ration is Required.";
                 ModelState.AddModelError("Errors", @"The data is invalid.");
                 return RedirectToAction("NewIdps"); // region not selected
             }
@@ -661,7 +686,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult Allocation_Create2(RegionalRequestDetailViewModel regionalRequestDetailViewModel)
         {
             if (regionalRequestDetailViewModel == null || !ModelState.IsValid)
-                return Json(new {success = 0, record = regionalRequestDetailViewModel, message = "Invalid input"},
+                return Json(new { success = 0, record = regionalRequestDetailViewModel, message = "Invalid input" },
                     JsonRequestBehavior.AllowGet);
 
             RegionalRequestDetail model = BindRegionalRequestDetail(regionalRequestDetailViewModel);
@@ -670,12 +695,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 _regionalRequestDetailService.FindBy(t => t.RegionalRequestID == model.RegionalRequestID);
             var existingRequest = requestDetails.Where(r => r.Fdpid == model.Fdpid);
             if (existingRequest.Any())
-                return Json(new {success = 0, record = regionalRequestDetailViewModel, message = "Data duplicated"},
-                    JsonRequestBehavior.AllowGet); 
-            
+                return Json(new { success = 0, record = regionalRequestDetailViewModel, message = "Data duplicated" },
+                    JsonRequestBehavior.AllowGet);
+
             _regionalRequestDetailService.AddCommodityFdp(model);
             regionalRequestDetailViewModel.RegionalRequestDetailID = model.RegionalRequestDetailID;
-            return Json(new {success = 1, record = regionalRequestDetailViewModel}, JsonRequestBehavior.AllowGet);
+            return Json(new { success = 1, record = regionalRequestDetailViewModel }, JsonRequestBehavior.AllowGet);
 
 
             // return RedirectToAction("Allocation_Read", new {request=new DataSourceRequest(), id = regionalRequestDetailViewModel.RegionalRequestID });
@@ -732,8 +757,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             var adminUnits = _adminUnitService.FindBy(t => t.AdminUnitTypeID == 2 && t.AdminUnitID == request.RegionID);
             var woredasNotInHrd = new List<int>();
-           
-            if (request != null && request.Program.ProgramID == (int) Programs.Releif)
+
+            if (request != null && request.Program.ProgramID == (int)Programs.Releif)
             {
                 var hrd = _hrdService.FindBy(m => m.PlanID == request.PlanID).FirstOrDefault();
                 var hrdWoerdasId = _HRDDetailService.FindBy(h => h.HRDID == hrd.HRDID).Select(w => w.WoredaID).ToList();
@@ -742,8 +767,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     foreach (var zone in region.AdminUnit1)
                     {
                         woredasNotInHrd.AddRange(from woreda in zone.AdminUnit1
-                            where !hrdWoerdasId.Contains(woreda.AdminUnitID)
-                            select woreda.AdminUnitID);
+                                                 where !hrdWoerdasId.Contains(woreda.AdminUnitID)
+                                                 select woreda.AdminUnitID);
                     }
                 }
             }
@@ -766,7 +791,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult Delete(int id)
         {
             var regionalRequest = _regionalRequestService.FindById(id);
-            if (_regionalRequestService.DeleteRegionalRequest(id)){
+            if (_regionalRequestService.DeleteRegionalRequest(id))
+            {
                 TempData["Deleted"] = "Regional Request has been deleted!";
                 return RedirectToAction("Index");
             }
@@ -944,7 +970,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             foreach (var zone in zones)
             {
                 var zoneFirstAllocatoin = requestDetailViewModels.FirstOrDefault(z => z.Zone == zone);
-                if(zoneFirstAllocatoin != null) zoneFirstAllocations.Add(zoneFirstAllocatoin);
+                if (zoneFirstAllocatoin != null) zoneFirstAllocations.Add(zoneFirstAllocatoin);
             }
             foreach (var requestDetailViewModel in requestDetailViewModels)
             {
@@ -1045,12 +1071,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private RegionalRequestDetail BindRegionalRequestDetail(RegionalRequestDetailViewModel regionalRequestDetailViewModel)
         {
             return new RegionalRequestDetail()
-                               {
-                                   Beneficiaries = regionalRequestDetailViewModel.Beneficiaries,
-                                   Fdpid = regionalRequestDetailViewModel.Fdpid,
-                                   RegionalRequestID = regionalRequestDetailViewModel.RegionalRequestID,
-                                   RegionalRequestDetailID = regionalRequestDetailViewModel.RegionalRequestDetailID
-                               };
+            {
+                Beneficiaries = regionalRequestDetailViewModel.Beneficiaries,
+                Fdpid = regionalRequestDetailViewModel.Fdpid,
+                RegionalRequestID = regionalRequestDetailViewModel.RegionalRequestID,
+                RegionalRequestDetailID = regionalRequestDetailViewModel.RegionalRequestDetailID
+            };
         }
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Allocation_Create([DataSourceRequest] DataSourceRequest request, RegionalRequestDetailViewModel regionalRequestDetailViewModel)
@@ -1204,9 +1230,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
 
             var requests = id == -1 ? _regionalRequestService.GetAllRegionalRequest().OrderByDescending(m => m.RegionalRequestID) : _regionalRequestService.Get(t => t.Status == id);
-            //var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
+            var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var requestViewModels = RequestViewModelBinder.BindRegionalRequestListViewModel(requests, datePref);
+            var requestViewModels = RequestViewModelBinder.BindRegionalRequestListViewModel(requests, statuses, datePref);
             return Json(requestViewModels.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -1220,8 +1246,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
             //        m =>
             //            m.RegionID == RegionID && m.ProgramId == ProgramID && m.RequistionDate >= DateFrom &&
             //            m.RequistionDate <= DateTo);
-             
-            var requestViewModels = new List<RegionalRequestViewModel>();
+
+
             if (StatusID == -1)
             {
                 requests = _regionalRequestService.
@@ -1275,15 +1301,22 @@ namespace Cats.Areas.EarlyWarning.Controllers
             }
             var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            if (requests != null)
-            {
-                requestViewModels = RequestViewModelBinder.BindRegionalRequestListViewModel(requests, datePref).ToList();
-            }
+            var requestViewModels = RequestViewModelBinder.BindRegionalRequestListViewModel(requests, statuses, datePref);
+            //  var j = requestViewModels.FirstOrDefault().C
+            requestViewModels = SetApprovalRequests(requestViewModels.Where(t => t.StateId == StatusID));
+
             return Json(requestViewModels.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
 
-
+        public IEnumerable<RegionalRequestViewModel> SetApprovalRequests(IEnumerable<RegionalRequestViewModel> requests)
+        {
+            foreach (var request in requests)
+            {
+                request.IsApprovable = CheckBeneficiaryNoAndCommodity(request.RegionalRequestID);
+            }
+            return requests;
+        }
 
         #endregion
 
@@ -1319,36 +1352,36 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
                 var details = regionalRequest.RegionalRequestDetails;
                 var hrd = _hrdService.FindBy(m => m.PlanID == regionalRequest.PlanID).FirstOrDefault();
-               
+
 
 
                 var woredaG = (from detail in details
                                group detail by detail.Fdp.AdminUnit
                                    into woredaDetail
-                                   select woredaDetail);
+                               select woredaDetail);
 
                 result.AddRange(from sw in woredaG
-                    from hrdDetails in hrd.HRDDetails
-                    let oneWoreda = sw.ToList()
-                    let regionalRequestDetail = oneWoreda.FirstOrDefault()
-                    where regionalRequestDetail != null && hrdDetails.AdminUnit.AdminUnitID == sw.Key.AdminUnitID
-                    select new PLANWithRegionalRequestViewModel()
-                    {
-                        zone = regionalRequestDetail.Fdp.AdminUnit.AdminUnit2.Name,
-                        Woreda = sw.Key.Name,
-                        RequestedBeneficiaryNo = sw.Sum(m => m.Beneficiaries),
-                        PlannedBeneficaryNo =
-                            hrd != null
-                                ? hrd.HRDDetails.First(m => m.AdminUnit.AdminUnitID == sw.Key.AdminUnitID)
-                                    .NumberOfBeneficiaries
-                                : 0,
-                        Difference =
-                            ((hrd != null
-                                ? hrd.HRDDetails.First(m => m.AdminUnit.AdminUnitID == sw.Key.AdminUnitID)
-                                    .NumberOfBeneficiaries
-                                : 0) - (sw.Sum(m => m.Beneficiaries))),
-                        RegionalRequestDetails = oneWoreda
-                    });
+                                from hrdDetails in hrd.HRDDetails
+                                let oneWoreda = sw.ToList()
+                                let regionalRequestDetail = oneWoreda.FirstOrDefault()
+                                where regionalRequestDetail != null && hrdDetails.AdminUnit.AdminUnitID == sw.Key.AdminUnitID
+                                select new PLANWithRegionalRequestViewModel()
+                                {
+                                    zone = regionalRequestDetail.Fdp.AdminUnit.AdminUnit2.Name,
+                                    Woreda = sw.Key.Name,
+                                    RequestedBeneficiaryNo = sw.Sum(m => m.Beneficiaries),
+                                    PlannedBeneficaryNo =
+                                        hrd != null
+                                            ? hrd.HRDDetails.First(m => m.AdminUnit.AdminUnitID == sw.Key.AdminUnitID)
+                                                .NumberOfBeneficiaries
+                                            : 0,
+                                    Difference =
+                                        ((hrd != null
+                                            ? hrd.HRDDetails.First(m => m.AdminUnit.AdminUnitID == sw.Key.AdminUnitID)
+                                                .NumberOfBeneficiaries
+                                            : 0) - (sw.Sum(m => m.Beneficiaries))),
+                                    RegionalRequestDetails = oneWoreda
+                                });
             }
 
             if (regionalRequest.ProgramId == 2)
@@ -1359,7 +1392,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 var woredaG = (from detail in details
                                group detail by detail.Fdp.AdminUnit
                                    into woredaDetail
-                                   select woredaDetail);
+                               select woredaDetail);
 
                 result.AddRange(from sw in woredaG
                                 from pnspDetail in psnp.RegionalPSNPPlanDetails
@@ -1384,7 +1417,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 var woredaG = (from detail in details
                                group detail by detail.Fdp.AdminUnit
                                    into woredaDetail
-                                   select woredaDetail);
+                               select woredaDetail);
 
 
                 result.AddRange(from sw in woredaG
@@ -1430,11 +1463,11 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private RegionalRequestDetail GetRequestDetail(AddFDPViewModel addFdpViewModel)
         {
             var requestdetail = new RegionalRequestDetail()
-                {
-                    RegionalRequestID = addFdpViewModel.RegionalRequestID,
-                    Fdpid = addFdpViewModel.FDPID,
-                    Beneficiaries = addFdpViewModel.Beneficiaries,
-                };
+            {
+                RegionalRequestID = addFdpViewModel.RegionalRequestID,
+                Fdpid = addFdpViewModel.FDPID,
+                Beneficiaries = addFdpViewModel.Beneficiaries,
+            };
             return requestdetail;
         }
 

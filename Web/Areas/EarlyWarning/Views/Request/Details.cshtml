@@ -5,9 +5,9 @@
 @using Cats.Helpers
 @using Cats.Security
 @using Cats.Models
+@using Cats.Models.ViewModels
 @using Cats.Services.Security
 @using Kendo.Mvc.UI
-
 @{
     ViewBag.Title = "Regional Relief Requests";
     //Layout = "~/Views/Shared/_MainLayout.cshtml";
@@ -20,12 +20,10 @@
 @{
     var modelRequest = (RegionalRequestViewModel)ViewData["Request_main_data"];
 }
-
 @{
 //var user = (UserIdentity)System.Web.HttpContext.Current.User.Identity;
 //var unit = user.Profile.PreferedWeightMeasurment;
 }
-
 @section Toolbar
 {
     @* <div class="btn-group" style="margin-right:8px;">
@@ -53,7 +51,6 @@
 
         </div>*@
     @*<a class="btn toolbar-btn " href="@Url.Action("Index", "Request", new { Area = "EarlyWarning" })" data-buttontype="btn_back_to_list"></a>*@
-
     @*<div class="btn-group">
             <button class="btn">Action</button>
             @{
@@ -94,13 +91,11 @@
             </ul>
             <a class="btn toolbar-btn" href="@Url.Action("Print", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })" style="display:none1;" target="_blank" id="toolbar_button_print" title="Print"><i class="icon-print"></i></a>
         </div>*@
-
     @* @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
         {
             <a class="btn toolbar-btn "   href="@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })" data-buttontype=""><i class="icon-plus"></i>Requisiton</a>
         }*@
     <a class="btn btn-fit-height grey-salt" href="@Url.Action("Index", "Request", new { Area = "EarlyWarning" })"><i class="fa fa-list"></i> @Html.Translate("Back to List")</a>
-
 }
 <script type="text/javascript">
     $(function() {
@@ -149,25 +144,21 @@
 
 
 </script>
-
 <div id='dialogDiv' class='modal hide fade in'>
     <div id='dialogContent'></div>
 </div>
-
 @if (ViewBag.message != null)
 {
     <div class="alert alert-success">
         @ViewBag.message
     </div>
 }
-
 @if (ViewBag.msg != null)
 {
     <div class="alert alert-error">
         @ViewBag.msg
     </div>
 }
-
 <div class="portlet light bordered bg-inverse">
     <div class="portlet-title">
         <div class="caption font-green-sharp">
@@ -177,7 +168,7 @@
         </div>
         <div class="tools">
             <a href="#" class="collapse" data-original-title="" title=""></a>
-            @*<a href="javascript:;" class="remove" data-original-title="" title=""></a>*@
+            @*<a href="javascript:;" class="remove" data-original-title="" title=""></a> && modelRequest.IsApprovable == true*@
         </div>
         <div class="actions">
             <div class="btn-group">
@@ -185,20 +176,17 @@
                     <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
                 </button>
                 <ul class="dropdown-menu pull-right">
-
                     @{
 
-                        var state = modelRequest.BusinessProcess.CurrentState.BaseStateTemplate;
+                        var state = modelRequest.CurrentStateNo;
                     }
-
-
-                    @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                    @foreach (FlowTemplateViewModel actions in state)
                     {
                         if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request) && actions.Name == "Approve")
                         {
                             <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , @modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                         }
-                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "FederalApproved")
+                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "Federal Approve")
                         {
                             <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                         }
@@ -206,7 +194,11 @@
                         {
                             <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                         }
-
+                        //close hiden b/c reginal request closed on cretation of requestion not by the user
+                        @*if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Close")
+                            {
+                                <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                            }*@
                     }
                     <li class="divider"></li>
                     @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
@@ -215,12 +207,11 @@
                     @*}*@
                 </ul>
             </div>
-
             <div class="btn-group">
                 <button class="btn green dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis"></i> Action <i class="fa fa-angle-down"></i></button>
                 <ul class="dropdown-menu pull-right" style="-moz-min-width: 120px; -ms-min-width: 120px; -o-min-width: 120px; -webkit-min-width: 120px; min-width: 120px;">
                     @*<li><a id="btnAddFDP"  href="@Url.Action("AddBeneficary", "Request", new { id = modelRequest.RegionalRequestID })" >ADD FDP </a></li>*@
-                    @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Draft)
+                    @if (modelRequest.StateId == 1 || modelRequest.StateId == 5)
                     {
                         <li><a class="btn green-haze-stripe" href="@Url.Action("Edit", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Edit</a></li>
                         <li><a class="btn green-haze-stripe" href="@Url.Action("Allocation", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Allocation</a></li>
@@ -228,41 +219,41 @@
                     if (modelRequest.Program == "Relief")
                     {
 
-                        <li>
-                            <a class="btn green-haze-stripe">
-                                @Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))
-                        </a>
+                        @*<li>
+                                        <a class="btn green-haze-stripe">
+                                            @Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                                 EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))
+                                    </a>
 
-                        <a class="btn green-haze-stripe">
-                            @Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)
-                    </a>
-                </li>
+                                    <a class="btn green-haze-stripe">
+                                        @Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                                 @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)
+                                </a>
+                            </li>*@
                     }
                     else
                     {
-                        <li>
-                            <a class="btn green-haze-stripe">
-                                @Html.PSNPOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     PsnpConstants.Operation.Approve_Request)
-                        </a>
-                        <a class="btn green-haze-stripe">
-                            @Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     RegionalConstants.Operation.Approve_regional_request)
-                    </a>
-                </li>
+                        @*<li>
+                                        <a class="btn green-haze-stripe">
+                                            @Html.PSNPOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                                 PsnpConstants.Operation.Approve_Request)
+                                    </a>
+                                    <a class="btn green-haze-stripe">
+                                        @Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                                 RegionalConstants.Operation.Approve_regional_request)
+                                </a>
+                            </li>*@
                         }
 
 
                     }
-                    @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved && modelRequest.ProgramId == (int)Cats.Models.Constant.Programs.IDPS)
+                    @if (modelRequest.StatusID == 1 && modelRequest.ProgramId == (int)Cats.Models.Constant.Programs.IDPS)
                     {
                         <li><a class="btn green-haze-stripe" id="btnEditPlan" href="@Url.Action("CreateRequisitionForIDPS", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID, programId = modelRequest.ProgramId})"><i class="icon-plus"></i>IDPS Requisiton</a></li>
 
-                        <li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li>
+                        @*<li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li> *@
                     }
-                    else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
+                    else if (modelRequest.StatusID == 1)
                     {
                         if (modelRequest.Program == "Relief")
                         {
@@ -270,11 +261,11 @@
                                 <a class="btn green-haze-stripe">
                                     @Html.EarlyWarningOperationMenuItem(@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID }),
                                                                      EarlyWarningConstants.Operation.New_requisition, @Html.Translate("Requisiton"))
-                            </a>
-                        </li>
-                                                                    <li> <a class="btn green-haze-stripe" href="javascript:rejectRequest('@modelRequest.RegionalRequestID')">Reject</a> </li>
-                                                                    @*<li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem( "javascript:rejectRequest('@modelRequest.RegionalRequestID')" ,
-                                                                        EarlyWarningConstants.Operation.Reject_Request, @Html.Translate("Reject"))</a></li>*@
+                                </a>
+                            </li>
+                            @*  <li> <a class="btn green-haze-stripe" href="javascript:rejectRequest('@modelRequest.RegionalRequestID')">Reject</a> </li>
+                                <li><a class="btn green-haze-stripe">@Html.EarlyWarningOperationMenuItem( "javascript:rejectRequest('@modelRequest.RegionalRequestID')" ,
+                                     EarlyWarningConstants.Operation.Reject_Request, @Html.Translate("Reject"))</a></li>*@
                         }
                         else if (modelRequest.Program == "PSNP")
                         {
@@ -282,19 +273,19 @@
                                 <a class="btn green-haze-stripe">
                                     @Html.PSNPOperationMenuItem(@Html.Translate("Requisiton"), @Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID }),
                                                                      PsnpConstants.Operation.New_requisition)
-                            </a>
-                        </li>
+                                </a>
+                            </li>
 
-                                                                    <li>
-                                                                        <a class="btn green-haze-stripe">
-                                                                            @Html.PSNPOperationMenuItem(@Html.Translate("Reject"), @Url.Action("RejectRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                            <li>
+                                <a class="btn green-haze-stripe">
+                                    @Html.PSNPOperationMenuItem(@Html.Translate("Reject"), @Url.Action("RejectRequest", "Request", new { id = modelRequest.RegionalRequestID }),
                                                                      PsnpConstants.Operation.Reject_Request)
-                                                                    </a>
-                                                                </li>
+                                </a>
+                            </li>
                         } @*
 
-                                                                        <li><a class="btn green-haze-stripe" href="@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })"><i class="icon-plus"></i>Requisiton</a></li>
-                                                                        <li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new { id = modelRequest.RegionalRequestID })">Reject</a></li>*@
+                                <li><a class="btn green-haze-stripe" href="@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })"><i class="icon-plus"></i>Requisiton</a></li>
+                                <li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new { id = modelRequest.RegionalRequestID })">Reject</a></li>*@
                     }
                     else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Closed)
                     {
@@ -307,16 +298,16 @@
                                 <a class="btn green-haze-stripe">
                                     @Html.EarlyWarningOperationMenuItem(@Url.Action("RevertRequestStatus", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID }),
                                                                          EarlyWarningConstants.Operation.Reverse_Request, @Html.Translate("Revert Status"))
-                            </a>
-                        </li>
+                                </a>
+                            </li>
                             break;
                         case "PSNP":
                             <li>
                                 <a class="btn green-haze-stripe">
                                     @Html.PSNPOperationMenuItem(@Html.Translate("Revert Status"), @Url.Action("RevertRequestStatus", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID }),
                                                                          PsnpConstants.Operation.Reverse_Request)
-                            </a>
-                        </li>
+                                </a>
+                            </li>
                                 break;
                         }
                     }
@@ -332,35 +323,34 @@
                         {
                             <li><a class="btn green-haze-stripe" href="@Url.Action("Allocation", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Allocation</a></li>
                         }
-                        if (modelRequest.Program == "Relief")
-                        {
-                            <li>
-                                <a class="btn green-haze-stripe">
-                                    @Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))
-                            </a>
-                            <a class="btn green-haze-stripe">
-                                @Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)
-                        </a>
-                    </li>
-                        }
-                        else
-                        {
-                            <li>
-                                <a class="btn green-haze-stripe">
-                                    @Html.PSNPOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     PsnpConstants.Operation.Approve_Request)
-                            </a>
-                            <a class="btn green-haze-stripe">
-                                @Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
-                                                                     RegionalConstants.Operation.Approve_regional_request)
-                        </a>
-                    </li>
-                        }
+                        @*if (modelRequest.Program == "Relief")
+                            {
+                                <li>
+                                    <a class="btn green-haze-stripe">
+                                        @Html.EarlyWarningOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                         EarlyWarningConstants.Operation.Approve_Request, @Html.Translate("Approve Request"))
+                                    </a>
+                                    <a class="btn green-haze-stripe">
+                                        @Html.RegionalOperationMenuItem(@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                         @Html.Translate("Approve Request"), RegionalConstants.Operation.Approve_regional_request)
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a class="btn green-haze-stripe">
+                                        @Html.PSNPOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                         PsnpConstants.Operation.Approve_Request)
+                                    </a>
+                                    <a class="btn green-haze-stripe">
+                                        @Html.RegionalOperationMenuItem(@Html.Translate("Approve Request"), @Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID }),
+                                                                         RegionalConstants.Operation.Approve_regional_request)
+                                    </a>
+                                </li>
+                            }*@
                         @*<li><a class="btn green-haze-stripe" href="@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID })">Approve</a></li>*@
                     }
-
                 </ul>
             </div>
             @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Print_request)
@@ -396,7 +386,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="col-md-4">
                                 <div class="form-group">
                                     @Html.LabelFor(m => modelRequest.RequestedBy, new { @class = "col-md-4 control-label" })
@@ -428,7 +417,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="col-md-4">
                                 <div class="form-group">
                                     @Html.LabelFor(m => modelRequest.ApprovedBy, new { @class = "col-md-4 control-label" })
@@ -465,7 +453,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="col-md-4">
                                 <div class="form-group">
                                     @Html.LabelFor(m => modelRequest.Ration, new { @class = "col-md-4 control-label" })
@@ -488,7 +475,6 @@
                                 </div>*@
                         </div>
                     </div>
-
                 </div>
             </div>
             @*<div id='dialogDiv' class='modal hide fade in'>
@@ -575,22 +561,29 @@
                     </div>
                 </div>
             </div>
+            <div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 id="modalHistoryLabel">Activity History</h4>
+                        </div>
+                        <div class="modal-body" id="modalHistoryBody">History</div>
+                    </div>
+                </div>
+            </div>
             @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
             <div class="modal" id="cats-modal-reject">
                 <div class="modal-dialog ">
                     <div class="modal-content">
-
                         <div class="modal-header">
                             <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
                             <h4 id="myModalLabel" class="modal-title">Reject Detail</h4>
                         </div>
 
-
                         <div class="modal-body">
-
                             <div class="row-fluid">
                                 <div class="controls span6">
-
 
                                     <textarea class="input-xlarge" id="Comment"
                                               name="Summary" rows="5" cols="0"
@@ -602,15 +595,12 @@
                                            class="input-xlarge" id="Attachment" name="Attachment"
                                            placeholder="Attachment" />
                                 </div>
-
                             </div>
-
                         </div>
                         <div class="modal-footer">
                             <button id="yes" class="btn btn-danger" type="submit">Reject</button>
                             <button id="no" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
                         </div>
-
 
                     </div>
                 </div>
@@ -778,7 +768,6 @@
     }
 
             </script>
-
             <style>
                 .surplus * {
                     color: red;

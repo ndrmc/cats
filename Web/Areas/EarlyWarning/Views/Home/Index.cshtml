@@ -8,7 +8,6 @@
     ViewBag.Title = "Home";
 
     Layout = "~/Views/Shared/_CATSLayout.cshtml";
-   
     const string pageName = "EarlyWarning.Index";
 }
 
@@ -371,7 +370,7 @@
                         <form class="form-inline" role="form">
                             <div class="form-group">
                                 <label for="selround">Filter By Round:</label>
-                                <select class="form-control" id="selround" ng-model="search.Round">
+                                <select class="form-control" id="selround" ng-model="searchReq.Round">
                                     @{
                                         var rounds = ViewBag.Rounds;
                                         foreach (var round in rounds)
@@ -396,7 +395,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="requisition in Requisitions | filter: search" class="">
+                                    <tr ng-repeat="requisition in Requisitions | filter: searchReq" class="">
                                         <td class="hidden-xs"><a ng-href="@Url.Content("~/EarlyWarning/ReliefRequisition/Allocation/{{requisition.RequisitionID}}")">{{requisition.RequisitonNumber}} </a></td>
                                         <td>{{requisition.Region}}</td>
                                         <td>{{requisition.Zone}}</td>
@@ -898,7 +897,7 @@
             $scope.getRequestedInfo = function () {
                 $http.post("@Url.Action("GetRequestedInfo", "EWDashboard", new { Area = "EarlyWarning" })").success(onRequestedAmoutSuccess);
 
-        };
+            };
 
             $scope.getRegionalRequestDataEntryStatus = function() {
                 $http.post("@Url.Action("GetRegionalRequestDataEntryStatus", "EWDashboard", new { Area = "EarlyWarning" })").success(onRegionalRequestDataEntryStatus);

@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Linq;
 using Cats.Data.UnitWork;
 using Cats.Models;
+using Cats.Services.Common;
 
 namespace Cats.Services.Common
 {
@@ -102,98 +103,98 @@ namespace Cats.Services.Common
 
         public int getPSNPWorkflow()
         {
-            return getIntValue("PSNPWorkflow");
+            return getIntValue( ApplicationSettings.Default.PSNPWorkflow);
         }
 
         public int getPaymentRequestWorkflow()
         {
-            return getIntValue("TransporterPaymentRequestWorkflow");
+            return getIntValue(ApplicationSettings.Default.TransporterPaymentRequestWorkflow);
         }
 
         public int getRegionalRequestWorkflow()
         {
-            return getIntValue("RegionalRequestWorkflow");
+            return getIntValue(ApplicationSettings.Default.RegionalRequestWorkflow);
         }
 
         public int getTransporterChequeWorkflow()
         {
-            return getIntValue("TransporterChequeWorkflow");
+            return getIntValue(ApplicationSettings.Default.TransporterChequeWorkflow);
         }
 
         public int getBidWinnerWorkflow()
         {
-            return getIntValue("BidWinnerWorkflow");
+            return getIntValue(ApplicationSettings.Default.BidWinnerWorkflow);
         }
 
         public int getDefaultRation()
         {
-            return getIntValue("DefaultRation");
+            return getIntValue(ApplicationSettings.Default.DefaultRation);
         }
 
         public int getNeedAssessmentPlanWorkflow()
         {
-            return getIntValue("NeedAssessmentPlanWorkflow");
+            return getIntValue(ApplicationSettings.Default.NeedAssessmentPlanWorkflow);
         }
 
         public int getNeedAssessmentWorkflow()
         {
-            return getIntValue("NeedAssessmentWorkflow");
+            return getIntValue(ApplicationSettings.Default.NeedAssessmentWorkflow);
         }
 
         public int getReliefRequisitionWorkflow()
         {
-            return getIntValue("ReliefRequisitionWorkflow");
+            return getIntValue(ApplicationSettings.Default.ReliefRequisitionWorkflow);
         }
 
         public int getTransportOrderWorkflow()
         {
-            return getIntValue("TransportOrderWorkflow");
+            return getIntValue(ApplicationSettings.Default.TransportOrderWorkflow);
         }
 
         public int getHRDWorkflow()
         {
-            return getIntValue("HRDWorkflow");
+            return getIntValue(ApplicationSettings.Default.HRDWorkflow);
         }
 
         public int getReciptPlanForLoanWorkflow()
         {
-            return getIntValue("ReciptPlanForLoanWorkflow");
+            return getIntValue(ApplicationSettings.Default.ReciptPlanForLoanWorkflow);
         }
 
         public int GetLocalPurchaseReceiptPlanWorkflow()
         {
-            return getIntValue("LocalPurchaseReceiptPlanWorkflow");
+            return getIntValue(ApplicationSettings.Default.LocalPurchaseReceiptPlanWorkflow);
         }
 
         public int GetSwapWrokflow()
         {
-            return getIntValue("SwapWorkflow");
+            return getIntValue(ApplicationSettings.Default.SwapWorkflow);
         }
 
         public int getTransportRequisitionWorkflow()
         {
-            return getIntValue("TransportRequisitionWorkflow");
+            return getIntValue(ApplicationSettings.Default.TransportRequisitionWorkflow);
         }
 
         public int getDonationPlanHeaderWorkflow()
         {
-            return getIntValue("DonationPlanHeaderWorkflow");
+            return getIntValue(ApplicationSettings.Default.DonationPlanHeaderWorkflow);
         }
 
 
         public int getGiftCertificateWorkflow()
         {
-            return getIntValue("GiftCertificateWorkflow");
+            return getIntValue(ApplicationSettings.Default.GiftCertificateWorkflow);
         }
 
         public int getBidPlanWorkflow()
         {
-            return getIntValue("BidWinnerWorkflow");
+            return getIntValue(Cats.Services.Common.ApplicationSettings.Default.BidPlanWorkflow);
         }
 
         public int getTransferReceiptPlanWorkflow()
         {
-            return getIntValue("TranferReceiptPlanWorkflow");
+            return getIntValue(ApplicationSettings.Default.TranferReceiptPlanWorkflow);
         }
     }
 }

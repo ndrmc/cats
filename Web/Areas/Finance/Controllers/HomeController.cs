@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Cats.Areas.Finance.Models;
@@ -10,6 +11,7 @@ using Cats.Services.Hub;
 using Cats.Services.Logistics;
 using Cats.Services.Procurement;
 using Cats.Helpers;
+using Cats.Models.Hubs;
 using IUserProfileService = Cats.Services.Administration.IUserProfileService;
 using Transporter = Cats.Models.Hubs.Transporter;
 using Cats.Models.Constant;
@@ -23,15 +25,19 @@ namespace Cats.Areas.Finance.Controllers
         private readonly ITransporterPaymentRequestService _transporterPaymentRequestService;
         private readonly IUserProfileService _userProfileService;
         private readonly IDispatchService _dispatchService;
+        private readonly IDispatchAllocationService _dispatchAllocationService;
         private readonly ITransportOrderDetailService _transportOrderDetailService;
         private readonly IBusinessProcessService _businessProcessService;
         private readonly ITransportOrderService _transportOrderService;
         private readonly IDeliveryService _deliveryService;
-        private readonly Services.Hub.IFDPService _ifdpService;
+        private readonly Services.Hub.IFDPService _fdpService;
         private readonly Services.Hub.IAdminUnitService _iadminUnitService;
         private readonly Services.Hub.ITransporterService _transporterService;
         private readonly IReliefRequisitionService _reliefRequisitionService;
-
+        private readonly IDispatchDetailService _disptDetailService;
+        private readonly Services.Hub.ICommodityService _commodityService;
+        private readonly Services.Hub.IHubService _hubService;
+        private readonly Services.Hub.IVWDdispatchAllocationDistributionService _dispatchAllocationDistributionService;
 
         public HomeController(ITransporterChequeService transporterChequeService,
             IUserProfileService userProfileService,
@@ -44,7 +50,12 @@ namespace Cats.Areas.Finance.Controllers
             Services.Hub.IFDPService ifdpService,
             Services.Hub.IAdminUnitService adminUnitService,
             Services.Hub.ITransporterService transporterService,
-            IReliefRequisitionService reliefRequisitionService)
+            IReliefRequisitionService reliefRequisitionService,
+            IDispatchAllocationService dispatchAllocationService,
+            IDispatchDetailService dispatchDetailService,
+            Services.Hub.ICommodityService commodityService,
+            Services.Hub.IHubService hubService,
+            Services.Hub.IVWDdispatchAllocationDistributionService vwDdispatchAllocationDistributionService)
         {
             _transporterChequeService = transporterChequeService;
             _userProfileService = userProfileService;
@@ -54,10 +65,15 @@ namespace Cats.Areas.Finance.Controllers
             _businessProcessService = businessProcessService;
             _transportOrderService = transportOrderService;
             _deliveryService = deliveryService;
-            _ifdpService = ifdpService;
+            _fdpService = ifdpService;
             _iadminUnitService = adminUnitService;
             _transporterService = transporterService;
             _reliefRequisitionService = reliefRequisitionService;
+            _dispatchAllocationService = dispatchAllocationService;
+            _disptDetailService = dispatchDetailService;
+            _commodityService = commodityService;
+            _hubService = hubService;
+            _dispatchAllocationDistributionService = vwDdispatchAllocationDistributionService;
         }
 
         //
@@ -332,6 +348,7 @@ namespace Cats.Areas.Finance.Controllers
             List<TransporterPaymentRequest> transporterPaymentRequests =
                 _transporterPaymentRequestService.GetAllTransporterPaymentRequest();
 
+
             var usersPerCaseTeam = _userProfileService.FindBy(c => c.CaseTeam == (int)UserType.CASETEAM.FINANCE);
             var users = usersPerCaseTeam.Select(u => u.UserName);
             var paymentRequests = (from tpr in transporterPaymentRequests
@@ -388,6 +405,36 @@ namespace Cats.Areas.Finance.Controllers
             return Json(userGroupedPaymentRequests, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetTransporterPaymentRequest(DateTime startDate, DateTime endDate, int takeTheFirst, int round)
+        {
+            List<VWDdispatchAllocationDistribution> dispatchedAllocations =
+               _dispatchAllocationDistributionService.GetAllDispatchAllocationDistribution();
+
+            var filteredDistributions = (from da in dispatchedAllocations
+                where da.Round == round && da.DispatchDate >= startDate && da.DispatchDate <= endDate
+                select new
+                {
+                    da.Transporter,
+                    da.Commodity,
+                    da.AllocatedAmount,
+                    da.DispatchedAmount,
+                    da.DispatchDate,
+                    da.Diff1
+                }).Take(takeTheFirst).ToList();
+
+            return Json(filteredDistributions, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetBidPlan() // Rounds/Cycle
+        {
+            var rounds = _dispatchService.GetAllDispatch().Select(r => new
+            {
+                round = r.Round,
+                id = r.Round
+            }).Distinct().OrderBy(o => o.round);
+
+            return Json(rounds, JsonRequestBehavior.AllowGet);
+        }
         private class PaymentRequestModel
         {
             public string UserName { get; set; }
