@@ -1,7 +1,7 @@
 USE [CatsDRMFSS]
 GO
 
-/****** Object:  View [dbo].[VWReceiptAllocation]    Script Date: 8/18/2016 5:55:35 PM ******/
+/****** Object:  View [dbo].[VWReceiptAllocation]    Script Date: 10/23/2016 10:36:23 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -10,26 +10,19 @@ GO
 
 CREATE VIEW [dbo].[VWReceiptAllocation]
 AS
-SELECT dbo.ReceiptAllocation.ReceiptAllocationID, dbo.Commodity.CommodityTypeID, dbo.ReceiptAllocation.CommoditySourceID, dbo.Commodity.Name AS CommodityName, dbo.ReceiptAllocation.SINumber, 
-                  dbo.ReceiptAllocation.ProjectNumber, dbo.ReceiptAllocation.QuantityInMT, SUM(dbo.[Transaction].QuantityInMT) AS ReceivedQuantityInMT, dbo.Receive.GRN, dbo.ReceiptAllocation.HubID, 
+SELECT dbo.ReceiptAllocation.ReceiptAllocationID, dbo.ReceiptAllocation.CommoditySourceID, dbo.ReceiptAllocation.SINumber, dbo.ReceiptAllocation.ProjectNumber, 
+                  dbo.ReceiptAllocation.QuantityInMT AS AllocatedQuantityInMT, dbo.[Transaction].QuantityInMT AS ReceivedQuantityInMT, dbo.[Transaction].LedgerID, dbo.Receive.GRN, dbo.ReceiptAllocation.HubID, 
                   dbo.ReceiptAllocation.IsClosed, dbo.ReceiptAllocation.IsFalseGRN, dbo.ReceiptAllocation.ETA, dbo.ReceiptAllocation.IsCommited, dbo.ReceiptAllocation.GiftCertificateDetailID, dbo.ReceiptAllocation.CommodityID, 
-                  dbo.ReceiptAllocation.UnitID, dbo.ReceiptAllocation.QuantityInUnit, dbo.ReceiptAllocation.DonorID, dbo.ReceiptAllocation.ProgramID, dbo.ReceiptAllocation.PurchaseOrder, dbo.ReceiptAllocation.SupplierName, 
-                  dbo.ReceiptAllocation.SourceHubID, dbo.ReceiptAllocation.OtherDocumentationRef, dbo.ReceiptAllocation.Remark
+                  dbo.ReceiptAllocation.UnitID, dbo.ReceiptAllocation.QuantityInUnit AS AllocatedQuantityInUnit, dbo.ReceiptAllocation.DonorID, dbo.ReceiptAllocation.ProgramID, dbo.ReceiptAllocation.PurchaseOrder, 
+                  dbo.ReceiptAllocation.SupplierName, dbo.ReceiptAllocation.SourceHubID, dbo.ReceiptAllocation.OtherDocumentationRef, dbo.ReceiptAllocation.Remark, 
+                  dbo.[Transaction].QuantityInUnit AS ReceivedQuantityInUnit
 FROM     dbo.ReceiptAllocation LEFT OUTER JOIN
                   dbo.Receive ON dbo.ReceiptAllocation.ReceiptAllocationID = dbo.Receive.ReceiptAllocationID LEFT OUTER JOIN
                   dbo.ReceiveDetail ON dbo.Receive.ReceiveID = dbo.ReceiveDetail.ReceiveID LEFT OUTER JOIN
-                  dbo.Commodity ON dbo.ReceiptAllocation.CommodityID = dbo.Commodity.CommodityID LEFT OUTER JOIN
                   dbo.TransactionGroup ON dbo.ReceiveDetail.TransactionGroupID = dbo.TransactionGroup.TransactionGroupID LEFT OUTER JOIN
                   dbo.[Transaction] ON dbo.TransactionGroup.TransactionGroupID = dbo.[Transaction].TransactionGroupID
-WHERE  (dbo.[Transaction].QuantityInUnit >= 0) AND (dbo.[Transaction].QuantityInMT >= 0) AND (dbo.[Transaction].LedgerID IN
-                      (SELECT LedgerID
-                       FROM      dbo.Ledger
-                       WHERE   (Name LIKE 'Statistics')))
-GROUP BY dbo.ReceiptAllocation.ReceiptAllocationID, dbo.Commodity.Name, dbo.ReceiptAllocation.SINumber, dbo.ReceiptAllocation.ProjectNumber, dbo.ReceiptAllocation.QuantityInMT, dbo.ReceiptAllocation.HubID, 
-                  dbo.ReceiptAllocation.IsClosed, dbo.ReceiptAllocation.IsFalseGRN, dbo.Receive.GRN, dbo.Commodity.CommodityTypeID, dbo.[Transaction].LedgerID, dbo.ReceiptAllocation.CommoditySourceID, 
-                  dbo.ReceiptAllocation.ETA, dbo.ReceiptAllocation.GiftCertificateDetailID, dbo.ReceiptAllocation.CommodityID, dbo.ReceiptAllocation.UnitID, dbo.ReceiptAllocation.QuantityInUnit, dbo.ReceiptAllocation.DonorID, 
-                  dbo.ReceiptAllocation.ProgramID, dbo.ReceiptAllocation.PurchaseOrder, dbo.ReceiptAllocation.SupplierName, dbo.ReceiptAllocation.SourceHubID, dbo.ReceiptAllocation.OtherDocumentationRef, 
-                  dbo.ReceiptAllocation.Remark, dbo.ReceiptAllocation.IsCommited
+WHERE  (dbo.ReceiptAllocation.SINumber IS NOT NULL) OR
+                  (dbo.ReceiptAllocation.ProjectNumber IS NOT NULL)
 
 GO
 
@@ -38,7 +31,7 @@ Begin DesignProperties =
    Begin PaneConfigurations = 
       Begin PaneConfiguration = 0
          NumPanes = 4
-         Configuration = "(H (1[30] 4[15] 2[17] 3) )"
+         Configuration = "(H (1[12] 4[9] 2[42] 3) )"
       End
       Begin PaneConfiguration = 1
          NumPanes = 3
@@ -100,7 +93,7 @@ Begin DesignProperties =
    End
    Begin DiagramPane = 
       Begin Origin = 
-         Top = 0
+         Top = -360
          Left = 0
       End
       Begin Tables = 
@@ -112,7 +105,7 @@ Begin DesignProperties =
                Right = 558
             End
             DisplayFlags = 280
-            TopColumn = 7
+            TopColumn = 0
          End
          Begin Table = "Receive"
             Begin Extent = 
@@ -122,7 +115,7 @@ Begin DesignProperties =
                Right = 912
             End
             DisplayFlags = 280
-            TopColumn = 2
+            TopColumn = 19
          End
          Begin Table = "ReceiveDetail"
             Begin Extent = 
@@ -132,17 +125,7 @@ Begin DesignProperties =
                Right = 1245
             End
             DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "Commodity"
-            Begin Extent = 
-               Top = 21
-               Left = 56
-               Bottom = 277
-               Right = 276
-            End
-            DisplayFlags = 280
-            TopColumn = 0
+            TopColumn = 1
          End
          Begin Table = "TransactionGroup"
             Begin Extent = 
@@ -156,10 +139,10 @@ Begin DesignProperties =
          End
          Begin Table = "Transaction"
             Begin Extent = 
-               Top = 371
+               Top = 367
                Left = 48
-               Bottom = 534
-               Right = 302
+               Bottom = 530
+               Right = 286
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -173,22 +156,22 @@ Begin DesignProperties =
       End
       Begin ColumnWidths = 26
          Width = 284
-         Width = 276' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VWReceiptAllocation'
-GO
-
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'0
+         Width = 2760
          Width = 2820
          Width = 2976
          Width = 1560
          Width = 2448
-         Width = 1536
+         Width = 2388
          Width = 2028
          Width = 2424
          Width = 1200
          Width = 1200
          Width = 1200
          Width = 1200
-         Width = 1200
+    ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VWReceiptAllocation'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'     Width = 1200
          Width = 1200
          Width = 1200
          Width = 1200
@@ -204,7 +187,7 @@ EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'0
       End
    End
    Begin CriteriaPane = 
-      Begin ColumnWidths = 12
+      Begin ColumnWidths = 11
          Column = 4392
          Alias = 2340
          Table = 2172
