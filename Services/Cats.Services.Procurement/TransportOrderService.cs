@@ -313,10 +313,11 @@ namespace Cats.Services.Procurement
                     var transReq = transporterRequisition;
 
                     //var activeBidStatusID = int.Parse(BidStatus.Active.ToString());
-                    var bidWinner =
-                    _unitOfWork.BidWinnerRepository.Get(
-                        t => t.SourceID == transReq.HubID && t.DestinationID == transReq.WoredaID && t.Position == 1 &&
-                            t.Bid.StatusID == 5).FirstOrDefault();
+                    //var bidWinner =
+                    //_unitOfWork.BidWinnerRepository.Get(
+                    //    t => t.SourceID == transReq.HubID && t.DestinationID == transReq.WoredaID && t.Position == 1 &&
+                    //        t.Bid.StatusID == 5).FirstOrDefault();
+                    var bidWinner = _unitOfWork.BidWinnerRepository.Get(t => t.SourceID == transReq.HubID && t.DestinationID == transReq.WoredaID && t.Position == 1 && t.BidID == bidId).FirstOrDefault();
 
 
                     if (bidWinner != null)
