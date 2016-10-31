@@ -800,6 +800,7 @@ namespace Cats.Areas.Procurement.Controllers
             var transportContractDetail = transportOrder.TransportOrderDetails;
             return (from detail in transportContractDetail
                     select new TransportOrderDetailViewModel()
+<<<<<<< HEAD
                     {
                         TransportOrderID = detail.TransportOrderID,
                         TransportOrderDetailID = detail.TransportOrderDetailID,
@@ -817,6 +818,25 @@ namespace Cats.Areas.Procurement.Controllers
                         WinnerAssignedByLogistics = detail.WinnerAssignedByLogistics,
 
                         SatelliteWarehouseName = GetSName(detail.ReliefRequisition.HubAllocations.First().SatelliteWarehouseID)
+=======
+                        {
+                            TransportOrderID = detail.TransportOrderID,
+                            TransportOrderDetailID = detail.TransportOrderDetailID,
+                            CommodityID = detail.CommodityID,
+                            SourceWarehouseID = detail.SourceWarehouseID,
+                            QuantityQtl = detail.QuantityQtl.ToPreferedWeightUnit(),
+                            RequisitionID = detail.RequisitionID,
+                            TariffPerQtl = detail.TariffPerQtl,
+                            Commodity = detail.Commodity.Name,
+                            OriginWarehouse = detail.Hub.Name,
+                            HubID = detail.Hub.HubID,
+                            Woreda = detail.FDP.AdminUnit.Name,
+                            FDP = detail.FDP.Name,
+                            RequisitionNo = detail.ReliefRequisition.RequisitionNo,
+                            WinnerAssignedByLogistics = detail.WinnerAssignedByLogistics,
+                            
+                            SatelliteWarehouseName = GetSName(detail.ReliefRequisition.HubAllocations.First().SatelliteWarehouseID, detail.Hub.HubID)
+>>>>>>> CATS-SLA-R-1.3.1
                         // Donor=detail.Donor.Name
 
 
@@ -825,15 +845,28 @@ namespace Cats.Areas.Procurement.Controllers
             // return transportContractDetail;
         }
 
-        private string GetSName(int? id)
+        private string GetSName(int? id, int hubId)
         {
             if (id != null)
             {
-                var k = _hubService.FindById(id.Value);
+                if (id != 0)
+                {
+                    var k = _hubService.FindById(id.Value);
+                    return k.Name;
+                }
+                else
+                {
+                    var k = _hubService.FindById(hubId);
+                    return k.Name;
+                }
+            }
+            else
+            {
+                var k = _hubService.FindById(hubId);
                 return k.Name;
             }
-            else return string.Empty;
         }
+
         private TransportContractViewModel GetTransportOrder(TransportOrder transportOrder)
         {
             var datePref = UserAccountHelper.GetUser(User.Identity.Name).DatePreference;
