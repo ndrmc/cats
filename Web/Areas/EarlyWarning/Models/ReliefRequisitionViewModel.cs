@@ -42,7 +42,10 @@ namespace Cats.Areas.EarlyWarning.Models
         public string StateName { get; set; }
         public List<FlowTemplateViewModel> InitialStateFlowTemplates { get; set; }
         public bool IsDraft { get; set; }
-
+        public bool IsSelected { get; set; }
+        public string Comment { get; set; }
+        public HttpPostedFileBase AttachmentFile { get; set; }
+        public int ApprovedId { get; set; }
 
 
 
