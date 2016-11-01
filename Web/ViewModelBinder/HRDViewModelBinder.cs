@@ -113,6 +113,17 @@ namespace Cats.ViewModelBinder
                     decimal total = 0;
                     decimal ration = 0;
 
+                    if (hrdDetail.AdminUnit.AdminUnit2.AdminUnitType.Name == "Zone")
+                    {
+                        dr[colRegion] = hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.Name;
+                        dr[colZone] = hrdDetail.AdminUnit.AdminUnit2.Name;
+                    }
+
+                    if (hrdDetail.AdminUnit.AdminUnit2.AdminUnitType.Name == "Region")
+                    {
+                        dr[colRegion] = hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.Name;
+                        dr[colZone] = hrdDetail.AdminUnit.AdminUnit2.Name;
+                    }
 
 
                     var currentUnit = preferedWeight; ;
