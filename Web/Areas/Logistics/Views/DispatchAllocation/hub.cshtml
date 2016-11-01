@@ -33,6 +33,9 @@
                   
                       <div  ng-model='Requisitions' id="container" style=" overflow-y:scroll;height: 800px" >
                           <div  class="btn btn-navbar btn-draggable " id="{{item.RequisitionId}}"  draggable=""   ng-repeat="item in Requisitions" >
+
+                              <i  style="border:none;display: none;" id="Remove" data-toggle="tooltip" data-placement="left" title="Remove" ng-click="RemoveRequisitionFromStore(item.RequisitionId)"  class="icon-remove-circle"></i>
+                              
                               <div class="accordion" id="accordion2">
                                   <div class="accordion-group">
                                       <div class="accordion-heading">
@@ -50,7 +53,10 @@
                                           </div>
                                       </div>
                                   </div>
+
+                                
                               </div>
+   
                           </div>
                       </div>
                   </div>

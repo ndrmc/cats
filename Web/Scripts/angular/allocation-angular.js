@@ -9,6 +9,7 @@ var HubId, StoreId;
 function onsaveAllocation() {
     $$scope.saveAllocation();
 }
+
 var app = angular.module("dragDrop", ['ngResource']);
 
 // Declaring a Service
@@ -124,7 +125,8 @@ app.controller("DragDroController", function ($scope, $http ,dragDropService, sa
     
     $scope.GetWarehouseList1 = function (index) {
 
-        $http({ method: 'GET', url: '../DispatchAllocation/ReadSWarehouse?hubId=' + index }).success(function (data, status, headers, config) { $scope.WarehouseList = data; })
+        $http({ method: 'GET', url: '../DispatchAllocation/ReadSWarehouse?hubId=' + index })
+            .success(function (data, status, headers, config) { $scope.WarehouseList = data; })
             .error(function (data, status, headers, config) {
 
             });
@@ -136,7 +138,30 @@ app.controller("DragDroController", function ($scope, $http ,dragDropService, sa
         savefactory.save($scope.allocated);
     };
 
-    
+    $scope.RemoveRequisitionFromStore = function(requisition)
+    {
+        //Get parent
+        var req = document.getElementById(requisition);
+        //Remove from parent div
+        
+        req.parentElement.removeChild(req);
+        //Remove req from allocations
+        for (var i = 0; i < $$scope.allocated.length; i++) {
+            if ($$scope.allocated[i].reqId == requisition) {
+                $$scope.allocated.splice(i, 1);//Removes the list from the allocaated array
+
+            }
+        }
+        //hide remove btn
+
+        req.children[0].style.display = 'none';
+        //Add req to $scope.Requisitions
+        var container = document.getElementById("container");
+
+        container.appendChild(req);
+
+
+    }
     $scope.Requisitions = dragDropService.getRequisitions.query({}, isArray = true);
     $scope.allocated = [];
 
@@ -161,7 +186,7 @@ app.directive('draggable', function () {
         var el = element[0];
         
         el.draggable = true;
-
+        
         el.addEventListener(
             'dragstart',
             function (e) {
@@ -242,7 +267,7 @@ app.directive('droppable', function () {
 
                     for (var i = 0; i < $$scope.allocated.length; i++) {
                         if ($$scope.allocated[i].reqId == item.id) {
-                            $$scope.allocated.splice(i, 1);
+                            $$scope.allocated.splice(i, 1);//Removes the list from the allocaated array
                             
                         }
                     }
@@ -250,6 +275,9 @@ app.directive('droppable', function () {
 
                     scope.$apply('drop()');
 
+                    //show Remove Button
+                    item.children[0].style.display = 'inline';
+                    //record parent
                     return false;
                 },
                 false
