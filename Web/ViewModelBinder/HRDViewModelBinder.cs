@@ -104,8 +104,8 @@ namespace Cats.ViewModelBinder
                 {
                     var dr = dt.NewRow();
                     //dr[colRequstDetailID] = requestDetail.RegionalRequestDetailID;
-                    dr[colRegion] = hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.Name;
-                    dr[colZone] = hrdDetail.AdminUnit.AdminUnit2.Name;
+                    //dr[colRegion] = hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.Name;
+                    //dr[colZone] = hrdDetail.AdminUnit.AdminUnit2.Name;
                     dr[colWoreda] = hrdDetail.AdminUnit.Name;
                     dr[colNoBeneficiary] = hrdDetail.NumberOfBeneficiaries;
                     dr[colDuration] = hrdDetail.DurationOfAssistance;
@@ -121,10 +121,9 @@ namespace Cats.ViewModelBinder
 
                     if (hrdDetail.AdminUnit.AdminUnit2.AdminUnitType.Name == "Region")
                     {
-                        dr[colRegion] = hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.Name;
-                        dr[colZone] = hrdDetail.AdminUnit.AdminUnit2.Name;
+                        dr[colRegion] = hrdDetail.AdminUnit.AdminUnit2.Name;
+                        dr[colZone] = "Not Available";
                     }
-
 
                     var currentUnit = preferedWeight; ;
 
