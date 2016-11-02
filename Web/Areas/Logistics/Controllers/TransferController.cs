@@ -136,6 +136,7 @@ namespace Cats.Areas.Logistics.Controllers
             ViewBag.CommodityTypeID = new SelectList(_commonService.GetCommodityTypes(), "CommodityTypeID", "Name");
             ViewBag.DestinationHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.DestinationHubID);
             ViewBag.CommoditySourceID = new SelectList(_commonService.GetCommoditySource(), "CommoditySourceID", "Name", transfer.CommoditySourceID);
+
             return View(transfer);
         }
 
