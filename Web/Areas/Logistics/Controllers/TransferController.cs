@@ -245,7 +245,7 @@ namespace Cats.Areas.Logistics.Controllers
             {
                 try
                 {
-                    if (_transferService.CreateRequisitonForTransfer(transfer))
+                    if (_transferService.CreateRequisitonForTransfer(transfer, true))
                     {
                         _transferService.Approve(transfer);
                         return RedirectToAction("Detail", new { id = transfer.TransferID });
@@ -374,7 +374,7 @@ namespace Cats.Areas.Logistics.Controllers
             {
                 try
                 {
-                    if (_transferService.CreateRequisitonForTransfer(transfer))
+                    if (_transferService.CreateRequisitonForTransfer(transfer, true))
                     {
                         _transferService.Approve(transfer);
 

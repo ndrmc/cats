@@ -229,7 +229,7 @@ namespace Cats.Areas.Logistics.Controllers
                 try
                 {
 
-                    if (_transferService.CreateRequisitonForTransfer(transfer))
+                    if (_transferService.CreateRequisitonForTransfer(transfer, false))
                     {
                         _transferService.Approve(transfer);
                         return RedirectToAction("Detail", new { id = transfer.TransferID });
@@ -307,7 +307,7 @@ namespace Cats.Areas.Logistics.Controllers
             string stateName = _stateTemplateService.FindById(st.StateID).Name;
             if (stateName == "Approved" && transfer != null)
             {
-                if (_transferService.CreateRequisitonForTransfer(transfer))
+                if (_transferService.CreateRequisitonForTransfer(transfer, false))
                 {
                     _transferService.ApproveSwap(transfer, HttpContext.User.Identity.Name);
                     _businessProcessService.PromotWorkflow(businessProcessState);

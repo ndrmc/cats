@@ -483,7 +483,7 @@ namespace Cats.Areas.Logistics.Controllers
 
             if (!requisition.IsTransfer)
             {
-                return View();
+                return RedirectToAction("Index", "DispatchAllocation", new { Area = "Logistics" });
             }
 
             var requisitionById = _reliefRequisitionService.FindById(requisition.RequisitionID); // get object from db
