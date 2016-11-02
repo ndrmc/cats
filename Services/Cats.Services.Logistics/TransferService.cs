@@ -266,7 +266,7 @@ namespace Cats.Services.Logistics
                    relifRequisition.Status = (int) ReliefRequisitionStatus.ProjectCodeAssigned;
                    relifRequisition.RequisitionNo = String.Format("REQ-{0}", relifRequisition.RequisitionID);
                    _unitOfWork.Save();
-                   if (!PostSIAllocation(relifRequisition.RequisitionID,transfer.CommoditySourceID))
+                   if (!PostSIAllocation(relifRequisition.RequisitionID,transfer))
                    {
                        return false;
                    }
@@ -284,8 +284,9 @@ namespace Cats.Services.Logistics
             return _unitOfWork.TransferRepository.Get(filter, orderBy, includeProperties);
         }
 
-        private bool PostSIAllocation(int requisitionID, int commoditySource=5)
+        private bool PostSIAllocation(int requisitionID,Transfer transfer=null)
        {
+            int commoditySource = transfer.CommoditySourceID;
            var allocationDetails = _unitOfWork.SIPCAllocationRepository.Get(t => t.ReliefRequisitionDetail.RequisitionID == requisitionID);
            if (allocationDetails == null) return false;
 
@@ -314,32 +315,34 @@ namespace Cats.Services.Logistics
                transaction.ProgramID = (int)allocationDetail.ReliefRequisitionDetail.ReliefRequisition.ProgramID;
                transaction.RegionID = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionID;
                transaction.CommoditySourceID = commoditySource;// commodity source transfer and swap
-               //transaction.PlanId = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionalRequest.PlanID;
-               //transaction.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
+                                                               //transaction.PlanId = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionalRequest.PlanID;
+                                                               //transaction.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
+                transaction.HubID = transfer.SourceHubID;
 
-               int hubID1 = 0;
-               if (allocationDetail.AllocationType == TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
-               {
-                   transaction.ShippingInstructionID = allocationDetail.Code;
-                   hubID1 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
-               }
-               else
-               {
-                   transaction.ProjectCodeID = allocationDetail.Code;
-                   hubID1 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+               // int hubID1 = 0;
+               //if (allocationDetail.AllocationType == TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
+               //{
+               //    transaction.ShippingInstructionID = allocationDetail.Code;
+               //     var v = _unitOfWork.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID);
+               //    hubID1 = (int)v.FirstOrDefault();
+               //}
+               //else
+               //{
+               //    transaction.ProjectCodeID = allocationDetail.Code;
+               //    hubID1 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code && m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
 
-               }
+               //}
 
-               if (hubID1 != 0)
-               {
-                   transaction.HubID = hubID1;
-               }
-               else
-               {
-                   transaction.HubID =
-                                     _unitOfWork.HubAllocationRepository.FindBy(r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
-                                             h => h.HubID).FirstOrDefault();
-               }
+               //if (hubID1 != 0)
+               //{
+               //    transaction.HubID = hubID1;
+               //}
+               //else
+               //{
+               //    transaction.HubID =
+               //                      _unitOfWork.HubAllocationRepository.FindBy(r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
+               //                              h => h.HubID).FirstOrDefault();
+               //}
 
 
 
@@ -366,50 +369,54 @@ namespace Cats.Services.Logistics
                transaction2.ProgramID = (int)allocationDetail.ReliefRequisitionDetail.ReliefRequisition.ProgramID;
                transaction2.RegionID = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionID;
                transaction2.CommoditySourceID = commoditySource;
-               //transaction2.PlanId = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionalRequest.PlanID;
-               //transaction2.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
+                //transaction2.PlanId = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.RegionalRequest.PlanID;
+                //transaction2.Round = allocationDetail.ReliefRequisitionDetail.ReliefRequisition.Round;
 
-               int hubID2 = 0; 
-               if (allocationDetail.AllocationType == TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
-               {
-                   var siCode = allocationDetail.Code.ToString();
-                   var shippingInstruction =
-                       _unitOfWork.ShippingInstructionRepository.Get(t => t.Value == siCode).
-                           FirstOrDefault();
-                   if (shippingInstruction != null) transaction.ShippingInstructionID = shippingInstruction.ShippingInstructionID;
+                //int hubID2 = 0; 
+                transaction2.HubID = transfer.SourceHubID;
 
-                   hubID2 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code &&
-                          m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
+               //if (allocationDetail.AllocationType == TransactionConstants.Constants.SHIPPNG_INSTRUCTION)
+               //{
+               //    var siCode = allocationDetail.Code.ToString();
+               //    var shippingInstruction =
+               //        _unitOfWork.ShippingInstructionRepository.Get(t => t.Value == siCode).
+               //            FirstOrDefault();
+               //    if (shippingInstruction != null) transaction.ShippingInstructionID = shippingInstruction.ShippingInstructionID;
 
-
-               }
-               else
-               {
-                   var detail = allocationDetail;
-                   var code = detail.Code.ToString();
-                   var projectCode =
-                       _unitOfWork.ProjectCodeRepository.Get(t => t.Value == code).
-                           FirstOrDefault();
-                   if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
-
-                   hubID2 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
-                              m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
-
-               }
+               //    hubID2 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ShippingInstructionID == allocationDetail.Code &&
+               //           m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
 
 
-               if (hubID2 != 0)
-               {
-                   transaction2.HubID = hubID2;
-               }
+               //}
+               //else
+               //{
+               //    var detail = allocationDetail;
+               //    var code = detail.Code.ToString();
+               //    var projectCode =
+               //        _unitOfWork.ProjectCodeRepository.Get(t => t.Value == code).
+               //            FirstOrDefault();
+               //    if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
 
-               else
-               {
-                   transaction2.HubID =
-                                      _unitOfWork.HubAllocationRepository.FindBy(r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
-                                              h => h.HubID).FirstOrDefault();
+               //    hubID2 = (int)_unitOfWork.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
+               //               m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
 
-               }
+               //}
+
+
+               //if (hubID2 != 0)
+               //{
+               //    transaction2.HubID = hubID2;
+               //}
+
+               //else
+               //{
+               //    transaction2.HubID =
+               //                       _unitOfWork.HubAllocationRepository.FindBy(r => r.RequisitionID == allocation.ReliefRequisitionDetail.RequisitionID).Select(
+               //                               h => h.HubID).FirstOrDefault();
+
+               //}
+
+
 
                _unitOfWork.TransactionRepository.Add(transaction2);
                allocationDetail.TransactionGroupID = transactionGroup;
