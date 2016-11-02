@@ -477,34 +477,33 @@ namespace Cats.Areas.Logistics.Controllers
             return View(request);
         }
         [HttpPost]
-        public ActionResult UpdateRequisition(ReliefRequisition requisition)
+        public JsonResult UpdateRequisition(ReliefRequisition requisition)
         {
-            if (requisition == null) return Json(new { status = "Bad", message = "Requistion is not found." });
+            if (requisition == null) return Json(new { status = "Bad", message = "Requistion is not found. Unable to update." });
 
             if (!requisition.IsTransfer)
             {
-                return RedirectToAction("Index", "DispatchAllocation", new { Area = "Logistics" });
+                return Json(new { status = "Bad", message = "Requisition is not of type Transfer. Unable to update.", regionId = requisition.RegionID });
             }
 
             var requisitionById = _reliefRequisitionService.FindById(requisition.RequisitionID); // get object from db
             var requisitionByReqNumber = _reliefRequisitionService.FindBy(r => r.RequisitionNo == requisition.RequisitionNo).FirstOrDefault();
-            var requisitionNumber = _reliefRequisitionService.FindBy(r => r.RequisitionNo == requisition.RequisitionNo)
-                 .FirstOrDefault();
+            var requisitionNumber = _reliefRequisitionService.FindBy(r => r.RequisitionNo == requisition.RequisitionNo);
 
             if (requisitionByReqNumber != null)
             {
-                if (requisitionById.RequisitionID != requisitionByReqNumber.RequisitionID)
+                if (requisitionByReqNumber.RequisitionID != requisitionById.RequisitionID &&
+                    requisitionByReqNumber.RequisitionNo == requisition.RequisitionNo && requisitionNumber.Count > 0)
                 {
-                    if (requisitionNumber != null)
-                    {
-                        return
-                            Json(
-                                new
-                                {
-                                    status = "Bad",
-                                    message = "Duplicate requisition number, please change it and try again."
-                                });
-                    }
+                    return
+                        Json(
+                            new
+                            {
+                                status = "Bad",
+                                message =
+                                    "Duplicate requisition number, please change it and try again. Unable to update.",
+                                regionId = requisition.RegionID
+                            });
                 }
             }
 
@@ -512,8 +511,7 @@ namespace Cats.Areas.Logistics.Controllers
 
             _reliefRequisitionService.EditReliefRequisition(requisitionById);
 
-            //return Json(new { status = "Ok", message = string.Empty, Id = requisitionById.RequisitionID });
-            return RedirectToAction("Index", "DispatchAllocation", new { Area = "Logistics" });
+            return Json(new { status = "Ok", message = "Requisition number has been successfully updated.", regionId = requisition.RegionID, Id = requisitionById.RequisitionID });
         }
     }
 }

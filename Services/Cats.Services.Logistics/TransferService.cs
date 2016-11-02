@@ -444,12 +444,12 @@ namespace Cats.Services.Logistics
             //
             // TODO: change the following implementation with workflow
             //
-            requisition.Status = 4;
+            requisition.Status = 2;
 
             var processTemplate = _applicationSettingService.FindBy(t => t.SettingName == "ReliefRequisitionWorkflow").FirstOrDefault();
             var processTemplateId = int.Parse(processTemplate.SettingValue);
             var processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
-            var stateTemplate = processStates.FirstOrDefault(t => t.Name == "Hub Assigned");
+            var stateTemplate = processStates.FirstOrDefault(t => t.Name == "Approved");
 
             if (stateTemplate == null) return false;
 
@@ -458,7 +458,7 @@ namespace Cats.Services.Logistics
                 StateID = stateTemplate.StateTemplateID,
                 PerformedBy = "",
                 DatePerformed = DateTime.Now,
-                Comment = "Internally requisition hub assigned",
+                Comment = "Internally requisition approved",
                 //AttachmentFile = fileName,
                 ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
             };

@@ -42,9 +42,11 @@
     {
 
         columns.Bound(e => e.RequisitionNo)
-                  .ClientTemplate("# if (true) { #" +
+                  .ClientTemplate("# if (IsTransfer) { #" +
                                     "<a href=\"javascript: UpdateRequisitionNumber(#=RequisitionId#)\" '>#=RequisitionNo#</a>  " +
-                                "# } #").Width(120).Title(@Html.Translate("Requisition No")).Filterable(false);
+                                "# } else { #" +
+                                "#=RequisitionNo#" 
+                                +"#} #").Width(120).Title(@Html.Translate("Requisition No")).Filterable(false);
 
         columns.Bound(e => e.Program).Width(120).Title(@Html.Translate("Program")).Filterable(true);
         columns.Bound(e => e.MonthName).Width(120).Title(@Html.Translate("Month")).Filterable(true);
