@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Cats.Helpers;
 using Cats.Models.Constant;
+using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Procurement;
 using Cats.Services.Security;
@@ -26,7 +27,16 @@ namespace Cats.Areas.Regional.Controllers
         private readonly ITransportOrderService _transportOrderService;
 
         private readonly IReliefRequisitionDetailService _reliefRequisitionDetailService;
-        public RegionRequisitionsController(IUserAccountService userAccountService, IReliefRequisitionService reliefRequisitionService, IWorkflowStatusService workflowStatusService, IReliefRequisitionDetailService reliefRequisitionDetailService, IDonorService donorService, IRationService rationService, ITransportOrderService transportOrderService)
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IStateTemplateService _stateTemplateService;
+        private readonly IBusinessProcessService _businessProcessService;
+
+        public RegionRequisitionsController(IUserAccountService userAccountService,
+            IReliefRequisitionService reliefRequisitionService, IWorkflowStatusService workflowStatusService,
+            IReliefRequisitionDetailService reliefRequisitionDetailService, IDonorService donorService,
+            IRationService rationService, ITransportOrderService transportOrderService,
+            IApplicationSettingService applicationSettingService, IStateTemplateService stateTemplateService,
+            IBusinessProcessService businessProcessService)
         {
             _userAccountService = userAccountService;
             _reliefRequisitionService = reliefRequisitionService;
@@ -35,21 +45,55 @@ namespace Cats.Areas.Regional.Controllers
             _workflowStatusService = workflowStatusService;
             _reliefRequisitionDetailService = reliefRequisitionDetailService;
             _transportOrderService = transportOrderService;
+            _applicationSettingService = applicationSettingService;
+            _stateTemplateService = stateTemplateService;
+            _businessProcessService = businessProcessService;
         }
 
         public ActionResult Index()
         {
             ViewBag.ProgramID = new SelectList(_transportOrderService.GetPrograms(), "ProgramID", "Name");
+
+            var processTemplate = _applicationSettingService.FindBy(t => t.SettingName == "ReliefRequisitionWorkflow").FirstOrDefault();
+            var processTemplateId = 0;
+            var processStates = new List<Cats.Models.StateTemplate>();
+            if (processTemplate != null)
+            {
+                processTemplateId = int.Parse(processTemplate.SettingValue);
+
+                processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
+
+                ViewBag.StatusID = new SelectList(processStates, "StateTemplateID", "Name");
+            }
+            var stateTemplate = processStates.FirstOrDefault();
+            if (stateTemplate != null)
+            {
+                ViewBag.Status = stateTemplate.StateTemplateID;
+            }
+
             return View();
         }
 
-        public ActionResult Requisition_Read([DataSourceRequest] DataSourceRequest request, string reqNoFilter, int? programFilter, int? roundFilter)
+        public ActionResult Requisition_Read([DataSourceRequest] DataSourceRequest request, string reqNoFilter, int? programFilter, int? roundFilter,int statusID)
         {
             var userRegionID= _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).RegionID;
-            var requests = _reliefRequisitionService.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved" && t.RegionID==userRegionID,
-                null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
+            var requests =
+                _reliefRequisitionService.Get(
+                    t =>
+                        t.BusinessProcess.CurrentState.BaseStateTemplate.StateTemplateID == statusID && //  t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved"
+                        t.RegionID == userRegionID,
+                    null,
+                    "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                    .ToList();
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var requestViewModels = RequisitionViewModelBinder.BindReliefRequisitionListViewModel(requests, datePref).OrderByDescending(m => m.RequisitionID).Where(p => (reqNoFilter.Length == 0 || p.RequisitionNo.Contains(reqNoFilter)) && (programFilter == null || p.ProgramID == programFilter) && (roundFilter == null || p.Round == roundFilter));
+            var requestViewModels =
+                RequisitionViewModelBinder.BindReliefRequisitionListViewModel(requests, datePref)
+                    .OrderByDescending(m => m.RequisitionID)
+                    .Where(
+                        p =>
+                            (reqNoFilter.Length == 0 || p.RequisitionNo.Contains(reqNoFilter)) &&
+                            (programFilter == null || p.ProgramID == programFilter) &&
+                            (roundFilter == null || p.Round == roundFilter));
             return Json(requestViewModels.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
