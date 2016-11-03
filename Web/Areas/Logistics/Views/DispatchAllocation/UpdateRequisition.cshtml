@@ -1,0 +1,79 @@
+﻿@using Cats.Helpers
+@using Cats.Services.Security
+@model Cats.Models.ReliefRequisition
+@{
+    ViewBag.Title = Html.Translate("Update Requisition Number");
+    var user = (UserIdentity)HttpContext.Current.User.Identity;
+}
+<div class="modal-dialog">
+    <div class="modal-content" style="width: 40%;margin: 140px auto;">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 id="myModalLabel">@Html.Translate("Update Requisition Number")</h4>
+        </div>
+
+        @*@using (Html.BeginForm("UpdateRequisition", "DispatchAllocation", FormMethod.Post, new { @class = "form", id = "frm_Update_requisition" }))
+            {*@
+            @Html.HiddenFor(m => m.BusinessProcessID)
+            @Html.HiddenFor(m => m.RequisitionID)
+            @Html.HiddenFor(m => m.IsTransfer)
+            @Html.HiddenFor(m => m.TransferId)
+            @Html.HiddenFor(m => m.RegionID)
+
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(m => m.RequisitionNo, new { @id = "RequisitionNo", @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        @*}*@
+
+        <div><span id="resultMessage"></span></div>
+
+        <div class="modal-footer">
+            <input class="btn green" type="submit" id="updateRequisition" value="Save" />
+            <a class="btn red" data-dismiss="modal" aria-hidden="true">@Html.Translate("Cancel")</a>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    
+    $(function () {
+        $("#updateRequisition").click(function () {
+
+            var requisition = {
+                BusinessProcessID: $('#BusinessProcessID').val(),
+                RequisitionID: $('#RequisitionID').val(),
+                IsTransfer: $('#IsTransfer').val(),
+                TransferId: $('#TransferId').val(),
+                RequisitionNo: $('#RequisitionNo').val(),
+                RegionID: $('#RegionID').val()
+            };
+            var postData = requisition;
+
+            // take the data and post it via json
+            $.post('DispatchAllocation/UpdateRequisition', postData, function (data) {
+                // get the result and do some magic with it
+                var message = data.message;
+                var status = data.status;
+
+                if (status === 'Ok') {
+                    var regionId = data.regionId;
+                    var url = '@Url.Action("Index", "DispatchAllocation")?regionId=' + regionId;
+
+                    window.location.href = url;
+                }
+                else {
+                    $("#resultMessage").html(message);
+                }
+            });
+        });
+    });
+
+
+</script>

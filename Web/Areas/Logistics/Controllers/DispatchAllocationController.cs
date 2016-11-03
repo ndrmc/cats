@@ -135,10 +135,10 @@ namespace Cats.Areas.Logistics.Controllers
             ViewBag.requestStatus = status;
             List<ReliefRequisition> requisititions = null;
             if (regionId == -1 || status == "") return Json((new List<RequisitionViewModel>()).ToDataSourceResult(request));
-            if (status=="Project Code Assigned")
+            if (status == "Project Code Assigned")
             {
-                requisititions = _reliefRequisitionService.Get(r => r.BusinessProcess.CurrentState.BaseStateTemplate.Name == status 
-                        || r.BusinessProcess.CurrentState.BaseStateTemplate.Name == "SiPc Allocation Approved" && r.RegionID == regionId, 
+                requisititions = _reliefRequisitionService.Get(r => r.BusinessProcess.CurrentState.BaseStateTemplate.Name == status
+                        || r.BusinessProcess.CurrentState.BaseStateTemplate.Name == "SiPc Allocation Approved" && r.RegionID == regionId,
                         null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
                         .OrderByDescending(t => t.RequisitionID).ToList();
             }
@@ -149,7 +149,7 @@ namespace Cats.Areas.Logistics.Controllers
                         null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
                 .OrderByDescending(t => t.RequisitionID).ToList();
             }
-            
+
             var requisitionViewModel = HubAllocationViewModelBinder.ReturnRequisitionGroupByReuisitionNo(requisititions);
             return Json(requisitionViewModel.ToDataSourceResult(request));
         }
@@ -162,7 +162,7 @@ namespace Cats.Areas.Logistics.Controllers
             return RedirectToAction("Hub", new { regionId = paramRegionId });
 
         }
-        
+
         public ActionResult AssignHubFromLogisticsDashboard(int paramRegionId)
         {
             ViewBag.regionId = paramRegionId;
@@ -176,7 +176,7 @@ namespace Cats.Areas.Logistics.Controllers
                 ViewBag.regionId = regionId;
                 ViewBag.RegionName = _adminUnitService.GetRegions().Where(r => r.AdminUnitID == regionId).Select(r => r.Name).Single();
                 ViewData["Hubs"] = _hubService.FindBy(h => h.HubOwnerID == 1);
-               // ViewData["Stores"] = _storeService.FindBy(s => s.Hub.HubOwnerID == 1); //get DRMFSS stores
+                // ViewData["Stores"] = _storeService.FindBy(s => s.Hub.HubOwnerID == 1); //get DRMFSS stores
                 return View();
             }
             return View();
@@ -215,20 +215,20 @@ namespace Cats.Areas.Logistics.Controllers
             {
                 foreach (var all in allocation)
                 {
-                    
+
                     var hubAllocated = _hubAllocationService.FindBy(h => h.RequisitionID == all.ReqId).FirstOrDefault();
 
-                    
 
-                    if (hubAllocated!=null)
+
+                    if (hubAllocated != null)
                     {
-                        
+
 
                         hubAllocated.AllocatedBy = user.UserProfileID;
                         hubAllocated.AllocationDate = DateTime.Now.Date;
                         hubAllocated.HubID = all.HubId;
 
-                       // hubAllocated.StoreId = all.StoreId;
+                        // hubAllocated.StoreId = all.StoreId;
 
                         hubAllocated.SatelliteWarehouseID = all.SatelliteWarehouseID;
 
@@ -257,7 +257,7 @@ namespace Cats.Areas.Logistics.Controllers
                     else
                     {
                         _hubAllocationService.AddHubAllocations(allocation, user.UserProfileID);
-                        var requisition = _reliefRequisitionService.Get(t=>t.RequisitionID == all.ReqId, null, 
+                        var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == all.ReqId, null,
                             "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
                         if (requisition != null)
                         {
@@ -278,10 +278,10 @@ namespace Cats.Areas.Logistics.Controllers
                             }
                         }
                     }
-               
+
 
                 }
-               
+
                 ModelState.AddModelError("Success", @"Allocation is Saved.");
                 return Json(new { success = true });
             }
@@ -342,7 +342,7 @@ namespace Cats.Areas.Logistics.Controllers
 
 
         }
-        
+
         public ActionResult RejectRequsition(int id)
         {
             //var requistion = _reliefRequisitionService.FindById(id);
@@ -470,6 +470,49 @@ namespace Cats.Areas.Logistics.Controllers
             return result;
         }
 
+        public ActionResult UpdateRequisition(int requisitionId)
+        {
+            var request = _reliefRequisitionService.FindBy(t => t.RequisitionID == requisitionId).FirstOrDefault();
+
+            return View(request);
+        }
+        [HttpPost]
+        public JsonResult UpdateRequisition(ReliefRequisition requisition)
+        {
+            if (requisition == null) return Json(new { status = "Bad", message = "Requistion is not found. Unable to update." });
+
+            if (!requisition.IsTransfer)
+            {
+                return Json(new { status = "Bad", message = "Requisition is not of type Transfer. Unable to update.", regionId = requisition.RegionID });
+            }
+
+            var requisitionById = _reliefRequisitionService.FindById(requisition.RequisitionID); // get object from db
+            var requisitionByReqNumber = _reliefRequisitionService.FindBy(r => r.RequisitionNo == requisition.RequisitionNo).FirstOrDefault();
+            var requisitionNumber = _reliefRequisitionService.FindBy(r => r.RequisitionNo == requisition.RequisitionNo);
+
+            if (requisitionByReqNumber != null)
+            {
+                if (requisitionByReqNumber.RequisitionID != requisitionById.RequisitionID &&
+                    requisitionByReqNumber.RequisitionNo == requisition.RequisitionNo && requisitionNumber.Count > 0)
+                {
+                    return
+                        Json(
+                            new
+                            {
+                                status = "Bad",
+                                message =
+                                    "Duplicate requisition number, please change it and try again. Unable to update.",
+                                regionId = requisition.RegionID
+                            });
+                }
+            }
+
+            requisitionById.RequisitionNo = requisition.RequisitionNo;
+
+            _reliefRequisitionService.EditReliefRequisition(requisitionById);
+
+            return Json(new { status = "Ok", message = "Requisition number has been successfully updated.", regionId = requisition.RegionID, Id = requisitionById.RequisitionID });
+        }
     }
 }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+

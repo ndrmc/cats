@@ -35,6 +35,8 @@ namespace Cats.Models
         public int ProgramID { get; set; }
         public int? RationID { get; set; }
         public Nullable<int> RegionalRequestID { get; set; }
+        public bool IsTransfer { get; set; }
+        public Nullable<int> TransferId { get; set; }
         public int? PartitionId { get; set; }
 
         public virtual AdminUnit AdminUnit { get; set; }
@@ -42,6 +44,7 @@ namespace Cats.Models
         public virtual Commodity Commodity { get; set; }
         public virtual Program Program { get; set; }
         public virtual BusinessProcess BusinessProcess { get; set; }
+        //public virtual Transfer Transfer { get; set; }
 
         public virtual RegionalRequest RegionalRequest { get; set; }
         public virtual ICollection<HubAllocation> HubAllocations { get; set; }

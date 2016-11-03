@@ -1,43 +1,62 @@
 ﻿@model List<int?>
-@using Kendo.Mvc.UI
-@using Cats.Helpers
-@using Cats.Security
-@using Cats.Services.Security
+    @using Kendo.Mvc.UI
+    @using Cats.Helpers
+    @using Cats.Security
+    @using Cats.Services.Security
 
-@{
-    var gridid = Guid.NewGuid().ToString();
-}
-<style>
-    .action-link {
-        display: none;
+    @{
+        var gridid = Guid.NewGuid().ToString();
     }
+    <style>
+        .action-link {
+            display: none;
+        }
 
-    .assign-code3 {
-        display: block;
-    }
+        .assign-code3 {
+            display: block;
+        }
 
-    .k-grid td {
-        overflow: visible;
-    }
-</style>
+        .k-grid td {
+            overflow: visible;
+        }
+    </style>
 
+    <style>
+        .k-window-titlebar {
+            margin-top: -30px;
+            height: 30px;
+        }
 
-@(Html.Kendo().Grid<Cats.Models.RequisitionViewModel>
-    ()
-    .Name("ApprovedRequsitions")
-    .Columns(columns =>
+        hr {
+            margin: 5px 0;
+        }
+    </style>
+
+    <div id='dialogDiv' class='modal fade bs-modal-lg'>
+        <div id='dialogContent'></div>
+    </div>
+
+    <div class="table-responsive">
+
+        @(Html.Kendo().Grid<Cats.Models.RequisitionViewModel>().Name("ApprovedRequsitions").Columns(columns =>
     {
 
-        columns.Bound(e => e.RequisitionNo).Width(120).Title(@Html.Translate("Requisition No")).Filterable(false);
+        columns.Bound(e => e.RequisitionNo)
+                  .ClientTemplate("# if (IsTransfer) { #" +
+                                    "<a href=\"javascript: UpdateRequisitionNumber(#=RequisitionId#)\" '>#=RequisitionNo#</a>  " +
+                                "# } else { #" +
+                                "#=RequisitionNo#" 
+                                +"#} #").Width(120).Title(@Html.Translate("Requisition No")).Filterable(false);
+
         columns.Bound(e => e.Program).Width(120).Title(@Html.Translate("Program")).Filterable(true);
         columns.Bound(e => e.MonthName).Width(120).Title(@Html.Translate("Month")).Filterable(true);
         columns.Bound(e => e.Round).Width(80).Title(@Html.Translate("Round"));
         columns.Bound(e => e.Region).Width(120).Title(@Html.Translate("Region")).Filterable(false);
         columns.Bound(e => e.Zone).Width(120).Title(@Html.Translate("Zone")).Filterable(false);
         columns.Bound(e => e.Commodity).Title(@Html.Translate("Commodity")).Width(110).Filterable(false);
-        columns.Bound(e => e.Amount).Width(140).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal; ", title =@Html.Translate("Amount Allocated"), @class = "cats-unit-pref-grid" }).Format("{0:N2}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).Filterable(false);
+        columns.Bound(e => e.Amount).Width(140).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal; ", title = @Html.Translate("Amount Allocated"), @class = "cats-unit-pref-grid" }).Format("{0:N2}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).Filterable(false);
         //columns.Bound(e => e.StrRequisitionDate).Title("Requested On").Width(140);
-        columns.Bound(e => e.BenficiaryNo).Title("Beneficiaries").Width(120).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title =@Html.Translate("Benficiary No") }).Format("{0:n0}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).Filterable(false);
+        columns.Bound(e => e.BenficiaryNo).Title("Beneficiaries").Width(120).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title = @Html.Translate("Benficiary No") }).Format("{0:n0}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).Filterable(false);
         //columns.Bound(e => e.Status).Title("").Width(120).ClientTemplate("<a class='action-link assign-code#=Status#' href='" + @Url.Action("Index", "FDPSIAllocation", new { Area = "Logistics", regionid = ViewBag.regionId }) + "&RequisitionID=#=RequisitionId#'>PC/SI Allocate</a>  ").Filterable(false);
         //columns.Bound(e => e.Status).Width(90).Title("Status");
         //@Url.Action("Create", "GiftCertificate", new { Area = "EarlyWarning" }),
@@ -47,48 +66,50 @@
             //columns.Command(p =>  p.Custom(@Html.Translate("Reject")).Click("onReject")).Width(100);
             columns.Bound(requisition => requisition.Status).Title("Actions")
                 .ClientTemplate(
-                @"<div class='btn-group'>
+                    @"<div class='btn-group'>
                 <button type='button' id='workflow-#=RequisitionId#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
                     <i class='fa fa-ellipsis-horizontal'></i>Workflow<i class='fa fa-angle-down'></i>
                 </button>
                 <ul class='dropdown-menu pull-right' style='overflow: visible;'>" +
                     "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Reject_Approved_Requisition).ToString() + "' == 'Reject_Approved_Requisition') { #" +
-                        "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=RejectStateID#','Reject','#=RequisitionId#')\" title='Reject Requisition'>Reject</a></li>" +
+                    "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=RejectStateID#','Reject','#=RequisitionId#')\" title='Reject Requisition'>Reject</a></li>" +
                     " # } #" +
                     " # if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Reject_Approved_Requisition).ToString() + "' == 'Reject_Approved_Requisition') { #" +
-                        "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
+                    "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
                     " # } #" +
-                "</ul></div>");
+                    "</ul></div>");
         }
 
     })
 
-    .DataSource(dataSource => dataSource
-    .Ajax()
-    .Model(model => model.Id(p => p.RequisitionId))
-    .Read(read => read.Action("AllocateProjectCode", "DispatchAllocation", new { regionId = Model[0], status = "Approved" }))
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .Model(model => model.Id(p => p.RequisitionId))
+              .Read(read => read.Action("AllocateProjectCode", "DispatchAllocation", new { regionId = Model[0], status = "Approved" }))
 
-    // .PageSize(5)
-    )
-    .Scrollable(scroll => scroll.Height(350))
-    //.Selectable(select => select.Mode(GridSelectionMode.Single))
-    .Navigatable()
-    .Filterable(filterable => filterable
-    .Extra(false)
-    .Operators(operators => operators
-    .ForString(str => str.Clear()
-    .StartsWith(@Html.Translate("Starts with"))
-    .IsEqualTo(@Html.Translate("Is equal to"))
-    .IsNotEqualTo(@Html.Translate("Is not equal to"))
-    )))
-    //.Filterable()
-    .Sortable()
-    .HtmlAttributes(new { style = "height:450px;" })
-    //.Pageable()
-    )
+          // .PageSize(5)
+          )
+          .Scrollable(scroll => scroll.Height(350))
+          //.Selectable(select => select.Mode(GridSelectionMode.Single))
+          .Navigatable()
+          .Filterable(filterable => filterable
+              .Extra(false)
+              .Operators(operators => operators
+                  .ForString(str => str.Clear()
+                      .StartsWith(@Html.Translate("Starts with"))
+                      .IsEqualTo(@Html.Translate("Is equal to"))
+                      .IsNotEqualTo(@Html.Translate("Is not equal to"))
+                  )))
+          //.Filterable()
+          .Sortable()
+          .HtmlAttributes(new { style = "height:450px;" })
+        //.Pageable()
+        )
+
+    </div>
 
 
-<script>
+    <script>
 
         function roundChange(e) {
             e.preventDefault();
@@ -108,4 +129,23 @@
             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
             window.location = "@Url.Action("RejectRequsition", "DispatchAllocation")" + "/" + dataItem.RequisitionId;
         }
-</script>
+
+        function UpdateRequisitionNumber(requisitionId) {
+
+            //var requisitionNumber = $('#RequisitionNumber').val();
+            var url = '@Url.Action("UpdateRequisition", "DispatchAllocation")?requisitionId=' + requisitionId;
+
+            //Optional: turn the chache off
+            $.ajaxSetup({ cache: false });
+
+            $('#dialogContent').load(url, function () {
+                $('#dialogDiv').modal({
+                    backdrop: 'static',
+                    keyboard: true
+                }, 'show');
+
+                $(".modal-dialog").removeClass("modal-sm").addClass("modal-lg");
+            });
+        }
+
+    </script>
