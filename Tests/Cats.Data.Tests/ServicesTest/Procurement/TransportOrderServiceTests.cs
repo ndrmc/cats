@@ -270,7 +270,7 @@ namespace Cats.Data.Tests.ServicesTest.Procurement
                                                                                                                    }
                                                                                                                });
             _notificationService = new NotificationService(unitOfWorkNotify.Object);
-            _transportOrderService = new TransportOrderService(mockUnitOfWork.Object, transporterService.Object, _notificationService,null);
+            _transportOrderService = new TransportOrderService(mockUnitOfWork.Object, transporterService.Object, _notificationService,null,null);
             //Act 
         }
 
@@ -328,7 +328,7 @@ namespace Cats.Data.Tests.ServicesTest.Procurement
             //Act 
 
            
-            var result = _transportOrderService.CreateTransportOrder(1,1,"",1);
+            var result = _transportOrderService.CreateTransportOrder(1,1,"");
 
             //Assert
 

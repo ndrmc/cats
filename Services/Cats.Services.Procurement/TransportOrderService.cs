@@ -19,14 +19,16 @@ namespace Cats.Services.Procurement
         private readonly ITransporterService _transporterService;
         private readonly INotificationService _notificationService;
         private readonly IBusinessProcessService _businessProcessService;
-        
+        private readonly IApplicationSettingService _applicationSettingService;
 
-        public TransportOrderService(IUnitOfWork unitOfWork, ITransporterService transporterService, INotificationService notificationService, IBusinessProcessService businessProcessService)
+
+        public TransportOrderService(IUnitOfWork unitOfWork, ITransporterService transporterService, INotificationService notificationService, IBusinessProcessService businessProcessService, IApplicationSettingService applicationSettingService)
         {
             this._unitOfWork = unitOfWork;
             this._transporterService = transporterService;
             _notificationService = notificationService;
             _businessProcessService = businessProcessService;
+            _applicationSettingService = applicationSettingService;
         }
 
         #region Default Service Implementation
@@ -97,10 +99,11 @@ namespace Cats.Services.Procurement
             var transportRequistionDetail = transportRequsitionDetails.Select(m => m.RequisitionID).Distinct();
             var transportOrder =
                 (from order in
-                    _unitOfWork.TransportOrderDetailRepository.FindBy(
+                    _unitOfWork.TransportOrderDetailRepository.Get(
                         m =>
                             transportRequistionDetail.Contains(m.RequisitionID) &&
-                            m.TransportOrder.BusinessProcess.CurrentState.BaseStateTemplate.Name == stateName)
+                            m.TransportOrder.BusinessProcess.CurrentState.BaseStateTemplate.Name == stateName, null,
+                        "FDP, FDP.AdminUnit, FDP.AdminUnit.AdminUnit2, FDP.AdminUnit.AdminUnit2.AdminUnit2").ToList()
                     select order.TransportOrder).Distinct().ToList();
             return transportOrder;
         }
@@ -268,7 +271,7 @@ namespace Cats.Services.Procurement
             return _unitOfWork.TransportOrderDetailRepository.Get(t => t.TransportOrderID == transportId);
         }
         //TODO:Factor Out  to single responiblity Principle 
-        public bool CreateTransportOrder(int transportRequisitionId, int bidId, string requesterName, int businessProcessID)
+        public bool CreateTransportOrder(int transportRequisitionId, int bidId, string requesterName)
         {
             //var requId=_unitOfWork.TransportRequisitionDetailRepository.FindBy(t=>t.TransportRequisitionID==)
             var transporterAssignedRequisionDetails = AssignTransporterForEachWoreda(transportRequisitionId, bidId);
@@ -301,6 +304,26 @@ namespace Cats.Services.Procurement
                 transportOrder.EndDate = DateTime.Today.AddDays(13);
                 transportOrder.StatusID = (int)TransportOrderStatus.Draft;
                 transportOrder.TransportRequiqsitionId = transportRequisitionId;
+                int businessProcessID = 0;
+                int BP_PR = _applicationSettingService.getTransportOrderWorkflow();
+                if (BP_PR != 0)
+                {
+                    BusinessProcessState createdstate = new BusinessProcessState
+                    {
+                        DatePerformed = DateTime.Now,
+                        PerformedBy = requesterName,
+                        Comment = "Transport Order Generated"
+
+                    };
+                    //_PaymentRequestservice.Create(request);
+
+                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                                                                                    "TransportOrder", createdstate);
+                    if (bp != null)
+                        businessProcessID = bp.BusinessProcessID;
+
+
+                }
 
                 transportOrder.BusinessProcessID = businessProcessID;
                 var transportLocations = transporterAssignedRequisionDetails.FindAll(t => t.TransporterID == transporter).Distinct();

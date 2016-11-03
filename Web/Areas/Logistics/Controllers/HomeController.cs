@@ -420,12 +420,12 @@ namespace Cats.Areas.Logistics.Controllers
                     beneficiaries = r.ReliefRequisitionDetails.Sum(d => d.BenficiaryNo),
                     amount = r.ReliefRequisitionDetails.Sum(d => d.Amount),
                     commodity = r.Commodity.Name,
-                    regionId = r.RegionalRequest.RegionID,
+                    regionId = r.RegionalRequest?.RegionID ?? 0,
                     RegionName = r.AdminUnit.Name,
                     RequestType = r.Program.Name,
-                    round = r.RegionalRequest.Round,
-                    month = r.RegionalRequest.Month,
-                    year = r.RegionalRequest.Year,
+                    round = r.RegionalRequest?.Round ?? 0,
+                    month = r.RegionalRequest?.Month ?? 0,
+                    year = r.RegionalRequest?.Year ?? 0,
                 });
             return Json(requestes, JsonRequestBehavior.AllowGet);
         }

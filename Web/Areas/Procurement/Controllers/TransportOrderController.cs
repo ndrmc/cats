@@ -104,33 +104,13 @@ namespace Cats.Areas.Procurement.Controllers
                     TempData["Error"] = "Transport order not created. Please select Bid and try again";
                     return RedirectToAction("TransportRequisitions");
                 }
-                int businessProcessID = 0;
+                
                 if (saveButton != null)
                 {
 
-                    int BP_PR = _applicationSettingService.getTransportOrderWorkflow();
-                    if (BP_PR != 0)
-                    {
-                        BusinessProcessState createdstate = new BusinessProcessState
-                        {
-                            DatePerformed = DateTime.Now,
-                            PerformedBy = User.Identity.Name,
-                            Comment = "Transport Order  Added"
-
-                        };
-                        //_PaymentRequestservice.Create(request);
-
-                        BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
-                                                                                        "TransportOrder", createdstate);
-                        if (bp != null)
-                            businessProcessID = bp.BusinessProcessID;
-
-
-                    }
-
 
                     var userName = UserAccountHelper.GetUser(User.Identity.Name).UserName;
-                    _transportOrderService.CreateTransportOrder(id, BidId, userName, businessProcessID);
+                    _transportOrderService.CreateTransportOrder(id, BidId, userName);
                     return RedirectToAction("Index", "TransportOrder");
                 }
                 return RedirectToAction("TransportRequisitions");

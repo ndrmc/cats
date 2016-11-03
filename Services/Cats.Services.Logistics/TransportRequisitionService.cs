@@ -438,20 +438,23 @@ namespace Cats.Services.Logistics
             return
                 _unitOfWork.TransportRequisitionDetailRepository.FindBy(
                     m => m.TransportRequisition.ProgramID == programId
-                         && m.TransportRequisition.Status == (int) TransportRequisitionStatus.Closed).ToList();
+                         && m.TransportRequisition.Status == (int) TransportRequisitionStatus.Closed ||
+                         m.TransportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name=="Closed").ToList();
         }
         public List<TransportRequisitionDetail> GetTransportRequsitionDetailsByRegion(int regionid)
         {
             return
                 _unitOfWork.TransportRequisitionDetailRepository.FindBy(
                     m => m.TransportRequisition.RegionID == regionid
-                         && m.TransportRequisition.Status == (int)TransportRequisitionStatus.Closed).ToList();
+                         && m.TransportRequisition.Status == (int)TransportRequisitionStatus.Closed ||
+                         m.TransportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Closed").ToList();
         }
         public List<TransportRequisitionDetail> GetTransportRequsitionDetails()
         {
             return
                 _unitOfWork.TransportRequisitionDetailRepository.FindBy(
-                    m => m.TransportRequisition.Status == (int)TransportRequisitionStatus.Closed).ToList();
+                    m => m.TransportRequisition.Status == (int)TransportRequisitionStatus.Closed||
+                    m.TransportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Closed").ToList();
         }
     }
 }
