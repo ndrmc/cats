@@ -69,12 +69,12 @@ namespace Cats.Areas.Logistics.Controllers
             IHRDDetailService hrdDetailService,
             IRationDetailService rationDetailService,
             IProgramService programService,
-            IStockStatusService stockStatusService, 
-            IReceiptPlanDetailService receiptPlanDetailService, 
-            IDeliveryService deliveryService, 
-            IGiftCertificateDetailService giftCertificateDetailService, 
+            IStockStatusService stockStatusService,
+            IReceiptPlanDetailService receiptPlanDetailService,
+            IDeliveryService deliveryService,
+            IGiftCertificateDetailService giftCertificateDetailService,
             hub.IReceiptAllocationService receiptAllocationService,
-            ITransporterPaymentRequestService transporterPaymentRequestService, 
+            ITransporterPaymentRequestService transporterPaymentRequestService,
             ILgDashboardService lgDashboardService)
         {
             this._reliefRequisitionService = reliefRequisitionService;
@@ -169,20 +169,20 @@ namespace Cats.Areas.Logistics.Controllers
             var info = (
                         from contract in contracts
                         select new
-                            {
-                                contract = contract.ContractNumber,
-                                transporter = contract.Transporter.Name,
-                                owner = contract.Transporter.OwnerName,
-                                //daysLeft = (int)(contract.EndDate - DateTime.Now).TotalDays,
-                                daysLeft = DaysLeft(contract),
-                                //daysToStart = (int)(contract.StartDate - DateTime.Now).TotalDays,
-                                daysToStart = DaysToStart(contract),
-                                //daysElapsed = (int)(DateTime.Now - contract.StartDate).TotalDays,
-                                daysElapsed = DaysElapsed(contract),
-                                //percentage = 50
-                                duration = (int)(contract.EndDate - contract.StartDate).TotalDays,
-                                percentage = ((contract.EndDate - DateTime.Now).TotalDays / (contract.EndDate - contract.StartDate).TotalDays) * 100
-                            }
+                        {
+                            contract = contract.ContractNumber,
+                            transporter = contract.Transporter.Name,
+                            owner = contract.Transporter.OwnerName,
+                            //daysLeft = (int)(contract.EndDate - DateTime.Now).TotalDays,
+                            daysLeft = DaysLeft(contract),
+                            //daysToStart = (int)(contract.StartDate - DateTime.Now).TotalDays,
+                            daysToStart = DaysToStart(contract),
+                            //daysElapsed = (int)(DateTime.Now - contract.StartDate).TotalDays,
+                            daysElapsed = DaysElapsed(contract),
+                            //percentage = 50
+                            duration = (int)(contract.EndDate - contract.StartDate).TotalDays,
+                            percentage = ((contract.EndDate - DateTime.Now).TotalDays / (contract.EndDate - contract.StartDate).TotalDays) * 100
+                        }
                        );
             return Json(info, JsonRequestBehavior.AllowGet);
         }
@@ -230,10 +230,10 @@ namespace Cats.Areas.Logistics.Controllers
         public JsonResult GetRegions()
         {
             var regions = _adminUnitService.GetRegions().Select(r => new
-                                                                        {
-                                                                            name = r.Name,
-                                                                            id = r.AdminUnitID
-                                                                        });
+            {
+                name = r.Name,
+                id = r.AdminUnitID
+            });
             return Json(regions, JsonRequestBehavior.AllowGet);
         }
 
@@ -299,10 +299,10 @@ namespace Cats.Areas.Logistics.Controllers
         public JsonResult GetBids()
         {
             var bids = _bidService.GetAllBid().Where(b => b.StatusID == (int)Cats.Models.Constant.BidStatus.Active).Select(b => new
-                                                                                                                         {
-                                                                                                                             BidNo = b.BidNumber,
-                                                                                                                             BidId = b.BidID
-                                                                                                                         });
+            {
+                BidNo = b.BidNumber,
+                BidId = b.BidID
+            });
             return Json(bids, JsonRequestBehavior.AllowGet);
         }
 
@@ -314,7 +314,7 @@ namespace Cats.Areas.Logistics.Controllers
             var transporters =
                 _transportOrderService.FindBy(
                     s =>
-                        s.StatusID < (int) (Cats.Models.Constant.TransportOrderStatus.Approved) &&
+                        s.StatusID < (int)(Cats.Models.Constant.TransportOrderStatus.Approved) &&
                         paymentRequests.Contains(s.TransporterID)).Select(p => new
                         {
                             name = p.Transporter.Name,
@@ -362,13 +362,13 @@ namespace Cats.Areas.Logistics.Controllers
 
             Bid selectedBid = _bidService.FindBy(t => t.BidNumber == id).FirstOrDefault();
 
-            var unSignedbidWinner = _bidWinnerService.FindBy(m => m.BidID == selectedBid.BidID 
-                                                            && m.ExpiryDate > DateTime.Now 
+            var unSignedbidWinner = _bidWinnerService.FindBy(m => m.BidID == selectedBid.BidID
+                                                            && m.ExpiryDate > DateTime.Now
                                                             && m.Status != (int)BidWinnerStatus.Signed).Take(5);
 
-            if (unSignedbidWinner != null  && unSignedbidWinner.Count() > 0)
+            if (unSignedbidWinner != null && unSignedbidWinner.Count() > 0)
                 selectedUnSignedBidWinners = GetBidWinners(unSignedbidWinner).ToList();
-            
+
 
             return Json(selectedUnSignedBidWinners, JsonRequestBehavior.AllowGet);
         }
@@ -420,12 +420,12 @@ namespace Cats.Areas.Logistics.Controllers
                     beneficiaries = r.ReliefRequisitionDetails.Sum(d => d.BenficiaryNo),
                     amount = r.ReliefRequisitionDetails.Sum(d => d.Amount),
                     commodity = r.Commodity.Name,
-                    regionId = r.RegionalRequest.RegionID,
+                    regionId = r.RegionalRequest?.RegionID ?? 0,
                     RegionName = r.AdminUnit.Name,
                     RequestType = r.Program.Name,
-                    round = r.RegionalRequest.Round,
-                    month = r.RegionalRequest.Month,
-                    year = r.RegionalRequest.Year,
+                    round = r.RegionalRequest?.Round ?? 0,
+                    month = r.RegionalRequest?.Month ?? 0,
+                    year = r.RegionalRequest?.Year ?? 0,
                 });
             return Json(requestes, JsonRequestBehavior.AllowGet);
         }
@@ -433,16 +433,16 @@ namespace Cats.Areas.Logistics.Controllers
         public JsonResult GetSiPcAllocation()
         {
             var siPcAllocated = _sipcAllocationService.FindBy(r => r.ReliefRequisitionDetail.ReliefRequisition.Status == (int)Cats.Models.Constant.ReliefRequisitionStatus.ProjectCodeAssigned).Select(s => new
-                                                                                {
-                                                                                    reqNo = s.ReliefRequisitionDetail.ReliefRequisition.RequisitionNo,
-                                                                                    beneficiaries = s.ReliefRequisitionDetail.BenficiaryNo,
-                                                                                    amount = s.AllocatedAmount,
-                                                                                    commodity = s.ReliefRequisitionDetail.ReliefRequisition.Commodity.Name,
-                                                                                    allocationType = s.AllocationType,
-                                                                                    regionId = s.ReliefRequisitionDetail.ReliefRequisition.RegionID,
-                                                                                    RegionName = s.ReliefRequisitionDetail.ReliefRequisition.AdminUnit.Name,
-                                                                                    program = s.ReliefRequisitionDetail.ReliefRequisition.Program.Name
-                                                                                });
+            {
+                reqNo = s.ReliefRequisitionDetail.ReliefRequisition.RequisitionNo,
+                beneficiaries = s.ReliefRequisitionDetail.BenficiaryNo,
+                amount = s.AllocatedAmount,
+                commodity = s.ReliefRequisitionDetail.ReliefRequisition.Commodity.Name,
+                allocationType = s.AllocationType,
+                regionId = s.ReliefRequisitionDetail.ReliefRequisition.RegionID,
+                RegionName = s.ReliefRequisitionDetail.ReliefRequisition.AdminUnit.Name,
+                program = s.ReliefRequisitionDetail.ReliefRequisition.Program.Name
+            });
             return Json(siPcAllocated, JsonRequestBehavior.AllowGet);
         }
 
@@ -456,7 +456,7 @@ namespace Cats.Areas.Logistics.Controllers
                 _transportOrderService.FindBy(s => s.StatusID < (int)(Cats.Models.Constant.TransportOrderStatus.Closed)).Select(p => new
                 {
                     name = p.Transporter.Name,
-                    region = (p.Transporter.Region!=0) ? _adminUnitService.FindById(p.Transporter.Region).Name : "",
+                    region = (p.Transporter.Region != 0) ? _adminUnitService.FindById(p.Transporter.Region).Name : "",
                     zone = (p.Transporter.Zone != 0) ? _adminUnitService.FindById(p.Transporter.Zone).Name : "",
                     transportOrderNo = p.TransportOrderNo,
                     mobileNo = p.Transporter.MobileNo ?? ""
@@ -469,19 +469,19 @@ namespace Cats.Areas.Logistics.Controllers
 
         public JsonResult GetDelayedTOs()
         {
-             var delayedTOs =
-                _transportOrderService.Get(t => t.StatusID == (int)(Cats.Models.Constant.TransportOrderStatus.Signed) && System.Data.Objects.SqlClient.SqlFunctions.DateDiff("day", t.TransporterSignedDate, DateTime.Now) >= 3).ToList();
-             var requestes = GetDelayedTransportersListViewModel(delayedTOs)
-                .Select(r => new
-                {
-                    TransportOrderID = r.TransportOrderID,
-                    TransportOrderNo = r.TransportOrderNo,
-                    SignedDate = r.SignedDate,
-                    StartedOn = r.StartedOn,
-                    TransporterName  = r.TransporterName,
-                    OrderExpiryDate = r.OrderExpiryDate,
-                    DaysPassedAfterSigned = (int)r.DaysPassedAfterSigned
-                }).ToList();
+            var delayedTOs =
+               _transportOrderService.Get(t => t.StatusID == (int)(Cats.Models.Constant.TransportOrderStatus.Signed) && System.Data.Objects.SqlClient.SqlFunctions.DateDiff("day", t.TransporterSignedDate, DateTime.Now) >= 3).ToList();
+            var requestes = GetDelayedTransportersListViewModel(delayedTOs)
+               .Select(r => new
+               {
+                   TransportOrderID = r.TransportOrderID,
+                   TransportOrderNo = r.TransportOrderNo,
+                   SignedDate = r.SignedDate,
+                   StartedOn = r.StartedOn,
+                   TransporterName = r.TransporterName,
+                   OrderExpiryDate = r.OrderExpiryDate,
+                   DaysPassedAfterSigned = (int)r.DaysPassedAfterSigned
+               }).ToList();
             return Json(requestes, JsonRequestBehavior.AllowGet);
         }
 
@@ -507,9 +507,9 @@ namespace Cats.Areas.Logistics.Controllers
         public JsonResult GetNonReportedTransporters()
         {
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            
+
             var transporters = _dispatchAllocationService.GetAllTransportersWithoutGrn();
-            foreach(var transporter in transporters)
+            foreach (var transporter in transporters)
             {
                 var dispatchId = transporter.DispatchID;
                 var delivery = _deliveryService.FindBy(t => t.DispatchID == dispatchId).FirstOrDefault();
@@ -522,17 +522,17 @@ namespace Cats.Areas.Logistics.Controllers
             var transportersView = transporters.ToList().Where(t => !t.GRNReceived).Where(t => DateTime.Now.Subtract(t.DispatchDate).Days >= 10).ToList();
 
             var transView = from tv in transportersView
-                             select new
-                                        {
-                                            TransporterName = tv.Transporter,
-                                            BidNo = tv.BidNumber,
-                                            FDPName = tv.FDP,
-                                            DispatchedDate = tv.DispatchDatePref
-                                        };
+                            select new
+                            {
+                                TransporterName = tv.Transporter,
+                                BidNo = tv.BidNumber,
+                                FDPName = tv.FDP,
+                                DispatchedDate = tv.DispatchDatePref
+                            };
 
             return Json(transView.ToList(), JsonRequestBehavior.AllowGet);
         }
-        
+
         #endregion
 
         #region Dispatch Allocations
@@ -577,14 +577,14 @@ namespace Cats.Areas.Logistics.Controllers
                          TotalPhysicalStock = s.TotalPhysicalStock.ToPreferedWeightUnit(),
                          DispatchedAmount = s.DispatchedAmount.ToPreferedWeightUnit(),
                          Remaining = s.Remaining.ToPreferedWeightUnit()
-                         
+
                      });
             return Json(q, JsonRequestBehavior.AllowGet);
         }
         #endregion
 
         #region Data entry indicator: Dispatch Allocation
-        
+
         public JsonResult DispatchAllocationIndicator(DateTime? startDate, DateTime? endDate, int round = 0)
         {
             var dispatchAllocatedRequisitions = _lgDashboardService.DispatchAllocatedRequisitions(startDate, endDate, round);
@@ -605,7 +605,7 @@ namespace Cats.Areas.Logistics.Controllers
 
         public JsonResult GetLogisticsUsers()
         {
-            var lgUsers = _userAccountService.FindBy(t=>t.CaseTeam.Value == (int)UserType.CASETEAM.LOGISTICS);
+            var lgUsers = _userAccountService.FindBy(t => t.CaseTeam.Value == (int)UserType.CASETEAM.LOGISTICS);
             var dashboardUserViewModels = new List<DashboardUserViewModel>();
             foreach (var lgUser in lgUsers)
             {
@@ -616,7 +616,7 @@ namespace Cats.Areas.Logistics.Controllers
                 };
                 dashboardUserViewModels.Add(dashboardUserViewModel);
             }
-            
+
             return Json(dashboardUserViewModels, JsonRequestBehavior.AllowGet);
         }
 
