@@ -95,6 +95,16 @@
     </div>
     <div class="portlet-body">
         <div class="form-horizontal">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="col-sm-4 control-label">@Html.DisplayNameFor(model => model.PlanName)</div>
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(model => model.PlanName, new {disabled = "true", @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row ">
                 <div class="col-md-4">
                     <div class="form-group">
@@ -133,7 +143,7 @@
                         <div class="col-sm-4 control-label">@Html.DisplayNameFor(model => model.Ration)</div>
                         <div class="col-sm-8">
                             <div class="input-group">
-                                @Html.TextBoxFor(model => model.Ration, new { disabled = "true", @class="form-control" })
+                                @Html.TextBoxFor(model => model.Ration, new {disabled = "true", @class = "form-control"})
                                 <span class="input-group-addon">
                                     <a id="pop" data-original-title="Ration Detail"><i class="icon-question"></i></a>
                                 </span>
@@ -143,23 +153,23 @@
                 </div>
                 <div class="col-md-4">
                     @if (Model.ProgramID == 1)
-            {
-            <div class="form-group">
-                <div class="col-sm-4 control-label">
-                    @Html.DisplayNameFor(model => model.Round)
-                </div>
-                <div class="col-sm-8">@Html.TextBoxFor(model => model.Round, new {disabled = "true", @class = "form-control"})</div>
-            </div>
-            }
-            else if (Model.ProgramID == 2)
-            {
-            <div class="form-group">
-                <div class="col-sm-4 control-label">
-                    @Html.DisplayNameFor(model => model.Month)
-                </div>
-                <div class="col-sm-8">@Html.TextBoxFor(model => model.Month, new {disabled = "true", @class = "form-control"})</div>
-            </div>
-            }
+                    {
+                        <div class="form-group">
+                            <div class="col-sm-4 control-label">
+                                @Html.DisplayNameFor(model => model.Round)
+                            </div>
+                            <div class="col-sm-8">@Html.TextBoxFor(model => model.Round, new {disabled = "true", @class = "form-control"})</div>
+                        </div>
+                    }
+                    else if (Model.ProgramID == 2)
+                    {
+                        <div class="form-group">
+                            <div class="col-sm-4 control-label">
+                                @Html.DisplayNameFor(model => model.Month)
+                            </div>
+                            <div class="col-sm-8">@Html.TextBoxFor(model => model.Month, new {disabled = "true", @class = "form-control"})</div>
+                        </div>
+                    }
                 </div>
             </div>
             <div class="row">

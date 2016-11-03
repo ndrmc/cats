@@ -34,9 +34,13 @@ namespace Cats.ViewModelBinder
             requisition.Zone = reliefRequisition.AdminUnit1.Name;
             requisition.Commodity = reliefRequisition.Commodity.Name;
             requisition.Month = RequestHelper.MonthName(reliefRequisition.Month);
-            requisition.RequestRefNo = reliefRequisition.RegionalRequest != null ? reliefRequisition.RegionalRequest.ReferenceNumber : "Transfer/Swap Requisition";
+            requisition.RequestRefNo = reliefRequisition.RegionalRequest != null
+                ? reliefRequisition.RegionalRequest.ReferenceNumber
+                : "Transfer/Swap Requisition";
             requisition.StateName = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name;
-            requisition.InitialStateFlowTemplates = BindFlowTemplateViewModel(reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates).ToList();
+            requisition.InitialStateFlowTemplates =
+                BindFlowTemplateViewModel(
+                    reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates).ToList();
             requisition.IsDraft = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft";
             requisition.BusinessProcessID = reliefRequisition.BusinessProcessID;
 
@@ -53,7 +57,9 @@ namespace Cats.ViewModelBinder
                 requisition.Ration = reliefRequisition.RegionalRequest.Ration.RefrenceNumber;
                 requisition.RationID = reliefRequisition.RegionalRequest.RationID;
             }
-            
+            if (reliefRequisition.RegionalRequest != null)
+                requisition.PlanName = reliefRequisition.RegionalRequest.Plan.PlanName;
+            else requisition.PlanName = "No HRD Plan";
             return requisition;
         }
 
