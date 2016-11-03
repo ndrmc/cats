@@ -104,33 +104,13 @@ namespace Cats.Areas.Procurement.Controllers
                     TempData["Error"] = "Transport order not created. Please select Bid and try again";
                     return RedirectToAction("TransportRequisitions");
                 }
-                int businessProcessID = 0;
+
                 if (saveButton != null)
                 {
 
-                    int BP_PR = _applicationSettingService.getTransportOrderWorkflow();
-                    if (BP_PR != 0)
-                    {
-                        BusinessProcessState createdstate = new BusinessProcessState
-                        {
-                            DatePerformed = DateTime.Now,
-                            PerformedBy = User.Identity.Name,
-                            Comment = "Transport Order  Added"
-
-                        };
-                        //_PaymentRequestservice.Create(request);
-
-                        BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
-                                                                                        "TransportOrder", createdstate);
-                        if (bp != null)
-                            businessProcessID = bp.BusinessProcessID;
-
-
-                    }
-
 
                     var userName = UserAccountHelper.GetUser(User.Identity.Name).UserName;
-                    _transportOrderService.CreateTransportOrder(id, BidId, userName, businessProcessID);
+                    _transportOrderService.CreateTransportOrder(id, BidId, userName);
                     return RedirectToAction("Index", "TransportOrder");
                 }
                 return RedirectToAction("TransportRequisitions");
@@ -816,8 +796,7 @@ namespace Cats.Areas.Procurement.Controllers
                         RequisitionNo = detail.ReliefRequisition.RequisitionNo,
                         WinnerAssignedByLogistics = detail.WinnerAssignedByLogistics,
 
-                        SatelliteWarehouseName = GetSName(detail.ReliefRequisition.HubAllocations.First().SatelliteWarehouseID)
-                        // Donor=detail.Donor.Name
+                        SatelliteWarehouseName = GetSName(detail.ReliefRequisition.HubAllocations.First().SatelliteWarehouseID, detail.Hub.HubID)
 
 
                     });
@@ -825,15 +804,28 @@ namespace Cats.Areas.Procurement.Controllers
             // return transportContractDetail;
         }
 
-        private string GetSName(int? id)
+        private string GetSName(int? id, int hubId)
         {
             if (id != null)
             {
-                var k = _hubService.FindById(id.Value);
+                if (id != 0)
+                {
+                    var k = _hubService.FindById(id.Value);
+                    return k.Name;
+                }
+                else
+                {
+                    var k = _hubService.FindById(hubId);
+                    return k.Name;
+                }
+            }
+            else
+            {
+                var k = _hubService.FindById(hubId);
                 return k.Name;
             }
-            else return string.Empty;
         }
+
         private TransportContractViewModel GetTransportOrder(TransportOrder transportOrder)
         {
             var datePref = UserAccountHelper.GetUser(User.Identity.Name).DatePreference;
