@@ -84,9 +84,9 @@ namespace Cats.Services.Logistics
         }
         #endregion
 
-        public bool CreateTransportRequisition(List<List<int>> programRequisitons,int requestedBy, string requesterName)
+        public bool CreateTransportRequisition(List<List<int>> programRequisitons, int requestedBy, string requesterName)
         {
-            if(programRequisitons.Count < 1) return false;
+            if (programRequisitons.Count < 1) return false;
             foreach (var reliefRequisitions in programRequisitons)
             {
 
@@ -100,23 +100,23 @@ namespace Cats.Services.Logistics
                     region = _unitOfWork.AdminUnitRepository.FindById(anyReliefRequisition.RegionID.Value);
                 }
                 var program = new Program();
-                
+
                 if (anyReliefRequisition.ProgramID != null)
                 {
                     program = _unitOfWork.ProgramRepository.FindById(anyReliefRequisition.ProgramID);
                 }
-                
+
                 var transportRequisition = new TransportRequisition()
-                                               {
-                                                   Status = (int)TransportRequisitionStatus.Draft, //Draft
-                                                   RequestedDate = DateTime.Today,
-                                                   RequestedBy = requestedBy, //should be current user
-                                                   CertifiedBy = requestedBy, //Should be some user ????
-                                                   CertifiedDate = DateTime.Today, //should be date cerified
-                                                   TransportRequisitionNo = Guid.NewGuid().ToString(),
-                                                   RegionID = region.AdminUnitID,
-                                                   ProgramID = program.ProgramID
-                                               };
+                {
+                    Status = (int)TransportRequisitionStatus.Draft, //Draft
+                    RequestedDate = DateTime.Today,
+                    RequestedBy = requestedBy, //should be current user
+                    CertifiedBy = requestedBy, //Should be some user ????
+                    CertifiedDate = DateTime.Today, //should be date cerified
+                    TransportRequisitionNo = Guid.NewGuid().ToString(),
+                    RegionID = region.AdminUnitID,
+                    ProgramID = program.ProgramID
+                };
 
                 int BP_PR = 0;
                 List<ApplicationSetting> ret = _applicationSettingService.FindBy(t => t.SettingName == "TransportRequisitionWorkflow");
@@ -150,7 +150,7 @@ namespace Cats.Services.Logistics
                 foreach (var reliefRequisition in reliefRequisitions)
                 {
                     transportRequisition.TransportRequisitionDetails.Add(new TransportRequisitionDetail
-                                                                             {RequisitionID = reliefRequisition});
+                    { RequisitionID = reliefRequisition });
                     //var orignal =
                     //    _unitOfWork.ReliefRequisitionRepository.Get(t => t.RequisitionID == reliefRequisition).
                     //        FirstOrDefault();
@@ -179,7 +179,7 @@ namespace Cats.Services.Logistics
                 }
 
                 AddTransportRequisition(transportRequisition);
-                
+
                 var year = transportRequisition.RequestedDate.Year;
                 transportRequisition.TransportRequisitionNo = string.Format("{0}/{1}/{2}/{3}",
                                                                             program.ShortCode, region.AdminUnitID,
@@ -187,7 +187,7 @@ namespace Cats.Services.Logistics
                                                                             year);
 
                 _unitOfWork.Save();
-               
+
             }
             return true;
 
@@ -205,7 +205,7 @@ namespace Cats.Services.Logistics
                                  "/Procurement/TransportOrder/NotificationNewRequisitions?recordId=" + transportRequisition.TransportRequisitionID;
                 return;
             }
-            destinationURl = 
+            destinationURl =
                              "/Procurement/TransportOrder/NotificationNewRequisitions?recordId=" + transportRequisition.TransportRequisitionID;
             _notificationService.AddNotificationForProcurementFromLogistics(destinationURl, transportRequisition);
         }
@@ -218,10 +218,10 @@ namespace Cats.Services.Logistics
                 t => t.TransportRequisitionID == transportRequisitionId, null, null).Select(t => t.RequisitionID);
 
             var reqDetails = _unitOfWork.ReliefRequisitionDetailRepository.Get(t => transportRequision.Contains(t.RequisitionID));
-           
+
             foreach (var reliefRequisitionDetail in reqDetails)
             {
-                var hubId =_unitOfWork.HubAllocationRepository.FindBy(t => t.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().HubID;
+                var hubId = _unitOfWork.HubAllocationRepository.FindBy(t => t.RequisitionID == reliefRequisitionDetail.RequisitionID).FirstOrDefault().HubID;
                 var woredaId = reliefRequisitionDetail.FDP.AdminUnitID;
                 var regionId = reliefRequisitionDetail.ReliefRequisition.RegionID;
 
@@ -231,16 +231,16 @@ namespace Cats.Services.Logistics
                              t.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionId).Distinct();
                 var result = from bid in bidWinner
                              select new BidNumber
-                                        {
-                                            BidId = bid.BidID,
-                                            BidNo = bid.Bid.BidNumber
-                                        };
+                             {
+                                 BidId = bid.BidID,
+                                 BidNo = bid.Bid.BidNumber
+                             };
 
 
-               bids.AddRange(result.Except(bids));
+                bids.AddRange(result.Except(bids));
 
             }
-            
+
             return bids;
         }
         public bool CheckIfBidIsCreatedForAnOrder(int transportRequisitionId)
@@ -319,7 +319,7 @@ namespace Cats.Services.Logistics
             {
                 var requisitionToDispatch = new RequisitionToDispatch();
                 var hubAllocation =
-                    _unitOfWork.HubAllocationRepository.Get(t => t.RequisitionID == requisition.RequisitionID,null,"Hub").FirstOrDefault();
+                    _unitOfWork.HubAllocationRepository.Get(t => t.RequisitionID == requisition.RequisitionID, null, "Hub").FirstOrDefault();
                 var status = _unitOfWork.WorkflowStatusRepository.Get(
                     t => t.StatusID == requisition.Status && t.WorkflowID == (int)WORKFLOW.RELIEF_REQUISITION).FirstOrDefault();
 
@@ -337,7 +337,7 @@ namespace Cats.Services.Logistics
 
                 requisitionToDispatch.RegionName = requisition.AdminUnit1.Name;
                 requisitionToDispatch.RequisitionStatusName = status.Description;
-               result.Add(requisitionToDispatch);
+                result.Add(requisitionToDispatch);
             }
 
 
@@ -351,11 +351,11 @@ namespace Cats.Services.Logistics
         }
 
 
-        public bool ApproveTransportRequisition(int id,int approvedBy, string approvedByName)
+        public bool ApproveTransportRequisition(int id, int approvedBy, string approvedByName)
         {
             var transportRequisition = _unitOfWork.TransportRequisitionRepository.Get(t => t.TransportRequisitionID == id, null,
                             "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
-            if (transportRequisition==null) return false;
+            if (transportRequisition == null) return false;
 
             var approveFlowTemplate = transportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Approve");
             if (approveFlowTemplate != null)
@@ -370,7 +370,7 @@ namespace Cats.Services.Logistics
                     ParentBusinessProcessID = transportRequisition.BusinessProcessID
                 };
                 //return 
-               _businessProcessService.PromotWorkflow(businessProcessState);
+                _businessProcessService.PromotWorkflow(businessProcessState);
                 AddToNotification(transportRequisition);
                 return true;
 
@@ -379,7 +379,7 @@ namespace Cats.Services.Logistics
             //transportRequisition.Status = (int) TransportRequisitionStatus.Approved;
             //transportRequisition.CertifiedBy = approvedBy;
             //transportRequisition.CertifiedDate = DateTime.Today;
-            
+
             //calling the notification 
             //AddToNotification(transportRequisition);
             return false;
@@ -414,7 +414,7 @@ namespace Cats.Services.Logistics
                     t => t.StatusID == requisition.Status && t.WorkflowID == (int)WORKFLOW.RELIEF_REQUISITION).FirstOrDefault();
 
                 if (hubAllocation != null) requisitionToDispatch.HubID = hubAllocation.HubID;
-               // requisitionToDispatch.Store = GetStoreName(requisitionToDispatch.HubID, requisition.RequisitionID);
+                // requisitionToDispatch.Store = GetStoreName(requisitionToDispatch.HubID, requisition.RequisitionID);
                 requisitionToDispatch.RequisitionID = requisition.RequisitionID;
                 requisitionToDispatch.RequisitionNo = requisition.RequisitionNo;
                 if (requisition.Status != null) requisitionToDispatch.RequisitionStatus = requisition.Status.Value;
@@ -438,20 +438,23 @@ namespace Cats.Services.Logistics
             return
                 _unitOfWork.TransportRequisitionDetailRepository.FindBy(
                     m => m.TransportRequisition.ProgramID == programId
-                         && m.TransportRequisition.Status == (int) TransportRequisitionStatus.Closed).ToList();
+                         && m.TransportRequisition.Status == (int)TransportRequisitionStatus.Closed ||
+                         m.TransportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Closed").ToList();
         }
         public List<TransportRequisitionDetail> GetTransportRequsitionDetailsByRegion(int regionid)
         {
             return
                 _unitOfWork.TransportRequisitionDetailRepository.FindBy(
                     m => m.TransportRequisition.RegionID == regionid
-                         && m.TransportRequisition.Status == (int)TransportRequisitionStatus.Closed).ToList();
+                         && m.TransportRequisition.Status == (int)TransportRequisitionStatus.Closed ||
+                         m.TransportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Closed").ToList();
         }
         public List<TransportRequisitionDetail> GetTransportRequsitionDetails()
         {
             return
                 _unitOfWork.TransportRequisitionDetailRepository.FindBy(
-                    m => m.TransportRequisition.Status == (int)TransportRequisitionStatus.Closed).ToList();
+                    m => m.TransportRequisition.Status == (int)TransportRequisitionStatus.Closed ||
+                    m.TransportRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Closed").ToList();
         }
     }
 }

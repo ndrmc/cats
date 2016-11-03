@@ -104,33 +104,13 @@ namespace Cats.Areas.Procurement.Controllers
                     TempData["Error"] = "Transport order not created. Please select Bid and try again";
                     return RedirectToAction("TransportRequisitions");
                 }
-                int businessProcessID = 0;
+
                 if (saveButton != null)
                 {
 
-                    int BP_PR = _applicationSettingService.getTransportOrderWorkflow();
-                    if (BP_PR != 0)
-                    {
-                        BusinessProcessState createdstate = new BusinessProcessState
-                        {
-                            DatePerformed = DateTime.Now,
-                            PerformedBy = User.Identity.Name,
-                            Comment = "Transport Order  Added"
-
-                        };
-                        //_PaymentRequestservice.Create(request);
-
-                        BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
-                                                                                        "TransportOrder", createdstate);
-                        if (bp != null)
-                            businessProcessID = bp.BusinessProcessID;
-
-
-                    }
-
 
                     var userName = UserAccountHelper.GetUser(User.Identity.Name).UserName;
-                    _transportOrderService.CreateTransportOrder(id, BidId, userName, businessProcessID);
+                    _transportOrderService.CreateTransportOrder(id, BidId, userName);
                     return RedirectToAction("Index", "TransportOrder");
                 }
                 return RedirectToAction("TransportRequisitions");
@@ -801,22 +781,22 @@ namespace Cats.Areas.Procurement.Controllers
             return (from detail in transportContractDetail
                     select new TransportOrderDetailViewModel()
                     {
-                            TransportOrderID = detail.TransportOrderID,
-                            TransportOrderDetailID = detail.TransportOrderDetailID,
-                            CommodityID = detail.CommodityID,
-                            SourceWarehouseID = detail.SourceWarehouseID,
-                            QuantityQtl = detail.QuantityQtl.ToPreferedWeightUnit(),
-                            RequisitionID = detail.RequisitionID,
-                            TariffPerQtl = detail.TariffPerQtl,
-                            Commodity = detail.Commodity.Name,
-                            OriginWarehouse = detail.Hub.Name,
-                            HubID = detail.Hub.HubID,
-                            Woreda = detail.FDP.AdminUnit.Name,
-                            FDP = detail.FDP.Name,
-                            RequisitionNo = detail.ReliefRequisition.RequisitionNo,
-                            WinnerAssignedByLogistics = detail.WinnerAssignedByLogistics,
-                            
-                            SatelliteWarehouseName = GetSName(detail.ReliefRequisition.HubAllocations.First().SatelliteWarehouseID, detail.Hub.HubID)
+                        TransportOrderID = detail.TransportOrderID,
+                        TransportOrderDetailID = detail.TransportOrderDetailID,
+                        CommodityID = detail.CommodityID,
+                        SourceWarehouseID = detail.SourceWarehouseID,
+                        QuantityQtl = detail.QuantityQtl.ToPreferedWeightUnit(),
+                        RequisitionID = detail.RequisitionID,
+                        TariffPerQtl = detail.TariffPerQtl,
+                        Commodity = detail.Commodity.Name,
+                        OriginWarehouse = detail.Hub.Name,
+                        HubID = detail.Hub.HubID,
+                        Woreda = detail.FDP.AdminUnit.Name,
+                        FDP = detail.FDP.Name,
+                        RequisitionNo = detail.ReliefRequisition.RequisitionNo,
+                        WinnerAssignedByLogistics = detail.WinnerAssignedByLogistics,
+
+                        SatelliteWarehouseName = GetSName(detail.ReliefRequisition.HubAllocations.First().SatelliteWarehouseID, detail.Hub.HubID)
 
 
                     });
