@@ -46,8 +46,8 @@ namespace Cats.Areas.EarlyWarning.Models
         public string Comment { get; set; }
         public HttpPostedFileBase AttachmentFile { get; set; }
         public int ApprovedId { get; set; }
-
-
+        [Display(Name = "Plan Name")]
+        public string PlanName { get; set; }
 
 
         public string MonthRound
