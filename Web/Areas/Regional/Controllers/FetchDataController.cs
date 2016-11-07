@@ -231,8 +231,8 @@ namespace Cats.Areas.Regional.Controllers
             var plans =
                 (from p in
                     _needAssessmentService.GetAllNeedAssessment()
-                 where p.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved" ||
-                    p.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Reversed"
+                 where (p.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved" ||
+                    p.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Reversed")
                  select new
                  {
                      p.PlanID,
@@ -244,6 +244,7 @@ namespace Cats.Areas.Regional.Controllers
                             p.Plan.EndDate.ToString("MMMM") + " " + p.Plan.EndDate.Day + "," + p.Plan.EndDate.Year,
                      p.Plan.Status,
                      StatusDescription = GetStatusDescription(p.BusinessProcess.CurrentState.BaseStateTemplate.Name),
+                     IsHRDCreated = p.Plan.BusinessProcess.CurrentState.BaseStateTemplate.Name == "HRDCreated" ? "Yes" : string.Empty
                  }).Distinct().ToList();
             return Json(plans, JsonRequestBehavior.AllowGet);
         }
