@@ -514,7 +514,7 @@
                                 <ul class=" pull-right portlet-tools ">
                                     <li>
 
-                                        <a class="btn btn-sm btn-default" href="@Url.Action("Index", "WoredaStockDistribution", new {Area = "Logistics", regionID = ViewBag.RegionID})"> Show more</a>
+                                        <a class="btn btn-sm btn-default" href="@Url.Action("Index", "WoredaStockDistribution", new { Area = "Logistics", regionID = ViewBag.RegionID })"> Show more</a>
                                     </li>
                                 </ul>
                             </div>
@@ -527,6 +527,8 @@
                                         <thead>
                                             <tr>
                                                 <th class="hidden-xs">Plan</th>
+
+                                                <th>Round</th>
                                                 <th>Woreda</th>
                                                 <th class="number">FDPs</th>
 
@@ -539,6 +541,7 @@
 
                                             <tr class="" ng-repeat="Distribution in Distribtion">
                                                 <td>{{Distribution.plan}}</td>
+                                                <td>{{Distribution.Month}}</td>
                                                 <th>{{Distribution.Woreda}}</th>
                                                 <th>{{Distribution.Fdps}}</th>
 

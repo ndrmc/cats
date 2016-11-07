@@ -103,12 +103,12 @@ namespace Cats.Areas.Regional.Controllers
             var requisitions = _reliefRequisitionService.FindBy(t => t.RegionID == regionID);
             var totalRequests = requests.Count();
             var currentPlan = _hrdService.FindBy(t => t.Status == 3).FirstOrDefault().PlanID;
+            var planName = _planService.FindById(currentPlan).PlanName;
+
             var utilizations =
                 _utilization.FindBy(
                     t => t.PlanID == currentPlan && t.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID);
-            
-            var planName = _planService.FindById(currentPlan).PlanName; 
-                        
+                 
             var sum18 = 0;
             var sum518 = 0;
             var sum5 = 0;
