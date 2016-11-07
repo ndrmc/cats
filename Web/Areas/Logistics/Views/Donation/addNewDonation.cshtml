@@ -33,6 +33,17 @@
 
             <table border="0" class="form-horizontal ">
                 <tr style="width: 300px">
+                <td>
+                    <div class="col-sm-6 form-group">
+                        <div class="col-sm-5 control-label">
+                            @Html.LabelFor(m => m.GiftCertificateID, @Html.Translate("Gift Certificate"))
+                        </div>
+                        <div class="col-sm-7">
+                            @Html.DropDownList("GiftCertificateID", null, new { @class = "form-control" })
+                            <span class="help-block">@Html.ValidationMessageFor(m => m.GiftCertificateID)</span>
+                        </div>
+                    </div>
+                </td>
                     <td style="width:50%; padding-bottom: 10px; padding-top:10px;">
                         <div class="control-label">
                             @Html.Label(@Html.Translate("SI Number"))
@@ -172,6 +183,23 @@
             error: function (error) {
                 alert("@Html.Translate("There was an error posting the data to the server"): " + error.responseText);
             }
+        });
+
+        $('#GiftCertificateID').change(function () {
+            var url = '@Url.Action("JsonGiftCertificates", "Donation")';
+            $.getJSON(url, {}, function (result) {
+             
+                if (result !== "" && result != null) {
+                  
+                    var options = '<option value="">@Html.Translate("-- Select a Gift Certificate")</option>';
+
+                    for (var i = 0; i < result.length; i++) {
+                        options += '<option value="' + result[i].Value + '">' + result[i].Text + '</option>';
+                    }
+
+                    $("#GiftCertificateID").html(options);
+                }
+            });
         });
     });
 
