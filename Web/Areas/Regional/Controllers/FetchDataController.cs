@@ -226,34 +226,32 @@ namespace Cats.Areas.Regional.Controllers
         }
 
         public JsonResult Assesments(int regionID = 0)
-      
+
         {
-            var planStatus = new List<int>();
-            planStatus.Add((int) PlanStatus.Approved);
-            planStatus.Add((int)PlanStatus.HRDCreated);
             var plans =
                 (from p in
-                    _needAssessmentService.FindBy(
-                        a => a.Region == regionID && planStatus.Contains(a.Plan.Status))
-                    select new
-                    {
-                        p.PlanID,
-                        p.Plan.PlanName,
-                        StartDate =
+                    _needAssessmentService.GetAllNeedAssessment()
+                 where p.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved" ||
+                    p.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Reversed"
+                 select new
+                 {
+                     p.PlanID,
+                     p.Plan.PlanName,
+                     StartDate =
                             p.Plan.StartDate.ToString("MMMM") + " " + p.Plan.StartDate.Day + "," +
                             p.Plan.StartDate.Year,
-                        EndDate =
+                     EndDate =
                             p.Plan.EndDate.ToString("MMMM") + " " + p.Plan.EndDate.Day + "," + p.Plan.EndDate.Year,
-                        p.Plan.Status,
-                        StatusDescription = GetStatusDescription(p.Plan.Status),
-                    }).Distinct().ToList();
+                     p.Plan.Status,
+                     StatusDescription = GetStatusDescription(p.BusinessProcess.CurrentState.BaseStateTemplate.Name),
+                 }).Distinct().ToList();
             return Json(plans, JsonRequestBehavior.AllowGet);
         }
-
-        public string GetStatusDescription(int status)
+        public string GetStatusDescription(string stateName)
         {
-            if (status == (int) PlanStatus.HRDCreated) return "HRD Created";
-            return status == (int) PlanStatus.Approved ? "Approved" : string.Empty;
+            if (stateName == "Approved") return "Approved";
+            if (stateName == "Reversed") return "Rejected";
+            return string.Empty;
         }
     }
 }
