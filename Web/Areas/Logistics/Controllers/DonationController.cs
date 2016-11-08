@@ -99,13 +99,13 @@ namespace Cats.Areas.Logistics.Controllers
         {
             var model = InitDonationViewModel();
 
-            var giftCertificates = _giftCertificateService.GetAllGiftCertificate().Where(g =>
-            g.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved");
+            //var giftCertificates = _giftCertificateService.GetAllGiftCertificate().Where(g =>
+            //g.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved");
 
-            if (giftCertificates != null)
-            {
-                ViewBag.GiftCertificateID = new SelectList(giftCertificates.ToList(), "GiftCertificateID", "ReferenceNo");
-            }
+            //if (giftCertificates != null)
+            //{
+            //    ViewBag.GiftCertificateID = new SelectList(giftCertificates.ToList(), "GiftCertificateID", "ReferenceNo");
+            //}
 
             return View("addNewDonation", model);
         }
@@ -477,6 +477,8 @@ namespace Cats.Areas.Logistics.Controllers
                     if (bp != null)
                     {
                         var commodity = _commodityService.FindById(donationViewModel.CommodityID);
+
+                        int giftCertificateId = _giftCertificateService.FindBySINumber(donationViewModel.SINumber).GiftCertificateID;
                         var donationHeader = new DonationPlanHeader
                         {
                             AllocationDate = DateTime.Now,
@@ -489,7 +491,7 @@ namespace Cats.Areas.Logistics.Controllers
                             DonatedAmount = donationViewModel.WieghtInMT,
                             CommodityTypeID = donationViewModel.CommodityTypeID,
                             BusinessProcessID = bp.BusinessProcessID,
-                            GiftCertificateID = donationViewModel.GiftCertificateID
+                            GiftCertificateID = giftCertificateId
                         };
 
                         foreach (var donationDetail in donationViewModel.DonationPlanDetails.Select(donationPlanDetail => new DonationPlanDetail
@@ -752,17 +754,17 @@ namespace Cats.Areas.Logistics.Controllers
             return RedirectToAction("Index", "Donation");
         }
 
-        public ActionResult JsonGiftCertificates(int commodityTypeID, int? editModval)
-        {
-            var giftCertificates = _giftCertificateService.GetAllGiftCertificate().Where(g => g.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved");
+        //public ActionResult JsonGiftCertificates(int commodityTypeID, int? editModval)
+        //{
+        //    var giftCertificates = _giftCertificateService.GetAllGiftCertificate().Where(g => g.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved");
 
-            if (giftCertificates != null)
-            {
-                var giftCertificatesSelectList = new SelectList(giftCertificates.ToList(), "GiftCertificateID", "Name", editModval);
-                return Json(giftCertificatesSelectList, JsonRequestBehavior.AllowGet);
-            }
-            return Json(null, JsonRequestBehavior.AllowGet);
-        }
+        //    if (giftCertificates != null)
+        //    {
+        //        var giftCertificatesSelectList = new SelectList(giftCertificates.ToList(), "GiftCertificateID", "Name", editModval);
+        //        return Json(giftCertificatesSelectList, JsonRequestBehavior.AllowGet);
+        //    }
+        //    return Json(null, JsonRequestBehavior.AllowGet);
+        //}
 
     }
 }
