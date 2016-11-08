@@ -33,18 +33,21 @@
 
             <table border="0" class="form-horizontal ">
                 <tr style="width: 300px">
-                <td>
-                    <div class="col-sm-6 form-group">
-                        <div class="col-sm-5 control-label">
-                            @Html.LabelFor(m => m.GiftCertificateID, @Html.Translate("Gift Certificate"))
+                    <td style="width:50%; padding-bottom: 10px; padding-top:10px;">
+
+                        <div class="control-label">
+                            @Html.Label(@Html.Translate("Gift Certificate"))
                         </div>
-                        <div class="col-sm-7">
+                        <div class="controls">
                             @Html.DropDownList("GiftCertificateID", null, new { @class = "form-control" })
                             <span class="help-block">@Html.ValidationMessageFor(m => m.GiftCertificateID)</span>
                         </div>
-                    </div>
-                </td>
-                    <td style="width:50%; padding-bottom: 10px; padding-top:10px;">
+                    </td>
+                </tr>
+                <tr style="width: 300px">
+
+
+                    <td style="width: 50%; padding-bottom: 10px; padding-top: 10px;">
                         <div class="control-label">
                             @Html.Label(@Html.Translate("SI Number"))
                         </div>
@@ -57,7 +60,7 @@
                     </td>
 
 
-                    <td style="width:50%; padding-bottom: 10px;padding-top:10px;">
+                    <td style="width: 50%; padding-bottom: 10px; padding-top: 10px;">
                         <div class="control-label">
                             @Html.Label(@Html.Translate("Quantity"))
                         </div>
@@ -69,7 +72,7 @@
 
                     </td>
                 <tr style="width: 300px">
-                    <td style="width:50%; padding-bottom: 10px;">
+                    <td style="width: 50%; padding-bottom: 10px;">
                         <div class="control-label">
                             @Html.LabelFor(model => model.ETA, @Html.Translate("ETA"))
                         </div>
@@ -80,7 +83,7 @@
                     </td>
 
 
-                    <td style="width:50%; padding-bottom: 10px;">
+                    <td style="width: 50%; padding-bottom: 10px;">
                         <div class="control-label">
                             @Html.Label(@Html.Translate("Donor"))
                         </div>
@@ -90,7 +93,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="width:50%; padding-bottom: 10px;">
+                    <td style="width: 50%; padding-bottom: 10px;">
 
                         <div class="control-label">
                             @Html.Label(@Html.Translate("Commodity Type"))
@@ -102,7 +105,7 @@
 
                     </td>
 
-                    <td style="width:50%; padding-bottom: 10px;">
+                    <td style="width: 50%; padding-bottom: 10px;">
                         <div class="control-label">
                             @Html.Label(@Html.Translate("Parent Commodity"))
                         </div>
@@ -117,7 +120,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="width:50%; padding-bottom: 10px;">
+                    <td style="width: 50%; padding-bottom: 10px;">
                         <div class="control-label">
                             @Html.Label(@Html.Translate("Program"))
                         </div>
@@ -126,7 +129,7 @@
                         </div>
                     </td>
 
-                    <td style="width:50%; padding-bottom: 10px;">
+                    <td style="width: 50%; padding-bottom: 10px;">
 
                         <div class="control-label">
                             @Html.Label(@Html.Translate("Child Commodity"))
@@ -166,7 +169,7 @@
 <script>
     var giftCertificates = "";
     var sourceArr = [];
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         $.ajax({
             type: "POST",
@@ -188,9 +191,9 @@
         $('#GiftCertificateID').change(function () {
             var url = '@Url.Action("JsonGiftCertificates", "Donation")';
             $.getJSON(url, {}, function (result) {
-             
+
                 if (result !== "" && result != null) {
-                  
+
                     var options = '<option value="">@Html.Translate("-- Select a Gift Certificate")</option>';
 
                     for (var i = 0; i < result.length; i++) {

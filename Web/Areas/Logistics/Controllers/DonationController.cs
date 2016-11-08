@@ -98,15 +98,13 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult AddNewDonation()
         {
             var model = InitDonationViewModel();
-            ViewBag.SourceHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name");
 
             var giftCertificates = _giftCertificateService.GetAllGiftCertificate().Where(g =>
             g.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved");
 
             if (giftCertificates != null)
             {
-                var giftCertificatesSelectList = new SelectList(giftCertificates.ToList(), "GiftCertificateID", "DeclarationNumber");
-                return Json(giftCertificatesSelectList, JsonRequestBehavior.AllowGet);
+                ViewBag.GiftCertificateID = new SelectList(giftCertificates.ToList(), "GiftCertificateID", "ReferenceNo");
             }
 
             return View("addNewDonation", model);
@@ -400,6 +398,7 @@ namespace Cats.Areas.Logistics.Controllers
             var hub = _hubService.GetAllHub().ToList();
             var commodityType = _commodityTypeService.GetAllCommodityType();
             var commodity = _commodityService.GetAllCommodity();
+            //var giftCertificate = _giftCertificateService.GetAllGiftCertificate();
 
             if (ModelState.IsValid && donationViewModel != null && donationViewModel.WieghtInMT >= donationViewModel.DonationPlanDetails.Sum(m => m.AllocatedAmount))
             {
@@ -489,7 +488,8 @@ namespace Cats.Areas.Logistics.Controllers
                             ShippingInstructionId = siId,
                             DonatedAmount = donationViewModel.WieghtInMT,
                             CommodityTypeID = donationViewModel.CommodityTypeID,
-                            BusinessProcessID = bp.BusinessProcessID
+                            BusinessProcessID = bp.BusinessProcessID,
+                            GiftCertificateID = donationViewModel.GiftCertificateID
                         };
 
                         foreach (var donationDetail in donationViewModel.DonationPlanDetails.Select(donationPlanDetail => new DonationPlanDetail
