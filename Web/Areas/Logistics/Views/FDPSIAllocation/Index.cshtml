@@ -104,13 +104,10 @@
 
                 <div class="portlet-title">
                     <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("Requisition") </div>
-                    <div class="tools">
-                        <a href="#" class="collapse" data-original-title="" title=""> </a>
-                    </div>
-                    @*<div class="actions"><a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a></div>*@
+                
                 </div>
-                <div class="portlet-body"  style="height: 500px;overflow-y: scroll;">
-                    <div><i class="cats-unit-pref"> Preferred Measurement </i> </div>
+                <div class="portlet-body"  >
+                   <div><i class="cats-unit-pref"> Preferred Measurement </i> </div>
                     <div class="accordion dd-item" id="accordion_zone">
                         <div class="accordion-group" id="accordion_zone{{$index}}" data-index="{{zone.id}}" ng-repeat="zone in requests" class="btn-draggable" ng-model="unallocated" data-drag="zone.allocatedAmount< 0.1"
                              data-jqyoui-options="{revert: 'invalid'}" jqyoui-draggable="{index: {{zone.id}},placeholder:'keep',animate:true, onStart:'startCallback(zone, $index)', onStop: 'stopCallback', onDrag: 'dragCallback'}" ng-cloak>
@@ -201,7 +198,7 @@
                         @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
                     </div>
                 </div>
-                <div class="portlet-body"  style="height: 500px;overflow-y: scroll;">
+                <div class="portlet-body"  style="height: 900px;overflow-y: scroll;">
                     @*<div class="well">
                             <div class="row">
                                 <div class="col-md-4">

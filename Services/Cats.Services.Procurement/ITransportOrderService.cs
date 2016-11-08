@@ -33,13 +33,13 @@ namespace Cats.Services.Procurement
 
         //IEnumerable<RequisitionToDispatch> GetRequisitionToDispatch();
         //IEnumerable<ReliefRequisition> GetProjectCodeAssignedRequisitions();
-       bool CreateTransportOrder(int requisitionId,int bidId, string requesterName, int businessProcessID);
-       int ReAssignTransporter(IEnumerable<TransportRequisitionWithoutWinnerModel> transReqWithTransporter,int transporterID);
-       bool ApproveTransportOrder(TransportOrder transportOrder);
-       bool SignTransportOrder(TransportOrder transportOrder);
-       List<vwTransportOrder> GeTransportOrderRpt(int id);
-       List<Transporter> GetTransporter();
-       List<Hub> GetHubs();
+        bool CreateTransportOrder(int requisitionId, int bidId, string requesterName);
+        int ReAssignTransporter(IEnumerable<TransportRequisitionWithoutWinnerModel> transReqWithTransporter, int transporterID);
+        bool ApproveTransportOrder(TransportOrder transportOrder);
+        bool SignTransportOrder(TransportOrder transportOrder);
+        List<vwTransportOrder> GeTransportOrderRpt(int id);
+        List<Transporter> GetTransporter();
+        List<Hub> GetHubs();
         bool GeneratDispatchPlan(int transportOrderId);
         IOrderedEnumerable<RequisiionNoViewModel> GetZone(int transReqNo);
         IOrderedEnumerable<WoredaViewModelInTransReqWithoutWinner> GetWoredas(int zoneId, int transReqNo);
