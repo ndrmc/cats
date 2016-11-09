@@ -4,8 +4,13 @@
 
 @model Cats.Models.NeedAssessment
 @{
-    ViewBag.Title = Html.Translate("Edit NeedAssessment");
-    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewBag.Title = Html.Translate("Edit Need Assessment");
+
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("Edit NeedAssessment");
+    ViewBag.PageTitleDescription = "";
+
+
 }
 
 @section LeftBar{
@@ -13,43 +18,60 @@
     @Html.Partial("_NeedAssessmentLeftBar")
 }
 @section Toolbar
-{ 
-    <a class="btn toolbar-btn " data-buttontype="btn_back_to_list" href="@Url.Action("Detail","NeedAssessment",new {id=Model.PlanID})"></a>
+{
+    <a class="btn btn-fit-height grey-salt" data-buttontype="btn_back_to_list" href="@Url.Action("Detail","NeedAssessment",new {id=Model.PlanID})"><i class="fa fa-list"></i> @Html.Translate("Back to List")</a>
+
+
 }
 <style>
-    .calculated
-    {
-        color:#888;
-        text-align:right;
-        font-weight:bold;
+    .calculated {
+        color: #888;
+        text-align: right;
+        font-weight: bold;
     }
 </style>
-<div style="float:left; width:45%;">
-    @Html.Translate("Region"):  @ViewData["RegionName"]
-</div>  
-<div style="float:left; width:45%;">
-    @Html.Translate("Need assessment type"): @ViewData["TypeOfNeedAssessment"]
-</div>      
-<div style="clear:both;padding:5px;"></div>
-@(Html.Kendo().Grid<Cats.Models.NeedAssessmentWoredaDao>()
+
+<div class="portlet light bordered" style="display: block;">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="fa fa-list font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("Edit Need Assessment")</span>
+            <span class="caption-helper">  </span>
+        </div>
+        <div class="tools">
+            <a href="#" class="collapse" data-original-title="" title=""></a>
+        
+        </div>
+   
+</div>
+<div class="portlet-body">
+
+    <div style="float:left; width:45%;">
+        @Html.Translate("Region"):  @ViewData["RegionName"]
+    </div>
+    <div style="float:left; width:45%;">
+        @Html.Translate("Need assessment type"): @ViewData["TypeOfNeedAssessment"]
+    </div>
+    <div style="clear:both;padding:5px;"></div>
+    @(Html.Kendo().Grid<Cats.Models.NeedAssessmentWoredaDao>()
       .Name("grid")
       .Columns(columns =>
       {
 
           columns.Bound(o => o.WoredaName).Title(Html.Translate("Woreda")).Width("200").HtmlAttributes(new { style = "background-color:rgb(250,250,250);" }).ClientTemplate("<span id='#=ZoneName#'>#=WoredaName#</span>");
-          columns.Bound(p => p.ProjectedMale).Title(Html.Translate("Projected Male")).Width(200).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;", title = "Projecgted Male"}).Format("{0:n0}").HtmlAttributes(new {align = "Right"}).HtmlAttributes(new {style = "text-align: right; font-size: 12px; "});
+          columns.Bound(p => p.ProjectedMale).Title(Html.Translate("Projected Male")).Width(200).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title = "Projecgted Male" }).Format("{0:n0}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " });
           columns.Bound(p => p.ProjectedFemale).Title(Html.Translate("Projected Female")).Width(200).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title = "Projected Female" }).Format("{0:n0}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " });
 
           columns.Template(c => { }).Title(Html.Translate("Projected Total")).HtmlAttributes(new { @class = "calculated" }).ClientTemplate("<span class='rowCount totalProjected' rowCount='#=rowCount#' nextRow='#=getRowNo(data)#'>#=calculateTotalProjected(data)# </span>");
 
 
-          columns.Bound(p => p.NonPSNPFromWoredasDOA).Title(Html.Translate("Duration of Assistance")).Width(200).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;", title = "Duration of Assistance" }).Format("{0:n0}").HtmlAttributes(new {align = "Right"});
+          columns.Bound(p => p.NonPSNPFromWoredasDOA).Title(Html.Translate("Duration of Assistance")).Width(200).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title = "Duration of Assistance" }).Format("{0:n0}").HtmlAttributes(new { align = "Right" });
 
       })
 
       .ToolBar(toolbar => toolbar.Save())
 
-      .HtmlAttributes(new {style = "height: 400px"})
+      .HtmlAttributes(new { style = "height: 400px" })
       .Scrollable()
       //   .Pageable()
       .Sortable()
@@ -72,7 +94,7 @@
                                     .ServerOperation(false)
                                     .Events(events => events.Error("error_handler"))
                                     .Group(groups => groups.Add(p => p.ZoneName))
-                                    .Read(read => read.Action("NeedAssessmentDetailRead", "NeedAssessment", new {region = int.Parse(ViewData["Id"].ToString())}))
+                                    .Read(read => read.Action("NeedAssessmentDetailRead", "NeedAssessment", new { region = int.Parse(ViewData["Id"].ToString()) }))
                                     .Update(update => update.Action("NeedAssessmentUpdate", "NeedAssessment"))
 
                                     .Model(model =>
@@ -92,52 +114,54 @@
                                         model.Field(p => p.TotalBeneficiaries).Editable(false);
                                     })
     )
-)
+    )
 
-<script>
-    var rowCount = 0;
-    var gridData = [];
-    function calculateTotalProjected(data) {
-        return data.ProjectedMale * 1 + data.ProjectedFemale*1;
-    }
-    function totalPsnpAndnonPsnp(data) {
-        
-        return data.RegularPSNP  + data.PSNP  + data.NonPSNP ;
-    }
-    function CalculateTotalBeneficiary(data) {
+</div>
+</div>
 
-        return (data.RegularPSNP + data.PSNP + data.NonPSNP) - data.Contingencybudget;
-    }
-    function getRowNo(data) {
-        gridData[rowCount] = data;
-        return 1 + rowCount++;
-    }
+    <script>
+        var rowCount = 0;
+        var gridData = [];
+        function calculateTotalProjected(data) {
+            return data.ProjectedMale * 1 + data.ProjectedFemale * 1;
+        }
+        function totalPsnpAndnonPsnp(data) {
 
-    function onGridKeydown(e) {
-        //if (e.keyCode === kendo.keys.TAB) {
-        //    var grid = $(this).closest("[data-role=grid]").data("kendoGrid");
-        //    var current = grid.current();
-        //    if (!current.hasClass("editable-cell")) {
-        //        var nextCell = current.nextAll(".editable-cell");
-        //        if (!nextCell[0]) {
-        //            //search the next row
-        //            var nextRow = current.parent().next();
-        //            var nextCell = current.parent().next().children(".editable-cell:first");
-        //        }
-        //        grid.current(nextCell);
-        //        grid.editCell(nextCell[0])
-        //    }
-        //}
-    };
-    
+            return data.RegularPSNP + data.PSNP + data.NonPSNP;
+        }
+        function CalculateTotalBeneficiary(data) {
 
-    function onDataBound(e) 
-    {
-        var grid = $("#grid").data("kendoGrid");
-        $(grid.tbody).on("focus", "input", function (e) {
-            var input = $(this);
-            setTimeout(function () { input.select(); }, 100);
-            
+            return (data.RegularPSNP + data.PSNP + data.NonPSNP) - data.Contingencybudget;
+        }
+        function getRowNo(data) {
+            gridData[rowCount] = data;
+            return 1 + rowCount++;
+        }
+
+        function onGridKeydown(e) {
+            //if (e.keyCode === kendo.keys.TAB) {
+            //    var grid = $(this).closest("[data-role=grid]").data("kendoGrid");
+            //    var current = grid.current();
+            //    if (!current.hasClass("editable-cell")) {
+            //        var nextCell = current.nextAll(".editable-cell");
+            //        if (!nextCell[0]) {
+            //            //search the next row
+            //            var nextRow = current.parent().next();
+            //            var nextCell = current.parent().next().children(".editable-cell:first");
+            //        }
+            //        grid.current(nextCell);
+            //        grid.editCell(nextCell[0])
+            //    }
+            //}
+        };
+
+
+        function onDataBound(e) {
+            var grid = $("#grid").data("kendoGrid");
+            $(grid.tbody).on("focus", "input", function (e) {
+                var input = $(this);
+                setTimeout(function () { input.select(); }, 100);
+
                 $(this).change(function () {
                     var $rowCount = $(this).closest("tr").find(".rowCount");
                     var $totalProjected = $(this).closest("tr").find(".totalProjected");
@@ -156,116 +180,116 @@
                     $totalbeneficiary.html(totalbeneficiary);
                     //gridData[rowCount].CashRatio = CashRatio;
 
-                   // console.log("change", { rowCount: rowCount, CashRatio: CashRatio, data: gridData[rowCount] });
+                    // console.log("change", { rowCount: rowCount, CashRatio: CashRatio, data: gridData[rowCount] });
                     // console.log("onDataBound",{data:$('#grid').data().kendoGrid.dataSource.data()})
                 });
-        });
-        
-       
-    }
-   
-    
-</script>
-
-<script>    
- 
-    function onEdit(e) {
-       
-        var input = e.container.find("input");
-        setTimeout(function() {
-            input.select();
-        }, 25);
-        var k = $("#grid").data("kendoGrid");
-        k.editable = false;
-        function zoneChange(value) {
-
-
-            var grid = $("#grid").data("kendoGrid");
-
-            if (value) {
-
-                grid.dataSource.filter({ field: "Zone", operator: "eq", value: value });
-            } else {
-                grid.dataSource.filter({ });
-            }
-        }
-
-
-        $('#batchEdit').click(function() {
-            if (this.checked) {
-
-                $("#dropdown").style.display = 'none';
-            } else {
-                alert("unchecked");
-            }
-
-        });
-    }
-</script>
-
-@*<style scoped="scoped">
-    #grid .k-toolbar
-    {
-        min-height: 27px;
-        padding: 1.3em;
-    }
-    .category-label
-    {
-        vertical-align: middle;
-        padding-right: .5em;
-    }
-    #category
-    {
-        vertical-align: middle;
-    }
-    .toolbar {
-        float: right;
-    }
-</style>*@
-
-@*.ToolBar(toolbar =>
-    {
-       
-        toolbar.Template(@<text>
-                              <div id ="dropdown" >
-                                  <label class="category-label" for="category">Show woredas by Zone:</label>
-                                  @(Html.Kendo().DropDownList()
-                                        .Name("regions")
-                                        .OptionLabel("All")
-                                        .DataTextField("Name")
-                                        .DataValueField("AdminUnitID")
-                                        .AutoBind(false)
-                                        .Events(e => e.Change("zoneChange"))
-                                        .DataSource(ds => ds.Read("GetZones", "NeedAssessment", new { region = int.Parse(ViewData["region"].ToString()) }))
-                                        ) 
-                              </div>
-                              
-        </text>);
-    })*@
-<script type="text/javascript">
-    function error_handler(e) {
-        if (e.errors) {
-            var message = "Errors:\n";
-            $.each(e.errors, function (key, value) {
-                if ('errors' in value) {
-                    $.each(value.errors, function () {
-                        message += this + "\n";
-                    });
-                }
             });
-           
-        }
-    }
-    
 
-    function onRequestEnd(e) {
-        debugger;
-        if (e.type == "update" && !e.response.Errors) {
-            alert("Update record is successfull");
+
         }
-        //alert("type:  " + e.type);
-        if (e.type == "create" && !e.response.Errors) {
-            alert("Create record is successfull");
+
+
+    </script>
+
+    <script>
+
+        function onEdit(e) {
+
+            var input = e.container.find("input");
+            setTimeout(function () {
+                input.select();
+            }, 25);
+            var k = $("#grid").data("kendoGrid");
+            k.editable = false;
+            function zoneChange(value) {
+
+
+                var grid = $("#grid").data("kendoGrid");
+
+                if (value) {
+
+                    grid.dataSource.filter({ field: "Zone", operator: "eq", value: value });
+                } else {
+                    grid.dataSource.filter({});
+                }
+            }
+
+
+            $('#batchEdit').click(function () {
+                if (this.checked) {
+
+                    $("#dropdown").style.display = 'none';
+                } else {
+                    alert("unchecked");
+                }
+
+            });
         }
-    }
-</script>
+    </script>
+
+    @*<style scoped="scoped">
+            #grid .k-toolbar
+            {
+                min-height: 27px;
+                padding: 1.3em;
+            }
+            .category-label
+            {
+                vertical-align: middle;
+                padding-right: .5em;
+            }
+            #category
+            {
+                vertical-align: middle;
+            }
+            .toolbar {
+                float: right;
+            }
+        </style>*@
+
+    @*.ToolBar(toolbar =>
+        {
+
+            toolbar.Template(@<text>
+                                  <div id ="dropdown" >
+                                      <label class="category-label" for="category">Show woredas by Zone:</label>
+                                      @(Html.Kendo().DropDownList()
+                                            .Name("regions")
+                                            .OptionLabel("All")
+                                            .DataTextField("Name")
+                                            .DataValueField("AdminUnitID")
+                                            .AutoBind(false)
+                                            .Events(e => e.Change("zoneChange"))
+                                            .DataSource(ds => ds.Read("GetZones", "NeedAssessment", new { region = int.Parse(ViewData["region"].ToString()) }))
+                                            )
+                                  </div>
+
+            </text>);
+        })*@
+    <script type="text/javascript">
+        function error_handler(e) {
+            if (e.errors) {
+                var message = "Errors:\n";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "\n";
+                        });
+                    }
+                });
+
+            }
+        }
+
+
+        function onRequestEnd(e) {
+            debugger;
+            if (e.type == "update" && !e.response.Errors) {
+                alert("Update record is successfull");
+            }
+            //alert("type:  " + e.type);
+            if (e.type == "create" && !e.response.Errors) {
+                alert("Create record is successfull");
+            }
+        }
+    </script>
