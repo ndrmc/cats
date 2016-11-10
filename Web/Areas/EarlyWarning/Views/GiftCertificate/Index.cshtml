@@ -82,7 +82,7 @@
                                 var ewCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.EarlyWarning);
                             }
 
-                            @if (item.Status == "Draft")
+                            @if (item.Status == "Draft" || item.Status == "Edited")
                             {
                                 @Html.EarlyWarningOperationButton(
                                     @Url.Action("Edit", new { id = item.GiftCertificateID }),
@@ -113,7 +113,7 @@
 
                                 <ul class='dropdown-menu pull-right' style='overflow: visible;'>
 
-                                    @if (item.Status == "Draft" && item.IsApprovable)
+                                    @if ((item.Status == "Draft"||item.Status == "Edited") && item.IsApprovable)
                                     {
                                         if (ewCache.CheckAccess(constants.ItemName(EarlyWarningConstants.Operation.Approve_Gift_Certeficate), DateTime.Now)
                                             == AuthorizationType.Allow && item.IsApprovable)
@@ -124,7 +124,7 @@
                                         }
                                     }
 
-                                    @if (item.Status == "Approved")
+                                    @if (item.Status == "Approved" || item.Status == "Printed")
                                     {
                                         if (item.IsPrinted == false)
                                         {

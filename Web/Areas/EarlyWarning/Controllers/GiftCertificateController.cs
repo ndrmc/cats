@@ -111,6 +111,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Generate_Gift_Certificate_Template)]
         public ActionResult GenerateTemplate(int id)
         {
+          //  UpdtePrintWorkflow(id, "The document has been Printed");
+
             return RedirectToAction("LetterTemplate", new { giftceritificateId = id });
         }
 
@@ -367,6 +369,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
                 _giftCertificateDetailService.DeleteById(giftCertificateDetailsViewModel.GiftCertificateDetailID);
 
+                if (!UpdateEditWorkflow(giftCertificateDetailsViewModel, "Gift Certificate Detail has been Deleted"))
+                {
+                    ViewBag.Error = "Gift Certificate can Not Be Edited.";
+                    ModelState.AddModelError("Errors", ViewBag.Error);
+                }
+
             }
             return Json(ModelState.ToDataSourceResult());
         }
@@ -565,6 +573,32 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             return RedirectToAction("Index");
         }
+        public Boolean UpdtePrintWorkflow(int giftCertificateID,String changeNote = null)
+        {
+            var giftCertificate = _giftCertificateService.Get(t => t.GiftCertificateID == giftCertificateID, null,
+     "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+     .FirstOrDefault();
+
+            var editFlowTemplate = giftCertificate.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Print");
+            if (editFlowTemplate != null)
+            {
+                var businessProcessState = new BusinessProcessState()
+                {
+                    StateID = editFlowTemplate.FinalStateID,
+                    PerformedBy = HttpContext.User.Identity.Name,
+                    DatePerformed = DateTime.Now,
+                    Comment = changeNote ?? "GiftCertificate has been Printed",
+                    ParentBusinessProcessID = giftCertificate.BusinessProcessID
+                };
+
+
+                _businessProcessService.PromotWorkflow(businessProcessState);
+            }
+            else
+                return false;
+
+            return true;
+        }
 
         public Boolean UpdateEditWorkflow(GiftCertificateViewModel giftCertificateViewModel, String changeNote = null, Boolean updateTransaction = true)
         {
@@ -624,7 +658,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             var giftCertificateViewModel = GiftCertificateViewModelBinder.BindGiftCertificateViewModel(giftcertificate, datePref,true);
 
-            UpdateEditWorkflow(giftCertificateViewModel, "Gift Certificate Detail is Edited");
+            UpdateEditWorkflow(giftCertificateViewModel, changeNote);
 
 
             return true;
@@ -694,6 +728,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 Response.End();
 
                 var result = _transactionService.PrintedGiftCertificate(giftCertificateId);
+
+
+                UpdtePrintWorkflow(giftCertificateId, String.Format("The document {0} has been Printed",fileName));
+
             }
             catch (Exception ex)
             {
