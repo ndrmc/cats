@@ -4,73 +4,102 @@
 @model IEnumerable<Cats.Models.Hubs.ViewModels.StartingBalanceViewModel>
 
 @{
-    ViewBag.Title = "Starting Balances";
+    //ViewBag.Title = "Starting Balances";
+    ViewBag.PageTitle = "Starting Balances";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+
 }
 
-@Html.Partial("DisplayHub")
+@*@Html.Partial("DisplayHub")*@
 
+@*@(Html.Telerik().ScriptRegistrar()
+                              .jQuery(true)
+                              .DefaultGroup(group => group.Compress(true)
+                              .Combined(false).CacheDurationInDays(365))
+                             .jQueryValidation(false)
+    )*@
 
 @{
-            Html.Telerik().Window()
-                    .Name("StartingBalance")
-                    .Title(Html.Translate("Edit/New StartingBalance"))
-                    .Content(@<text>
-                                  <div style="padding: 10px;" id="create-edit-form"></div>
-                                </text>)
+    Html.Telerik().Window()
+            .Name("StartingBalance")
+            .Title(Html.Translate("Edit/New StartingBalance"))
+            .Content(@<text>
+                <div style="padding: 10px;" id="create-edit-form"></div>
+            </text>)
                     .Width(800)
-                    .Height(380)
+                    .Height(640)
                     .Draggable(true)
                     .Modal(true)
                     .Visible(false)
                     .Render();
 }
 
-<p>
-    @if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Create_new_starting_balance) )
-    {
-    <a href="#" onclick="CreateStartingBalance()">@Html.Translate("Create New Starting Balance")</a>
-}
-</p>
-<p>
-@*    @Html.ActionLink("Create New Starting Balance", "Create")*@
-</p>
+@*<p>
+         @Html.ActionLink("Create New Starting Balance", "Create")
+    </p>*@
+<div class="container-fluid   full-height-content " style="margin-top:-30px;">
+    <div class=" row">
 
-@(Html.Telerik().Grid<StartingBalanceViewModelDto>()
+        @*@if (HubConstants.isValidOperation(HubConstants.Operation.Create_new_starting_balance).ToString() == "Create_new_starting_balance")*@
+        @*  {*@
+        <div class=" col-md-12 margin-bottom-5 ">
+
+            <a class="btn pull-right green" href="#" onclick="CreateStartingBalance()">@Html.Translate(" Create New Starting Balance")</a>
+        </div>
+        @*}*@
+    </div>
+
+    <div class="portlet light bordered bg-inverse">
+        <div class="portlet-title">
+            <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @ViewBag.PageTitle </div>
+            <div class="actions">
+                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href=" javascript:;" data-original-title="" title=""></a>
+            </div>
+        </div>
+        <div class="portlet-body" style="text-align:center;">
+
+            @(Html.Telerik().Grid<StartingBalanceViewModelDto>()
             .Name("StartingBalanceGrid")
-            .Columns(columns => 
-            {
-                columns.Bound(o => o.CommodityName);
-                columns.Bound(o => o.ChildCommodity);
-                columns.Bound(o => o.SINumber);
-                columns.Bound(o => o.DonorName);
-                columns.Bound(o => o.ProjectCode);
-                columns.Bound(o => o.ProgramName);
-                columns.Bound(o => o.StoreName);
-                columns.Bound(o => o.StackNumber).Title("Stack");
-                columns.Bound(o => o.UnitName).Title("Unit");
-                columns.Bound(o => o.QuantityInUnit);//.Format("{0:N3}").HtmlAttributes(new { align = "right" });
-                columns.Bound(o => o.QuantityInMT); //.Format("{0:N3}").HtmlAttributes(new { align = "right" }); 
+           .Columns(columns =>
+           {
+               columns.Bound(o => o.CommodityName).Width(150);
+               columns.Bound(o => o.ChildCommodity).HeaderHtmlAttributes(new { style = "height:60px; background-color:lightgray, align = center; overflow: visible; white-space: normal;" }).Width(100);
 
-            })
-            
+               columns.Bound(o => o.SINumber).HeaderHtmlAttributes(new { style = "height:60px; background-color:lightgray, align = center; overflow: visible; white-space: normal;" });
+               columns.Bound(o => o.DonorName).HeaderHtmlAttributes(new { style = "height:60px; background-color:lightgray, align = center; overflow: visible; white-space: normal;" });
+               columns.Bound(o => o.ProjectCode).HeaderHtmlAttributes(new { style = "height:60px; background-color:lightgray, align = center; overflow: visible; white-space: normal;" });
+               columns.Bound(o => o.ProgramName).HeaderHtmlAttributes(new { style = "height:60px; background-color:lightgray, align = center; overflow: visible; white-space: normal;" });
+               columns.Bound(o => o.StoreName).HeaderHtmlAttributes(new { style = "height:60px; background-color:lightgray, align = center; overflow: visible; white-space: normal;" });
+               columns.Bound(o => o.StackNumber).Title("Stack ");
+               columns.Bound(o => o.UnitName).Title("Unit");
+               columns.Bound(o => o.QuantityInUnit).HeaderHtmlAttributes(new { style = "height:60px; background-color:lightgray, align = center; overflow: visible; white-space: normal;" });
+               columns.Bound(o => o.QuantityInMT).HeaderHtmlAttributes(new { style = "height:60px; background-color:lightgray, align = center; overflow: visible; white-space: normal;" })
+                .Width(105);
+           })
+            .Scrollable(p => p.Height(450)).HtmlAttributes(new { style = "overflow: visible; white-space: normal;" })
+            //   .HeaderHtmlAttributes(); }
             //.ClientEvents(ev => ev.OnDataBinding("dataBinding"))
             .DataBinding(dataBinding => dataBinding.Ajax().Select("GetListOfStartingBalances", "StartingBalance"))
             .Sortable(sorting => sorting.Enabled(true))
             //.Pageable(paging => paging.Enabled(true))
-            .Filterable()
+            .Filterable().ColumnContextMenu(z => z.Enabled(true))
             .Footer(true)
-      )
+            )
+        </div>
+    </div>
+</div>
 
 <script type="text/javascript">
 
     function CreateStartingBalance() {
+
         $('#StartingBalance').data('tWindow').center().open();
         $('#StartingBalance').data('tWindow').title('@Html.Translate("New StartingBalance")');
         var url = '@Url.Action("Create", "StartingBalance")';
         $('#create-edit-form').load(url);
 
     }
-    
+
     function submitStartingBalanceForm(button) {
 
         var form = $(button).closest("form");
@@ -83,19 +112,18 @@
                 url: form.attr('action'),
                 data: $(form).serialize(),
                 success: function (response) {
-                    //rebind the GRID 
+                    //rebind the GRID
                     $(button).removeAttr('disabled');
                     if (response != null && response == true) {
                         $('#StartingBalance').data('tWindow').close();
                         var gr = $('#StartingBalanceGrid').data('tGrid');
                         gr.rebind();
-                        
+
                     }
                 }
             });
         }
     }
-
 
     function cancelStartingBalanceForm() {
         $('#StartingBalance').data('tWindow').close();

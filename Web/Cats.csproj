@@ -3498,6 +3498,7 @@
     <Content Include="Web References\ReportPortal\CacheRefreshPlan6.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
+    <Content Include="Views\Shared\DefaultLayout.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
