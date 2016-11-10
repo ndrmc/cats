@@ -190,9 +190,19 @@
                         {
                             <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                         }
-                        if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Reject")
+                        if (modelRequest.Program == "Relief")
                         {
-                            <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Reverse_Request) && actions.Name == "Reject")
+                            {
+                                <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                            }
+                        }
+                        else if (modelRequest.Program == "PSNP")
+                        {
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Reverse_Request) && actions.Name == "Reject")
+                            {
+                                <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                            }
                         }
                         //close hiden b/c reginal request closed on cretation of requestion not by the user
                         @*if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Close")
