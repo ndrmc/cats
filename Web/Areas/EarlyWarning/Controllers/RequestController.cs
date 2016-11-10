@@ -28,6 +28,7 @@ using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using IFDPService = Cats.Services.EarlyWarning.IFDPService;
 using Workflow = Cats.Models.Constant.WORKFLOW;
 using System.IO;
+using StateTemplate = Cats.Models.StateTemplate;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -265,6 +266,21 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 }
 
             }
+            if (stateName == "Rejected")
+            {
+                var reginalRequest = _regionalRequestService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
+                if (reginalRequest != null)
+                {
+                    int id = reginalRequest.RegionalRequestID;
+                    if (!_regionalRequestService.RevertRequestStatus(id))
+                    {
+                        TempData["msg"] = "Request can not be Rejected.";
+                        return RedirectToAction("Details", new { id = id });
+                    }
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+
+            }
             else
             {
                 _businessProcessService.PromotWorkflow(businessProcessState);
@@ -393,6 +409,30 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     RequestViewModelBinder.BindRegionalRequest(regionalRequest, target);
 
                     _regionalRequestService.EditRegionalRequest(target);
+
+                    if (target != null)
+                    {
+                        BusinessProcessState bps = target.BusinessProcess.CurrentState;
+                        var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
+
+                        if (stateTemplate != null)
+                        {
+                            int editStateId = stateTemplate.StateTemplateID;
+
+                            var businessProcessState = new BusinessProcessState()
+                            {
+                                StateID = editStateId,
+                                PerformedBy = HttpContext.User.Identity.Name,
+                                DatePerformed = DateTime.Now,
+                                Comment = "Regional Request is edited, a system internally captured data.",
+                                //AttachmentFile = fileName,
+                                ParentBusinessProcessID = bps.ParentBusinessProcessID
+                            };
+
+                            _businessProcessService.PromotWorkflow(businessProcessState);
+                        }
+                    }
+
                     ModelState.AddModelError("Success", @"Regional Request updated successfully.");
                     return RedirectToAction("Details", "Request", new { id = regionalRequest.RegionalRequestID });
                 }
@@ -790,11 +830,37 @@ namespace Cats.Areas.EarlyWarning.Controllers
         }
         public ActionResult Delete(int id)
         {
-            var regionalRequest = _regionalRequestService.FindById(id);
-            if (_regionalRequestService.DeleteRegionalRequest(id))
+            //var regionalRequest = _regionalRequestService.FindById(id);
+            //if (_regionalRequestService.DeleteRegionalRequest(id))
             {
-                TempData["Deleted"] = "Regional Request has been deleted!";
-                return RedirectToAction("Index");
+                var target = _regionalRequestService.Get(t => t.RegionalRequestID == id, null, "AdminUnit,Program").FirstOrDefault();
+
+                if (target != null)
+                {
+                    BusinessProcessState bps = target.BusinessProcess.CurrentState;
+                    var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Deleted").FirstOrDefault();
+
+                    if (stateTemplate != null)
+                    {
+                        int editStateId = stateTemplate.StateTemplateID;
+
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = editStateId,
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment = "Regional Request is deleted, a system internally captured data.",
+                            //AttachmentFile = fileName,
+                            ParentBusinessProcessID = bps.ParentBusinessProcessID
+                        };
+
+                        if (_businessProcessService.PromotWorkflow(businessProcessState))
+                        {
+                            TempData["Deleted"] = "Regional Request has been deleted!";
+                            return RedirectToAction("Index");
+                        }
+                    }
+                }
             }
             TempData["UnableToDeleted"] = "Regional Request can not be deleted!";
             return RedirectToAction("Index");
@@ -1639,6 +1705,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (_regionalRequestService.RevertRequestStatus(id))
             {
                 TempData["CustomMsg"] = "Status has been successfully  Reverted!!";
+
                 return RedirectToAction("Details", new { id = id });
             }
             TempData["CustomError"] = "Status Can not be Reverted !Requistions from this Request has been Created and Used in Logistics Caseteam!";
@@ -1655,7 +1722,35 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var dataSourceName = "RegionalRequest";
             var result = ReportHelper.PrintReport(reportPath, reportData, dataSourceName);
 
-            return File(result.RenderBytes, result.MimeType);
+            var target = _regionalRequestService.Get(t => t.RegionalRequestID == id, null, "AdminUnit,Program").FirstOrDefault();
+
+            if (target != null)
+            {
+                BusinessProcessState bps = target.BusinessProcess.CurrentState;
+                var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Printed").FirstOrDefault();
+
+                if (stateTemplate != null)
+                {
+                    int editStateId = stateTemplate.StateTemplateID;
+
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = editStateId,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "Regional Request is printed, a system internally captured data.",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = bps.ParentBusinessProcessID
+                    };
+
+                    if (_businessProcessService.PromotWorkflow(businessProcessState))
+                    {
+                        return File(result.RenderBytes, result.MimeType);
+                    }
+                }
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }
