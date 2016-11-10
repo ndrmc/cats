@@ -132,14 +132,35 @@ namespace Cats.Helpers
 
         public static string   GetRelativeURL(string AbsURL)
         {
-           var extractedUrl=  AbsURL.Substring(AbsURL.IndexOf("//", StringComparison.Ordinal) + 1);
-            extractedUrl= extractedUrl.Substring(extractedUrl.IndexOf("//", StringComparison.Ordinal) + 1);
-            string local = System.Web.HttpContext.Current.Request.Url.ToString();
-            if (local.Contains( "/trunk"))
-                extractedUrl = "/trunk" + extractedUrl;
-            return extractedUrl;
+            string[] CaseTeams =
+             {
+                "LOgistics",
+                "EARLYWARNING",
+                "PSNP",
+                "PROCUREMENT",
+                "FINANCE",
+                "HUB",
+                "REGIONAL"
+
+            };
+            var extractedUrl = "";
+            foreach (var caseTeam in CaseTeams)
+            {
+                if(AbsURL.IndexOf(caseTeam, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
+                { 
+                extractedUrl = AbsURL.Substring(AbsURL.IndexOf(caseTeam, StringComparison.OrdinalIgnoreCase));
+                    break;
+                }
+            }
+            // var extractedUrl = AbsURL.Substring(AbsURL.Any(CaseTeams.Contains(), StringComparison.OrdinalIgnoreCase) + 1);
+            return GetCurrentApplicationPath() + "/" + extractedUrl;
         }
 
+       
+        private static string GetCurrentApplicationPath()
+        {
+            return HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + HttpContext.Current.Request.ApplicationPath;
+        }
         public static HtmlString GetActiveNotifications()
         {
             try

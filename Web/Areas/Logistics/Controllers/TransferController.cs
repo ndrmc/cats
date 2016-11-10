@@ -343,6 +343,8 @@ namespace Cats.Areas.Logistics.Controllers
                 {
                     _businessProcessService.PromotWorkflow(businessProcessState);
                 }
+                if (stateName == "Rejected")
+                _businessProcessService.PromotWorkflow(businessProcessState);
             }
 
             if (statusId != null)

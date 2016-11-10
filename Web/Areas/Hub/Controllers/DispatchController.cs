@@ -579,7 +579,9 @@ namespace Cats.Areas.Hub.Controllers
                        }
                      * */
                 }
+                if (Request.UrlReferrer != null) return Redirect(Request.UrlReferrer.PathAndQuery);
                 return RedirectToAction("Index", "Dispatch");
+                
             }
             else
             {
