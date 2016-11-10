@@ -84,16 +84,16 @@ namespace Cats.Services.EarlyWarning
         {
             // Get the Current HRD and the one to set as current
             var newHrd = _unitOfWork.HRDRepository.FindById(hrdId);
-            var currentHrd = this.Get(m => m.Status == 3).FirstOrDefault();
+            var currentHrd = this.Get(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").FirstOrDefault();
 
             try
             {
-                newHrd.Status = 3;
+                //newHrd.Status = 3;
                 newHrd.PublishedDate = DateTime.Now;
-                // If the currentHrd is null it means we don't have a current HRD in the database.
-                if (null !=currentHrd)
-                    currentHrd.Status = 4;
-                _unitOfWork.Save();
+                //// If the currentHrd is null it means we don't have a current HRD in the database.
+                //if (null !=currentHrd)
+                //    currentHrd.Status = 4;
+                //_unitOfWork.Save();
                
             }
             catch (Exception ex)
@@ -144,8 +144,8 @@ namespace Cats.Services.EarlyWarning
                     PlanID = planID,
                     CreatedDate = DateTime.Now,
                     PublishedDate = DateTime.Now,
-                    Status = (int?) HRDStatus.Draft,
-                    BusinessProcessId = businessProcessId
+                Status = (int?)HRDStatus.Draft,
+                BusinessProcessId = businessProcessId
                 };
             var hrdDetails = (from detail in woredas
                               select new HRDDetail
@@ -187,7 +187,7 @@ namespace Cats.Services.EarlyWarning
                         CreatedDate = hrd.CreatedDate,
                         CreatedBy = hrd.UserProfile.FirstName + " " + hrd.UserProfile.LastName,
                         PublishedDate = hrd.PublishedDate,
-                        StatusID = hrd.Status,
+                        //StatusID = hrd.Status,
                         Plan = hrd.Plan.PlanName,
                     });
         }

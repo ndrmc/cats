@@ -92,7 +92,9 @@ namespace Cats.Services.Procurement
 
         public decimal GetHrdCommodityAmount(int woredaID)
         {
-            var hrd = _unitOfWork.HRDRepository.FindBy(m => m.Status == 3).FirstOrDefault();
+            var hrd =
+                _unitOfWork.HRDRepository.FindBy(
+                    m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").FirstOrDefault();
             decimal totalAmout=0;
             decimal totalCommodity=0;
             if (hrd!=null)
