@@ -249,7 +249,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 int giftCertificateId = giftCertificate.GiftCertificateID;
 
-                if (stateName == "Draft" && OnReject(giftCertificateId))
+                if ((stateName == "Draft" || stateName == "Edited" )&& OnReject(giftCertificateId))
                 {
                     _businessProcessService.PromotWorkflow(businessProcessState);
                 }
@@ -259,7 +259,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     _businessProcessService.PromotWorkflow(businessProcessState);
                 }
 
-                if (stateName == "Approved" && OnApprove(giftCertificateId))
+                if ((stateName == "Approved" || stateName == "Printed") && OnApprove(giftCertificateId))
                 {
                     _businessProcessService.PromotWorkflow(businessProcessState);
                 }

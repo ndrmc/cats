@@ -96,7 +96,7 @@
                                     " <button type=\"button\" class=\"btn btn-xs btn-primary\"><span class=\"fa fa-list\"></span>" +
                                     @Html.Translate("Detail") + " </button> ")
                             }
-                            else
+                            else if(item.Status!="Rejected")
                             {
                                 @Html.EarlyWarningOperationButton(
                                     @Url.Action("GenerateTemplate", new { id = item.GiftCertificateID }),
