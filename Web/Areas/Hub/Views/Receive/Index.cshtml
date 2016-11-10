@@ -1,45 +1,24 @@
 ﻿@model IEnumerable<Cats.Models.Hubs.Receive>
 @using Cats.Web.Hub.Helpers
 @using Kendo.Mvc.UI
-@{
-    ViewBag.Title = Html.Translate("Expected Receipts");
 
+
+@{
+    ViewBag.Title = Html.Translate("Reciept Allocation");
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = "Reciept Allocation";
+    ViewBag.PageTitleDescription = "";
     string quanityColumnHeader = "MT";
     if (@Html.GetCurrentUser().PreferedWeightMeasurment == "qn")
     {
         quanityColumnHeader = "Quintals";
     }
-    Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
 @section Toolbar
 {
-    <a class="btn" href="@Url.Action("Log")">@Html.Translate("Receipt Log")</a>
-    @*<div class="btn-group">
+    <a class="btn btn-fit-height grey-salt" href="@Url.Action("Log")"><i class="fa fa-list"></i> @Html.Translate("Receipt Log")</a>
 
-             <button class="btn toolbar-btn" title="Make a new Plan" onclick="CreateNewPlan()">New Plan</button>
-                 <button class="btn dropdown-toggle " data-toggle="dropdown">
-                     <span class="caret"></span>
-                 </button>
-             <ul class="dropdown-menu">
-                 <li><a href="javascript:CreateNewPlan(@Cats.Models.Hubs.CommoditySource.Constants.DONATION)">@Html.Translate("From Donation")</a></li>
-                 <li><a href="javascript:CreateNewPlan(@Cats.Models.Hubs.CommoditySource.Constants.LOAN)">@Html.Translate("From Loan")</a></li>
-                 <li><a href="javascript:CreateNewPlan(@Cats.Models.Hubs.CommoditySource.Constants.LOCALPURCHASE)">@Html.Translate("From Local Purchase")</a></li>
 
-             </ul>
-        </div>*@
-
-    @*<div class="btn-group">
-            <button class="btn toolbar-btn" title="Record a new receipt">Receipt</button>
-                <button class="btn dropdown-toggle " data-toggle="dropdown">
-                    <span class="caret"></span>
-                </button>
-            <ul class="dropdown-menu">
-                <li>@Html.ActionLink("From Loan", "Create", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.LOAN }, null)</li>
-                <li> @Html.ActionLink("From Repayment", "Create", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.REPAYMENT }, null)</li>
-                <li>@Html.ActionLink("From Swap", "Create", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.SWAP }, null)</li>
-                <li>@Html.ActionLink("From Transfer", "Create", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.TRANSFER }, null)</li>
-            </ul>
-        </div>*@
 }
 <style>
     .filter {
@@ -65,36 +44,6 @@
         width: 49%;
     }
 </style>
-<h3>Reciept Allocation</h3>
-<div class="filter">
-
-    <form class="form-inline" style="margin:0;padding:0;">
-        <i class="icon-filter" style="margin-left:10px;"></i>
-        <div class="input-prepend" style="margin-left:20px;">
-            <label for="cmb_hub" class="add-on">Hub</label>
-            @Html.DropDownList("HubsID", null, new { @class = "inputs-large", @disabled = "disabled" })
-
-        </div>
-        <div class="input-prepend" style="margin-left: 50px;">
-            <label for="cmb_commodity_type" class="add-on">Commodity</label>
-            @Html.DropDownList("FilterCommodityTypeID", null, new { @class = "inputs-large" })
-        </div>
-
-        <div class="input-prepend" style="margin-left:50px;">
-            <label for="FilterGRN" class="add-on">GRN</label>
-            @Html.TextBox("FilterGRN", null, new { @class = "inputs-medium" })
-        </div>
-
-        <label class="checkbox" style="margin-left:50px;">
-            <input type="checkbox" id="chk_closed"> Show closed Plans
-            @*  </label>
-
-                   <label class="checkbox" style="margin-left:50px;">
-                  <input type="checkbox" id="chk_receivable"> Show Receivable Plans
-                </label>*@
-    </form>
-</div>
-
 
 
 <!--Modal Editor-->
@@ -118,31 +67,95 @@
     </div>
 
 </div>
-<br />
 
-<ul id="myTab" class="nav nav-tabs">
-    <li class="active"><a href="#from_donation" data-toggle="tab" onclick="onSourceTypeChange(@Cats.Models.Hubs.CommoditySource.Constants.DONATION)">From Donation</a></li>
-    <li><a href="#from_loan" data-toggle="tab" onclick="onSourceTypeChange(@Cats.Models.Hubs.CommoditySource.Constants.LOAN)">@Html.Translate("From Loan, Swap,  Repayment Or Transfer")</a></li>
-    <li><a href="#local_purchase" data-toggle="tab" onclick="onSourceTypeChange(@Cats.Models.Hubs.CommoditySource.Constants.LOCALPURCHASE)">Local purchase</a></li>
-</ul>
-
-<div id="myTabContent" class="tab-content">
-    <div class="tab-pane fade active in" id="from_donation">
-        <div class="field-set">
-           @Html.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.DONATION })
+<div class="portlet light bordered bg-inverse">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="fa fa-list-alt font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("Reciept Allocation")</span>
+            <span class="caption-helper">  </span>
         </div>
-    </div>
-
-    <div class="tab-pane fade" id="from_loan">
-        <div class="field-set">
+        <div class="actions">
+            <a class="btn   btn-icon-only btn-default fullscreen" href=" javascript:;" data-original-title="" title=""></a>
         </div>
-    </div>
+ 
+        <div class="row  bordered">
 
-    <div class="tab-pane fade" id="local_purchase">
-        <div class="field-set">
+            <div class="col-md-2 col-md-offset-1">
+                <div class="form-group">
+                </div>
+            </div>
+            <div class="col-md-2 col-md-offset-1">
+                <div class="form-group">
+                </div>
+            </div>
+
+            <div class="col-md-2 col-md-offset-1 col-center-block">
+                <div class="btn-group">
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="portlet-body">
+
+            <div class="form-horizontal">
+                <div class="row">
+                    <div class="col-md-2 col-md-offset-1">
+                        <div class="form-group">
+                            <label>@Html.Translate("hub")</label>
+                            @Html.DropDownList("HubsID", null, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-md-offset-1">
+                        <div class="form-group">
+                            <label class="">@Html.Translate("Commodity")</label>
+                            @Html.DropDownList("FilterCommodityTypeID", null, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-md-offset-1 col-center-block">
+                        <div class="btn-group">
+                            <label class="checkbox">
+                                <input type="checkbox" class=" border" id="chk_closed"> Show closed Plans
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active"><a href="#from_donation" data-toggle="tab" onclick="onSourceTypeChange(@Cats.Models.Hubs.CommoditySource.Constants.DONATION)">From Donation</a></li>
+                <li><a href="#from_loan" data-toggle="tab" onclick="onSourceTypeChange(@Cats.Models.Hubs.CommoditySource.Constants.LOAN)">@Html.Translate("From Loan, Swap,  Repayment Or Transfer")</a></li>
+                <li><a href="#local_purchase" data-toggle="tab" onclick="onSourceTypeChange(@Cats.Models.Hubs.CommoditySource.Constants.LOCALPURCHASE)">Local purchase</a></li>
+            </ul>
+
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade active in" id="from_donation">
+                    <div class="field-set">
+                        @Html.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.DONATION })
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="from_loan">
+                    <div class="field-set">
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="local_purchase">
+                    <div class="field-set">
+                    </div>
+                </div>
+            </div>
+
+
+
         </div>
     </div>
 </div>
+
 
 
 
