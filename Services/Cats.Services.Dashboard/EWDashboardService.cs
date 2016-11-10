@@ -51,7 +51,7 @@ namespace Cats.Services.Dashboard
 
       public int GetRemainingRequest(int regionID, int planID)
       {
-            var hrd = _unitOfWork.HRDRepository.FindBy(m => m.Status == 2).FirstOrDefault();
+            var hrd = _unitOfWork.HRDRepository.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved").FirstOrDefault();
             var totalRequest = (from hrdDetail in hrd.HRDDetails
                                 where hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID
                                 select new
@@ -67,8 +67,10 @@ namespace Cats.Services.Dashboard
       }
 
       public int GetRemainingRequest(int regionID, int planID,int roundId)
-        {
-            var hrd = _unitOfWork.HRDRepository.FindBy(m => m.Status==2).FirstOrDefault();
+      {
+          var hrd =
+              _unitOfWork.HRDRepository.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved")
+                  .FirstOrDefault();
              var totalRequest = (from hrdDetail in hrd.HRDDetails
                                   where hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID==regionID
                                  select new

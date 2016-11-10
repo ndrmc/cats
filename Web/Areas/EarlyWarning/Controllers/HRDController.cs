@@ -84,7 +84,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var hrd = _hrdService.GetAllHRD();
             //ViewBag.Status = _workflowStatusService.GetStatusName();
 
-            var hrds = _hrdService.Get(m => m.Status == 1).OrderByDescending(m => m.HRDID);
+            var hrds =
+                _hrdService.Get(
+                    m =>
+                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft" ||
+                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Edited")
+                    .OrderByDescending(m => m.HRDID);
             var hrdsToDisplay = GetHrds(hrds).ToList();
             ViewBag.TargetController = "HRD";
             return View(hrdsToDisplay);
@@ -155,7 +160,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.View_HRD_list)]
         public ActionResult HRD_Read([DataSourceRequest] DataSourceRequest request)
         {
-            var hrds = _hrdService.Get(m => m.Status == 1).OrderByDescending(m => m.HRDID);
+            var hrds =
+                _hrdService.Get(
+                    m =>
+                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft" ||
+                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Edited")
+                    .OrderByDescending(m => m.HRDID);
             var hrdsToDisplay = GetHrds(hrds).ToList();
             return Json(hrdsToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -167,7 +177,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
             HRD hrd;
             if (id == 0)
             {
-                hrd = _hrdService.FindBy(m => m.Status == 3).FirstOrDefault();
+                hrd =
+                    _hrdService.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                        .FirstOrDefault();
                 if (hrd != null)
                 {
                     id = hrd.HRDID;
@@ -192,7 +204,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
             HRD hrd;
             if (id == 0)
             {
-                hrd = _hrdService.FindBy(m => m.Status == 3).FirstOrDefault();
+                hrd =
+                    _hrdService.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                        .FirstOrDefault();
                 if (hrd != null)
                 {
                     id = hrd.HRDID;
@@ -217,7 +231,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             HRD hrd;
             if (id == 0)
             {
-                hrd = _hrdService.FindBy(m => m.Status == 3).FirstOrDefault();
+                hrd = _hrdService.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").FirstOrDefault();
                 if (hrd != null)
                 {
                     id = hrd.HRDID;
@@ -243,7 +257,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
             HRD hrd;
             if (id == 0)
             {
-                hrd = _hrdService.FindBy(m => m.Status == 3).FirstOrDefault();
+                hrd =
+                    _hrdService.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                        .FirstOrDefault();
                 if (hrd != null)
                 {
                     id = hrd.HRDID;
@@ -264,7 +280,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult ApprovedHRD_Read([DataSourceRequest] DataSourceRequest request)
         {
 
-            var hrds = _hrdService.Get(m => m.Status == 2).OrderByDescending(m => m.HRDID);
+            var hrds =
+                _hrdService.Get(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved")
+                    .OrderByDescending(m => m.HRDID);
             var hrdsToDisplay = GetHrds(hrds).ToList();
 
             return Json(hrdsToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
@@ -309,7 +327,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                         CreatedDate = hrd.CreatedDate,
                         CreatedBy = hrd.UserProfile.FirstName + " " + hrd.UserProfile.LastName,
                         PublishedDate = hrd.PublishedDate,
-                        StatusID = hrd.Status,
+                        //StatusID = hrd.Status,
                         Status = hrd.BusinessProcess.CurrentState.BaseStateTemplate.Name,//_workflowStatusService.GetStatusName(WORKFLOW.HRD, hrd.Status.Value),
                         CreatedDatePref = hrd.CreatedDate.ToCTSPreferedDateFormat(datePref),
                         PublishedDatePref = hrd.PublishedDate.ToCTSPreferedDateFormat(datePref),
@@ -423,7 +441,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             ViewBag.SeasonID = hrd.Season.Name;
             ViewBag.Year = hrd.Year;
             ViewBag.HRDID = id;
-            ViewBag.HrdStatus = hrd.Status;
+            ViewBag.HrdStatus = hrd.BusinessProcess.CurrentState.BaseStateTemplate.Name;
             var dt = GetTransposedHRD(id, preferedweight);
             return View(dt);
         }
@@ -691,8 +709,34 @@ namespace Cats.Areas.EarlyWarning.Controllers
             hrd.CreatedBY = userid;
             if (ModelState.IsValid)
             {
+                int BP_PR = _applicationSettingService.getHRDWorkflow();
+                var firstOrDefault = _stateTemplateService
+                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == BP_PR && s.Name == "Edited");
 
-                _hrdService.EditHRD(hrd);
+                var dbHrd = _hrdService.FindById(hrd.HRDID);
+
+                if (firstOrDefault != null && dbHrd != null)
+                {
+                    var editedStateId = firstOrDefault.StateTemplateID;
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = editedStateId,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = dbHrd.BusinessProcessId
+                    };
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+                if (dbHrd != null)
+                {
+                    dbHrd.Year = hrd.Year;
+                    dbHrd.SeasonID = hrd.SeasonID;
+                    dbHrd.RationID = hrd.RationID;
+                    dbHrd.CreatedDate = hrd.CreatedDate;
+                    _hrdService.EditHRD(dbHrd);
+                }
                 return RedirectToAction("Index");
             }
 
@@ -743,7 +787,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult ApproveHRD(int id)
         {
             var hrd = _hrdService.FindById(id);
-            hrd.Status = 2;
+            //hrd.Status = 2;
             _hrdService.EditHRD(hrd);
             return RedirectToAction("Index");
         }
@@ -755,16 +799,36 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             var hrd = _hrdService.FindById(id);
             //_hrdService.DeleteHRD(hrd);
-            hrd.Status = -1;
-            _hrdService.EditHRD(hrd);
+            //hrd.Status = -1;
+
+            int BP_PR = _applicationSettingService.getHRDWorkflow();
+            var firstOrDefault = _stateTemplateService
+                .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == BP_PR && s.Name == "Deleted");
+            if (firstOrDefault != null)
+            {
+                var deleteStateId = firstOrDefault.StateTemplateID;
+                var businessProcessState = new BusinessProcessState()
+                {
+                    StateID = deleteStateId,
+                    PerformedBy = HttpContext.User.Identity.Name,
+                    DatePerformed = DateTime.Now,
+                    Comment = "",
+                    //AttachmentFile = fileName,
+                    ParentBusinessProcessID = hrd.BusinessProcessId
+                };
+                _businessProcessService.PromotWorkflow(businessProcessState);
+                //_hrdService.EditHRD(hrd);
+            }
             ViewBag.TargetController = "HRD";
             return RedirectToAction("Index");
         }
 
         public ActionResult PublishHRD(int id)
         {
-            _hrdService.PublishHrd(id);
-            var currentHrd = _hrdService.Get(m => m.Status == 3).FirstOrDefault();
+            //_hrdService.PublishHrd(id);
+            var currentHrd =
+                _hrdService.Get(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                    .FirstOrDefault();
             if (currentHrd != null) _transactionService.PostHRDPlan(currentHrd, currentHrd.Ration);
             ViewBag.TargetController = "HRD";
             return RedirectToAction("ApprovedHRDs");
@@ -826,7 +890,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             hrd.CreatedDate = dateCreated;
             hrd.PublishedDate = DatePublished;
-            hrd.Status = 1;
+            //hrd.Status = 1;
 
             if (ModelState.IsValid)
             {

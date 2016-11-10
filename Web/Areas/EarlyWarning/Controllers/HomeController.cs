@@ -42,7 +42,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             ViewBag.HRDList = new SelectList(_hrdService.GetHrds(), "HRDID", "HRDName");
             //ModelState.AddModelError("Success", "Sample Error Message. Use in Your Controller: ModelState.AddModelError('Errors', 'Your Error Message.')");
-            var hrd = _hrdService.FindBy(m => m.Status == 3).FirstOrDefault();
+            var hrd = _hrdService.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").FirstOrDefault();
             if (hrd == null)
             {
                 return HttpNotFound();
@@ -77,7 +77,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult HRDSummaryJson()
         {
             //ModelState.AddModelError("Success", "Sample Error Message. Use in Your Controller: ModelState.AddModelError('Errors', 'Your Error Message.')");
-            var hrd = _hrdService.FindBy(m => m.Status == 3).FirstOrDefault();
+            var hrd = _hrdService.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").FirstOrDefault();
             if (hrd == null)
             {
                 return HttpNotFound();
@@ -118,7 +118,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             var currentHrd =
                 _eWDashboardService.FindByHrd(
-                    m => m.Status == 3 || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                    m =>  m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
                     .FirstOrDefault();
             return currentHrd;
         }
