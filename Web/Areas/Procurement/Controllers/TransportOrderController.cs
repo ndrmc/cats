@@ -299,23 +299,24 @@ namespace Cats.Areas.Procurement.Controllers
         }
         public ActionResult TransportOrder_Read([DataSourceRequest] DataSourceRequest request, int id = 0, int programId = 0, int regionId = 0)
         {
-            var stateName = string.Empty;
+            string[] stateNames = new string[2];
             switch (id)
             {
                 case 1:
-                    stateName = "Draft";
+                    stateNames[0] = "Draft"; // this filter should include for Edited records too,
+                    stateNames[1] = "Edited";
                     break;
                 case 2:
-                    stateName = "Approved";
+                    stateNames[0] = "Approved";
                     break;
                 case 3:
-                    stateName = "Signed";
+                    stateNames[0] = "Signed";
                     break;
                 case 4:
-                    stateName = "Closed";
+                    stateNames[0] = "Closed";
                     break;
                 case 5:
-                    stateName = "Rejected";
+                    stateNames[0] = "Rejected";
                     break;
             }
 
@@ -326,10 +327,10 @@ namespace Cats.Areas.Procurement.Controllers
 
             //var filteredTransportOrder=_transportOrderDetailService.FindBy(m=>m.RequisitionID=)
             var transportOrders = id == 0
-                ? _transportOrderService.GetFilteredTransportOrder(transportRequistions, stateName)
+                ? _transportOrderService.GetFilteredTransportOrder(transportRequistions, stateNames)
                     .OrderByDescending(m => m.TransportOrderID)
                     .ToList()
-                : _transportOrderService.GetFilteredTransportOrder(transportRequistions, stateName).ToList();
+                : _transportOrderService.GetFilteredTransportOrder(transportRequistions, stateNames).ToList();
 
 
             transportRequisitionRegion = regionId == 0
@@ -867,6 +868,34 @@ namespace Cats.Areas.Procurement.Controllers
                     detail.TariffPerQtl = orderDetails.TariffPerQtl;
 
                     _transportOrderDetailService.EditTransportOrderDetail(detail);
+
+                    if (_transportOrderDetailService.EditTransportOrderDetail(detail))
+                    {
+                        var target = _transportOrderService.Get(t => t.TransportOrderID == orderDetails.TransportOrderID).FirstOrDefault();
+
+                        if (target != null)
+                        {
+                            BusinessProcessState bps = target.BusinessProcess.CurrentState;
+                            var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
+
+                            if (stateTemplate != null)
+                            {
+                                int editStateId = stateTemplate.StateTemplateID;
+
+                                var businessProcessState = new BusinessProcessState()
+                                {
+                                    StateID = editStateId,
+                                    PerformedBy = HttpContext.User.Identity.Name,
+                                    DatePerformed = DateTime.Now,
+                                    Comment = "Transport Order - detail is edited - " + detail.TariffPerQtl + ", a system internally captured data.",
+                                    //AttachmentFile = fileName,
+                                    ParentBusinessProcessID = bps.ParentBusinessProcessID
+                                };
+
+                                _businessProcessService.PromotWorkflow(businessProcessState);
+                            }
+                        }
+                    }
                 }
 
             }
