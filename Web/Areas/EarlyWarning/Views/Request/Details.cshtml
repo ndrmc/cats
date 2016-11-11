@@ -26,76 +26,7 @@
 }
 @section Toolbar
 {
-    @* <div class="btn-group" style="margin-right:8px;">
-            <button class="btn">Action</button>
-            @{
-                <button class="btn dropdown-toggle " data-toggle="dropdown">
-                    <span class="caret"></span>
-                </button>
-            }
-
-
-            <ul class="dropdown-menu">
-
-                @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Draft)
-                {
-
-                    <li><a href="@Url.Action("Edit", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Edit</a></li>
-                    <li><a href="@Url.Action("Allocation", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Allocation</a></li>
-                    <li><a href="@Url.Action("ApproveRequest", "Request", new { id = modelRequest.RegionalRequestID })">Approve</a></li>
-                }
-
-
-                <li><a href="#"></a></li>
-            </ul>
-
-        </div>*@
-    @*<a class="btn toolbar-btn " href="@Url.Action("Index", "Request", new { Area = "EarlyWarning" })" data-buttontype="btn_back_to_list"></a>*@
-    @*<div class="btn-group">
-            <button class="btn">Action</button>
-            @{
-                <button class="btn dropdown-toggle " data-toggle="dropdown">
-                    <span class="caret"></span>
-                </button>
-            }
-
-            <ul class="dropdown-menu">
-                @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Draft)
-                {
-                <li><a href="@Url.Action("Edit", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Edit</a></li>
-                <li><a href="@Url.Action("Allocation", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Allocation</a></li>
-                <li><a href="@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID})">Approve</a></li>
-
-                }
-                @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved && modelRequest.ProgramId == 3)
-                {
-                <li><a id="btnEditPlan" href="@Url.Action("CreateRequisitionForIDPS", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID, programId = modelRequest.ProgramId })"><i class="icon-plus"></i>IDPS Requisiton</a></li>
-                <li><a href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li>
-                }
-                else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
-                {
-                <li><a href="@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })"><i class="icon-plus"></i>Requisiton</a></li>
-                <li><a href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li>
-                }
-                else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Closed)
-                {
-                <li><a href="@Url.Action("RevertRequestStatus", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Revert Status</a></li>
-                }
-                else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Reject)
-                {
-                <li><a href="@Url.Action("Edit", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Edit</a></li>
-                <li><a href="@Url.Action("Allocation", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Allocation</a></li>
-                <li><a href="@Url.Action("ApproveRequest", "Request", new {id = modelRequest.RegionalRequestID})">Approve</a></li>
-                }
-
-            </ul>
-            <a class="btn toolbar-btn" href="@Url.Action("Print", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })" style="display:none1;" target="_blank" id="toolbar_button_print" title="Print"><i class="icon-print"></i></a>
-        </div>*@
-    @* @if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Approved)
-        {
-            <a class="btn toolbar-btn "   href="@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })" data-buttontype=""><i class="icon-plus"></i>Requisiton</a>
-        }*@
-    <a class="btn btn-fit-height grey-salt" href="@Url.Action("Index", "Request", new { Area = "EarlyWarning" })"><i class="fa fa-list"></i> @Html.Translate("Back to List")</a>
+     <a class="btn btn-fit-height grey-salt" href="@Url.Action("Index", "Request", new { Area = "EarlyWarning" })"><i class="fa fa-list"></i> @Html.Translate("Back to List")</a>
 }
 <script type="text/javascript">
     $(function() {

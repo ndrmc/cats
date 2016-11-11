@@ -9,16 +9,11 @@
     Layout = "~/Views/Shared/DefaultLayout.cshtml";
 
 }
+ @section Toolbar
+{
+<a class="btn btn-fit-height grey-salt" href="#" onclick="CreateStartingBalance()">@Html.Translate(" Create New Starting Balance")</a>
 
-@*@Html.Partial("DisplayHub")*@
-
-@*@(Html.Telerik().ScriptRegistrar()
-                              .jQuery(true)
-                              .DefaultGroup(group => group.Compress(true)
-                              .Combined(false).CacheDurationInDays(365))
-                             .jQueryValidation(false)
-    )*@
-
+}
 @{
     Html.Telerik().Window()
             .Name("StartingBalance")
@@ -33,21 +28,7 @@
                     .Visible(false)
                     .Render();
 }
-
-@*<p>
-         @Html.ActionLink("Create New Starting Balance", "Create")
-    </p>*@
-<div class="container-fluid   full-height-content " style="margin-top:-30px;">
-    <div class=" row">
-
-        @*@if (HubConstants.isValidOperation(HubConstants.Operation.Create_new_starting_balance).ToString() == "Create_new_starting_balance")*@
-        @*  {*@
-        <div class=" col-md-12 margin-bottom-5 ">
-
-            <a class="btn pull-right green" href="#" onclick="CreateStartingBalance()">@Html.Translate(" Create New Starting Balance")</a>
-        </div>
-        @*}*@
-    </div>
+ 
 
     <div class="portlet light bordered bg-inverse">
         <div class="portlet-title">
