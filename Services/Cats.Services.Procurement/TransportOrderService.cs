@@ -94,17 +94,18 @@ namespace Cats.Services.Procurement
                 select c.TransportOrder).Where(x => x.StatusID == statusId).Distinct().ToList();
             return transportOrder;
         }
-        public IEnumerable<TransportOrder> GetFilteredTransportOrder(IEnumerable<TransportRequisitionDetail> transportRequsitionDetails, string stateName)
+        public IEnumerable<TransportOrder> GetFilteredTransportOrder(IEnumerable<TransportRequisitionDetail> transportRequsitionDetails, string [] stateNames)
         {
             var transportRequistionDetail = transportRequsitionDetails.Select(m => m.RequisitionID).Distinct();
             var transportOrder =
-                (from order in
-                    _unitOfWork.TransportOrderDetailRepository.Get(
-                        m =>
-                            transportRequistionDetail.Contains(m.RequisitionID) &&
-                            m.TransportOrder.BusinessProcess.CurrentState.BaseStateTemplate.Name == stateName, null,
-                        "FDP, FDP.AdminUnit, FDP.AdminUnit.AdminUnit2, FDP.AdminUnit.AdminUnit2.AdminUnit2").ToList()
-                 select order.TransportOrder).Distinct().ToList();
+             (from order in
+                 _unitOfWork.TransportOrderDetailRepository.Get(
+                     m =>
+                         transportRequistionDetail.Contains(m.RequisitionID) &&
+                         stateNames.Contains(m.TransportOrder.BusinessProcess.CurrentState.BaseStateTemplate.Name), null,
+                     "FDP, FDP.AdminUnit, FDP.AdminUnit.AdminUnit2, FDP.AdminUnit.AdminUnit2.AdminUnit2").ToList()
+              select order.TransportOrder).Distinct().ToList();
+
             return transportOrder;
         }
         public IEnumerable<TransportOrder> GetFilteredTransportOrder(IEnumerable<TransportOrderDetail> transportOrderDetails, int statusId)
