@@ -174,7 +174,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                         {
                             var giftCertificate =
                                 GiftCertificateViewModelBinder.BindGiftCertificate(giftcertificateViewModel);
-                            giftCertificate.StatusID = 1;
+                            giftCertificate.BusinessProcess.CurrentState.BaseStateTemplate.Name = "Draft";
                             giftCertificate.BusinessProcessID = bp.BusinessProcessID;
 
                             var shippingInstructionID =
