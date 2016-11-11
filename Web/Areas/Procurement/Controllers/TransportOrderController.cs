@@ -664,7 +664,7 @@ namespace Cats.Areas.Procurement.Controllers
                             RequisitionNo = detail.ReliefRequisition.RequisitionNo,
                             WinnerAssignedByLogistics = detail.WinnerAssignedByLogistics,
                             
-                            SatelliteWarehouseName = GetSName(detail.ReliefRequisition.HubAllocations.First().SatelliteWarehouseID)
+                            SatelliteWarehouseName = GetSName(detail.ReliefRequisition.HubAllocations.First().SatelliteWarehouseID, detail.Hub.HubID)
                         // Donor=detail.Donor.Name
 
 
@@ -673,15 +673,28 @@ namespace Cats.Areas.Procurement.Controllers
             // return transportContractDetail;
         }
 
-        private string GetSName(int? id)
+        private string GetSName(int? id, int hubId)
         {
             if (id != null)
             {
-                var k = _hubService.FindById(id.Value);
+                if (id != 0)
+                {
+                    var k = _hubService.FindById(id.Value);
+                    return k.Name;
+                }
+                else
+                {
+                    var k = _hubService.FindById(hubId);
+                    return k.Name;
+                }
+            }
+            else
+            {
+                var k = _hubService.FindById(hubId);
                 return k.Name;
             }
-            else return string.Empty;
         }
+
         private TransportContractViewModel GetTransportOrder(TransportOrder transportOrder)
         {
             var datePref = UserAccountHelper.GetUser(User.Identity.Name).DatePreference;
