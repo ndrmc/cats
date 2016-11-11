@@ -45,7 +45,7 @@ namespace Cats.Services.Procurement
         IOrderedEnumerable<WoredaViewModelInTransReqWithoutWinner> GetWoredas(int zoneId, int transReqNo);
         IOrderedEnumerable<RegionsViewModel> GetRegions();
         IEnumerable<TransportOrder> GetFilteredTransportOrder(
-            IEnumerable<TransportRequisitionDetail> transportRequsitionDetails, string stateName);
+            IEnumerable<TransportRequisitionDetail> transportRequsitionDetails, string [] stateName);
 
         IEnumerable<TransportOrder> GetFilteredTransportOrder(IEnumerable<TransportOrderDetail> transportOrderDetails,
                                                               int statusId);
