@@ -490,6 +490,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (reliefRequisitionDetailViewModel != null && ModelState.IsValid)
             {
                 _reliefRequisitionDetailService.AddReliefRequisitionDetail(RequisitionViewModelBinder.BindReliefRequisitionDetail(reliefRequisitionDetailViewModel));
+
+                UpdateEditWorkflow(reliefRequisitionDetailViewModel.RequisitionID, "Relief Requisition Detail has been added to the requisition.");
             }
 
             return Json(new[] { reliefRequisitionDetailViewModel }.ToDataSourceResult(request, ModelState));
@@ -503,6 +505,14 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 var target = _reliefRequisitionDetailService.FindById(reliefRequisitionDetailViewModel.RequisitionDetailID);
                 if (target != null)
                 {
+                    //Only create log if there is any change
+                    if(target.BenficiaryNo!= reliefRequisitionDetailViewModel.BenficiaryNo)
+                    {
+                        UpdateEditWorkflow(reliefRequisitionDetailViewModel.RequisitionID, 
+                            String.Format("Relief Requisition Detail-Beneficiary No for {0} has been changed from {1} to {2}.",target.FDP.Name, target.BenficiaryNo, reliefRequisitionDetailViewModel.BenficiaryNo));
+
+                    }
+
                     target.Amount = reliefRequisitionDetailViewModel.Amount.ToPreferedWeightUnitForInsert();
                     target.BenficiaryNo = reliefRequisitionDetailViewModel.BenficiaryNo;
                     target.Contingency = reliefRequisitionDetailViewModel.Contingency;
@@ -510,6 +520,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                         target.DonorID = reliefRequisitionDetailViewModel.DonorID.Value;
                     _reliefRequisitionDetailService.EditReliefRequisitionDetail(target);
                 }
+
+
             }
 
             return Json(new[] { reliefRequisitionDetailViewModel }.ToDataSourceResult(request, ModelState));
@@ -523,12 +535,37 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (reliefRequisitionDetail != null)
             {
                 _reliefRequisitionDetailService.DeleteById(reliefRequisitionDetail.RequisitionDetailID);
+
+                UpdateEditWorkflow(reliefRequisitionDetail.RequisitionID, "Relief Requisition Detail has been Deleted from the requisition.");
+
             }
 
             return Json(ModelState.ToDataSourceResult());
         }
 
+        public Boolean UpdateEditWorkflow(int requisitionid, String changeNote = null)
+        {
 
+            var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == requisitionid, null,
+                                  "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+            if (requisition != null)
+            {
+                var editFlowTemplate = requisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Edit");
+                if (editFlowTemplate != null)
+                {
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = editFlowTemplate.FinalStateID,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = changeNote ?? "Relief Requistion has been Edited.",
+                        ParentBusinessProcessID = requisition.BusinessProcessID
+                    };
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+            }
+            return true;
+        }
         [HttpPost]
         public ActionResult RequistionDetailEdit(IEnumerable<ReleifRequisitionDetailEdit.ReleifRequisitionDetailEditInput> input)
         {
@@ -631,7 +668,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
             requisitionById.RequisitionNo = reliefrequisition.RequisitionNo;
             requisitionById.RequestedDate = reliefrequisition.RequestedDate;
             _reliefRequisitionService.EditReliefRequisition(requisitionById);
-            //return RedirectToAction("Index", "ReliefRequisition");
+
+            UpdateEditWorkflow(reliefrequisition.RequisitionID);
+
             return Json(new { status = "Ok", message = string.Empty, Id = requisitionById.RequisitionID});
         }
 
