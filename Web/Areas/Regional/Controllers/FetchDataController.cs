@@ -102,7 +102,10 @@ namespace Cats.Areas.Regional.Controllers
            var requests = _regionalRequestService.FindBy(t => t.RegionID == regionID);
             var requisitions = _reliefRequisitionService.FindBy(t => t.RegionID == regionID);
             var totalRequests = requests.Count();
-            var currentPlan = _hrdService.FindBy(t => t.Status == 3).FirstOrDefault().PlanID;
+            var currentPlan =
+                _hrdService.FindBy(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                    .FirstOrDefault()
+                    .PlanID;
             var planName = _planService.FindById(currentPlan).PlanName;
 
             var utilizations =
@@ -210,7 +213,7 @@ namespace Cats.Areas.Regional.Controllers
             var requests = _regionalRequestService.FindBy(t => t.RegionID == regionID);
             var requisitions = _reliefRequisitionService.FindBy(t => t.RegionID == regionID);
             var fdps = _fdpService.FindBy(t => t.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID);
-            var currentHRD = _hrdService.FindBy(t => t.Status == 3).FirstOrDefault();
+            var currentHRD = _hrdService.FindBy(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").FirstOrDefault();
             var bene = currentHRD.HRDDetails.Where(t => t.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID).Sum(
                 e => e.NumberOfBeneficiaries);
 

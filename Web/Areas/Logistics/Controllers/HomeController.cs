@@ -106,7 +106,7 @@ namespace Cats.Areas.Logistics.Controllers
             UserInfo currentUser = UserAccountHelper.GetUser(HttpContext.User.Identity.Name);
             ViewBag.RegionName = currentUser.RegionID != null ? _adminUnitService.FindById(currentUser.RegionID ?? 0).Name : "";
 
-            var hrd = _hrdService.FindBy(m => m.Status == 3).FirstOrDefault();
+            var hrd = _hrdService.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").FirstOrDefault();
             if (hrd == null)
             {
                 return HttpNotFound();
@@ -262,7 +262,7 @@ namespace Cats.Areas.Logistics.Controllers
                         CreatedDate = hrd.CreatedDate,
                         CreatedBy = hrd.UserProfile.FirstName + " " + hrd.UserProfile.LastName,
                         PublishedDate = hrd.PublishedDate,
-                        StatusID = hrd.Status,
+                        //StatusID = hrd.Status,
                         CreatedDatePref = hrd.CreatedDate.ToCTSPreferedDateFormat(datePref),
                         PublishedDatePref = hrd.PublishedDate.ToCTSPreferedDateFormat(datePref),
                         Plan = hrd.Plan.PlanName
@@ -274,8 +274,8 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult CurrentHrdRead()
         {
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            DateTime latestDate = _hrdService.Get(m => m.Status == 3).Max(m => m.PublishedDate);
-            var hrds = _hrdService.FindBy(m => m.Status == 3 && m.PublishedDate == latestDate);
+            DateTime latestDate = _hrdService.Get(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").Max(m => m.PublishedDate);
+            var hrds = _hrdService.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published" && m.PublishedDate == latestDate);
             var hrdsToDisplay = GetHrds(hrds).ToList();
             return Json(hrdsToDisplay, JsonRequestBehavior.AllowGet);
         }

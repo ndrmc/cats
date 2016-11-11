@@ -52,7 +52,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             var hrdDonorCoverage = new HrdDonorCoverage();
             ViewBag.DonorID =new SelectList(_donorService.GetAllDonor(),"DonorID","Name");
-            var hrds = _hrdService.GetAllHRD().Where(m => m.Status != (int)HRDStatus.Draft).OrderByDescending(m=>m.HRDID);
+            var hrds = _hrdService.GetAllHRD().Where(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name != "Draft").OrderByDescending(m=>m.HRDID);
             var hrd = (from item in hrds
                        select new { item.HRDID, Name = item.Plan.PlanName }).ToList();
             
