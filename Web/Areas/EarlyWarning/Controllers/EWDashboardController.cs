@@ -267,7 +267,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 return
                     _eWDashboardService.FindByHrd(
-                        m => m.Status == 3 || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                        m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
                         .FirstOrDefault();
             }
             catch (Exception)
