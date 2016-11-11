@@ -5,45 +5,56 @@
 
 @model Cats.Models.ViewModels.TransportRequisitionWithTransporter
 
-
 @{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_MainLayoutWide.cshtml";
-}
-@*@section LeftBar{
-    @Html.Partial("_TransportOrderLeftBar");
+    ViewBag.Title = ViewBag.TransportOrderTitle + " Transport Orders";
 
-}*@
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = ViewBag.Title;
+    ViewBag.PageTitleDescription = "";
+    int index = 0;
+
+}
+
+
+
 
 @{
     var counter = 1;
 }
-<h4 class="page-header">@ViewBag.TransportOrderTitle Transport Orders</h4>
 
-<div>
-@(Html.Kendo().Grid<TransportOrderViewModel>().Name("Grid").Columns(columns =>
+
+
+<div class="portlet light bordered bg-inverse">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @ViewBag.PageTitle </div>
+        <div class="actions">
+            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href=" javascript:;" data-original-title="" title=""></a>
+        </div>
+    </div>
+    <div class="portlet-body">
+        @(Html.Kendo().Grid<TransportOrderViewModel>().Name("Grid").Columns(columns =>
 {
-if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.View_transport_order_list) )
-{
-    columns.Template(t => { }).Title("No").ClientTemplate(
-        "#= renderNumber(data) #").Width(30);
-    columns.Bound(to => to.ContractNumber).Width(200).ClientTemplate("<a href='" + Url.Action("TransportContract", "TransportOrder", new {Area = "Hub", id = "#=TransportOrderID#"}) + " '>#=ContractNumber#</a>  ").HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal;"});
-}
-columns.Bound(to => to.Transporter).Width(100);
-columns.Bound(to => to.BidDocumentNo).Width(70).Title(Html.Translate("Bid Document #")).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal" });;
-columns.Bound(to => to.OrderExpiryDateET).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
-columns.Bound(to => to.StartDate).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
-columns.Bound(to => to.EndDate).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
-columns.Bound(to => to.RequestedDispatchDateET).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
-columns.Bound(to => to.TransportOrderNo).Width(100).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal" }); ;
-columns.Bound(to => to.Status).Width(60);
-if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.New_dispatch_to_FDPs) )
-{
-    columns.Bound(to => to.TransportOrderID).Width(120).ClientTemplate("<a href='" + Url.Action("GenerateDispatchAllocation", "TransportOrder", new {Area = "Procurement", id = "#=TransportOrderID#"}) + " '>Create Dispatch Plan</a>  ").HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal"});
-}
-    if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Close_dispatch_plan_to_FDPs) )
+    if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.View_transport_order_list))
     {
-        columns.Command(to => to.Custom("Reject").Click("onReject")).Width(70).HeaderHtmlAttributes(new {style = "overflow: visible; white-space: normal"});
+        columns.Template(t => { }).Title("No").ClientTemplate(
+            "#= renderNumber(data) #").Width(30);
+        columns.Bound(to => to.ContractNumber).Width(200).ClientTemplate("<a href='" + Url.Action("TransportContract", "TransportOrder", new { Area = "Hub", id = "#=TransportOrderID#" }) + " '>#=ContractNumber#</a>  ").HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;" });
+    }
+    columns.Bound(to => to.Transporter).Width(100);
+    columns.Bound(to => to.BidDocumentNo).Width(70).Title(Html.Translate("Bid Document #")).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal" }); ;
+    columns.Bound(to => to.OrderExpiryDateET).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
+    columns.Bound(to => to.StartDate).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
+    columns.Bound(to => to.EndDate).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
+    columns.Bound(to => to.RequestedDispatchDateET).Width(80).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid", style = "overflow: visible; white-space: normal;" });
+    columns.Bound(to => to.TransportOrderNo).Width(100).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal" }); ;
+    columns.Bound(to => to.Status).Width(60);
+    if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.New_dispatch_to_FDPs))
+    {
+        columns.Bound(to => to.TransportOrderID).Width(120).ClientTemplate("<a href='" + Url.Action("GenerateDispatchAllocation", "TransportOrder", new { Area = "Procurement", id = "#=TransportOrderID#" }) + " '>Create Dispatch Plan</a>  ").HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal" });
+    }
+    if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Close_dispatch_plan_to_FDPs))
+    {
+        columns.Command(to => to.Custom("Reject").Click("onReject")).Width(70).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal" });
         ;
 
     }
@@ -56,39 +67,40 @@ if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.New_
 
     .DataSource(dataSource => dataSource
         .Ajax()
-        .Model(model =>model.Id(p => p.TransportOrderID))
-        .Read(read => read.Action("TransportOrder_Read", "TransportOrder",new {id=ViewBag.TransportOrdrStatus}))
+        .Model(model => model.Id(p => p.TransportOrderID))
+        .Read(read => read.Action("TransportOrder_Read", "TransportOrder", new { id = ViewBag.TransportOrdrStatus }))
     )
-      )
+        )
+
+
     </div>
-
-
+</div>
 
 <script>
-    function onReject(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        window.location = "@Url.Action("SendBackTransportOrder","TransportOrder")" + "/" + dataItem.TransportOrderID;
-    }
+            function onReject(e) {
+                e.preventDefault();
+                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                window.location = "@Url.Action("SendBackTransportOrder","TransportOrder")" + "/" + dataItem.TransportOrderID;
+            }
 
-    
+
 </script>
 
 <script type="text/javascript">
-    var rowNumber = 0;
+            var rowNumber = 0;
 
-    function resetRowNumber(e) {
-        rowNumber = 0;
-    }
+            function resetRowNumber(e) {
+                rowNumber = 0;
+            }
 
-    function renderNumber(data) {
-        return ++rowNumber;
-    }
+            function renderNumber(data) {
+                return ++rowNumber;
+            }
 
-    function renderRecordNumber(data) {
-        var page = parseInt($("#Grid").data("kendoGrid").dataSource.page()) - 1;
-        var pagesize = $("#Grid").data("kendoGrid").dataSource.pageSize();
-        return parseInt(rowNumber + (parseInt(page) * parseInt(pagesize)));
-    }
+            function renderRecordNumber(data) {
+                var page = parseInt($("#Grid").data("kendoGrid").dataSource.page()) - 1;
+                var pagesize = $("#Grid").data("kendoGrid").dataSource.pageSize();
+                return parseInt(rowNumber + (parseInt(page) * parseInt(pagesize)));
+            }
 
-</script>  
+</script>
