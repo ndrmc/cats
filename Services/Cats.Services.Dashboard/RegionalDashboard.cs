@@ -70,8 +70,14 @@ namespace Cats.Services.Dashboard
         public List<RegionalRequestAllocationChange> GetAllocationChange(int regionID)
         {
             var r = new List<RegionalRequestAllocationChange>();
-            var currentHRD = _unitOfWork.HRDRepository.FindBy(m => m.Status == 3).FirstOrDefault();
-            var requests = _unitOfWork.RegionalRequestRepository.FindBy(t => t.RegionID == regionID && t.PlanID == currentHRD.PlanID).OrderByDescending(t => t.RegionalRequestID).Take(5);
+            var currentHRD =
+                _unitOfWork.HRDRepository.FindBy(
+                    m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").FirstOrDefault();
+            var requests =
+                _unitOfWork.RegionalRequestRepository.FindBy(
+                    t => t.RegionID == regionID && t.PlanID == currentHRD.PlanID)
+                    .OrderByDescending(t => t.RegionalRequestID)
+                    .Take(5);
 
             foreach (var regionalRequest in requests)
             {
@@ -106,7 +112,7 @@ namespace Cats.Services.Dashboard
                     "SELECT TOP 5 * FROM Dashborad_Regional_Requisitions WHERE RegionID=@0 ORDER BY RequestedDate DESC",
                     args: regionID);
             return limResult.ToList();*/
-            var currentHRD = _unitOfWork.HRDRepository.FindBy(m => m.Status == 2);//status value cahnged from 3 to 2
+            var currentHRD = _unitOfWork.HRDRepository.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved");//status value cahnged from 3 to 2
             var requisitions =
                 _unitOfWork.ReliefRequisitionRepository.FindBy(
                     t => t.RegionID == regionID && t.Status == (int) RegionalRequestStatus.Approved)

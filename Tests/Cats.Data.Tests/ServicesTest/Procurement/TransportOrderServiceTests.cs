@@ -328,7 +328,11 @@ namespace Cats.Data.Tests.ServicesTest.Procurement
             //Act 
 
            
+<<<<<<< .mine
             var result = _transportOrderService.CreateTransportOrder(1,1,"");
+=======
+            var result = _transportOrderService.CreateTransportOrder(1, 1, "");
+>>>>>>> .theirs
 
             //Assert
 

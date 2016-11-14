@@ -107,7 +107,11 @@ namespace Cats.Areas.Procurement.Controllers
                     TempData["Error"] = "Transport order not created. Please select Bid and try again";
                     return RedirectToAction("TransportRequisitions");
                 }
+<<<<<<< .mine
                 
+=======
+
+>>>>>>> .theirs
                 if (saveButton != null)
                 {
 

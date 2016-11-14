@@ -102,13 +102,16 @@ namespace Cats.Areas.Regional.Controllers
            var requests = _regionalRequestService.FindBy(t => t.RegionID == regionID);
             var requisitions = _reliefRequisitionService.FindBy(t => t.RegionID == regionID);
             var totalRequests = requests.Count();
-            var currentPlan = _hrdService.FindBy(t => t.Status == 3).FirstOrDefault().PlanID;
+            var currentPlan =
+                _hrdService.FindBy(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                    .FirstOrDefault()
+                    .PlanID;
+            var planName = _planService.FindById(currentPlan).PlanName;
+
             var utilizations =
                 _utilization.FindBy(
                     t => t.PlanID == currentPlan && t.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID);
-            
-            var planName = _planService.FindById(currentPlan).PlanName; 
-                        
+                 
             var sum18 = 0;
             var sum518 = 0;
             var sum5 = 0;
@@ -210,7 +213,7 @@ namespace Cats.Areas.Regional.Controllers
             var requests = _regionalRequestService.FindBy(t => t.RegionID == regionID);
             var requisitions = _reliefRequisitionService.FindBy(t => t.RegionID == regionID);
             var fdps = _fdpService.FindBy(t => t.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID);
-            var currentHRD = _hrdService.FindBy(t => t.Status == 3).FirstOrDefault();
+            var currentHRD = _hrdService.FindBy(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published").FirstOrDefault();
             var bene = currentHRD.HRDDetails.Where(t => t.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID).Sum(
                 e => e.NumberOfBeneficiaries);
 
@@ -226,34 +229,33 @@ namespace Cats.Areas.Regional.Controllers
         }
 
         public JsonResult Assesments(int regionID = 0)
-      
+
         {
-            var planStatus = new List<int>();
-            planStatus.Add((int) PlanStatus.Approved);
-            planStatus.Add((int)PlanStatus.HRDCreated);
             var plans =
                 (from p in
-                    _needAssessmentService.FindBy(
-                        a => a.Region == regionID && planStatus.Contains(a.Plan.Status))
-                    select new
-                    {
-                        p.PlanID,
-                        p.Plan.PlanName,
-                        StartDate =
+                    _needAssessmentService.GetAllNeedAssessment()
+                 where (p.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved" ||
+                    p.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Reversed")
+                 select new
+                 {
+                     p.PlanID,
+                     p.Plan.PlanName,
+                     StartDate =
                             p.Plan.StartDate.ToString("MMMM") + " " + p.Plan.StartDate.Day + "," +
                             p.Plan.StartDate.Year,
-                        EndDate =
+                     EndDate =
                             p.Plan.EndDate.ToString("MMMM") + " " + p.Plan.EndDate.Day + "," + p.Plan.EndDate.Year,
-                        p.Plan.Status,
-                        StatusDescription = GetStatusDescription(p.Plan.Status),
-                    }).Distinct().ToList();
+                     p.Plan.Status,
+                     StatusDescription = GetStatusDescription(p.BusinessProcess.CurrentState.BaseStateTemplate.Name),
+                     IsHRDCreated = p.Plan.BusinessProcess.CurrentState.BaseStateTemplate.Name == "HRDCreated" ? "Yes" : string.Empty
+                 }).Distinct().ToList();
             return Json(plans, JsonRequestBehavior.AllowGet);
         }
-
-        public string GetStatusDescription(int status)
+        public string GetStatusDescription(string stateName)
         {
-            if (status == (int) PlanStatus.HRDCreated) return "HRD Created";
-            return status == (int) PlanStatus.Approved ? "Approved" : string.Empty;
+            if (stateName == "Approved") return "Approved";
+            if (stateName == "Reversed") return "Rejected";
+            return string.Empty;
         }
     }
 }

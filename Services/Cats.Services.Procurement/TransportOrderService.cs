@@ -30,9 +30,15 @@ namespace Cats.Services.Procurement
             this._transporterService = transporterService;
             _notificationService = notificationService;
             _businessProcessService = businessProcessService;
+<<<<<<< .mine
             _applicationSettingService = applicationSettingService;
             _stateTemplateService = stateTemplateService;
             _businessProcessStateService = paramBusinessProcessStateService;
+=======
+            _applicationSettingService = applicationSettingService;
+
+
+>>>>>>> .theirs
         }
 
         #region Default Service Implementation
