@@ -453,7 +453,7 @@ namespace Cats.Areas.Logistics.Controllers
         public JsonResult GetTransporters()
         {
             var transporters =
-                _transportOrderService.FindBy(s => s.StatusID < (int)(Cats.Models.Constant.TransportOrderStatus.Closed)).Select(p => new
+                _transportOrderService.FindBy(s => s.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft" || s.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved" || s.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed").Select(p => new
                 {
                     name = p.Transporter.Name,
                     region = (p.Transporter.Region!=0) ? _adminUnitService.FindById(p.Transporter.Region).Name : "",

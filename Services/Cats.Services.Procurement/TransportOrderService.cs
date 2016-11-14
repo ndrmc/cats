@@ -781,15 +781,17 @@ namespace Cats.Services.Procurement
                         PerformedBy = userName,
                         Comment = " TransportOrder Approved on multiple approval",
                         StateID = approvedStateId.StateTemplateID,
-                        ParentBusinessProcessID = transportOrder.BusinessProcessID
+                        ParentBusinessProcessID = transportOrder.BusinessProcessID,
+                        
                     };
-                    _businessProcessStateService.Add(createdstate3);
+                    //_businessProcessStateService.Add(createdstate3);
 
-                    if (bp != null)
-                    {
-                        bp.CurrentState = createdstate3;
-                        _businessProcessService.Update(bp);
-                    }
+                    //if (bp != null)
+                    //{
+                    //    bp.CurrentState = createdstate3;
+                    //    _businessProcessService.Update(bp);
+                    //}
+                    _businessProcessService.PromotWorkflow(createdstate3);
                 }
 
                 //_unitOfWork.TransportOrderRepository.Edit(transportOrder);

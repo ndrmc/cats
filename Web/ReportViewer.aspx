@@ -144,7 +144,9 @@
             // Register an end request event on asynchronuous requests to enable the ASP Disabled date fields 
             Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
         }
-
+        $(document).ajaxSuccess(function () {
+            alert("An individual AJAX call has completed successfully");
+        });
         function PageLoadHandler(sender, args) {
             showDatePicker();
             console.log("Show date picker: Input");
@@ -168,7 +170,7 @@
                 var calendar = "<%= GetCalendarPreference() %>";
                 var date = new Date();
                 
-                if (calendar == "EC") {
+                if (calendar === "EC") {
                     $(dateInput).ethcal_datepicker();
                 }
                 else {
