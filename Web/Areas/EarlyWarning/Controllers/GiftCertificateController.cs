@@ -642,34 +642,14 @@ namespace Cats.Areas.EarlyWarning.Controllers
                  .Where(d => d.ShippingInstructionId == _giftCertificateService.FindById(giftCertificateId).ShippingInstructionID);
 
             // find all receipt plans that are not commited or approved under this giftcertificate
-            // and revert them all
-            foreach (var donation in donations.ToList())
-            {
-                if (donation.IsCommited == true)
-                {
-                    if (_donationPlanHeaderService.DeleteReceiptAllocation(donation))
-                    {
-                        donation.IsCommited = false;
-                        _donationPlanHeaderService.EditDonationPlanHeader(donation);
+            // and remove them all
+            var donationPlanHeaders = donations as IList<DonationPlanHeader> ?? donations.ToList();
 
-                        var approveFlowTemplate =
-                            donation.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates
-                                .FirstOrDefault(t => t.Name == "Revert");
-                        if (approveFlowTemplate != null)
-                        {
-                            var businessProcessState = new BusinessProcessState()
-                            {
-                                StateID = approveFlowTemplate.FinalStateID,
-                                PerformedBy = HttpContext.User.Identity.Name,
-                                DatePerformed = DateTime.Now,
-                                Comment = "Donation Plan Header reverted to draft from GiftCertificate, internally.",
-                                //AttachmentFile = fileName,
-                                ParentBusinessProcessID = donation.BusinessProcessID
-                            };
-                            //return 
-                            _businessProcessService.PromotWorkflow(businessProcessState);
-                        }
-                    }
+            foreach (var donation in donationPlanHeaders)
+            {
+                if (donation.IsCommited == false)
+                {
+                    _donationPlanHeaderService.DeleteDonationPlanHeader(donation);
                 }
             }
 

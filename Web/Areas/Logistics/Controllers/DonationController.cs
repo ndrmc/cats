@@ -690,7 +690,11 @@ namespace Cats.Areas.Logistics.Controllers
                         SingleOrDefault();
                 if (donationHeader != null)
                 {
+                    donationHeader.IsCommited = true;
+                    _donationPlanHeaderService.EditDonationPlanHeader(donationHeader);
+
                     var approveFlowTemplate = donationHeader.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Send to hub");
+
                     if (approveFlowTemplate != null)
                     {
                         var businessProcessState = new BusinessProcessState()
