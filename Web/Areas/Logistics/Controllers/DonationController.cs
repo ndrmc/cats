@@ -625,28 +625,41 @@ namespace Cats.Areas.Logistics.Controllers
 
                 foreach (var detail in donationDetail)
                 {
-                    var receiptAllocation = new Cats.Models.Hubs.ReceiptAllocation
+                    //
+                    // NOTE: GiftCertificate and GiftCertificateDetail are one-to-one
+                    //
+                    int giftCertificateId = 0;
+                    int.TryParse(detail.DonationPlanHeader.GiftCertificateID.ToString(), out giftCertificateId);
 
+                    GiftCertificateDetail giftCertificateDetail = _giftCertificateService.FindById(giftCertificateId)
+                        .GiftCertificateDetails.FirstOrDefault();
+
+                    if (giftCertificateDetail != null)
                     {
-                        ReceiptAllocationID = Guid.NewGuid(),
-                        CommodityID = detail.DonationPlanHeader.CommodityID,
-                        IsCommited = false,
-                        ETA = detail.DonationPlanHeader.ETA,
-                        ProjectNumber = "PC",
-                        SINumber = detail.DonationPlanHeader.ShippingInstruction.Value,
-                        QuantityInMT = detail.AllocatedAmount,
-                        HubID = detail.HubID,
-                        ProgramID = detail.DonationPlanHeader.ProgramID,
-                        GiftCertificateDetailID = detail.DonationPlanHeader.GiftCertificateID,
-                        CommoditySourceID = 1,
-                        IsClosed = false,
-                        PartitionId = 0,
-                        DonorID = detail.DonationPlanHeader.DonorID,
-                        ReceiptPlanID = detail.DonationDetailPlanID
+                        int giftCertificateDetailId = giftCertificateDetail.GiftCertificateDetailID;
 
-                    };
+                        var receiptAllocation = new Cats.Models.Hubs.ReceiptAllocation
 
-                    _receiptAllocationService.AddReceiptAllocation(receiptAllocation);
+                        {
+                            ReceiptAllocationID = Guid.NewGuid(),
+                            CommodityID = detail.DonationPlanHeader.CommodityID,
+                            IsCommited = false,
+                            ETA = detail.DonationPlanHeader.ETA,
+                            ProjectNumber = "PC",
+                            SINumber = detail.DonationPlanHeader.ShippingInstruction.Value,
+                            QuantityInMT = detail.AllocatedAmount,
+                            HubID = detail.HubID,
+                            ProgramID = detail.DonationPlanHeader.ProgramID,
+                            GiftCertificateDetailID = giftCertificateDetailId,
+                            CommoditySourceID = 1,
+                            IsClosed = false,
+                            PartitionId = 0,
+                            DonorID = detail.DonationPlanHeader.DonorID,
+                            ReceiptPlanID = detail.DonationDetailPlanID
+                        };
+
+                        _receiptAllocationService.AddReceiptAllocation(receiptAllocation);
+                    }
                 }
                 return true;
             }
