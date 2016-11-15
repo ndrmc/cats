@@ -174,7 +174,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                         {
                             var giftCertificate =
                                 GiftCertificateViewModelBinder.BindGiftCertificate(giftcertificateViewModel);
-                            giftCertificate.BusinessProcess.CurrentState.BaseStateTemplate.Name = "Draft";
+                            
                             giftCertificate.BusinessProcessID = bp.BusinessProcessID;
 
                             var shippingInstructionID =
@@ -588,7 +588,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult ShowLetterTemplates([DataSourceRequest] DataSourceRequest request)
         {
             return Json(_letterTemplateService.GetAllLetterTemplates().ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
-		}
+        }
         public void ShowTemplate(string fileName, int giftCertificateId)
         {
             // TODO: Make sure to use DI to get the template generator instance
@@ -597,7 +597,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 var template = new TemplateHelper(_unitofwork, _log);
                 string filePath = template.GenerateTemplate(giftCertificateId, 1, fileName); //here you have to send the name of the tempalte and the id of the giftcertificate
 
-				Response.Clear();
+                Response.Clear();
                 Response.ContentType = "application/text";
                 Response.AddHeader("Content-Disposition", @"filename= " + fileName + ".docx");
                 Response.TransmitFile(filePath);
@@ -609,8 +609,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 _log.Error(ex.Message.ToString(CultureInfo.InvariantCulture), ex.GetBaseException());
                 //System.IO.File.AppendAllText(@"c:\temp\errors.txt", " ShowTemplate : " + ex.Message.ToString(CultureInfo.InvariantCulture));
-          }
-}
+            }
+        }
         protected override void Dispose(bool disposing)
         {
             _giftCertificateService.Dispose();
@@ -625,9 +625,14 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public bool OnReject(int giftCertificateId)
         {
             var giftCertificate = _giftCertificateService.FindById(giftCertificateId);
-            int donationHeaderCount = _giftCertificateService.FindById(giftCertificateId).Donor.DonationPlanHeaders.Count;
+            //int donationHeaderCount = _giftCertificateService.FindById(giftCertificateId).Donor.DonationPlanHeaders.Count;
+            var donationHeader =
+                _donationPlanHeaderService.FindBy(
+                    d =>
+                        d.GiftCertificateID == giftCertificateId &
+                        d.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Sent to hub");
 
-            if (donationHeaderCount > 0 || giftCertificate.IsPrinted) // if any approved or commited receipt plan is found under this giftcertificate, then don't revert 
+            if (donationHeader.Count > 0 || giftCertificate.IsPrinted) // if any approved/sent to hub or commited receipt plan is found under this giftcertificate, then don't revert 
             {
                 return false;
             }
@@ -637,36 +642,14 @@ namespace Cats.Areas.EarlyWarning.Controllers
                  .Where(d => d.ShippingInstructionId == _giftCertificateService.FindById(giftCertificateId).ShippingInstructionID);
 
             // find all receipt plans that are not commited or approved under this giftcertificate
-            // and revert them all
-            if (donationHeaderCount > 0)
-            {
-                foreach (var donation in donations.ToList())
-                {
-                    if (donation.IsCommited == true)
-                    {
-                        if (_donationPlanHeaderService.DeleteReceiptAllocation(donation))
-                        {
-                            donation.IsCommited = false;
-                            _donationPlanHeaderService.EditDonationPlanHeader(donation);
-                        }
-                    }
-                }
-            }
+            // and remove them all
+            var donationPlanHeaders = donations as IList<DonationPlanHeader> ?? donations.ToList();
 
-            // find all receipt plans that are not commited or approved under this giftcertificate
-            // and revert them all
-            if (donationHeaderCount > 0)
+            foreach (var donation in donationPlanHeaders)
             {
-                foreach (var donation in donations.ToList())
+                if (donation.IsCommited == false)
                 {
-                    if (donation.IsCommited == true)
-                    {
-                        if (_donationPlanHeaderService.DeleteReceiptAllocation(donation))
-                        {
-                            donation.IsCommited = false;
-                            _donationPlanHeaderService.EditDonationPlanHeader(donation);
-                        }
-                    }
+                    _donationPlanHeaderService.DeleteDonationPlanHeader(donation);
                 }
             }
 
