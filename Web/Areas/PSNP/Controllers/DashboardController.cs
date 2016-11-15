@@ -82,7 +82,7 @@ namespace Cats.Areas.PSNP.Controllers
              var requests = _regionalRequestService.FindBy(t => t.PlanID == planId);
 
             var r = (from request in requests
-                     group request by request.Status into g
+                     group request by request.BusinessProcess.CurrentState.BaseStateTemplate.Name into g
                       let firstOrDefault = g.FirstOrDefault() 
                      where firstOrDefault != null 
                      select new
