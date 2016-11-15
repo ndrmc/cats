@@ -44,12 +44,12 @@ namespace Cats.Tests.ControllersTests
                                                          TransportRequisitionNo = "TRN-001",
                                                          Status = 1,
                                                          Remark = "Remark",
-                                                         
+
 
 
                                                      }
                                              };
-            var transportOrders=new List<TransportOrder>()
+            var transportOrders = new List<TransportOrder>()
                                     {
                                         new TransportOrder()
                                             {
@@ -85,18 +85,18 @@ namespace Cats.Tests.ControllersTests
                                                                         AdminUnitID = 1,
                                                                         AdminUnit = new AdminUnit
                                                                             {
-                                                                                AdminUnitID = 1, 
-                                                                                Name = "Woreda", 
+                                                                                AdminUnitID = 1,
+                                                                                Name = "Woreda",
                                                                                 AdminUnitTypeID = 2,
                                                                                 AdminUnit2 = new AdminUnit
                                                                                     {
-                                                                                        AdminUnitID = 2, 
-                                                                                        Name = "Zone", 
+                                                                                        AdminUnitID = 2,
+                                                                                        Name = "Zone",
                                                                                         AdminUnitTypeID = 1,
                                                                                         AdminUnit2 = new AdminUnit
                                                                                             {
-                                                                                                AdminUnitID = 3, 
-                                                                                                Name = "Region", 
+                                                                                                AdminUnitID = 3,
+                                                                                                Name = "Region",
                                                                                                 AdminUnitTypeID = 0
                                                                                             }
                                                                                     }
@@ -150,7 +150,7 @@ namespace Cats.Tests.ControllersTests
                                                                     }
                                                             },
                                                     },
-                                                
+
                                             }
                                     };
             var mockTransportOrderService = new Mock<ITransportOrderService>();
@@ -177,7 +177,7 @@ namespace Cats.Tests.ControllersTests
 
             var fakeContext = new Mock<HttpContextBase>();
             var identity = new GenericIdentity("User");
-            
+
             var principal = new GenericPrincipal(identity, null);
             fakeContext.Setup(t => t.User).Returns(principal);
             var controllerContext = new Mock<ControllerContext>();
@@ -190,10 +190,10 @@ namespace Cats.Tests.ControllersTests
                 };
 
             var transReqWithoutTransporterService = new Mock<ITransReqWithoutTransporterService>();
-            
+
             transReqWithoutTransporterService.Setup(m => m.GetAllTransReqWithoutTransporter()).Returns(
                 TransReqWithoutTransporter);
-            
+
             var transporterOrderDetail = new List<TransportOrderDetail>
                 {
                     new TransportOrderDetail
@@ -218,7 +218,7 @@ namespace Cats.Tests.ControllersTests
             var transporterOrderDetailService = new Mock<ITransportOrderDetailService>();
             transporterOrderDetailService.Setup(m => m.GetAllTransportOrderDetail()).Returns(transporterOrderDetail);
 
-             var adminUnit = new List<AdminUnit>
+            var adminUnit = new List<AdminUnit>
                 {
                     new AdminUnit {AdminUnitID = 1, Name = "Adminunit name", AdminUnitTypeID = 2},
                     new AdminUnit {AdminUnitID = 2, Name = "AdminUnit", AdminUnitTypeID = 2}
@@ -313,7 +313,7 @@ namespace Cats.Tests.ControllersTests
             _transportOrderController = new TransportOrderController(mockTransportOrderService.Object, mockTransportRequisitionService.Object,
                                                                      workflowStatusService.Object, logService.Object,
                                                                      transReqWithoutTransporterService.Object, transporterOrderDetailService.Object,
-                                                                     adminUnitService.Object, transporterService.Object, transportBidQuotationService.Object,null,null, null,null);
+                                                                     adminUnitService.Object, transporterService.Object, transportBidQuotationService.Object, null, null, null, null, null);
             //var transporterOrderDetailService = new Mock<ITransportOrderDetailService>();
             //transporterOrderDetailService.Setup(m => m.GetAllTransportOrderDetail()).Returns(transporterOrderDetail);
             //_transportOrderController = new TransportOrderController(mockTransportOrderService.Object, mockTransportRequisitionService.Object,
@@ -325,7 +325,7 @@ namespace Cats.Tests.ControllersTests
 
         [TearDown]
         public void Dispose()
-        { _transportOrderController.Dispose();}
+        { _transportOrderController.Dispose(); }
 
         #endregion
 
@@ -375,26 +375,26 @@ namespace Cats.Tests.ControllersTests
         public void CanChangeTransportersForTransportOrderContract()
         {
             //Act
-          /*  var request = new Kendo.Mvc.UI.DataSourceRequest();
-            var substituteTransporterOrder = new List<SubstituteTransporterOrder>
-                {
-                    new SubstituteTransporterOrder
-                        {
-                            WoredaID = 1,
-                            Woreda = "Woreda 1",
-                            TransportersStandingList = new List<TransportBidQuotationViewModel>
-                                {
-                                    new TransportBidQuotationViewModel {TransportBidQuotationID = 1,BidID = 1,TransporterID = 1,SourceID = 1,DestinationID = 55,Tariff=123,IsWinner=false,Position = 2},
-                                    new TransportBidQuotationViewModel {TransportBidQuotationID = 1,BidID = 1,TransporterID = 2,SourceID = 1,DestinationID = 55,Tariff=123,IsWinner=false,Position = 2},
+            /*  var request = new Kendo.Mvc.UI.DataSourceRequest();
+              var substituteTransporterOrder = new List<SubstituteTransporterOrder>
+                  {
+                      new SubstituteTransporterOrder
+                          {
+                              WoredaID = 1,
+                              Woreda = "Woreda 1",
+                              TransportersStandingList = new List<TransportBidQuotationViewModel>
+                                  {
+                                      new TransportBidQuotationViewModel {TransportBidQuotationID = 1,BidID = 1,TransporterID = 1,SourceID = 1,DestinationID = 55,Tariff=123,IsWinner=false,Position = 2},
+                                      new TransportBidQuotationViewModel {TransportBidQuotationID = 1,BidID = 1,TransporterID = 2,SourceID = 1,DestinationID = 55,Tariff=123,IsWinner=false,Position = 2},
 
-                                }
-                        }
-                };
+                                  }
+                          }
+                  };
 
 
-            var result = _transportOrderController.ChangeTransporters(request, substituteTransporterOrder, 1);
-            //Assert
-            Assert.IsInstanceOf<RedirectToRouteResult>(result);*/
+              var result = _transportOrderController.ChangeTransporters(request, substituteTransporterOrder, 1);
+              //Assert
+              Assert.IsInstanceOf<RedirectToRouteResult>(result);*/
             Assert.AreEqual(2, 2);
         }
         #endregion
@@ -405,6 +405,6 @@ namespace Cats.Tests.ControllersTests
             //var result = _transportOrderController.OrderDetail(1);
             //Assert.IsNotNull(result);
         }
-        
+
     }
 }
