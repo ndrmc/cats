@@ -3,7 +3,7 @@
 
  BEGIN TRANSACTION
 use 
-CatsMaster
+[Cats-v-1-3-1]
 go
 IF  NOT EXISTS (
   SELECT * 
@@ -36,7 +36,7 @@ BEGIN
 		declare @draft int 
 		declare @Closed int
 		declare @Signed int
-		declare @Rejected int 
+		declare @Failed int 
 		declare @Approved int   
 		select @id = Scope_Identity()  
 		 INSERT INTO [dbo].[ApplicationSetting]
@@ -80,7 +80,7 @@ BEGIN
            )
 
      VALUES
-		   ( @id,'Rejected',0,2,1 ) select @Rejected = Scope_Identity()
+		   ( @id,'Failed',0,3,1 ) select @Failed = Scope_Identity()
 		  
 		  
 		   
@@ -96,7 +96,7 @@ ROLLBACK /* Rollback of the transaction */
      VALUES
            (@id ,@Draft,@Approved,'Approve'),
 		   (@id ,@Approved,@Signed,'Sign'),
-		   (@id ,@Approved,@Rejected,'Reject'),
+		   (@id ,@Approved,@Failed,'Fail'),
 		   (@id ,@Signed,@Closed,'Close')
 IF(@@error <> 0)
 ROLLBACK /* Rollback of the transaction */		  
