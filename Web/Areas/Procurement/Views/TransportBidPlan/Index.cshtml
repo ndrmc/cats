@@ -6,204 +6,202 @@
 
 
 
-@{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
-    //Layout = "~/Views/Shared/_MainLayout.cshtml";
-    ViewBag.PageTitle = "Procurement";
-    ViewBag.PageTitleDescription = "";
-    int index = 0;
-}
-@*@section LeftBar
+    @{
+        ViewBag.Title = "Index";
+        Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+        //Layout = "~/Views/Shared/_MainLayout.cshtml";
+        ViewBag.PageTitle = "Procurement";
+        ViewBag.PageTitleDescription = "";
+        int index = 0;
+    }
+    @*@section LeftBar
+        {
+            @Html.Partial("_BidPlanLeftBar")
+        }*@
+    @section Toolbar
 {
-    @Html.Partial("_BidPlanLeftBar")
-}*@
-@section Toolbar
-{
-@*<div id="dashboard-report-range" class="pull-right tooltips" data-placement="top" data-original-title="Back to List">
-    <a href="@Url.Action("Create", "TransportBidPlan")" class="btn btn-fit-height grey-salt" title="Create New Bid Plan"><i class="icon-plus"></i>&nbsp;&nbsp; Create</a>
-</div>*@
-    @*<a data-buttontype="btn_new_record" class="btn toolbar-btn " href="@Url.Action("Create", "TransportBidPlan")"></a>*@
-}
+        @*<div id="dashboard-report-range" class="pull-right tooltips" data-placement="top" data-original-title="Back to List">
+                <a href="@Url.Action("Create", "TransportBidPlan")" class="btn btn-fit-height grey-salt" title="Create New Bid Plan"><i class="icon-plus"></i>&nbsp;&nbsp; Create</a>
+            </div>*@
+        @*<a data-buttontype="btn_new_record" class="btn toolbar-btn " href="@Url.Action("Create", "TransportBidPlan")"></a>*@
+    }
 
-<div class="portlet light bordered" style="display: block;">
-    <div class="portlet-title">
-        <div class="caption font-green-sharp">
-            <i class="fa fa-truck font-green-sharp"></i>
-            <span class="caption-subject bold uppercase"> @Html.Translate("List of Bid Plans")</span>
-            <span class="caption-helper">  </span>
-        </div>
+    <div class="portlet light bordered" style="display: block;">
+        <div class="portlet-title">
+            <div class="caption font-green-sharp">
+                <i class="fa fa-truck font-green-sharp"></i>
+                <span class="caption-subject bold uppercase"> @Html.Translate("List of Bid Plans")</span>
+                <span class="caption-helper">  </span>
+            </div>
 
-        <div class="actions">
-            @if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Add_Bid_Plan)
-                 || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Create_new_bid_plan))
-            {
-                <a class="btn btn-circle btn-default green-stripe toolbar-btn" href="@Url.Action("Create", "TransportBidPlan")">
-
-                    <i class="fa fa-plus-circle "></i> @Html.Translate("New Bid Plan")
-                </a>
-            }
-            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
-        </div>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-striped table-condensed">
-            <thead>
-                <tr>
-                    <th>Short Name</th>
-                    <th>Year</th>
-                    <th>Year Half</th>
-                    <th></th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-     
-                @foreach (TransportBidPlan item in Model)
+            <div class="actions">
+                @if (UserAccountHelper.LogisticsOperationCheck(LogisticsConstants.Operation.Add_Bid_Plan)
+             || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Create_new_bid_plan))
                 {
-                    index++;
-                    var state = item.BusinessProcess.CurrentState.BaseStateTemplate;
-                    //if (state.Name == "Approved by finance" || state.Name == "Cheque Issued" || state.Name == "Cheque Cashed")
-                    //{
-                    <tr>
-                        <td>
-                            @item.ShortName
-                        </td>
-                        <td>
-                            @item.Year
-                        </td>
-                        <td>
-                            @item.YearHalf
-                        </td>
-                        <td>
-                            @state.Name
-                        </td>
-                        
-                        <td>
-                            @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_Bid_Plan).ToString() == "Edit_Bid_Plan"
-    || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Edit_bid_plan))
-                            {
-                                <a class="k-button-icontext k-grid-Edit btn btn-xs mrgn3 btn-warning" href="#" onclick="TranBidEdit(@item.TransportBidPlanID)">
-                                    <span class=""></span><span class="fa fa-pencil-square-o"></span> Edit
-                                </a>
-                                
-                                
-                            }
-                            @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Warehouse_selection).ToString() == "Warehouse_selection"
-|| UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Transport_warehouse_assignment))
-                            {
-                                <a class="k-button-icontext k-grid-Edit btn btn-xs mrgn3 btn-warning" href="#" onclick="selectWarehouseTrans(@item.TransportBidPlanID)">
-                                    <span class=""></span><span class="fa fa-pencil-square-o"></span> Warehouse Selection
-                                </a>
-                                 
-                            }
-                            @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Bid_Plan).ToString() == "Delete_Bid_Plan"
-    || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Delete_bid_plan))
-                            {
-                                <a class="k-button-icontext k-grid-Delete btn btn-xs mrgn3 btn-danger" href="#" onclick="deleteRecordTrans(@item.TransportBidPlanID)">
-                                    <span class=""></span><span class="fa fa-times"></span> Delete
-                                </a>
-                                
-                            }
-                            <div class="btn-group">
-                                <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
-                                    <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
-                                </button>
-                                <ul class="dropdown-menu pull-right">
-                                    @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
-                                    {
+                    <a class="btn btn-circle btn-default green-stripe toolbar-btn" href="@Url.Action("Create", "TransportBidPlan")">
 
-                                        if ((LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Warehouse_selection).ToString() == "Warehouse_selection") && actions.Name == "Approve")
-                                        {
-                                            <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransportBidPlanID)" title="@actions.Name">@actions.Name</a></li>
-                                        }
-                                        
-                                    }
-                                    <li class="divider"></li>
-                                    @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
-                                        {*@
-                                    <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
-                                    @*}*@
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    //}
-
+                        <i class="fa fa-plus-circle "></i> @Html.Translate("New Bid Plan")
+                    </a>
                 }
-            </tbody>
-        </table>
-
-       
-    </div>
-
-    @*<div class="portlet-body" style="height: auto;">
-
-        @(Html.Kendo().Grid<Cats.Models.TransportBidPlan>()
-              .Name("grid")
-              .Columns(columns =>
-              {
-                  columns.Bound(p => p.ShortName).Title(Html.Translate("Short Name"));
-                  columns.Bound(p => p.Year).Width(100).Title(Html.Translate("Year"));
-                  columns.Bound(p => p.YearHalf).Width(100).Title(Html.Translate("Year Half"));
-                  columns.Bound(p => p.BusinessProcess.CurrentState.BaseStateTemplate.Name).Width(100).Title(Html.Translate("Status"));
-                  columns.Command(command =>
-                  {
-                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_Bid_Plan).ToString() == "Edit_Bid_Plan"
-                          || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Edit_bid_plan))
-                      {
-                          command.Custom("Edit").Click("editRecord");
-                      }
-                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Warehouse_selection).ToString() == "Warehouse_selection"
-                          || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Transport_warehouse_assignment))
-                      {
-                          command.Custom("Warehouse Selection").Click("selectWarehouse");
-                      }
-                      if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Bid_Plan).ToString() == "Delete_Bid_Plan"
-                          || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Delete_bid_plan))
-                      {
-                          command.Custom("Delete").Click("deleteRecord");
-                      }
-                  });
-              })
-
-              .Editable(editable => editable.Mode(GridEditMode.PopUp))
-              .Pageable()
-              .Sortable()
-              .Scrollable()
-              //.HtmlAttributes(new {style = "height:430px;"})
-              .DataSource(dataSource => dataSource
-                  .Ajax()
-                  .PageSize(20)
-                  .Events(events => events.Error("error_handler"))
-                  .Model(model => model.Id(p => p.TransportBidPlanID))
-                  .Read(read => read.Action("GetListJson", "TransportBidPlan"))
-                  .Destroy(update => update.Action("DeleteAjax", "TransportBidPlan"))
-                  //.Update(update => update.Action("EditingInline_Update", "Transporter"))
-                  //.Create(update => update.Action("EditingInline_Create", "Transporter"))
-
-                  .Update(update => update.Action("UpdateAjax", "TransportBidPlan"))
-                  .Create(update => update.Action("CreateAjax", "TransportBidPlan"))
-              )
-              )
-    </div>*@
-    <div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 id="modalHistoryLabel">Activity History</h4>
-                </div>
-                <div class="modal-body" id="modalHistoryBody">History</div>
-
+                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
             </div>
         </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>Short Name</th>
+                        <th>Year</th>
+                        <th>Year Half</th>
+                        <th></th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (TransportBidPlan item in Model)
+                    {
+                        index++;
+                        var state = item.BusinessProcess.CurrentState.BaseStateTemplate;
+                        //if (state.Name == "Approved by finance" || state.Name == "Cheque Issued" || state.Name == "Cheque Cashed")
+                        //{
+                        <tr>
+                            <td>
+                                @item.ShortName
+                            </td>
+                            <td>
+                                @item.Year
+                            </td>
+                            <td>
+                                @item.YearHalf
+                            </td>
+
+
+                            <td>
+                                @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_Bid_Plan).ToString() == "Edit_Bid_Plan"
+|| UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Edit_bid_plan))
+                                {
+                                    <a class="k-button-icontext k-grid-Edit btn btn-xs mrgn3 btn-warning" href="#" onclick="TranBidEdit(@item.TransportBidPlanID)">
+                                        <span class=""></span><span class="fa fa-pencil-square-o"></span> Edit
+                                    </a>
+
+
+                                }
+                                @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Warehouse_selection).ToString() == "Warehouse_selection"
+|| UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Transport_warehouse_assignment))
+                                {
+                                    <a class="k-button-icontext k-grid-Edit btn btn-xs mrgn3 btn-warning" href="#" onclick="selectWarehouseTrans(@item.TransportBidPlanID)">
+                                        <span class=""></span><span class="fa fa-pencil-square-o"></span> Warehouse Selection
+                                    </a>
+
+                                }
+                                @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Bid_Plan).ToString() == "Delete_Bid_Plan"
+|| UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Delete_bid_plan))
+                                {
+                                    <a class="k-button-icontext k-grid-Delete btn btn-xs mrgn3 btn-danger" href="#" onclick="deleteRecordTrans(@item.TransportBidPlanID)">
+                                        <span class=""></span><span class="fa fa-times"></span> Delete
+                                    </a>
+
+                                }
+                                <div class="btn-group">
+                                    <button type="button" id="action_@index" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
+                                        <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        @*@foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                                            {
+
+                                                if ((LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Warehouse_selection).ToString() == "Warehouse_selection") && actions.Name == "Approve")
+                                                {
+                                                    <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransportBidPlanID)" title="@actions.Name">@actions.Name</a></li>
+                                                }
+
+                                            }*@
+                                        <li class="divider"></li>
+                                        @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
+                                            {*@
+                                        <li class="edit_button"><a href="javascript:workflow_history(@item.BusinessProcessID)"> History </a></li>
+                                        @*}*@
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        //}
+
+                    }
+                </tbody>
+            </table>
+
+
+        </div>
+
+        @*<div class="portlet-body" style="height: auto;">
+
+                @(Html.Kendo().Grid<Cats.Models.TransportBidPlan>()
+                      .Name("grid")
+                      .Columns(columns =>
+                      {
+                          columns.Bound(p => p.ShortName).Title(Html.Translate("Short Name"));
+                          columns.Bound(p => p.Year).Width(100).Title(Html.Translate("Year"));
+                          columns.Bound(p => p.YearHalf).Width(100).Title(Html.Translate("Year Half"));
+                          columns.Bound(p => p.BusinessProcess.CurrentState.BaseStateTemplate.Name).Width(100).Title(Html.Translate("Status"));
+                          columns.Command(command =>
+                          {
+                              if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_Bid_Plan).ToString() == "Edit_Bid_Plan"
+                                  || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Edit_bid_plan))
+                              {
+                                  command.Custom("Edit").Click("editRecord");
+                              }
+                              if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Warehouse_selection).ToString() == "Warehouse_selection"
+                                  || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Transport_warehouse_assignment))
+                              {
+                                  command.Custom("Warehouse Selection").Click("selectWarehouse");
+                              }
+                              if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Bid_Plan).ToString() == "Delete_Bid_Plan"
+                                  || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Delete_bid_plan))
+                              {
+                                  command.Custom("Delete").Click("deleteRecord");
+                              }
+                          });
+                      })
+
+                      .Editable(editable => editable.Mode(GridEditMode.PopUp))
+                      .Pageable()
+                      .Sortable()
+                      .Scrollable()
+                      //.HtmlAttributes(new {style = "height:430px;"})
+                      .DataSource(dataSource => dataSource
+                          .Ajax()
+                          .PageSize(20)
+                          .Events(events => events.Error("error_handler"))
+                          .Model(model => model.Id(p => p.TransportBidPlanID))
+                          .Read(read => read.Action("GetListJson", "TransportBidPlan"))
+                          .Destroy(update => update.Action("DeleteAjax", "TransportBidPlan"))
+                          //.Update(update => update.Action("EditingInline_Update", "Transporter"))
+                          //.Create(update => update.Action("EditingInline_Create", "Transporter"))
+
+                          .Update(update => update.Action("UpdateAjax", "TransportBidPlan"))
+                          .Create(update => update.Action("CreateAjax", "TransportBidPlan"))
+                      )
+                      )
+            </div>*@
+        <div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 id="modalHistoryLabel">Activity History</h4>
+                    </div>
+                    <div class="modal-body" id="modalHistoryBody">History</div>
+
+                </div>
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
+
     </div>
-    @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
 
-</div>
-
-<script type="text/javascript">
+    <script type="text/javascript">
     var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
     function promot_workflow(BusinessProcessID, nextstate, actionname, TransportBidPlanID) {
         $('#ParentBusinessProcessID').val(BusinessProcessID);
@@ -260,7 +258,7 @@
         window.location = "@Url.Action("DeleteBidPlan", "TransportBidPlan")" + "/" + dataItem.TransportBidPlanID;
     }
     function deleteRecordTrans(bidTransAid) {
-        
+
 
         window.location = null;
 
@@ -284,11 +282,11 @@
 
 
     }
-</script>
+    </script>
 
-<script type="text/javascript">
+    <script type="text/javascript">
     $(function() {
         $(".k-button").attr("class" ,"btn btn-xs btn-default green-stripe");
     });
-    
-</script>
+
+    </script>
