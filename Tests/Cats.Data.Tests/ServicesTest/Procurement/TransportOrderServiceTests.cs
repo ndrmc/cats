@@ -270,7 +270,7 @@ namespace Cats.Data.Tests.ServicesTest.Procurement
                                                                                                                    }
                                                                                                                });
             _notificationService = new NotificationService(unitOfWorkNotify.Object);
-            _transportOrderService = new TransportOrderService(mockUnitOfWork.Object, transporterService.Object, _notificationService, null, null);
+            _transportOrderService = new TransportOrderService(mockUnitOfWork.Object, transporterService.Object, _notificationService, null, null, null, null);
             //Act 
         }
 
@@ -328,7 +328,9 @@ namespace Cats.Data.Tests.ServicesTest.Procurement
             //Act 
 
 
+
             var result = _transportOrderService.CreateTransportOrder(1, 1, "");
+
 
             //Assert
 
@@ -337,7 +339,7 @@ namespace Cats.Data.Tests.ServicesTest.Procurement
         [Test]
         public void ShouldGenerateDispatchAllocation()
         {
-            var result = _transportOrderService.GeneratDispatchPlan(1);
+            var result = _transportOrderService.GeneratDispatchPlan(1, "user");
 
             Assert.IsTrue(result);
         }
