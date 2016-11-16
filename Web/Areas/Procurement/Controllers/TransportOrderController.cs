@@ -742,7 +742,11 @@ namespace Cats.Areas.Procurement.Controllers
                                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == changedTransportOrderObj.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Failed");
 
             var bp = _businessProcessService.GetAll().FirstOrDefault(t => t.BusinessProcessID == changedTransportOrderObj.BusinessProcessID);
+<<<<<<< .mine
            
+=======
+
+>>>>>>> .theirs
             if (failedStateId != null)
             {
                 var createdstate3 = new BusinessProcessState

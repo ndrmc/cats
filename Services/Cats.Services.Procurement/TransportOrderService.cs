@@ -93,8 +93,8 @@ namespace Cats.Services.Procurement
             Func<IQueryable<TransportOrder>, IOrderedQueryable<TransportOrder>> orderBy = null,
             string includeProperties = "", int hubId = 0, int statusId = 0)
         {
-        //    var transportOrderDetail =
-//        ;
+            //    var transportOrderDetail =
+            //        ;
             var transportOrder = (
                 from c in _unitOfWork.TransportOrderDetailRepository.FindBy(x => x.SourceWarehouseID == hubId)
                 select c.TransportOrder).Where(x => x.StatusID == statusId).Distinct().ToList();
@@ -110,7 +110,7 @@ namespace Cats.Services.Procurement
                             transportRequistionDetail.Contains(m.RequisitionID) &&
                             m.TransportOrder.BusinessProcess.CurrentState.BaseStateTemplate.Name == stateName, null,
                         "FDP, FDP.AdminUnit, FDP.AdminUnit.AdminUnit2, FDP.AdminUnit.AdminUnit2.AdminUnit2").ToList()
-                    select order.TransportOrder).Distinct().ToList();
+                 select order.TransportOrder).Distinct().ToList();
             return transportOrder;
         }
         public IEnumerable<TransportOrder> GetFilteredTransportOrder(IEnumerable<TransportOrderDetail> transportOrderDetails, int statusId)
@@ -380,9 +380,9 @@ namespace Cats.Services.Procurement
 
                         else
                             transportOrderDetail.QuantityQtl = reliefRequisitionDetail.Amount;
-	                        transportOrderDetail.TariffPerQtl = transReq.TariffPerQtl;
-	                        transportOrderDetail.SourceWarehouseID = transReq.HubID;
-	                        transportOrder.TransportOrderDetails.Add(transportOrderDetail);
+                        transportOrderDetail.TariffPerQtl = transReq.TariffPerQtl;
+                        transportOrderDetail.SourceWarehouseID = transReq.HubID;
+                        transportOrder.TransportOrderDetails.Add(transportOrderDetail);
                     }
 
                 }
@@ -392,7 +392,7 @@ namespace Cats.Services.Procurement
 
             }
 
-          var requisition = _unitOfWork.TransportRequisitionRepository.Get(t => t.TransportRequisitionID == transportRequisitionId).FirstOrDefault();
+            var requisition = _unitOfWork.TransportRequisitionRepository.Get(t => t.TransportRequisitionID == transportRequisitionId).FirstOrDefault();
             //var requisition = _unitOfWork.TransportRequisitionRepository.Get(t => t.TransportRequisitionID == transportRequisitionId).FirstOrDefault();
 
             var transportRequisition = _unitOfWork.TransportRequisitionRepository.Get(t => t.TransportRequisitionID == transportRequisitionId, null,
@@ -415,7 +415,7 @@ namespace Cats.Services.Procurement
                     _businessProcessService.PromotWorkflow(businessProcessState);
                 }
             }
-            
+
 
             //requisition.Status = (int)TransportRequisitionStatus.Closed;
 
@@ -570,10 +570,10 @@ namespace Cats.Services.Procurement
             try
             {
 
-               var transportOrder = new TransportOrder();
+                var transportOrder = new TransportOrder();
 
 
-               var transReq = transReqWithTransporter as List<TransportRequisitionWithoutWinnerModel> ?? transReqWithTransporter.ToList();
+                var transReq = transReqWithTransporter as List<TransportRequisitionWithoutWinnerModel> ?? transReqWithTransporter.ToList();
                 foreach (var detail in transReq)
                 {
                     var transportReq = _unitOfWork.TransReqWithoutTransporterRepository.FindById(detail.TransReqWithoutTransporterID);
@@ -588,7 +588,7 @@ namespace Cats.Services.Procurement
                       t.TransportOrder.StatusID == (int)TransportOrderStatus.Draft).Select(
                               t => t.TransportOrder).FirstOrDefault();
 
-                   
+
                     if (transportOrder == null) continue;
                     var transportOrderDetail = new TransportOrderDetail
                     {
@@ -602,16 +602,16 @@ namespace Cats.Services.Procurement
                     };
                     transportOrder.TransportOrderDetails.Add(transportOrderDetail);
 
-               }
+                }
 
-               bool isSaved = _unitOfWork.TransportOrderRepository.Edit(transportOrder);
+                bool isSaved = _unitOfWork.TransportOrderRepository.Edit(transportOrder);
                 _unitOfWork.Save();
                 if (isSaved)
                 {
 
-                   foreach (var item in transReq)
+                    foreach (var item in transReq)
 
-                   {
+                    {
                         var withoutTransporter =
                             _unitOfWork.TransReqWithoutTransporterRepository.FindById(item.TransReqWithoutTransporterID);
                         withoutTransporter.IsAssigned = true;
@@ -619,7 +619,7 @@ namespace Cats.Services.Procurement
                         _unitOfWork.Save();
                     }
 
-               }
+                }
                 if (transportOrder != null) return transportOrder.TransportOrderID;
                 return -1;
             }
@@ -767,7 +767,7 @@ namespace Cats.Services.Procurement
 
                 }
 
-              //  transportOrder.StatusID = (int)TransportOrderStatus.Approved;
+                //  transportOrder.StatusID = (int)TransportOrderStatus.Approved;
 
                 var approvedStateId =
                               _stateTemplateService
@@ -784,7 +784,7 @@ namespace Cats.Services.Procurement
                         Comment = " TransportOrder Approved on multiple approval",
                         StateID = approvedStateId.StateTemplateID,
                         ParentBusinessProcessID = transportOrder.BusinessProcessID,
-                        
+
                     };
                     //_businessProcessStateService.Add(createdstate3);
 
@@ -819,7 +819,7 @@ namespace Cats.Services.Procurement
 
         }
 
-        public bool GeneratDispatchPlan(int transportOrderId,string UserName)
+        public bool GeneratDispatchPlan(int transportOrderId, string UserName)
         {
 
             var transportOrder =
@@ -839,7 +839,7 @@ namespace Cats.Services.Procurement
                     _unitOfWork.ReliefRequisitionDetailRepository.Get(
                         t => t.RequisitionID == requisition.RequisitionID && t.FDPID == fdpId).FirstOrDefault();
 
-                
+
 
                 var sipc =
                    _unitOfWork.SIPCAllocationRepository.FindBy(
@@ -848,16 +848,16 @@ namespace Cats.Services.Procurement
                 {
                     /****** BEGIN: This Calculates the already dispatched amount of the FDP by former transporter if there is any **********/
                     decimal sumOfdispatchedQty = 0.00M;
-                    var prevDispatchAllocation = _unitOfWork.DispatchAllocationRepository.FindBy(d => d.RequisitionId == requisition.RequisitionID && d.FDPID == fdpId && 
+                    var prevDispatchAllocation = _unitOfWork.DispatchAllocationRepository.FindBy(d => d.RequisitionId == requisition.RequisitionID && d.FDPID == fdpId &&
                                                         d.ShippingInstructionID == t.Code && d.HubID == t.HubID).FirstOrDefault();
-                    
+
 
                     if (prevDispatchAllocation != null)
                     {
                         sumOfdispatchedQty = prevDispatchAllocation.Dispatches.Select(dispatch => dispatch?.DispatchDetails).Where(result => result?.Count > 0)
                             .Aggregate(0.00M, (current1, result) => result.Aggregate(current1, (current, dispatchDetail) => current + dispatchDetail.RequestedQuantityInMT));
 
-                    //var prevDispatchAllocationChildren = _unitOfWork.DispatchAllocationRepository.FindBy(d=>d.ParentDispatchAllocationID == prevDispatchAllocation.DispatchAllocationID && 
+                        //var prevDispatchAllocationChildren = _unitOfWork.DispatchAllocationRepository.FindBy(d=>d.ParentDispatchAllocationID == prevDispatchAllocation.DispatchAllocationID && 
                         //                                    d.RequisitionId == requisition.RequisitionID && d.FDPID == fdpId && d.HubID == t.HubID).ToList();
 
                         //if (prevDispatchAllocationChildren.Count > 0)
@@ -941,12 +941,12 @@ namespace Cats.Services.Procurement
                     _businessProcessService.Update(bp);
                 }
             }
-            transportOrder.StatusID = (int) TransportOrderStatus.Closed;
-                _unitOfWork.Save();
+            transportOrder.StatusID = (int)TransportOrderStatus.Closed;
+            _unitOfWork.Save();
 
-                return true;
-            
-            
+            return true;
+
+
         }
 
         public List<Dispatch> ReverseDispatchAllocation(int transportOrderId)
@@ -968,7 +968,7 @@ namespace Cats.Services.Procurement
                             t => t.DispatchAllocationID == allocation1.DispatchAllocationID);
                         if (dispatch.Count > 0)
                         {
-                           listDispatches.AddRange(dispatch);
+                            listDispatches.AddRange(dispatch);
                         }
                     }
 
@@ -1262,7 +1262,7 @@ namespace Cats.Services.Procurement
 
         public decimal? CheckIfCommodityIsDipatchedToThisFdp(int fdpId, string bidNo, int transporterId, int transportOrderId, int commodityId, int requisitionID)
         {
-            var dispatchAllocations = _unitOfWork.DispatchAllocationRepository.FindBy(d => d.TransportOrderID == transportOrderId && d.TransporterID == transporterId && 
+            var dispatchAllocations = _unitOfWork.DispatchAllocationRepository.FindBy(d => d.TransportOrderID == transportOrderId && d.TransporterID == transporterId &&
                                     d.BidRefNo == bidNo && d.FDPID == fdpId && d.CommodityID == commodityId && d.RequisitionId == requisitionID).ToList();
             decimal sumOfdispatchedQty = 0.00M;
             decimal sumOfAllocatedQty = 0.00M;
@@ -1275,7 +1275,7 @@ namespace Cats.Services.Procurement
                     {
                         var result =
                             dispatch?.DispatchDetails;
-                        
+
                         if (result?.Count > 0)
                         {
                             sumOfdispatchedQty = result.Aggregate(sumOfdispatchedQty, (current, dispatchDetail) => current + dispatchDetail.RequestedQuantityInMT);
@@ -1388,30 +1388,30 @@ namespace Cats.Services.Procurement
         }
         public void UpdateRequsitionStatus(int requisitionID)
         {
-            
+
             var requisition = _unitOfWork.ReliefRequisitionRepository.Get(t => t.RequisitionID == requisitionID, null,
                             "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
             if (requisition != null)
             {
                 var approveFlowTemplate = requisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Create Transport Requisition");
-                    if (approveFlowTemplate != null)
+                if (approveFlowTemplate != null)
+                {
+                    var businessProcessState = new BusinessProcessState()
                     {
-                        var businessProcessState = new BusinessProcessState()
-                        {
-                            StateID = approveFlowTemplate.FinalStateID,
-                            PerformedBy = "Performed by the system",
-                            DatePerformed = DateTime.Now,
-                            Comment = "Requisition has been reverted from 'transport order created' state to 'Approved' state.",
-                            //AttachmentFile = fileName,
-                            ParentBusinessProcessID = requisition.BusinessProcessID
-                        };
-                        //return 
-                        _businessProcessService.PromotWorkflow(businessProcessState);
-                    }
-               // requisition.Status = (int)ReliefRequisitionStatus.Approved;
-               //_unitOfWork.ReliefRequisitionRepository.Edit(requisition);
-              //_unitOfWork.Save();
-                    
+                        StateID = approveFlowTemplate.FinalStateID,
+                        PerformedBy = "Performed by the system",
+                        DatePerformed = DateTime.Now,
+                        Comment = "Requisition has been reverted from 'transport order created' state to 'Approved' state.",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = requisition.BusinessProcessID
+                    };
+                    //return 
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+                // requisition.Status = (int)ReliefRequisitionStatus.Approved;
+                //_unitOfWork.ReliefRequisitionRepository.Edit(requisition);
+                //_unitOfWork.Save();
+
             }
 
         }
