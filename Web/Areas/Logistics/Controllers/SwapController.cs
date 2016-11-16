@@ -78,6 +78,7 @@ namespace Cats.Areas.Logistics.Controllers
                 var transfer = GetTransfer(transferViewModel);
                 // Workflow Implementation
                 int BP_PR = _applicationSettingService.GetSwapWrokflow();
+
                 if (BP_PR != 0)
                 {
                     var createdstate = new BusinessProcessState
@@ -86,13 +87,14 @@ namespace Cats.Areas.Logistics.Controllers
                         PerformedBy = User.Identity.Name,
                         Comment = "Transfer Created"
                     };
-                    var bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
-                        "Transfer", createdstate);
+                    var bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "Transfer", createdstate);
+
                     if (bp != null)
                     {
                         transfer.BusinessProcessID = bp.BusinessProcessID;
                         _transferService.AddTransfer(transfer);
                     }
+
                     return RedirectToAction("Index");
                 }
             }

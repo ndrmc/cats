@@ -313,7 +313,8 @@ namespace Cats.Areas.Logistics.Controllers
 
             if (transfer != null)
             {
-                // the next line will go pagan, and/or replaced with workflow deleted state
+                // the next line will go pagan, and/or replaced with workflow deleted state,
+                // this stops physical record deletion
                 //_transferService.DeleteTransfer(transfer);
 
                 BusinessProcessState bps = transfer.BusinessProcess.CurrentState;
