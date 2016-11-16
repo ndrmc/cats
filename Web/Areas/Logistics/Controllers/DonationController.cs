@@ -427,7 +427,7 @@ namespace Cats.Areas.Logistics.Controllers
 
                 ModelState.AddModelError("Success", @"Receipt Plan has been saved");
 
-                // Affect Donation Plan Header workflow status, when a detail is edited, 
+                // Affect Donation Plan Header workflow, when a detail is edited, 
                 // since there is no workflow implementation for the detail
                 
                 // Get the current BusinessProcessState of the DonationPlanHeader 
@@ -460,8 +460,6 @@ namespace Cats.Areas.Logistics.Controllers
             donationViewModel.Programs = program;
             donationViewModel.CommodityTypes = commodityType;
             return View("AddNewDonationPlan", donationViewModel);
-
-
         }
 
         private bool SaveNewDonationPlan(DonationViewModel donationViewModel, int siId)
@@ -482,7 +480,6 @@ namespace Cats.Areas.Logistics.Controllers
                         DatePerformed = DateTime.Now,
                         PerformedBy = userName,
                         Comment = "New Requisition Created"
-
                     };
                     //_PaymentRequestservice.Create(request);
 
@@ -713,11 +710,35 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult Remove(int id)
         {
             var donation = _donationPlanHeaderService.FindById(id);
+
             if (donation != null)
             {
                 if (donation.IsCommited == false)
                 {
-                    _donationPlanHeaderService.DeleteDonationPlanHeader(donation);
+                    // the next line will go pagan, and/or replaced with workflow deleted state,
+                    // this stops physical record deletion
+                    // _donationPlanHeaderService.DeleteDonationPlanHeader(donation);
+
+                    BusinessProcessState bps = donation.BusinessProcess.CurrentState;
+                    StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Deleted").FirstOrDefault();
+
+                    if (stateTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = stateTemplate.StateTemplateID, // mark as deleted
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment = "Donation is deleted, a system internally captured data.",
+                            ParentBusinessProcessID = bps.ParentBusinessProcessID
+                        };
+
+                        if (_businessProcessService.PromotWorkflow(businessProcessState))
+                        {
+                            TempData["Deleted"] = "Donation has been deleted!";
+                        }
+                    }
+
                     return RedirectToAction("Index", "Donation");
                 }
 

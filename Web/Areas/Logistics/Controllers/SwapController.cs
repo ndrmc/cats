@@ -125,7 +125,7 @@ namespace Cats.Areas.Logistics.Controllers
             if (ModelState.IsValid && transfer != null)
             {
                 // i have to ask, what the next line really does
-                transfer.CommoditySourceID = 9; ////Commodity Source for Swap
+                transfer.CommoditySourceID = 9; //Commodity Source for Swap
 
                 if (_transferService.EditTransfer(transfer))
                 {

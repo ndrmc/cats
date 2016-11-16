@@ -22,6 +22,7 @@ using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using StateTemplate = Cats.Models.StateTemplate;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -125,7 +126,27 @@ namespace Cats.Areas.Logistics.Controllers
         {
             if (ModelState.IsValid && loanReciptPlan != null)
             {
-                _loanReciptPlanService.EditLoanReciptPlan(loanReciptPlan);
+                if (_loanReciptPlanService.EditLoanReciptPlan(loanReciptPlan))
+                {
+                    BusinessProcess bp = _businessProcessService.FindById(loanReciptPlan.BusinessProcessID);
+                    BusinessProcessState bps = bp.CurrentState;
+
+                    var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
+
+                    if (stateTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = stateTemplate.StateTemplateID, // mark as edited
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment = "Loan is edited, a system internally captured data.",
+                            ParentBusinessProcessID = bps.ParentBusinessProcessID
+                        };
+
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                    }
+                }
                 return RedirectToAction("Detail", new { id = loanReciptPlan.LoanReciptPlanID });
             }
             ModelState.AddModelError("Errors", @"Unable to update please check fields");
@@ -412,9 +433,31 @@ namespace Cats.Areas.Logistics.Controllers
         {
             if (loanReciptPlanWithDetailViewModel != null)
             {
+                // the next line will go pagan, and/or replaced with workflow deleted state,
+                // this stops physical record deletion
                 _loanReciptPlanDetailService.DeleteById(loanReciptPlanWithDetailViewModel.LoanReciptPlanDetailID);
 
+                //if (stateTemplate != null)
+                //{
+                //    var businessProcessState = new BusinessProcessState()
+                //    {
+                //        StateID = stateTemplate.StateTemplateID, // mark as deleted
+                //        PerformedBy = HttpContext.User.Identity.Name,
+                //        DatePerformed = DateTime.Now,
+                //        Comment = "Loan is deleted, a system internally captured data.",
+                //        ParentBusinessProcessID = bps.ParentBusinessProcessID
+                //    };
+
+                //    // Promot if deletion is successful
+                //    if (_businessProcessService.PromotWorkflow(businessProcessState))
+                //    {
+                //        TempData["Deleted"] = "Loan has been deleted!";
+                //    }
+                //}
+
+
             }
+
             return Json(ModelState.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
 
         }
@@ -451,7 +494,30 @@ namespace Cats.Areas.Logistics.Controllers
                     RecievedDate = DateTime.Today,
                     ApprovedBy = userID
                 };
-                _loanReciptPlanDetailService.AddRecievedLoanReciptPlanDetail(loanReciptPlanModel);
+
+                if (_loanReciptPlanDetailService.AddRecievedLoanReciptPlanDetail(loanReciptPlanModel))
+                {
+                    LoanReciptPlan loanReciptPlan = _loanReciptPlanService.FindById(loanReciptPlanModel.LoanReciptPlanID);
+                    BusinessProcess bp = _businessProcessService.FindById(loanReciptPlan.BusinessProcessID);
+                    BusinessProcessState bps = bp.CurrentState;
+
+                    var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "ReceivedPlan").FirstOrDefault();
+
+                    if (stateTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = stateTemplate.StateTemplateID, // mark as Received Plan
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment = "Receiv Plan is performed, a system internally captured data.",
+                            ParentBusinessProcessID = bps.ParentBusinessProcessID
+                        };
+
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                    }
+                }
+
                 return RedirectToAction("Detail", new { id = loanReciptPlanDetail.LoanReciptPlanID });
             }
             ViewBag.HubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name");
@@ -462,23 +528,67 @@ namespace Cats.Areas.Logistics.Controllers
             var loanReciptPlan = _loanReciptPlanService.FindById(id);
             if (loanReciptPlan != null)
             {
-                if (loanReciptPlan.StatusID == (int)LocalPurchaseStatus.Draft)
+                BusinessProcessState bps = loanReciptPlan.BusinessProcess.CurrentState;
+                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Deleted").FirstOrDefault();
+
+                if (loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft")
                 {
-                    _loanReciptPlanService.DeleteLoanWithDetail(loanReciptPlan);
+                    // the next line will go pagan, and/or replaced with workflow deleted state,
+                    // this stops physical record deletion
+                    // _loanReciptPlanService.DeleteLoanWithDetail(loanReciptPlan);
+
+                    if (stateTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = stateTemplate.StateTemplateID, // mark as deleted
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment = "Loan is deleted, a system internally captured data.",
+                            ParentBusinessProcessID = bps.ParentBusinessProcessID
+                        };
+
+                        // Promot if deletion is successful
+                        if (_businessProcessService.PromotWorkflow(businessProcessState))
+                        {
+                            TempData["Deleted"] = "Loan has been deleted!";
+                        }
+                    }
+
                     return RedirectToAction("Index", "ReciptPlanForLoan");
                 }
                 else
                 {
                     if (_loanReciptPlanService.DeleteLoanReciptAllocation(loanReciptPlan))
                     {
-                        _loanReciptPlanService.DeleteLoanWithDetail(loanReciptPlan);
+                        // the next line will go pagan, and/or replaced with workflow deleted state,
+                        // this stops physical record deletion
+                        // _loanReciptPlanService.DeleteLoanWithDetail(loanReciptPlan);
+
+                        if (stateTemplate != null)
+                        {
+                            var businessProcessState = new BusinessProcessState()
+                            {
+                                StateID = stateTemplate.StateTemplateID, // mark as deleted
+                                PerformedBy = HttpContext.User.Identity.Name,
+                                DatePerformed = DateTime.Now,
+                                Comment = "Loan is deleted, a system internally captured data.",
+                                ParentBusinessProcessID = bps.ParentBusinessProcessID
+                            };
+
+                            // Promot if deletion is successful
+                            if (_businessProcessService.PromotWorkflow(businessProcessState))
+                            {
+                                TempData["Deleted"] = "Loan has been deleted!";
+                            }
+                        }
+
                         return RedirectToAction("Index", "ReciptPlanForLoan");
                     }
-                    else
-                    {
-                        TempData["Received"] = "Loan Recipt Plan can not be Deleted. It has already been Received!";
-                        return RedirectToAction("Index");
-                    }
+
+                    TempData["Received"] = "Loan Recipt Plan can not be Deleted. It has already been Received!";
+
+                    return RedirectToAction("Index");
                 }
 
             }
