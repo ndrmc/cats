@@ -120,19 +120,43 @@ namespace Cats.Areas.Logistics.Controllers
         [HttpPost]
         public ActionResult Edit(Transfer transfer)
         {
-
             if (ModelState.IsValid && transfer != null)
             {
-                transfer.CommoditySourceID = 9;//Commodity Source for Swao
-                _transferService.EditTransfer(transfer);
+                // i have to ask, what the next line really does
+                transfer.CommoditySourceID = 9; ////Commodity Source for Swap
+
+                if (_transferService.EditTransfer(transfer))
+                {
+                    BusinessProcess bp = _businessProcessService.FindById(transfer.BusinessProcessID);
+                    BusinessProcessState bps = bp.CurrentState;
+
+                    var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
+
+                    if (stateTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = stateTemplate.StateTemplateID, // mark as edited
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment = "Swap is edited, a system internally captured data.",
+                            ParentBusinessProcessID = bps.ParentBusinessProcessID
+                        };
+
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                    }
+                }
+
                 return RedirectToAction("detail", new { id = transfer.TransferID });
             }
+
             ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name", transfer.ProgramID);
             ViewBag.SourceHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.SourceHubID);
             ViewBag.CommodityID = new SelectList(_commonService.GetCommodities(), "CommodityID", "Name", transfer.CommodityID);
             ViewBag.CommodityTypeID = new SelectList(_commonService.GetCommodityTypes(), "CommodityTypeID", "Name");
             ViewBag.DestinationHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.DestinationHubID);
             ViewBag.CommoditySourceID = new SelectList(_commonService.GetCommoditySource(), "CommoditySourceID", "Name", transfer.CommoditySourceID);
+
             return View(transfer);
         }
         private Transfer GetTransfer(TransferViewModel transferViewModel)
