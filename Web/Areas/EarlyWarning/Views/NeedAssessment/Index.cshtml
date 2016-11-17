@@ -12,9 +12,15 @@
         int index = 0;
         const string PAGE_NAME = "EarlyWarning.Index";
         Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
-        ViewBag.PageTitle = Html.Translate("Draft Need Assessment");
+
+        if (ViewBag.AssessmentStatus == "Approved") { ViewBag.PageTitle = Html.Translate("Approved Need Assessments");}
+
+        else if (ViewBag.AssessmentStatus == "HRDCreated") { ViewBag.PageTitle = Html.Translate("HRD Created Need Assessments");}
+
+        else { ViewBag.PageTitle = Html.Translate("Draft Need Assessments");}
+
         ViewBag.PageTitleDescription = "";
-        //ViewBag._id = "draft";
+            //ViewBag._id = "draft";
     }
 <div class="row">
         @Html.Partial("_NeedAssessmentMainLeftBar", new System.Web.Mvc.ViewDataDictionary { { "_id", @ViewBag.AssessmentStatus } })
