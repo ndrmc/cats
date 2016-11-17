@@ -122,7 +122,7 @@
                 <ul class="dropdown-menu pull-right">
 
 
-                    @if (Model.Status == "Draft" || Model.Status == "Rejected")
+                    @if (Model.Status == "Draft" || Model.Status == "Rejected" || Model.Status == ConventionalAction.Edited)
                     {
                         <li><a id="btnRecive" class="btn green-sharp-stripe" href="@Url.Action("ReciptPlan", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Recieve Plan")</a></li>
                         <li><a id="btnEdit" class="btn green-sharp-stripe" href="@Url.Action("Edit", "ReciptPlanForLoan", new {id = Model.LoanReciptPlanID})">@Html.Translate("Edit")</a></li>

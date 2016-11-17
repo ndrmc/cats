@@ -262,7 +262,7 @@ namespace Cats.Areas.Logistics.Controllers
         {
             var reciptPlan = _loanReciptPlanService
             .Get(
-                       null,
+                       l => l.BusinessProcess.CurrentState.BaseStateTemplate.Name != ConventionalAction.Deleted,
                        null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
                        .OrderByDescending(m => m.LoanReciptPlanID)
                        .ToList();
