@@ -3,7 +3,7 @@
 
 @model Cats.Models.NeedAssessment
 
-<div class="modal-dialog modal-sm">
+<div class="modal-dialog modal-md">
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -20,7 +20,7 @@
                         <div class="control-label">
                             @Html.LabelFor(m => m.Season,Html.Translate("Season"), new { @class = "col-sm-4 control-label"})
                         </div>
-                        <div class="col-sm-8">
+                        <div class="col-sm-4">
                             @Html.DropDownList("SeasonID", ViewBag.Season as SelectList, new { id = "Season", @class = "form-control"  })
                             @Html.ValidationMessageFor(model => model.Season)
                         </div>
@@ -30,7 +30,7 @@
                         <div class="control-label">
                             @Html.LabelFor(m => m.Region,Html.Translate("Region"), new { @class = "col-sm-4 control-label"})
                         </div>
-                        <div class="col-sm-8">
+                        <div class="col-sm-4">
                             @Html.DropDownList("RegionID", ViewBag.Regions as SelectList, new { id = "Region", @class = "form-control"  })
                             @Html.ValidationMessageFor(model => model.Region)
                         </div>
@@ -40,7 +40,7 @@
                         <div class="control-label">
                             @Html.Label(Html.Translate("Assessment Type"), new { @class = "col-sm-4 control-label"})
                         </div>
-                        <div class="col-sm-8">
+                        <div class="col-sm-4">
                             @Html.DropDownList("TypeOfNeedID", ViewBag.TypeOfNeed as SelectList, new { id = "TypeOfNeed", @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.TypeOfNeedAssessment1.TypeOfNeedAssessmentID)
                         </div>
