@@ -532,10 +532,11 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult Delete(int id)
         {
             var loanReciptPlan = _loanReciptPlanService.FindById(id);
+
             if (loanReciptPlan != null)
             {
                 BusinessProcessState bps = loanReciptPlan.BusinessProcess.CurrentState;
-                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Deleted").FirstOrDefault();
+                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Deleted).FirstOrDefault();
 
                 if (loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft")
                 {

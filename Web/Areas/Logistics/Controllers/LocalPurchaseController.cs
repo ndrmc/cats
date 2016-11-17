@@ -225,14 +225,14 @@ namespace Cats.Areas.Logistics.Controllers
                 localPurchase.Quantity = localPurchaseDetailViewModel.Quantity;
                 localPurchase.ReferenceNumber = localPurchaseDetailViewModel.ReferenceNumber;
                 localPurchase.ProjectCode = localPurchaseDetailViewModel.ProjectCode;
-                
+
+                BusinessProcess bp = _businessProcessService.FindById(localPurchase.BusinessProcessID);
+                BusinessProcessState bps = bp.CurrentState;
+                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited).FirstOrDefault();
+
                 // Partial workflow implementation
                 if (_localPurchaseService.EditLocalPurchase(localPurchase))
                 {
-                    BusinessProcess bp = _businessProcessService.FindById(localPurchase.BusinessProcessID);
-                    BusinessProcessState bps = bp.CurrentState;
-                    StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited).FirstOrDefault();
-
                     if (stateTemplate != null)
                     {
                         var businessProcessState = new BusinessProcessState()
@@ -244,6 +244,7 @@ namespace Cats.Areas.Logistics.Controllers
                             ParentBusinessProcessID = bps.ParentBusinessProcessID
                         };
 
+                        // Promot
                         _businessProcessService.PromotWorkflow(businessProcessState);
                     }
                 }
@@ -254,13 +255,26 @@ namespace Cats.Areas.Logistics.Controllers
                     if (detail != null)
                     {
                         detail.AllocatedAmount = localPurchaseDetail.AllocatedAmonut;
-                        _localPurchaseDetailService.EditLocalPurchaseDetail(detail);
 
-                        //
-                        // TODO: Child status
-                        //
+                        // Partial workflow implementation
+                        if (_localPurchaseDetailService.EditLocalPurchaseDetail(detail))
+                        {
+                            if (stateTemplate != null)
+                            {
+                                var businessProcessState = new BusinessProcessState()
+                                {
+                                    StateID = stateTemplate.StateTemplateID, // mark as edited
+                                    PerformedBy = HttpContext.User.Identity.Name,
+                                    DatePerformed = DateTime.Now,
+                                    Comment = "Local Purchase detail is edited, a system internally captured data.",
+                                    ParentBusinessProcessID = bps.ParentBusinessProcessID
+                                };
+
+                                // Promot
+                                _businessProcessService.PromotWorkflow(businessProcessState);
+                            }
+                        }
                     }
-
                 }
 
                 TempData["success"] = "Local Purchase Sucessfully Updated";
