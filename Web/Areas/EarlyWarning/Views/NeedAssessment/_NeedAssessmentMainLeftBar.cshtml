@@ -1,27 +1,43 @@
 ﻿@using Cats.Models.Constant
 @using Cats.Helpers
 
-<div class="col-md-2  col-sm-3 skin-blue ">
-    <div class="row sidebar left-side">
-        <div class="hdr-blck ">@Html.Translate("Sidebar Menu")</div>
-        <ul class="sidebar-menu">
-            <li>
-                <a href="@Url.Action("Index", "NeedAssessment", new { id = "" })">
-                    <i class="fa fa-dashboard"></i><span>@Html.Translate("Draft Need Assessment")</span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("index", "NeedAssessment", new { id = "Approved" })">
-                    <i class="fa fa-th"></i><span>@Html.Translate("Approved Need Assessment")</span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("index", "NeedAssessment", new { id = "HRDCreated" })">
-                    <i class="fa fa-th"></i><span>@Html.Translate("HRD Created Assessments")</span>
-                </a>
-            </li>
 
-        </ul>
+<div class="col-md-3 col-sm-3">
+    <div class="portlet solid  bordered" style="border-right: 2px solid #e6e9ec !important; border-left: none !important;">
+        <div class="portlet-title">
+            <div class="caption font-green-sharp">
+                @*<i class="icon-list font-green-sharp"></i>*@
+                <span class="caption-subject bold uppercase"> @Html.Translate("Need Assessment Types")</span>
+            </div>
+        </div>
+        <div class="portlet-body" >
+            <ul class="ver-inline-menu tabbable margin-bottom-10">
+                <li @{ if (ViewData["_id"] != null) { if (ViewData["_id"].ToString() == "") { <text> class="active" </text>  } }}>
+                    <a href="@Url.Action("Index", "NeedAssessment", new {id = ""})">
+                        <i class="fa fa-edit"></i> @Html.Translate("Draft")
+                    </a>
+                </li>
+
+                <li @{ if (ViewData["_id"] != null) { if (ViewData["_id"].ToString() == "Approved") { <text> class="active" </text>  } }}>
+                    <a href="@Url.Action("index", "NeedAssessment", new {id = "Approved"})">
+                        <i class="fa fa-check-square"></i> @Html.Translate("Approved")
+                    </a>
+                </li>
+                <li @{ if (ViewData["_id"] != null) { if (ViewData["_id"].ToString() == "HRDCreated") { <text> class="active" </text>  } }}>
+                    <a href="@Url.Action("index", "NeedAssessment", new {id = "HRDCreated"})">
+                        <i class="fa fa-tasks"></i> @Html.Translate("HRD Created")
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
-
+    
 </div>
+<style>
+    .ver-inline-menu li.active:after {
+        border-left: 6px solid #2b3643;
+    }
+    .ver-inline-menu li.active a, .ver-inline-menu li.active i {
+        background: #2b3643 !important;
+    }
+</style>
