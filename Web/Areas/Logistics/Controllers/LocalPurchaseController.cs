@@ -15,6 +15,7 @@ using Cats.Services.EarlyWarning;
 using Cats.Services.Logistics;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using StateTemplate = Cats.Models.StateTemplate;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -224,7 +225,28 @@ namespace Cats.Areas.Logistics.Controllers
                 localPurchase.Quantity = localPurchaseDetailViewModel.Quantity;
                 localPurchase.ReferenceNumber = localPurchaseDetailViewModel.ReferenceNumber;
                 localPurchase.ProjectCode = localPurchaseDetailViewModel.ProjectCode;
-                _localPurchaseService.EditLocalPurchase(localPurchase);
+                
+                // Partial workflow implementation
+                if (_localPurchaseService.EditLocalPurchase(localPurchase))
+                {
+                    BusinessProcess bp = _businessProcessService.FindById(localPurchase.BusinessProcessID);
+                    BusinessProcessState bps = bp.CurrentState;
+                    StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited).FirstOrDefault();
+
+                    if (stateTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = stateTemplate.StateTemplateID, // mark as edited
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment = "Local Purchase is edited, a system internally captured data.",
+                            ParentBusinessProcessID = bps.ParentBusinessProcessID
+                        };
+
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                    }
+                }
 
                 foreach (var localPurchaseDetail in localPurchaseDetailViewModel.LocalPurchaseDetailViewModels)
                 {
@@ -233,9 +255,14 @@ namespace Cats.Areas.Logistics.Controllers
                     {
                         detail.AllocatedAmount = localPurchaseDetail.AllocatedAmonut;
                         _localPurchaseDetailService.EditLocalPurchaseDetail(detail);
+
+                        //
+                        // TODO: Child status
+                        //
                     }
 
                 }
+
                 TempData["success"] = "Local Purchase Sucessfully Updated";
                 //ModelState.AddModelError("Success", @"Local Purchase Sucessfully Updated");
                 return RedirectToAction("Details", new { id = localPurchase.LocalPurchaseID });

@@ -130,8 +130,7 @@ namespace Cats.Areas.Logistics.Controllers
                 {
                     BusinessProcess bp = _businessProcessService.FindById(loanReciptPlan.BusinessProcessID);
                     BusinessProcessState bps = bp.CurrentState;
-
-                    var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
+                    StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited).FirstOrDefault();
 
                     if (stateTemplate != null)
                     {
@@ -433,29 +432,36 @@ namespace Cats.Areas.Logistics.Controllers
         {
             if (loanReciptPlanWithDetailViewModel != null)
             {
+                // find out what state the document is on
+                LoanReciptPlan loanReciptPlan =
+                    _loanReciptPlanService.FindById(loanReciptPlanWithDetailViewModel.LoanReciptPlanID);
+                BusinessProcess bp = _businessProcessService.FindById(loanReciptPlan.BusinessProcessID);
+                BusinessProcessState bps = bp.CurrentState;
+                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited).FirstOrDefault();
+                
                 // the next line will go pagan, and/or replaced with workflow deleted state,
                 // this stops physical record deletion
-                _loanReciptPlanDetailService.DeleteById(loanReciptPlanWithDetailViewModel.LoanReciptPlanDetailID);
+                //_loanReciptPlanDetailService.DeleteById(loanReciptPlanWithDetailViewModel.LoanReciptPlanDetailID);
 
-                //if (stateTemplate != null)
-                //{
-                //    var businessProcessState = new BusinessProcessState()
-                //    {
-                //        StateID = stateTemplate.StateTemplateID, // mark as deleted
-                //        PerformedBy = HttpContext.User.Identity.Name,
-                //        DatePerformed = DateTime.Now,
-                //        Comment = "Loan is deleted, a system internally captured data.",
-                //        ParentBusinessProcessID = bps.ParentBusinessProcessID
-                //    };
+                // In the case of detail loan-receipt-plan deletion, we don't mark actual deleted state
+                // we only need to mark as edited -- since the parent is not deleted
+                if (stateTemplate != null)
+                {
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = stateTemplate.StateTemplateID, // mark as deleted
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "Loan detail is deleted, a system internally captured data.",
+                        ParentBusinessProcessID = bps.ParentBusinessProcessID
+                    };
 
-                //    // Promot if deletion is successful
-                //    if (_businessProcessService.PromotWorkflow(businessProcessState))
-                //    {
-                //        TempData["Deleted"] = "Loan has been deleted!";
-                //    }
-                //}
-
-
+                    // Promot if deletion is successful
+                    if (_businessProcessService.PromotWorkflow(businessProcessState))
+                    {
+                        TempData["Deleted"] = "Loan has been deleted!";
+                    }
+                }
             }
 
             return Json(ModelState.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);

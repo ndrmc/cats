@@ -30,6 +30,13 @@ namespace Cats.Models.Constant
         LocalPUrchase = 10,
 
     }
+    public enum Action // conventional states -- this will help identify where a specific document is on
+    {
+       Edited,
+       Deleted,
+       Printed,
+       Viewed
+    }
     public enum Programs
     {
         Releif = 1,
