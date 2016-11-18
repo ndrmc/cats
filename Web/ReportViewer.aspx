@@ -167,35 +167,62 @@
 
         }
 
-        function showDatePicker() {
+           function showDatePicker() {
+                    
+			if (!IsPrefCalendarEthiopian()) {
+                $("td>span:contains('Date')").each(function (index) {
 
-            if (!IsPrefCalendarEthiopian()) return;
-            
+                    var dateInputRow = $(this).parent().next();
+
+                    var Control = dateInputRow.find("input[type=text][placeholder!='dd/mm/yyyy']");
+
+
+                    $(Control).datepicker({ dateFormat: 'mm-dd-yy' });
+
+                });
+                return;
+            }
+			
             var parameterRow = $("#ParametersRowrvREXReport");
             var innerTable = $(parameterRow).find("table").find("table");
             var span = innerTable.find("span:contains('Date')");
+			
+			var containLabel=true;
+			
+			var dateContainers=$("label>span:contains('Date')");
+            if(dateContainers.length==0)
+               { 
+			   dateContainers=$("td>span:contains('Date')");
+			   containLabel=false;
+			   }
 
-            $("label>span:contains('Date')").each(function (index) {
-
-                var dateInputRow = $(this).parent().parent().next();
-
+            if (dateContainers.length > 0)
+                {
+            $(dateContainers).each(function (index) {
+			
+			var dateInputRow;
+		
+				if(containLabel)
+               {  dateInputRow = $(this).parent().parent().next();}
+			   else
+			   { dateInputRow = $(this).parent().next();
+			   }
+				
                 var gcControl = dateInputRow.find("input[type=text][placeholder!='dd/mm/yyyy']");
-
+				
                 if (gcControl == NaN)//this is ethiopian cal control skip
                     return;//same as continue
-
                  //CREATE ETH CONTROL, MAKE INVISIBLE GC
                 CreateEthiopianCalField(gcControl);
-
                 //CONVERT GC DATE AND ASSIGN TO THE VISIBLE ETH CONTROL
                 AssignEthDate(gcControl);
-
                 //CHECK IF CALENDAR PICTRUE EXISTS OR NOT(NOT ON SOME VERSIONS OFCHROME)
                 HideCalendarImage(dateInputRow);
-
                 
                 
             });
+			
+			}
         }
 
         function HideCalendarImage(container, gcControl)
