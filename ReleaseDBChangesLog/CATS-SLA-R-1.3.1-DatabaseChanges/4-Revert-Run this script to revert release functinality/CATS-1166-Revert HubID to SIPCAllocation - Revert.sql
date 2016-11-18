@@ -1,0 +1,1 @@
+ALTER TABLE [CatsDRMFSS].[dbo].[SIPCAllocation] DROP COLUMN [HubID]

@@ -36,7 +36,7 @@ namespace Cats.ViewModelBinder
             giftCertificateViewModel.PortName = giftCertificateModel.PortName;
             giftCertificateViewModel.DModeOfTransport = giftCertificateModel.DModeOfTransport;
             giftCertificateViewModel.Donor = giftCertificateModel.Donor.Name;
-            giftCertificateViewModel.StatusID = giftCertificateModel.StatusID;
+            //giftCertificateViewModel.StatusID = giftCertificateModel.StatusID;
             giftCertificateViewModel.Status = giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.Name;
             giftCertificateViewModel.DeclarationNumber = giftCertificateModel.DeclarationNumber;
             giftCertificateViewModel.GiftDatePref=giftCertificateModel.GiftDate.ToCTSPreferedDateFormat(userPrefrence);
@@ -53,7 +53,7 @@ namespace Cats.ViewModelBinder
 
             giftCertificateViewModel.ApprovedId =
                 giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>
-                a.Name == "Approve").Select(s => s.FinalStateID).FirstOrDefault();
+                a.Name == "Approve" || a.Name== "Print").Select(s => s.FinalStateID).FirstOrDefault();
 
             //giftCertificateViewModel.PrintedId =
             //    giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>

@@ -494,6 +494,7 @@ namespace Cats.Services.EarlyWarning
                     request.Status = (int) RegionalRequestStatus.Draft;
                     _unitOfWork.RegionalRequestRepository.Edit(request);
                     _unitOfWork.Save();
+
                     return true;
                 }
                 return true;

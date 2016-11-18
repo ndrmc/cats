@@ -223,13 +223,16 @@ namespace Cats.Services.Logistics
                         StateID = stateTemplate.StateTemplateID,
                         PerformedBy = "",
                         DatePerformed = DateTime.Now,
-                        Comment = "Requisition hub assigned",
+                        Comment = "Internally Requisition hub assigned",
                         //AttachmentFile = fileName,
                         ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
                     };
 
-                    // Promot
-                    _businessProcessService.PromotWorkflow(businessProcessState);
+                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(
+                        stateTemplate.ParentProcessTemplateID, 0, "ReliefRequisitionWorkflow", businessProcessState);
+
+                    if (bp == null) return false;
+                    relifRequisition.BusinessProcessID = bp.BusinessProcessID;
 
                     relifRequisition.BusinessProcessID = businessProcessState.ParentBusinessProcessID;
 
@@ -280,7 +283,7 @@ namespace Cats.Services.Logistics
                         DatePerformed = DateTime.Now,
                         Comment = "Internally requisition project code assigned",
                         //AttachmentFile = fileName,
-                        ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
+                        ParentBusinessProcessID = bp.BusinessProcessID
                     };
 
                     // Promot
@@ -462,7 +465,7 @@ namespace Cats.Services.Logistics
                 DatePerformed = DateTime.Now,
                 Comment = "Internally requisition approved",
                 //AttachmentFile = fileName,
-                ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
+                ParentBusinessProcessID = requisition.BusinessProcessID
             };
 
             // Promot

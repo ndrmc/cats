@@ -11,10 +11,10 @@ namespace Cats.Models.Constant
     public enum ActionType
     {
         [Description("Submit to Finance")]
-        Finance=1,
+        Finance = 1,
 
-       [Description("Approve Payment")]
-        Approve=2
+        [Description("Approve Payment")]
+        Approve = 2
     }
 
     public enum WORKFLOW
@@ -29,6 +29,13 @@ namespace Cats.Models.Constant
         BID = 9,
         LocalPUrchase = 10,
 
+    }
+    public struct ConventionalAction  // this will help identify where a specific document is on
+    {
+        public static string Edited = "Edited";
+        public static string Deleted = "Deleted";
+        public static string Printed = "Printed";
+        public static string Viewed = "Viewed";
     }
     public enum Programs
     {
@@ -133,8 +140,8 @@ namespace Cats.Models.Constant
     }
     public enum TransferStatus
     {
-        Draft=1,
-        Approved=2
+        Draft = 1,
+        Approved = 2
 
     }
 

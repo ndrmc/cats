@@ -38,8 +38,8 @@ namespace Cats.Areas.Hub.Controllers
                 {
                     var value = st.Find(t => t.HubID == hub);
 
-                    var free = (value.TotalPhysicalStock == 0) ? 0 : ((value.TotalFreestock / (value.TotalPhysicalStock + value.TotalFreestock)) * 100);
-                    var commited = ((value.TotalPhysicalStock) / ((value.TotalPhysicalStock == 0) ? 1.0M : value.TotalPhysicalStock + value.TotalFreestock)) * 100;
+                    var free = (value.TotalPhysicalStock == 0) ? 0 : ((value.TotalFreestock / (value.TotalPhysicalStock)) * 100);
+                    var commited = ((value.TotalPhysicalStock - value.TotalFreestock) / ((value.TotalPhysicalStock == 0) ? 1.0M : value.TotalPhysicalStock )) * 100;
 
                     
                     var j = new StockStatusViewModel()

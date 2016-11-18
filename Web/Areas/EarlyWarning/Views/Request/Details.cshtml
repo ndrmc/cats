@@ -121,9 +121,33 @@
                         {
                             <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                         }
-                        if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Reject")
+                        if (modelRequest.Program == "Relief")
                         {
-                            <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Reverse_Request) && actions.Name == "Reject")
+                            {
+                                <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                            }
+                        }
+                        else if (modelRequest.Program == "PSNP")
+                        {
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Reverse_Request) && actions.Name == "Reject")
+                            {
+                                <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                            }
+                        }
+                        if (modelRequest.Program == "Relief")
+                        {
+                            if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Reverse_Request) && actions.Name == "Reject")
+                            {
+                                <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                            }
+                        }
+                        else if (modelRequest.Program == "PSNP")
+                        {
+                            if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Reverse_Request) && actions.Name == "Reject")
+                            {
+                                <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                            }
                         }
                         //close hiden b/c reginal request closed on cretation of requestion not by the user
                         @*if (UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Add_new_needs_assessment) && actions.Name == "Close")
@@ -178,13 +202,13 @@
 
 
                     }
-                    @if (modelRequest.StatusID == 1 && modelRequest.ProgramId == (int)Cats.Models.Constant.Programs.IDPS)
+                    @if (modelRequest.Status == "Draft" && modelRequest.ProgramId == (int)Cats.Models.Constant.Programs.IDPS)
                     {
                         <li><a class="btn green-haze-stripe" id="btnEditPlan" href="@Url.Action("CreateRequisitionForIDPS", "ReliefRequisition", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID, programId = modelRequest.ProgramId})"><i class="icon-plus"></i>IDPS Requisiton</a></li>
 
                         @*<li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new {id = modelRequest.RegionalRequestID})">Reject</a></li> *@
                     }
-                    else if (modelRequest.StatusID == 1)
+                    else if (modelRequest.Status == "Approved")
                     {
                         if (modelRequest.Program == "Relief")
                         {
@@ -218,7 +242,7 @@
                                 <li><a class="btn green-haze-stripe" href="@Url.Action("CreateRequisiton", "ReliefRequisition", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })"><i class="icon-plus"></i>Requisiton</a></li>
                                 <li><a class="btn green-haze-stripe" href="@Url.Action("RejectRequest", "Request", new { id = modelRequest.RegionalRequestID })">Reject</a></li>*@
                     }
-                    else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Closed)
+                    else if (modelRequest.Status == "Closed")
                     {
                         @*<li><a class="btn green-haze-stripe" href="@Url.Action("RevertRequestStatus", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Revert Status</a></li>*@
 
@@ -242,7 +266,7 @@
                                 break;
                         }
                     }
-                    else if (modelRequest.StatusID == (int)Cats.Models.Constant.RegionalRequestStatus.Reject)
+                    else if (modelRequest.Status == "Rejected")
                     {
                         if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Edit_request)
                             || UserAccountHelper.RegionalOperationCheck(RegionalConstants.Operation.Edit_regional_request))

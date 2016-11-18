@@ -76,6 +76,8 @@
                     <ul class="dropdown-menu pull-right">
                         @foreach (FlowTemplateViewModel actions in Model.InitialStateFlowTemplates)
                         {
+                            if (actions.Name == "Edit") { continue; }
+
                             if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Requisition)
                             || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Approve_Monthly_relife_requisitions))
                             {

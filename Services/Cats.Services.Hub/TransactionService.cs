@@ -974,9 +974,9 @@ namespace Cats.Services.Hub
                 receive.ReceiveDetails.Add(receiveDetail);
 
 
-                var parentCommodityId =
-                    _unitOfWork.CommodityRepository.FindById(viewModel.ReceiveDetailNewViewModel.CommodityId).ParentID ??
-                    viewModel.ReceiveDetailNewViewModel.CommodityId;
+                //var parentCommodityId =
+                //    _unitOfWork.CommodityRepository.FindById(viewModel.ReceiveDetailNewViewModel.CommodityId).ParentID ??
+                //    viewModel.ReceiveDetailNewViewModel.CommodityId;
 
                 //physical stock movement 
 
@@ -986,6 +986,13 @@ namespace Cats.Services.Hub
 
                 #region On Positive Side
 
+                var siNumber="";
+                var firstOrDefault = _unitOfWork.ReceiveRepository.Get(r => r.ReceiveID == receiveDetail.ReceiveID,null, "ReceiptAllocation").FirstOrDefault();
+                if (
+                    firstOrDefault != null)
+                {
+                     siNumber = firstOrDefault.ReceiptAllocation.SINumber;
+                }
                 var transactionOne = new Transaction
                 {
                     TransactionID = Guid.NewGuid(),
@@ -999,7 +1006,7 @@ namespace Cats.Services.Hub
                     DonorID = receive.SourceDonorID,
                     AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, receive.HubID),
                     ShippingInstructionID =
-                        _shippingInstructionService.GetSINumberIdWithCreate(receiveDetail.SiNumber.ToString())
+                        _shippingInstructionService.GetSINumberIdWithCreate(siNumber)
                             .ShippingInstructionID,
                     ProjectCodeID = _projectCodeService.GetProjectCodeIdWIthCreate(viewModel.ProjectCode).ProjectCodeID,
                     HubID = viewModel.CurrentHub,
@@ -1035,7 +1042,7 @@ namespace Cats.Services.Hub
                     DonorID = receive.SourceDonorID, //
 
                     ShippingInstructionID =
-                        _shippingInstructionService.GetSINumberIdWithCreate(receiveDetail.SiNumber.ToString())
+                        _shippingInstructionService.GetSINumberIdWithCreate(siNumber)
                             .ShippingInstructionID,
                     ProjectCodeID = _projectCodeService.GetProjectCodeIdWIthCreate(viewModel.ProjectCode).ProjectCodeID,
                     HubID = viewModel.CurrentHub,
@@ -1097,7 +1104,7 @@ namespace Cats.Services.Hub
                     DonorID = receive.SourceDonorID,
                     AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, receive.HubID),
                     ShippingInstructionID =
-                        _shippingInstructionService.GetSINumberIdWithCreate(receiveDetail.SiNumber.ToString())
+                        _shippingInstructionService.GetSINumberIdWithCreate(siNumber)
                             .ShippingInstructionID,
                     ProjectCodeID = _projectCodeService.GetProjectCodeIdWIthCreate(viewModel.ProjectCode).ProjectCodeID,
                     HubID = viewModel.CurrentHub,
@@ -1129,7 +1136,7 @@ namespace Cats.Services.Hub
                     //HubOwnerID = 
                     DonorID = receive.SourceDonorID,
                     ShippingInstructionID =
-                        _shippingInstructionService.GetSINumberIdWithCreate(receiveDetail.SiNumber.ToString())
+                        _shippingInstructionService.GetSINumberIdWithCreate(siNumber)
                             .ShippingInstructionID,
                     ProjectCodeID = _projectCodeService.GetProjectCodeIdWIthCreate(viewModel.ProjectCode).ProjectCodeID,
                     HubID = viewModel.CurrentHub,
@@ -1282,28 +1289,33 @@ namespace Cats.Services.Hub
 
             if (!existed) //viewModel.ReceiveId == Guid.Empty
             {
-                var receiveDetail = new ReceiveDetail
-                {
-                    ReceiveDetailID = viewModel.ReceiveDetailNewViewModel.ReceiveDetailId, //Guid.NewGuid(), //Todo: if there is existing id dont give new one  
 
-                    CommodityID = viewModel.ReceiveDetailNewViewModel.CommodityId,
-                    CommodityChildID = viewModel.ReceiveDetailNewViewModel.CommodityChildID,
-                    Description = viewModel.ReceiveDetailNewViewModel.Description,
-                    SentQuantityInMT = viewModel.ReceiveDetailNewViewModel.SentQuantityInMt,
-                    SentQuantityInUnit = viewModel.ReceiveDetailNewViewModel.SentQuantityInUnit,
-                    UnitID = viewModel.ReceiveDetailNewViewModel.UnitId,
-                    ReceiveID = receive.ReceiveID,
+                if (viewModel.ReceiveDetailNewViewModel.ReceiveDetailId != Guid.Empty) //||     viewModel.ReceiveDetailNewViewModel.ReceiveDetailId != null
+
+                { 
+                    var receiveDetail = new ReceiveDetail
+                    {
+                        ReceiveDetailID = viewModel.ReceiveDetailNewViewModel.ReceiveDetailId,
+                        //Guid.NewGuid(), //Todo: if there is existing id dont give new one  
+
+                        CommodityID = viewModel.ReceiveDetailNewViewModel.CommodityId,
+                        CommodityChildID = viewModel.ReceiveDetailNewViewModel.CommodityChildID,
+                        Description = viewModel.ReceiveDetailNewViewModel.Description,
+                        SentQuantityInMT = viewModel.ReceiveDetailNewViewModel.SentQuantityInMt,
+                        SentQuantityInUnit = viewModel.ReceiveDetailNewViewModel.SentQuantityInUnit,
+                        UnitID = viewModel.ReceiveDetailNewViewModel.UnitId,
+                        ReceiveID = receive.ReceiveID,
 
 
-                };
+                    };
 
                 CreateTransaction(viewModel, transactionsign, receive, receiveDetail);
 
                 //add to receive 
                 receive.ReceiveDetails.Clear();
                 receive.ReceiveDetails.Add(receiveDetail);
-
             }
+        }
             else
             {
                 foreach (var receiveDetailModel in viewModel.ReceiveDetailsViewModels)
@@ -1326,7 +1338,7 @@ namespace Cats.Services.Hub
 
                     };
 
-                    //receive.ReceiveDetails.Add(receiveDetail);
+                    
 
                     try
                     {
