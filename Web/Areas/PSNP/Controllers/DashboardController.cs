@@ -21,7 +21,7 @@ namespace Cats.Areas.PSNP.Controllers
         private readonly IRegionalPSNPPlanService _regionalPsnpPlanService;
         private readonly IUtilizationHeaderSerivce _utilizationService;
         private readonly IUtilizationDetailSerivce _utilizationDetailSerivce;
-        
+
 
         public DashboardController(IRegionalRequestService regionalRequestService,
             IRegionalRequestDetailService reliefRequisitionDetailService,
@@ -40,7 +40,7 @@ namespace Cats.Areas.PSNP.Controllers
         }
         public JsonResult GetPsnpRequests()
         {
-            var requests = _regionalRequestService.GetAllRegionalRequest().OrderByDescending(t=>t.RequistionDate);
+            var requests = _regionalRequestService.GetAllRegionalRequest().OrderByDescending(t => t.RequistionDate);
             var r = new List<PSNPRequetViewModel>();
             foreach (var regionalRequest in requests)
             {
@@ -57,34 +57,35 @@ namespace Cats.Areas.PSNP.Controllers
             return Json(r, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult RequestPie(int planId=-1)
+        public JsonResult RequestPie(int planId = -1)
         {
-           
+
 
             var requests = _regionalRequestService.FindBy(t => t.PlanID == planId);
 
             var req = (from request in requests
-                     group request by request.AdminUnit.AdminUnitID into g 
-                     let firstOrDefault = g.FirstOrDefault() 
-                     where firstOrDefault != null select new
-                     {
-                         Region = g.First().AdminUnit.Name,
-                         Count = g.Count(),
-                         PlanId = g.First().PlanID,
-                         firstOrDefault.Plan.PlanName
-                     });
+                       group request by request.AdminUnit.AdminUnitID into g
+                       let firstOrDefault = g.FirstOrDefault()
+                       where firstOrDefault != null
+                       select new
+                       {
+                           Region = g.First().AdminUnit.Name,
+                           Count = g.Count(),
+                           PlanId = g.First().PlanID,
+                           firstOrDefault.Plan.PlanName
+                       });
             return Json(req, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult RequestPieByStatus(int planId = -1)
         {
-            
-             var requests = _regionalRequestService.FindBy(t => t.PlanID == planId);
+
+            var requests = _regionalRequestService.FindBy(t => t.PlanID == planId);
 
             var r = (from request in requests
-                     group request by request.Status into g
-                      let firstOrDefault = g.FirstOrDefault() 
-                     where firstOrDefault != null 
+                     group request by request.BusinessProcess.CurrentState.BaseStateTemplate.Name into g
+                     let firstOrDefault = g.FirstOrDefault()
+                     where firstOrDefault != null
                      select new
                      {
                          g.First().Status,
@@ -94,9 +95,9 @@ namespace Cats.Areas.PSNP.Controllers
                      });
 
             Dictionary<string, int> _request = new Dictionary<string, int>();
-            
 
-            foreach (var req in r )
+
+            foreach (var req in r)
             {
                 if (req.Status == (decimal)Cats.Models.Constant.RegionalRequestStatus.Draft)
                     _request.Add("Draft", req.Count);
@@ -104,7 +105,7 @@ namespace Cats.Areas.PSNP.Controllers
                     _request.Add("Approved", req.Count);
                 else if (req.Status == (decimal)Cats.Models.Constant.RegionalRequestStatus.Closed)
                     _request.Add("Closed", req.Count);
-               
+
             }
             return Json(_request, JsonRequestBehavior.AllowGet);
         }
@@ -112,17 +113,17 @@ namespace Cats.Areas.PSNP.Controllers
         public JsonResult GetPlans()
         {
             var plans =
-                _regionalPsnpPlanService.FindBy(p => p.Plan.Status == (int) Cats.Models.Constant.PlanStatus.PSNPCreated)
+                _regionalPsnpPlanService.FindBy(p => p.Plan.Status == (int)Cats.Models.Constant.PlanStatus.PSNPCreated)
                     .Select(q => new
-                                     {
-                                         planId = q.PlanId,
-                                         planName = q.Plan.PlanName
-                                     }).Distinct();
+                    {
+                        planId = q.PlanId,
+                        planName = q.Plan.PlanName
+                    }).Distinct();
             return Json(plans, JsonRequestBehavior.AllowGet);
         }
 
-       
-        
+
+
         public ActionResult GetPsnpRequisitions()
         {
             var requests = _reliefRequisitionService.GetAllReliefRequisition().OrderByDescending(t => t.RequestedDate);
@@ -130,14 +131,14 @@ namespace Cats.Areas.PSNP.Controllers
             foreach (var regionalRequsition in requests)
             {
                 var psnpReqistions = new PSNPRequisitionViewModel
-                            {
-                                Number = regionalRequsition.RequisitionNo,
-                                Commodity = regionalRequsition.Commodity.Name,
-                                Beneficicaries = regionalRequsition.ReliefRequisitionDetails.Sum(t => t.BenficiaryNo),
-                                Amount = regionalRequsition.ReliefRequisitionDetails.Sum(t => t.Amount),
-                                Status = regionalRequsition.Status,
-                                RequisitionId = regionalRequsition.RequisitionID
-                            };
+                {
+                    Number = regionalRequsition.RequisitionNo,
+                    Commodity = regionalRequsition.Commodity.Name,
+                    Beneficicaries = regionalRequsition.ReliefRequisitionDetails.Sum(t => t.BenficiaryNo),
+                    Amount = regionalRequsition.ReliefRequisitionDetails.Sum(t => t.Amount),
+                    Status = regionalRequsition.Status,
+                    RequisitionId = regionalRequsition.RequisitionID
+                };
                 if (regionalRequsition.RegionalRequest != null)
                 {
                     psnpReqistions.PlanId = regionalRequsition.RegionalRequest.PlanID;
@@ -158,13 +159,13 @@ namespace Cats.Areas.PSNP.Controllers
                      where firstOrDefault != null
                      select new
                      {
-                         
-                         Above18 = g.Sum(t=>t.MaleAbove18Years) + g.Sum(t=>t.FemaleAbove18Years),
-                         Bet5and18 = g.Sum(t=>t.MaleBetween5And18Years) + g.Sum(t=>t.FemaleBetween5And18Years),
+
+                         Above18 = g.Sum(t => t.MaleAbove18Years) + g.Sum(t => t.FemaleAbove18Years),
+                         Bet5and18 = g.Sum(t => t.MaleBetween5And18Years) + g.Sum(t => t.FemaleBetween5And18Years),
                          Below5 = g.Sum(t => t.FemaleLessThan5Years) + g.Sum(t => t.MaleLessThan5Years)
-                         
+
                      });
-                return Json(r, JsonRequestBehavior.AllowGet);
+            return Json(r, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetUtilizationByRegion(int planId = -1)
@@ -176,34 +177,34 @@ namespace Cats.Areas.PSNP.Controllers
             {
                 foreach (var utilizationdetail in utilization.WoredaStockDistributionDetails)
                 {
-                    var regionalutilization  = new UtilizationViewModel()
-                                             {
-                                                 Region =  utilization.AdminUnit.AdminUnit2.AdminUnit2.Name,
-                                                 //Commodity = utilizationdetail.CommodityID.ToString(),
-                                                 //ActualBeneficicaries = utilization.ActualBeneficairies,
-                                                 Amount = utilizationdetail.DistributedAmount,
-                                                 
-                                             };
+                    var regionalutilization = new UtilizationViewModel()
+                    {
+                        Region = utilization.AdminUnit.AdminUnit2.AdminUnit2.Name,
+                        //Commodity = utilizationdetail.CommodityID.ToString(),
+                        //ActualBeneficicaries = utilization.ActualBeneficairies,
+                        Amount = utilizationdetail.DistributedAmount,
+
+                    };
                     r.Add(regionalutilization);
                 }
-               
-                
+
+
             }
-            
+
             var grouped = (from total in r
                            group total by total.Region
                            into g
                            select new
-                                      {
+                           {
 
-                                          Region = g.First().Region,
-                                          total = g.Sum(t => t.Amount)
-                                      });
-            return Json(grouped, JsonRequestBehavior.AllowGet );
+                               Region = g.First().Region,
+                               total = g.Sum(t => t.Amount)
+                           });
+            return Json(grouped, JsonRequestBehavior.AllowGet);
 
-            
-        
-            }
+
+
+        }
 
     }
 }

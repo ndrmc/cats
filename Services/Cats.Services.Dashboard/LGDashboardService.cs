@@ -60,7 +60,7 @@ namespace Cats.Services.Dashboard
 
         public List<DashboardDispAlloRequisition> DispatchAllocatedRequisitions(DateTime? startDate, DateTime? endDate, int round = 0)
         {
-            var currentHrd = _unitOfWork.HRDRepository.Get(m => m.Status == (int)HRDStatus.Published, null,
+            var currentHrd = _unitOfWork.HRDRepository.Get(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published", null,
                     "HRDDetails, HRDDetails.AdminUnit, HRDDetails.AdminUnit.AdminUnit2, HRDDetails.AdminUnit.AdminUnit2.AdminUnit2," +
                     "Ration, Ration.RationDetails")
                                 .OrderByDescending(t => t.PublishedDate).FirstOrDefault();
@@ -193,7 +193,7 @@ namespace Cats.Services.Dashboard
         public List<int?> GetRounds()
         {
             var roundList = new List<int?>();
-            var currentHrd = _unitOfWork.HRDRepository.Get(m => m.Status == (int)HRDStatus.Published, null,
+            var currentHrd = _unitOfWork.HRDRepository.Get(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published", null,
                     "HRDDetails, HRDDetails.AdminUnit, HRDDetails.AdminUnit.AdminUnit2, HRDDetails.AdminUnit.AdminUnit2.AdminUnit2," +
                     "Ration, Ration.RationDetails")
                                 .OrderByDescending(t => t.PublishedDate).FirstOrDefault();
