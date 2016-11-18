@@ -192,6 +192,11 @@ namespace Cats.Services.Common
             return getIntValue(Cats.Services.Common.ApplicationSettings.Default.BidPlanWorkflow);
         }
 
+        public int getBidPlanDeatailWorkflow()
+        {
+            return getIntValue(ApplicationSettings.Default.BidPlanDetailActionWorkflow);
+        }
+
         public int getTransferReceiptPlanWorkflow()
         {
             return getIntValue(ApplicationSettings.Default.TranferReceiptPlanWorkflow);
