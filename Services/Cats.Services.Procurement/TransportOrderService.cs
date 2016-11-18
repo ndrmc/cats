@@ -20,15 +20,21 @@ namespace Cats.Services.Procurement
         private readonly INotificationService _notificationService;
         private readonly IBusinessProcessService _businessProcessService;
         private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IStateTemplateService _stateTemplateService;
+        private readonly IBusinessProcessStateService _businessProcessStateService;
 
 
-        public TransportOrderService(IUnitOfWork unitOfWork, ITransporterService transporterService, INotificationService notificationService, IBusinessProcessService businessProcessService, IApplicationSettingService applicationSettingService)
+        public TransportOrderService(IUnitOfWork unitOfWork, ITransporterService transporterService, INotificationService notificationService, IBusinessProcessService businessProcessService, IApplicationSettingService applicationSettingService, IStateTemplateService stateTemplateService, IBusinessProcessStateService paramBusinessProcessStateService)
         {
             this._unitOfWork = unitOfWork;
             this._transporterService = transporterService;
             _notificationService = notificationService;
             _businessProcessService = businessProcessService;
+
             _applicationSettingService = applicationSettingService;
+            _stateTemplateService = stateTemplateService;
+            _businessProcessStateService = paramBusinessProcessStateService;
+
         }
 
         #region Default Service Implementation
@@ -741,7 +747,7 @@ namespace Cats.Services.Procurement
         {
             return _unitOfWork.HubRepository.GetAll();
         }
-        public bool ApproveTransportOrder(TransportOrder transportOrder)
+        public bool ApproveTransportOrder(TransportOrder transportOrder, string userName)
         {
             if (transportOrder != null)
             {
@@ -762,9 +768,37 @@ namespace Cats.Services.Procurement
 
                 }
 
-                transportOrder.StatusID = (int)TransportOrderStatus.Approved;
-                _unitOfWork.TransportOrderRepository.Edit(transportOrder);
-                _unitOfWork.Save();
+                //  transportOrder.StatusID = (int)TransportOrderStatus.Approved;
+
+                var approvedStateId =
+                              _stateTemplateService
+                                  .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Approved");
+
+                var bp = _businessProcessService.GetAll().FirstOrDefault(t => t.BusinessProcessID == transportOrder.BusinessProcessID);
+
+                if (approvedStateId != null)
+                {
+                    var createdstate3 = new BusinessProcessState
+                    {
+                        DatePerformed = DateTime.Now,
+                        PerformedBy = userName,
+                        Comment = " TransportOrder Approved on multiple approval",
+                        StateID = approvedStateId.StateTemplateID,
+                        ParentBusinessProcessID = transportOrder.BusinessProcessID,
+
+                    };
+                    //_businessProcessStateService.Add(createdstate3);
+
+                    //if (bp != null)
+                    //{
+                    //    bp.CurrentState = createdstate3;
+                    //    _businessProcessService.Update(bp);
+                    //}
+                    _businessProcessService.PromotWorkflow(createdstate3);
+                }
+
+                //_unitOfWork.TransportOrderRepository.Edit(transportOrder);
+                //_unitOfWork.Save();
 
                 return true;
             }
@@ -786,13 +820,13 @@ namespace Cats.Services.Procurement
 
         }
 
-        public bool GeneratDispatchPlan(int transportOrderId)
+        public bool GeneratDispatchPlan(int transportOrderId, string UserName)
         {
 
             var transportOrder =
                             _unitOfWork.TransportOrderRepository.Get(
                                 t =>
-                                t.TransportOrderID == transportOrderId && t.StatusID == (int)TransportOrderStatus.Signed).FirstOrDefault();
+                                t.TransportOrderID == transportOrderId && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
             if (transportOrder == null) return false;
 
             var transportOrderDetails =
@@ -886,10 +920,34 @@ namespace Cats.Services.Procurement
                     }
                 }
             }
+            var closedStateId =
+                                _stateTemplateService
+                                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Signed");
+            var bp = _businessProcessService.GetAll().FirstOrDefault(t => t.BusinessProcessID == transportOrder.BusinessProcessID);
+            if (closedStateId != null)
+            {
+                var createdstate3 = new BusinessProcessState
+                {
+                    DatePerformed = DateTime.Now,
+                    PerformedBy = UserName,
+                    Comment = " TransportOrder Closed on Dispatch Plan Creation",
+                    StateID = closedStateId.StateTemplateID,
+                    ParentBusinessProcessID = transportOrder.BusinessProcessID
+                };
+                _businessProcessStateService.Add(createdstate3);
+
+                if (bp != null)
+                {
+                    bp.CurrentState = createdstate3;
+                    _businessProcessService.Update(bp);
+                }
+            }
             transportOrder.StatusID = (int)TransportOrderStatus.Closed;
             _unitOfWork.Save();
 
             return true;
+
+
         }
 
         public List<Dispatch> ReverseDispatchAllocation(int transportOrderId)

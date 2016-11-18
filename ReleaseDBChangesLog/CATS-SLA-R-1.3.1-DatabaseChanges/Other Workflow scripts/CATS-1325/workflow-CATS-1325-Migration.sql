@@ -42,7 +42,7 @@ SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProce
 ELSE IF (@status = 4)
 SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @ProcessTemplateID AND Name = 'Closed' );
 ELSE IF (@status = 5)
-SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @ProcessTemplateID AND Name = 'Rejected' );
+SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @ProcessTemplateID AND Name = 'Failed' );
 ELSE
 SET IDENTITY_INSERT BusinessProcessState ON;
 INSERT INTO BusinessProcessState 

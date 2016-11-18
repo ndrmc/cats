@@ -709,7 +709,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             hrd.CreatedBY = userid;
             if (ModelState.IsValid)
             {
-                int BP_PR = _applicationSettingService.getHRDWorkflow();
+				int BP_PR = _applicationSettingService.getHRDWorkflow();
                 var firstOrDefault = _stateTemplateService
                     .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == BP_PR && s.Name == "Edited");
 

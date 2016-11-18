@@ -70,56 +70,54 @@ namespace Cats.Services.Logistics
 
         #endregion
 
-         public bool DeleteDonation(DonationPlanHeader donationPlanHeader)
-         {
-             try
-             {
-                 var donationPlanDetails =
-                 _unitOfWork.DonationPlanDetailRepository.FindBy(
-                     m => m.DonationHeaderPlanID == donationPlanHeader.DonationHeaderPlanID);
-                 foreach (var planDetail in donationPlanDetails)
-                 {
+        public bool DeleteDonation(DonationPlanHeader donationPlanHeader)
+        {
+            try
+            {
+                var donationPlanDetails =
+                _unitOfWork.DonationPlanDetailRepository.FindBy(
+                    m => m.DonationHeaderPlanID == donationPlanHeader.DonationHeaderPlanID);
+                foreach (var planDetail in donationPlanDetails)
+                {
 
-                     _unitOfWork.DonationPlanDetailRepository.Delete(planDetail);
-                     _unitOfWork.Save();
-                 }
-                 _unitOfWork.DonationPlanHeaderRepository.Delete(donationPlanHeader);
-                 _unitOfWork.Save();
-                 return true;
-             }
-             catch (Exception)
-             {
+                    _unitOfWork.DonationPlanDetailRepository.Delete(planDetail);
+                    _unitOfWork.Save();
+                }
+                _unitOfWork.DonationPlanHeaderRepository.Delete(donationPlanHeader);
+                _unitOfWork.Save();
+                return true;
+            }
+            catch (Exception)
+            {
 
-                 return false;
-             }
-             
+                return false;
+            }
 
-         }
-       public bool DeleteReceiptAllocation(DonationPlanHeader donationPlanHeader)
-         {
 
-           try
-           {
-               var donationDetailHubIDs =
-                   _unitOfWork.DonationPlanDetailRepository.FindBy(
-                       m => m.DonationHeaderPlanID == donationPlanHeader.DonationHeaderPlanID).Select(m => m.HubID);
-               var receiptPlans = _unitOfWork.ReceiptAllocationReository.FindBy(m => donationDetailHubIDs.Contains(m.HubID) && m.SINumber == donationPlanHeader.ShippingInstruction.Value 
-                                                                               && m.ETA ==donationPlanHeader.ETA );
-               foreach (var receiptAllocation in receiptPlans)
-               {
-                   //_unitOfWork.ReceiptAllocationReository.Delete(receiptAllocation);
-               }
-               _unitOfWork.Save();
-               return true;
+        }
+        public bool DeleteReceiptAllocation(DonationPlanHeader donationPlanHeader)
+        {
 
-           }
-           catch (Exception)
-           {
+            try
+            {
+                var donationDetailHubIDs =
+                    _unitOfWork.DonationPlanDetailRepository.FindBy(
+                        m => m.DonationHeaderPlanID == donationPlanHeader.DonationHeaderPlanID).Select(m => m.HubID);
+                var receiptPlans = _unitOfWork.ReceiptAllocationReository.FindBy(m => donationDetailHubIDs.Contains(m.HubID) && m.SINumber == donationPlanHeader.ShippingInstruction.Value
+                                                                                && m.ETA == donationPlanHeader.ETA);
+                foreach (var receiptAllocation in receiptPlans)
+                {
+                    _unitOfWork.ReceiptAllocationReository.Delete(receiptAllocation);
+                }
+                _unitOfWork.Save();
+                return true;
 
-               return false;
-           }
-             
-         }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         public IEnumerable<DonationPlanHeader> Get(Expression<Func<DonationPlanHeader, bool>> filter = null,
                                     Func<IQueryable<DonationPlanHeader>, IOrderedQueryable<DonationPlanHeader>> orderBy = null,
@@ -136,7 +134,7 @@ namespace Cats.Services.Logistics
 
     }
 }
-   
- 
-      
+
+
+
 
