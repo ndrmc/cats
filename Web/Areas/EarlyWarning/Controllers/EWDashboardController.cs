@@ -267,7 +267,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 return
                     _eWDashboardService.FindByHrd(
-                        m => m.Status == 3 || m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                        m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
                         .FirstOrDefault();
             }
             catch (Exception)
@@ -280,7 +280,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             var draftGiftCertificate =
                 from gs in
                     _eWDashboardService.GetAllGiftCertificate()
-                        .Where(m => m.StatusID == 1)
+                        .Where(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft")
                         .OrderByDescending(m => m.GiftCertificateID)
                 where DateTime.Compare(gs.GiftDate, startDate) >= 0
                       && DateTime.Compare(gs.GiftDate, endDate) <= 0

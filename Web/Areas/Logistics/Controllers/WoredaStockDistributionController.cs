@@ -396,7 +396,7 @@ namespace Cats.Areas.Logistics.Controllers
                     var saved = _utilizationService.AddHeaderDistribution(bindToModel);
                     if (saved)
                     {
-               
+
 
                         var distributionHeader = _utilizationService.FindBy(m => m.WoredaID == woredaStockDistribution.WoredaID &&
                                                              m.PlanID == woredaStockDistribution.PlanID &&
@@ -417,10 +417,10 @@ namespace Cats.Areas.Logistics.Controllers
                                 LossReason = woredaDistributionDetailViewModel.LossReasonId,
                                 DistributedAmount = woredaDistributionDetailViewModel.DistributedAmount,
                                 RequisitionId = woredaDistributionDetailViewModel.RequisitionId,
-             
+
                             };
 
-                             SetServiceModelDate(distributionDetailModel, woredaDistributionDetailViewModel);
+                            SetServiceModelDate(distributionDetailModel, woredaDistributionDetailViewModel);
 
                             _utilizationDetailSerivce.AddDetailDistribution(distributionDetailModel);
                         }
@@ -539,8 +539,8 @@ namespace Cats.Areas.Logistics.Controllers
 
             //if(datePref.Trim().ToLower().Equals("gc"))
             //{
-                distributionDetailModel.DistributionStartDate = woredaDistributionDetailViewModel.DistributionStartDate;
-                distributionDetailModel.DistributionEndDate = woredaDistributionDetailViewModel.DistributionEndDate;
+            distributionDetailModel.DistributionStartDate = woredaDistributionDetailViewModel.DistributionStartDate;
+            distributionDetailModel.DistributionEndDate = woredaDistributionDetailViewModel.DistributionEndDate;
 
 
             //}

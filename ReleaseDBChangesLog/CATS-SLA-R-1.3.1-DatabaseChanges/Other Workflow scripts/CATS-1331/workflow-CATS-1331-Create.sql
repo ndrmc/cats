@@ -55,7 +55,7 @@ ROLLBACK /* Rollback of the transaction */
            ,[StateType]
            )
      VALUES
-		   ( @id,'Approved',0,1,1 )  select @Approve = Scope_Identity()
+		   ( @id,'Edited',0,1,1 )  select @Approve = Scope_Identity()
 		   		   
 		   
 
@@ -66,7 +66,7 @@ ROLLBACK /* Rollback of the transaction */
            ,[Name]
            )
      VALUES
-           (@id ,@draft,@Approve,'Approve')
+           (@id ,@draft,@Approve,'Edit')
 		   
 	 IF(@@error <> 0) 
 ROLLBACK /* Rollback of the transaction */	
