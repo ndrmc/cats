@@ -31,12 +31,13 @@ namespace Cats.Areas.Procurement.Controllers
         private readonly ICommonService _commonService;
         private readonly IApplicationSettingService _applicationSettingService;
         private readonly IBusinessProcessService _businessProcessService;
+        private readonly IStateTemplateService _stateTemplateService;
         public TransportBidPlanController(ITransportBidPlanService transportBidPlanServiceParam
                                           , IAdminUnitService adminUnitServiceParam
                                           , IProgramService programServiceParam
                                           , ITransportBidPlanDetailService transportBidPlanDetailServiceParam
                                           , IHubService hubServiceParam, ICommonService commonService, IApplicationSettingService applicationSettingService,
-            IBusinessProcessService businessProcessService)
+            IBusinessProcessService businessProcessService,IStateTemplateService stateTemplateService)
         {
             this._transportBidPlanService = transportBidPlanServiceParam;
             this._adminUnitService = adminUnitServiceParam;
@@ -46,6 +47,7 @@ namespace Cats.Areas.Procurement.Controllers
             _commonService = commonService;
             _applicationSettingService = applicationSettingService;
             _businessProcessService = businessProcessService;
+            _stateTemplateService = stateTemplateService;
         }
         public TransportBidPlan fetchFromDB(int id)
         {
@@ -86,7 +88,7 @@ namespace Cats.Areas.Procurement.Controllers
         {
             var list = _transportBidPlanService
                 .Get(
-                    null,
+                    p => p.BusinessProcess.CurrentState.BaseStateTemplate.Name != "Deleted",
                     null,
                     "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
                 .OrderByDescending(m => m.TransportBidPlanID);
@@ -260,7 +262,30 @@ namespace Cats.Areas.Procurement.Controllers
         {
             if (ModelState.IsValid)
             {
-                _transportBidPlanService.UpdateTransportBidPlan(transportbidplan);
+                var bidplan = _transportBidPlanService.FindById(transportbidplan.TransportBidPlanID);
+                bidplan.Year = transportbidplan.Year;
+                bidplan.YearHalf = transportbidplan.YearHalf;
+
+                int BP_PR = _applicationSettingService.getBidPlanWorkflow();
+                var firstOrDefault = _stateTemplateService
+                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == BP_PR && s.Name == "Edited");
+
+                if (firstOrDefault != null)
+                {
+                    var editedStateId = firstOrDefault.StateTemplateID;
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = editedStateId,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = bidplan.BusinessProcessID
+                    };
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+
+                _transportBidPlanService.UpdateTransportBidPlan(bidplan);
                 return RedirectToAction("Index");
             }
             loadLookups(transportbidplan);
@@ -377,7 +402,8 @@ namespace Cats.Areas.Procurement.Controllers
             // return View(table);
             foreach (TransportBidPlanDetail i in bidDetails)
             {
-                _transportBidPlanDetailService.DeleteTransportBidPlanDetail(i);
+                //_transportBidPlanDetailService.DeleteTransportBidPlanDetail(i);
+                PromoteBidPlanDetail(i,"Deleted");
             }
             return Json("{}");
         }
@@ -413,16 +439,19 @@ namespace Cats.Areas.Procurement.Controllers
         {
             if (warehouseAllocation!=null && ModelState.IsValid)
             {
+                var bpId = CreateBidPlanDetailActionWorkflow();
+                if (bpId == 0) return Json(new[] {warehouseAllocation}.ToDataSourceResult(request, ModelState));
                 var reliefDetail = new TransportBidPlanDetail()
                 {
                     BidPlanID = transportBidPlanID,
                     DestinationID = selectedWoreda,
                     SourceID = warehouseAllocation.WarehouseID,
                     ProgramID = 1,
-                    Quantity = warehouseAllocation.Relief
-                    //_transportBidPlanDetailService.GetHrdCommodityAmount(selectedWoreda),
+                    Quantity = warehouseAllocation.Relief,
+                    //_transportBidPlanDetailService.GetHrdCommodityAmount(selectedWoreda),                 
                 };
-                UpdateBidPlanDetail(reliefDetail);
+                reliefDetail.BusinessProcessID = bpId;
+                UpdateBidPlanDetail(reliefDetail,false);
                 var psnpDetail = new TransportBidPlanDetail()
                 {
                     BidPlanID = transportBidPlanID,
@@ -432,8 +461,9 @@ namespace Cats.Areas.Procurement.Controllers
                     Quantity = warehouseAllocation.PSNP
                     //_transportBidPlanDetailService.GetWoredaGroupedPsnpAmount(selectedWoreda),
                 };
-                UpdateBidPlanDetail(psnpDetail);
-            }
+                psnpDetail.BusinessProcessID = bpId;
+                UpdateBidPlanDetail(psnpDetail,false);
+            }         
 
             return Json(new[] { warehouseAllocation }.ToDataSourceResult(request, ModelState));
         }
@@ -443,7 +473,6 @@ namespace Cats.Areas.Procurement.Controllers
         {
             if (WarehouseAllocation != null && ModelState.IsValid)
             {
-        
                 TransportBidPlanDetail psnp = new TransportBidPlanDetail
                 {
                     BidPlanID = transportBidPlanID,
@@ -453,7 +482,8 @@ namespace Cats.Areas.Procurement.Controllers
                     TransportBidPlanDetailID = WarehouseAllocation.PSNP_ID,
                         ProgramID=2
                     };
-                UpdateBidPlanDetail(psnp);
+                //PromoteBidPlanDetail(psnp,"Edited");
+                UpdateBidPlanDetail(psnp,false); // the business process edited state should be created 
 
                 TransportBidPlanDetail relief = new TransportBidPlanDetail
                 {
@@ -465,14 +495,14 @@ namespace Cats.Areas.Procurement.Controllers
                     
                     ProgramID = 1
                 };
-                UpdateBidPlanDetail(relief);
+                UpdateBidPlanDetail(relief,true);//the business process state already updated
             }
 
             return Json(new[] { WarehouseAllocation }.ToDataSourceResult(request, ModelState));
         }
-        public void UpdateBidPlanDetail(TransportBidPlanDetail bpd)
+        public void UpdateBidPlanDetail(TransportBidPlanDetail bpd,bool businessProcessStateUdated)
         {
-            TransportBidPlanDetail inDb  = _transportBidPlanDetailService.FindById(bpd.TransportBidPlanDetailID);
+            TransportBidPlanDetail inDb  = _transportBidPlanDetailService.FindById(bpd.TransportBidPlanDetailID);         
 
             if (inDb==null)
             {
@@ -480,19 +510,82 @@ namespace Cats.Areas.Procurement.Controllers
             }
             else
             {
+                if(!businessProcessStateUdated)
+                PromoteBidPlanDetail(inDb,"Edited");
                 inDb.SourceID = bpd.SourceID;
                 inDb.DestinationID = bpd.DestinationID;
                 inDb.Quantity = bpd.Quantity;
                 _transportBidPlanDetailService.UpdateTransportBidPlanDetail(inDb);
             }
         }
+
+        public void PromoteBidPlanDetail(TransportBidPlanDetail bpd,string state)
+        {
+            var bpPr = _applicationSettingService.getBidPlanDeatailWorkflow();
+            var firstOrDefault = _stateTemplateService
+                .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == bpPr && s.Name == state);
+           
+            if (firstOrDefault == null) return;
+            var editedStateId = firstOrDefault.StateTemplateID;
+            var businessProcessState = new BusinessProcessState
+            {
+                StateID = editedStateId,
+                PerformedBy = HttpContext.User.Identity.Name,
+                DatePerformed = DateTime.Now,
+                Comment = "",
+                ParentBusinessProcessID = bpd.BusinessProcessID
+            };
+            _businessProcessService.PromotWorkflow(businessProcessState);
+        }
+
+        public int CreateBidPlanDetailActionWorkflow()
+        {
+            //create workflow
+            int BP_PR = _applicationSettingService.getBidPlanWorkflow();
+            if (BP_PR != 0)
+            {
+                BusinessProcessState createdstate = new BusinessProcessState
+                {
+                    DatePerformed = DateTime.Now,
+                    PerformedBy = User.Identity.Name,
+                    Comment = "Transport Bid plan detail Added"
+
+                };
+                //_PaymentRequestservice.Create(request);
+
+                BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                    "TransporterBidPlanDetail", createdstate);
+                if (bp != null) return bp.BusinessProcessID;
+                 return 0;
+            }
+            return 0;
+        }
+
         public ActionResult DeleteBidPlan(int id)
         {
             var bidPlan = _transportBidPlanService.FindById(id);
             if (bidPlan!=null)
             {
-                _transportBidPlanService.DeleteTransportBidPlan(bidPlan);
-                _transportBidPlanDetailService.DeleteByBidPlanID(bidPlan.TransportBidPlanID);
+                int BP_PR = _applicationSettingService.getBidPlanWorkflow();
+                var firstOrDefault = _stateTemplateService
+                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == BP_PR && s.Name == "Deleted");
+
+                if (firstOrDefault != null)
+                {
+                    var editedStateId = firstOrDefault.StateTemplateID;
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = editedStateId,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = bidPlan.BusinessProcessID
+                    };
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+                //_transportBidPlanService.DeleteTransportBidPlan(bidPlan);
+                //_transportBidPlanDetailService.DeleteByBidPlanID(bidPlan.TransportBidPlanID);
                 return RedirectToAction("Index");
             }
            ModelState.AddModelError("Errors",@"Unable to delete Bid Plan");
