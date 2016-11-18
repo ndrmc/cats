@@ -1,123 +1,146 @@
 ﻿@model Cats.Models.ViewModels.LoginModel
+@using Cats.Helpers;
 @{
     ViewBag.Title = "Login";
 }
 
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Sign in CATS</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <link rel="shortcut icon" type="image/ico" href="~/Content/images/CATS_Blue.ico">
-        <!-- Le styles -->
-        <link href="~/Content/Login/bootstrap.min.css" rel="stylesheet">
-        @*<link href="~/Content/bootstrap.min.css" rel="stylesheet">*@
-        <link href="~/Content/Login/App.css" rel="stylesheet">
-        <link href="~/Content/Login/Login.css" rel="stylesheet">
-
-        <!--
-            <style type="text/css">
-        body {
-            padding-top: 100px;
-            padding-bottom: 40px;
-            background-color: #f5f5f5;
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+    <meta charset="utf-8" />
+    <title> Sign In to @Html.Translate("Commodity Allocation & Tracking System") | @Html.Translate("CATS")</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=all" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assetss/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assetss/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assetss/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assetss/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="~/Content/assetss/admin/pages/css/login.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <!-- BEGIN THEME STYLES -->
+    <link href="~/Content/assetss/global/css/components.css" id="style_components" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assetss/global/css/plugins.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assetss/admin/layout/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assetss/admin/layout/css/themes/darkblue.css" rel="stylesheet" type="text/css" id="style_color" />
+    <link href="~/Content/assetss/admin/layout/css/custom.css" rel="stylesheet" type="text/css" />
+    <!-- END THEME STYLES -->
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <style type="text/css">
+        .login .content {
+            width: 500px;
+            margin-top: 10px;
         }
-
-        .form-signin {
-            max-width: 300px;
-            padding: 19px 29px 29px;
-            margin: 0 auto 20px;
-            background-color: #fff;
-            border: 1px solid #e5e5e5;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-            -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+        .login .content .form-title {
+            margin-bottom: 0;
         }
-
-        .form-signin .form-signin-heading {
-            text-align:center;
-        }
-
-        .form-signin .checkbox {
-            margin-bottom: 10px;
-        }
-
-        .form-signin input[type="text"],
-        .form-signin input[type="password"] {
-            font-size: 16px;
-            height: auto;
-            margin-bottom: 15px;
-            padding: 7px 9px;
+        .login .logo {
+            margin-top: 50px;
         }
     </style>
-            -->
-        <link href="~/Content/assets/css/bootstrap-responsive.css" rel="stylesheet">
-        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-        <!--[if lt IE 9]>
-            <script src="~/Content/assets/js/html5shiv.js"></script>
-        <![endif]-->
-    </head>
-
-    <body>
-        <div id="login-container">
-            <div></div>
-            <div id="logo">
-                <img src="~/Content/images/CATS.png">
-            </div>
-
-            <div id="login">
-                <h3>Welcome to CATS.</h3>
-                <h5>Please sign in to get access.</h5>
-
-                @if (ViewBag.HasError)
-                {
-                    <div class="alert alert-danger">
-                        <i class="icon-exclamation-sign"></i>
-                        <h4>Error</h4>
-                        @*@LanguageHelpers.Localization.Translator.Translate(ViewBag.ErrorMesssage)*@
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="login">
+    <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+    <div class="menu-toggler sidebar-toggler">
+    </div>
+    <!-- END SIDEBAR TOGGLER BUTTON -->
+    <!-- BEGIN LOGO -->
+    <div class="logo">
+        <a href="index.html">
+            <img src="~/Content/images/CATS.png" alt="" />
+        </a>
+    </div>
+    <!-- END LOGO -->
+    <!-- BEGIN LOGIN -->
+    <div class="content">
+        <!-- BEGIN LOGIN FORM -->
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "login-form", @id = "login-form" }))
+        {
+            <h3 class="form-title">Welcome to CATS</h3>
+            <h5 style="text-align: center; margin-bottom: 30px;">
+                Please Sign In to get access
+            </h5>
+            if (ViewBag.HasError)
+            {
+                <div class="alert alert-danger" style="text-align: center;">
+                    <button class="close" data-close="alert"></button>
+                    <span style="font-size: 14px;">
                         @ViewBag.ErrorMessage
-                    </div>
-                }
-
-                @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form", @id = "login-form" }))
-                {
-               
-                    <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
-                    <!--<h2 class="form-signin-heading">Sign in to CATS</h2>  -->
-                    <div class="form-group">
-                        <label for="login-username">Username</label>
-                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "Username", @required = "required", @id = "login-username" })
-                    </div>  
-             
-                    <div class="form-group">
-                        <label for="login-password">Password</label>
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password", @required = "required", @id = "login-password" })
-                    </div> 
-            
-                    <div class="form-group">
-                        <button type="submit" id="login-btn" class="btn btn-primary btn-block">Sign in &nbsp;  <i class="ui-icon-power"></i></button>
-                    </div>                      
-
-                }
-             
-                    <a href="@Url.Action("ForgetPasswordRequest","Account")">Forgot password?</a>
-                     @*<button class="btn btn-default" type="submit"  name="Forgot Password" id="btnForgotPassword">Forgot Password?</button>
-        *@       
-               
-                @*<div class="alert alert-danger">
-                    <i class="icon-exclamation-sign"></i>
-                    <h4>Notice: To all CATS users.</h4>
-                    Today on Friday July 04, 2014 CATS system will go down and will be unavailable due to maintenance 
-                    starting from 5:00 pm  in the afternoon (11:00 Ethiopian Time).
-                </div>*@
+                    </span>
+                </div>
+            }
+            <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+            <div class="form-group">
+                <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                <label class="control-label visible-ie8 visible-ie9">Username</label>
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control form-control-solid placeholder-no-fix", @placeholder = "Username", @required = "required", @id = "login-username" })
+                @*<input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="Username" name="username" />*@
             </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">Password</label>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control form-control-solid placeholder-no-fix", @placeholder = "Password", @required = "required", @id = "login-password" })
+                @*<input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" />*@
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success uppercase">Sign In</button>
+                @*<label class="rememberme check">
+                    <input type="checkbox" name="remember" value="1" />Remember
+                </label>*@
+                <a href="@Url.Action("ForgetPasswordRequest","Account")" id="forget-password" class="forget-password">Forgot Password?</a>
+            </div>
+            
+        }
+        <!-- END LOGIN FORM -->
+    </div>
 
-        </div>
-    </body>
+    <div class="copyright">
+        2016 © NDRMCC. Commodity Allocation & Tracking System
+    </div>
+    <!-- END LOGIN -->
+    <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+    <!-- BEGIN CORE PLUGINS -->
+    <!--[if lt IE 9]>
+        <script src="~/Content/assetss/global/plugins/respond.min.js"></script>
+        <script src="~/Content/assetss/global/plugins/excanvas.min.js"></script>
+    <![endif]-->
+    <script src="~/Content/assetss/global/plugins/jquery.min.js" type="text/javascript"></script>
+    <script src="~/Content/assetss/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
+    <script src="~/Content/assetss/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/Content/assetss/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+    <script src="~/Content/assetss/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+    <script src="~/Content/assetss/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+    <!-- END CORE PLUGINS -->
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/Content/assetss/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="~/Content/assetss/global/scripts/metronic.js" type="text/javascript"></script>
+    <script src="~/Content/assetss/admin/layout/scripts/layout.js" type="text/javascript"></script>
+    <script src="~/Content/assetss/admin/layout/scripts/demo.js" type="text/javascript"></script>
+    @*<script src="~/Content/assetss/admin/pages/scripts/login.js" type="text/javascript"></script>*@
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <script>
+        jQuery(document).ready(function () {
+            Metronic.init(); // init metronic core components
+            Layout.init(); // init current layout
+            Login.init();
+            Demo.init();
+        });
+    </script>
+    <!-- END JAVASCRIPTS -->
+</body>
 </html>
-
