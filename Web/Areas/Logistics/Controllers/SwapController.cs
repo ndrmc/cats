@@ -132,7 +132,8 @@ namespace Cats.Areas.Logistics.Controllers
                     BusinessProcess bp = _businessProcessService.FindById(transfer.BusinessProcessID);
                     BusinessProcessState bps = bp.CurrentState;
 
-                    var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
+                    var stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
+                    p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                     if (stateTemplate != null)
                     {

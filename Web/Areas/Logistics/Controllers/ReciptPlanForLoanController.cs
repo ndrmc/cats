@@ -130,7 +130,8 @@ namespace Cats.Areas.Logistics.Controllers
                 {
                     BusinessProcess bp = _businessProcessService.FindById(loanReciptPlan.BusinessProcessID);
                     BusinessProcessState bps = bp.CurrentState;
-                    StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited).FirstOrDefault();
+                    StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited && 
+                    p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                     if (stateTemplate != null)
                     {
@@ -432,16 +433,18 @@ namespace Cats.Areas.Logistics.Controllers
         {
             if (loanReciptPlanWithDetailViewModel != null)
             {
+                // the next line will go pagan, and/or replaced with workflow deleted state,
+                // this stops physical record deletion
+                //_loanReciptPlanDetailService.DeleteById(loanReciptPlanWithDetailViewModel.LoanReciptPlanDetailID);
+
                 // find out what state the document is on
                 LoanReciptPlan loanReciptPlan =
                     _loanReciptPlanService.FindById(loanReciptPlanWithDetailViewModel.LoanReciptPlanID);
                 BusinessProcess bp = _businessProcessService.FindById(loanReciptPlan.BusinessProcessID);
                 BusinessProcessState bps = bp.CurrentState;
-                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited).FirstOrDefault();
-                
-                // the next line will go pagan, and/or replaced with workflow deleted state,
-                // this stops physical record deletion
-                //_loanReciptPlanDetailService.DeleteById(loanReciptPlanWithDetailViewModel.LoanReciptPlanDetailID);
+                // We searched for Edited state, please read the comment below
+                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
+                p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                 // In the case of detail loan-receipt-plan deletion, we don't mark actual deleted state
                 // we only need to mark as edited -- since the parent is not deleted
@@ -536,7 +539,8 @@ namespace Cats.Areas.Logistics.Controllers
             if (loanReciptPlan != null)
             {
                 BusinessProcessState bps = loanReciptPlan.BusinessProcess.CurrentState;
-                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Deleted).FirstOrDefault();
+                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Deleted &&
+                p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                 if (loanReciptPlan.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft")
                 {

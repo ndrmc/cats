@@ -16,6 +16,7 @@ using Cats.Services.Security;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using log4net;
+using StateTemplate = Cats.Models.StateTemplate;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -55,7 +56,8 @@ namespace Cats.Areas.Logistics.Controllers
         {
             ViewBag.TargetController = "Transfer";
 
-            var transfer = _transferService.GetAllTransfer().Where(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name != "Deleted").OrderByDescending(m => m.TransferID);
+            var transfer = _transferService.GetAllTransfer().Where(t => 
+            t.BusinessProcess.CurrentState.BaseStateTemplate.Name != ConventionalAction.Deleted).OrderByDescending(m => m.TransferID);
             var transferToDisplay = GetAllTransfers(transfer);
 
             return View(transferToDisplay);
@@ -146,7 +148,8 @@ namespace Cats.Areas.Logistics.Controllers
                     BusinessProcess bp = _businessProcessService.FindById(transfer.BusinessProcessID);
                     BusinessProcessState bps = bp.CurrentState;
 
-                    var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
+                    var stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
+                    p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                     if (stateTemplate != null)
                     {
@@ -318,7 +321,8 @@ namespace Cats.Areas.Logistics.Controllers
                 //_transferService.DeleteTransfer(transfer);
 
                 BusinessProcessState bps = transfer.BusinessProcess.CurrentState;
-                var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Deleted").FirstOrDefault();
+                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Deleted &&
+                p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                 if (stateTemplate != null)
                 {

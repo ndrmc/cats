@@ -228,7 +228,8 @@ namespace Cats.Areas.Logistics.Controllers
 
                 BusinessProcess bp = _businessProcessService.FindById(localPurchase.BusinessProcessID);
                 BusinessProcessState bps = bp.CurrentState;
-                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited).FirstOrDefault();
+                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
+                p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                 // Partial workflow implementation
                 if (_localPurchaseService.EditLocalPurchase(localPurchase))
@@ -249,31 +250,42 @@ namespace Cats.Areas.Logistics.Controllers
                     }
                 }
 
+                string localPurchaseDetails = string.Empty;
+
                 foreach (var localPurchaseDetail in localPurchaseDetailViewModel.LocalPurchaseDetailViewModels)
                 {
                     var detail = _localPurchaseDetailService.FindById(localPurchaseDetail.LocalPurchaseDetailID);
+
                     if (detail != null)
                     {
                         detail.AllocatedAmount = localPurchaseDetail.AllocatedAmonut;
 
-                        // Partial workflow implementation
+                        // Concatenate all saved details onto a string
                         if (_localPurchaseDetailService.EditLocalPurchaseDetail(detail))
                         {
-                            if (stateTemplate != null)
-                            {
-                                var businessProcessState = new BusinessProcessState()
-                                {
-                                    StateID = stateTemplate.StateTemplateID, // mark as edited
-                                    PerformedBy = HttpContext.User.Identity.Name,
-                                    DatePerformed = DateTime.Now,
-                                    Comment = "Local Purchase detail is edited, a system internally captured data.",
-                                    ParentBusinessProcessID = bps.ParentBusinessProcessID
-                                };
-
-                                // Promot
-                                _businessProcessService.PromotWorkflow(businessProcessState);
-                            }
+                            localPurchaseDetails += "[" + detail.LocalPurchaseDetailID + "|" + detail.AllocatedAmount + "] ";
                         }
+                    }
+                }
+
+                if (localPurchaseDetails != string.Empty)
+                {
+                    // Partial workflow implementation
+                    if (stateTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = stateTemplate.StateTemplateID, // mark as edited
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment =
+                                "Local Purchase detail is edited, " + localPurchaseDetails +
+                                "\n a system internally captured data.",
+                            ParentBusinessProcessID = bps.ParentBusinessProcessID
+                        };
+
+                        // Promot
+                        _businessProcessService.PromotWorkflow(businessProcessState);
                     }
                 }
 

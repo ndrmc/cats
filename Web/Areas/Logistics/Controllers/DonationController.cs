@@ -84,7 +84,9 @@ namespace Cats.Areas.Logistics.Controllers
             try
             {
                 List<DonationPlanHeader> donationHeader = null;
-                donationHeader = _donationPlanHeaderService.Get(null, null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
+                donationHeader = _donationPlanHeaderService.Get(d => 
+                d.BusinessProcess.CurrentState.BaseStateTemplate.Name != ConventionalAction.Deleted, null, 
+                "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").ToList();
                 var receiptViewModel = ReceiptPlanViewModelBinder.GetReceiptHeaderPlanViewModel(donationHeader);
                 return Json(receiptViewModel.ToList().ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
 
@@ -92,8 +94,6 @@ namespace Cats.Areas.Logistics.Controllers
             catch (Exception e)
             {
                 return Json(e);
-
-
             }
         }
 
@@ -434,7 +434,8 @@ namespace Cats.Areas.Logistics.Controllers
                 DonationPlanHeader donation = _donationPlanHeaderService.FindById(donationViewModel.DonationHeaderPlanID);
                 BusinessProcess bp = _businessProcessService.FindById(donation.BusinessProcessID);
                 BusinessProcessState bps = bp.CurrentState;
-                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
+                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
+                p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                 if (stateTemplate != null)
                 {
@@ -720,7 +721,8 @@ namespace Cats.Areas.Logistics.Controllers
                     // _donationPlanHeaderService.DeleteDonationPlanHeader(donation);
 
                     BusinessProcessState bps = donation.BusinessProcess.CurrentState;
-                    StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Deleted").FirstOrDefault();
+                    StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Deleted &&
+                    p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                     if (stateTemplate != null)
                     {
