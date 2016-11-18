@@ -40,13 +40,13 @@
         columns.Bound(p => p.DonationHeaderPlanID).Visible(false);
         columns.Bound(p => p.Status).Title(Html.Translate("Status"));
         columns.Bound(p => p.Status).Title(Html.Translate("Actions")).ClientTemplate(
-                @"<div class='btn-group'># if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_donation).ToString() + "' == 'Edit_donation' && Status == 'Draft') { #" +
+                @"<div class='btn-group'># if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_donation).ToString() + "' == 'Edit_donation' && Status == 'Draft' || Status == 'Edited') { #" +
                     "<span href='' onclick='Edit(\"#=SINumber#\")' title='Edit Donation' class='btn btn-xs btn-warning edit_btn'>Edit</span></li>" +
                 " # } #" +
                 "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() + "' == 'Revert_Donation' && Status == 'Sent to hub') { #" +
                     "<span href='' onclick='OnRevert(#=DonationHeaderPlanID#)' title='Revert Donation' class='btn btn-xs btn-error revert_btn'>Revert</span></li>" +
                 " # } #" +
-                "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() + "' == 'Delete_Donation' && Status == 'Draft') { #" +
+                "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() + "' == 'Delete_Donation' && Status == 'Draft' || Status == 'Edited') { #" +
                     "<span href='' onclick='OnDelete(#=DonationHeaderPlanID#)' title='Delete Donation' class='btn btn-xs btn-error delete_btn'>Delete</span></li>" +
                 " # } #" +
                 "</div>" +

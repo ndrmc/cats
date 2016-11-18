@@ -1,6 +1,7 @@
 ﻿@using Cats.Areas.Logistics.Models
 @using Cats.Helpers
 @using Cats.Models
+@using Cats.Models.Constant
 @using Cats.Models.ViewModels.HRD
 @using Kendo.Mvc.UI
 @using Cats.Security
@@ -160,21 +161,21 @@
                                             </button>
                                             <ul class="dropdown-menu pull-right">
 
-                                                @if (item.Status == "Draft")
+                                                @if (item.Status == "Draft" || item.Status == ConventionalAction.Edited)
                                                 {
                                                     <li class="edit_button">
                                                         <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.ApprovedId,'Approve',@item.TransferID)" title="Approve">Approve</a>
                                                     </li>
                                                 }
 
-                                                @if (item.Status == "Approved")
+                                                @*@if (item.Status == "Approved" || item.Status == ConventionalAction.Edited)
                                                 {
                                                     <li class="edit_button">
                                                         <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.RejectedId,'Reject',@item.TransferID)" title="Reject">Reject</a>
                                                     </li>
                                                 }
 
-                                                @*@if (item.Status == "Rejected")
+                                                @if (item.Status == "Rejected")
                                                 {
                                                     <li class="edit_button">
                                                         <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.ApprovedId,'Approve',@item.TransferID)" title="Approve">Approve</a>

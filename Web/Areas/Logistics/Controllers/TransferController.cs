@@ -56,8 +56,7 @@ namespace Cats.Areas.Logistics.Controllers
         {
             ViewBag.TargetController = "Transfer";
 
-            var transfer = _transferService.GetAllTransfer().Where(t => 
-            t.BusinessProcess.CurrentState.BaseStateTemplate.Name != ConventionalAction.Deleted).OrderByDescending(m => m.TransferID);
+            var transfer = _transferService.GetAllTransfer();
             var transferToDisplay = GetAllTransfers(transfer);
 
             return View(transferToDisplay);
@@ -220,7 +219,8 @@ namespace Cats.Areas.Logistics.Controllers
         {
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             return (from transfer in transfers
-                    where transfer.CommoditySourceID == 5
+                    where transfer.CommoditySourceID == 5 &&
+                          transfer.BusinessProcess.CurrentState.BaseStateTemplate.Name != ConventionalAction.Deleted
                     select new TransferViewModel
                     {
                         TransferID = transfer.TransferID,
