@@ -185,6 +185,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alert\AlertManager.cs" />
+    <Compile Include="Alert\AlertMessage.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AlertMessage.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Alert\AlertMessage_Amh.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AlertMessage_Amh.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\WorkflowManager\WorkflowManager.cs" />
     <Compile Include="AmharicReportViewer.aspx.cs">
       <DependentUpon>AmharicReportViewer.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3709,6 +3721,14 @@
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>EditorLocalization.designer.cs</LastGenOutput>
     </Content>
+    <EmbeddedResource Include="Alert\AlertMessage.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AlertMessage.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Alert\AlertMessage_Amh.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AlertMessage_Amh.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Areas\EarlyWarning\Views\PrintableReports\HRD\AllHRD.rdlc" />
     <EmbeddedResource Include="Report\EarlyWarning\Ration.rdlc" />
     <EmbeddedResource Include="Report\EarlyWarning\RegionalRequest.rdlc" />
