@@ -151,21 +151,21 @@ namespace Cats.Services.EarlyWarning
         {
             int globalId = _unitOfWork.ProcessTemplateRepository.Get(p => p.Name == "GlobalWorkflow").FirstOrDefault().ProcessTemplateID;
 
-            return _unitOfWork.StateTemplateRepository.Get( t => t.ParentProcessTemplateID == globalId && t.Name=="Edit").FirstOrDefault().StateTemplateID;
+            return _unitOfWork.StateTemplateRepository.Get( t => t.ParentProcessTemplateID == globalId && t.Name=="Edited").FirstOrDefault().StateTemplateID;
         }
 
         public int GetGlobalDeleteStateTempId()
         {
             int globalId = _unitOfWork.ProcessTemplateRepository.Get(p => p.Name == "GlobalWorkflow").FirstOrDefault().ProcessTemplateID;
 
-            return _unitOfWork.StateTemplateRepository.Get(t => t.ParentProcessTemplateID == globalId &&  t.Name == "Delete").FirstOrDefault().StateTemplateID;
+            return _unitOfWork.StateTemplateRepository.Get(t => t.ParentProcessTemplateID == globalId &&  t.Name == "Deleted").FirstOrDefault().StateTemplateID;
         }
 
         public int GetGlobalPrintStateTempId()
         {
             int globalId = _unitOfWork.ProcessTemplateRepository.Get(p => p.Name == "GlobalWorkflow").FirstOrDefault().ProcessTemplateID;
 
-            return _unitOfWork.StateTemplateRepository.Get(t => t.ParentProcessTemplateID == globalId &&  t.Name == "Print").FirstOrDefault().StateTemplateID;
+            return _unitOfWork.StateTemplateRepository.Get(t => t.ParentProcessTemplateID == globalId &&  t.Name == "Printed").FirstOrDefault().StateTemplateID;
         }
 
         public bool Save()

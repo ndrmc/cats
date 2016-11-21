@@ -666,8 +666,8 @@ namespace Cats.Areas.Logistics.Controllers
             {
                     var printFlowTemplate = transPayreq.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Print Letter");
 
-                    if (printFlowTemplate != null)
-                        WorkflowCommon.EnterPrintWorkflow(transPayreq.BusinessProcessID, printFlowTemplate.FinalStateID,AlertManager.GetWorkflowPrintMessage("A Letter for this Document"));
+                if (printFlowTemplate != null)
+                    WorkflowCommon.EnterPrintWorkflow(transPayreq.BusinessProcess);
 
             }
 

@@ -337,26 +337,27 @@ namespace Cats.Areas.PSNP.Controllers
             // update the psnp plan 
             if (planId != 0 && (isAdded || isUpdated||isDeleted))
             {
-                int BP_PR = _applicationSettingService.getPSNPWorkflow();
-                var firstOrDefault = _stateTemplateService
-                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == BP_PR && s.Name == "Edited");
+                //int BP_PR = _applicationSettingService.getPSNPWorkflow();
+                //var firstOrDefault = _stateTemplateService
+                //    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == BP_PR && s.Name == "Edited");
 
                 var plan = _regionalPSNPPlanService.FindById(planId);
 
-                if (firstOrDefault != null && plan != null)
-                {
-                    var editedStateId = firstOrDefault.StateTemplateID;
-                    var businessProcessState = new BusinessProcessState()
-                    {
-                        StateID = editedStateId,
-                        PerformedBy = HttpContext.User.Identity.Name,
-                        DatePerformed = DateTime.Now,
-                        Comment = "",
-                        //AttachmentFile = fileName,
-                        ParentBusinessProcessID = plan.StatusID
-                    };
-                    _businessProcessService.PromotWorkflow(businessProcessState);
-                }
+                //if (firstOrDefault != null && plan != null)
+                //{
+                //    var editedStateId = firstOrDefault.StateTemplateID;
+                //    var businessProcessState = new BusinessProcessState()
+                //    {
+                //        StateID = editedStateId,
+                //        PerformedBy = HttpContext.User.Identity.Name,
+                //        DatePerformed = DateTime.Now,
+                //        Comment = "",
+                //        //AttachmentFile = fileName,
+                //        ParentBusinessProcessID = plan.StatusID
+                //    };
+                //    _businessProcessService.PromotWorkflow(businessProcessState);
+                //}
+                Workflow.WorkflowCommon.EnterEditWorkflow(plan.AttachedBusinessProcess);
             }
             /*var allFDPData = getDetailView(planId);
            return Json(new[] { regionalRequestDetail }.ToDataSourceResult(request, ModelState)); */

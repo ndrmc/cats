@@ -196,7 +196,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AlertMessage_Amh.resx</DependentUpon>
     </Compile>
-    <Compile Include="Areas\WorkflowManager\WorkflowManager.cs" />
     <Compile Include="AmharicReportViewer.aspx.cs">
       <DependentUpon>AmharicReportViewer.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -552,6 +551,7 @@
     <Compile Include="Areas\WorkflowManager\Controllers\FlowTemplateController.cs" />
     <Compile Include="Areas\WorkflowManager\Controllers\ProcessTemplateController.cs" />
     <Compile Include="Areas\WorkflowManager\Controllers\StateTemplateController.cs" />
+    <Compile Include="Areas\WorkflowManager\WorkflowManager.cs" />
     <Compile Include="Areas\WorkflowManager\WorkflowManagerAreaRegistration.cs" />
     <Compile Include="CatsMasterDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
