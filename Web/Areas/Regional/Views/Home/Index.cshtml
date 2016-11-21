@@ -136,6 +136,7 @@
                                             <th>Start Date</th>
                                             <th>End Date</th>
                                             <th>Status</th>
+                                            <th>Is HRD Created </th>
                                             @*<th class="number">Amount(QT)</th>
                                                 <th>Status</th>
                                                 <th>Detail</th>*@
@@ -149,8 +150,15 @@
                                             <td>{{assessment.PlanName}}</td>
                                             <td>{{assessment.StartDate}} </td>
                                             <td>{{assessment.EndDate}} </td>
-                                            <td><span class="label label-success">{{assessment.StatusDescription}}</span></td>
-
+                                            <td>
+                                                <span ng-class="{
+                                                      'label label-success': assessment.StatusDescription == 'Approved',
+                                                      'label label-danger': assessment.StatusDescription == 'Rejected'}">{{assessment.StatusDescription}}</span>
+                                            </td>
+                                            <td>
+                                                <span ng-class="{
+                                                      'label label-success': assessment.IsHRDCreated == 'Yes'}">{{assessment.IsHRDCreated}}</span>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -514,7 +522,7 @@
                                 <ul class=" pull-right portlet-tools ">
                                     <li>
 
-                                        <a class="btn btn-sm btn-default" href="@Url.Action("Index", "WoredaStockDistribution", new {Area = "Logistics", regionID = ViewBag.RegionID})"> Show more</a>
+                                        <a class="btn btn-sm btn-default" href="@Url.Action("Index", "WoredaStockDistribution", new { Area = "Logistics", regionID = ViewBag.RegionID })"> Show more</a>
                                     </li>
                                 </ul>
                             </div>
@@ -527,6 +535,8 @@
                                         <thead>
                                             <tr>
                                                 <th class="hidden-xs">Plan</th>
+
+                                                <th>Round</th>
                                                 <th>Woreda</th>
                                                 <th class="number">FDPs</th>
 
@@ -539,6 +549,7 @@
 
                                             <tr class="" ng-repeat="Distribution in Distribtion">
                                                 <td>{{Distribution.plan}}</td>
+                                                <td>{{Distribution.Month}}</td>
                                                 <th>{{Distribution.Woreda}}</th>
                                                 <th>{{Distribution.Fdps}}</th>
 

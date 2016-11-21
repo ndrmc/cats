@@ -283,7 +283,7 @@ namespace Cats.Services.Logistics
                         DatePerformed = DateTime.Now,
                         Comment = "Internally requisition project code assigned",
                         //AttachmentFile = fileName,
-                        ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
+                        ParentBusinessProcessID = bp.BusinessProcessID
                     };
 
                     // Promot
@@ -465,7 +465,7 @@ namespace Cats.Services.Logistics
                 DatePerformed = DateTime.Now,
                 Comment = "Internally requisition approved",
                 //AttachmentFile = fileName,
-                ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
+                ParentBusinessProcessID = requisition.BusinessProcessID
             };
 
             // Promot

@@ -202,5 +202,14 @@ namespace Cats.Services.Common {
                 return ((string)(this["TranferReceiptPlanWorkflow"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("BidPlanDetailActionWorkflow")]
+        public string BidPlanDetailActionWorkflow {
+            get {
+                return ((string)(this["BidPlanDetailActionWorkflow"]));
+            }
+        }
     }
 }

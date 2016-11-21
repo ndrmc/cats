@@ -70,7 +70,7 @@
                             isDraft = state.Name == "Draft";
                         }
                     }
-                    @if (Model.StatusID == (int) LocalPurchaseStatus.Draft)
+                    @if (Model.StatusID == (int) LocalPurchaseStatus.Draft || Model.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft")
                     {
                         if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_Swap).ToString() == "Edit_Swap")
                         {
@@ -81,7 +81,7 @@
                             foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
                              {
 
-                                 if (actions.Name == "Approve")
+                                 if (actions.Name == "Approve" || actions.Name == "Edited")
                                  {
                                      <li class="edit_button">
                                          <a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@Model.TransferID)" title="@actions.Name">Approve(Send to Hub)</a>

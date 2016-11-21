@@ -118,7 +118,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             var currentHrd =
                 _eWDashboardService.FindByHrd(
-                    m =>  m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
+                    m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
                     .FirstOrDefault();
             return currentHrd;
         }

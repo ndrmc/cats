@@ -16,6 +16,7 @@ using Cats.Services.Security;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using log4net;
+using StateTemplate = Cats.Models.StateTemplate;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -55,7 +56,7 @@ namespace Cats.Areas.Logistics.Controllers
         {
             ViewBag.TargetController = "Transfer";
 
-            var transfer = _transferService.GetAllTransfer().OrderByDescending(m => m.TransferID);
+            var transfer = _transferService.GetAllTransfer();
             var transferToDisplay = GetAllTransfers(transfer);
 
             return View(transferToDisplay);
@@ -75,14 +76,10 @@ namespace Cats.Areas.Logistics.Controllers
         [HttpPost]
         public ActionResult Create(TransferViewModel transferViewModel, FormCollection collection)
         {
-            //if (ModelState.IsValid && transferViewModel != null)
-            //{
-
-            //}
-
             try
             {
                 int BP_PR = _applicationSettingService.getTransferReceiptPlanWorkflow();
+
                 if (BP_PR != 0)
                 {
                     BusinessProcessState createdstate = new BusinessProcessState
@@ -90,13 +87,10 @@ namespace Cats.Areas.Logistics.Controllers
                         DatePerformed = DateTime.Now,
                         PerformedBy = User.Identity.Name,
                         Comment = "Transfer Receipt Plan Workflow"
-
                     };
-                    //_PaymentRequestservice.Create(request);
 
-                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
-                                                                                    "TransferReceiptPlan",
-                                                                                    createdstate);
+                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "TransferReceiptPlan", createdstate);
+
                     if (bp != null)
                     {
                         var transfer = GetTransfer(transferViewModel);
@@ -145,17 +139,42 @@ namespace Cats.Areas.Logistics.Controllers
         {
             if (ModelState.IsValid && transfer != null)
             {
-                transfer.CommoditySourceID = 5;//Commodity Source for transfer
-                _transferService.EditTransfer(transfer);
+                // i have to ask, what the next line really does
+                transfer.CommoditySourceID = 5; //Commodity Source for transfer
+
+                if (_transferService.EditTransfer(transfer))
+                {
+                    BusinessProcess bp = _businessProcessService.FindById(transfer.BusinessProcessID);
+                    BusinessProcessState bps = bp.CurrentState;
+
+                    var stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
+                    p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
+
+                    if (stateTemplate != null)
+                    {
+                        var businessProcessState = new BusinessProcessState()
+                        {
+                            StateID = stateTemplate.StateTemplateID, // mark as edited
+                            PerformedBy = HttpContext.User.Identity.Name,
+                            DatePerformed = DateTime.Now,
+                            Comment = "Transfer is edited, a system internally captured data.",
+                            ParentBusinessProcessID = bps.ParentBusinessProcessID
+                        };
+
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                    }
+                }
 
                 return RedirectToAction("Index");
             }
+
             ViewBag.ProgramID = new SelectList(_commonService.GetPrograms(), "ProgramID", "Name", transfer.ProgramID);
             ViewBag.SourceHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.SourceHubID);
             ViewBag.CommodityID = new SelectList(_commonService.GetCommodities(), "CommodityID", "Name", transfer.CommodityID);
             ViewBag.CommodityTypeID = new SelectList(_commonService.GetCommodityTypes(), "CommodityTypeID", "Name");
             ViewBag.DestinationHubID = new SelectList(_commonService.GetAllHubs(), "HubID", "Name", transfer.DestinationHubID);
             ViewBag.CommoditySourceID = new SelectList(_commonService.GetCommoditySource(), "CommoditySourceID", "Name", transfer.CommoditySourceID);
+
             return View(transfer);
         }
         private Transfer GetTransfer(TransferViewModel transferViewModel)
@@ -200,7 +219,8 @@ namespace Cats.Areas.Logistics.Controllers
         {
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             return (from transfer in transfers
-                    where transfer.CommoditySourceID == 5
+                    where transfer.CommoditySourceID == 5 &&
+                          transfer.BusinessProcess.CurrentState.BaseStateTemplate.Name != ConventionalAction.Deleted
                     select new TransferViewModel
                     {
                         TransferID = transfer.TransferID,
@@ -293,15 +313,37 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult Delete(int id)
         {
             var transfer = _transferService.FindById(id);
+
             if (transfer != null)
             {
-                if (transfer.StatusID == (int)TransferStatus.Draft)
-                {
-                    _transferService.DeleteTransfer(transfer);
-                    return RedirectToAction("Index");
-                }
+                // the next line will go pagan, and/or replaced with workflow deleted state,
+                // this stops physical record deletion
+                //_transferService.DeleteTransfer(transfer);
 
+                BusinessProcessState bps = transfer.BusinessProcess.CurrentState;
+                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Deleted &&
+                p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
+
+                if (stateTemplate != null)
+                {
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = stateTemplate.StateTemplateID, // mark as deleted
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "Transfer is deleted, a system internally captured data.",
+                        ParentBusinessProcessID = bps.ParentBusinessProcessID
+                    };
+
+                    if (_businessProcessService.PromotWorkflow(businessProcessState))
+                    {
+                        TempData["Deleted"] = "Transfer has been deleted!";
+
+                        return RedirectToAction("Index");
+                    }
+                }
             }
+
             return RedirectToAction("Index", "Transfer");
         }
 
@@ -344,10 +386,10 @@ namespace Cats.Areas.Logistics.Controllers
                 {
                     _businessProcessService.PromotWorkflow(businessProcessState);
                 }
-                else if (stateName == "Rejected")
-                {
-                    _businessProcessService.PromotWorkflow(businessProcessState);
-                }
+                //else if (stateName == "Rejected") // if reject will be incorporated, then uncomment this section, and please to remember it affects or reverts what is done in approve
+                //{
+                //    _businessProcessService.PromotWorkflow(businessProcessState);
+                //}
             }
 
             if (statusId != null)
