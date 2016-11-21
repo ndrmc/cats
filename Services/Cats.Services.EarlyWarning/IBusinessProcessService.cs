@@ -21,8 +21,8 @@ namespace Cats.Services.EarlyWarning
          bool Save();
         bool CheckPlanBeforeReject(BusinessProcessState st);
 
-          int GetGlobalEditStateTempId();
-          int GetGlobalDeleteStateTempId();
+        int GetGlobalEditStateTempId();
+         int GetGlobalDeleteStateTempId();
         int GetGlobalPrintStateTempId();
 
     }

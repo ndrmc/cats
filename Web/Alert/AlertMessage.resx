@@ -126,7 +126,19 @@
   <data name="Workflow_DefaultPrint" xml:space="preserve">
     <value>"The document has been Printed."</value>
   </data>
+  <data name="Workflow_LossEntry" xml:space="preserve">
+    <value>"Loss Entry has been made for this Document."</value>
+  </data>
+  <data name="Workflow_PrintLetter" xml:space="preserve">
+    <value>"A Letter has been Printed for this Document."</value>
+  </data>
   <data name="Workflow_PrintwithParam1" xml:space="preserve">
     <value>"{1} has been Printed."</value>
+  </data>
+  <data name="Workflow_RejectedDocument" xml:space="preserve">
+    <value>"This Document Has been Rejected."</value>
+  </data>
+  <data name="Workflow_RejectedDocumentwithParam1" xml:space="preserve">
+    <value>"{1} Has been Rejected."</value>
   </data>
 </root>
