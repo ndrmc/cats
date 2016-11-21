@@ -110,6 +110,7 @@ namespace Cats.Areas.Regional.Controllers
                 _utilization.FindBy(
                     t => t.PlanID == currentPlan && t.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID);
 
+
             var planName = _planService.FindById(currentPlan).PlanName;
             var sum18 = 0;
             var sum518 = 0;

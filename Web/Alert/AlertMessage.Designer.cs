@@ -88,11 +88,47 @@ namespace Cats.Alert {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;Loss Entry has been made for this Document.&quot;.
+        /// </summary>
+        public static string Workflow_LossEntry {
+            get {
+                return ResourceManager.GetString("Workflow_LossEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;A Letter has been Printed for this Document.&quot;.
+        /// </summary>
+        public static string Workflow_PrintLetter {
+            get {
+                return ResourceManager.GetString("Workflow_PrintLetter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;{1} has been Printed.&quot;.
         /// </summary>
         public static string Workflow_PrintwithParam1 {
             get {
                 return ResourceManager.GetString("Workflow_PrintwithParam1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;This Document Has been Rejected.&quot;.
+        /// </summary>
+        public static string Workflow_RejectedDocument {
+            get {
+                return ResourceManager.GetString("Workflow_RejectedDocument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;{1} Has been Rejected.&quot;.
+        /// </summary>
+        public static string Workflow_RejectedDocumentwithParam1 {
+            get {
+                return ResourceManager.GetString("Workflow_RejectedDocumentwithParam1", resourceCulture);
             }
         }
     }
