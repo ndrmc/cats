@@ -128,22 +128,23 @@ namespace Cats.Areas.Hub.Controllers
             ReceiveDetail receivedetail = receive.ReceiveDetails.FirstOrDefault();
             viewModel.StoreId = receive.StoreId.GetValueOrDefault();
             viewModel.StackNumber = receive.StackNumber.GetValueOrDefault();
-            viewModel.ReceiveDetailNewViewModel = new ReceiveDetailNewViewModel
-            {
-                CommodityId = receivedetail.CommodityID,
-                CommodityChildID = receivedetail.CommodityChildID,
-                ReceivedQuantityInMt =
-                                                              receivedetail.QuantityInMT,
-                ReceivedQuantityInUnit =
-                                                              receivedetail.QuantityInUnit,
-                SentQuantityInMt = receivedetail.SentQuantityInMT,
-                SentQuantityInUnit = receivedetail.SentQuantityInUnit,
-                UnitId = receivedetail.UnitID,
-                Description = receivedetail.Description??string.Empty,
-                ReceiveId = receivedetail.ReceiveID,
-                ReceiveDetailId = receivedetail.ReceiveDetailID,
+            if (receivedetail != null)
+                viewModel.ReceiveDetailNewViewModel = new ReceiveDetailNewViewModel
+                {
+                    CommodityId = receivedetail.CommodityID,
+                    CommodityChildID = receivedetail.CommodityChildID,
+                    ReceivedQuantityInMt =
+                        receivedetail.QuantityInMT,
+                    ReceivedQuantityInUnit =
+                        receivedetail.QuantityInUnit,
+                    SentQuantityInMt = receivedetail.SentQuantityInMT,
+                    SentQuantityInUnit = receivedetail.SentQuantityInUnit,
+                    UnitId = receivedetail.UnitID,
+                    Description = receivedetail.Description??string.Empty,
+                    ReceiveId = receivedetail.ReceiveID,
+                    ReceiveDetailId = receivedetail.ReceiveDetailID,
 
-            };
+                };
             viewModel.ReceiveDetailsViewModels = new List<ReceiveDetailsViewModel>();
             foreach (var receivedetai in receive.ReceiveDetails)
             {
@@ -448,7 +449,7 @@ namespace Cats.Areas.Hub.Controllers
             foreach (var receiveDetailViewModel in receiveDetailsViewModels)
             {
                 ReceiveDetailsViewModel rdvm;
-                if (receiveDetailViewModel.ReceiveDetailsId == Guid.Empty)
+                if (receiveDetailViewModel.ReceiveDetailsId == Guid.Empty|| receiveDetailViewModel.ReceiveDetailsId== null)
                 {
                     rdvm = receiveDetailViewModel;
                     rdvm.ReceiveDetailsId = Guid.NewGuid();
@@ -541,22 +542,22 @@ namespace Cats.Areas.Hub.Controllers
                     firstOrdefault = viewNewModel;         
                 if (firstOrdefault != null && firstOrdefault.ReceiveDetailsId == null)
                     firstOrdefault.ReceiveDetailsId = Guid.NewGuid();
-                viewModel.ReceiveDetailNewViewModel = new ReceiveDetailNewViewModel
-                {                  
-                    CommodityId = firstOrdefault.CommodityId,
-                    CommodityChildID = firstOrdefault.CommodityChildID,
-                    Description = firstOrdefault.Description,
-                    ReceiveDetailId =  (Guid) firstOrdefault.ReceiveDetailsId,
-                    ReceivedQuantityInMt = firstOrdefault.ReceivedQuantityInMt,
-                    ReceivedQuantityInUnit = firstOrdefault.ReceivedQuantityInUnit,
-                    SentQuantityInMt = firstOrdefault.SentQuantityInMt,
-                    SentQuantityInUnit = firstOrdefault.SentQuantityInUnit,
-                    UnitId = firstOrdefault.UnitId
-                };
+                //viewModel.ReceiveDetailNewViewModel = new ReceiveDetailNewViewModel
+                //{                  
+                //    CommodityId = firstOrdefault.CommodityId,
+                //    CommodityChildID = firstOrdefault.CommodityChildID,
+                //    Description = firstOrdefault.Description,
+                //    ReceiveDetailId =  (Guid) firstOrdefault.ReceiveDetailsId,
+                //    ReceivedQuantityInMt = firstOrdefault.ReceivedQuantityInMt,
+                //    ReceivedQuantityInUnit = firstOrdefault.ReceivedQuantityInUnit,
+                //    SentQuantityInMt = firstOrdefault.SentQuantityInMt,
+                //    SentQuantityInUnit = firstOrdefault.SentQuantityInUnit,
+                //    UnitId = firstOrdefault.UnitId
+                //};
 
-                if (viewModel.ReceiveDetailNewViewModel.ReceiveDetailId == Guid.Empty)
-                    firstOrdefault.ReceiveDetailsId =
-                        viewModel.ReceiveDetailNewViewModel.ReceiveDetailId = Guid.NewGuid();
+                //if (viewModel.ReceiveDetailNewViewModel.ReceiveDetailId == Guid.Empty)
+                //    firstOrdefault.ReceiveDetailsId =
+                //        viewModel.ReceiveDetailNewViewModel.ReceiveDetailId = Guid.NewGuid();
 
                 #region GRN validation
 

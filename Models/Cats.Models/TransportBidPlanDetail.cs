@@ -52,5 +52,8 @@ namespace Cats.Models
         public decimal Quantity { get; set; }
 
         public int? PartitionId  { get; set; }
+
+        public int BusinessProcessID { get; set; }
+        public virtual  BusinessProcess BusinessProcess { get; set; }
     }
 }

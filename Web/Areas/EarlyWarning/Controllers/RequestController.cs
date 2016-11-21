@@ -102,8 +102,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             ViewBag.Months = new SelectList(RequestHelper.GetMonthList(), "Id", "Name");
             ViewBag.RegionID = new SelectList(_commonService.GetAminUnits(t => t.AdminUnitTypeID == 2), "AdminUnitID", "Name");
-            ViewBag.Status = new SelectList(_commonService.GetStatus(Workflow.REGIONAL_REQUEST), "StatusID",
-                                            "Description");
+            //ViewBag.Status = new SelectList(_commonService.GetStatus(Workflow.REGIONAL_REQUEST), "StatusID",
+            //                                "Description");
 
             var requests = _regionalRequestService.Get(t => t.Status == id, null, "AdminUnit,Program");
             var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);

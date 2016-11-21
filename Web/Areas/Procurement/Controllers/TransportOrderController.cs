@@ -24,6 +24,7 @@ using Cats.ViewModelBinder;
 using Cats.Helpers;
 using Cats.Services.Common;
 using System.IO;
+using System.ServiceModel.Security;
 
 namespace Cats.Areas.Procurement.Controllers
 {
@@ -43,6 +44,7 @@ namespace Cats.Areas.Procurement.Controllers
         private readonly IApplicationSettingService _applicationSettingService;
         private readonly IBusinessProcessService _businessProcessService;
         private readonly IStateTemplateService _stateTemplateService;
+        private readonly IBusinessProcessStateService _businessProcessStateService;
         public TransportOrderController(ITransportOrderService transportOrderService,
             ITransportRequisitionService transportRequisitionService,
             IWorkflowStatusService workflowStatusService, ILog log,
@@ -50,7 +52,7 @@ namespace Cats.Areas.Procurement.Controllers
             IAdminUnitService adminUnitService, ITransporterService transporterService, ITransportBidQuotationService bidQuotationService,
             IHubService hubService, IApplicationSettingService applicationSettingService,
             IBusinessProcessService businessProcessService,
-            IStateTemplateService stateTemplateService)
+            IStateTemplateService stateTemplateService, IBusinessProcessStateService paramBusinessProcessStateService)
         {
             this._transportOrderService = transportOrderService;
             this._transportRequisitionService = transportRequisitionService;
@@ -65,6 +67,7 @@ namespace Cats.Areas.Procurement.Controllers
             _applicationSettingService = applicationSettingService;
             _businessProcessService = businessProcessService;
             _stateTemplateService = stateTemplateService;
+            _businessProcessStateService = paramBusinessProcessStateService;
         }
 
 
@@ -299,23 +302,24 @@ namespace Cats.Areas.Procurement.Controllers
         }
         public ActionResult TransportOrder_Read([DataSourceRequest] DataSourceRequest request, int id = 0, int programId = 0, int regionId = 0)
         {
-            var stateName = string.Empty;
+            string[] stateNames = new string[2];
             switch (id)
             {
                 case 1:
-                    stateName = "Draft";
+                    stateNames[0] = "Draft"; // this filter should include for Edited records too,
+                    stateNames[1] = "Edited";
                     break;
                 case 2:
-                    stateName = "Approved";
+                    stateNames[0] = "Approved";
                     break;
                 case 3:
-                    stateName = "Signed";
+                    stateNames[0] = "Signed";
                     break;
                 case 4:
-                    stateName = "Closed";
+                    stateNames[0] = "Closed";
                     break;
                 case 5:
-                    stateName = "Rejected";
+                    stateNames[0] = "Rejected";
                     break;
             }
 
@@ -326,10 +330,10 @@ namespace Cats.Areas.Procurement.Controllers
 
             //var filteredTransportOrder=_transportOrderDetailService.FindBy(m=>m.RequisitionID=)
             var transportOrders = id == 0
-                ? _transportOrderService.GetFilteredTransportOrder(transportRequistions, stateName)
+                ? _transportOrderService.GetFilteredTransportOrder(transportRequistions, stateNames)
                     .OrderByDescending(m => m.TransportOrderID)
                     .ToList()
-                : _transportOrderService.GetFilteredTransportOrder(transportRequistions, stateName).ToList();
+                : _transportOrderService.GetFilteredTransportOrder(transportRequistions, stateNames).ToList();
 
 
             transportRequisitionRegion = regionId == 0
@@ -533,7 +537,7 @@ namespace Cats.Areas.Procurement.Controllers
 
                     SubstituteTransporterOrder orders = subTransporterOrders;
                     TransportOrder transportOrderOld = null;
-
+                    // Change status to workflow 
                     var transportOrder = _transportOrderService.FindBy(t => t.TransporterID == transporterObj.TransporterID && t.StatusID == (int)TransportOrderStatus.Draft).Distinct();
                     var transportOrders = transportOrder as List<TransportOrder> ?? transportOrder.ToList();
                     foreach (var order in transportOrders)
@@ -618,6 +622,27 @@ namespace Cats.Areas.Procurement.Controllers
                     }
                     else
                     {
+                        int businessProcessID = 0;
+                        int BP_PR = _applicationSettingService.getTransportOrderWorkflow();
+                        if (BP_PR != 0)
+                        {
+                            BusinessProcessState createdstate = new BusinessProcessState
+                            {
+                                DatePerformed = DateTime.Now,
+                                PerformedBy = User.Identity.Name,
+                                Comment = "Transport Order Created for Transporter Changed"
+
+                            };
+                            //_PaymentRequestservice.Create(request);
+
+                            BusinessProcess bpTR = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                                                                                            "TransportOrder", createdstate);
+                            if (bpTR != null)
+                                businessProcessID = bpTR.BusinessProcessID;
+
+
+                        }
+
 
 
                         var transportOrderObj = new TransportOrder
@@ -632,7 +657,8 @@ namespace Cats.Areas.Procurement.Controllers
                             TransporterSignedDate = DateTime.Today,
                             RequestedDispatchDate = DateTime.Today,
                             ConsignerDate = DateTime.Today,
-                            StatusID = (int)TransportOrderStatus.Draft,
+                            BusinessProcessID = businessProcessID,
+                            StatusID = (int)TransportOrderStatus.Draft, // change this to workflow 
                             StartDate = DateTime.Today,
                             EndDate = DateTime.Today.AddDays(10),
                         };
@@ -712,6 +738,30 @@ namespace Cats.Areas.Procurement.Controllers
                 }
             }
             //changedTransportOrderObj.StatusID = (int)TransportOrderStatus.Failed;
+            var failedStateId =
+                               _stateTemplateService
+                                   .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == changedTransportOrderObj.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Failed");
+
+            var bp = _businessProcessService.GetAll().FirstOrDefault(t => t.BusinessProcessID == changedTransportOrderObj.BusinessProcessID);
+
+            if (failedStateId != null)
+            {
+                var createdstate3 = new BusinessProcessState
+                {
+                    DatePerformed = DateTime.Now,
+                    PerformedBy = User.Identity.Name,
+                    Comment = " TransportOrder Failed on Transporter Change",
+                    StateID = failedStateId.StateTemplateID,
+                    ParentBusinessProcessID = changedTransportOrderObj.BusinessProcessID
+                };
+                _businessProcessStateService.Add(createdstate3);
+
+                if (bp != null)
+                {
+                    bp.CurrentState = createdstate3;
+                    _businessProcessService.Update(bp);
+                }
+            }
             _transportOrderService.EditTransportOrder(changedTransportOrderObj);
             return RedirectToAction("Index", "TransportOrder", returnedObj);
             //return Json(returnedObj.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
@@ -867,6 +917,34 @@ namespace Cats.Areas.Procurement.Controllers
                     detail.TariffPerQtl = orderDetails.TariffPerQtl;
 
                     _transportOrderDetailService.EditTransportOrderDetail(detail);
+
+                    if (_transportOrderDetailService.EditTransportOrderDetail(detail))
+                    {
+                        var target = _transportOrderService.Get(t => t.TransportOrderID == orderDetails.TransportOrderID).FirstOrDefault();
+
+                        if (target != null)
+                        {
+                            BusinessProcessState bps = target.BusinessProcess.CurrentState;
+                            var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
+
+                            if (stateTemplate != null)
+                            {
+                                int editStateId = stateTemplate.StateTemplateID;
+
+                                var businessProcessState = new BusinessProcessState()
+                                {
+                                    StateID = editStateId,
+                                    PerformedBy = HttpContext.User.Identity.Name,
+                                    DatePerformed = DateTime.Now,
+                                    Comment = "Transport Order - detail is edited - " + detail.TariffPerQtl + ", a system internally captured data.",
+                                    //AttachmentFile = fileName,
+                                    ParentBusinessProcessID = bps.ParentBusinessProcessID
+                                };
+
+                                _businessProcessService.PromotWorkflow(businessProcessState);
+                            }
+                        }
+                    }
                 }
 
             }
@@ -912,7 +990,7 @@ namespace Cats.Areas.Procurement.Controllers
                 {
 
 
-                    _transportOrderService.ApproveTransportOrder(transportOrder);
+                    _transportOrderService.ApproveTransportOrder(transportOrder, User.Identity.Name);
                     return RedirectToAction("Index");
                 }
                 TempData["CustomError"] = "Transport Order Without Tariff can not be approved! Please Specify Tariff for each transport order detail! ";
@@ -966,7 +1044,8 @@ namespace Cats.Areas.Procurement.Controllers
         {
             try
             {
-                var result = _transportOrderService.GeneratDispatchPlan(id);
+                string UserName = User.Identity.Name;
+                var result = _transportOrderService.GeneratDispatchPlan(id, UserName);
                 if (result)
                 {
                     return RedirectToAction("Index", "Dispatch", new { Area = "Hub" });
@@ -1018,7 +1097,7 @@ namespace Cats.Areas.Procurement.Controllers
         }
         public ActionResult MultipleApproval()
         {
-            var draftTransportOrders = _transportOrderService.FindBy(m => m.StatusID == (int)TransportOrderStatus.Draft);
+            var draftTransportOrders = _transportOrderService.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft");
             if (draftTransportOrders.Count == 0)
             {
                 TempData["CustomError"] = "There are no draft Transport Orders to be Approved! ";
@@ -1053,7 +1132,7 @@ namespace Cats.Areas.Procurement.Controllers
                         }
                         if (orderDetailWithoutTarrif == 0)
                         {
-                            _transportOrderService.ApproveTransportOrder(transportOrder);
+                            _transportOrderService.ApproveTransportOrder(transportOrder, User.Identity.Name);
                             ++noOfApproval;
                         }
                     }

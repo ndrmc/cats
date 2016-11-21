@@ -2,7 +2,7 @@
 
     var _ethdatepickerInitialized = false;
 
-    var inputTargetIsReadonly =false;
+    var inputTargetIsReadonly = false;
 
     $.fn.ethcal_datepicker = function (options) {
         _ethdatepicker_init();
@@ -23,9 +23,10 @@
                 if ($(that).val()) {
                     geezStr = eth_date.toString();
                 }
-                
 
- 
+
+
+
 
                 var eth_date_input = $($(that).clone()).insertAfter($(this));
                 var selected_date;
@@ -36,7 +37,7 @@
 
                     .change(function () {
                         var $this = $(this);
-                          selected_date = new EthDate();
+                        selected_date = new EthDate();
                         if ($this.val()) {
 
                             selected_date.parse($this.val());
@@ -54,22 +55,23 @@
                             selected_date = null;
                         }
 
-                        if(selected_date!=null)
-                        if (selected_date.date.toString() == "NaN" || selected_date.month.toString() == "NaN" ||selected_date.year.toString() == "NaN")
-                        {
-                            selected_date = null;
+                        if (selected_date != null)
+                            if (selected_date.date.toString() == "NaN" || selected_date.month.toString() == "NaN" || selected_date.year.toString() == "NaN") {
+                                selected_date = null;
 
-                        }
+                            }
 
-                        dateEditorValueChanged(selected_date,gregorian_date,this);
+                        dateEditorValueChanged(selected_date, gregorian_date, this);
                     })
                     .tooltip({ trigger: "hover manual", title: "dd/mm/yyyy" })
                     .attr("placeholder", "dd/mm/yyyy")
-               
+
                 eth_date_input.data("greg_input", this);
                 eth_date_input.blur(function (e) { _handle_blur(e, this) });
                 var dp = _build_date_picker(eth_date_input);
                 dp.displayStyle = "popup";
+
+                $(dp).data("input", eth_date_input);
 
                 $(this).data("eth_date_input", eth_date_input);
                 $(this).css({ opacity: 0.5, display: "none" });
@@ -77,12 +79,28 @@
                 if ($(that).is('[readonly]')) {
                     inputTargetIsReadonly = true;
 
-                }else{
+                } else {
                     inputTargetIsReadonly = false;
 
                 }
 
- 
+                //if(options!=null)
+                //{
+                //    if (options.selector == "input[type='image'][src$='.calendar.gif']")
+                //    {
+                //        options.click(function () {
+                //            try {
+                //                _ethdatepicker_show(eth_date_input);
+                //            } catch (err) { }
+                //        });
+
+                //    }
+
+
+                //}
+
+
+
             }
             else {
                 var geezDate = [""];
@@ -132,12 +150,20 @@
         editorValueChangedEvent.sender = sender
         ;
         var id = sender.id;
-        $('#'+id).trigger(editorValueChangedEvent);
-         
+        $('#' + id).trigger(editorValueChangedEvent);
+
     }
     var editorValueChangedEvent = jQuery.Event("dateEditorValueChanged");
+    var aboutToOpenPickerEvent = jQuery.Event("aboutToOpenPicker");
 
- 
+    function OnAboutToOpenPicker(pickerControl, inputControl) {
+
+        aboutToOpenPickerEvent.PickerControl = pickerControl;
+        aboutToOpenPickerEvent.InputControl = inputControl;
+
+        $(document).trigger(aboutToOpenPickerEvent);
+
+    }
     var test_coutn = 0;
     var _handle_blur = function (evt, elem) {
         var input = $(elem);
@@ -148,7 +174,7 @@
         var htm = "";
         // htm += date_picker.attr("id");
         $(".hover").each(function () { hide = false; });
-    
+
         if (hide) {
             date_picker.displayed = 0;
             date_picker.selected_month = "";
@@ -192,10 +218,10 @@
 
         //        var $title = $(' <div class="ui-datepicker-title"><span class="ui-datepicker-month" id="ui-ethdatepicker-current-month">#Month#</span>&nbsp;<span class="ui-datepicker-year" id="ui-ethdatepicker-current-year">#Year#</span></div></div>').appendTo($header);
         var $title = $('<div class="ui-datepicker-title"></div>').appendTo($header);
-        var monthhtm = _write_month_option() ;
+        var monthhtm = _write_month_option();
         var yearhtm = _write_year_option();
         var $month = $(monthhtm).appendTo($title);
-   
+
         var $year = $(yearhtm).appendTo($title);
         var yearmonth = $("<div class='year-month'>Month : Year</div>").appendTo($title);
 
@@ -204,29 +230,31 @@
         $month.data("date_picker", eth_date_pickerdata);
         $year.data("date_picker", eth_date_pickerdata);
 
-        var month_yr_changed = function (date_picker) {
+        input.data("picker", eth_date_pickerdata);
 
-         
+        var month_yr_changed = function (eth_date_pickerdata) {
+
+
             var selected_ddate = new EthDate();
- 
-            var m = date_picker.ui.month.val() / 1 + 1;
-    
-            var yr = date_picker.ui.year.val();
+
+            var m = eth_date_pickerdata.ui.month.val() / 1 + 1;
+
+            var yr = eth_date_pickerdata.ui.year.val();
             var selected_month = new EthDate(yr, m, 1);
-            date_picker.selected_month = selected_month;
+            eth_date_pickerdata.selected_month = selected_month;
 
 
-            _ethdatepicker_show_month(date_picker, selected_month);
+            _ethdatepicker_show_month(eth_date_pickerdata, selected_month);
 
-            _attach_eth_cal_event(date_picker);
-            date_picker.input.focus();
+            _attach_eth_cal_event(eth_date_pickerdata);
+            eth_date_pickerdata.input.focus();
         };
 
         $month.change(function () {
             var dp = $(this).data("date_picker");
             month_yr_changed($(this).data("date_picker"));
             return;
-          
+
 
         });
         $year.change(function () {
@@ -264,13 +292,13 @@
 
         _ethdatepickerInitialized = true;
     }
-    var _ethdatepicker_show = function (target, dispdate) {
+    function _ethdatepicker_show(target, dispdate) {
         //var txtdtgr = $(target).data("greg_input").value;
         //var converted = new EthDate();
         var datepicker = $(target).data("date_picker");
-         
+
         if (inputTargetIsReadonly == true) return;
-        
+
         dispdate = datepicker.selected_month;
         if (datepicker.displayed) {
             //   return;
@@ -298,6 +326,7 @@
         var container = datepicker.ui.container;
         container.css("top", top);
         container.css("left", left);
+        OnAboutToOpenPicker(container, target);
         container.show();
         container.focus();
         _ethdatepicker_show_month(datepicker, selected_date, target, dispdate);
@@ -413,7 +442,7 @@
 
     }
     var dateClickedEvent = jQuery.Event("dateChanged");
-   
+
     var _attach_eth_cal_event = function (date_picker) {
         var cal = date_picker.ui.container;
         cal.hover(function () { $(this).addClass("hover"); }, function () { $(this).removeClass("hover"); });
@@ -425,7 +454,7 @@
 															    var selected_date = new EthDate(_this.data("year") / 1, _this.data("month") / 1, date / 1);
 															    $("#ui-ethdatepicker-debug").html(selected_date.toString());
 
-															 
+
 
 															    var target = _this.data("target");
 															    target.val(selected_date);
@@ -461,3 +490,6 @@
     }
 
 })(jQuery);
+
+
+
