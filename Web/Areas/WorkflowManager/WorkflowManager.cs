@@ -1,6 +1,7 @@
 ﻿using Cats.Alert;
 using Cats.Models;
 using Cats.Services.EarlyWarning;
+using Cats.Services.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,27 @@ using System.Web.Mvc;
 
 namespace Cats.Areas.Workflow
 {
-    public  class WorkflowManager 
+    public  class WorkflowCommon:Controller
     {
         private static  IBusinessProcessService _businessProcessService;
 
-        public WorkflowManager(IBusinessProcessService businessProcessService)
+        private static String UserName = String.Empty;
+
+        public WorkflowCommon(IBusinessProcessService businessProcessService )
         {
             _businessProcessService = businessProcessService;
 
+        UserName = HttpContext.User.Identity.Name;
+
 
         }
+        public static Boolean EnterEditWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultEdit",  String fileName = "")
+        {
+            int editId = _businessProcessService.GetGlobalEditStateTempId();
 
-        public static Boolean EnterEditWorkflow(int businessProcessID, int finalStateID, String performedBy, String fileName="",String description="Workflow_DefaultEdit")
+            return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, editId, description, fileName);
+        }
+        private static Boolean EnterEditWorkflow(int businessProcessID, int finalStateID,String description="Workflow_DefaultEdit", String fileName = "")
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -35,14 +45,20 @@ namespace Cats.Areas.Workflow
             else
                 msg = description;
 
-            EnterWorkflow(businessProcessID, finalStateID, performedBy, fileName, msg);
+            EnterWorkflow(businessProcessID, finalStateID,fileName, msg);
 
 
             return true;
         }
+        public static Boolean EnterPrintWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print",String fileName = "")
+        {
 
+            int PrintId = _businessProcessService.GetGlobalPrintStateTempId();
 
-        public static Boolean EnterPrintWorkflow(int businessProcessID, int finalStateID, String performedBy, String fileName = "", String description = "Workflow_DefaultPrint")
+            return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, PrintId, description, fileName);
+        }
+
+        private static Boolean EnterPrintWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultPrint",   String fileName = "")
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -56,13 +72,22 @@ namespace Cats.Areas.Workflow
             else
                 msg = description;
 
-            EnterWorkflow(businessProcessID, finalStateID, performedBy, fileName, msg);
+            EnterWorkflow(businessProcessID, finalStateID, fileName, msg);
 
 
             return true;
         }
 
-        public static Boolean EnterDeleteWorkflow(int businessProcessID, int finalStateID, String performedBy, String fileName = "", String description = "Workflow_DefaultDelete")
+        public static Boolean EnterDelteteWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
+        {
+            int deleteId = _businessProcessService.GetGlobalDeleteStateTempId();
+
+          return  EnterDeleteWorkflow(documentBusinessProcess.BusinessProcessID, deleteId, description, fileName);
+
+            
+        }
+
+        private  static Boolean EnterDeleteWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultDelete",   String fileName = "")
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -76,17 +101,18 @@ namespace Cats.Areas.Workflow
             else
                 msg = description;
 
-            EnterWorkflow(businessProcessID, finalStateID,  performedBy, fileName, msg);
+            EnterWorkflow(businessProcessID, finalStateID,  fileName, msg);
 
             return true;
         }
 
-        private static void EnterWorkflow(int businessProcessID, int finalStateID, String performedBy,string fileName, string msg)
+        private static void EnterWorkflow(int businessProcessID, int finalStateID, string fileName, string msg)
         {
+            
             var businessProcessState = new BusinessProcessState()
             {
                 StateID = finalStateID,
-                PerformedBy = performedBy,
+                PerformedBy = UserName,
                 DatePerformed = DateTime.Now,
                 Comment = msg,
                 AttachmentFile = fileName,
@@ -94,7 +120,7 @@ namespace Cats.Areas.Workflow
             };
 
 
-            _businessProcessService.PromotWorkflow(businessProcessState);
+            _businessProcessService.PromotWorkflow_WoutUpdatingCurrentStatus(businessProcessState);
         }
     }
 }

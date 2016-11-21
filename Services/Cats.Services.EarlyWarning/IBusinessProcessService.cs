@@ -14,10 +14,16 @@ namespace Cats.Services.EarlyWarning
          BusinessProcess FindById(int id);
          List<BusinessProcess> GetAll();
          List<BusinessProcess> FindBy(Expression<Func<BusinessProcess, bool>> predicate);
-         bool PromotWorkflow(BusinessProcessState state);
-         BusinessProcess CreateBusinessProcess(int templateID, int documentID, string documentType, BusinessProcessState startingState);
+         bool PromotWorkflow(BusinessProcessState state); 
+         bool PromotWorkflow_WoutUpdatingCurrentStatus(BusinessProcessState state); 
+          BusinessProcess CreateBusinessProcess(int templateID, int documentID, string documentType, BusinessProcessState startingState);
          BusinessProcess CreateBusinessProcessForObject(int templateID, int DocumentID, string DocumentType, bool save = false);
          bool Save();
         bool CheckPlanBeforeReject(BusinessProcessState st);
+
+          int GetGlobalEditStateTempId();
+          int GetGlobalDeleteStateTempId();
+        int GetGlobalPrintStateTempId();
+
     }
 }

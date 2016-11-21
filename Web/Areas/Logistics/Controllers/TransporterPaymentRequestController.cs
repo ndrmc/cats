@@ -1,5 +1,7 @@
-﻿using Cats.Areas.Logistics.Models;
+﻿using Cats.Alert;
+using Cats.Areas.Logistics.Models;
 using Cats.Areas.Procurement.Models;
+using Cats.Areas.Workflow;
 using Cats.Helpers;
 using Cats.Infrastructure;
 using Cats.Models;
@@ -505,6 +507,10 @@ namespace Cats.Areas.Logistics.Controllers
                     }
 
                     _transporterPaymentRequestService.EditTransporterPaymentRequest(transporterPaymentRequest);
+
+                    WorkflowCommon.EnterEditWorkflow(transporterPaymentRequest.BusinessProcess);
+                    
+
                     return RedirectToAction("PaymentRequests", "TransporterPaymentRequest",
                                             new
                                                 {
@@ -579,6 +585,20 @@ namespace Cats.Areas.Logistics.Controllers
             dsNameArray[0] = "TransporterPayReq";
             dsNameArray[1] = "TOVM";
             var result = ReportHelper.PrintReport(reportPath, reportDataArray, dsNameArray, "PDF", false);
+
+            foreach (var transPayreq in transporterPaymentRequests)
+            {
+                if (transPayreq.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Request Verified")
+                {
+                    var printFlowTemplate = transPayreq.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Print");
+
+                    WorkflowCommon.EnterPrintWorkflow(transPayreq.BusinessProcess);
+
+                  }
+
+             }
+
+
             return File(result.RenderBytes, result.MimeType);
         }
 
@@ -589,6 +609,8 @@ namespace Cats.Areas.Logistics.Controllers
             if (reportData == null) return null;
             var dataSourceName = "TPRL";
             var result = ReportHelper.PrintReport(reportPath, reportData, dataSourceName);
+
+
             return File(result.RenderBytes, result.MimeType);
             //return Json(new { status = true, content = File(result.RenderBytes, result.MimeType) });
         }
@@ -639,6 +661,15 @@ namespace Cats.Areas.Logistics.Controllers
                 } : null;
             });
             var req = requests.Where(m => m.TransporterId == transporterId).ToArray();
+
+            foreach (var transPayreq in transporterPaymentRequests)
+            {
+                    var printFlowTemplate = transPayreq.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Print Letter");
+
+                    if (printFlowTemplate != null)
+                        WorkflowCommon.EnterPrintWorkflow(transPayreq.BusinessProcessID, printFlowTemplate.FinalStateID,AlertManager.GetWorkflowPrintMessage("A Letter for this Document"));
+
+            }
 
             if (req.Sum(r => r.FreightCharge) == 0) return null;
 
