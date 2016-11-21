@@ -38,7 +38,20 @@ namespace Cats.Services.EarlyWarning
             }
             return false;
         }
+        /// <summary>
+        /// For Recording entries of  : Edit , Print and Delete
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public bool PromotWorkflow_WoutUpdatingCurrentStatus(BusinessProcessState state)
+        {
+                _unitOfWork.BusinessProcessStateRepository.Add(state);
 
+                _unitOfWork.Save();
+
+                return true;
+     
+        }
         public BusinessProcess CreateBusinessProcess(int templateID, int documentID, string documentType, BusinessProcessState startingState)
         {
             var startingTemplate=_unitOfWork.StateTemplateRepository.FindBy(s => s.ParentProcessTemplateID == templateID && s.StateType == 0).FirstOrDefault();
@@ -134,6 +147,26 @@ namespace Cats.Services.EarlyWarning
             return bp;
         }
 
+        public int GetGlobalEditStateTempId()
+        {
+            int globalId = _unitOfWork.ProcessTemplateRepository.Get(p => p.Name == "GlobalWorkflow").FirstOrDefault().ProcessTemplateID;
+
+            return _unitOfWork.StateTemplateRepository.Get( t => t.ParentProcessTemplateID == globalId && t.Name=="Edit").FirstOrDefault().StateTemplateID;
+        }
+
+        public int GetGlobalDeleteStateTempId()
+        {
+            int globalId = _unitOfWork.ProcessTemplateRepository.Get(p => p.Name == "GlobalWorkflow").FirstOrDefault().ProcessTemplateID;
+
+            return _unitOfWork.StateTemplateRepository.Get(t => t.ParentProcessTemplateID == globalId &&  t.Name == "Delete").FirstOrDefault().StateTemplateID;
+        }
+
+        public int GetGlobalPrintStateTempId()
+        {
+            int globalId = _unitOfWork.ProcessTemplateRepository.Get(p => p.Name == "GlobalWorkflow").FirstOrDefault().ProcessTemplateID;
+
+            return _unitOfWork.StateTemplateRepository.Get(t => t.ParentProcessTemplateID == globalId &&  t.Name == "Print").FirstOrDefault().StateTemplateID;
+        }
 
         public bool Save()
         {
