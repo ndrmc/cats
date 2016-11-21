@@ -191,7 +191,7 @@
                         <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Action") <i class="fa fa-angle-down"></i>
                     </button>
                     <ul class="dropdown-menu pull-right">
-                        @if (state.AllowedAccessLevel >= 2)
+                        @if (state.AllowedAccessLevel >= 0)
                         {
                             if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Edit_PSNP_plan))
                             {

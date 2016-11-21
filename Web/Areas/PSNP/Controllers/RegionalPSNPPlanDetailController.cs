@@ -16,6 +16,7 @@ using Cats.ViewModelBinder;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Cats.Models.PSNP;
+using Cats.Services.Common;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using IFDPService = Cats.Services.EarlyWarning.IFDPService;
 
@@ -31,6 +32,9 @@ namespace Cats.Areas.PSNP.Controllers
         private readonly IRationDetailService _rationDetailService;
         private readonly IUserAccountService _userAccountService;
         private readonly IUserProfileService _userProfileService;
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IStateTemplateService _stateTemplateService;
+        private readonly IBusinessProcessService _businessProcessService;
         public RegionalPSNPPlanDetailController(
                             IRegionalPSNPPlanDetailService regionalPSNPPlanDetailServiceParam,
                             IRegionalPSNPPlanService regionalPSNPPlanServiceParam,
@@ -38,7 +42,10 @@ namespace Cats.Areas.PSNP.Controllers
                             IFDPService FDPServiceParam,
                             IAdminUnitService adminUnitService,
                             IRationDetailService rationDetailService,
-                            IUserAccountService userAccountService, IUserProfileService userProfileService)
+                            IUserAccountService userAccountService, IUserProfileService userProfileService,
+                            IApplicationSettingService applicationSettingService, 
+                            IStateTemplateService stateTemplateService,
+                            IBusinessProcessService businessProcessService)
         {
             this._regionalPSNPPlanDetailService = regionalPSNPPlanDetailServiceParam;
             this._regionalPSNPPlanService = regionalPSNPPlanServiceParam;
@@ -48,6 +55,9 @@ namespace Cats.Areas.PSNP.Controllers
             this._rationDetailService = rationDetailService;
             this._userAccountService = userAccountService;
             this._userProfileService = userProfileService;
+            this._businessProcessService = businessProcessService;
+            this._applicationSettingService = applicationSettingService;
+            this._stateTemplateService = stateTemplateService;
         }
         public void loadLookups()
         {
@@ -265,6 +275,9 @@ namespace Cats.Areas.PSNP.Controllers
             //    _regionalPSNPPlanService.FindBy(m => m.RegionalPSNPPlanID == items.FirstOrDefault().RegionalPSNPPlanID).
             //        FirstOrDefault();
             List<PSNPPlanDetailView> updated = new List<PSNPPlanDetailView>();
+            bool isUpdated = false;
+            bool isAdded = false;
+            bool isDeleted = false;
             foreach (PSNPPlanDetailView item in items)
             {
                 updated.Add(item);
@@ -285,7 +298,7 @@ namespace Cats.Areas.PSNP.Controllers
                         bm.FoodRatio = (int)item.FoodRatio;
                         bm.CashRatio = (int)item.CashRatio;
                         bm.Contingency = item.Contingency;
-                        _regionalPSNPPlanDetailService.UpdateRegionalPSNPPlanDetail(bm);
+                       isUpdated = _regionalPSNPPlanDetailService.UpdateRegionalPSNPPlanDetail(bm);
                     }
                     else
                     {
@@ -308,7 +321,7 @@ namespace Cats.Areas.PSNP.Controllers
                                 FirstOrDefault();
                         if (psnpPlanExist==null)
                         {
-                            _regionalPSNPPlanDetailService.AddRegionalPSNPPlanDetail(bm);
+                         isAdded =    _regionalPSNPPlanDetailService.AddRegionalPSNPPlanDetail(bm);
                         }
                         
                     }
@@ -316,11 +329,33 @@ namespace Cats.Areas.PSNP.Controllers
                 else
                 {
                     if (item.RegionalPSNPPlanDetailID >= 0)
-                    {
-                       
-                        
-                        _regionalPSNPPlanDetailService.DeleteById(item.RegionalPSNPPlanDetailID);
+                    {                     
+                       isDeleted = _regionalPSNPPlanDetailService.DeleteById(item.RegionalPSNPPlanDetailID);
                     }
+                }
+            }
+            // update the psnp plan 
+            if (planId != 0 && (isAdded || isUpdated||isDeleted))
+            {
+                int BP_PR = _applicationSettingService.getPSNPWorkflow();
+                var firstOrDefault = _stateTemplateService
+                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == BP_PR && s.Name == "Edited");
+
+                var plan = _regionalPSNPPlanService.FindById(planId);
+
+                if (firstOrDefault != null && plan != null)
+                {
+                    var editedStateId = firstOrDefault.StateTemplateID;
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = editedStateId,
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "",
+                        //AttachmentFile = fileName,
+                        ParentBusinessProcessID = plan.StatusID
+                    };
+                    _businessProcessService.PromotWorkflow(businessProcessState);
                 }
             }
             /*var allFDPData = getDetailView(planId);
