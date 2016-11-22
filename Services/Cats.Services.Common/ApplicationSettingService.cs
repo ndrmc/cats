@@ -201,5 +201,10 @@ namespace Cats.Services.Common
         {
             return getIntValue(ApplicationSettings.Default.TranferReceiptPlanWorkflow);
         }
+
+        public int getReceiveHubWorkflow()
+        {
+            return getIntValue(ApplicationSettings.Default.ReceiveHubWorkflow);
+    }
     }
 }

@@ -242,6 +242,11 @@ namespace Cats.Data.Hub.UnitWork
         IGenericRepository<VWTransferredStock> VWTransferredStock { get; }
         IGenericRepository<VWReceiptAllocationAggregate> VWReceiptAllocationAggregateRepository { get; }
         IGenericRepository<VWDdispatchAllocationDistribution> VwDispatchAllocationDistribuition { get; }
+        IGenericRepository<BusinessProcessState> HubBusinessProcessStateRepository { get; }
+        IGenericRepository<BusinessProcess> HubBusinessProcessRepository { get; }
+        IGenericRepository<ProcessTemplate> HubProcessTemplateRepository { get; }
+        IGenericRepository<StateTemplate> HubStateTemplateRepository { get; }
+        IGenericRepository<FlowTemplate> HubFlowTemplateRepository { get; }
     }
 }
 
