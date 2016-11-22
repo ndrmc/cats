@@ -61,7 +61,16 @@ namespace Cats.Alert {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;The document has been Deleted.&quot;.
+        ///   Looks up a localized string similar to Allocation has been Modified..
+        /// </summary>
+        public static string Workflow_AllocationModified {
+            get {
+                return ResourceManager.GetString("Workflow_AllocationModified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The document has been Deleted..
         /// </summary>
         public static string Workflow_DefaultDelete {
             get {
@@ -70,7 +79,7 @@ namespace Cats.Alert {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;The document has been Edited.&quot;.
+        ///   Looks up a localized string similar to The document has been Edited..
         /// </summary>
         public static string Workflow_DefaultEdit {
             get {
@@ -79,7 +88,7 @@ namespace Cats.Alert {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;The document has been Printed.&quot;.
+        ///   Looks up a localized string similar to The document has been Printed..
         /// </summary>
         public static string Workflow_DefaultPrint {
             get {
@@ -88,7 +97,25 @@ namespace Cats.Alert {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;Loss Entry has been made for this Document.&quot;.
+        ///   Looks up a localized string similar to {1} Has been Deleted..
+        /// </summary>
+        public static string Workflow_DeleteWithParam1 {
+            get {
+                return ResourceManager.GetString("Workflow_DeleteWithParam1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {1} Has been Edited..
+        /// </summary>
+        public static string Workflow_EditwithParam1 {
+            get {
+                return ResourceManager.GetString("Workflow_EditwithParam1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loss Entry has been made for this Document..
         /// </summary>
         public static string Workflow_LossEntry {
             get {
@@ -97,7 +124,7 @@ namespace Cats.Alert {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;A Letter has been Printed for this Document.&quot;.
+        ///   Looks up a localized string similar to A Letter has been Printed for this Document..
         /// </summary>
         public static string Workflow_PrintLetter {
             get {
@@ -106,7 +133,7 @@ namespace Cats.Alert {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;{1} has been Printed.&quot;.
+        ///   Looks up a localized string similar to {1} has been Printed..
         /// </summary>
         public static string Workflow_PrintwithParam1 {
             get {
@@ -115,7 +142,7 @@ namespace Cats.Alert {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;This Document Has been Rejected.&quot;.
+        ///   Looks up a localized string similar to This Document Has been Rejected..
         /// </summary>
         public static string Workflow_RejectedDocument {
             get {
@@ -124,11 +151,38 @@ namespace Cats.Alert {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;{1} Has been Rejected.&quot;.
+        ///   Looks up a localized string similar to {1} Has been Rejected..
         /// </summary>
         public static string Workflow_RejectedDocumentwithParam1 {
             get {
                 return ResourceManager.GetString("Workflow_RejectedDocumentwithParam1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Relief Requisition Detail-Beneficiary No for {0} has been changed from {1} to {2}..
+        /// </summary>
+        public static string Workflow_ReliefReqDetailParam3 {
+            get {
+                return ResourceManager.GetString("Workflow_ReliefReqDetailParam3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Relief Requisition Detail has been added to the requisition..
+        /// </summary>
+        public static string Workflow_ReliiefReqDetailAdded {
+            get {
+                return ResourceManager.GetString("Workflow_ReliiefReqDetailAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Relief Requisition Detail has been Deleted from the requisition..
+        /// </summary>
+        public static string Workflow_ReliiefReqDetailDeleted {
+            get {
+                return ResourceManager.GetString("Workflow_ReliiefReqDetailDeleted", resourceCulture);
             }
         }
     }

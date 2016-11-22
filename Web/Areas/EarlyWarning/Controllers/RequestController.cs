@@ -29,6 +29,7 @@ using IFDPService = Cats.Services.EarlyWarning.IFDPService;
 using Workflow = Cats.Models.Constant.WORKFLOW;
 using System.IO;
 using StateTemplate = Cats.Models.StateTemplate;
+using Cats.Alert;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -1165,6 +1166,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 {
                     target.Beneficiaries = regionalRequestDetail.Beneficiaries;
                     _regionalRequestDetailService.EditRegionalRequestDetail(target);
+
+                    var req = _regionalRequestService.FindById(regionalRequestDetail.RegionalRequestID);
+
+                    WorkflowCommon.EnterDelteteWorkflow(req.BusinessProcess,AlertMessage.Workflow_AllocationModified);
+
+             
                 }
                 else
                 {
@@ -1684,6 +1691,11 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (commodityID != null)
             {
                 _regionalRequestDetailService.DeleteRequestDetailCommodity((int)commodityID, requestID);
+
+                var request = _regionalRequestService.FindById(requestID);
+
+                WorkflowCommon.EnterDelteteWorkflow(request.BusinessProcess, AlertManager.GetWorkflowMessage_Delete("RegionalRequest with an ID of " + requestID.ToString()));
+
                 return RedirectToAction("Allocation", new { id = requestID });
             }
             return RedirectToAction("Allocation", new { id = requestID });
@@ -1745,6 +1757,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
                     if (_businessProcessService.PromotWorkflow(businessProcessState))
                     {
+
+               
+
                         return File(result.RenderBytes, result.MimeType);
                     }
                 }

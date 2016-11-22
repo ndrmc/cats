@@ -2,6 +2,7 @@
 using Cats.Models;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Security;
+using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,25 +10,47 @@ using System.Web;
 using System.Web.Mvc;
 
 
-namespace Cats.Areas.Workflow
+namespace Cats.Areas
 {
     public  class WorkflowCommon:Controller
     {
-        private static  IBusinessProcessService _businessProcessService;
+        private static IBusinessProcessService _businessProcessService;
 
         private static String UserName = String.Empty;
 
-        public WorkflowCommon(IBusinessProcessService businessProcessService )
-        {
-            _businessProcessService = businessProcessService;
 
-        UserName = HttpContext.User.Identity.Name;
+        public static IBusinessProcessService BusinessProcessService
+        {
+            get
+            {
+                if(_businessProcessService==null)
+               {
+
+                    _businessProcessService =
+               (IBusinessProcessService)DependencyResolver.Current.GetService(typeof(IBusinessProcessService));
+
+                }
+                return _businessProcessService;
+               
+            }
+
+            set
+            {
+                _businessProcessService = value;
+            }
+        }
+
+        public WorkflowCommon( )
+        {
+
+            UserName = HttpContext.User.Identity.Name;
+
 
 
         }
         public static Boolean EnterEditWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultEdit",  String fileName = "")
         {
-            int editId = _businessProcessService.GetGlobalEditStateTempId();
+            int editId =  BusinessProcessService.GetGlobalEditStateTempId();
 
             return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, editId, description, fileName);
         }
@@ -53,7 +76,7 @@ namespace Cats.Areas.Workflow
         public static Boolean EnterPrintWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print",String fileName = "")
         {
 
-            int PrintId = _businessProcessService.GetGlobalPrintStateTempId();
+            int PrintId = BusinessProcessService.GetGlobalPrintStateTempId();
 
             return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, PrintId, description, fileName);
         }
@@ -80,7 +103,7 @@ namespace Cats.Areas.Workflow
 
         public static Boolean EnterDelteteWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
         {
-            int deleteId = _businessProcessService.GetGlobalDeleteStateTempId();
+            int deleteId = BusinessProcessService.GetGlobalDeleteStateTempId();
 
           return  EnterDeleteWorkflow(documentBusinessProcess.BusinessProcessID, deleteId, description, fileName);
 
@@ -120,7 +143,7 @@ namespace Cats.Areas.Workflow
             };
 
 
-            _businessProcessService.PromotWorkflow_WoutUpdatingCurrentStatus(businessProcessState);
+            BusinessProcessService.PromotWorkflow_WoutUpdatingCurrentStatus(businessProcessState);
         }
     }
 }

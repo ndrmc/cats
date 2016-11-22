@@ -117,28 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Workflow_AllocationModified" xml:space="preserve">
+    <value>Allocation has been Modified.</value>
+  </data>
   <data name="Workflow_DefaultDelete" xml:space="preserve">
-    <value>"The document has been Deleted."</value>
+    <value>The document has been Deleted.</value>
   </data>
   <data name="Workflow_DefaultEdit" xml:space="preserve">
-    <value>"The document has been Edited."</value>
+    <value>The document has been Edited.</value>
   </data>
   <data name="Workflow_DefaultPrint" xml:space="preserve">
-    <value>"The document has been Printed."</value>
+    <value>The document has been Printed.</value>
+  </data>
+  <data name="Workflow_DeleteWithParam1" xml:space="preserve">
+    <value>{1} Has been Deleted.</value>
+  </data>
+  <data name="Workflow_EditwithParam1" xml:space="preserve">
+    <value>{1} Has been Edited.</value>
   </data>
   <data name="Workflow_LossEntry" xml:space="preserve">
-    <value>"Loss Entry has been made for this Document."</value>
+    <value>Loss Entry has been made for this Document.</value>
   </data>
   <data name="Workflow_PrintLetter" xml:space="preserve">
-    <value>"A Letter has been Printed for this Document."</value>
+    <value>A Letter has been Printed for this Document.</value>
   </data>
   <data name="Workflow_PrintwithParam1" xml:space="preserve">
-    <value>"{1} has been Printed."</value>
+    <value>{1} has been Printed.</value>
   </data>
   <data name="Workflow_RejectedDocument" xml:space="preserve">
-    <value>"This Document Has been Rejected."</value>
+    <value>This Document Has been Rejected.</value>
   </data>
   <data name="Workflow_RejectedDocumentwithParam1" xml:space="preserve">
-    <value>"{1} Has been Rejected."</value>
+    <value>{1} Has been Rejected.</value>
+  </data>
+  <data name="Workflow_ReliefReqDetailParam3" xml:space="preserve">
+    <value>Relief Requisition Detail-Beneficiary No for {0} has been changed from {1} to {2}.</value>
+  </data>
+  <data name="Workflow_ReliiefReqDetailAdded" xml:space="preserve">
+    <value>Relief Requisition Detail has been added to the requisition.</value>
+  </data>
+  <data name="Workflow_ReliiefReqDetailDeleted" xml:space="preserve">
+    <value>Relief Requisition Detail has been Deleted from the requisition.</value>
   </data>
 </root>

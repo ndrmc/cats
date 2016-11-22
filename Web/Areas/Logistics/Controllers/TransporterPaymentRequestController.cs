@@ -1,7 +1,7 @@
 ﻿using Cats.Alert;
 using Cats.Areas.Logistics.Models;
 using Cats.Areas.Procurement.Models;
-using Cats.Areas.Workflow;
+using Cats.Areas;
 using Cats.Helpers;
 using Cats.Infrastructure;
 using Cats.Models;
