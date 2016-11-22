@@ -81,10 +81,10 @@ namespace Cats.Areas
             }
         }
 
-        public void GetUserName()
+        public String GetUserName()
         {
             UserName = HttpContext.User.Identity.Name;
-
+            return UserName;
 
 
         }
@@ -99,11 +99,11 @@ namespace Cats.Areas
                 var createdstate = new BusinessProcessState
                 {
                     DatePerformed = DateTime.Now,
-                    PerformedBy = UserName,
+                    PerformedBy = userName,
                     Comment = description
                 };
 
-                bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,"Created", createdstate);
+                bp = BusinessProcessService.CreateBusinessProcessWithOutStateEntry(BP_PR, 0,"Created");
 
             }
             return bp;
@@ -265,7 +265,7 @@ namespace Cats.Areas
             var businessProcessState = new BusinessProcessState()
             {
                 StateID = finalStateID,
-                PerformedBy = UserName,
+                PerformedBy = userName,
                 DatePerformed = DateTime.Now,
                 Comment = msg,
                 AttachmentFile = fileName,
