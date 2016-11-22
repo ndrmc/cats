@@ -5,9 +5,11 @@ using Cats.Services.Security;
 using Ninject;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Cats.Services.Common;
 
 
 namespace Cats.Areas
@@ -15,6 +17,7 @@ namespace Cats.Areas
     public class WorkflowCommon : Controller
     {
         private static IBusinessProcessService _businessProcessService;
+        private static IApplicationSettingService _applicationSettingService;
 
         private static String UserName = String.Empty;
 
@@ -31,6 +34,7 @@ namespace Cats.Areas
                         (IBusinessProcessService)
                             DependencyResolver.Current.GetService(typeof (IBusinessProcessService));
 
+
                 }
                 return _businessProcessService;
 
@@ -46,12 +50,38 @@ namespace Cats.Areas
             int editId =  BusinessProcessService.GetGlobalEditStateTempId();
 
             UserName = HttpContext.User.Identity.Name;
+        
 
-
-
+            _applicationSettingService =
+                (IApplicationSettingService)
+                    DependencyResolver.Current.GetService(typeof(IApplicationSettingService));
+ 
         }
+
+        public static BusinessProcess GetNewInstance(string description)
+        {
+            BusinessProcess bp = new BusinessProcess();
+            int BP_PR = _applicationSettingService.getGlobalWorkflow();
+
+            if (BP_PR != 0)
+            {
+                var createdstate = new BusinessProcessState
+                {
+                    DatePerformed = DateTime.Now,
+                    PerformedBy = UserName,
+                    Comment = description
+                };
+
+                bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                    "Created", createdstate);
+
+            }
+            return bp;
+        }
+
         public static Boolean EnterEditWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultEdit", String fileName = "")
         {
+
             int editId = BusinessProcessService.GetGlobalEditStateTempId();
 
             return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, editId, description, fileName);
@@ -77,12 +107,12 @@ namespace Cats.Areas
         }
         public static Boolean EnterPrintWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print", String fileName = "")
         {
-
             int PrintId = BusinessProcessService.GetGlobalPrintStateTempId();
 
             return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, PrintId, description, fileName);
         }
 
+    
         private static Boolean EnterPrintWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultPrint", String fileName = "")
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception

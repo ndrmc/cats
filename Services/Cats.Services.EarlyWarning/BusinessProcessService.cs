@@ -54,7 +54,9 @@ namespace Cats.Services.EarlyWarning
         }
         public BusinessProcess CreateBusinessProcess(int templateID, int documentID, string documentType, BusinessProcessState startingState)
         {
-            var startingTemplate=_unitOfWork.StateTemplateRepository.FindBy(s => s.ParentProcessTemplateID == templateID && s.StateType == 0).FirstOrDefault();
+            var startingTemplate =
+                _unitOfWork.StateTemplateRepository.FindBy(
+                    s => s.ParentProcessTemplateID == templateID && s.StateType == 0).FirstOrDefault();
             if (startingTemplate==null)
                 return null;
             var bp = new BusinessProcess { ProcessTypeID = templateID, DocumentID = documentID, DocumentType = documentType };
