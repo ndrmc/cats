@@ -217,8 +217,7 @@ namespace Cats.Areas.Logistics.Controllers
                         StatusName = _commonService.GetStatusName(WORKFLOW.LocalPUrchase, transfer.StatusID),
                         //BusinessProcess = transfer.BusinessProcess,
                         BusinessProcessID = transfer.BusinessProcessID,
-                        RejectedId = transfer.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>
-                        a.Name == "Reject").Select(s => s.FinalStateID).FirstOrDefault(),
+                        
                         ApprovedId = transfer.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>
                             a.Name == "Approve").Select(s => s.FinalStateID).FirstOrDefault(),
                         Status = transfer.BusinessProcess.CurrentState.BaseStateTemplate.Name
