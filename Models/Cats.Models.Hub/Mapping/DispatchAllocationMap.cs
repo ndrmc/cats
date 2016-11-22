@@ -68,6 +68,10 @@ namespace Cats.Models.Hubs.Mapping
                 .WithMany(t => t.DispatchAllocations)
                 .HasForeignKey(d => d.TransporterID);
 
+
+            this.HasRequired(t => t.BusinessProcess).WithMany(t => t.DispatchAllocations).HasForeignKey(t => t.BusinessProcessId);
+
+
         }
     }
 }

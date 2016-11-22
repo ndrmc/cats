@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cats.Models.Hubs
 {
-    public partial class DispatchAllocation
+    public partial class DispatchAllocation:IWorkflow
     {
         public DispatchAllocation()
         {
@@ -44,5 +44,9 @@ namespace Cats.Models.Hubs
         public virtual ProjectCode ProjectCode { get; set; }
         public virtual ShippingInstruction ShippingInstruction { get; set; }
         public virtual Transporter Transporter { get; set; }
+
+        public int BusinessProcessId { get; set; }
+
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }

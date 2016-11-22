@@ -1,10 +1,11 @@
+using Cats.Models.Hubs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cats.Models
 {
-    public partial class GiftCertificate
+    public partial class GiftCertificate:IWorkflow
     {
         public GiftCertificate()
         {
@@ -75,5 +76,18 @@ namespace Cats.Models
         }
 
         public virtual BusinessProcess BusinessProcess { get; set; }
+
+        public int BusinessProcessId
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

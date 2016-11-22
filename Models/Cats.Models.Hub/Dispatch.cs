@@ -1,10 +1,11 @@
+using Cats.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cats.Models.Hubs
 {
-    public partial class Dispatch
+    public partial class Dispatch:IWorkflow
     {
         public Dispatch()
         {
@@ -41,5 +42,10 @@ namespace Cats.Models.Hubs
         public virtual OtherDispatchAllocation OtherDispatchAllocation { get; set; }
         public virtual Transporter Transporter { get; set; }
         public virtual ICollection<DispatchDetail> DispatchDetails { get; set; }
+
+        public int BusinessProcessId { get; set; }
+
+        public virtual BusinessProcess BusinessProcess { get; set; }
+
     }
 }

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using Cats.Models.Hubs;
 
 namespace Cats.Models
 {
-    public class DispatchAllocation
+    public class DispatchAllocation:IWorkflow
     {
        
       public Guid DispatchAllocationID {get; set;}
@@ -39,5 +40,9 @@ namespace Cats.Models
         public int TransportOrderID { get; set; }
         public Guid? ParentDispatchAllocationID { get; set; }
         public virtual ICollection<Dispatch> Dispatches { get; set; }
+
+        public int BusinessProcessId { get; set; }
+
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }

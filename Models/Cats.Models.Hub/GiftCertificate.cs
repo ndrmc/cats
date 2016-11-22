@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cats.Models.Hubs
 {
-    public partial class GiftCertificate
+    public partial class GiftCertificate:IWorkflow
     {
         public GiftCertificate()
         {
@@ -27,5 +27,31 @@ namespace Cats.Models.Hubs
         public virtual Program Program { get; set; }
         public virtual ShippingInstruction ShippingInstruction { get; set; }
         public virtual ICollection<GiftCertificateDetail> GiftCertificateDetails { get; set; }
+
+        public int BusinessProcessId
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public BusinessProcess BusinessProcess
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

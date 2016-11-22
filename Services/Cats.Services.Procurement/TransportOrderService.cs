@@ -819,7 +819,17 @@ namespace Cats.Services.Procurement
             return false;
 
         }
+        public List<DispatchAllocation> GeneratedDispatchAllocations = new List<DispatchAllocation>();
 
+        public List<DispatchAllocation> GetGeneratedDispatchAllocations()
+        {
+            return GeneratedDispatchAllocations;
+        }
+
+        public void ClearGeneratedDispatchAllocations()
+        {
+              GeneratedDispatchAllocations.Clear();
+        }
         public bool GeneratDispatchPlan(int transportOrderId, string UserName)
         {
 
@@ -917,6 +927,8 @@ namespace Cats.Services.Procurement
                         // dispatchAllocation.StoreID  //Would be set null and filled by user later
                         //dispatchAllocation.Year= requisition.Year ; //Year is not available 
                         _unitOfWork.DispatchAllocationRepository.Add(dispatchAllocation);
+
+                        GeneratedDispatchAllocations.Add(dispatchAllocation);
                     }
                 }
             }
