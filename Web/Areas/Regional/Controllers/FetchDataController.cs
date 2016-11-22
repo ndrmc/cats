@@ -106,6 +106,8 @@ namespace Cats.Areas.Regional.Controllers
                 _hrdService.FindBy(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Published")
                     .FirstOrDefault()
                     .PlanID;
+
+            var planName = _planService.FindById(currentPlan).PlanName;
             var utilizations =
                 _utilization.FindBy(
                     t => t.PlanID == currentPlan && t.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID);

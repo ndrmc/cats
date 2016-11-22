@@ -11,10 +11,12 @@
     </div>
 
     <div class="portlet-body" style="padding: 0px;">
-        @foreach (var item in ViewBag.Zones)
-        {
-            int id = @item.AdminUnitID;
-            <li><a href="#@item.Name" OnClicks="zoneChange(@id);">@item.Name </a></li>
-        }
+        <ul style="list-style: none; padding-left: 30px;">
+            @foreach (var item in ViewBag.Zones)
+            {
+                int id = @item.AdminUnitID;
+                <li style="padding: 5px 0px;"><a style="color: #2b3643;" href="#@item.Name" OnClicks="zoneChange(@id);">@item.Name </a></li>
+            }
+        </ul>
     </div>
 </div>
