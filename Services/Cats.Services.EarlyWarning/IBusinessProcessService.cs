@@ -24,6 +24,7 @@ namespace Cats.Services.EarlyWarning
         int GetGlobalEditStateTempId();
          int GetGlobalDeleteStateTempId();
         int GetGlobalPrintStateTempId();
-
+        int GetGlobalCreatedStateTempId();
+        int GetGlobalExportedStateTempId();
     }
 }

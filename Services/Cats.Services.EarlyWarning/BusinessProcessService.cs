@@ -176,7 +176,18 @@ namespace Cats.Services.EarlyWarning
                         .StateTemplateID;
             return 0;
         }
-
+        public int GetGlobalCreatedStateTempId()
+        {
+            int globalId = GetGlobalProcessTemplateId();
+            var stateTemplate = _unitOfWork.StateTemplateRepository.Get(
+                t => t.ParentProcessTemplateID == globalId && t.Name == "Created")
+                .FirstOrDefault();
+            if (stateTemplate != null)
+                return
+                    stateTemplate
+                        .StateTemplateID;
+            return 0;
+        }
         public int GetGlobalDeleteStateTempId()
         {
             int globalId = GetGlobalProcessTemplateId();

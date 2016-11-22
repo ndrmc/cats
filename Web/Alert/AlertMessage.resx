@@ -120,11 +120,17 @@
   <data name="Workflow_AllocationModified" xml:space="preserve">
     <value>Allocation has been Modified.</value>
   </data>
+  <data name="Workflow_DefaultCreate" xml:space="preserve">
+    <value>The document has been Created.</value>
+  </data>
   <data name="Workflow_DefaultDelete" xml:space="preserve">
     <value>The document has been Deleted.</value>
   </data>
   <data name="Workflow_DefaultEdit" xml:space="preserve">
     <value>The document has been Edited.</value>
+  </data>
+  <data name="Workflow_DefaultExport" xml:space="preserve">
+    <value>The document has been Exported.</value>
   </data>
   <data name="Workflow_DefaultPrint" xml:space="preserve">
     <value>The document has been Printed.</value>

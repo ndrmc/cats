@@ -70,6 +70,15 @@ namespace Cats.Alert {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The document has been Created..
+        /// </summary>
+        public static string Workflow_DefaultCreate {
+            get {
+                return ResourceManager.GetString("Workflow_DefaultCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The document has been Deleted..
         /// </summary>
         public static string Workflow_DefaultDelete {
@@ -84,6 +93,15 @@ namespace Cats.Alert {
         public static string Workflow_DefaultEdit {
             get {
                 return ResourceManager.GetString("Workflow_DefaultEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The document has been Exported..
+        /// </summary>
+        public static string Workflow_DefaultExport {
+            get {
+                return ResourceManager.GetString("Workflow_DefaultExport", resourceCulture);
             }
         }
         
