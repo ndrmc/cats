@@ -211,5 +211,14 @@ namespace Cats.Services.Common {
                 return ((string)(this["BidPlanDetailActionWorkflow"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("GlobalWorkflow")]
+        public string GlobalWorkflow {
+            get {
+                return ((string)(this["GlobalWorkflow"]));
+            }
+        }
     }
 }
