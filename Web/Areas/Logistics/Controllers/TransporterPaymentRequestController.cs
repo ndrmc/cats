@@ -2,6 +2,7 @@
 using Cats.Areas.Logistics.Models;
 using Cats.Areas.Procurement.Models;
 using Cats.Areas;
+
 using Cats.Helpers;
 using Cats.Infrastructure;
 using Cats.Models;
@@ -20,7 +21,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Web;
 using System.Web.Mvc;
 using ICommonService = Cats.Services.Common.ICommonService;
 
@@ -666,8 +666,7 @@ namespace Cats.Areas.Logistics.Controllers
             var req = requests.Where(m => m.TransporterId == transporterId).ToArray();
 
             foreach (var transPayreq in transporterPaymentRequests)
-            {
-
+            {         
                 WorkflowCommon.EnterPrintWorkflow(transPayreq.BusinessProcess,AlertMessage.Workflow_PrintLetter);
 
             }

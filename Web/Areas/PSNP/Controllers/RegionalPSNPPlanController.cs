@@ -69,20 +69,23 @@ namespace Cats.Areas.PSNP
             try
             {
                 return (from plan in list
-                        select new RegionalPSNPPlanViewModel
-                        {
-                            RegionalPSNPPlanID = plan.RegionalPSNPPlanID,
-                            Duration = plan.Duration,
-                            PlanName = plan.Plan.PlanName, 
-                            Year = plan.Year,
-                           // RegionName = plan.Region.Name,
-                            RationName = plan.Ration.RefrenceNumber,
-                            From = plan.Plan.StartDate.ToCTSPreferedDateFormat(datePref),
-                            To = plan.Plan.EndDate.ToCTSPreferedDateFormat(datePref),
-                            StatusName = plan.AttachedBusinessProcess.CurrentState.BaseStateTemplate.Name,
-                            UserId = plan.User
+                    select new RegionalPSNPPlanViewModel
+                    {
+                        RegionalPSNPPlanID = plan.RegionalPSNPPlanID,
+                        Duration = plan.Duration,
+                        PlanName = plan.Plan.PlanName,
+                        Year = plan.Year,
+                        // RegionName = plan.Region.Name,
+                        RationName = plan.Ration.RefrenceNumber,
+                        From = plan.Plan.StartDate.ToCTSPreferedDateFormat(datePref),
+                        To = plan.Plan.EndDate.ToCTSPreferedDateFormat(datePref),
+                        StatusName =
+                            plan.AttachedBusinessProcess.CurrentState.BaseStateTemplate != null
+                                ? plan.AttachedBusinessProcess.CurrentState.BaseStateTemplate.Name
+                                : string.Empty,
+                        UserId = plan.User
 
-                        });
+                    });
             }
             catch (Exception e)
             {
@@ -132,7 +135,9 @@ namespace Cats.Areas.PSNP
 
             var dataSourceName = "annualplan";
             var result = ReportHelper.PrintReport(reportPath, reportData, dataSourceName);
-
+            var regionalPsnp = _regionalPSNPPlanService.FindById(id);
+            if (regionalPsnp != null)
+                WorkflowCommon.EnterPrintWorkflow(regionalPsnp.AttachedBusinessProcess);
             return File(result.RenderBytes, result.MimeType);
         }
         public ActionResult Details(int id = 0)
@@ -165,7 +170,7 @@ namespace Cats.Areas.PSNP
             item.StatusID = nextState;
             _regionalPSNPPlanService.UpdateRegionalPSNPPlan(item);
 
-            if (item.StatusID == (int) Cats.Models.Constant.PSNPWorkFlow.Completed)
+            if (item.AttachedBusinessProcess.CurrentState.BaseStateTemplate.Name == "Completed")
                 PostPSNP(item);
             return RedirectToAction("Index");
         }

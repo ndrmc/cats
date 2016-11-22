@@ -22,6 +22,7 @@ using AdminUnit = Cats.Models.AdminUnit;
 using Dispatch = Cats.Models.Hubs.Dispatch;
 using FDP = Cats.Models.FDP;
 using ZonesViewModel = Cats.Areas.Logistics.Models.ZonesViewModel;
+using Cats.Alert;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -130,6 +131,8 @@ namespace Cats.Areas.Logistics.Controllers
                         deliveryReconcile.LossAmount = dispatchViewModelForReconcile.LossAmount;
                         deliveryReconcile.LossReason = dispatchViewModelForReconcile.LossReasonId;
                         _deliveryReconcileService.EditDeliveryReconcile(deliveryReconcile);
+                        //WorkflowCommon.EnterEditWorkflow(deliveryReconcile.BusinessProcess, AlertManager.GetWorkflowEdifFDPReceipt("Delivery reconsile with requisition no " + deliveryReconcile.RequsitionNo));
+                        WorkflowCommon.EnterEditWorkflow(deliveryReconcile.BusinessProcess, "Delivery reconcile with requision no " + deliveryReconcile.RequsitionNo + " has been edited.");
                         ModelState.AddModelError("Success", @"Success: Delivery Reconcilation Data Updated.");
                     }
                     else
@@ -156,6 +159,8 @@ namespace Cats.Areas.Logistics.Controllers
                             };
                             _deliveryReconcileService.AddDeliveryReconcile(deliveryReconcile);
                             _transactionService.PostDeliveryReconcileReceipt(deliveryReconcile.DeliveryReconcileID);
+                            //WorkflowCommon.EnterEditWorkflow(deliveryReconcile.BusinessProcess, AlertManager.GetWorkflowEdifFDPReceipt("Post delivery reconsile with requisition no " + deliveryReconcile.RequsitionNo));
+                            WorkflowCommon.EnterEditWorkflow(deliveryReconcile.BusinessProcess, "Delivery reconcile with requision no " + deliveryReconcile.RequsitionNo + " has been edited.");
                             ModelState.AddModelError("Success", @"Success: Delivery Reconcilation Data Added.");
                         }
                         else if (dvmfr.GRN == null && dvmfr.LossAmount == null && dvmfr.LossReasonId == 0

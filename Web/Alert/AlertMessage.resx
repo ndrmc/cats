@@ -135,6 +135,9 @@
   <data name="Workflow_EditwithParam1" xml:space="preserve">
     <value>{1} Has been Edited.</value>
   </data>
+  <data name="Workflow_FDPReceipt_EditedParam1" xml:space="preserve">
+    <value>{1) has been edited.</value>
+  </data>
   <data name="Workflow_LossEntry" xml:space="preserve">
     <value>Loss Entry has been made for this Document.</value>
   </data>

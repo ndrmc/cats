@@ -147,27 +147,71 @@ namespace Cats.Services.EarlyWarning
             return bp;
         }
 
+        private int GetGlobalProcessTemplateId()
+        {
+            var applicationSetting =
+                _unitOfWork.ApplicationSettingRepository.Get(p => p.SettingName == "GlobalWorkflow")
+                    .FirstOrDefault();
+            int globalId = 0;
+            if (applicationSetting != null)
+            {
+                var processTemplateId =
+                    applicationSetting
+                        .SettingValue;
+                globalId = Convert.ToInt32(processTemplateId);
+            }
+            return globalId;
+        }
         public int GetGlobalEditStateTempId()
         {
-            int globalId = _unitOfWork.ProcessTemplateRepository.Get(p => p.Name == "GlobalWorkflow").FirstOrDefault().ProcessTemplateID;
-
-            return _unitOfWork.StateTemplateRepository.Get( t => t.ParentProcessTemplateID == globalId && t.Name=="Edit").FirstOrDefault().StateTemplateID;
+            int globalId = GetGlobalProcessTemplateId();
+            var stateTemplate = _unitOfWork.StateTemplateRepository.Get(
+                t => t.ParentProcessTemplateID == globalId && t.Name == "Edited")
+                .FirstOrDefault();
+            if (stateTemplate != null)
+                return
+                    stateTemplate
+                        .StateTemplateID;
+            return 0;
         }
 
         public int GetGlobalDeleteStateTempId()
         {
-            int globalId = _unitOfWork.ProcessTemplateRepository.Get(p => p.Name == "GlobalWorkflow").FirstOrDefault().ProcessTemplateID;
-
-            return _unitOfWork.StateTemplateRepository.Get(t => t.ParentProcessTemplateID == globalId &&  t.Name == "Delete").FirstOrDefault().StateTemplateID;
+            int globalId = GetGlobalProcessTemplateId();
+            var stateTemplate = _unitOfWork.StateTemplateRepository.Get(
+                t => t.ParentProcessTemplateID == globalId && t.Name == "Deleted")
+                .FirstOrDefault();
+            if (stateTemplate != null)
+                return
+                    stateTemplate
+                        .StateTemplateID;
+            return 0;
         }
 
         public int GetGlobalPrintStateTempId()
         {
-            int globalId = _unitOfWork.ProcessTemplateRepository.Get(p => p.Name == "GlobalWorkflow").FirstOrDefault().ProcessTemplateID;
-
-            return _unitOfWork.StateTemplateRepository.Get(t => t.ParentProcessTemplateID == globalId &&  t.Name == "Print").FirstOrDefault().StateTemplateID;
+            int globalId = GetGlobalProcessTemplateId();
+            var stateTemplate = _unitOfWork.StateTemplateRepository.Get(
+                t => t.ParentProcessTemplateID == globalId && t.Name == "Printed")
+                .FirstOrDefault();
+            if (stateTemplate != null)
+                return
+                    stateTemplate
+                        .StateTemplateID;
+            return 0;
         }
-
+        public int GetGlobalExportedStateTempId()
+        {
+            int globalId = GetGlobalProcessTemplateId();
+            var stateTemplate = _unitOfWork.StateTemplateRepository.Get(
+                t => t.ParentProcessTemplateID == globalId && t.Name == "Exported")
+                .FirstOrDefault();
+            if (stateTemplate != null)
+                return
+                    stateTemplate
+                        .StateTemplateID;
+            return 0;
+        }
         public bool Save()
         {
             _unitOfWork.Save();

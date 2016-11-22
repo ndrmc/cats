@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 namespace Cats.Areas
 {
-    public  class WorkflowCommon:Controller
+    public class WorkflowCommon : Controller
     {
         private static IBusinessProcessService _businessProcessService;
 
@@ -20,41 +20,43 @@ namespace Cats.Areas
 
 
         public static IBusinessProcessService BusinessProcessService
+
         {
             get
             {
-                if(_businessProcessService==null)
-               {
+                if (_businessProcessService == null)
+                {
 
                     _businessProcessService =
-               (IBusinessProcessService)DependencyResolver.Current.GetService(typeof(IBusinessProcessService));
+                        (IBusinessProcessService)
+                            DependencyResolver.Current.GetService(typeof (IBusinessProcessService));
 
                 }
                 return _businessProcessService;
-               
+
             }
 
-            set
-            {
-                _businessProcessService = value;
-            }
+            set { _businessProcessService = value; }
         }
+    
 
-        public WorkflowCommon( )
+ 
+        public WorkflowCommon()
         {
+            int editId =  BusinessProcessService.GetGlobalEditStateTempId();
 
             UserName = HttpContext.User.Identity.Name;
 
 
 
         }
-        public static Boolean EnterEditWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultEdit",  String fileName = "")
+        public static Boolean EnterEditWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultEdit", String fileName = "")
         {
-            int editId =  BusinessProcessService.GetGlobalEditStateTempId();
+            int editId = BusinessProcessService.GetGlobalEditStateTempId();
 
             return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, editId, description, fileName);
         }
-        private static Boolean EnterEditWorkflow(int businessProcessID, int finalStateID,String description="Workflow_DefaultEdit", String fileName = "")
+        private static Boolean EnterEditWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultEdit", String fileName = "")
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -68,12 +70,12 @@ namespace Cats.Areas
             else
                 msg = description;
 
-            EnterWorkflow(businessProcessID, finalStateID,fileName, msg);
+            EnterWorkflow(businessProcessID, finalStateID, fileName, msg);
 
 
             return true;
         }
-        public static Boolean EnterPrintWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print",String fileName = "")
+        public static Boolean EnterPrintWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print", String fileName = "")
         {
 
             int PrintId = BusinessProcessService.GetGlobalPrintStateTempId();
@@ -81,7 +83,7 @@ namespace Cats.Areas
             return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, PrintId, description, fileName);
         }
 
-        private static Boolean EnterPrintWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultPrint",   String fileName = "")
+        private static Boolean EnterPrintWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultPrint", String fileName = "")
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -105,12 +107,12 @@ namespace Cats.Areas
         {
             int deleteId = BusinessProcessService.GetGlobalDeleteStateTempId();
 
-          return  EnterDeleteWorkflow(documentBusinessProcess.BusinessProcessID, deleteId, description, fileName);
+            return EnterDeleteWorkflow(documentBusinessProcess.BusinessProcessID, deleteId, description, fileName);
 
-            
+
         }
 
-        private  static Boolean EnterDeleteWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultDelete",   String fileName = "")
+        private static Boolean EnterDeleteWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultDelete", String fileName = "")
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -124,14 +126,14 @@ namespace Cats.Areas
             else
                 msg = description;
 
-            EnterWorkflow(businessProcessID, finalStateID,  fileName, msg);
+            EnterWorkflow(businessProcessID, finalStateID, fileName, msg);
 
             return true;
         }
 
         private static void EnterWorkflow(int businessProcessID, int finalStateID, string fileName, string msg)
         {
-            
+
             var businessProcessState = new BusinessProcessState()
             {
                 StateID = finalStateID,
