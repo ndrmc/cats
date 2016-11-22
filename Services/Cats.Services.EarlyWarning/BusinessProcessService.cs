@@ -52,6 +52,12 @@ namespace Cats.Services.EarlyWarning
                 return true;
      
         }
+        public BusinessProcess CreateBusinessProcessWithOutStateEntry(int templateID, int documentID, string documentType)
+        {           
+            var bp = new BusinessProcess { ProcessTypeID = templateID, DocumentID = documentID, DocumentType = documentType };
+            Add(bp);       
+            return bp;
+        }
         public BusinessProcess CreateBusinessProcess(int templateID, int documentID, string documentType, BusinessProcessState startingState)
         {
             var startingTemplate =
