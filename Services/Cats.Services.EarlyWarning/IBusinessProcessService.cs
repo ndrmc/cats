@@ -26,5 +26,6 @@ namespace Cats.Services.EarlyWarning
         int GetGlobalPrintStateTempId();
         int GetGlobalCreatedStateTempId();
         int GetGlobalExportedStateTempId();
+        BusinessProcess CreateBusinessProcessWithOutStateEntry(int bpPr, int i, string created);
     }
 }
