@@ -357,7 +357,7 @@ namespace Cats.Areas.PSNP.Controllers
                 //    };
                 //    _businessProcessService.PromotWorkflow(businessProcessState);
                 //}
-                Workflow.WorkflowCommon.EnterEditWorkflow(plan.AttachedBusinessProcess);
+                WorkflowCommon.EnterEditWorkflow(plan.AttachedBusinessProcess);
             }
             /*var allFDPData = getDetailView(planId);
            return Json(new[] { regionalRequestDetail }.ToDataSourceResult(request, ModelState)); */

@@ -88,6 +88,15 @@ namespace Cats.Alert {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;{1) has been edited.&quot;.
+        /// </summary>
+        public static string Workflow_FDPReceipt_EditedParam1 {
+            get {
+                return ResourceManager.GetString("Workflow_FDPReceipt_EditedParam1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;Loss Entry has been made for this Document.&quot;.
         /// </summary>
         public static string Workflow_LossEntry {

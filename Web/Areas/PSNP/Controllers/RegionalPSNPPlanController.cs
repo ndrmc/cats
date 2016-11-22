@@ -137,7 +137,7 @@ namespace Cats.Areas.PSNP
             var result = ReportHelper.PrintReport(reportPath, reportData, dataSourceName);
             var regionalPsnp = _regionalPSNPPlanService.FindById(id);
             if (regionalPsnp != null)
-                Workflow.WorkflowCommon.EnterPrintWorkflow(regionalPsnp.AttachedBusinessProcess);
+                WorkflowCommon.EnterPrintWorkflow(regionalPsnp.AttachedBusinessProcess);
             return File(result.RenderBytes, result.MimeType);
         }
         public ActionResult Details(int id = 0)
