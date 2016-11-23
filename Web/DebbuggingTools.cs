@@ -18,16 +18,23 @@ namespace Cats
         /// <param name="message"></param>
       public  static void ShowMethodCaller(int frameNo = 1,String message="")
         {
-         
-            StackFrame frame = new StackFrame(frameNo, true);
-            var method = frame.GetMethod();
-            var fileName = frame.GetFileName();
-            var lineNumber = frame.GetFileLineNumber();
 
-            Debug.Flush();
-            Debug.WriteLine("*------------METHOD CALLER------------------*");
+            try
+            {
+                StackFrame frame = new StackFrame(frameNo, true);
+                var method = frame.GetMethod();
+                var fileName = frame.GetFileName();
+                var lineNumber = frame.GetFileLineNumber();
 
-            Debug.WriteLine("{0}({1}):{2} - {3}", fileName, lineNumber, method.Name, message);
+                Debug.Flush();
+                Debug.WriteLine("*------------METHOD CALLER------------------*");
+
+                Debug.WriteLine("{0}({1}):{2} - {3}", fileName, lineNumber, method.Name, message);
+            }
+            catch 
+            {
+
+            }
         }
 
         private static IBusinessProcessService _businessProcessService;
@@ -59,27 +66,34 @@ namespace Cats
         /// <param name="businessProcessId"></param>
         public static void ShowHistory(int businessProcessId)
         {
-
-            BusinessProcess item = BusinessProcessService.FindById(businessProcessId);
-            if (item == null|| item.BusinessProcessStates==null || !item.BusinessProcessStates.Any())
+            try
             {
-                Debug.Flush();
-                Debug.WriteLine("*------------ NO DATA ENTRY LOGS FOR =>" + businessProcessId + "------------------*");
 
-            }
-            else
+                BusinessProcess item = BusinessProcessService.FindById(businessProcessId);
+                if (item == null || item.BusinessProcessStates == null || !item.BusinessProcessStates.Any())
                 {
+                    Debug.Flush();
+                    Debug.WriteLine("*------------ NO DATA ENTRY LOGS FOR =>" + businessProcessId + "------------------*");
 
-                Debug.Flush();
-                Debug.WriteLine("*------------WORKFLOW DATA ENTRY LOGS FOR BP ID =>"+ businessProcessId + "------------------*");
-
-                int index = 1;
-                foreach(var businessprocessstate in item.BusinessProcessStates)
-                {
-
-                    Debug.WriteLine((index++)+" >  "+businessprocessstate.DatePerformed.ToShortDateString()+" "+businessprocessstate.DatePerformed.ToLongTimeString() + "==>"+businessprocessstate.Comment);
                 }
-                 
+                else
+                {
+
+                    Debug.Flush();
+                    Debug.WriteLine("*------------WORKFLOW DATA ENTRY LOGS FOR BP ID =>" + businessProcessId + "------------------*");
+
+                    int index = 1;
+                    foreach (var businessprocessstate in item.BusinessProcessStates)
+                    {
+
+                        Debug.WriteLine((index++) + " >  " + businessprocessstate.DatePerformed.ToShortDateString() + " " + businessprocessstate.DatePerformed.ToLongTimeString() + "==>" + businessprocessstate.Comment);
+                    }
+
+
+                }
+            }
+            catch 
+            {
 
             }
 
