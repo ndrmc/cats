@@ -19,5 +19,7 @@ namespace Cats.Services.Hub
          BusinessProcess CreateBusinessProcessForObject(int templateID, int DocumentID, string DocumentType, bool save = false);
          bool Save();
         bool CheckPlanBeforeReject(BusinessProcessState st);
+        BusinessProcess CreateBusinessProcessWithOutStateEntry(int templateID, int documentID, string documentType);
+        bool PromotWorkflow_WoutUpdatingCurrentStatus(BusinessProcessState businessProcessState);
     }
 }

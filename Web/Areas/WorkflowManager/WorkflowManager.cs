@@ -10,13 +10,15 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Cats.Services.Common;
-//using Cats.Models.Hubs;
+using Cats.Models.Hubs;
+using Cats.Services.Hub;
 
 namespace Cats.Areas
 {
     public class WorkflowCommon : Controller
     {
         private static IBusinessProcessService _businessProcessService;
+        private static IHubBusinessProcessService _hubBusinessProcessService;
         private static IApplicationSettingService _applicationSettingService;
 
         private static String userName ;
@@ -41,6 +43,27 @@ namespace Cats.Areas
             }
 
             set { _businessProcessService = value; }
+        }
+
+        public static IHubBusinessProcessService HubBusinessProcessService
+
+        {
+            get
+            {
+                if (_hubBusinessProcessService == null)
+                {
+
+                    _hubBusinessProcessService =
+                        (IHubBusinessProcessService)
+                            DependencyResolver.Current.GetService(typeof(IHubBusinessProcessService));
+
+
+                }
+                return _hubBusinessProcessService;
+
+            }
+
+            set { _hubBusinessProcessService = value; }
         }
 
 
@@ -89,14 +112,14 @@ namespace Cats.Areas
 
         }
 
-        public static BusinessProcess GetNewInstance(string description)
+        public static Models.BusinessProcess GetNewInstance(string description)
         {
-            BusinessProcess bp = new BusinessProcess();
+            Models.BusinessProcess bp = new Models.BusinessProcess();
             int BP_PR = ApplicationSettingService.getGlobalWorkflow();
 
             if (BP_PR != 0)
             {
-                var createdstate = new BusinessProcessState
+                var createdstate = new Models.BusinessProcessState
                 {
                     DatePerformed = DateTime.Now,
                     PerformedBy = userName,
@@ -104,6 +127,26 @@ namespace Cats.Areas
                 };
 
                 bp = BusinessProcessService.CreateBusinessProcessWithOutStateEntry(BP_PR, 0,"Created");
+
+            }
+            return bp;
+        }
+
+        public static Models.Hubs.BusinessProcess GetNewInstanceHub(string description)
+        {
+            Models.Hubs.BusinessProcess bp = new Models.Hubs.BusinessProcess();
+            int BP_PR = ApplicationSettingService.getGlobalWorkflow();
+
+            if (BP_PR != 0)
+            {
+                var createdstate = new Models.Hubs.BusinessProcessState
+                {
+                    DatePerformed = DateTime.Now,
+                    PerformedBy = userName,
+                    Comment = description
+                };
+
+                bp = HubBusinessProcessService.CreateBusinessProcessWithOutStateEntry(BP_PR, 0, "Created");
 
             }
             return bp;
@@ -128,7 +171,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            //if (workflowImplementer.BusinessProcess == null)
+            if (workflowImplementer.BusinessProcess == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
             }
@@ -146,11 +189,11 @@ namespace Cats.Areas
 
         private static void InitializeWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String instanceDescription)
         {
-            //workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
-            //workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
+            workflowImplementer.BusinessProcess = GetNewInstanceHub(instanceDescription);
+            workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
         }
 
-        public static Boolean EnterCreateWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultCreate", String fileName = "")
+        public static Boolean EnterCreateWorkflow(Models.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultCreate", String fileName = "")
         {
             if (documentBusinessProcess == null) return false;
 
@@ -158,7 +201,16 @@ namespace Cats.Areas
 
             return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, CreateId, description, fileName);
         }
-        private static Boolean EnterCreateWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultCreate", String fileName = "")
+
+        public static Boolean EnterCreateWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultCreate", String fileName = "")
+        {
+            if (documentBusinessProcess == null) return false;
+
+            int CreateId = BusinessProcessService.GetGlobalCreatedStateTempId();
+
+            return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, CreateId, description, fileName);
+        }
+        private static Boolean EnterCreateWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultCreate", String fileName = "", bool isHub = false)
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -172,7 +224,8 @@ namespace Cats.Areas
             else
                 msg = description;
 
-            EnterWorkflow(businessProcessID, finalStateID, fileName, msg);
+            EnterWorkflow(businessProcessID, finalStateID, fileName, isHub, msg);
+
 
 
             return true;
@@ -201,9 +254,9 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            //if (workflowImplementer.BusinessProcess == null)
+            if (workflowImplementer.BusinessProcess == null)
             {
-                //if (workflowImplementer.BusinessProcess == null)
+                if (workflowImplementer.BusinessProcess == null)
                 {
                     InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultEdit);
                 }
@@ -215,7 +268,7 @@ namespace Cats.Areas
         }
 
 
-        public static Boolean EnterEditWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultEdit", String fileName = "")
+        public static Boolean EnterEditWorkflow(Models.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultEdit", String fileName = "")
         {
             if (documentBusinessProcess == null) return false;
 
@@ -223,7 +276,16 @@ namespace Cats.Areas
 
             return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, editId, description, fileName);
         }
-        private static Boolean EnterEditWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultEdit", String fileName = "")
+
+        public static Boolean EnterEditWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultEdit", String fileName = "")
+        {
+            if (documentBusinessProcess == null) return false;
+
+            int editId = BusinessProcessService.GetGlobalEditStateTempId();
+
+            return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, editId, description, fileName);
+        }
+        private static Boolean EnterEditWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultEdit", String fileName = "", bool isHub = false)
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -237,7 +299,8 @@ namespace Cats.Areas
             else
                 msg = description;
 
-            EnterWorkflow(businessProcessID, finalStateID, fileName, msg);
+            EnterWorkflow(businessProcessID, finalStateID, fileName, isHub, msg);
+
 
 
             return true;
@@ -260,7 +323,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            //if (workflowImplementer.BusinessProcess == null)
+            if (workflowImplementer.BusinessProcess == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultPrint);
             }
@@ -269,7 +332,7 @@ namespace Cats.Areas
 
             return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, PrintId, description, fileName);
         }
-        public static Boolean EnterPrintWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print", String fileName = "")
+        public static Boolean EnterPrintWorkflow(Models.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print", String fileName = "")
         {
             if (documentBusinessProcess == null) return false;
 
@@ -277,7 +340,16 @@ namespace Cats.Areas
 
             return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, PrintId, description, fileName);
         }
-        private static Boolean EnterPrintWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultPrint", String fileName = "")
+
+        public static Boolean EnterPrintWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print", String fileName = "")
+        {
+            if (documentBusinessProcess == null) return false;
+
+            int PrintId = BusinessProcessService.GetGlobalPrintStateTempId();
+
+            return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, PrintId, description, fileName);
+        }
+        private static Boolean EnterPrintWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultPrint", String fileName = "", bool isHub = false)
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -291,7 +363,8 @@ namespace Cats.Areas
             else
                 msg = description;
 
-            EnterWorkflow(businessProcessID, finalStateID, fileName, msg);
+            EnterWorkflow(businessProcessID, finalStateID, fileName, isHub, msg);
+
 
 
             return true;
@@ -314,7 +387,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            //if (workflowImplementer.BusinessProcess == null)
+            if (workflowImplementer.BusinessProcess == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultDelete);
             }
@@ -325,7 +398,7 @@ namespace Cats.Areas
 
         }
 
-        public static Boolean EnterDelteteWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
+        public static Boolean EnterDelteteWorkflow(Models.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
         {
             if (documentBusinessProcess == null) return false;
 
@@ -335,7 +408,17 @@ namespace Cats.Areas
 
 
         }
-        private static Boolean EnterDeleteWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultDelete", String fileName = "")
+        public static Boolean EnterDelteteWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
+        {
+            if (documentBusinessProcess == null) return false;
+
+            int deleteId = BusinessProcessService.GetGlobalDeleteStateTempId();
+
+            return EnterDeleteWorkflow(documentBusinessProcess.BusinessProcessID, deleteId, description, fileName);
+
+
+        }
+        private static Boolean EnterDeleteWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultDelete", String fileName = "", bool isHub = false)
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -349,7 +432,8 @@ namespace Cats.Areas
             else
                 msg = description;
 
-            EnterWorkflow(businessProcessID, finalStateID, fileName, msg);
+            EnterWorkflow(businessProcessID, finalStateID, fileName, isHub, msg);
+
 
             return true;
         }
@@ -358,7 +442,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            //if (workflowImplementer.BusinessProcess == null)
+            if (workflowImplementer.BusinessProcess == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultExport);
             }
@@ -380,7 +464,7 @@ namespace Cats.Areas
 
             return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, ExportId, description, fileName);
         }
-        public static Boolean EnterExportWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultExport", String fileName = "")
+        public static Boolean EnterExportWorkflow(Models.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultExport", String fileName = "")
         {
             if (documentBusinessProcess == null) return false;
 
@@ -388,7 +472,15 @@ namespace Cats.Areas
 
             return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, ExportId, description, fileName);
         }
-        private static Boolean EnterExportWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultExport", String fileName = "")
+        public static Boolean EnterExportWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultExport", String fileName = "")
+        {
+            if (documentBusinessProcess == null) return false;
+
+            int ExportId = BusinessProcessService.GetGlobalExportedStateTempId();
+
+            return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, ExportId, description, fileName);
+        }
+        private static Boolean EnterExportWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultExport", String fileName = "", bool isHub = false)
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -402,17 +494,23 @@ namespace Cats.Areas
             else
                 msg = description;
 
-            EnterWorkflow(businessProcessID, finalStateID, fileName, msg);
-
+            EnterWorkflow(businessProcessID, finalStateID, fileName, isHub, msg);
 
             return true;
         }
 
-        
+        private static void EnterWorkflow(int businessProcessID, int finalStateID, string fileName, bool isHub, string msg)
+        {
+            if (!isHub)
+                EnterWorkflow(businessProcessID, finalStateID, fileName, msg);
+            else
+                EnterWorkflowHub(businessProcessID, finalStateID, fileName, msg);
+        }
+
         private static void EnterWorkflow(int businessProcessID, int finalStateID, string fileName, string msg)
         {
 
-            var businessProcessState = new BusinessProcessState()
+            var businessProcessState = new Models.BusinessProcessState()
             {
                 StateID = finalStateID,
                 PerformedBy = userName,
@@ -424,6 +522,23 @@ namespace Cats.Areas
 
 
             BusinessProcessService.PromotWorkflow_WoutUpdatingCurrentStatus(businessProcessState);
+        }
+
+        private static void EnterWorkflowHub(int businessProcessID, int finalStateID, string fileName, string msg)
+        {
+
+            var businessProcessState = new Models.Hubs.BusinessProcessState()
+            {
+                StateID = finalStateID,
+                PerformedBy = userName,
+                DatePerformed = DateTime.Now,
+                Comment = msg,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = businessProcessID
+            };
+
+
+            HubBusinessProcessService.PromotWorkflow_WoutUpdatingCurrentStatus(businessProcessState);
         }
         #endregion
 

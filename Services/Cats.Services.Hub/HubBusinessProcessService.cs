@@ -38,7 +38,15 @@ namespace Cats.Services.Hub
             }
             return false;
         }
+        public bool PromotWorkflow_WoutUpdatingCurrentStatus(BusinessProcessState state)
+        {
+            _unitOfWork.HubBusinessProcessStateRepository.Add(state);
 
+            _unitOfWork.Save();
+
+            return true;
+
+        }
         public BusinessProcess CreateBusinessProcess(int templateID, int documentID, string documentType, BusinessProcessState startingState)
         {
             var startingTemplate=_unitOfWork.HubStateTemplateRepository.FindBy(s => s.ParentProcessTemplateID == templateID && s.StateType == 0).FirstOrDefault();
@@ -140,5 +148,13 @@ namespace Cats.Services.Hub
             _unitOfWork.Save();
             return true;
         }
+
+        public BusinessProcess CreateBusinessProcessWithOutStateEntry(int templateID, int documentID, string documentType)
+        {
+            var bp = new BusinessProcess { ProcessTypeID = templateID, DocumentID = documentID, DocumentType = documentType };
+            Add(bp);
+            return bp;
+        }
+
     }
  }
