@@ -64,12 +64,12 @@ namespace Cats
         /// SHOW BUSINESS PROCESS STATE HISTORY FOR BUSINESS PROCESS
         /// </summary>
         /// <param name="businessProcessId"></param>
-        public static void ShowHistory(int businessProcessId)
+        public static void ShowHistory(int? businessProcessId)
         {
             try
             {
 
-                BusinessProcess item = BusinessProcessService.FindById(businessProcessId);
+                BusinessProcess item = BusinessProcessService.FindById(businessProcessId??0);
                 if (item == null || item.BusinessProcessStates == null || !item.BusinessProcessStates.Any())
                 {
                     Debug.Flush();

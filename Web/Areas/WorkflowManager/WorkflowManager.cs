@@ -211,7 +211,7 @@ namespace Cats.Areas
 
             return EnterCreateWorkflow(documentBusinessProcess.BusinessProcessID, CreateId, description, fileName);
         }
-        private static Boolean EnterCreateWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultCreate", String fileName = "", bool isHub = false)
+        private static Boolean EnterCreateWorkflow(int? businessProcessID, int finalStateID, String description = "Workflow_DefaultCreate", String fileName = "", bool isHub = false)
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -287,7 +287,7 @@ namespace Cats.Areas
 
             return EnterEditWorkflow(documentBusinessProcess.BusinessProcessID, editId, description, fileName);
         }
-        private static Boolean EnterEditWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultEdit", String fileName = "", bool isHub = false)
+        private static Boolean EnterEditWorkflow(int? businessProcessID, int finalStateID, String description = "Workflow_DefaultEdit", String fileName = "", bool isHub = false)
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -352,7 +352,7 @@ namespace Cats.Areas
 
             return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, PrintId, description, fileName);
         }
-        private static Boolean EnterPrintWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultPrint", String fileName = "", bool isHub = false)
+        private static Boolean EnterPrintWorkflow(int? businessProcessID, int finalStateID, String description = "Workflow_DefaultPrint", String fileName = "", bool isHub = false)
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -422,7 +422,7 @@ namespace Cats.Areas
 
 
         }
-        private static Boolean EnterDeleteWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultDelete", String fileName = "", bool isHub = false)
+        private static Boolean EnterDeleteWorkflow(int? businessProcessID, int finalStateID, String description = "Workflow_DefaultDelete", String fileName = "", bool isHub = false)
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -485,7 +485,7 @@ namespace Cats.Areas
 
             return EnterEditWorkflow(documentBusinessProcess.BusinessProcessID, ExportId, description, fileName);
         }
-        private static Boolean EnterExportWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultExport", String fileName = "", bool isHub = false)
+        private static Boolean EnterExportWorkflow(int? businessProcessID, int finalStateID, String description = "Workflow_DefaultExport", String fileName = "", bool isHub = false)
         {
             if (businessProcessID <= 0) return false;//Throw invalid param exception
             if (finalStateID < 0) return false;//Throw invalid param exception
@@ -504,7 +504,7 @@ namespace Cats.Areas
             return true;
         }
 
-        private static void EnterWorkflow(int businessProcessID, int finalStateID, string fileName, bool isHub, string msg)
+        private static void EnterWorkflow(int? businessProcessID, int finalStateID, string fileName, bool isHub, string msg)
         {
             if (!isHub)
                 EnterWorkflow(businessProcessID, finalStateID, fileName, msg);
@@ -512,7 +512,7 @@ namespace Cats.Areas
                 EnterWorkflowHub(businessProcessID, finalStateID, fileName, msg);
         }
 
-        private static void EnterWorkflow(int businessProcessID, int finalStateID, string fileName, string msg)
+        private static void EnterWorkflow(int? businessProcessID, int finalStateID, string fileName, string msg)
         {
 
             var businessProcessState = new Models.BusinessProcessState()
@@ -521,8 +521,8 @@ namespace Cats.Areas
                 PerformedBy = userName,
                 DatePerformed = DateTime.Now,
                 Comment = msg,
-                AttachmentFile = fileName,
-                ParentBusinessProcessID = businessProcessID
+                AttachmentFile = fileName, 
+                ParentBusinessProcessID = businessProcessID??0
             };
 
 
@@ -537,7 +537,7 @@ namespace Cats.Areas
 
         }
 
-        private static void EnterWorkflowHub(int businessProcessID, int finalStateID, string fileName, string msg)
+        private static void EnterWorkflowHub(int? businessProcessID, int finalStateID, string fileName, string msg)
         {
 
             var businessProcessState = new Models.Hubs.BusinessProcessState()
@@ -547,7 +547,7 @@ namespace Cats.Areas
                 DatePerformed = DateTime.Now,
                 Comment = msg,
                 AttachmentFile = fileName,
-                ParentBusinessProcessID = businessProcessID
+                ParentBusinessProcessID = businessProcessID ?? 0
             };
 
             Debug.WriteLine("*-----------WORKFLOW COMMEN BEFORE ENTERING LOG");

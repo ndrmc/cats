@@ -61,6 +61,8 @@ namespace Cats.Models
         public virtual ICollection<DeliveryReconcile> DeliveryReconciles { get; set; }
         public virtual ICollection<Dispatch> Dispatches { get; set; }
         public virtual ICollection<DispatchAllocation> DispatchAllocations { get; set; }
+        public virtual ICollection<TransportBidQuotationHeader> TransportBidQuotationHeaders { get; set; }
+        public virtual ICollection<TransportBidQuotation> TTransportBidQuotations { get; set; }
         public virtual ICollection<Transporter> Transporters { get; set; }
 
 

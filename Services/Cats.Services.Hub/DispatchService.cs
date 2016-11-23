@@ -290,7 +290,7 @@ namespace Cats.Services.Hub
             dispatch.plannedAmount = dispatchAllocation.Amount;
 
             dispatch.BusinessProcess = dispatchAllocation.BusinessProcess;
-            dispatch.BusinessProcessId = dispatchAllocation.BusinessProcessId;
+            dispatch.BusinessProcessId = Convert.ToInt16(dispatchAllocation.BusinessProcessId);
 
             return dispatch;
         }

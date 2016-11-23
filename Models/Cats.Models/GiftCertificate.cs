@@ -79,20 +79,9 @@ namespace Cats.Models
 
         public virtual BusinessProcess BusinessProcess { get; set; }
 
-        public int BusinessProcessId
-        {
-            get
-            {
-                return _BusinessProcessId;
-            }
+        public int? BusinessProcessId { get; set; }
 
-            set
-            {
-                _BusinessProcessId = value;
-            }
-        }
-
-        int _BusinessProcessId { get; set; }
+     
 
     }
 }

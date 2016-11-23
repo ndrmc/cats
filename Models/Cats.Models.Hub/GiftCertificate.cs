@@ -28,30 +28,8 @@ namespace Cats.Models.Hubs
         public virtual ShippingInstruction ShippingInstruction { get; set; }
         public virtual ICollection<GiftCertificateDetail> GiftCertificateDetails { get; set; }
 
-        public int BusinessProcessId
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
+        public int? BusinessProcessId { get; set; }
 
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public BusinessProcess BusinessProcess
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public BusinessProcess BusinessProcess { get; set; }
     }
 }

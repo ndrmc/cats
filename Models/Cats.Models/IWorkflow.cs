@@ -3,7 +3,7 @@
     public interface IWorkflow
     {
 
-         int BusinessProcessId { get; set; }
+         int? BusinessProcessId { get; set; }
 
          BusinessProcess BusinessProcess { get; set; }
     }

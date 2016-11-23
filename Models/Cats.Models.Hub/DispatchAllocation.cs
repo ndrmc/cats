@@ -45,7 +45,7 @@ namespace Cats.Models.Hubs
         public virtual ShippingInstruction ShippingInstruction { get; set; }
         public virtual Transporter Transporter { get; set; }
 
-        public int BusinessProcessId { get; set; }
+        public int? BusinessProcessId { get; set; }
 
         public virtual BusinessProcess BusinessProcess { get; set; }
     }
