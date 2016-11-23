@@ -517,7 +517,7 @@ namespace Cats.Areas
                 PerformedBy = userName,
                 DatePerformed = DateTime.Now,
                 Comment = msg,
-                AttachmentFile = fileName,
+                AttachmentFile = fileName, 
                 ParentBusinessProcessID = businessProcessID
             };
 
