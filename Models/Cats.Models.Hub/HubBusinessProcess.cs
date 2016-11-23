@@ -31,6 +31,8 @@ namespace Cats.Models.Hubs
         public virtual ICollection<BusinessProcessState> BusinessProcessStates { get; set; }
 
         public virtual ICollection<Receive> Receives { get; set; }
+        public virtual ICollection<DispatchAllocation> DispatchAllocations { get; set; }
+        public virtual ICollection<Dispatch> Dispatches { get; set; }
     }
 
     public class BusinessProcessClean
