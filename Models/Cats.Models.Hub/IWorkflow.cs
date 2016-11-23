@@ -1,6 +1,6 @@
 ﻿namespace Cats.Models.Hubs
 {
-    public interface IWorkflow
+    public interface IWorkflowHub
     {
 
          int BusinessProcessId { get; set; }

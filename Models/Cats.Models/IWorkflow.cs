@@ -1,4 +1,4 @@
-﻿namespace Cats.Models.Hubs
+﻿namespace Cats.Models
 {
     public interface IWorkflow
     {

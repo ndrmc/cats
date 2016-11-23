@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cats.Models.Hubs
 {
-    public partial class DispatchAllocation:IWorkflow
+    public partial class DispatchAllocation:IWorkflowHub
     {
         public DispatchAllocation()
         {

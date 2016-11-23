@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="Contact.cs" />
     <Compile Include="FreeStockStatus.cs" />
+    <Compile Include="IWorkflow.cs" />
     <Compile Include="Mapping\VWDispatchAllocationMap.cs" />
     <Compile Include="Mapping\VWFreePhysicalStockMap.cs" />
     <Compile Include="Mapping\VWReceiptAllocationAggregateMap.cs" />

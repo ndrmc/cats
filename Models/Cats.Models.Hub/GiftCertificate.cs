@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cats.Models.Hubs
 {
-    public partial class GiftCertificate:IWorkflow
+    public partial class GiftCertificate:IWorkflowHub
     {
         public GiftCertificate()
         {

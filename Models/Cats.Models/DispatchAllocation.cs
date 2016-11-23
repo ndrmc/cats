@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
-using Cats.Models.Hubs;
+using Cats.Models;
 
 namespace Cats.Models
 {

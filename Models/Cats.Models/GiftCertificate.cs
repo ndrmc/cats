@@ -1,12 +1,11 @@
-using Cats.Models.Hubs;
+using Cats.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cats.Models
 {
-    public partial class GiftCertificate:IWorkflow
-    {
+    public partial class GiftCertificate:IWorkflow  {
         public GiftCertificate()
         {
             this.GiftCertificateDetails = new List<GiftCertificateDetail>();
@@ -37,6 +36,9 @@ namespace Cats.Models
         public virtual IList<GiftCertificateDetail> GiftCertificateDetails { get; set; }
         public virtual ShippingInstruction ShippingInstruction { get; set; }
         public virtual ICollection<LocalPurchase> LocalPurchases  { get; set; }
+
+
+
         public Dictionary<string,string> ToDictionary()
         {
             var dictionary = new Dictionary<string, string>
@@ -81,13 +83,16 @@ namespace Cats.Models
         {
             get
             {
-                throw new NotImplementedException();
+                return _BusinessProcessId;
             }
 
             set
             {
-                throw new NotImplementedException();
+                _BusinessProcessId = value;
             }
         }
+
+        int _BusinessProcessId { get; set; }
+
     }
 }

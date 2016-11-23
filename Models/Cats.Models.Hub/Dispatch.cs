@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cats.Models.Hubs
 {
-    public partial class Dispatch:IWorkflow
+    public partial class Dispatch:IWorkflowHub
     {
         public Dispatch()
         {
