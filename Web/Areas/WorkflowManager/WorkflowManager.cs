@@ -128,7 +128,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+            //if (workflowImplementer.BusinessProcess == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
             }
@@ -146,8 +146,8 @@ namespace Cats.Areas
 
         private static void InitializeWorkflow(IWorkflowHub workflowImplementer, String instanceDescription)
         {
-            workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
-            workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
+            //workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
+            //workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
         }
 
         public static Boolean EnterCreateWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultCreate", String fileName = "")
@@ -201,9 +201,9 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+            //if (workflowImplementer.BusinessProcess == null)
             {
-                if (workflowImplementer.BusinessProcess == null)
+                //if (workflowImplementer.BusinessProcess == null)
                 {
                     InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultEdit);
                 }
@@ -260,7 +260,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+            //if (workflowImplementer.BusinessProcess == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultPrint);
             }
@@ -314,7 +314,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+            //if (workflowImplementer.BusinessProcess == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultDelete);
             }
@@ -358,7 +358,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+            //if (workflowImplementer.BusinessProcess == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultExport);
             }
