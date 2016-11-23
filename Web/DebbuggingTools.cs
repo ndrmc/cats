@@ -26,7 +26,6 @@ namespace Cats
                 var fileName = frame.GetFileName();
                 var lineNumber = frame.GetFileLineNumber();
 
-                Debug.Flush();
                 Debug.WriteLine("*------------METHOD CALLER------------------*");
 
                 Debug.WriteLine("{0}({1}):{2} - {3}", fileName, lineNumber, method.Name, message);
@@ -72,14 +71,12 @@ namespace Cats
                 BusinessProcess item = BusinessProcessService.FindById(businessProcessId??0);
                 if (item == null || item.BusinessProcessStates == null || !item.BusinessProcessStates.Any())
                 {
-                    Debug.Flush();
                     Debug.WriteLine("*------------ NO DATA ENTRY LOGS FOR =>" + businessProcessId + "------------------*");
 
                 }
                 else
                 {
 
-                    Debug.Flush();
                     Debug.WriteLine("*------------WORKFLOW DATA ENTRY LOGS FOR BP ID =>" + businessProcessId + "------------------*");
 
                     int index = 1;

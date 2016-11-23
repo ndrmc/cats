@@ -46,6 +46,7 @@ namespace Cats.Models.Mapping
             this.Property(t => t.ExperienceTo).HasColumnName("ExperienceTo");
             this.Property(t => t.PartitionId).HasColumnName("PartitionId");
             this.Property(t => t.OwnedByDRMFSS).HasColumnName("OwnedByDRMFSS");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
             // Relationships
             /*this.HasOptional(t => t.AdminUnit2)
                 .WithMany(t => t.AdminUnit1)
