@@ -44,18 +44,20 @@ namespace Cats.Models.Mapping
             this.HasRequired(t => t.Detail)
                 .WithMany(t => t.GiftCertificates)
                 .HasForeignKey(d => d.DModeOfTransport);
-            this.HasRequired(t => t.Donor)
-                .WithMany(t => t.GiftCertificates)
-                .HasForeignKey(d => d.DonorID);
-            this.HasRequired(t => t.Program)
-                .WithMany(t => t.GiftCertificates)
-                .HasForeignKey(d => d.ProgramID);
-            this.HasRequired(t => t.ShippingInstruction)
-                .WithMany(t => t.GiftCertificates)
-                .HasForeignKey(t => t.ShippingInstructionID);
-            this.HasRequired(t => t.BusinessProcess)
-             .WithMany(t => t.GiftCertificates)
-             .HasForeignKey(d => d.BusinessProcessID);
+            //this.HasRequired(t => t.Donor)
+            //    .WithMany(t => t.GiftCertificates)
+            //    .HasForeignKey(d => d.DonorID);
+            //this.HasRequired(t => t.Program)
+            //    .WithMany(t => t.GiftCertificates)
+            //    .HasForeignKey(d => d.ProgramID);
+            //this.HasRequired(t => t.ShippingInstruction)
+            //    .WithMany(t => t.GiftCertificates)
+            //    .HasForeignKey(t => t.ShippingInstructionID);
+            //this.HasRequired(t => t.BusinessProcess)
+            // .WithMany(t => t.GiftCertificates)
+            // .HasForeignKey(d => d.BusinessProcessID);
+
+            this.HasRequired(t => t.BusinessProcess).WithMany(t => t.GiftCertificates).HasForeignKey(t => t.BusinessProcessId);
 
         }
     }

@@ -25,6 +25,7 @@ using Cats.Helpers;
 using Cats.Services.Common;
 using System.IO;
 using System.ServiceModel.Security;
+using Cats.Models.Hubs;
 
 namespace Cats.Areas.Procurement.Controllers
 {
@@ -1048,6 +1049,13 @@ namespace Cats.Areas.Procurement.Controllers
                 var result = _transportOrderService.GeneratDispatchPlan(id, UserName);
                 if (result)
                 {
+                    var generated = _transportOrderService.GetGeneratedDispatchAllocations();
+                    foreach (var dispatchAllocation in generated)
+                    {
+                        WorkflowCommon.EnterCreateWorkflow(dispatchAllocation);
+
+                    }
+
                     return RedirectToAction("Index", "Dispatch", new { Area = "Hub" });
                 }
                 else

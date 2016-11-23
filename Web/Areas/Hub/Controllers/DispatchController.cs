@@ -36,6 +36,7 @@ using IShippingInstructionService = Cats.Services.Hub.IShippingInstructionServic
 using IUnitService = Cats.Services.Hub.IUnitService;
 using Cats.Areas.Logistics.Models;
 using Cats.Services.Logistics;
+using Cats.Alert;
 
 namespace Cats.Areas.Hub.Controllers
 {
@@ -374,11 +375,29 @@ namespace Cats.Areas.Hub.Controllers
                     dispatch.ChildCommodity = _commodityService.FindById((int)dispatch.CommodityChildID).Name;
                 }
                 dispatch.Unit = _unitService.FindById(dispatch.UnitID).Name;
+
+                if(dispatch.BusinessProcess== null)
+                {
+                    var disp = WorkflowCommon.GetNewInstance(AlertMessage.Workflow_DefaultCreate);
+                    dispatch.BusinessProcessId = disp.BusinessProcessID;
+                    dispatch.BusinessProcess = disp;
+                 }
+
+                WorkflowCommon.EnterCreateWorkflow(dispatch.BusinessProcess,"Dispatch has been Created from Dispatch Allocation.");
+
+
             }
             else
             {
                 dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(id, 0);
 
+                if (dispatch.BusinessProcess == null)
+                {
+                    var disp = WorkflowCommon.GetNewInstance(AlertMessage.Workflow_DefaultCreate);
+                    dispatch.BusinessProcessId = disp.BusinessProcessID;
+                    dispatch.BusinessProcess = disp;
+                }
+                WorkflowCommon.EnterCreateWorkflow(dispatch.BusinessProcess);
 
             }
 

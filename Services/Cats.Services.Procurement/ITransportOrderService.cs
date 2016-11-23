@@ -62,6 +62,11 @@ namespace Cats.Services.Procurement
 
         decimal? CheckIfCommodityIsDipatchedToThisFdp(int fdpId, string bidNo, int transporterId, int transporrtOrderId,
                                                      int commodityId, int requisitionID);
+
+        List<DispatchAllocation> GetGeneratedDispatchAllocations();
+    
+
+        void ClearGeneratedDispatchAllocations();
     }
 }
 

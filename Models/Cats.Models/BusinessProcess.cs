@@ -59,6 +59,10 @@ namespace Cats.Models
         public virtual ICollection<Transfer> Transfers { get; set; }
         public virtual ICollection<GiftCertificate> GiftCertificates { get; set; }
         public virtual ICollection<DeliveryReconcile> DeliveryReconciles { get; set; }
+        public virtual ICollection<Dispatch> Dispatches { get; set; }
+        public virtual ICollection<DispatchAllocation> DispatchAllocations { get; set; }
+
+
     }
 
     public class BusinessProcessClean
