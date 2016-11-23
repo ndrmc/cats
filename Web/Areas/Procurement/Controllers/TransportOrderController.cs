@@ -144,7 +144,7 @@ namespace Cats.Areas.Procurement.Controllers
                 }
                 st.AttachmentFile.SaveAs(path);
             }
-            var businessProcessState = new BusinessProcessState()
+            var businessProcessState = new Cats.Models.BusinessProcessState()
             {
                 StateID = st.StateID,
                 PerformedBy = HttpContext.User.Identity.Name,
@@ -627,7 +627,7 @@ namespace Cats.Areas.Procurement.Controllers
                         int BP_PR = _applicationSettingService.getTransportOrderWorkflow();
                         if (BP_PR != 0)
                         {
-                            BusinessProcessState createdstate = new BusinessProcessState
+                            Cats.Models.BusinessProcessState createdstate = new Cats.Models.BusinessProcessState
                             {
                                 DatePerformed = DateTime.Now,
                                 PerformedBy = User.Identity.Name,
@@ -636,7 +636,7 @@ namespace Cats.Areas.Procurement.Controllers
                             };
                             //_PaymentRequestservice.Create(request);
 
-                            BusinessProcess bpTR = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                            Cats.Models.BusinessProcess bpTR = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
                                                                                             "TransportOrder", createdstate);
                             if (bpTR != null)
                                 businessProcessID = bpTR.BusinessProcessID;
@@ -747,7 +747,7 @@ namespace Cats.Areas.Procurement.Controllers
 
             if (failedStateId != null)
             {
-                var createdstate3 = new BusinessProcessState
+                var createdstate3 = new Cats.Models.BusinessProcessState
                 {
                     DatePerformed = DateTime.Now,
                     PerformedBy = User.Identity.Name,
@@ -925,14 +925,14 @@ namespace Cats.Areas.Procurement.Controllers
 
                         if (target != null)
                         {
-                            BusinessProcessState bps = target.BusinessProcess.CurrentState;
+                            Cats.Models.BusinessProcessState bps = target.BusinessProcess.CurrentState;
                             var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
 
                             if (stateTemplate != null)
                             {
                                 int editStateId = stateTemplate.StateTemplateID;
 
-                                var businessProcessState = new BusinessProcessState()
+                                var businessProcessState = new Cats.Models.BusinessProcessState()
                                 {
                                     StateID = editStateId,
                                     PerformedBy = HttpContext.User.Identity.Name,
