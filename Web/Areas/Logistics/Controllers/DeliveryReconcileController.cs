@@ -120,7 +120,7 @@ namespace Cats.Areas.Logistics.Controllers
             {
                 try
                 {
-                    BusinessProcess bp = new BusinessProcess();
+                    Cats.Models.BusinessProcess bp = new Cats.Models.BusinessProcess();
                    
                     if (dispatchViewModelForReconcile.DeliveryReconcileID!=null)
                     {

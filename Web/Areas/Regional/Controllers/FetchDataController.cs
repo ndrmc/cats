@@ -112,7 +112,6 @@ namespace Cats.Areas.Regional.Controllers
             var planName = _planService.FindById(currentPlan).PlanName;
                  
 
-            var planName = _planService.FindById(currentPlan).PlanName;
             var sum18 = 0;
             var sum518 = 0;
             var sum5 = 0;

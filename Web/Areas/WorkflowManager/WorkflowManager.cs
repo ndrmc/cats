@@ -10,7 +10,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Cats.Services.Common;
-using Cats.Models.Hubs;
+//using Cats.Models.Hubs;
 
 namespace Cats.Areas
 {
@@ -124,7 +124,7 @@ namespace Cats.Areas
 
             return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
         }
-        public static Boolean EnterCreateWorkflow(IWorkflowHub workflowImplementer, String description = "Workflow_DefaultCreate", String fileName = "")
+        public static Boolean EnterCreateWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String description = "Workflow_DefaultCreate", String fileName = "")
         {
             if (workflowImplementer == null) return false;
 
@@ -144,7 +144,7 @@ namespace Cats.Areas
             workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
         }
 
-        private static void InitializeWorkflow(IWorkflowHub workflowImplementer, String instanceDescription)
+        private static void InitializeWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String instanceDescription)
         {
             //workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
             //workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
@@ -197,7 +197,7 @@ namespace Cats.Areas
         }
 
 
-        public static Boolean EnterEditWorkflow(IWorkflowHub workflowImplementer, String description = "Workflow_DefaultEdit", String fileName = "")
+        public static Boolean EnterEditWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String description = "Workflow_DefaultEdit", String fileName = "")
         {
             if (workflowImplementer == null) return false;
 
@@ -256,7 +256,7 @@ namespace Cats.Areas
             return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, PrintId, description, fileName);
         }
 
-        public static Boolean EnterPrintWorkflow(IWorkflowHub workflowImplementer, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print", String fileName = "")
+        public static Boolean EnterPrintWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print", String fileName = "")
         {
             if (workflowImplementer == null) return false;
 
@@ -310,7 +310,7 @@ namespace Cats.Areas
 
 
         }
-        public static Boolean EnterDelteteWorkflow(IWorkflowHub workflowImplementer, String description = "Workflow_DefaultDelete", String fileName = "")
+        public static Boolean EnterDelteteWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String description = "Workflow_DefaultDelete", String fileName = "")
         {
             if (workflowImplementer == null) return false;
 
@@ -354,7 +354,7 @@ namespace Cats.Areas
             return true;
         }
 
-        public static Boolean EnterExportWorkflow(IWorkflowHub workflowImplementer, String description = "Workflow_DefaultExport", String fileName = "")
+        public static Boolean EnterExportWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String description = "Workflow_DefaultExport", String fileName = "")
         {
             if (workflowImplementer == null) return false;
 
