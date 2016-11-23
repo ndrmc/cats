@@ -37,7 +37,7 @@ namespace Cats.Models.Hubs.Mapping
             this.Property(t => t.ExperienceTo).HasColumnName("ExperienceTo");
             this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
 
-            this.HasRequired(t => t.BusinessProcess).WithMany(t => t.Transporters).HasForeignKey(t => t.BusinessProcessId);
+            this.HasOptional(t => t.BusinessProcess).WithMany(t => t.Transporters).HasForeignKey(x => x.BusinessProcessId);
 
         }
     }

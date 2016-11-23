@@ -178,13 +178,14 @@ namespace Cats.Areas.EarlyWarning.Controllers
                             var giftCertificate =
                                 GiftCertificateViewModelBinder.BindGiftCertificate(giftcertificateViewModel);
                             
-                            giftCertificate.BusinessProcessID = bp.BusinessProcessID;
+                            giftCertificate.BusinessProcessId = Convert.ToInt16(bp.BusinessProcessID);
 
                             var shippingInstructionID =
                                 _shippingInstructionService.GetSiNumber(giftcertificateViewModel.SINumber)
                                     .ShippingInstructionID;
                             giftCertificate.ShippingInstructionID = shippingInstructionID;
                             _giftCertificateService.AddGiftCertificate(giftCertificate);
+                            WorkflowCommon.EnterCreateWorkflow(giftCertificate);
 
                             return RedirectToAction("Index");
                         }
@@ -242,7 +243,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 ParentBusinessProcessID = st.ParentBusinessProcessID
             };
 
-            var giftCertificate = _giftCertificateService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
+            var giftCertificate = _giftCertificateService.FindBy(b => b.BusinessProcessId == st.ParentBusinessProcessID).FirstOrDefault();
             string stateName = _stateTemplateService.FindById(st.StateID).Name;
 
             if (giftCertificate != null)
@@ -423,6 +424,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
 
                 _giftCertificateService.EditGiftCertificate(giftcert);
+                WorkflowCommon.EnterEditWorkflow(giftcert);
 
                 return RedirectToAction("Index");
             }
@@ -444,6 +446,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
         [EarlyWarningAuthorize(operation = EarlyWarningConstants.Operation.Delete_Gift_Certificate)]
         public ActionResult DeleteConfirmed(int id)
         {
+            var giftCertificate = _giftCertificateService.FindById(id);
+            WorkflowCommon.EnterDelteteWorkflow(giftCertificate);
+
             _giftCertificateService.DeleteById(id);
             return RedirectToAction("Index");
         }
@@ -522,7 +527,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                         DatePerformed = DateTime.Now,
                         Comment = "GiftCertificate has been rejected!",
                         //AttachmentFile = fileName,
-                        ParentBusinessProcessID = giftCertificate.BusinessProcessID
+                        ParentBusinessProcessID = Convert.ToInt32(giftCertificate.BusinessProcessId)
                     };
 
                     _businessProcessService.PromotWorkflow(businessProcessState);
@@ -563,7 +568,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                         DatePerformed = DateTime.Now,
                         Comment = "GiftCertificate has been approved",
                         //AttachmentFile = fileName,
-                        ParentBusinessProcessID = giftCertificate.BusinessProcessID
+                        ParentBusinessProcessID = Convert.ToInt32( giftCertificate.BusinessProcessId)
                     };
 
                     //_giftCertificateService.EditGiftCertificate(giftCertificate);
@@ -588,7 +593,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     PerformedBy = HttpContext.User.Identity.Name,
                     DatePerformed = DateTime.Now,
                     Comment = changeNote ?? "GiftCertificate has been Printed",
-                    ParentBusinessProcessID = giftCertificate.BusinessProcessID
+                    ParentBusinessProcessID = Convert.ToInt32( giftCertificate.BusinessProcessId)
                 };
 
 
@@ -637,7 +642,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                         PerformedBy = HttpContext.User.Identity.Name,
                         DatePerformed = DateTime.Now,
                         Comment = changeNote ?? "GiftCertificate has been Edited",
-                        ParentBusinessProcessID = giftCertificate.BusinessProcessID
+                        ParentBusinessProcessID = Convert.ToInt32( giftCertificate.BusinessProcessId)
                     };
 
 

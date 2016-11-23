@@ -26,7 +26,7 @@ namespace Cats.Models
         public string PortName { get; set; }
         public int StatusID { get; set; }
         public int? PartitionId { get; set; }
-        public int BusinessProcessID { get; set; }
+        //public int BusinessProcessID { get; set; }
 
         public string DeclarationNumber { get; set; }
         public Nullable<Guid> TransactionGroupID { get; set; }

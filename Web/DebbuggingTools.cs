@@ -43,7 +43,7 @@ namespace Cats
         {
             get
             {
-                if (_businessProcessService == null)
+                //if (_businessProcessService == null)
                 {
 
                     _businessProcessService =

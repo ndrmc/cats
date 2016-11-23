@@ -30,7 +30,7 @@ namespace Cats.Areas
         {
             get
             {
-                if (_businessProcessService == null)
+                //if (_businessProcessService == null)
                 {
 
                     _businessProcessService =
@@ -51,7 +51,7 @@ namespace Cats.Areas
         {
             get
             {
-                if (_hubBusinessProcessService == null)
+                //if (_hubBusinessProcessService == null)
                 {
 
                     _hubBusinessProcessService =
@@ -73,7 +73,7 @@ namespace Cats.Areas
         {
             get
             {
-                if (_applicationSettingService == null)
+                //if (_applicationSettingService == null)
                 {
 
                     _applicationSettingService =
@@ -159,7 +159,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+                     if (workflowImplementer.BusinessProcessId == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
             }
@@ -172,7 +172,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+            if (workflowImplementer.BusinessProcessId == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
             }
@@ -182,13 +182,13 @@ namespace Cats.Areas
             return EnterCreateWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName,true);
         }
        
-        private static void InitializeWorkflow(IWorkflow workflowImplementer ,String instanceDescription )
+        public static void InitializeWorkflow(IWorkflow workflowImplementer ,String instanceDescription=null )
         {
             workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
             workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
         }
 
-        private static void InitializeWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String instanceDescription)
+        public static void InitializeWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String instanceDescription = null)
         {
             workflowImplementer.BusinessProcess = GetNewInstanceHub(instanceDescription);
             workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
@@ -237,12 +237,11 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+                     if (workflowImplementer.BusinessProcessId == null)
             {
-                if (workflowImplementer.BusinessProcess == null)
-                {
+           
                     InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultEdit);
-                }
+             
             }
 
             int editId = BusinessProcessService.GetGlobalEditStateTempId();
@@ -255,13 +254,12 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
-            {
-                if (workflowImplementer.BusinessProcess == null)
+          
+                         if (workflowImplementer.BusinessProcessId == null)
                 {
                     InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultEdit);
                 }
-            }
+           
 
             int editId = BusinessProcessService.GetGlobalEditStateTempId();
 
@@ -311,7 +309,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+                     if (workflowImplementer.BusinessProcessId == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultPrint);
             }
@@ -325,7 +323,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+                     if (workflowImplementer.BusinessProcessId == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultPrint);
             }
@@ -376,7 +374,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+                     if (workflowImplementer.BusinessProcessId == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultDelete);
             }
@@ -390,7 +388,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+                     if (workflowImplementer.BusinessProcessId == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultDelete);
             }
@@ -446,7 +444,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+                     if (workflowImplementer.BusinessProcessId == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultExport);
             }
@@ -460,7 +458,7 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcess == null)
+                     if (workflowImplementer.BusinessProcessId == null)
             {
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultExport);
             }

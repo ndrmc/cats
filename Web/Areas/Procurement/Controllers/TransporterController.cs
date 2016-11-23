@@ -57,6 +57,9 @@ namespace Cats.Areas.Procurement.Controllers
             transporterPoco.ManagerName = tm.ManagerName;
             transporterPoco.ManagerMobile = tm.ManagerMobile;
             transporterPoco.OwnedByDRMFSS = tm.OwnedByDRMFSS;
+            transporterPoco.BusinessProcessId = tm.BusinessProcessId;
+
+
             //TransporterPOCO tp= new TransporterPOCO{
             //                                        TransporterID=tm.TransporterID,
             //                                        Name=tm.Name,
@@ -189,8 +192,12 @@ namespace Cats.Areas.Procurement.Controllers
         public ActionResult Create(Transporter transporter)
         {
             if (!ModelState.IsValid)
+             
             {
+                WorkflowCommon.InitializeWorkflow(transporter);
+
                 transportService.AddTransporter(transporter);
+
                 WorkflowCommon.EnterCreateWorkflow(transporter);
 
             }
@@ -272,16 +279,21 @@ namespace Cats.Areas.Procurement.Controllers
             if (ModelState.IsValid)
             {
                 if (transporter.TransporterID == 0)
-                {
-                    transportService.AddTransporter(transporter);
-                    WorkflowCommon.EnterCreateWorkflow(transporter);
+                { transportService.AddTransporter(transporter);
+                   WorkflowCommon.EnterCreateWorkflow(transporter);   
+                 
                 }
                 else
                 {
                     //   transporter.ExperienceFrom = ExperienceFrom;
                     //   transporter.ExperienceTo = ExperienceTo;
-                    transportService.EditTransporter(transporter);
                     WorkflowCommon.EnterEditWorkflow(transporter);
+
+
+                    transportService.EditTransporter(transporter);
+
+                    //WorkflowCommon.EnterEditWorkflow(transporter);    
+               
 
                 }
                 return RedirectToAction("Index");

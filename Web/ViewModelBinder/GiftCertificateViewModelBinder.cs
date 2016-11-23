@@ -44,7 +44,7 @@ namespace Cats.ViewModelBinder
             giftCertificateViewModel.AllowReject = giftCertificateModel.Donor.DonationPlanHeaders.Count > 0; 
             giftCertificateViewModel.IsApprovable = giftCertificateModel.GiftCertificateDetails.Count > 0;
 
-            giftCertificateViewModel.BusinessProcessID = giftCertificateModel.BusinessProcessID;
+            giftCertificateViewModel.BusinessProcessID = Convert.ToInt32( giftCertificateModel.BusinessProcessId);
             giftCertificateViewModel.IsApprovable = giftCertificateModel.GiftCertificateDetails.Count > 0;
 
             giftCertificateViewModel.RejectedId = 

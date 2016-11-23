@@ -713,6 +713,10 @@ namespace Cats.Data.UnitWork
                     }
                 }
                 throw;
+            }catch(Exception ex)
+
+            {
+                throw ex;
             }
 
         }
