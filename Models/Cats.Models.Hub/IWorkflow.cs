@@ -5,6 +5,6 @@
 
          int BusinessProcessId { get; set; }
 
-         BusinessProcess BusinessProcess { get; set; }
+         //BusinessProcess BusinessProcess { get; set; }
     }
 }
