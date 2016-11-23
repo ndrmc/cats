@@ -33,6 +33,8 @@ namespace Cats.Models.Hubs.Mapping
             this.Property(t => t.ProgramID).HasColumnName("ProgramID");
             this.Property(t => t.DModeOfTransport).HasColumnName("DModeOfTransport");
             this.Property(t => t.PortName).HasColumnName("PortName");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
+
 
             // Relationships
             this.HasRequired(t => t.Detail)

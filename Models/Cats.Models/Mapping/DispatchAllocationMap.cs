@@ -44,6 +44,7 @@ namespace Cats.Models.Mapping
             this.Property(t => t.TransportOrderID).HasColumnName("TransportOrderID");
             this.Property(t => t.IsClosed).HasColumnName("IsClosed");
             this.Property(t => t.ParentDispatchAllocationID).HasColumnName("ParentDispatchAllocationID");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
 
             this.HasRequired(t => t.BusinessProcess).WithMany(t => t.DispatchAllocations).HasForeignKey(t => t.BusinessProcessId);
 

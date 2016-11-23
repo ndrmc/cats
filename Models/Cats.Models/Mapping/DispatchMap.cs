@@ -67,6 +67,7 @@ namespace Cats.Models.Mapping
             this.Property(t => t.Remark).HasColumnName("Remark");
             this.Property(t => t.DispatchedByStoreMan).HasColumnName("DispatchedByStoreMan");
             this.Property(t => t.DispatchAllocationID).HasColumnName("DispatchAllocationID");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
             this.Property(t => t.OtherDispatchAllocationID).HasColumnName("OtherDispatchAllocationID");
 
             // Relationships
