@@ -1,4 +1,4 @@
-﻿using Cats.Alert;
+using Cats.Alert;
 using Cats.Models;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Security;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Cats.Services.Common;
-
+using Cats.Models.Hubs;
 
 namespace Cats.Areas
 {
@@ -111,6 +111,44 @@ namespace Cats.Areas
 
         #region Enter workflow Methods
 
+        public static Boolean EnterCreateWorkflow(IWorkflow workflowImplementer, String description = "Workflow_DefaultCreate", String fileName = "")
+        {
+            if (workflowImplementer == null) return false;
+
+            if (workflowImplementer.BusinessProcess == null)
+            {
+                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
+            }
+
+            int editId = BusinessProcessService.GetGlobalEditStateTempId();
+
+            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
+        }
+        public static Boolean EnterCreateWorkflow(IWorkflowHub workflowImplementer, String description = "Workflow_DefaultCreate", String fileName = "")
+        {
+            if (workflowImplementer == null) return false;
+
+            if (workflowImplementer.BusinessProcess == null)
+            {
+                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
+            }
+
+            int editId = BusinessProcessService.GetGlobalEditStateTempId();
+
+            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
+        }
+       
+        private static void InitializeWorkflow(IWorkflow workflowImplementer ,String instanceDescription )
+        {
+            workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
+            workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
+        }
+
+        private static void InitializeWorkflow(IWorkflowHub workflowImplementer, String instanceDescription)
+        {
+            workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
+            workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
+        }
 
         public static Boolean EnterCreateWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultCreate", String fileName = "")
         {
@@ -141,6 +179,42 @@ namespace Cats.Areas
         }
 
 
+        public static Boolean EnterEditWorkflow(IWorkflow workflowImplementer, String description = "Workflow_DefaultEdit", String fileName = "")
+        {
+            if (workflowImplementer == null) return false;
+
+            if (workflowImplementer.BusinessProcess == null)
+            {
+                if (workflowImplementer.BusinessProcess == null)
+                {
+                    InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultEdit);
+                }
+            }
+
+            int editId = BusinessProcessService.GetGlobalEditStateTempId();
+
+            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
+        }
+
+
+        public static Boolean EnterEditWorkflow(IWorkflowHub workflowImplementer, String description = "Workflow_DefaultEdit", String fileName = "")
+        {
+            if (workflowImplementer == null) return false;
+
+            if (workflowImplementer.BusinessProcess == null)
+            {
+                if (workflowImplementer.BusinessProcess == null)
+                {
+                    InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultEdit);
+                }
+            }
+
+            int editId = BusinessProcessService.GetGlobalEditStateTempId();
+
+            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
+        }
+
+
         public static Boolean EnterEditWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultEdit", String fileName = "")
         {
             if (documentBusinessProcess == null) return false;
@@ -168,8 +242,33 @@ namespace Cats.Areas
 
             return true;
         }
+        public static Boolean EnterPrintWorkflow(IWorkflow workflowImplementer, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print", String fileName = "")
+        {
+            if (workflowImplementer == null) return false;
 
+            if (workflowImplementer.BusinessProcess == null)
+            {
+                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultPrint);
+            }
 
+            int PrintId = BusinessProcessService.GetGlobalPrintStateTempId();
+
+            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, PrintId, description, fileName);
+        }
+
+        public static Boolean EnterPrintWorkflow(IWorkflowHub workflowImplementer, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print", String fileName = "")
+        {
+            if (workflowImplementer == null) return false;
+
+            if (workflowImplementer.BusinessProcess == null)
+            {
+                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultPrint);
+            }
+
+            int PrintId = BusinessProcessService.GetGlobalPrintStateTempId();
+
+            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, PrintId, description, fileName);
+        }
         public static Boolean EnterPrintWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print", String fileName = "")
         {
             if (documentBusinessProcess == null) return false;
@@ -197,7 +296,34 @@ namespace Cats.Areas
 
             return true;
         }
+        public static Boolean EnterDelteteWorkflow(IWorkflow workflowImplementer, String description = "Workflow_DefaultDelete", String fileName = "")
+        {
+            if (workflowImplementer == null) return false;
 
+            if (workflowImplementer.BusinessProcess == null)
+            {
+                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultDelete);
+            }
+            int deleteId = BusinessProcessService.GetGlobalDeleteStateTempId();
+
+            return EnterDeleteWorkflow(workflowImplementer.BusinessProcessId, deleteId, description, fileName);
+
+
+        }
+        public static Boolean EnterDelteteWorkflow(IWorkflowHub workflowImplementer, String description = "Workflow_DefaultDelete", String fileName = "")
+        {
+            if (workflowImplementer == null) return false;
+
+            if (workflowImplementer.BusinessProcess == null)
+            {
+                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultDelete);
+            }
+            int deleteId = BusinessProcessService.GetGlobalDeleteStateTempId();
+
+            return EnterDeleteWorkflow(workflowImplementer.BusinessProcessId, deleteId, description, fileName);
+
+
+        }
 
         public static Boolean EnterDelteteWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
         {
@@ -228,6 +354,32 @@ namespace Cats.Areas
             return true;
         }
 
+        public static Boolean EnterExportWorkflow(IWorkflowHub workflowImplementer, String description = "Workflow_DefaultExport", String fileName = "")
+        {
+            if (workflowImplementer == null) return false;
+
+            if (workflowImplementer.BusinessProcess == null)
+            {
+                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultExport);
+            }
+
+            int ExportId = BusinessProcessService.GetGlobalExportedStateTempId();
+
+            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, ExportId, description, fileName);
+        }
+        public static Boolean EnterExportWorkflow(IWorkflow workflowImplementer, String description = "Workflow_DefaultExport", String fileName = "")
+        {
+            if (workflowImplementer == null) return false;
+
+            if (workflowImplementer.BusinessProcess == null)
+            {
+                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultExport);
+            }
+        
+            int ExportId = BusinessProcessService.GetGlobalExportedStateTempId();
+
+            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, ExportId, description, fileName);
+        }
         public static Boolean EnterExportWorkflow(BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultExport", String fileName = "")
         {
             if (documentBusinessProcess == null) return false;
@@ -256,9 +408,7 @@ namespace Cats.Areas
             return true;
         }
 
-
-
-
+        
         private static void EnterWorkflow(int businessProcessID, int finalStateID, string fileName, string msg)
         {
 
