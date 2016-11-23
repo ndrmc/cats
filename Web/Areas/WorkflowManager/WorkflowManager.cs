@@ -164,9 +164,9 @@ namespace Cats.Areas
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
             }
 
-            int editId = BusinessProcessService.GetGlobalEditStateTempId();
+            int editId = BusinessProcessService.GetGlobalCreatedStateTempId();
 
-            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
+            return EnterCreateWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
         }
         public static Boolean EnterCreateWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String description = "Workflow_DefaultCreate", String fileName = "")
         {
@@ -177,9 +177,9 @@ namespace Cats.Areas
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
             }
 
-            int editId = BusinessProcessService.GetGlobalEditStateTempId();
+            int editId = BusinessProcessService.GetGlobalCreatedStateTempId();
 
-            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
+            return EnterCreateWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName,true);
         }
        
         private static void InitializeWorkflow(IWorkflow workflowImplementer ,String instanceDescription )
@@ -200,7 +200,7 @@ namespace Cats.Areas
 
             int CreateId = BusinessProcessService.GetGlobalCreatedStateTempId();
 
-            return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, CreateId, description, fileName);
+            return EnterCreateWorkflow(documentBusinessProcess.BusinessProcessID, CreateId, description, fileName);
         }
 
         public static Boolean EnterCreateWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultCreate", String fileName = "")
@@ -209,7 +209,7 @@ namespace Cats.Areas
 
             int CreateId = BusinessProcessService.GetGlobalCreatedStateTempId();
 
-            return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, CreateId, description, fileName);
+            return EnterCreateWorkflow(documentBusinessProcess.BusinessProcessID, CreateId, description, fileName);
         }
         private static Boolean EnterCreateWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultCreate", String fileName = "", bool isHub = false)
         {
@@ -247,7 +247,7 @@ namespace Cats.Areas
 
             int editId = BusinessProcessService.GetGlobalEditStateTempId();
 
-            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
+            return EnterEditWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
         }
 
 
@@ -265,7 +265,8 @@ namespace Cats.Areas
 
             int editId = BusinessProcessService.GetGlobalEditStateTempId();
 
-            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
+            return EnterEditWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName, true);
+
         }
 
 
@@ -275,7 +276,7 @@ namespace Cats.Areas
 
             int editId = BusinessProcessService.GetGlobalEditStateTempId();
 
-            return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, editId, description, fileName);
+            return EnterEditWorkflow(documentBusinessProcess.BusinessProcessID, editId, description, fileName);
         }
 
         public static Boolean EnterEditWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultEdit", String fileName = "")
@@ -284,7 +285,7 @@ namespace Cats.Areas
 
             int editId = BusinessProcessService.GetGlobalEditStateTempId();
 
-            return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, editId, description, fileName);
+            return EnterEditWorkflow(documentBusinessProcess.BusinessProcessID, editId, description, fileName);
         }
         private static Boolean EnterEditWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultEdit", String fileName = "", bool isHub = false)
         {
@@ -331,7 +332,8 @@ namespace Cats.Areas
 
             int PrintId = BusinessProcessService.GetGlobalPrintStateTempId();
 
-            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, PrintId, description, fileName);
+            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, PrintId, description, fileName, true);
+
         }
         public static Boolean EnterPrintWorkflow(Models.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print", String fileName = "")
         {
@@ -394,7 +396,8 @@ namespace Cats.Areas
             }
             int deleteId = BusinessProcessService.GetGlobalDeleteStateTempId();
 
-            return EnterDeleteWorkflow(workflowImplementer.BusinessProcessId, deleteId, description, fileName);
+            return EnterDeleteWorkflow(workflowImplementer.BusinessProcessId, deleteId, description, fileName, true);
+
 
 
         }
@@ -450,7 +453,8 @@ namespace Cats.Areas
 
             int ExportId = BusinessProcessService.GetGlobalExportedStateTempId();
 
-            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, ExportId, description, fileName);
+            return EnterEditWorkflow(workflowImplementer.BusinessProcessId, ExportId, description, fileName, true);
+
         }
         public static Boolean EnterExportWorkflow(IWorkflow workflowImplementer, String description = "Workflow_DefaultExport", String fileName = "")
         {
@@ -463,7 +467,7 @@ namespace Cats.Areas
         
             int ExportId = BusinessProcessService.GetGlobalExportedStateTempId();
 
-            return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, ExportId, description, fileName);
+            return EnterEditWorkflow(workflowImplementer.BusinessProcessId, ExportId, description, fileName);
         }
         public static Boolean EnterExportWorkflow(Models.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultExport", String fileName = "")
         {
@@ -471,7 +475,7 @@ namespace Cats.Areas
 
             int ExportId = BusinessProcessService.GetGlobalExportedStateTempId();
 
-            return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, ExportId, description, fileName);
+            return EnterEditWorkflow(documentBusinessProcess.BusinessProcessID, ExportId, description, fileName);
         }
         public static Boolean EnterExportWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultExport", String fileName = "")
         {
@@ -479,7 +483,7 @@ namespace Cats.Areas
 
             int ExportId = BusinessProcessService.GetGlobalExportedStateTempId();
 
-            return EnterPrintWorkflow(documentBusinessProcess.BusinessProcessID, ExportId, description, fileName);
+            return EnterEditWorkflow(documentBusinessProcess.BusinessProcessID, ExportId, description, fileName);
         }
         private static Boolean EnterExportWorkflow(int businessProcessID, int finalStateID, String description = "Workflow_DefaultExport", String fileName = "", bool isHub = false)
         {
