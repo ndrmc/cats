@@ -337,6 +337,11 @@ namespace Cats.Infrastructure
             //kernel.Bind<Cats.Services.Hub.Interfaces.IStockStatusService>().To<Cats.Services.Hub.DetailService>();
 
             kernel.Bind<Cats.Services.Hub.IVWDdispatchAllocationDistributionService>().To<Cats.Services.Hub.VWDdispatchAllocationDistributionService>();
+
+            kernel.Bind<IHubBusinessProcessStateService>().To<HubBusinessProcessStateService>();
+            kernel.Bind<IHubBusinessProcessService>().To<HubBusinessProcessService>();
+            kernel.Bind<IHubProcessTemplateService>().To<HubProcessTemplateService>();
+            kernel.Bind<IHubStateTemplateService>().To<HubStateTemplateService>();
         }
     }
 }

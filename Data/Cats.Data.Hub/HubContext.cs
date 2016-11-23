@@ -98,6 +98,12 @@ namespace Cats.Data.Hub
 
         public DbSet<VWDispatchAllocation> VWDispatchAllocation { get; set; }
         public DbSet<VWDdispatchAllocationDistribution> VwDdispatchAllocationDistributions { get; set; }
+
+        public DbSet<ProcessTemplate> ProcessTemplates { get; set; }
+        public DbSet<StateTemplate> StateTemplates { get; set; }
+        public DbSet<BusinessProcess> BusinessProcesss { get; set; }
+        public DbSet<BusinessProcessState> BusinessProcessStates { get; set; }
+        public DbSet<FlowTemplate> FlowTemplates { get; set; }
         #endregion
 
 
@@ -174,14 +180,20 @@ namespace Cats.Data.Hub
             modelBuilder.Configurations.Add(new VWDdispatchAllocationDistributionMap());
 
 
+            modelBuilder.Configurations.Add(new ProcessTemplateMap());
+            modelBuilder.Configurations.Add(new StateTemplateMap());
+            modelBuilder.Configurations.Add(new BusinessProcessMap());
+            modelBuilder.Configurations.Add(new BusinessProcessStateMap());
+            modelBuilder.Configurations.Add(new FlowTemplateMap());
 
-            /*     modelBuilder.Entity<UserProfile>()
-                .HasMany(n => n.UserHubs)
-                .WithRequired() // <- no param because not exposed end of relation,
-                     // nc => nc.News would throw an exception
-                     // because nc.News is in the base class
-                .Map(a => a.MapKey("UserProfileID"));*/
-        }
+            
+        /*     modelBuilder.Entity<UserProfile>()
+            .HasMany(n => n.UserHubs)
+            .WithRequired() // <- no param because not exposed end of relation,
+                 // nc => nc.News would throw an exception
+                 // because nc.News is in the base class
+            .Map(a => a.MapKey("UserProfileID"));*/
+    }
         #endregion
 
 

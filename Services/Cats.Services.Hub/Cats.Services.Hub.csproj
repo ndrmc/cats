@@ -60,6 +60,8 @@
     <Compile Include="AdjustmentService.cs" />
     <Compile Include="AdminUnitService.cs" />
     <Compile Include="AuditSevice.cs" />
+    <Compile Include="HubBusinessProcessService.cs" />
+    <Compile Include="HubBusinessProcessStateService.cs" />
     <Compile Include="CommodityGradeService.cs" />
     <Compile Include="CommodityService.cs" />
     <Compile Include="CommoditySourceService.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="DonorService.cs" />
     <Compile Include="ErrorLogService.cs" />
     <Compile Include="FDPService.cs" />
+    <Compile Include="HubFlowTemplateService.cs" />
     <Compile Include="ForgetPasswordRequestService.cs" />
     <Compile Include="GiftCertificateDetailService.cs" />
     <Compile Include="GiftCertificateService.cs" />
@@ -81,6 +84,9 @@
     <Compile Include="HubService.cs" />
     <Compile Include="HubSettingService.cs" />
     <Compile Include="HubSettingValueService.cs" />
+    <Compile Include="IHubBusinessProcessService.cs" />
+    <Compile Include="IHubBusinessProcessStateService.cs" />
+    <Compile Include="IHubFlowTemplateService.cs" />
     <Compile Include="Interfaces\IAccountService.cs" />
     <Compile Include="Interfaces\IAdjustmentReasonService.cs" />
     <Compile Include="Interfaces\IAdjustmentService.cs" />
@@ -139,6 +145,8 @@
     <Compile Include="Interfaces\IUserHubService.cs" />
     <Compile Include="Interfaces\IUserProfileService.cs" />
     <Compile Include="Interfaces\IUserRoleService.cs" />
+    <Compile Include="IHubProcessTemplateService.cs" />
+    <Compile Include="IHubStateTemplateService.cs" />
     <Compile Include="IVWDdispatchAllocationDistributionService.cs" />
     <Compile Include="IVWReceiptAllocationAggregateService.cs" />
     <Compile Include="LedgerService.cs" />
@@ -148,6 +156,7 @@
     <Compile Include="OtherDispatchAllocationService.cs" />
     <Compile Include="PartitionService.cs" />
     <Compile Include="PeriodService.cs" />
+    <Compile Include="HubProcessTemplateService.cs" />
     <Compile Include="ProgramService.cs" />
     <Compile Include="ProjectCodeService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -163,6 +172,7 @@
     <Compile Include="SMSService.cs" />
     <Compile Include="StackEventService.cs" />
     <Compile Include="StackEventTypeService.cs" />
+    <Compile Include="HubStateTemplateService.cs" />
     <Compile Include="StockStatusService.cs" />
     <Compile Include="StoreService.cs" />
     <Compile Include="TransactionGroupService.cs" />

@@ -20,6 +20,9 @@ using Cats.ViewModelBinder;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Cats.Helpers;
+using BusinessProcess = Cats.Models.BusinessProcess;
+using BusinessProcessState = Cats.Models.BusinessProcessState;
+
 namespace Cats.Areas.Logistics.Controllers
 {
     [Authorize]

@@ -65,6 +65,9 @@
     <Setting Name="BidPlanDetailActionWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">BidPlanDetailActionWorkflow</Value>
     </Setting>
+    <Setting Name="ReceiveHubWorkflow" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ReceiveHubWorkflow</Value>
+    </Setting>
     <Setting Name="GlobalWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">GlobalWorkflow</Value>
     </Setting>

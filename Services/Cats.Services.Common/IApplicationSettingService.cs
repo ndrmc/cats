@@ -42,5 +42,7 @@ namespace Cats.Services.Common
         int getBidPlanDeatailWorkflow();
         int getTransferReceiptPlanWorkflow();
         int getGlobalWorkflow();
+        int getReceiveHubWorkflow();
+
     }
 }

@@ -214,6 +214,15 @@ namespace Cats.Services.Common {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ReceiveHubWorkflow")]
+        public string ReceiveHubWorkflow {
+            get {
+                return ((string)(this["ReceiveHubWorkflow"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("GlobalWorkflow")]
         public string GlobalWorkflow {
             get {
