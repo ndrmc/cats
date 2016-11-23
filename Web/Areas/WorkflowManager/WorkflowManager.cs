@@ -12,6 +12,7 @@ using System.Web.Mvc;
 using Cats.Services.Common;
 using Cats.Models.Hubs;
 using Cats.Services.Hub;
+using System.Diagnostics;
 
 namespace Cats.Areas
 {
@@ -521,7 +522,15 @@ namespace Cats.Areas
             };
 
 
+            Debug.WriteLine("*-----------WORKFLOW COMMEN BEFORE ENTERING LOG");
+            DebbuggingTools.ShowHistory(businessProcessID);
+
             BusinessProcessService.PromotWorkflow_WoutUpdatingCurrentStatus(businessProcessState);
+
+
+            Debug.WriteLine("*-----------WORKFLOW COMMEN AFTER ENTERING LOG");
+            DebbuggingTools.ShowHistory(businessProcessID);
+
         }
 
         private static void EnterWorkflowHub(int businessProcessID, int finalStateID, string fileName, string msg)
@@ -537,8 +546,15 @@ namespace Cats.Areas
                 ParentBusinessProcessID = businessProcessID
             };
 
+            Debug.WriteLine("*-----------WORKFLOW COMMEN BEFORE ENTERING LOG");
+            DebbuggingTools.ShowHistory(businessProcessID);
 
             HubBusinessProcessService.PromotWorkflow_WoutUpdatingCurrentStatus(businessProcessState);
+
+            Debug.WriteLine("*-----------WORKFLOW COMMEN AFTER ENTERING LOG");
+            DebbuggingTools.ShowHistory(businessProcessID);
+
+
         }
         #endregion
 

@@ -581,6 +581,7 @@
       <DependentUpon>dataset.xsd</DependentUpon>
     </Compile>
     <Compile Include="Content\Filters\LocalizationFilter.cs" />
+    <Compile Include="DebbuggingTools.cs" />
     <Compile Include="Helpers\CaseHelper.cs" />
     <Compile Include="Helpers\CatsAuthorize.cs" />
     <Compile Include="Helpers\CatsGlobals.cs" />
