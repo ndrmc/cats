@@ -667,11 +667,7 @@ namespace Cats.Areas.Hub.Controllers
                         if (bp != null)
                         {
                             viewModel.BusinessProcessID = bp.BusinessProcessID;
-
-                            return RedirectToAction("Index", "Receive");
                         }
-
-                        return RedirectToAction("Index", "Receive");
                     }
                 }
 

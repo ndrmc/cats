@@ -1270,7 +1270,7 @@ namespace Cats.Services.Hub
             receive.StackNumber = viewModel.StackNumber;
             receive.SourceDonorID = viewModel.SourceDonorId;
             receive.ResponsibleDonorID = viewModel.ResponsibleDonorId;
-
+            receive.BusinessProcessID = viewModel.BusinessProcessID;
 
 
 
