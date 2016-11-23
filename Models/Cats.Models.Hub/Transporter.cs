@@ -4,7 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cats.Models.Hubs
 {
-    public partial class Transporter
+    public partial class Transporter:IWorkflowHub
+
     {
         public Transporter()
         {
@@ -56,5 +57,11 @@ namespace Cats.Models.Hubs
         public virtual ICollection<DispatchAllocation> DispatchAllocations { get; set; }
         public virtual ICollection<OtherDispatchAllocation> OtherDispatchAllocations { get; set; }
         public virtual ICollection<Receive> Receives { get; set; }
+
+        public int BusinessProcessId { get; set; }
+      
+
+        public BusinessProcess BusinessProcess { get; set; }
+      
     }
 }

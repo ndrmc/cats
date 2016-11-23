@@ -108,6 +108,8 @@ namespace Cats.Areas.Procurement.Controllers
         public ActionResult EditingInline_Update([DataSourceRequest] DataSourceRequest request, Transporter transporter)
         {
             transportService.EditTransporter(transporter);
+            WorkflowCommon.EnterEditWorkflow(transporter);
+
             return Json(ModelState.ToDataSourceResult(), JsonRequestBehavior.AllowGet);
         }
 
@@ -117,6 +119,8 @@ namespace Cats.Areas.Procurement.Controllers
             if (transporter != null && ModelState.IsValid)
             {
                 transportService.AddTransporter(transporter);
+                WorkflowCommon.EnterCreateWorkflow(transporter);
+
             }
 
             return Json(new[] { transporter }.ToDataSourceResult(request, ModelState));
@@ -187,6 +191,8 @@ namespace Cats.Areas.Procurement.Controllers
             if (!ModelState.IsValid)
             {
                 transportService.AddTransporter(transporter);
+                WorkflowCommon.EnterCreateWorkflow(transporter);
+
             }
             //return RedirectToAction("Edit");
             //return View(transporter);
@@ -268,12 +274,15 @@ namespace Cats.Areas.Procurement.Controllers
                 if (transporter.TransporterID == 0)
                 {
                     transportService.AddTransporter(transporter);
+                    WorkflowCommon.EnterCreateWorkflow(transporter);
                 }
                 else
                 {
                     //   transporter.ExperienceFrom = ExperienceFrom;
                     //   transporter.ExperienceTo = ExperienceTo;
                     transportService.EditTransporter(transporter);
+                    WorkflowCommon.EnterEditWorkflow(transporter);
+
                 }
                 return RedirectToAction("Index");
             }
@@ -292,10 +301,14 @@ namespace Cats.Areas.Procurement.Controllers
                 if (transporter.TransporterID == 0)
                 {
                     transportService.AddTransporter(transporter);
+                    WorkflowCommon.EnterCreateWorkflow(transporter);
+
                 }
                 else
                 {
                     transportService.EditTransporter(transporter);
+                    WorkflowCommon.EnterEditWorkflow(transporter);
+
                 }
                 return Json("{}", JsonRequestBehavior.AllowGet);
             }
@@ -321,6 +334,8 @@ namespace Cats.Areas.Procurement.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Transporter transporter = transportService.FindById(id);
+            WorkflowCommon.EnterDelteteWorkflow(transporter);
+
             transportService.DeleteTransporter(transporter);
             return RedirectToAction("Index");
         }
@@ -330,6 +345,8 @@ namespace Cats.Areas.Procurement.Controllers
         {
             if (transporter != null)
             {
+                WorkflowCommon.EnterDelteteWorkflow(transporter);
+
                 transportService.DeleteById(transporter.TransporterID);
                 transportService.DeleteTransporter(transporter);
             }
