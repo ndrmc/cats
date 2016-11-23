@@ -44,6 +44,7 @@ namespace Cats.Models.Hubs.Mapping
             this.Property(t => t.TransportOrderID).HasColumnName("TransportOrderID");
             this.Property(t => t.IsClosed).HasColumnName("IsClosed");
             this.Property(t => t.ParentDispatchAllocationID).HasColumnName("ParentDispatchAllocationID");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
 
             // Relationships
             this.HasRequired(t => t.Commodity)
