@@ -13,10 +13,11 @@ using Cats.Services.Common;
 using Cats.Models.Hubs;
 using Cats.Services.Hub;
 using System.Diagnostics;
+using Cats.Models.Security;
 
 namespace Cats.Areas
 {
-    public class WorkflowCommon : Controller
+    public class WorkflowCommon :Controller
     {
         private static IBusinessProcessService _businessProcessService;
         private static IHubBusinessProcessService _hubBusinessProcessService;
@@ -89,7 +90,7 @@ namespace Cats.Areas
             set { _applicationSettingService = value; }
         }
 
-        public  string UserName
+        public static  string UserName
         {
             get
             {
@@ -107,7 +108,12 @@ namespace Cats.Areas
 
         public String GetUserName()
         {
-            UserName = HttpContext.User.Identity.Name;
+
+           UserInfo info = (UserInfo)System.Web.HttpContext.Current.Session["USER_INFO"];
+            
+            if(info!=null)
+            UserName = info.UserName;
+
             return UserName;
 
 
@@ -123,7 +129,7 @@ namespace Cats.Areas
                 var createdstate = new Models.BusinessProcessState
                 {
                     DatePerformed = DateTime.Now,
-                    PerformedBy = userName,
+                    PerformedBy = UserName,
                     Comment = description
                 };
 
@@ -143,7 +149,7 @@ namespace Cats.Areas
                 var createdstate = new Models.Hubs.BusinessProcessState
                 {
                     DatePerformed = DateTime.Now,
-                    PerformedBy = userName,
+                    PerformedBy = UserName,
                     Comment = description
                 };
 
@@ -500,7 +506,7 @@ namespace Cats.Areas
             var businessProcessState = new Models.BusinessProcessState()
             {
                 StateID = finalStateID,
-                PerformedBy = userName,
+                PerformedBy = UserName,
                 DatePerformed = DateTime.Now,
                 Comment = msg,
                 AttachmentFile = fileName, 
@@ -525,7 +531,7 @@ namespace Cats.Areas
             var businessProcessState = new Models.Hubs.BusinessProcessState()
             {
                 StateID = finalStateID,
-                PerformedBy = userName,
+                PerformedBy = UserName,
                 DatePerformed = DateTime.Now,
                 Comment = msg,
                 AttachmentFile = fileName,
