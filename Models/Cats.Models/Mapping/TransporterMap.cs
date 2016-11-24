@@ -56,9 +56,9 @@ namespace Cats.Models.Mapping
                 .HasForeignKey(d => d.AdminUnitTypeID);
             */
 
-            this.HasOptional(t => t.BusinessProcess).
-                WithMany(t => t.Transporters).
-                HasForeignKey(z => z.BusinessProcessId);
+            //this.HasOptional(t => t.BusinessProcess).
+            //    WithMany(t => t.Transporters).
+            //    HasForeignKey(z => z.BusinessProcessId);
         }
     }
 }

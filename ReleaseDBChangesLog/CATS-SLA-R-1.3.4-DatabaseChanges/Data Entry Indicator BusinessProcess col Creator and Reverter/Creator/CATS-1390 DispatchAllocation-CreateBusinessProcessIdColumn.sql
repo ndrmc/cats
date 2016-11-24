@@ -1,12 +1,19 @@
-IF  NOT EXISTS (
-  SELECT * 
-  FROM   sys.columns 
-  WHERE  object_id = OBJECT_ID(N'[dbo].[DispatchAllocation]') 
-         AND name = 'BusinessProcessID'
-)
+
  
- BEGIN
-alter table 
-[dbo].[DispatchAllocation]
-add   [BusinessProcessID] [int] Default NULL
- END
+ BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
+SET ARITHABORT ON
+SET NUMERIC_ROUNDABORT OFF
+SET CONCAT_NULL_YIELDS_NULL ON
+SET ANSI_NULLS ON
+SET ANSI_PADDING ON
+SET ANSI_WARNINGS ON
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.DispatchAllocation ADD
+	BusinessProcessID int NOT NULL CONSTRAINT DF_DispatchAllocation_BusinessProcessID DEFAULT 0
+GO
+ALTER TABLE dbo.DispatchAllocation SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
