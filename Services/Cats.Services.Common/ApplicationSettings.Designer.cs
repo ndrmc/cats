@@ -229,5 +229,14 @@ namespace Cats.Services.Common {
                 return ((string)(this["GlobalWorkflow"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DispatchWorkflow")]
+        public string DispatchWorkflow {
+            get {
+                return ((string)(this["DispatchWorkflow"]));
+            }
+        }
     }
 }

@@ -151,6 +151,11 @@ namespace Cats.Services.Common
             return getIntValue(ApplicationSettings.Default.TransportOrderWorkflow);
         }
 
+
+        public int GetDispatchWorkflow()
+        {
+            return getIntValue(ApplicationSettings.Default.DispatchWorkflow);
+        }
         public int getHRDWorkflow()
         {
             return getIntValue(ApplicationSettings.Default.HRDWorkflow);

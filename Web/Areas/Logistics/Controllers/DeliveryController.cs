@@ -756,7 +756,12 @@ namespace Cats.Areas.Logistics.Controllers
            var dispach = _dispatchService.FindBy(g => g.GIN == id).FirstOrDefault();
            if(dispach!=null)
            {
+
+                WorkflowCommon.InitializeWorkflow(dispach);
+                WorkflowCommon.EnterDelteteWorkflow(dispach,"Dispatch with and Id of "+dispach.DispatchID+" Has been Rejected.");
+
                _dispatchService.RejectToHubs(dispach);
+
                return Json(true, JsonRequestBehavior.AllowGet);
            }
            return Json(false, JsonRequestBehavior.AllowGet);

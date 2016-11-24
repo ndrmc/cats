@@ -376,14 +376,7 @@ namespace Cats.Areas.Hub.Controllers
                 }
                 dispatch.Unit = _unitService.FindById(dispatch.UnitID).Name;
 
-                //if(dispatch.BusinessProcess== null)
-                //{
-                //    var disp = WorkflowCommon.GetNewInstance(AlertMessage.Workflow_DefaultCreate);
-                //    dispatch.BusinessProcessId = disp.BusinessProcessID;
-                //    dispatch.BusinessProcess = disp;
-                // }
 
-                //WorkflowCommon.EnterCreateWorkflow(dispatch,"Dispatch has been Created from Dispatch Allocation.");
 
 
             }
@@ -391,13 +384,7 @@ namespace Cats.Areas.Hub.Controllers
             {
                 dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(id, 0);
 
-                //if (dispatch.BusinessProcess == null)
-                //{
-                //    var disp = WorkflowCommon.GetNewInstance(AlertMessage.Workflow_DefaultCreate);
-                //    dispatch.BusinessProcessId = disp.BusinessProcessID;
-                //    dispatch.BusinessProcess = disp;
-                //}
-                //WorkflowCommon.EnterCreateWorkflow(dispatch.BusinessProcess);
+            
 
             }
 

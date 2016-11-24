@@ -838,6 +838,8 @@ namespace Cats.Services.Procurement
                                 t =>
                                 t.TransportOrderID == transportOrderId && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
             if (transportOrder == null) return false;
+            int appServId = _applicationSettingService.GetDispatchWorkflow();
+
 
             var transportOrderDetails =
                 _unitOfWork.TransportOrderDetailRepository.Get(t => t.TransportOrderID == transportOrderId, null, "ReliefRequisition").ToList();
@@ -923,6 +925,21 @@ namespace Cats.Services.Procurement
                             dispatchAllocation.ShippingInstructionID = t.Code;
                         else if (t.AllocationType == "PC")
                             dispatchAllocation.ProjectCodeID = t.Code;
+
+                        BusinessProcessState createdstate = new BusinessProcessState
+                        {
+                            DatePerformed = DateTime.Now,
+                            PerformedBy = "System Generated",
+                            Comment = "Dispatch Allocation has been  Generated"
+
+                        };
+                        //_PaymentRequestservice.Create(request);
+
+                        BusinessProcess businessPro = _businessProcessService.CreateBusinessProcess(appServId, 0,
+                                                                                        "Dispatch", createdstate);
+
+                        dispatchAllocation.BusinessProcessId = businessPro.BusinessProcessID;
+
                         //dispatchAllocation.Unit //i have no idea where to get it
                         // dispatchAllocation.StoreID  //Would be set null and filled by user later
                         //dispatchAllocation.Year= requisition.Year ; //Year is not available 
