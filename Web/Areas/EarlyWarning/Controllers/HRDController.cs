@@ -85,7 +85,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
             //ViewBag.Status = _workflowStatusService.GetStatusName();
 
             var hrds =
-                _hrdService.Get(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft")
+                _hrdService.Get(
+                    m =>
+                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft" ||
+                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Reverted")
                     .OrderByDescending(m => m.HRDID);
             var hrdsToDisplay = GetHrds(hrds).ToList();
             ViewBag.TargetController = "HRD";
@@ -158,7 +161,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult HRD_Read([DataSourceRequest] DataSourceRequest request)
         {
             var hrds =
-                _hrdService.Get(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft")
+                _hrdService.Get(
+                    m =>
+                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft" ||
+                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Reverted")
                     .OrderByDescending(m => m.HRDID);
             var hrdsToDisplay = GetHrds(hrds).ToList();
             return Json(hrdsToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
