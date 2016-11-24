@@ -43,7 +43,7 @@ namespace Cats.Models.Hubs
         public virtual Transporter Transporter { get; set; }
         public virtual ICollection<DispatchDetail> DispatchDetails { get; set; }
 
-        public int? BusinessProcessId { get; set; }
+        public int BusinessProcessId { get; set; }
 
         public virtual BusinessProcess BusinessProcess { get; set; }
 

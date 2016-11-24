@@ -24,7 +24,7 @@ namespace Cats.Models
         public virtual ICollection<TransportBidQuotation> TransportBidQuotations { get; set; }
         public virtual Transporter Transporter { get; set; }
 
-        public int? BusinessProcessId { get; set; }
+        public int BusinessProcessId { get; set; }
 
         public BusinessProcess BusinessProcess { get; set; }
     }

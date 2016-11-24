@@ -41,7 +41,7 @@ namespace Cats.Models
         public virtual ICollection<DispatchDetail> DispatchDetails { get; set; }
         public virtual ICollection<DeliveryReconcile> DeliveryReconciles { get; set; }
 
-        public int? BusinessProcessId { get; set; }
+        public int BusinessProcessId { get; set; }
 
         public virtual BusinessProcess BusinessProcess { get; set; }
     }

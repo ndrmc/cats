@@ -188,7 +188,7 @@ namespace Cats.Areas
        
         public static void InitializeWorkflow(IWorkflow workflowImplementer ,String instanceDescription=null )
         {
-            if (workflowImplementer.BusinessProcessId == null)
+            if (workflowImplementer.BusinessProcessId == 0)
             {
                 workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
                 workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
@@ -197,7 +197,7 @@ namespace Cats.Areas
 
         public static void InitializeWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String instanceDescription = null)
         {
-            if (workflowImplementer.BusinessProcessId == null)
+            if (workflowImplementer.BusinessProcessId == 0)
             {
                 workflowImplementer.BusinessProcess = GetNewInstanceHub(instanceDescription);
                 workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;

@@ -28,7 +28,7 @@ namespace Cats.Models.Hubs
         public virtual ShippingInstruction ShippingInstruction { get; set; }
         public virtual ICollection<GiftCertificateDetail> GiftCertificateDetails { get; set; }
 
-        public int? BusinessProcessId { get; set; }
+        public int BusinessProcessId { get; set; }
 
         public BusinessProcess BusinessProcess { get; set; }
     }

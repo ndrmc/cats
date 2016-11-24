@@ -41,7 +41,7 @@ namespace Cats.Models
         public Guid? ParentDispatchAllocationID { get; set; }
         public virtual ICollection<Dispatch> Dispatches { get; set; }
 
-        public int? BusinessProcessId { get; set; }
+        public int BusinessProcessId { get; set; }
 
         public virtual BusinessProcess BusinessProcess { get; set; }
     }

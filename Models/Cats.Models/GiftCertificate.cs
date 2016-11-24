@@ -79,7 +79,7 @@ namespace Cats.Models
 
         public virtual BusinessProcess BusinessProcess { get; set; }
 
-        public int? BusinessProcessId { get; set; }
+        public int BusinessProcessId { get; set; }
 
      
 

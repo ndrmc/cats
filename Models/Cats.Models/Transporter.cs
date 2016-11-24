@@ -70,7 +70,7 @@ namespace Cats.Models
         public virtual ICollection<Dispatch> Dispatches { get; set; }
         public virtual ICollection<OtherDispatchAllocation> OtherDispatchAllocations { get; set; }
 
-        public int? BusinessProcessId { get; set; }
+        public int BusinessProcessId { get; set; }
 
         public BusinessProcess BusinessProcess { get; set; }
     }

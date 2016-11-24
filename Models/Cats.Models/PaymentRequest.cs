@@ -31,7 +31,7 @@ namespace Cats.Models
         
         public int? PartitionId { get; set; }
 
-        public int? BusinessProcessId { get; set; }
+        public int BusinessProcessId { get; set; }
 
         public BusinessProcess BusinessProcess { get; set; }
     }
