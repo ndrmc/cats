@@ -110,6 +110,7 @@ namespace Cats.Areas.Procurement.Controllers
 
         public ActionResult EditingInline_Update([DataSourceRequest] DataSourceRequest request, Transporter transporter)
         {
+            WorkflowCommon.InitializeWorkflow(transporter);
             transportService.EditTransporter(transporter);
             WorkflowCommon.EnterEditWorkflow(transporter);
 
@@ -121,6 +122,8 @@ namespace Cats.Areas.Procurement.Controllers
         {
             if (transporter != null && ModelState.IsValid)
             {
+                WorkflowCommon.InitializeWorkflow(transporter);
+
                 transportService.AddTransporter(transporter);
                 WorkflowCommon.EnterCreateWorkflow(transporter);
 
@@ -280,6 +283,7 @@ namespace Cats.Areas.Procurement.Controllers
             {
                 if (transporter.TransporterID == 0)
                 {
+                    WorkflowCommon.InitializeWorkflow(transporter);
 
                     transportService.AddTransporter(transporter);
                    WorkflowCommon.EnterCreateWorkflow(transporter);   
@@ -287,15 +291,14 @@ namespace Cats.Areas.Procurement.Controllers
                 }
                 else
                 {
-                    //   transporter.ExperienceFrom = ExperienceFrom;
-                    //   transporter.ExperienceTo = ExperienceTo;
-                    WorkflowCommon.EnterEditWorkflow(transporter);
+                    WorkflowCommon.InitializeWorkflow(transporter);
+
 
 
                     transportService.EditTransporter(transporter);
 
-                    //WorkflowCommon.EnterEditWorkflow(transporter);    
-               
+                    WorkflowCommon.EnterEditWorkflow(transporter);
+                     
 
                 }
                 return RedirectToAction("Index");
@@ -314,12 +317,16 @@ namespace Cats.Areas.Procurement.Controllers
             {
                 if (transporter.TransporterID == 0)
                 {
+            WorkflowCommon.InitializeWorkflow(transporter);
+                    
                     transportService.AddTransporter(transporter);
                     WorkflowCommon.EnterCreateWorkflow(transporter);
 
                 }
                 else
                 {
+                    WorkflowCommon.InitializeWorkflow(transporter);
+
                     transportService.EditTransporter(transporter);
                     WorkflowCommon.EnterEditWorkflow(transporter);
 
@@ -359,6 +366,7 @@ namespace Cats.Areas.Procurement.Controllers
         {
             if (transporter != null)
             {
+                
                 WorkflowCommon.EnterDelteteWorkflow(transporter);
 
                 transportService.DeleteById(transporter.TransporterID);
