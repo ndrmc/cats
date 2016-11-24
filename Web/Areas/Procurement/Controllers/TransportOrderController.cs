@@ -156,6 +156,41 @@ namespace Cats.Areas.Procurement.Controllers
             if (stateName == "Approved")
             {
                 var transportOrder =
+                   _transportOrderService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID)
+                       .FirstOrDefault();
+                int orderDetailWithoutTarrif = 0;
+                try
+                {
+                    foreach (var transportOrderDetail in transportOrder.TransportOrderDetails)
+                    {
+                        if (transportOrderDetail.TariffPerQtl <= 0 && transportOrderDetail.WinnerAssignedByLogistics != true)
+                        {
+                            orderDetailWithoutTarrif = 1;
+                            break;
+                        }
+                    }
+                    if (orderDetailWithoutTarrif == 0)
+                    {
+
+
+                        if(_transportOrderService.ApproveTransportOrder(transportOrder, User.Identity.Name,true))
+                            _businessProcessService.PromotWorkflow(businessProcessState);
+                        return RedirectToAction("Index");
+                    }
+                    TempData["CustomError"] = "Transport Order Without Tariff can not be approved! Please Specify Tariff for each transport order detail! ";
+                    return RedirectToAction("Index");
+                    //ModelState.AddModelError("Errors", @"Transport Order Without Tariff can not be approved!");
+                }
+                catch (Exception ex)
+                {
+                    var log = new Logger();
+                    log.LogAllErrorsMesseges(ex, _log);
+                    ModelState.AddModelError("Errors", @"Unable to approve");
+                }
+            }
+            if (stateName == "Signed")
+            {
+                var transportOrder =
                     _transportOrderService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID)
                         .FirstOrDefault();
                 int orderDetailWithoutTarrif = 0;
@@ -202,6 +237,7 @@ namespace Cats.Areas.Procurement.Controllers
                 }
 
             }
+
             else
                 _businessProcessService.PromotWorkflow(businessProcessState);
             if (statusId != null)
@@ -278,9 +314,10 @@ namespace Cats.Areas.Procurement.Controllers
                 {
                     new RequestStatus() {StatusID = 1, StatusName = "Draft"},
                     new RequestStatus() {StatusID = 2, StatusName = "Approved"},
+                    new RequestStatus() {StatusID = 5, StatusName = "Rejected"},
                     new RequestStatus() {StatusID = 3, StatusName = "Signed"},
                      new RequestStatus() {StatusID = 4, StatusName = "Closed"},
-                     new RequestStatus() {StatusID = 5, StatusName = "Failed"}
+                     new RequestStatus() {StatusID = 6, StatusName = "Failed"}
                 };
             ViewBag.StatusID = new SelectList(transportOrderStatus, "StatusID", "StatusName");
             ViewBag.TargetController = "TransportOrder";
@@ -961,7 +998,7 @@ namespace Cats.Areas.Procurement.Controllers
                 {
 
 
-                    _transportOrderService.ApproveTransportOrder(transportOrder, User.Identity.Name);
+                    _transportOrderService.ApproveTransportOrder(transportOrder, User.Identity.Name, true);
                     return RedirectToAction("Index");
                 }
                 TempData["CustomError"] = "Transport Order Without Tariff can not be approved! Please Specify Tariff for each transport order detail! ";
@@ -1103,7 +1140,7 @@ namespace Cats.Areas.Procurement.Controllers
                         }
                         if (orderDetailWithoutTarrif == 0)
                         {
-                            _transportOrderService.ApproveTransportOrder(transportOrder, User.Identity.Name);
+                            _transportOrderService.ApproveTransportOrder(transportOrder, User.Identity.Name, false);
                             ++noOfApproval;
                         }
                     }

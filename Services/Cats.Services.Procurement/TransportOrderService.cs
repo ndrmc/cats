@@ -746,7 +746,7 @@ namespace Cats.Services.Procurement
         {
             return _unitOfWork.HubRepository.GetAll();
         }
-        public bool ApproveTransportOrder(TransportOrder transportOrder, string userName)
+        public bool ApproveTransportOrder(TransportOrder transportOrder, string userName, bool single =true)
         {
             if (transportOrder != null)
             {
@@ -768,36 +768,37 @@ namespace Cats.Services.Procurement
                 }
 
                 //  transportOrder.StatusID = (int)TransportOrderStatus.Approved;
-
-                var approvedStateId =
-                              _stateTemplateService
-                                  .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Approved");
-
-                var bp = _businessProcessService.GetAll().FirstOrDefault(t => t.BusinessProcessID == transportOrder.BusinessProcessID);
-
-                if (approvedStateId != null)
+                if (!single)
                 {
-                    var createdstate3 = new BusinessProcessState
+                    var approvedStateId =
+                        _stateTemplateService
+                            .GetAll()
+                            .FirstOrDefault(
+                                s =>
+                                    s.ParentProcessTemplateID ==
+                                    transportOrder.BusinessProcess.CurrentState.BaseStateTemplate
+                                        .ParentProcessTemplateID && s.Name == "Approved");
+
+                    var bp =
+                        _businessProcessService.GetAll()
+                            .FirstOrDefault(t => t.BusinessProcessID == transportOrder.BusinessProcessID);
+
+                    if (approvedStateId != null)
                     {
-                        DatePerformed = DateTime.Now,
-                        PerformedBy = userName,
-                        Comment = " TransportOrder Approved on multiple approval",
-                        StateID = approvedStateId.StateTemplateID,
-                        ParentBusinessProcessID = transportOrder.BusinessProcessID,
+                        var createdstate3 = new BusinessProcessState
+                        {
+                            DatePerformed = DateTime.Now,
+                            PerformedBy = userName,
+                            Comment = " TransportOrder Approved on multiple approval",
+                            StateID = approvedStateId.StateTemplateID,
+                            ParentBusinessProcessID = transportOrder.BusinessProcessID,
 
-                    };
-                    //_businessProcessStateService.Add(createdstate3);
+                        };
 
-                    //if (bp != null)
-                    //{
-                    //    bp.CurrentState = createdstate3;
-                    //    _businessProcessService.Update(bp);
-                    //}
-                    _businessProcessService.PromotWorkflow(createdstate3);
+                        _businessProcessService.PromotWorkflow(createdstate3);
+                    }
+
                 }
-
-                //_unitOfWork.TransportOrderRepository.Edit(transportOrder);
-                //_unitOfWork.Save();
 
                 return true;
             }

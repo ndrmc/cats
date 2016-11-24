@@ -193,6 +193,14 @@
                       "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_transport_order).ToString() + "' == 'Approve_transport_order') { #" +
                       "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=SignStateID#','Sign','#=TransportOrderID#')\" title='Sign Transport Order'>Sign</a></li>" +
                       " # } #" + " # } #" +
+                      "# if (Status == 'Approved') { #" +
+                      "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_transport_order).ToString() + "' == 'Approve_transport_order') { #" +
+                      "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=RejectStateID#','Reject','#=TransportOrderID#')\" title='Reject Transport Order'>Reject</a></li>" +
+                      " # } #" + " # } #" +
+                       "# if (Status == 'Rejected') { #" +
+                      "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_transport_order).ToString() + "' == 'Approve_transport_order') { #" +
+                      "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=ApproveStateID#','Approve','#=TransportOrderID#')\" title='Approve TransportOrder'>Approve</a></li>" +
+                      " # } #" + " # } #" +
                       "# if (Status == 'Draft') { #" +
                       "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_transport_order).ToString() + "' == 'Approve_transport_order') { #" +
                       "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=ApproveStateID#','Approve','#=TransportOrderID#')\" title='Approve TransportOrder'>Approve</a></li>" +
