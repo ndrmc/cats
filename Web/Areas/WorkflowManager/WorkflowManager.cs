@@ -159,10 +159,9 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-                     if (workflowImplementer.BusinessProcessId == null)
-            {
+           
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
-            }
+            
 
             int editId = BusinessProcessService.GetGlobalCreatedStateTempId();
 
@@ -172,10 +171,9 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-            if (workflowImplementer.BusinessProcessId == null)
-            {
+         
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
-            }
+        
 
             int editId = BusinessProcessService.GetGlobalCreatedStateTempId();
 
@@ -184,14 +182,20 @@ namespace Cats.Areas
        
         public static void InitializeWorkflow(IWorkflow workflowImplementer ,String instanceDescription=null )
         {
-            workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
-            workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
+            if (workflowImplementer.BusinessProcessId == null)
+            {
+                workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
+                workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
+            }
         }
 
         public static void InitializeWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String instanceDescription = null)
         {
-            workflowImplementer.BusinessProcess = GetNewInstanceHub(instanceDescription);
-            workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
+            if (workflowImplementer.BusinessProcessId == null)
+            {
+                workflowImplementer.BusinessProcess = GetNewInstanceHub(instanceDescription);
+                workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
+            }
         }
 
         public static Boolean EnterCreateWorkflow(Models.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultCreate", String fileName = "")
@@ -237,13 +241,9 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-                     if (workflowImplementer.BusinessProcessId == null)
-            {
-           
-                    InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultEdit);
-             
-            }
-
+        
+            InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultEdit);
+         
             int editId = BusinessProcessService.GetGlobalEditStateTempId();
 
             return EnterEditWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
@@ -254,12 +254,8 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-          
-                         if (workflowImplementer.BusinessProcessId == null)
-                {
                     InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultEdit);
-                }
-           
+         
 
             int editId = BusinessProcessService.GetGlobalEditStateTempId();
 
@@ -308,11 +304,9 @@ namespace Cats.Areas
         public static Boolean EnterPrintWorkflow(IWorkflow workflowImplementer, String description = "Workflow_DefaultPrint", String NameofInitialStateFlowTempl = "Print", String fileName = "")
         {
             if (workflowImplementer == null) return false;
-
-                     if (workflowImplementer.BusinessProcessId == null)
-            {
-                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultPrint);
-            }
+            
+             InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultPrint);
+          
 
             int PrintId = BusinessProcessService.GetGlobalPrintStateTempId();
 
@@ -323,11 +317,8 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-                     if (workflowImplementer.BusinessProcessId == null)
-            {
-                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultPrint);
-            }
-
+            InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultPrint);
+           
             int PrintId = BusinessProcessService.GetGlobalPrintStateTempId();
 
             return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, PrintId, description, fileName, true);
@@ -374,10 +365,9 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-                     if (workflowImplementer.BusinessProcessId == null)
-            {
+         
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultDelete);
-            }
+          
             int deleteId = BusinessProcessService.GetGlobalDeleteStateTempId();
 
             return EnterDeleteWorkflow(workflowImplementer.BusinessProcessId, deleteId, description, fileName);
@@ -388,10 +378,8 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-                     if (workflowImplementer.BusinessProcessId == null)
-            {
-                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultDelete);
-            }
+          InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultDelete);
+
             int deleteId = BusinessProcessService.GetGlobalDeleteStateTempId();
 
             return EnterDeleteWorkflow(workflowImplementer.BusinessProcessId, deleteId, description, fileName, true);
@@ -443,12 +431,9 @@ namespace Cats.Areas
         public static Boolean EnterExportWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String description = "Workflow_DefaultExport", String fileName = "")
         {
             if (workflowImplementer == null) return false;
-
-                     if (workflowImplementer.BusinessProcessId == null)
-            {
+ 
                 InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultExport);
-            }
-
+           
             int ExportId = BusinessProcessService.GetGlobalExportedStateTempId();
 
             return EnterEditWorkflow(workflowImplementer.BusinessProcessId, ExportId, description, fileName, true);
@@ -458,10 +443,9 @@ namespace Cats.Areas
         {
             if (workflowImplementer == null) return false;
 
-                     if (workflowImplementer.BusinessProcessId == null)
-            {
-                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultExport);
-            }
+             
+           InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultExport);
+            
         
             int ExportId = BusinessProcessService.GetGlobalExportedStateTempId();
 
