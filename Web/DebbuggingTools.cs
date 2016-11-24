@@ -3,6 +3,7 @@ using Cats.Services.EarlyWarning;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -67,23 +68,30 @@ namespace Cats
         {
             try
             {
+                String logMsg = String.Empty;
 
                 BusinessProcess item = BusinessProcessService.FindById(businessProcessId??0);
                 if (item == null || item.BusinessProcessStates == null || !item.BusinessProcessStates.Any())
                 {
-                    Debug.WriteLine("*------------ NO DATA ENTRY LOGS FOR =>" + businessProcessId + "------------------*");
+                    logMsg = "*------------ NO DATA ENTRY LOGS FOR =>" + businessProcessId + "------------------*";
+                    Debug.WriteLine(logMsg);
+                    WriteLog(logMsg);
+
 
                 }
                 else
                 {
-
-                    Debug.WriteLine("*------------WORKFLOW DATA ENTRY LOGS FOR BP ID =>" + businessProcessId + "------------------*");
+                    logMsg = "*------------WORKFLOW DATA ENTRY LOGS FOR BP ID =>" + businessProcessId + "------------------*";
+                    Debug.WriteLine(logMsg);
+                    WriteLog(logMsg);
 
                     int index = 1;
                     foreach (var businessprocessstate in item.BusinessProcessStates)
                     {
 
-                        Debug.WriteLine((index++) + " >  " + businessprocessstate.DatePerformed.ToShortDateString() + " " + businessprocessstate.DatePerformed.ToLongTimeString() + "==>" + businessprocessstate.Comment);
+                        logMsg = (index++) + " >  " + businessprocessstate.DatePerformed.ToShortDateString() + " " + businessprocessstate.DatePerformed.ToLongTimeString() + "==>" + businessprocessstate.Comment;
+                        WriteLog(logMsg);
+                        Debug.WriteLine(logMsg);
                     }
 
 
@@ -94,6 +102,38 @@ namespace Cats
 
             }
 
+        }
+
+        public static void WriteLog(string strLog)
+        {
+            try
+            {
+                StreamWriter log;
+                FileStream fileStream = null;
+                DirectoryInfo logDirInfo = null;
+                FileInfo logFileInfo;
+
+                string logFilePath = "C:\\Workflow Logs\\";
+                logFilePath = logFilePath + "Workflow_Log.txt";// + System.DateTime.Today.ToString("MM-dd-yyyy") + "." + "txt";
+                logFileInfo = new FileInfo(logFilePath);
+                logDirInfo = new DirectoryInfo(logFileInfo.DirectoryName);
+                if (!logDirInfo.Exists) logDirInfo.Create();
+                if (!logFileInfo.Exists)
+                {
+                    fileStream = logFileInfo.Create();
+                }
+                else
+                {
+                    fileStream = new FileStream(logFilePath, FileMode.Append);
+                }
+                log = new StreamWriter(fileStream);
+                log.WriteLine(strLog);
+                log.Close();
+            }
+            catch 
+            {
+
+            }
         }
 
 
