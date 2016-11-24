@@ -2754,7 +2754,6 @@
     <Content Include="Areas\Settings\Views\Users\ForgetPassword.cshtml" />
     <Content Include="Areas\Settings\Views\Users\ForgetPasswordRequest.cshtml" />
     <Content Include="Areas\WorkflowManager\Views\BusinessProcess\Details.cshtml" />
-    <Content Include="Areas\Logistics\Views\Transfer\_Edit.cshtml" />
     <None Include="dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>dataset.Designer.cs</LastGenOutput>
@@ -3490,12 +3489,9 @@
     <Content Include="Views\Shared\_AdminUnitTreeForAllocation.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\WoredaStockDistrAmhDPEnd.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\WoredaStockDistrAmhDPStart.cshtml" />
-    <Content Include="Web References\ReportPortal\CacheRefreshPlan5.datasource">
-      <DependentUpon>Reference.map</DependentUpon>
-    </Content>
-    <Content Include="Web References\ReportPortal\CacheRefreshPlan6.datasource">
-      <DependentUpon>Reference.map</DependentUpon>
-    </Content>
+    <Content Include="Web References\ReportPortal\CacheRefreshPlan1.datasource" />
+    <Content Include="Web References\ReportPortal\CacheRefreshPlan3.datasource" />
+    <Content Include="Web References\ReportPortal\CacheRefreshPlan4.datasource" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

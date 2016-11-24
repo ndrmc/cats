@@ -114,27 +114,34 @@
                 if (browser.name.includes("IE")) {
                     //alert(browser.name);
                 }
-                else{
-                    //alert(window.navigator.userAgent);
-                    showDatePicker();
-                    //showPrintButton();
-                    $("select").on("focusout", function () {
-                        showDatePicker();
-                        console.log("Show date picker: Select");
-                        //showPrintButton();
-                        //alert();
-                    });
-                    $("input[type=checkbox]").on("focusout", function () {
-                        //setTimeout(showDatePicker, 1000);
-                        showDatePicker();
-                        console.log("Show date picker: Input");
-                        //showPrintButton();
-                    });
-                }
+                else {
+                    
+                    //if (IsPrefCalendarEthiopian())
+                    //    {
+                    ////alert(window.navigator.userAgent);
+                    //showDatePicker();
+                    ////showPrintButton();
+                    //$("select").on("focusout", function () {
+                    //    showDatePicker();
+                    //    console.log("Show date picker: Select");
+                    //    //showPrintButton();
+                    //    //alert();
+                    //});
+                    //$("input[type=checkbox]").on("focusout", function () {
+                    //    //setTimeout(showDatePicker, 1000);
+                    //    showDatePicker();
+                    //    console.log("Show date picker: Input");
+                    //    //showPrintButton();
+                    //});
+                    }
+                
                 
 
             });
         });
+
+        var browser = get_browser_info();
+
         var messageElem = 'AlertMessage';
         if (browser.name.includes("IE")) {
             //alert(browser.name);
@@ -144,65 +151,180 @@
             // Register an end request event on asynchronuous requests to enable the ASP Disabled date fields 
             Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
         }
-        $(document).ajaxSuccess(function () {
-            alert("An individual AJAX call has completed successfully");
-        });
+
         function PageLoadHandler(sender, args) {
             showDatePicker();
+
             console.log("Show date picker: Input");
         }
         function EndRequestHandler(sender, args) {
+
             $("input[type=text]").css("background-color", "#fff");
             $("input[type=text]").prop('disabled', true);
             $("input[type=text]").removeAttr('disabled');
             console.log("Enable date picker: Input");
+            showDatePicker();
+
         }
 
-        function showDatePicker() {
-            
+           function showDatePicker() {
+                    
+			if (!IsPrefCalendarEthiopian()) {
+                $("td>span:contains('Date')").each(function (index) {
+
+                    var dateInputRow = $(this).parent().next();
+
+                    var Control = dateInputRow.find("input[type=text][placeholder!='dd/mm/yyyy']");
+
+
+                    $(Control).datepicker({ dateFormat: 'mm-dd-yy' });
+
+                });
+                return;
+            }
+			
             var parameterRow = $("#ParametersRowrvREXReport");
             var innerTable = $(parameterRow).find("table").find("table");
             var span = innerTable.find("span:contains('Date')");
+			
+			var containLabel=true;
+			
+			var dateContainers=$("label>span:contains('Date')");
+            if(dateContainers.length==0)
+               { 
+			   dateContainers=$("td>span:contains('Date')");
+			   containLabel=false;
+			   }
 
-            $("span:contains('Date')").each(function (index) {
-                var dateInputRow = $(this).parent().next();
-                var dateInput = dateInputRow.find("input[type=text]");
-                var calendar = "<%= GetCalendarPreference() %>";
-                var date = new Date();
+            if (dateContainers.length > 0)
+                {
+            $(dateContainers).each(function (index) {
+			
+			var dateInputRow;
+		
+				if(containLabel)
+               {  dateInputRow = $(this).parent().parent().next();}
+			   else
+			   { dateInputRow = $(this).parent().next();
+			   }
+				
+                var gcControl = dateInputRow.find("input[type=text][placeholder!='dd/mm/yyyy']");
+				
+                if (gcControl == NaN)//this is ethiopian cal control skip
+                    return;//same as continue
+                 //CREATE ETH CONTROL, MAKE INVISIBLE GC
+                CreateEthiopianCalField(gcControl);
+                //CONVERT GC DATE AND ASSIGN TO THE VISIBLE ETH CONTROL
+                AssignEthDate(gcControl);
+                //CHECK IF CALENDAR PICTRUE EXISTS OR NOT(NOT ON SOME VERSIONS OFCHROME)
+                HideCalendarImage(dateInputRow);
                 
-                if (calendar === "EC") {
-                    $(dateInput).ethcal_datepicker();
-                }
-                else {
-                    if (typeof Metronic === 'undefined') {
-                        $(dateInput).datepicker();
-                    } else {
-                        $(dateInput).datepicker({
-                            rtl: Metronic.isRTL(),
-                            orientation: "left",
-                            autoclose: true
-                        });
-                    }
-                }
-                $(dateInput).each(function () {
-                    if ($(this).val()) {
-                        date = new Date(Date.parse($(this).val()));
-                    }
-                    $(this).val(date.toLocaleDateString());
-                    $(this).change(function () {
-                        var date2 = new Date(Date.parse($(this).val()));
-                        //alert(date2.toLocaleDateString() +" * " + $(this).val());
-                        if (date2.toLocaleDateString() != $(this).val()) {
-                            var today = new Date();
-                            //$(this).val(today.toLocaleDateString());
-                            //$(this).tooltip('show');
-                        }
-                        console.log("Date Changed", date2);
-                    });
-                }).tooltip({ trigger: "hover manual", title: "mm/dd/yyyy" }).attr("placeholder", "mm/dd/yyyy");
                 
             });
+			
+			}
         }
+
+        function HideCalendarImage(container, gcControl)
+        {
+            var calIcon = container.find("input[type='image']");
+
+            
+            if(calIcon)
+            {
+
+                calIcon.css("display", "none");
+            }
+
+
+        }
+
+
+        function IsPrefCalendarEthiopian()
+        {
+            var calendar = "<%= GetCalendarPreference() %>";
+
+            if (calendar == "EC") return true;
+            else return false;
+
+        }
+
+        function CreateEthiopianCalField(gcCalendarField)
+        {
+
+            if (IsPrefCalendarEthiopian()) {
+                $(gcCalendarField).ethcal_datepicker();
+            }
+            else {
+                if (typeof Metronic === 'undefined') { //TODO: check what the heck this is
+                    $(gcCalendarField).datepicker();
+                } else {
+                    $(gcCalendarField).datepicker({
+                        rtl: Metronic.isRTL(),
+                        orientation: "left",
+                        autoclose: true
+                    });
+                }
+            }
+        }
+        function AssignEthDate(gcControl)
+        {
+            //get ec control
+            var ecControl = FindECControl(gcControl);
+
+            var gcDate = gcControl.attr("value");
+
+            if (gcDate) gcDate = new Date(Date.parse(gcDate));
+            else {
+                ecControl.attr("Value", "");
+                return
+            }   
+            
+            //Convert to Ethiopian Date
+            var ecDate = new EthDate().fromGregStr(gcDate.toLocaleDateString());
+
+            ecControl.attr("Value", ecDate);
+
+
+        }
+        function FindECControl(gcControl)
+        {
+            var ecControl = gcControl.next();
+            return ecControl;
+        }
+
+        //EVENT LISTENER TO ADJUST THE LOCATION OF THE DATE PICKER
+        $(document).on("aboutToOpenPicker", function (event) {
+
+            var pickerControl = event.PickerControl;
+
+            var inputField = pickerControl.data("input");
+
+            AdjustEthCalLocation(event.InputControl, pickerControl);
+
+
+        });
+
+        //ADJUST THE LOCATION OF THE PICKER RELATIVE TO THE INPUTFIELD
+
+        function AdjustEthCalLocation(inputField,pickerControl)
+        {
+
+            var offsetTop = 0;
+            var offsetleft = 0;
+            try {
+                var bodyRect = document.body.getBoundingClientRect(),
+                 elemRect = inputField.getBoundingClientRect(),
+                 offsetTop = elemRect.top,
+                 offsetleft = elemRect.left - bodyRect.left;
+
+                offsetTop = offsetTop + elemRect.height;
+            } catch (err) { }
+
+            pickerControl.css({ top: offsetTop, left: offsetleft, position: 'fixed', 'z-index': '1' });
+
+        }
+
 
         //Function that is called on Successful AJAX method call.  These are referenced in the "CallServerMethodBeforePrint" function that is created from code behind and will exist in the final rendering of the page.
         function ServerCallSucceeded(result, context) {

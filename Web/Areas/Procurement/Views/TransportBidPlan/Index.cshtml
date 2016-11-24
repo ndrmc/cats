@@ -75,8 +75,8 @@
                         <td>
                             @item.YearHalf
                         </td>
-                       
-                        
+
+
                         <td>
                             @if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Edit_Bid_Plan).ToString() == "Edit_Bid_Plan"
     || UserAccountHelper.ProcurementOperationCheck(ProcurementConstants.Operation.Edit_bid_plan))
@@ -108,7 +108,7 @@
                                     <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
                                 </button>
                                 <ul class="dropdown-menu pull-right">
-                                    @*@foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
+                                        @*@foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
                                     {
 
                                         if ((LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Warehouse_selection).ToString() == "Warehouse_selection") && actions.Name == "Approve")
@@ -116,7 +116,7 @@
                                             <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransportBidPlanID)" title="@actions.Name">@actions.Name</a></li>
                                         }
                                         
-                                    }*@
+                                            }*@
                                     <li class="divider"></li>
                                     @*@if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.View_Need_Assessment_Detail))
                                         {*@
@@ -289,4 +289,4 @@
         $(".k-button").attr("class" ,"btn btn-xs btn-default green-stripe");
     });
     
-</script>
+    </script>
