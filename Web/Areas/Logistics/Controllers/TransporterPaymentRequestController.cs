@@ -600,50 +600,58 @@ namespace Cats.Areas.Logistics.Controllers
             //            .OrderByDescending(t => t.TransporterPaymentRequestID);
             //var transporterPaymentRequests = TransporterPaymentRequestViewModelBinder(list.ToList()).Where(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Request Verified");
 
-            var paymentRequests = _transporterPaymentRequestService
-                .Get(t => t.TransportOrder.TransporterID == transporterId
-                          && t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo < 2, null,
-                     "Delivery,Delivery.DeliveryDetails,TransportOrder").ToList();
-            List<TransporterPaymentRequestViewModel> tpr;
-            if (refno == "" && programname == "All")
+            var transporterPaymentRequest = _transporterPaymentRequestService.Get(t=>t.ReferenceNo.Contains(refno)).FirstOrDefault();
+            if (transporterPaymentRequest != null)
             {
-                tpr = TransporterPaymentRequestViewModelBinder(paymentRequests);
-            }
-            else
-            {
-                tpr = (programname == "All") ? TransporterPaymentRequestViewModelBinder(paymentRequests).Where(t => t.ReferenceNo.Contains(refno)).ToList() : 
-                    TransporterPaymentRequestViewModelBinder(paymentRequests).Where(t => t.ReferenceNo.Contains(refno) && t.Program.Name == programname).ToList();
-            }
-            var noRecords = tpr.Count(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Request Verified");
+                var refNoFull = transporterPaymentRequest.ReferenceNo;
 
-            var transporterPaymentRequests = tpr.Where(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name != "Request Verified");
-
-            var requests = transporterPaymentRequests.GroupBy(ac => new { ac.Transporter.TransporterID }).Select(ac =>
-                                                                                                                     
-{
-                var transporterPaymentRequestViewModel = ac.FirstOrDefault();
-                return transporterPaymentRequestViewModel != null ? new
+                var paymentRequests = _transporterPaymentRequestService
+                    .Get(t => t.TransportOrder.TransporterID == transporterId
+                              && t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo < 2, null,
+                        "Delivery,Delivery.DeliveryDetails,TransportOrder").ToList();
+                List<TransporterPaymentRequestViewModel> tpr;
+                if (refno == "" && programname == "All")
                 {
-                    TransporterName = transporterPaymentRequestViewModel.Transporter.Name,
-                    TransporterId = transporterPaymentRequestViewModel.Transporter.TransporterID,
-                    //CommodityName = ac.Key.Commodity,
-                    SourceName = transporterPaymentRequestViewModel.Source,
-                    ReceivedQuantity = ac.Sum(s => s.ReceivedQty),
-                    ShortageQuantity = ac.Sum(s => s.ShortageQty),
-                    ShortageBirr = ac.Sum(s => s.ShortageBirr),
-                    FreightCharge = ac.Sum(s => s.FreightCharge),
-                    ShortageBirrInWords = ac.Sum(s => s.ShortageBirr).ToNumWordsWrapper(),
-                    FreightChargeInWords = Math.Round(ac.Sum(s => s.FreightCharge), 2).ToNumWordsWrapper(),
-                    NoRecords = noRecords,
-                    ReferenceNo = refno
-                } : null;
-            });
-            var req = requests.Where(m => m.TransporterId == transporterId).ToArray();
+                    tpr = TransporterPaymentRequestViewModelBinder(paymentRequests);
+                }
+                else
+                {
+                    tpr = (programname == "All") ? TransporterPaymentRequestViewModelBinder(paymentRequests).Where(t => t.ReferenceNo == refNoFull).ToList() : 
+                        TransporterPaymentRequestViewModelBinder(paymentRequests).Where(t => t.ReferenceNo == refNoFull && t.Program.Name == programname).ToList();
+                }
+                var noRecords = tpr.Count(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Request Verified");
 
-            if (req.Sum(r => r.FreightCharge) == 0) return null;
+                var transporterPaymentRequests = tpr.Where(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name != "Request Verified");
 
-            return req;
+                var requests = transporterPaymentRequests.GroupBy(ac => new { ac.Transporter.TransporterID }).Select(ac =>
+                                                                                                                     
+                {
+                    var transporterPaymentRequestViewModel = ac.FirstOrDefault();
+                    return transporterPaymentRequestViewModel != null ? new
+                    {
+                        TransporterName = transporterPaymentRequestViewModel.Transporter.Name,
+                        TransporterId = transporterPaymentRequestViewModel.Transporter.TransporterID,
+                        //CommodityName = ac.Key.Commodity,
+                        SourceName = transporterPaymentRequestViewModel.Source,
+                        ReceivedQuantity = ac.Sum(s => s.ReceivedQty),
+                        ShortageQuantity = ac.Sum(s => s.ShortageQty),
+                        ShortageBirr = ac.Sum(s => s.ShortageBirr),
+                        FreightCharge = ac.Sum(s => s.FreightCharge),
+                        ShortageBirrInWords = ac.Sum(s => s.ShortageBirr).ToNumWordsWrapper(),
+                        FreightChargeInWords = Math.Round(ac.Sum(s => s.FreightCharge), 2).ToNumWordsWrapper(),
+                        NoRecords = noRecords,
+                        ReferenceNo = transporterPaymentRequestViewModel.ReferenceNo
+                    } : null;
+                });
+                var req = requests.Where(m => m.TransporterId == transporterId).ToArray();
+
+                if (req.Sum(r => r.FreightCharge) == 0) return null;
+
+                return req;
+            }
+            return null;
         }
+
         public ActionResult Multiplesubmission(int actionType, int transporterID)
         {
             var paymentRequests = new List<TransporterPaymentRequest>();
