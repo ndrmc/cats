@@ -628,7 +628,7 @@ namespace Cats.Services.Procurement
                 return -1;
             }
         }
-        public int ReAssignTransporter(IEnumerable<TransportRequisitionWithoutWinnerModel> transReqWithTransporter, int transporterID)
+        public int ReAssignTransporter(IEnumerable<TransportRequisitionWithoutWinnerModel> transReqWithTransporter, int transporterID, string userName)
         {
             if (transReqWithTransporter != null && transporterID != 0)
             {
@@ -669,7 +669,29 @@ namespace Cats.Services.Procurement
                     transportOrder.TransporterSignedDate = DateTime.Today;
                     transportOrder.RequestedDispatchDate = DateTime.Today;
                     transportOrder.ConsignerDate = DateTime.Today;
-                    transportOrder.StatusID = (int)TransportOrderStatus.Draft;
+                    transportOrder.StatusID = (int)TransportOrderStatus.Draft;// change this to workflow
+                    int businessProcessID = 0;
+                    int BP_PR = _applicationSettingService.getTransportOrderWorkflow();
+                    if (BP_PR != 0)
+                    {
+                        BusinessProcessState createdstate = new BusinessProcessState
+                        {
+                            DatePerformed = DateTime.Now,
+                            PerformedBy = userName,
+                            Comment = "Transport Order Generated"
+
+                        };
+                        //_PaymentRequestservice.Create(request);
+
+                        BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                                                                                        "TransportOrder", createdstate);
+                        if (bp != null)
+                            businessProcessID = bp.BusinessProcessID;
+
+
+                    }
+
+                    transportOrder.BusinessProcessID = businessProcessID;
                     var lastOrder = _unitOfWork.TransportOrderRepository.GetAll();
                     if (lastOrder.Count != 0)
                     {

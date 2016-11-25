@@ -967,7 +967,8 @@ namespace Cats.Areas.Procurement.Controllers
             var selectedTransRequision = requisitionWithTransporter.TransReqwithOutTransporters.Where(m => m.Selected == true);
             try
             {
-                var transportOrderId = _transportOrderService.ReAssignTransporter(selectedTransRequision, requisitionWithTransporter.SelectedTransporterID);
+                string username = User.Identity.Name;
+                var transportOrderId = _transportOrderService.ReAssignTransporter(selectedTransRequision, requisitionWithTransporter.SelectedTransporterID, username);
 
                 return RedirectToAction("OrderDetail", new { id = transportOrderId });
             }
