@@ -134,15 +134,7 @@ Plans
                                     <td>
                                         @item.Status
                                     </td>
-                                    <td>
-                                        @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Modify_HRD))
-                                        {
-                                            <a href='@Url.Action("Edit", "HRD", new {id = item.HRDID})' class="btn-warning">
-                                                @*<span class="glyphicon glyphicon-edit"></span>*@
-                                                Edit
-                                            </a>
-                                        }
-                                        &nbsp;
+                                    <td>                                      
                                         @if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.HRD_Summary))
                                         {
                                             <a href='@Url.Action("RegionalSummary", "HRD", new {id = item.HRDID})' class="btn-primary btn-large">
