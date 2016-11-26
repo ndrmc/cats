@@ -621,7 +621,7 @@ namespace Cats.Areas.Logistics.Controllers
                 }
                 var noRecords = tpr.Count(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Request Verified");
 
-                var transporterPaymentRequests = tpr.Where(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name != "Request Verified");
+                var transporterPaymentRequests = tpr.Where(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Request Verified");
 
                 var requests = transporterPaymentRequests.GroupBy(ac => new { ac.Transporter.TransporterID }).Select(ac =>
                                                                                                                      
