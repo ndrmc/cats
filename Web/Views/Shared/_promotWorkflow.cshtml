@@ -47,14 +47,11 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">@Html.Translate("Attachment File")</label>
                         <div class="col-md-9">
+                            <div class="col-md-12">
 
-                            <div class="col-md-7">
+                                <input type="file" id="fileOpen" name="AttachmentFile" class="form-control valid" style="display: inline-block;width: 80%;">
 
-                                <input type="file" id="fileOpen" name="AttachmentFile" class="form-control valid">
-
-                            </div>
-                            <div class="col-md-2 ">
-                                <input type="button" onclick="onRemove()" id="clear" value="Clear">
+                                <input type="button" onclick="onRemove()" id="clear" value="Clear" class="btn btn-sm btn-danger pull-right" style="margin-top: 4px;">
                             </div>
                         </div>
                     </div>
