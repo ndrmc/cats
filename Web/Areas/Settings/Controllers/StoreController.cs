@@ -8,7 +8,7 @@ using Cats.Services.Hub;
 using Cats.Areas.Settings.Models.ViewModels;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
-
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Settings.Controllers
 {

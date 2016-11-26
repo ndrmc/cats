@@ -185,17 +185,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Alert\AlertManager.cs" />
-    <Compile Include="Alert\AlertMessage.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AlertMessage.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Alert\AlertMessage_Amh.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AlertMessage_Amh.resx</DependentUpon>
-    </Compile>
     <Compile Include="AmharicReportViewer.aspx.cs">
       <DependentUpon>AmharicReportViewer.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -551,7 +540,6 @@
     <Compile Include="Areas\WorkflowManager\Controllers\FlowTemplateController.cs" />
     <Compile Include="Areas\WorkflowManager\Controllers\ProcessTemplateController.cs" />
     <Compile Include="Areas\WorkflowManager\Controllers\StateTemplateController.cs" />
-    <Compile Include="Areas\WorkflowManager\WorkflowManager.cs" />
     <Compile Include="Areas\WorkflowManager\WorkflowManagerAreaRegistration.cs" />
     <Compile Include="CatsMasterDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -581,7 +569,6 @@
       <DependentUpon>dataset.xsd</DependentUpon>
     </Compile>
     <Compile Include="Content\Filters\LocalizationFilter.cs" />
-    <Compile Include="DebbuggingTools.cs" />
     <Compile Include="Helpers\CaseHelper.cs" />
     <Compile Include="Helpers\CatsAuthorize.cs" />
     <Compile Include="Helpers\CatsGlobals.cs" />
@@ -3609,7 +3596,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cats.Web.Adminstration\Cats.Web.Adminstration.csproj">
-      <Project>{7D69AEC0-4CE9-4BFE-BB34-9B92E78DB6E5}</Project>
+      <Project>{7d69aec0-4ce9-4bfe-bb34-9b92e78db6e5}</Project>
       <Name>Cats.Web.Adminstration</Name>
     </ProjectReference>
     <ProjectReference Include="..\Data\Cats.Data.Hub\Cats.Data.Hub.csproj">
@@ -3704,9 +3691,9 @@
       <Project>{9b741d92-4b67-4863-bf38-a1adcae40870}</Project>
       <Name>Cats.Services.Transaction</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tests\Cats.Web.Adminstration.Tests\Cats.Web.Adminstration.Tests.csproj">
-      <Project>{6b42ca40-4be0-4122-8050-7df94a5bd40c}</Project>
-      <Name>Cats.Web.Adminstration.Tests</Name>
+    <ProjectReference Include="..\Services\Cats.Services.Workflow\Cats.Services.Workflow.csproj">
+      <Project>{91b6c6b9-eec7-4436-a24b-5bc33cae1beb}</Project>
+      <Name>Cats.Services.Workflow</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -3718,14 +3705,6 @@
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>EditorLocalization.designer.cs</LastGenOutput>
     </Content>
-    <EmbeddedResource Include="Alert\AlertMessage.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>AlertMessage.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Alert\AlertMessage_Amh.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AlertMessage_Amh.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Areas\EarlyWarning\Views\PrintableReports\HRD\AllHRD.rdlc" />
     <EmbeddedResource Include="Report\EarlyWarning\Ration.rdlc" />
     <EmbeddedResource Include="Report\EarlyWarning\RegionalRequest.rdlc" />

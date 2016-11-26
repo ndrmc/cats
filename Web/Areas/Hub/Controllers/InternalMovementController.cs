@@ -8,6 +8,7 @@ using Cats.Models.Hubs.ViewModels;
 using Cats.Models.Hubs;
 using Cats.Models.Hubs.ViewModels.Common;
 using Cats.Web.Hub;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Hub.Controllers
 {

@@ -79,8 +79,7 @@
     <Compile Include="AdminUnitService.cs" />
     <Compile Include="AdminUnitTypeService.cs" />
     <Compile Include="AllocationByRegionService.cs" />
-    <Compile Include="BusinessProcessService.cs" />
-    <Compile Include="BusinessProcessStateService.cs" />
+    <Compile Include="HRDService.cs" />
     <Compile Include="IReasonService.cs" />
     <Compile Include="ReasonService.cs" />
     <Compile Include="CommodityService.cs" />
@@ -91,9 +90,6 @@
     <Compile Include="HrdDonorCoverageService.cs" />
     <Compile Include="IHrdDonorCoverageDetailService.cs" />
     <Compile Include="IHrdDonorCoverageService.cs" />
-    <Compile Include="ITemplateFieldsService.cs" />
-    <Compile Include="ITemplateService.cs" />
-    <Compile Include="ITemplateTypeService.cs" />
     <Compile Include="PlanService.cs" />
     <Compile Include="IAllocationByRegionService.cs" />
     <Compile Include="ICurrencyService.cs" />
@@ -114,26 +110,19 @@
     <Compile Include="GiftCertificateDetailService.cs" />
     <Compile Include="GiftCetificateService.cs" />
     <Compile Include="HRDDetailService.cs" />
-    <Compile Include="HRDService.cs" />
     <Compile Include="HubAllocationService.cs" />
-    <Compile Include="HubService.cs" />
     <Compile Include="IAdminUnitService.cs" />
     <Compile Include="IAdminUnitTypeService.cs" />
-    <Compile Include="IBusinessProcessService.cs" />
-    <Compile Include="IBusinessProcessStateService.cs" />
     <Compile Include="ICommodityService.cs" />
     <Compile Include="ICommodityTypeService.cs" />
     <Compile Include="IFDPService.cs" />
-    <Compile Include="IFlowTemplateService.cs" />
     <Compile Include="IGiftCertificateDetailService.cs" />
     <Compile Include="IGiftCertificateService.cs" />
     <Compile Include="IHRDDetailService.cs" />
     <Compile Include="IHRDService.cs" />
     <Compile Include="IHubAllocation.cs" />
-    <Compile Include="IHubService.cs" />
     <Compile Include="INeedAssessmentDetailService.cs" />
     <Compile Include="INeedAssessmentHeaderService.cs" />
-    <Compile Include="IProcessTemplateService.cs" />
     <Compile Include="IProgramService.cs" />
     <Compile Include="IProjectCodeAllocationService.cs" />
     <Compile Include="IProjectCodeService.cs" />
@@ -144,14 +133,11 @@
     <Compile Include="IReliefRequisitionDetailService.cs" />
     <Compile Include="IReliefRequisitionService.cs" />
     <Compile Include="IShippingInstructionService.cs" />
-    <Compile Include="IStateTemplateService.cs" />
     <Compile Include="ITypeOfNeedAssessmentService.cs" />
     <Compile Include="IUnitService.cs" />
-    <Compile Include="IWorkflowStatusService.cs" />
     <Compile Include="NeedAssessmentDetailService.cs" />
     <Compile Include="NeedAssessmentHeaderService.cs" />
     <Compile Include="NeedAssessmentService.cs" />
-    <Compile Include="ProcessTemplateService.cs" />
     <Compile Include="ProgramService.cs" />
     <Compile Include="ProjectCodeAllocationService.cs" />
     <Compile Include="ProjectCodeService.cs" />
@@ -166,13 +152,8 @@
     <Compile Include="RequestDetailCommodityService.cs" />
     <Compile Include="SeasonService.cs" />
     <Compile Include="ShippingInstructionService.cs" />
-    <Compile Include="StateTemplateService.cs" />
-    <Compile Include="TemplateFieldService.cs" />
-    <Compile Include="TemplateService.cs" />
-    <Compile Include="TemplateTypeService.cs" />
     <Compile Include="TypeOfNeedAssessmentService.cs" />
     <Compile Include="UnitService.cs" />
-    <Compile Include="WorkflowStatusService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Cats.Data\Cats.Data.csproj">
@@ -194,6 +175,10 @@
     <ProjectReference Include="..\Cats.Services.Security\Cats.Services.Security.csproj">
       <Project>{0e706780-a5b2-488c-a502-49526946deb5}</Project>
       <Name>Cats.Services.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cats.Services.Workflow\Cats.Services.Workflow.csproj">
+      <Project>{91b6c6b9-eec7-4436-a24b-5bc33cae1beb}</Project>
+      <Name>Cats.Services.Workflow</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

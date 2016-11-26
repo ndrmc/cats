@@ -20,6 +20,8 @@ using log4net;
 using Cats.Security;
 using Cats.Services.Common;
 using StateTemplate = Cats.Models.StateTemplate;
+using Cats.Services;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {

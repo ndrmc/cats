@@ -15,10 +15,10 @@ namespace Cats.Areas.Settings.Controllers
     public class UserWarehouseController : Controller
     {
         private readonly IUserHubService _userHubService;
-        private readonly Cats.Services.EarlyWarning.IHubService _hubService;
+        private readonly Cats.Services.Hubs.IHubService _hubService;
         private readonly IUserProfileService _userProfileService;
 
-        public UserWarehouseController(IUserHubService userHubService, Cats.Services.EarlyWarning.IHubService hubService, IUserProfileService userProfileService)
+        public UserWarehouseController(IUserHubService userHubService, Cats.Services.Hubs.IHubService hubService, IUserProfileService userProfileService)
         {
             this._userHubService = userHubService;
             this._hubService = hubService;

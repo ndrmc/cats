@@ -23,6 +23,7 @@ using Dispatch = Cats.Models.Hubs.Dispatch;
 using FDP = Cats.Models.FDP;
 using ZonesViewModel = Cats.Areas.Logistics.Models.ZonesViewModel;
 using Cats.Alert;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -138,20 +139,20 @@ namespace Cats.Areas.Logistics.Controllers
                         deliveryReconcile.LossAmount = dispatchViewModelForReconcile.LossAmount;
                         deliveryReconcile.LossReason = dispatchViewModelForReconcile.LossReasonId;
                        //action workflow implementation 
-                        if (deliveryReconcile.BusinessProcess == null)
-                        {
-                            bp = WorkflowCommon.GetNewInstance("Delivery reconsile created");
-                            deliveryReconcile.BusinessProcessID = bp.BusinessProcessID;
-                        }
-                        else bp = deliveryReconcile.BusinessProcess;
+                        //if (deliveryReconcile.BusinessProcess == null)
+                        //{
+                        //    bp = WorkflowActivityUtil.GetNewInstance("Delivery reconsile created");
+                        //    deliveryReconcile.BusinessProcessID = bp.BusinessProcessID;
+                        //}
+                        //else bp = deliveryReconcile.BusinessProcess;
                         
                         _deliveryReconcileService.EditDeliveryReconcile(deliveryReconcile);
-                        //WorkflowCommon.EnterEditWorkflow(deliveryReconcile.BusinessProcess, AlertManager.GetWorkflowEdifFDPReceipt("Delivery reconsile with requisition no " + deliveryReconcile.RequsitionNo));
-                        if (bp != null)
-                            WorkflowCommon.EnterEditWorkflow(bp,
-                                "Delivery reconcile with requision no " + deliveryReconcile.RequsitionNo +
-                                " has been edited.");
-                        ModelState.AddModelError("Success", @"Success: Delivery Reconcilation Data Updated.");
+                        //WorkflowActivityUtil.EnterEditWorkflow(deliveryReconcile.BusinessProcess, AlertManager.GetWorkflowEdifFDPReceipt("Delivery reconsile with requisition no " + deliveryReconcile.RequsitionNo));
+                        //if (bp != null)
+                        //    WorkflowActivityUtil.EnterEditWorkflow(bp,
+                        //        "Delivery reconcile with requision no " + deliveryReconcile.RequsitionNo +
+                        //        " has been edited.");
+                        //ModelState.AddModelError("Success", @"Success: Delivery Reconcilation Data Updated.");
                     }
                     else
                     {
@@ -178,15 +179,15 @@ namespace Cats.Areas.Logistics.Controllers
                             //Action workflow implemetation 
                             if (deliveryReconcile.BusinessProcess == null)
                             {
-                                bp = WorkflowCommon.GetNewInstance("Delivery reconsile created");
+                                bp = WorkflowActivityUtil.GetNewInstance("Delivery reconsile created");
                                 if (bp != null) deliveryReconcile.BusinessProcessID = bp.BusinessProcessID;
                             }
                             else bp = deliveryReconcile.BusinessProcess;
                             _deliveryReconcileService.AddDeliveryReconcile(deliveryReconcile);
                             _transactionService.PostDeliveryReconcileReceipt(deliveryReconcile.DeliveryReconcileID);
-                            //WorkflowCommon.EnterEditWorkflow(deliveryReconcile.BusinessProcess, AlertManager.GetWorkflowEdifFDPReceipt("Post delivery reconsile with requisition no " + deliveryReconcile.RequsitionNo));
+                            //WorkflowActivityUtil.EnterEditWorkflow(deliveryReconcile.BusinessProcess, AlertManager.GetWorkflowEdifFDPReceipt("Post delivery reconsile with requisition no " + deliveryReconcile.RequsitionNo));
                             if (bp != null)
-                                WorkflowCommon.EnterEditWorkflow(bp,
+                                WorkflowActivityUtil.EnterEditWorkflow(bp,
                                     "Delivery reconcile with requision no " + deliveryReconcile.RequsitionNo +
                                     " has been edited.");
                             ModelState.AddModelError("Success", @"Success: Delivery Reconcilation Data Added.");

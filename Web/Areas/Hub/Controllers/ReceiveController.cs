@@ -14,6 +14,9 @@ using Cats.Helpers;
 using Cats.Web.Hub;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Cats.Services;
+using Cats.Services.Hubs;
+
 namespace Cats.Areas.Hub.Controllers
 {
     /// <summary>

@@ -10,6 +10,7 @@ using Cats.Services.Hub;
 using Cats.Web.Hub;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Settings.Controllers
 {

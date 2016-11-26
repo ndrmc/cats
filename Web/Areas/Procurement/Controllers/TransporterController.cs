@@ -13,6 +13,7 @@ using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Cats.Procurement.Models;
 using Microsoft.Ajax.Utilities;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.Procurement.Controllers
 {
@@ -110,9 +111,9 @@ namespace Cats.Areas.Procurement.Controllers
 
         public ActionResult EditingInline_Update([DataSourceRequest] DataSourceRequest request, Transporter transporter)
         {
-            WorkflowCommon.InitializeWorkflow(transporter);
+            WorkflowActivityUtil.InitializeWorkflow(transporter);
             transportService.EditTransporter(transporter);
-            WorkflowCommon.EnterEditWorkflow(transporter);
+            WorkflowActivityUtil.EnterEditWorkflow(transporter);
 
             return Json(ModelState.ToDataSourceResult(), JsonRequestBehavior.AllowGet);
         }
@@ -122,10 +123,10 @@ namespace Cats.Areas.Procurement.Controllers
         {
             if (transporter != null && ModelState.IsValid)
             {
-                WorkflowCommon.InitializeWorkflow(transporter);
+          //      WorkflowActivityUtil.InitializeWorkflow(transporter);
 
                 transportService.AddTransporter(transporter);
-                WorkflowCommon.EnterCreateWorkflow(transporter);
+    ///            WorkflowActivityUtil.EnterCreateWorkflow(transporter);
 
             }
 
@@ -197,11 +198,11 @@ namespace Cats.Areas.Procurement.Controllers
             if (!ModelState.IsValid)
              
             {
-                WorkflowCommon.InitializeWorkflow(transporter);
+             //   WorkflowActivityUtil.InitializeWorkflow(transporter);
 
                 transportService.AddTransporter(transporter);
 
-                WorkflowCommon.EnterCreateWorkflow(transporter);
+          //      WorkflowActivityUtil.EnterCreateWorkflow(transporter);
 
             }
             //return RedirectToAction("Edit");
@@ -283,21 +284,21 @@ namespace Cats.Areas.Procurement.Controllers
             {
                 if (transporter.TransporterID == 0)
                 {
-                    WorkflowCommon.InitializeWorkflow(transporter);
+                    //WorkflowActivityUtil.InitializeWorkflow(transporter);
 
                     transportService.AddTransporter(transporter);
-                   WorkflowCommon.EnterCreateWorkflow(transporter);   
+                   //WorkflowActivityUtil.EnterCreateWorkflow(transporter);   
                  
                 }
                 else
                 {
-                    WorkflowCommon.InitializeWorkflow(transporter);
+                //    WorkflowActivityUtil.InitializeWorkflow(transporter);
 
 
 
                     transportService.EditTransporter(transporter);
 
-                    WorkflowCommon.EnterEditWorkflow(transporter);
+             //       WorkflowActivityUtil.EnterEditWorkflow(transporter);
                      
 
                 }
@@ -317,18 +318,18 @@ namespace Cats.Areas.Procurement.Controllers
             {
                 if (transporter.TransporterID == 0)
                 {
-            WorkflowCommon.InitializeWorkflow(transporter);
+       //     WorkflowActivityUtil.InitializeWorkflow(transporter);
                     
                     transportService.AddTransporter(transporter);
-                    WorkflowCommon.EnterCreateWorkflow(transporter);
+                 //   WorkflowActivityUtil.EnterCreateWorkflow(transporter);
 
                 }
                 else
                 {
-                    WorkflowCommon.InitializeWorkflow(transporter);
+             //       WorkflowActivityUtil.InitializeWorkflow(transporter);
 
                     transportService.EditTransporter(transporter);
-                    WorkflowCommon.EnterEditWorkflow(transporter);
+              //      WorkflowActivityUtil.EnterEditWorkflow(transporter);
 
                 }
                 return Json("{}", JsonRequestBehavior.AllowGet);
@@ -355,7 +356,7 @@ namespace Cats.Areas.Procurement.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Transporter transporter = transportService.FindById(id);
-            WorkflowCommon.EnterDelteteWorkflow(transporter);
+            WorkflowActivityUtil.EnterDelteteWorkflow(transporter);
 
             transportService.DeleteTransporter(transporter);
             return RedirectToAction("Index");
@@ -367,7 +368,7 @@ namespace Cats.Areas.Procurement.Controllers
             if (transporter != null)
             {
                 
-                WorkflowCommon.EnterDelteteWorkflow(transporter);
+                WorkflowActivityUtil.EnterDelteteWorkflow(transporter);
 
                 transportService.DeleteById(transporter.TransporterID);
                 transportService.DeleteTransporter(transporter);

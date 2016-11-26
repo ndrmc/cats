@@ -14,6 +14,7 @@ using Kendo.Mvc.UI;
 using log4net;
 using HubAllocation = Cats.Models.HubAllocation;
 using Cats.ViewModelBinder;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Logistics.Controllers
 {

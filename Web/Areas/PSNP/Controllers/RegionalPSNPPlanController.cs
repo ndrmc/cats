@@ -20,7 +20,7 @@ using Cats.Services.Common;
 using Cats.Infrastructure;
 using log4net;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
-
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.PSNP
 {
@@ -137,7 +137,7 @@ namespace Cats.Areas.PSNP
             var result = ReportHelper.PrintReport(reportPath, reportData, dataSourceName);
             var regionalPsnp = _regionalPSNPPlanService.FindById(id);
             if (regionalPsnp != null)
-                WorkflowCommon.EnterPrintWorkflow(regionalPsnp.AttachedBusinessProcess);
+                WorkflowActivityUtil.EnterPrintWorkflow(regionalPsnp.AttachedBusinessProcess);
             return File(result.RenderBytes, result.MimeType);
         }
         public ActionResult Details(int id = 0)

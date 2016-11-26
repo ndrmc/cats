@@ -12,6 +12,7 @@ using Cats.Services.Transaction;
 using Cats.ViewModelBinder;
 using log4net;
 using Cats.Services.Common;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Logistics.Controllers
 {

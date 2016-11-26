@@ -26,6 +26,8 @@ using Cats.Services.Common;
 using System.IO;
 using System.ServiceModel.Security;
 using Cats.Models.Hubs;
+using Cats.Services.Workflows;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Procurement.Controllers
 {
@@ -1052,7 +1054,7 @@ namespace Cats.Areas.Procurement.Controllers
                     var generated = _transportOrderService.GetGeneratedDispatchAllocations();
                     foreach (var dispatchAllocation in generated)
                     {
-                        WorkflowCommon.EnterCreateWorkflow(dispatchAllocation);
+                        WorkflowActivityUtil.EnterCreateWorkflow(dispatchAllocation);
 
                     }
 

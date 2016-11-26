@@ -5,6 +5,7 @@ using Cats.Data.UnitWork;
 using Cats.Models;
 using System.Linq;
 using Cats.Models.Constant;
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Procurement
 {
@@ -21,14 +22,23 @@ namespace Cats.Services.Procurement
         #region Default Service Implementation
         public bool AddTransporter(Transporter transporter)
         {
+
             _unitOfWork.TransporterRepository.Add(transporter);
+
+            WorkflowActivityUtil.EnterCreateWorkflow(transporter);
+
             _unitOfWork.Save();
+
+
             return true;
 
         }
         public bool EditTransporter(Transporter transporter)
         {
             _unitOfWork.TransporterRepository.Edit(transporter);
+
+            WorkflowActivityUtil.EnterEditWorkflow(transporter);
+
             _unitOfWork.Save();
             return true;
 
