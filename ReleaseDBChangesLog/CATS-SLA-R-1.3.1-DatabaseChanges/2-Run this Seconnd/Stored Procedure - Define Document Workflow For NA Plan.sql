@@ -1,9 +1,9 @@
-use [CatsDRMFSS];
+
 
 DECLARE @h int
 EXECUTE sp_xml_preparedocument @h OUTPUT, N'<Data>  
 	<ProcessTemplate Name="Needs Assessment Plan" Description="Workflow for plan of needs assessment" GraphicsData="NULL" PartitionId="0" />
-	<ApplicationSetting SettingName="PlanWorkflow" SettingValue="" />
+	<ApplicationSetting SettingName="NeedAssessmentPlanWorkflow" SettingValue="" />
 
 	<StateTemplate Name="Draft" AllowedAccessLevel="0" StateNo="0" StateType="0" FinalStates="Approved" Actions="Approve" />
 	<StateTemplate Name="Approved" AllowedAccessLevel="0" StateNo="1" StateType="1" FinalStates="AssessmentCreated" Actions="Create assessment" /> 

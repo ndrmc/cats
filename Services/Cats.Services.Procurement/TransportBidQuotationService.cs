@@ -26,15 +26,33 @@ namespace Cats.Services.Procurement
 
         public bool AddWoreda(TransportBidQuotation transportBidQuotation)
         {
-            var detail = _unitOfWork.TransportBidQuotationRepository.FindBy(
-                    m => m.TransportBidQuotationHeaderID == transportBidQuotation.TransportBidQuotationHeaderID 
-                    && m.DestinationID == transportBidQuotation.DestinationID).FirstOrDefault();
-            if (detail == null)
-            {
-                _unitOfWork.TransportBidQuotationRepository.Add(transportBidQuotation);
-                _unitOfWork.Save();
-                return true;
-            }
+            //var detail = _unitOfWork.TransportBidQuotationRepository.FindBy(
+            //        m => m.TransportBidQuotationHeaderID == transportBidQuotation.TransportBidQuotationHeaderID 
+            //        && m.DestinationID == transportBidQuotation.DestinationID).FirstOrDefault();
+            var bid =
+                _unitOfWork.BidRepository.Get(b => b.BidID == transportBidQuotation.BidID).FirstOrDefault();
+            var bidPlanDetail =
+                _unitOfWork.TransportBidPlanDetailRepository.Get(t => t.BidPlanID == bid.TransportBidPlanID).FirstOrDefault();
+            
+            //if (detail == null)
+            //{
+                if (bidPlanDetail != null)
+                {
+                    var newBidPlanDetail = new TransportBidPlanDetail
+                    {
+                        BidPlanID = bidPlanDetail.BidPlanID,
+                        DestinationID = transportBidQuotation.DestinationID,
+                        ProgramID = bidPlanDetail.ProgramID,
+                        Quantity = bidPlanDetail.Quantity,
+                        SourceID = transportBidQuotation.SourceID
+                    };
+                    _unitOfWork.TransportBidPlanDetailRepository.Add(newBidPlanDetail);
+                    _unitOfWork.TransportBidQuotationRepository.Add(transportBidQuotation);
+                    _unitOfWork.Save();
+                    return true;
+                }
+                
+            //}
             return false;
         }
 

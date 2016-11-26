@@ -4,7 +4,8 @@
     <ProcessTemplate Name="TransferReceiptPlan" Description="Workflow for Transfer Receipt Plan in Logistics" GraphicsData="NULL" PartitionId="0" />
     <ApplicationSetting SettingName="TranferReceiptPlanWorkflow" SettingValue="" />
     <StateTemplate Name="Draft" AllowedAccessLevel="0" StateNo="0" StateType="0" FinalStates="Approved" Actions="Approve" />
-    <StateTemplate Name="Approved" AllowedAccessLevel="0" StateNo="1" StateType="1" FinalStates="Approved" /> 
+    <StateTemplate Name="Approved" AllowedAccessLevel="0" StateNo="1" StateType="1" FinalStates="Rejected" Actions="Reject" /> 
+    <StateTemplate Name="Rejected" AllowedAccessLevel="0" StateNo="2" StateType="1" FinalStates="Approved" Actions="Approve" />
     
     </Data>'
     EXECUTE define_document_workflow @h

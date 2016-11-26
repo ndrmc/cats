@@ -1,8 +1,6 @@
 --Create CATS-1315
  BEGIN TRANSACTION
-use 
-CatsMaster
-go
+
 IF  NOT EXISTS (
   SELECT * 
   FROM   sys.columns 

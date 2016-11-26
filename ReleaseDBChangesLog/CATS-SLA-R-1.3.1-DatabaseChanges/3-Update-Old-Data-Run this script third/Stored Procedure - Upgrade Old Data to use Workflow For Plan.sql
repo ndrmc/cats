@@ -1,35 +1,35 @@
-use [CatsDRMFSS];
+
 
 /********************************************************************************************************
 ********************************************************************************************************
 --	Author: Nathnael Getahun (Senior Software Developer @ Neuronet)
 --	Type: Stored Procedure
 --	Name: Upgrade Old Data
---	Description: Make old data of Donation Plan Header table support the new workflow implementation
+--	Description: Make old data of Needs Assessment Plan table support the new workflow implementation
 --	What it does:
-----	> Add BusinessProcessID column in Donation Plan Header table 
-----	> Iterate through each Donation Plan Header entry and create them a business process and 
+----	> Add BusinessProcessID column in Needs Assessment Plan table 
+----	> Iterate through each Needs Assessment Plan entry and create them a business process and 
 ----	  business process state for their current status only
 ********************************************************************************************************
 ********************************************************************************************************/
 
 
-IF COL_LENGTH('dbo.DonationPlanHeader','BusinessProcessID') IS NULL
+IF COL_LENGTH('dbo.Plan','BusinessProcessID') IS NULL
 BEGIN
-	ALTER TABLE [dbo].[DonationPlanHeader]
+	ALTER TABLE [dbo].[Plan]
 	ADD BusinessProcessID INT NOT NULL
-	CONSTRAINT BP_Default_2 DEFAULT 0 WITH VALUES;
+	CONSTRAINT BP_Default_0 DEFAULT 0 WITH VALUES;
 END
 
 IF EXISTS(
     SELECT *
     FROM sys.procedures 
-    WHERE Object_ID = Object_ID(N'upgrade_donation_plan_header_old_data'))
+    WHERE Object_ID = Object_ID(N'upgrade_needs_assessment_plan_old_data'))
 BEGIN
-    DROP PROCEDURE upgrade_donation_plan_header_old_data  
+    DROP PROCEDURE upgrade_needs_assessment_plan_old_data  
 END
 GO
-CREATE PROCEDURE upgrade_donation_plan_header_old_data  @xmldoc	int        
+CREATE PROCEDURE upgrade_needs_assessment_plan_old_data  @xmldoc	int        
 AS  
 
 /* Begin a transaction that will hold all the statements executed in this procedure */
@@ -47,7 +47,8 @@ IF(@@error <> 0)
 	ROLLBACK /* Rollback of the transaction */
 
 DECLARE document_table CURSOR FOR  
-    SELECT DonationHeaderPlanID FROM [dbo].[DonationPlanHeader] 
+    SELECT PlanID FROM [dbo].[Plan] 
+	WHERE PlanID IN (SELECT PlanID FROM [Earlywarning].[NeedAssessment])
 /* Check if the above statement failed to execute and rollback the transcation */
 IF(@@error <> 0)
 	ROLLBACK /* Rollback of the transaction */
@@ -75,28 +76,36 @@ BEGIN
 		--IF (@bpid = 0)  
 		--BEGIN
 			DECLARE @status int, @businessprocessid int, @businessprocessstateid int, @stateid int;
-			SET @status = ( SELECT [Status] FROM [dbo].[DonationPlanHeader] WHERE DonationHeaderPlanID = @rowid );
-			IF (@status = 1 OR @status IS NULL)  
+			SET @status = ( SELECT [Status] FROM [dbo].[Plan] WHERE PlanID = @rowid );
+			IF (@status = 1)  
 				SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Draft' );
 			ELSE IF (@status = 2)
-				SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Sent to hub' );
+				SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Approved' );
+			ELSE IF (@status = 3)
+				SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'AssessmentCreated' );
+			ELSE IF (@status = 4)
+				SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'HRDCreated' );
+			ELSE IF (@status = 5)
+				SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'PSNPCreated' );
+			ELSE IF (@status = 6)
+				SET @stateid = ( SELECT [StateTemplateID] FROM [StateTemplate] WHERE ParentProcessTemplateID = @processid AND Name = 'Closed' );
 
 
 			INSERT INTO BusinessProcessState 
-			VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'Donation Plan Header business process created by data migrator', NULL, NULL);
+			VALUES ( @processid, @stateid, 'System: Data Migration', '2016-06-06', 'Plan business process created by data migrator', NULL,NULL);
 			SET @businessprocessstateid = SCOPE_IDENTITY();			
 
 			INSERT INTO BusinessProcess 
-			VALUES ( @processid, 0, 'DonationPlanHeader', @businessprocessstateid, NULL);
+			VALUES ( @processid, 0, 'Plan', @businessprocessstateid, NULL);
 			SET @businessprocessid = SCOPE_IDENTITY();
 
 			UPDATE [dbo].[BusinessProcessState]
 			SET ParentBusinessProcessID=@businessprocessid
 			WHERE BusinessProcessStateID = @businessprocessstateid;
 
-			UPDATE [dbo].[DonationPlanHeader]
+			UPDATE [dbo].[Plan]
 			SET BusinessProcessID=@businessprocessid
-			WHERE DonationHeaderPlanID = @rowid;
+			WHERE PlanID = @rowid;
 				
 		--END		
     END  
@@ -113,10 +122,10 @@ Go
 
 DECLARE @h int
 EXECUTE sp_xml_preparedocument @h OUTPUT, N'<Data>  
-	<ProcessTemplate Name="Donation Plan Header" Description="Workflow for Donation Plan Header" GraphicsData="NULL" PartitionId="0" />
-	<ApplicationSetting SettingName="DonationPlanHeaderWorkflow" SettingValue="" />
+	<ProcessTemplate Name="Needs Assessment Plan" Description="Workflow for plan of needs assessment" GraphicsData="NULL" PartitionId="0" />
+	<ApplicationSetting SettingName="PlanWorkflow" SettingValue="" />
 </Data>'
 
 
 
-EXECUTE upgrade_donation_plan_header_old_data @h
+EXECUTE upgrade_needs_assessment_plan_old_data @h

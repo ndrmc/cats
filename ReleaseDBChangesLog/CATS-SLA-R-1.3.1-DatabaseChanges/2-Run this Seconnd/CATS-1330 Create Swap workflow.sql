@@ -1,7 +1,7 @@
 --Create CATS-1315
 
 use 
-CatsDRMFSS
+[Cats-v-1-3-1]
 go
 IF  NOT EXISTS (
   SELECT * 

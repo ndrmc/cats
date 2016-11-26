@@ -47,7 +47,12 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">@Html.Translate("Attachment File")</label>
                         <div class="col-md-9">
-                            <input type="file" name="AttachmentFile" class="form-control" />
+                            <div class="col-md-12">
+
+                                <input type="file" id="fileOpen" name="AttachmentFile" class="form-control valid" style="display: inline-block;width: 80%;">
+
+                                <input type="button" onclick="onRemove()" id="clear" value="Clear" class="btn btn-sm btn-danger pull-right" style="margin-top: 4px;">
+                            </div>
                         </div>
                     </div>
                     
@@ -64,8 +69,20 @@
     </div>
 </div>
 <script>
-    $("#modalPromotion").submit(function () {
+    $("#modalPromotion").submit(function() {
         $("#promotionFooter").html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
 
     });
+</script>
+
+<script type="text/javascript">
+
+    function onRemove() {
+
+        var fileOpen = document.getElementById("fileOpen");
+        var clone = fileOpen.cloneNode(true);
+
+        fileOpen.parentNode.replaceChild(clone, fileOpen);
+    }
+
 </script>

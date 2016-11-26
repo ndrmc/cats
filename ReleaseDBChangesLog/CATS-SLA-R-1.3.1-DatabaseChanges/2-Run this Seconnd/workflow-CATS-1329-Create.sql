@@ -2,7 +2,7 @@
 --- Created BY Robel Alazar
 
 use 
-CatsMaster
+[Cats-v-1-3-1]
 go
 IF  NOT EXISTS (
   SELECT * 

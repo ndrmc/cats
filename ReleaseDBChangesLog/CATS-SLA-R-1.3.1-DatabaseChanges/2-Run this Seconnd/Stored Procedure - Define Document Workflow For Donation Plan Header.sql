@@ -1,4 +1,4 @@
-use [CatsDRMFSS];
+use [Cats-v-1-3-1]
 
 DECLARE @h int
 EXECUTE sp_xml_preparedocument @h OUTPUT, N'<Data>  
