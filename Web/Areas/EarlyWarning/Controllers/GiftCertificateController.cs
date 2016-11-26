@@ -22,6 +22,7 @@ using Cats.Services.Logistics;
 using log4net;
 using GiftCertificateViewModel = Cats.Areas.GiftCertificate.Models.GiftCertificateViewModel;
 using Cats.Areas.GiftCertificate.Models;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -185,7 +186,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                     .ShippingInstructionID;
                             giftCertificate.ShippingInstructionID = shippingInstructionID;
                             _giftCertificateService.AddGiftCertificate(giftCertificate);
-                            WorkflowCommon.EnterCreateWorkflow(giftCertificate);
+                            WorkflowActivityUtil.EnterCreateWorkflow(giftCertificate);
 
                             return RedirectToAction("Index");
                         }
@@ -424,7 +425,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
 
                 _giftCertificateService.EditGiftCertificate(giftcert);
-                WorkflowCommon.EnterEditWorkflow(giftcert);
+                WorkflowActivityUtil.EnterEditWorkflow(giftcert);
 
                 return RedirectToAction("Index");
             }
@@ -447,7 +448,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             var giftCertificate = _giftCertificateService.FindById(id);
-            WorkflowCommon.EnterDelteteWorkflow(giftCertificate);
+            WorkflowActivityUtil.EnterDelteteWorkflow(giftCertificate);
 
             _giftCertificateService.DeleteById(id);
             return RedirectToAction("Index");

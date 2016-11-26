@@ -9,6 +9,7 @@ using Cats.Web.Hub;
 using Telerik.Web.Mvc;
 using Cats.Models.Hubs.ViewModels.Common;
 using Cats.Services.Hub;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Hub.Controllers
 {

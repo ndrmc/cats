@@ -11,6 +11,8 @@ using Cats.Web.Hub;
 using Cats.Web.Hub.Helpers;
 using Telerik.Web.Mvc;
 using Cats.Alert;
+using Cats.Services.Workflows;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Hub.Controllers.Allocations
 {
@@ -689,7 +691,7 @@ namespace Cats.Areas.Hub.Controllers.Allocations
                 _dispatchAllocationService.EditDispatchAllocation(alloc);
 
       
-                WorkflowCommon.EnterEditWorkflow(alloc, "FDP Allocation Has been Saved.");
+                WorkflowActivityUtil.EnterEditWorkflow(alloc, "FDP Allocation Has been Saved.");
 
 
                 return Json("{status:1}", JsonRequestBehavior.AllowGet);
@@ -765,7 +767,7 @@ namespace Cats.Areas.Hub.Controllers.Allocations
             DispatchAllocation allocation = _dispatchAllocationService.FindById(Guid.Parse(id));
             DispatchAllocationViewModel alloc = GetAllocationModelForClose(allocation);
 
-            WorkflowCommon.EnterDelteteWorkflow(allocation);
+            WorkflowActivityUtil.EnterDelteteWorkflow(allocation);
             
             return PartialView("Close", alloc);
         }

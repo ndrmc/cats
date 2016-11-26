@@ -19,6 +19,7 @@ using Cats.Models.PSNP;
 using Cats.Services.Common;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using IFDPService = Cats.Services.EarlyWarning.IFDPService;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.PSNP.Controllers
 {
@@ -357,7 +358,7 @@ namespace Cats.Areas.PSNP.Controllers
                 //    };
                 //    _businessProcessService.PromotWorkflow(businessProcessState);
                 //}
-                WorkflowCommon.EnterEditWorkflow(plan.AttachedBusinessProcess);
+                //WorkflowActivityUtil.EnterEditWorkflow(plan.AttachedBusinessProcess);
             }
             /*var allFDPData = getDetailView(planId);
            return Json(new[] { regionalRequestDetail }.ToDataSourceResult(request, ModelState)); */

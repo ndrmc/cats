@@ -6,6 +6,7 @@ using System.Text;
 using Cats.Data.Hub;
 using Cats.Data.Hub.UnitWork;
 using Cats.Models.Hubs;
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Hub
 {
@@ -20,8 +21,10 @@ namespace Cats.Services.Hub
 
         public bool AddTransporter(Transporter entity)
        {
+            
            _unitOfWork.TransporterRepository.Add(entity);
-           _unitOfWork.Save();
+            WorkflowActivityUtil.EnterCreateWorkflow(entity);
+            _unitOfWork.Save();
            return true;
            
        }

@@ -22,6 +22,8 @@ using WebGrease.Css.Ast.Selectors;
 using NUnit.Framework;
 using StateTemplate = Cats.Models.StateTemplate;
 using Cats.Alert;
+using Cats.Services.Workflows.Alert;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -551,7 +553,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                   "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
 
          
-            WorkflowCommon.EnterEditWorkflow(requisition.BusinessProcess, changeNote);
+            WorkflowActivityUtil.EnterEditWorkflow(requisition.BusinessProcess, changeNote);
 
 
             return true;

@@ -8,6 +8,7 @@ using System.Web.Routing;
 using Cats.Models.Hubs;
 using Cats.Services.Hub;
 using Cats.Web.Hub;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Hub.Controllers.Allocations
 {

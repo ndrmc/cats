@@ -30,6 +30,8 @@ using Workflow = Cats.Models.Constant.WORKFLOW;
 using System.IO;
 using StateTemplate = Cats.Models.StateTemplate;
 using Cats.Alert;
+using Cats.Services.Workflows.Alert;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -1169,7 +1171,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
                     var req = _regionalRequestService.FindById(regionalRequestDetail.RegionalRequestID);
 
-                    WorkflowCommon.EnterDelteteWorkflow(req.BusinessProcess,AlertMessage.Workflow_AllocationModified);
+                    WorkflowActivityUtil.EnterDelteteWorkflow(req.BusinessProcess,AlertMessage.Workflow_AllocationModified);
 
              
                 }
@@ -1694,7 +1696,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
                 var request = _regionalRequestService.FindById(requestID);
 
-                WorkflowCommon.EnterDelteteWorkflow(request.BusinessProcess, AlertManager.GetWorkflowMessage_Delete("RegionalRequest with an ID of " + requestID.ToString()));
+                WorkflowActivityUtil.EnterDelteteWorkflow(request.BusinessProcess, AlertManager.GetWorkflowMessage_Delete("RegionalRequest with an ID of " + requestID.ToString()));
 
                 return RedirectToAction("Allocation", new { id = requestID });
             }

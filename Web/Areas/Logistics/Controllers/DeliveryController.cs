@@ -22,6 +22,7 @@ using Kendo.Mvc.UI;
 using Cats.Helpers;
 using BusinessProcess = Cats.Models.BusinessProcess;
 using BusinessProcessState = Cats.Models.BusinessProcessState;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -757,8 +758,8 @@ namespace Cats.Areas.Logistics.Controllers
            if(dispach!=null)
            {
 
-                WorkflowCommon.InitializeWorkflow(dispach);
-                WorkflowCommon.EnterDelteteWorkflow(dispach,"Dispatch with and Id of "+dispach.DispatchID+" Has been Rejected.");
+                WorkflowActivityUtil.InitializeWorkflow(dispach);
+                WorkflowActivityUtil.EnterDelteteWorkflow(dispach,"Dispatch with and Id of "+dispach.DispatchID+" Has been Rejected.");
 
                _dispatchService.RejectToHubs(dispach);
 

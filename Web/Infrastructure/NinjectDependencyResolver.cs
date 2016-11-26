@@ -30,7 +30,7 @@ using FDPService = Cats.Services.EarlyWarning.FDPService;
 using ForgetPasswordRequestService = Cats.Services.Security.ForgetPasswordRequestService;
 using GiftCertificateDetailService = Cats.Services.EarlyWarning.GiftCertificateDetailService;
 using GiftCertificateService = Cats.Services.EarlyWarning.GiftCertificateService;
-using HubService = Cats.Services.EarlyWarning.HubService;
+using HubService = Cats.Services.Hubs.HubService;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using ICommodityService = Cats.Services.EarlyWarning.ICommodityService;
 using ICommonService = Cats.Services.Common.ICommonService;
@@ -39,7 +39,7 @@ using IFDPService = Cats.Services.EarlyWarning.IFDPService;
 using IForgetPasswordRequestService = Cats.Services.Security.IForgetPasswordRequestService;
 using IGiftCertificateDetailService = Cats.Services.EarlyWarning.IGiftCertificateDetailService;
 using IGiftCertificateService = Cats.Services.EarlyWarning.IGiftCertificateService;
-using IHubService = Cats.Services.EarlyWarning.IHubService;
+using IHubService = Cats.Services.Hubs.IHubService;
 using ILedgerService = Cats.Services.Common.ILedgerService;
 using ILetterTemplateService = Cats.Services.Common.ILetterTemplateService;
 using IProgramService = Cats.Services.EarlyWarning.IProgramService;
@@ -60,6 +60,9 @@ using TransporterService = Cats.Services.Procurement.TransporterService;
 using UnitService = Cats.Services.EarlyWarning.UnitService;
 using Cats.Localization;
 using Cats.Localization.Services;
+using Cats.Services;
+using Cats.Services.Hubs;
+using Cats.Services.Workflows;
 
 
 
@@ -270,6 +273,8 @@ namespace Cats.Infrastructure
             kernel.Bind<ITransporterChequeDetailService>().To<TransporterChequeDetailService>();
             kernel.Bind<Cats.Services.Administration.IStoreService>().To<Cats.Services.Administration.StoreService>();
             kernel.Bind<ILgDashboardService>().To<LgDashboardService>();
+            kernel.Bind<IWorkflowActivityService>().To<WorkflowActivityService>();
+
         }
         private void AddBindingsHub()
         {
@@ -297,7 +302,7 @@ namespace Cats.Infrastructure
             kernel.Bind<Cats.Services.Hub.IOtherDispatchAllocationService>().To<Cats.Services.Hub.OtherDispatchAllocationService>();
             kernel.Bind<Cats.Services.Hub.IDispatchDetailService>().To<Cats.Services.Hub.DispatchDetailService>();
             kernel.Bind<Cats.Services.Hub.IPeriodService>().To<Cats.Services.Hub.PeriodService>();
-            kernel.Bind<Cats.Services.Hub.IHubService>().To<Cats.Services.Hub.HubService>();
+            kernel.Bind<IHubService>().To<HubService>();
             kernel.Bind<Cats.Services.Hub.IReceiveService>().To<Cats.Services.Hub.ReceiveService>();
             kernel.Bind<Cats.Web.Hub.IMembershipWrapper>().To<Cats.Web.Hub.MembershipWrapper>(); ;
             kernel.Bind<Cats.Web.Hub.IUrlHelperWrapper>().To<Cats.Web.Hub.UrlHelperWrapper>();

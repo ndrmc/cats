@@ -70,7 +70,7 @@ namespace Cats.Services.EarlyWarning
             return hubId.HubID;
 
         }
-        
+
         public void Dispose()
         {
             _unitOfWork.Dispose();
@@ -83,16 +83,16 @@ namespace Cats.Services.EarlyWarning
         {
             var adminUnit = _unitOfWork.AdminUnitRepository.FindById(woredaID);
             var region = adminUnit.AdminUnit2.AdminUnit2.Name;
-            if (adminUnit!=null)
+            if (adminUnit != null)
             {
-                if (region == "Afar" || region=="Oromia" ||region == "SNNPR")
+                if (region == "Afar" || region == "Oromia" || region == "SNNPR")
                 {
                     return _unitOfWork.HubRepository.FindById(1);
                 }
                 else if (region == "Amhara" || region == "Tigray" || region == "Gambella")
                 {
                     return _unitOfWork.HubRepository.FindById(2);
-                    
+
                 }
                 else
                 {

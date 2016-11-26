@@ -23,6 +23,8 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using ICommonService = Cats.Services.Common.ICommonService;
+using Cats.Services.Workflows.Alert;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -321,7 +323,7 @@ namespace Cats.Areas.Logistics.Controllers
                 }
                 _transporterPaymentRequestService.EditTransporterPaymentRequest(transporterPaymentRequest);
 
-                WorkflowCommon.EnterEditWorkflow(transporterPaymentRequest.BusinessProcess, "Commodity Tarrif has been Adjusted.");
+                WorkflowActivityUtil.EnterEditWorkflow(transporterPaymentRequest.BusinessProcess, "Commodity Tarrif has been Adjusted.");
 
                 return RedirectToAction("PaymentRequests", "TransporterPaymentRequest",
                                         new
@@ -346,7 +348,7 @@ namespace Cats.Areas.Logistics.Controllers
             if (transporterPaymentRequest != null)
             {
                 _transporterPaymentRequestService.Reject(transporterPaymentRequest);
-                WorkflowCommon.EnterDelteteWorkflow(transporterPaymentRequest.BusinessProcess, AlertMessage.Workflow_RejectedDocument);
+                WorkflowActivityUtil.EnterDelteteWorkflow(transporterPaymentRequest.BusinessProcess, AlertMessage.Workflow_RejectedDocument);
                 return Json(new[] { true }.ToDataSourceResult(request, ModelState));
             }
             else
@@ -512,7 +514,7 @@ namespace Cats.Areas.Logistics.Controllers
 
                     _transporterPaymentRequestService.EditTransporterPaymentRequest(transporterPaymentRequest);
 
-                    WorkflowCommon.EnterEditWorkflow(transporterPaymentRequest.BusinessProcess,AlertMessage.Workflow_LossEntry);
+                    WorkflowActivityUtil.EnterEditWorkflow(transporterPaymentRequest.BusinessProcess,AlertMessage.Workflow_LossEntry);
 
 
                     return RedirectToAction("PaymentRequests", "TransporterPaymentRequest",
@@ -595,7 +597,7 @@ namespace Cats.Areas.Logistics.Controllers
                 if (transPayreq.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Request Verified")
                 {
 
-                    WorkflowCommon.EnterPrintWorkflow(transPayreq.BusinessProcess);
+                    WorkflowActivityUtil.EnterPrintWorkflow(transPayreq.BusinessProcess);
 
                 }
 
@@ -667,7 +669,7 @@ namespace Cats.Areas.Logistics.Controllers
 
             foreach (var transPayreq in transporterPaymentRequests)
             {         
-                WorkflowCommon.EnterPrintWorkflow(transPayreq.BusinessProcess,AlertMessage.Workflow_PrintLetter);
+                WorkflowActivityUtil.EnterPrintWorkflow(transPayreq.BusinessProcess,AlertMessage.Workflow_PrintLetter);
 
             }
 
