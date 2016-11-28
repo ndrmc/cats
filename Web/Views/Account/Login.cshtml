@@ -96,11 +96,11 @@
                 @*<input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" />*@
             </div>
             <div class="form-actions">
-                <button type="submit" class="btn btn-success uppercase">Sign In</button>
+                <button style="float: right" type="submit" class="btn btn-success uppercase">Sign In</button>
                 @*<label class="rememberme check">
                     <input type="checkbox" name="remember" value="1" />Remember
                 </label>*@
-                <a href="@Url.Action("ForgetPasswordRequest","Account")" id="forget-password" class="forget-password">Forgot Password?</a>
+                <a style="float: left"  href="@Url.Action("ForgetPasswordRequest","Account")" id="forget-password" class="forget-password">Forgot Password?</a>
             </div>
             
         }
