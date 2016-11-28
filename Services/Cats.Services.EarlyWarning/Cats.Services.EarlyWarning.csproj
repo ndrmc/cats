@@ -106,7 +106,6 @@
     <Compile Include="InKindContributionDetailService.cs" />
     <Compile Include="ISeasonService.cs" />
     <Compile Include="FDPService.cs" />
-    <Compile Include="FlowTemplateService.cs" />
     <Compile Include="GiftCertificateDetailService.cs" />
     <Compile Include="GiftCetificateService.cs" />
     <Compile Include="HRDDetailService.cs" />
