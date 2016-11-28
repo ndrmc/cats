@@ -919,6 +919,7 @@
     <Content Include="Areas\Logistics\Views\DispatchAllocation\AllocationAdjustment.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\ReliefRequisition\PromotThese.cshtml" />
     <Content Include="Areas\Logistics\Views\DispatchAllocation\UpdateRequisition.cshtml" />
+    <Content Include="Areas\EarlyWarning\Views\Request\Allocation_old.cshtml" />
     <None Include="Areas\Logistics\Views\DispatchAllocation\_AllocateProjectCode.cshtml" />
     <Content Include="Content\2013.1.219\Black\editor.png" />
     <Content Include="Content\2013.1.219\Black\imagebrowser.png" />

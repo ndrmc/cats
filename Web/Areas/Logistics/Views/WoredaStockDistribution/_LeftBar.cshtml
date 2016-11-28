@@ -11,71 +11,88 @@
         width:170px;
     }
 </style>
-<div class="sidebarForm">
-    @using (Html.BeginForm("Create", "WoredaStockDistribution", FormMethod.Get))
+
+
+    @using (Html.BeginForm("Create", "WoredaStockDistribution", FormMethod.Get, new {@class="form"}))
     {
+        
+        <div class="portlet solid  bordered" style="border-right: 2px solid #e6e9ec !important; border-left: none !important;">
+                <div class="portlet-title">
+                    <div class="caption font-green-sharp">
+                        @*<i class="icon-list font-green-sharp"></i>*@
+                        <span class="caption-subject bold uppercase"> @Html.Translate("Select Parameters")</span>
+                    </div>
+                </div>
+                <div class="portlet-body">
 
-        <div class="control-group">
-            <div class="control-label">
-                @Html.Label(Html.Translate("Region"))
-            </div>
-            <div class="controls" id="div_region">
-                @Html.DropDownList("Region",ViewBag.Region as SelectList ,"--Select Region--",new {@id="RegionID"})
-            </div>
+                    <div class="form-group">
+                        <div class="control-label">
+                            @Html.Label(Html.Translate("Region"))
+                        </div>
+                        <div id="div_region">
+                            @Html.DropDownList("Region", ViewBag.Region as SelectList, "--Select Region--", new {@id = "RegionID", @class="form-control"})
+                        </div>
 
-        </div> 
-        <div class="control-group">
-            <div class="control-label">
-                @Html.Label(Html.Translate("Zone"))
-            </div>
-            <div class="controls" id="div_zone">
-                @Html.DropDownList("Zone",ViewBag.Zone as SelectList ,"--Select Zone--",new {@id="ZoneID"})
-            </div>
-        </div>
-        <div class="control-group">
-            <div class="control-label">
-                @Html.Label(Html.Translate("Woreda"))
-            </div>
-            <div class="controls"  id="div_woreda">
-                @Html.DropDownList("Woreda",ViewBag.Woreda as SelectList,"--Select Woreda--",new {@id="WoredaID"})
-                @*@Html.DropDownListFor(m=>m.WoredaID,ViewBag.Woreda as SelectList,new {@id="WoredaID"})*@
-                @*@Html.ValidationMessageFor(m=>m.WoredaID)*@
-            </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="control-label">
+                            @Html.Label(Html.Translate("Zone"))
+                        </div>
+                        <div id="div_zone">
+                            @Html.DropDownList("Zone", ViewBag.Zone as SelectList, "--Select Zone--", new {@id = "ZoneID", @class="form-control"})
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="control-label">
+                            @Html.Label(Html.Translate("Woreda"))
+                        </div>
+                        <div id="div_woreda">
+                            @Html.DropDownList("Woreda", ViewBag.Woreda as SelectList, "--Select Woreda--", new {@id = "WoredaID", @class="form-control"})
+                            @*@Html.DropDownListFor(m=>m.WoredaID,ViewBag.Woreda as SelectList,new {@id="WoredaID"})*@
+                            @*@Html.ValidationMessageFor(m=>m.WoredaID)*@
+                        </div>
 
-        </div>
-        <div class="control-group">
-                        
-            <div class="control-label">
-                @Html.Label(Html.Translate("Program"))
-            </div>
-            <div class="controls">
-                @*@Html.DropDownList("ProgramID",String.Empty)*@
-                <select id="ProgramID" name="ProgramID"></select>
-            </div>
+                    </div>
+                    <div class="form-group">
 
-        </div>
-        <div class="control-group">
-            <div class="control-label">
-                @Html.Label(Html.Translate("Plan"))
-            </div>
-            <div class="controls">
-                @*@Html.Label(Html.Translate("Plan"))*@
-                <select id="PlanID" name="PlanID"></select>
-                @* @Html.DropDownList("PlanID",String.Empty)*@
-            </div>
-        </div>
-        <div class="control-group">
-            <div class="control-label">
-                @Html.Label(Html.Translate("Month /Round"))
-            </div>
-            <div class="controls">
-                <select id="month" name="month"></select>
-            </div>
+                        <div class="control-label">
+                            @Html.Label(Html.Translate("Program"))
+                        </div>
+                        <div>
+                            @*@Html.DropDownList("ProgramID",String.Empty)*@
+                            <select id="ProgramID" name="ProgramID" class="form-control"></select>
+                        </div>
 
-        </div>
-        <input type="submit" value="Select" class="btn btn-default btn-lg"/>
+                    </div>
+                    <div class="form-group">
+                        <div class="control-label">
+                            @Html.Label(Html.Translate("Plan"))
+                        </div>
+                        <div>
+                            @*@Html.Label(Html.Translate("Plan"))*@
+                            <select id="PlanID" name="PlanID" class="form-control"></select>
+                            @* @Html.DropDownList("PlanID",String.Empty)*@
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="control-label">
+                            @Html.Label(Html.Translate("Month /Round"))
+                        </div>
+                        <div>
+                            <select id="month" name="month"  class="form-control"></select>
+                        </div>
+
+                    </div>
+
+                    <hr/>
+                    <div class="form-group">
+                        <input type="submit" value="Select" class="btn btn-default btn-md green pull-right" />
+                    </div>
+                </div>
+            </div>
+        
     }
-</div>
+
 <script>
     
     var admin_region_hash = {};
@@ -119,7 +136,7 @@
 
             //var msg = "";
             
-            var htm = "<select name='Zone' id ='ZoneID' ><option value=''>-- Select Zone --</option> ";
+            var htm = "<select name='Zone' id ='ZoneID'  class='form-control' ><option value=''>-- Select Zone --</option> ";
             for (var z in zones) {
                 //htm += "<option value='" + zones[z].AdminUnitID + "'>" + zones[z].Name + "</option>";
                 htm += "<option value='" + zones[z].ZoneID + "'>" + zones[z].ZoneName + "</option>";
@@ -140,7 +157,7 @@
             var zoneId = $("#ZoneID").val();
             //alert(zoneId);
             var woredas = admin_zone_hash[zoneId];
-            var s = "<select id ='WoredaID' name='Woreda' ><option value=''>-- Select Woreda --</option> ";
+            var s = "<select id ='WoredaID' name='Woreda' class='form-control' ><option value=''>-- Select Woreda --</option> ";
             for (w in woredas) {
                 s += "<option value='" + woredas[w].WoredaID + "'>" + woredas[w].WoredaName + "</option>";
             }

@@ -1,33 +1,25 @@
 ﻿@model UtilizationViewModel
 @using Cats.Areas.Logistics.Models
+@using Cats.Helpers
 @using Kendo.Mvc.UI
 @using LanguageHelpers.Localization
 
 @{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewBag.Title = @Html.Translate("Woreda Stock Distribution");
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("Woreda Stock Distribution");
+    ViewBag.PageTitleDescription = "";
 }
 
-
-
-
-@*@section Toolbar
-{
-     
-    <a class="btn toolbar-btn " data-buttontype="btn_save" href="javascript:saveUtilization()"></a>
-   
-}*@
-@section LeftBar
-{
-    @Html.Partial("_LeftBar")
-}
-
-
-<fieldset>
-    <legend>
-        Distribution Data Entry<br/>
-       <h5> Select all information from the Left side to Enter new/Edit Distribution information</h5>
-    </legend>   
-</fieldset> 
-
+<div class="row">
+    <div class="col-md-2" style="width: 20%;">
+        @Html.Partial("_LeftBar")
+    </div>
+    <div class="col-md-10 well" style="padding: 100px 150px; width: 80%;" >
+        <h2>Distribution Data Entry</h2>
+        <h4>
+            Select all information from the <b>Left side</b> to Enter new/Edit Distribution information
+        </h4>
+    </div>
+</div>
 
