@@ -566,13 +566,16 @@ namespace Cats.Areas.Finance.Controllers
             return RedirectToAction("Cheques", "Cheque", new { Area = "Finance", transporterID });
         }
 
-        public ActionResult EditChequeInfo(Models.TransporterChequeViewModel transporterChequeViewModel, int transporterID)
+        public ActionResult EditChequeInfo(Models.TransporterChequeViewModel transporterChequeViewModel)
         {
+            int transporterID = transporterChequeViewModel.TransporterId;
             var transporterChequeObj = _transporterChequeService.FindById(transporterChequeViewModel.TransporterChequeId);
             transporterChequeObj.CheckNo = transporterChequeViewModel.CheckNo;
             transporterChequeObj.PaymentVoucherNo = transporterChequeViewModel.PaymentVoucherNo;
             transporterChequeObj.BankName = transporterChequeViewModel.BankName;
+
             _transporterChequeService.EditTransporterCheque(transporterChequeObj);
+
             return RedirectToAction("Cheques", "Cheque", new { Area = "Finance", transporterID });
         }
 
