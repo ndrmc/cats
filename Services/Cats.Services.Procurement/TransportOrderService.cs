@@ -951,8 +951,9 @@ namespace Cats.Services.Procurement
             }
             var closedStateId =
                                 _stateTemplateService
-                                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Signed");
-            var bp = _businessProcessService.GetAll().FirstOrDefault(t => t.BusinessProcessID == transportOrder.BusinessProcessID);
+                                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Closed");
+            
+            var bp = _businessProcessService.FindBy(t => t.BusinessProcessID == transportOrder.BusinessProcessID).FirstOrDefault();
             if (closedStateId != null)
             {
                 var createdstate3 = new BusinessProcessState
