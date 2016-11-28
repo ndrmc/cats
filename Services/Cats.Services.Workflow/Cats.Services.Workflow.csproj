@@ -60,6 +60,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Enum\WorkflowState.cs" />
+    <Compile Include="Implementation\FlowTemplateService.cs" />
     <Compile Include="Implementation\Hub\HubBusinessProcessService.cs" />
     <Compile Include="Implementation\Hub\HubBusinessProcessStateService.cs" />
     <Compile Include="Implementation\Hub\HubFlowTemplateService.cs" />
