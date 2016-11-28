@@ -18,6 +18,7 @@ using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using ITransporterService = Cats.Services.Procurement.ITransporterService;
 using IUserProfileService = Cats.Services.Administration.IUserProfileService;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.Finance.Controllers
 {
@@ -177,6 +178,10 @@ namespace Cats.Areas.Finance.Controllers
             tc.AddRange(transporterCheques.Select(BindTransporterChequeViewModel));
             var reportPath = Server.MapPath("~/Report/Finance/CheckPayment.rdlc");
             var result = ReportHelper.PrintReport(reportPath, tc, "CheckPayment", true, false);
+
+            foreach (var transporterCheque in transporterCheques)
+                WorkflowActivityUtil.EnterPrintWorkflow(transporterCheque);
+
             return File(result.RenderBytes, result.MimeType);
         }
     }
