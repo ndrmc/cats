@@ -38,6 +38,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
@@ -60,20 +62,22 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Enum\WorkflowState.cs" />
+    <Compile Include="Implementation\FlowTemplateService.cs" />
     <Compile Include="Implementation\Hub\HubBusinessProcessService.cs" />
     <Compile Include="Implementation\Hub\HubBusinessProcessStateService.cs" />
     <Compile Include="Implementation\Hub\HubFlowTemplateService.cs" />
     <Compile Include="Implementation\Hub\HubProcessTemplateService.cs" />
     <Compile Include="Implementation\Hub\HubService.cs" />
     <Compile Include="Implementation\Hub\HubStateTemplateService.cs" />
-    <Compile Include="Interfaces\IWorkflowActivityService.cs" />
     <Compile Include="Implementation\WorkflowActivityService.cs" />
+    <Compile Include="Implementation\WorkflowStatusService.cs" />
     <Compile Include="Interfaces\Hub\IHubService.cs" />
     <Compile Include="Interfaces\Hub\IHubBusinessProcessService.cs" />
     <Compile Include="Interfaces\Hub\IHubBusinessProcessStateService.cs" />
     <Compile Include="Interfaces\Hub\IHubFlowTemplateService.cs" />
     <Compile Include="Interfaces\Hub\IHubProcessTemplateService.cs" />
     <Compile Include="Interfaces\Hub\IHubStateTemplateService.cs" />
+    <Compile Include="Interfaces\IWorkflowActivityService.cs" />
     <Compile Include="Utility\DebbuggingTools.cs" />
     <Compile Include="Implementation\BusinessProcessService.cs" />
     <Compile Include="Implementation\BusinessProcessStateService.cs" />
@@ -92,7 +96,6 @@
     <Compile Include="Implementation\TemplateFieldService.cs" />
     <Compile Include="Implementation\TemplateService.cs" />
     <Compile Include="Implementation\TemplateTypeService.cs" />
-    <Compile Include="Implementation\WorkflowStatusService.cs" />
     <Compile Include="Utility\WorkflowBusinessUtils.cs" />
     <Compile Include="Utility\WorkflowActivityUtils.cs" />
   </ItemGroup>
@@ -135,6 +138,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AlertMessage_Amh.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

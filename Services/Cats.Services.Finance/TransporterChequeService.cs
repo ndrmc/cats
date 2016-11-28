@@ -34,9 +34,14 @@ namespace Cats.Services.Finance
         }
         public bool EditTransporterCheque(TransporterCheque transporterCheque)
         {
+          _workflowActivityService.InitializeWorkflow(transporterCheque);
+
             _unitOfWork.TransporterChequeRepository.Edit(transporterCheque);
-            _workflowActivityService.EnterEditWorkflow(transporterCheque);
+
             _unitOfWork.Save();
+
+            _workflowActivityService.EnterEditWorkflow(transporterCheque);
+
             return true;
 
         }
