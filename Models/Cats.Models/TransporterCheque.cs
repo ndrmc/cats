@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Cats.Models
 {
-    public partial class TransporterCheque
+    public partial class TransporterCheque:IWorkflow
     {
         public int? PartitionId { get; set; }
         public int TransporterChequeId { get; set; }
-        public int BusinessProcessID { get; set; }
+        public int BusinessProcessId { get; set; }
         public string CheckNo { get; set; }
         public string PaymentVoucherNo { get; set; }
         public string BankName { get; set; }
@@ -27,5 +27,7 @@ namespace Cats.Models
         public virtual UserProfile UserProfile1 { get; set; }
         public virtual BusinessProcess BusinessProcess { get; set; }
         public virtual ICollection<TransporterChequeDetail> TransporterChequeDetails { get; set; }
+
+        
     }
 }

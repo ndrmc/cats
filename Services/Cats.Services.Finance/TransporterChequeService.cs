@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Cats.Data.UnitWork;
 using Cats.Models;
-
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Finance
 {
@@ -12,19 +12,22 @@ namespace Cats.Services.Finance
     public class TransporterChequeService : ITransporterChequeService
     {
         private readonly IUnitOfWork _unitOfWork;
-        
+        private readonly IWorkflowActivityService _workflowActivityService;
+
         private int PartitionId = 1;
 
 
-        public TransporterChequeService(IUnitOfWork unitOfWork)
+        public TransporterChequeService(IUnitOfWork unitOfWork,IWorkflowActivityService workflowActivityService)
         {
             this._unitOfWork = unitOfWork;
+            this._workflowActivityService = workflowActivityService;
         }
         #region Default Service Implementation
         public bool AddTransporterCheque(TransporterCheque transporterCheque)
         {
 
             _unitOfWork.TransporterChequeRepository.Add(transporterCheque);
+
             _unitOfWork.Save();
             return true;
 
@@ -32,6 +35,7 @@ namespace Cats.Services.Finance
         public bool EditTransporterCheque(TransporterCheque transporterCheque)
         {
             _unitOfWork.TransporterChequeRepository.Edit(transporterCheque);
+            _workflowActivityService.EnterEditWorkflow(transporterCheque);
             _unitOfWork.Save();
             return true;
 

@@ -539,7 +539,7 @@ namespace Cats.Areas.Finance.Controllers
 
                     BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, transporterChequeObj.TransporterChequeId,
                                                                                     "ValidatedPaymentRequest", createdstate);
-                    if (bp != null) transporterChequeObj.BusinessProcessID = bp.BusinessProcessID;
+                    if (bp != null) transporterChequeObj.BusinessProcessId = bp.BusinessProcessID;
                     transporterChequeObj.IssueDate = DateTime.Now;
                     _transporterChequeService.AddTransporterCheque(transporterChequeObj);
                     foreach (var paymentRequest in paymentRequestList)
