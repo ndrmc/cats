@@ -495,7 +495,12 @@ namespace Cats.Areas.Logistics.Controllers
                 if (_localPurchaseService.Approve(localPurchase))
                     _businessProcessService.PromotWorkflow(businessProcessState);
             }
-
+            if (stateName == "Reverted" && localPurchase != null)
+            {
+                //localPurchase.StatusID = (int) LocalPurchaseStatus.Approved;
+                if (_localPurchaseService.Revert(localPurchase))
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+            }
             if (statusId != null)
                 return RedirectToAction("Index", "LocalPurchase", new { Area = "Logistics", statusId });
             return RedirectToAction("Index", "LocalPurchase", new { Area = "Logistics" });
