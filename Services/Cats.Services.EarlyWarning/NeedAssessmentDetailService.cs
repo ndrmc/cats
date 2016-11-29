@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Cats.Data.UnitWork;
 using Cats.Models;
+using Cats.Services.Workflows;
 
 namespace Cats.Services.EarlyWarning
 {
@@ -11,23 +12,28 @@ namespace Cats.Services.EarlyWarning
     public class NeedAssessmentDetailService : INeedAssessmentDetailService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWorkflowActivityService _workflowActivityService;
 
-
-        public NeedAssessmentDetailService(IUnitOfWork unitOfWork)
+        public NeedAssessmentDetailService(IUnitOfWork unitOfWork, IWorkflowActivityService workflowActivityService)
         {
             this._unitOfWork = unitOfWork;
+            this._workflowActivityService = workflowActivityService;
         }
         #region Default Service Implementation
         public bool AddNeedAssessmentDetail(NeedAssessmentDetail needAssessmentDetail)
         {
+            _workflowActivityService.InitializeWorkflow(needAssessmentDetail);
             _unitOfWork.NeedAssessmentDetailRepository.Add(needAssessmentDetail);
+            _workflowActivityService.EnterCreateWorkflow(needAssessmentDetail);
             _unitOfWork.Save();
             return true;
-
+            
         }
         public bool EditNeedAssessmentDetail(NeedAssessmentDetail needAssessmentDetail)
         {
+            _workflowActivityService.InitializeWorkflow(needAssessmentDetail);
             _unitOfWork.NeedAssessmentDetailRepository.Edit(needAssessmentDetail);
+            _workflowActivityService.EnterEditWorkflow(needAssessmentDetail);
             _unitOfWork.Save();
             return true;
 
