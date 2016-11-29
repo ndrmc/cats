@@ -231,9 +231,9 @@
                                         <th style="overflow: visible; white-space: normal;" scope="col" data-title="Created Date" data-field="CreatedDatePref" class="cats-date-pref-grid">
                                             <span>Created Date</span>
                                         </th>
-                                        <th style="overflow: visible; white-space: normal;" scope="col" data-title="Workflow" data-field="Workflow">
+                                        @*<th style="overflow: visible; white-space: normal;" scope="col" data-title="Workflow" data-field="Workflow">
                                             <span>History</span>
-                                        </th>
+                                        </th>*@
                                     </tr>
                                 </thead>
                                 <tbody ng-cloak>
@@ -255,7 +255,7 @@
                                         <td>{{item.CreatedDatePref}}</td>
 
                                         <td><a data-dispatchid="{{item.DispatchID}}" style="cursor: pointer;" class="btn btn-xs red" data-ng-click="Reject(item.GIN)">Reject</a></td>
-                                        <td>
+                                        @*<td>
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
                                                     <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
@@ -266,7 +266,7 @@
 
                                                 </ul>
                                             </div>
-                                        </td>
+                                        </td>*@
                                     </tr>
                                 </tbody>
                             </table>
@@ -347,7 +347,7 @@
                                         <td>{{item.PlateNo_Trailer}}</td>
                                         <td>{{item.DriverName}}</td>
                                         <td>{{item.DispatchDatePref}}</td>
-                                        <td>{{item.CreatedDatePref + item.DeliveryBusinessProcessId}}</td>
+                                        <td>{{item.CreatedDatePref}}</td>
                                         <td>
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
@@ -355,7 +355,7 @@
                                                 </button>
                                                 <ul class="dropdown-menu pull-right">
 
-                                                    <li class="edit_button"><a  ng-click="workflow_history(item.DeliveryBusinessProcessId)"> History </a></li>
+                                                    <li class="edit_button"><a ng-click="workflow_history(item.DeliveryBusinessProcessId)"> History </a></li>
 
                                                 </ul>
                                             </div>
@@ -450,7 +450,7 @@
                                                 </button>
                                                 <ul class="dropdown-menu pull-right">                                                  
 
-                                                    <li class="edit_button"><a href="javascript:workflow_history(item.DeliveryBusinessProcessId)"> History </a></li>
+                                                    <li class="edit_button"><a ng-click="workflow_history(item.DeliveryBusinessProcessId)"> History </a></li>
 
                                                 </ul>
                                             </div>
