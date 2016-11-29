@@ -824,6 +824,7 @@ namespace Cats.Models.Hubs
         public decimal? QuantityPerUnit { get; set; }
 
         public decimal plannedAmount { get; set; }
+        public int DeliveryBusinessProcessId { get; set; }
 
         public int BusinessProcessId { get; set; }
         public virtual BusinessProcess BusinessProcess { get; set; }

@@ -116,7 +116,10 @@ namespace Cats.Areas.Logistics.Controllers
                 var delivery = _deliveryService.FindBy(t => t.DispatchID == dispatchId).FirstOrDefault();
                 dispatchViewModel.GRNReceived = delivery != null;
                 if (delivery != null)
+                {
                     dispatchViewModel.DeliveryID = delivery.DeliveryID;
+                    dispatchViewModel.DeliveryBusinessProcessId = delivery.BusinessProcessId;
+                }
             }
             var dispatchView = SetDatePreference(dispatch);
             return Json(dispatchView.Where(t => !t.GRNReceived).ToList(), JsonRequestBehavior.AllowGet);
@@ -132,6 +135,7 @@ namespace Cats.Areas.Logistics.Controllers
                 dispatchViewModel.GRNReceived = delivery != null;
                 if (delivery != null)
                     dispatchViewModel.DeliveryID = delivery.DeliveryID;
+                dispatchViewModel.DeliveryBusinessProcessId = delivery.BusinessProcessId;
             }
             var dispatchView = SetDatePreference(dispatch);
             return Json(dispatchView.Where(t => t.GRNReceived).ToList(), JsonRequestBehavior.AllowGet);
@@ -241,7 +245,8 @@ namespace Cats.Areas.Logistics.Controllers
                     PlateNoTrailler = delivery.PlateNoTrailler,
                     DriverName = delivery.DriverName,
                     DispatchID = delivery.DispatchID,
-                    RefNo = _transporterPaymentRequestService.FindBy(r => r.GIN == delivery.InvoiceNo).Select(t => t.ReferenceNo).FirstOrDefault()
+                    BusinessProcessId = delivery.BusinessProcessId,
+                RefNo = _transporterPaymentRequestService.FindBy(r => r.GIN == delivery.InvoiceNo).Select(t => t.ReferenceNo).FirstOrDefault()
                 };
             }
             return deliveryViewModel;
