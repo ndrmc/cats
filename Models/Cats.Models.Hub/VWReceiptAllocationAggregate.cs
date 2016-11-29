@@ -32,5 +32,6 @@ namespace Cats.Models.Hubs
         public string OtherDocumentationRef { get; set; }
         public bool IsFalseGRN { get; set; }
         public string Remark { get; set; }
+        public int BusinessProcessID { get; set; }
     }
 }
