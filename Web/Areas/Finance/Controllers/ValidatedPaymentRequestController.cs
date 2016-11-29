@@ -166,7 +166,7 @@ namespace Cats.Areas.Finance.Controllers
             foreach (var transporterPaymentRequest in transporterPaymentRequests)
             {
                 var request = transporterPaymentRequest;
-                var dispatch = _dispatchService.Get(t => t.DispatchID == request.Delivery.DispatchID, null, "Hub, FDP").FirstOrDefault();
+                var dispatch = _dispatchService.Get(t => t.DispatchID == request.Delivery.DispatchID, null, "").FirstOrDefault();
                 var transportOrderdetail =
                    _transportOrderDetailService.FindBy(
                        m => m.TransportOrderID == request.TransportOrderID && m.SourceWarehouseID == dispatch.HubID && m.FdpID == dispatch.FDPID).FirstOrDefault();

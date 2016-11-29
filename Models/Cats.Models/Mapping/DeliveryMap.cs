@@ -66,6 +66,7 @@ namespace Cats.Models.Mapping
             this.HasOptional(t => t.Hub)
                 .WithMany(t => t.Deliveries)
                 .HasForeignKey(d => d.HubID);
+            this.HasRequired(t => t.BusinessProcess).WithMany(t => t.Deliveries).HasForeignKey(t => t.BusinessProcessId);
 
         }
     }
