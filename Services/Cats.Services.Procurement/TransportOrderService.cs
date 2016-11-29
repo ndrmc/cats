@@ -97,7 +97,9 @@ namespace Cats.Services.Procurement
             //        ;
             var transportOrder = (
                 from c in _unitOfWork.TransportOrderDetailRepository.FindBy(x => x.SourceWarehouseID == hubId)
-                select c.TransportOrder).Where(x => x.StatusID == statusId).Distinct().ToList();
+                select c.TransportOrder).Where(x => x.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed")
+                .Distinct()
+                .ToList();
             return transportOrder;
         }
         public IEnumerable<TransportOrder> GetFilteredTransportOrder(IEnumerable<TransportRequisitionDetail> transportRequsitionDetails, string stateName)
