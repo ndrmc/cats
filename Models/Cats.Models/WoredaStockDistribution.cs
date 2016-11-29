@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cats.Models
 {
-    public class WoredaStockDistribution
+    public class WoredaStockDistribution:IWorkflow
     {
         public WoredaStockDistribution()
         {
@@ -38,6 +38,11 @@ namespace Cats.Models
         public virtual ICollection<WoredaStockDistributionDetail> WoredaStockDistributionDetails { get; set; }
         public virtual UserProfile UserProfile { get; set; }
         public virtual AdminUnit AdminUnit { get; set; }
-        //public virtual SupportType SupportType { get; set; }
+
+        public int BusinessProcessId
+        { get; set; }
+
+        public BusinessProcess BusinessProcess
+        { get; set; }
     }
 }

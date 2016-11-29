@@ -40,6 +40,7 @@ namespace Cats.Models.Mapping
             this.Property(t => t.FemaleAbove18Years).HasColumnName("FemaleAbove18Years");
 
             this.Property(t => t.Remark).HasColumnName("Remark");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessId");
 
             // Relationships
             this.HasOptional(t => t.UserProfile)
