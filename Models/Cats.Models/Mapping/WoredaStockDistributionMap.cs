@@ -32,7 +32,7 @@ namespace Cats.Models.Mapping
 
             this.Property(t => t.MaleLessThan5Years).HasColumnName("MaleLessThan5Years");
             this.Property(t => t.FemaleLessThan5Years).HasColumnName("FemaleLessThan5Years");
-
+            
             this.Property(t => t.MaleBetween5And18Years).HasColumnName("MaleBetween5And18Years");
             this.Property(t => t.FemaleBetween5And18Years).HasColumnName("FemaleBetween5And18Years");
 
@@ -40,6 +40,7 @@ namespace Cats.Models.Mapping
             this.Property(t => t.FemaleAbove18Years).HasColumnName("FemaleAbove18Years");
 
             this.Property(t => t.Remark).HasColumnName("Remark");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
 
             // Relationships
             this.HasOptional(t => t.UserProfile)
