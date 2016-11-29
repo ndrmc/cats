@@ -304,6 +304,7 @@
     function promot_workflow(BusinessProcessID, nextstate, actionname, TransportOrderID) {
         $('#ParentBusinessProcessID').val(BusinessProcessID);
         $('#stateID').val(nextstate);
+        $('#actionname').val(actionname);
         $('#modalPromotionLabel').html(actionname);
         $('#TransportOrderID').val(TransportOrderID);
         $('#modalPromotion').modal();
