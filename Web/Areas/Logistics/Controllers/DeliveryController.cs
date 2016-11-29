@@ -48,6 +48,7 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IBusinessProcessService _businessProcessService;
         private readonly IApplicationSettingService _applicationSettingService;
         private readonly ITransporterPaymentRequestService _transporterPaymentRequestService;
+        private readonly IStateTemplateService _stateTemplateService;
 
         public DeliveryController(ITransportOrderService transportOrderService,
                                       IWorkflowStatusService workflowStatusService,
@@ -57,7 +58,10 @@ namespace Cats.Areas.Logistics.Controllers
             IDeliveryDetailService deliveryDetailService,
             INotificationService notificationService, IActionTypesService actionTypeService, IUserAccountService userAccountService,
             Cats.Services.EarlyWarning.ICommodityService commodityService, Cats.Services.EarlyWarning.IUnitService unitService,
-            Cats.Services.Transaction.ITransactionService transactionService, IBusinessProcessService businessProcessService, IApplicationSettingService applicationSettingService, ITransporterPaymentRequestService transporterPaymentRequestService)
+            Cats.Services.Transaction.ITransactionService transactionService, IBusinessProcessService businessProcessService,
+            IApplicationSettingService applicationSettingService,
+            ITransporterPaymentRequestService transporterPaymentRequestService,
+            IStateTemplateService stateTemplateService)
         {
             _transportOrderService = transportOrderService;
             _workflowStatusService = workflowStatusService;
@@ -76,6 +80,7 @@ namespace Cats.Areas.Logistics.Controllers
             _businessProcessService = businessProcessService;
             _applicationSettingService = applicationSettingService;
             _transporterPaymentRequestService = transporterPaymentRequestService;
+            _stateTemplateService = stateTemplateService;
         }
         //
         // GET: /Logistics/delivery/
@@ -111,7 +116,10 @@ namespace Cats.Areas.Logistics.Controllers
                 var delivery = _deliveryService.FindBy(t => t.DispatchID == dispatchId).FirstOrDefault();
                 dispatchViewModel.GRNReceived = delivery != null;
                 if (delivery != null)
+                {
                     dispatchViewModel.DeliveryID = delivery.DeliveryID;
+                    dispatchViewModel.DeliveryBusinessProcessId = delivery.BusinessProcessId;
+                }
             }
             var dispatchView = SetDatePreference(dispatch);
             return Json(dispatchView.Where(t => !t.GRNReceived).ToList(), JsonRequestBehavior.AllowGet);
@@ -127,6 +135,7 @@ namespace Cats.Areas.Logistics.Controllers
                 dispatchViewModel.GRNReceived = delivery != null;
                 if (delivery != null)
                     dispatchViewModel.DeliveryID = delivery.DeliveryID;
+                dispatchViewModel.DeliveryBusinessProcessId = delivery.BusinessProcessId;
             }
             var dispatchView = SetDatePreference(dispatch);
             return Json(dispatchView.Where(t => t.GRNReceived).ToList(), JsonRequestBehavior.AllowGet);
@@ -186,24 +195,24 @@ namespace Cats.Areas.Logistics.Controllers
                     {
                         //deliveryViewModel.SentQuantity = dispatchDetail.RequestedQunatityInUnit;
                         deliveryViewModel.SentQuantity = dispatchDetail.RequestedQuantityInMT.ToQuintal(); //chahge to quintal. they receive using only quintal
-                         deliveryViewModel.UnitID = dispatchDetail.UnitID;
+                        deliveryViewModel.UnitID = dispatchDetail.UnitID;
                         deliveryViewModel.Unit = "Quintal";//They always want to receive using quintal// _unitService.FindById(int.Parse(dispatchDetail.UnitID.ToString())).Name;
                     }
                     deliveryViewModel.CommodityID = dispatchObj.DispatchAllocation.CommodityID;
                     deliveryViewModel.Commodity = dispatchObj.DispatchAllocation.Commodity.Name;
                     if (dispatchObj.DispatchAllocation.Unit != 0)
                     {
-                       
+
                     }
                     deliveryViewModel.DeliveryBy = dispatchObj.DriverName;
-                   
+
                 }
             }
             deliveryViewModel.DispatchID = id;
             var firstOrDefault = _dispatchService.FindBy(t => t.DispatchID == id).FirstOrDefault();
             if (firstOrDefault != null)
                 deliveryViewModel.InvoiceNo = firstOrDefault.GIN;
-            
+
             return Json(deliveryViewModel, JsonRequestBehavior.AllowGet);
         }
         private GRNViewModel BindDeliveryViewModel(Delivery delivery)
@@ -229,14 +238,15 @@ namespace Cats.Areas.Logistics.Controllers
                     DeliveryDate = delivery.DeliveryDate != null ? delivery.DeliveryDate.Value.ToShortDateString() : "",
                     DocumentReceivedDate = delivery.DocumentReceivedDate != null ? delivery.DocumentReceivedDate.Value.ToShortDateString() : "",
                     RequisitionNo = delivery.RequisitionNo,
-                    Zone=delivery.FDP.AdminUnit.AdminUnit2.Name,
+                    Zone = delivery.FDP.AdminUnit.AdminUnit2.Name,
                     Woreda = delivery.FDP.AdminUnit.Name,
                     FDP = delivery.FDP.Name,
                     PlateNoPrimary = delivery.PlateNoPrimary,
                     PlateNoTrailler = delivery.PlateNoTrailler,
                     DriverName = delivery.DriverName,
                     DispatchID = delivery.DispatchID,
-                    RefNo = _transporterPaymentRequestService.FindBy(r=>r.GIN==delivery.InvoiceNo).Select(t=>t.ReferenceNo).FirstOrDefault()
+                    BusinessProcessId = delivery.BusinessProcessId,
+                RefNo = _transporterPaymentRequestService.FindBy(r => r.GIN == delivery.InvoiceNo).Select(t => t.ReferenceNo).FirstOrDefault()
                 };
             }
             return deliveryViewModel;
@@ -288,7 +298,7 @@ namespace Cats.Areas.Logistics.Controllers
 
                 var dispatch = _dispatchService.Get(t => t.DispatchID == deliveryViewModel.DispatchID, null,
                     "DispatchDetails,DispatchAllocation").FirstOrDefault();
-                
+
                 var delivery = new Delivery();
                 delivery.DeliveryBy = deliveryViewModel.DeliveryBy;
                 delivery.DeliveryDate = deliveryViewModel.DeliveryDate;
@@ -347,12 +357,13 @@ namespace Cats.Areas.Logistics.Controllers
                 "FDP,FDP.AdminUnit,FDP.AdminUnit.AdminUnit2,FDP.AdminUnit.AdminUnit2.AdminUnit2,Hub").FirstOrDefault();
             var newdelivery = new Delivery();
             var deliveryDetail = new DeliveryDetail();
+
             if (originaldelivery != null)
             {
                 newdelivery = _deliveryService.FindBy(t => t.DeliveryID == originaldelivery.DeliveryID).FirstOrDefault();
                 TransporterPaymentRequest newTransportPaymentRequest = null;
                 newTransportPaymentRequest = _transporterPaymentRequestService.FindBy(t => t.GIN == delivery.InvoiceNo).FirstOrDefault();
-               
+
 
                 if (newdelivery != null)
                 {
@@ -364,8 +375,31 @@ namespace Cats.Areas.Logistics.Controllers
                     newdelivery.DeliveryBy = delivery.DeliveryBy;
                     newdelivery.DeliveryDate = delivery.DeliveryDate != null ? DateTime.Parse(delivery.DeliveryDate) : DateTime.Now;
                     newdelivery.DocumentReceivedDate = delivery.DocumentReceivedDate != null ? DateTime.Parse(delivery.DocumentReceivedDate) : DateTime.Now;
-                    
-                    _deliveryService.EditDelivery(newdelivery);
+
+                    // if update is successful, then promot workflow to edit mode                   
+                    if (_deliveryService.EditDelivery(newdelivery))
+                    {
+                        BusinessProcess bp = _businessProcessService.FindById(newdelivery.BusinessProcessId);
+                        BusinessProcessState bps = bp.CurrentState;
+                        Cats.Models.StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
+                                                                              p.ParentProcessTemplateID ==
+                                                                              bps.BaseStateTemplate
+                                                                                  .ParentProcessTemplateID).FirstOrDefault();
+
+                        if (stateTemplate != null)
+                        {
+                            var businessProcessState = new BusinessProcessState()
+                            {
+                                StateID = stateTemplate.StateTemplateID, // mark as edited
+                                PerformedBy = HttpContext.User.Identity.Name,
+                                DatePerformed = DateTime.Now,
+                                Comment = "Delivery is edited, a system internally captured data.",
+                                ParentBusinessProcessID = bps.ParentBusinessProcessID
+                            };
+
+                            _businessProcessService.PromotWorkflow(businessProcessState);
+                        }
+                    }
 
                     deliveryDetail =
                         _deliveryDetailService.Get(t => t.DeliveryID == newdelivery.DeliveryID, null,
@@ -376,7 +410,7 @@ namespace Cats.Areas.Logistics.Controllers
                         _deliveryDetailService.EditDeliveryDetail(deliveryDetail);
 
                     }
-                    if(newTransportPaymentRequest!=null)
+                    if (newTransportPaymentRequest != null)
                     {
                         newTransportPaymentRequest.ReferenceNo = delivery.RefNo;
                         _transporterPaymentRequestService.EditTransporterPaymentRequest(newTransportPaymentRequest);
@@ -430,10 +464,30 @@ namespace Cats.Areas.Logistics.Controllers
                 //deliveryDetail.Delivery.DeliveryBy = _commodityService.FindById(delivery.CommodityID);
                 //deliveryDetail.Unit = _unitService.FindById(delivery.UnitID);
                 newdelivery.DeliveryDetails = new List<DeliveryDetail> { deliveryDetail };
-                _deliveryService.AddDelivery(newdelivery);
+
+                int bp_pr = _applicationSettingService.GetDeliveryWorkflow();
+
+                if (bp_pr != 0)
+                {
+                    BusinessProcessState createdstate = new BusinessProcessState
+                    {
+                        DatePerformed = DateTime.Now,
+                        PerformedBy = User.Identity.Name,
+                        Comment = "Delivery workflow is created."
+                    };
+
+                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(bp_pr, 0, "DeliveryWorkflow", createdstate);
+
+                    if (bp != null)
+                    {
+                        newdelivery.BusinessProcessId = bp.BusinessProcessID;
+
+                        _deliveryService.AddDelivery(newdelivery);
+                    }
+                }
 
                 var transporterPaymentRequest = new TransporterPaymentRequest();
-                transporterPaymentRequest.ReferenceNo =  delivery.RefNo;
+                transporterPaymentRequest.ReferenceNo = delivery.RefNo;
                 transporterPaymentRequest.GIN = delivery.InvoiceNo;
 
                 //var firstOrDefault = _transportOrderService.Get(t => t.TransporterID == newdelivery.TransporterID && t.StatusID >= 3).FirstOrDefault();
@@ -752,20 +806,20 @@ namespace Cats.Areas.Logistics.Controllers
             return RedirectToAction("Dispatches", new { id = TO });
         }
 
-       public ActionResult RejectToHubs(string id)
-       {
-           var dispach = _dispatchService.FindBy(g => g.GIN == id).FirstOrDefault();
-           if(dispach!=null)
-           {
+        public ActionResult RejectToHubs(string id)
+        {
+            var dispach = _dispatchService.FindBy(g => g.GIN == id).FirstOrDefault();
+            if (dispach != null)
+            {
 
                 WorkflowActivityUtil.InitializeWorkflow(dispach);
-                WorkflowActivityUtil.EnterDelteteWorkflow(dispach,"Dispatch with and Id of "+dispach.DispatchID+" Has been Rejected.");
+                WorkflowActivityUtil.EnterDelteteWorkflow(dispach, "Dispatch with and Id of " + dispach.DispatchID + " Has been Rejected.");
 
-               _dispatchService.RejectToHubs(dispach);
+                _dispatchService.RejectToHubs(dispach);
 
-               return Json(true, JsonRequestBehavior.AllowGet);
-           }
-           return Json(false, JsonRequestBehavior.AllowGet);
-       }
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            return Json(false, JsonRequestBehavior.AllowGet);
+        }
     }
 }
