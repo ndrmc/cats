@@ -83,5 +83,6 @@ namespace Cats.Areas.Logistics.Models
         public string Unit { get; set; }
 
         public int TransportOrderID { get; set; }
+        public int BusinessProcessId { get; set; }
     }
 }
