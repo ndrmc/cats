@@ -216,5 +216,14 @@ namespace Cats.Services.Common
         {
             return getIntValue(ApplicationSettings.Default.GlobalWorkflow);
         }
+        public int getDeliveryWorkflow()
+        {
+            return getIntValue(ApplicationSettings.Default.DeliveryWorkflow);
+        }
+
+        public int GetDeliveryWorkflow()
+        {
+            return getIntValue(ApplicationSettings.Default.DeliveryWorkflow);
+        }
     }
 }

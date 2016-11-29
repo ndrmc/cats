@@ -223,7 +223,7 @@
                             StateTemplate state = item.BusinessProcess.CurrentState.BaseStateTemplate;
                             <tr>
                                 <td>
-                                    <a class="btn green-sharp-stripe btn-default btn-xs" href="@Url.Action("History", "BusinessProcess", new {Area = "WorkflowManager", id = item.BusinessProcessID, partial = 0})">@item.ReferenceNo</a>
+                                    <a class="btn green-sharp-stripe btn-default btn-xs" href="@Url.Action("History", "BusinessProcess", new {Area = "WorkflowManager", id = item.BusinessProcessId, partial = 0})">@item.ReferenceNo</a>
                                 </td>
                                 <td>
                                     @item.TransportOrder.Transporter.Name

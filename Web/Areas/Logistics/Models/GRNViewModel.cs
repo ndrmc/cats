@@ -81,7 +81,9 @@ namespace Cats.Areas.Logistics.Models
         public decimal ReceivedQuantity { get; set; }
         public string Commodity { get; set; }
         public string Unit { get; set; }
+        public int DeliveryBusinessProcessId { get; set; }
 
         public int TransportOrderID { get; set; }
+        public int BusinessProcessId { get; set; }
     }
 }

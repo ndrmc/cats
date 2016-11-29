@@ -44,5 +44,6 @@ namespace Cats.Services.Common
         int getGlobalWorkflow();
         int getReceiveHubWorkflow();
         int GetDispatchWorkflow();
+        int GetDeliveryWorkflow();
     }
 }
