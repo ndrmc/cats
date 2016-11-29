@@ -145,3 +145,4 @@ src/*/obj/*
 /.vs/Cats/v14/.suo
 /.vs/Cats/v14/.suo
 /packages
+/Web/Properties/PublishProfiles/cats.pubxml.user
