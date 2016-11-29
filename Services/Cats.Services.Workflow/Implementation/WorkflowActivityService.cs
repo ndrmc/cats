@@ -225,7 +225,7 @@ namespace Cats.Services.Workflows
             return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, PrintId, description, fileName, true);
 
         }
-        public Boolean EnterDelteteWorkflow(IWorkflow workflowImplementer, String description = "Workflow_DefaultDelete", String fileName = "")
+        public Boolean EnterDeleteWorkflow(IWorkflow workflowImplementer, String description = "Workflow_DefaultDelete", String fileName = "")
         {
             if (workflowImplementer == null) return false;
 
@@ -238,7 +238,7 @@ namespace Cats.Services.Workflows
 
 
         }
-        public Boolean EnterDelteteWorkflow(Models.Hubs.IWorkflowHub workflowImplementer, String description = "Workflow_DefaultDelete", String fileName = "")
+        public Boolean EnterDeleteWorkflow(Models.Hubs.IWorkflowHub workflowImplementer, String description = "Workflow_DefaultDelete", String fileName = "")
         {
             if (workflowImplementer == null) return false;
 
@@ -394,7 +394,7 @@ namespace Cats.Services.Workflows
 
             return true;
         }
-        public Boolean EnterDelteteWorkflow(Models.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
+        public Boolean EnterDeleteWorkflow(Models.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
         {
             if (documentBusinessProcess == null) return false;
 
@@ -404,7 +404,7 @@ namespace Cats.Services.Workflows
 
 
         }
-        public Boolean EnterDelteteWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
+        public Boolean EnterDeleteWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
         {
             if (documentBusinessProcess == null) return false;
 

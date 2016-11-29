@@ -124,6 +124,33 @@ namespace Cats.Services.Workflows.Alert {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;Woreda Stock Distribution Detail has been Created.&quot;.
+        /// </summary>
+        public static string Workflow_DistributionDetailCreated {
+            get {
+                return ResourceManager.GetString("Workflow_DistributionDetailCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;Woreda Stock Distribution Detail has been Deleted.&quot;.
+        /// </summary>
+        public static string Workflow_DistributionDetailDeleted {
+            get {
+                return ResourceManager.GetString("Workflow_DistributionDetailDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;Woreda Stock Distribution Detail has been Edited.&quot;.
+        /// </summary>
+        public static string Workflow_DistributionDetailEdited {
+            get {
+                return ResourceManager.GetString("Workflow_DistributionDetailEdited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {1} Has been Edited..
         /// </summary>
         public static string Workflow_EditwithParam1 {
