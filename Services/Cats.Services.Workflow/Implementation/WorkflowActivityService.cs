@@ -535,6 +535,53 @@ namespace Cats.Services.Workflows
             return BusinessProcessService.FindById(businessProcessId);
         }
 
+        public List<WorkflowActivity> GetWorkflowActivity(string pageName, string filter = null)
+        {
+
+            
+            List<WorkflowActivity> mocks = new List<WorkflowActivity>();
+
+            WorkflowActivity mock1 = new WorkflowActivity()
+            {
+                BusinessProcessStateID = 1,
+                PerformedBy = "Ayele",
+                Comment = Alert.AlertMessage.Workflow_DefaultCreate,
+                //TargetObject = get gift certificate from unit of work
+                TargetObjectJsonData = "ID:14 , Name ='GiftCert1'",
+                TargetObjectReferenceId = "14",
+                TargetObjectType = typeof(Models.Hubs.GiftCertificate)
+
+            };
+
+            WorkflowActivity mock2 = new WorkflowActivity()
+            {
+                BusinessProcessStateID = 1,
+                PerformedBy = "Kebede",
+                Comment = Alert.AlertMessage.Workflow_DefaultCreate,
+                //TargetObject = get gift certificate from unit of work
+                TargetObjectJsonData = "ID:14 , Name ='GiftCert1'",
+                TargetObjectReferenceId = "14",
+                TargetObjectType = typeof(Models.Hubs.GiftCertificate)
+
+            };
+
+            mocks.Add(mock1);
+            mocks.Add(mock2);
+
+            return mocks;
+
+
+        }
+
+
+        //public List<WorkflowActivityAgg> GetWorkflowActivityAgg(string pageName, string filter = null)
+
+        //{
+
+        //    return null;
+        //}
+
+
         #endregion
 
     }

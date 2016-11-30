@@ -540,6 +540,8 @@
     <Compile Include="Areas\WorkflowManager\Controllers\FlowTemplateController.cs" />
     <Compile Include="Areas\WorkflowManager\Controllers\ProcessTemplateController.cs" />
     <Compile Include="Areas\WorkflowManager\Controllers\StateTemplateController.cs" />
+    <Compile Include="Areas\WorkflowManager\Models\WorkflowActivityViewModel.cs" />
+    <Compile Include="Areas\WorkflowManager\WorkflowManager.cs" />
     <Compile Include="Areas\WorkflowManager\WorkflowManagerAreaRegistration.cs" />
     <Compile Include="CatsMasterDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -3514,7 +3516,6 @@
     <Folder Include="Areas\Settings\Views\Setting\" />
     <Folder Include="Areas\Transaction\Models\" />
     <Folder Include="Areas\Transaction\Views\Shared\" />
-    <Folder Include="Areas\WorkflowManager\Models\" />
     <Folder Include="bin\" />
     <Folder Include="Content\assetss\admin\img\" />
     <Folder Include="Content\assetss\admin\layout3\img\" />

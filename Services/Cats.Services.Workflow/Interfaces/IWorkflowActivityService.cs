@@ -1,5 +1,6 @@
 ﻿using Cats.Models;
 using Cats.Models.Hubs;
+using System.Collections.Generic;
 
 namespace Cats.Services.Workflows
 {
@@ -38,6 +39,9 @@ namespace Cats.Services.Workflows
         void InitializeWorkflow(IWorkflow workflowImplementer, string instanceDescription = null);
         Models.BusinessProcess GetBusinessProcess(int businessProcessId);
         Models.Hubs.BusinessProcess GetBusinessProcessHub(int businessProcessId);
+
+        List<WorkflowActivity> GetWorkflowActivity(string pageName, string filter = null);
+
 
     }
 }
