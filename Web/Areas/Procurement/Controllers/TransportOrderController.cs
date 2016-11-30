@@ -775,10 +775,17 @@ namespace Cats.Areas.Procurement.Controllers
             }
             //changedTransportOrderObj.StatusID = (int)TransportOrderStatus.Failed;
             var failedStateId =
-                               _stateTemplateService
-                                   .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == changedTransportOrderObj.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Failed");
+                _stateTemplateService
+                    .GetAll()
+                    .FirstOrDefault(
+                        s =>
+                            s.ParentProcessTemplateID ==
+                            changedTransportOrderObj.BusinessProcess.CurrentState.BaseStateTemplate
+                                .ParentProcessTemplateID && s.Name == "Failed");
 
-            var bp = _businessProcessService.GetAll().FirstOrDefault(t => t.BusinessProcessID == changedTransportOrderObj.BusinessProcessID);
+            var bp =
+                _businessProcessService.FindBy(t => t.BusinessProcessID == changedTransportOrderObj.BusinessProcessID)
+                    .FirstOrDefault();
 
             if (failedStateId != null)
             {
