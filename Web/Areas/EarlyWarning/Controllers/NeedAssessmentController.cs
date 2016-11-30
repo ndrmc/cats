@@ -18,6 +18,7 @@ using Cats.Helpers;
 using Cats.Models.ViewModels;
 using Cats.ViewModelBinder;
 using Cats.Security;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -36,7 +37,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly IUserAccountService _userAccountService;
         private readonly INotificationService _notificationService;
         private readonly IApplicationSettingService _applicationSettingService;
-
+        private readonly IWorkflowActivityService _workflowActivityService;
         public NeedAssessmentController(INeedAssessmentService needAssessmentService,
                                         IAdminUnitService adminUnitService,
                                         INeedAssessmentHeaderService needAssessmentHeaderService,
@@ -47,7 +48,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                         ICommonService commonService,IUserAccountService userAccountService,
                                         INotificationService notificationService,
                                         IBusinessProcessService businessProcessService, 
-                                        IApplicationSettingService applicationSettingService)
+                                        IApplicationSettingService applicationSettingService,
+                                        IWorkflowActivityService workflowActivityService)
         {
             _needAssessmentService = needAssessmentService;
             _adminUnitService = adminUnitService;
@@ -62,6 +64,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _notificationService = notificationService;
             _businessProcessService = businessProcessService;
             _applicationSettingService = applicationSettingService;
+            _workflowActivityService = workflowActivityService;
         }
 
       
@@ -434,15 +437,26 @@ namespace Cats.Areas.EarlyWarning.Controllers
             List<NeedAssessmentDetail> result = new List<NeedAssessmentDetail>();
             if (needAssessmentlDetails != null && ModelState.IsValid)
             {
+                bool deatilUpdated = false;
                 foreach (NeedAssessmentDetail details in needAssessmentlDetails)
                 {
                    // details.
-                    _needAssessmentDetailService.EditNeedAssessmentDetail(details);
+                   deatilUpdated = _needAssessmentDetailService.EditNeedAssessmentDetail(details);
                     //details.
                     NeedAssessmentDetail record = _needAssessmentDetailService.FindById(details.NAId);
                     if (record != null)
                     {
                         result.Add(record);
+                    }
+                }
+                if (deatilUpdated)
+                {
+                    var needAssessmentDetail = needAssessmentlDetails.FirstOrDefault();
+                    if (needAssessmentDetail != null)
+                    {
+                        var needAssessmentId = Convert.ToInt32(needAssessmentDetail.NeedAId);
+                        var needAssessment = _needAssessmentService.FindById(needAssessmentId);
+                        _workflowActivityService.EnterEditWorkflow(needAssessment.BusinessProcess);
                     }
                 }
             }

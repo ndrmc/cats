@@ -24,14 +24,14 @@ namespace Cats.Services.EarlyWarning
         {
             _workflowActivityService.InitializeWorkflow(needAssessmentDetail);
             _unitOfWork.NeedAssessmentDetailRepository.Add(needAssessmentDetail);
-            _workflowActivityService.EnterCreateWorkflow(needAssessmentDetail);
+            //_workflowActivityService.EnterCreateWorkflow(needAssessmentDetail);
             _unitOfWork.Save();
             return true;
             
         }
         public bool EditNeedAssessmentDetail(NeedAssessmentDetail needAssessmentDetail)
         {
-            _workflowActivityService.InitializeWorkflow(needAssessmentDetail);
+            //_workflowActivityService.InitializeWorkflow(needAssessmentDetail);
             _unitOfWork.NeedAssessmentDetailRepository.Edit(needAssessmentDetail);
             _workflowActivityService.EnterEditWorkflow(needAssessmentDetail);
             _unitOfWork.Save();
