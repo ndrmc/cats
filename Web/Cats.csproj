@@ -2188,6 +2188,7 @@
     <Content Include="Scripts\js\bootstrap-timepicker.min.js" />
     <Content Include="Scripts\js\bootstrap.calendars.picker.css" />
     <Content Include="Scripts\js\bootstrap.min.js" />
+    <Content Include="Scripts\js\DataActivityIndictor\DataActivityIndicator.js" />
     <Content Include="Scripts\js\kendo.all.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af-ZA.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af.min.js" />
@@ -2758,6 +2759,7 @@
     <Content Include="Areas\Settings\Views\Users\ForgetPassword.cshtml" />
     <Content Include="Areas\Settings\Views\Users\ForgetPasswordRequest.cshtml" />
     <Content Include="Areas\WorkflowManager\Views\BusinessProcess\Details.cshtml" />
+    <Content Include="DataActTester.cshtml" />
     <None Include="dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>dataset.Designer.cs</LastGenOutput>

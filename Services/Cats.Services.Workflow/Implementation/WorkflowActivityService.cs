@@ -559,8 +559,8 @@ namespace Cats.Services.Workflows
                 PerformedBy = "Kebede",
                 Comment = Alert.AlertMessage.Workflow_DefaultCreate,
                 //TargetObject = get gift certificate from unit of work
-                TargetObjectJsonData = "ID:14 , Name ='GiftCert1'",
-                TargetObjectReferenceId = "14",
+                TargetObjectJsonData = "ID:15 , Name ='GiftCert1'",
+                TargetObjectReferenceId = "15",
                 TargetObjectType = typeof(Models.Hubs.GiftCertificate)
 
             };
