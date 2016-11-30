@@ -118,6 +118,23 @@
         </div>
 
     </div>
+
+
+    <div id='dialogDiv' class='modal fade'>
+        <div id='dialogContent'></div>
+    </div>
+    
+    <div id="modalHistory" class="modal hide fade" style="width: 900px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 id="modalHistoryLabel">Activity History</h4>
+                    </div>
+                    <div class="modal-body" id="modalHistoryBody">History</div>
+                </div>
+            </div>
+        </div>
     <br />
 
     <ul id="myTab" class="nav nav-tabs">
@@ -342,4 +359,47 @@
 
 
         });
+    </script>
+
+    <script type="text/javascript">
+
+        var history_link = "@Url.Action("History", "BusinessProcess", new {Area = "WorkflowManager", id = "0"})";
+        function workflow_history(BusinessProcessID) {
+            $("#modal_message").html("...Loading");
+            $("#modalHistoryBody").html("");
+            $('#modalHistory').modal();
+            $.post(history_link + BusinessProcessID, {},
+                function (data) {
+                    $("#modal_message").html("");
+                    $("#modalHistoryBody").html(data);
+                    setTimeout(function () {
+                        initValidation();
+                    }, 1000);
+                }
+            );
+        }
+
+        function workflow_history_new(BusinessProcessID) {
+            @*var url = '@Url.Action("Close", "ReceiptAllocation")';*@
+            var attribs = { id: BusinessProcessID };
+            //var title = "Close Receipt Plan";
+            openModalEditor(history_link + BusinessProcessID);
+            //showModalEditor(history_link, attribs, '');
+        }
+        function openModalEditor(url, attribs) {
+            //$("#modal_label").html(title);
+            $("#modal_message").html("...Loading");
+            $("#modalHistoryBody").html("");
+            $('#modalHistory').modal();
+
+            $.get(url, attribs, function (data) {
+                $("#modal_message").html("");
+                $("#modalHistoryBody").html(data);
+                setTimeout(function () {
+                    initValidation();
+                }, 1000);
+
+            });
+        }
+
     </script>
