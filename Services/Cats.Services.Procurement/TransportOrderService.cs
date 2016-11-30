@@ -95,12 +95,16 @@ namespace Cats.Services.Procurement
         {
             //    var transportOrderDetail =
             //        ;
-            var transportOrder = (
-                from c in _unitOfWork.TransportOrderDetailRepository.FindBy(x => x.SourceWarehouseID == hubId)
-                select c.TransportOrder).Where(x => x.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed")
+            var transportOrderDetailIDs = (
+                from c in _unitOfWork.TransportOrderDetailRepository.Get(x => x.SourceWarehouseID == hubId)
+                select c.TransportOrderID)
                 .Distinct()
                 .ToList();
-            return transportOrder;
+            var signedTransportOrders =
+                _unitOfWork.TransportOrderRepository.Get(x => transportOrderDetailIDs.Contains(x.TransportOrderID) && x.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null,
+                    "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                    .Distinct().ToList();
+            return signedTransportOrders;
         }
         public IEnumerable<TransportOrder> GetFilteredTransportOrder(IEnumerable<TransportRequisitionDetail> transportRequsitionDetails, string stateName)
         {
