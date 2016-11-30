@@ -634,6 +634,8 @@ namespace Cats.Areas.Hub.Controllers
 
                         if (stateTemplate != null)
                         {
+                            viewModel.BusinessProcessID = bp.BusinessProcessID;
+
                             var businessProcessState = new BusinessProcessState()
                             {
                                 StateID = stateTemplate.StateTemplateID, // mark as edited
