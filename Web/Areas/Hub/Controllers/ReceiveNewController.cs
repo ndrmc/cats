@@ -639,7 +639,7 @@ namespace Cats.Areas.Hub.Controllers
                                 StateID = stateTemplate.StateTemplateID, // mark as edited
                                 PerformedBy = HttpContext.User.Identity.Name,
                                 DatePerformed = DateTime.Now,
-                                Comment = "Transfer is edited, a system internally captured data.",
+                                Comment = "Receipt hub is edited, a system internally captured data.",
                                 ParentBusinessProcessID = bps.ParentBusinessProcessID
                             };
 
