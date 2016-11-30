@@ -166,7 +166,7 @@ namespace Cats.Areas.Finance.Controllers
             foreach (var transporterPaymentRequest in transporterPaymentRequests)
             {
                 var request = transporterPaymentRequest;
-                var dispatch = _dispatchService.Get(t => t.DispatchID == request.Delivery.DispatchID, null, "Hub, FDP").FirstOrDefault();
+                var dispatch = _dispatchService.Get(t => t.DispatchID == request.Delivery.DispatchID, null, "").FirstOrDefault();
                 var transportOrderdetail =
                    _transportOrderDetailService.FindBy(
                        m => m.TransportOrderID == request.TransportOrderID && m.SourceWarehouseID == dispatch.HubID && m.FdpID == dispatch.FDPID).FirstOrDefault();
@@ -566,13 +566,16 @@ namespace Cats.Areas.Finance.Controllers
             return RedirectToAction("Cheques", "Cheque", new { Area = "Finance", transporterID });
         }
 
-        public ActionResult EditChequeInfo(Models.TransporterChequeViewModel transporterChequeViewModel, int transporterID)
+        public ActionResult EditChequeInfo(Models.TransporterChequeViewModel transporterChequeViewModel)
         {
+            int transporterID = transporterChequeViewModel.TransporterId;
             var transporterChequeObj = _transporterChequeService.FindById(transporterChequeViewModel.TransporterChequeId);
             transporterChequeObj.CheckNo = transporterChequeViewModel.CheckNo;
             transporterChequeObj.PaymentVoucherNo = transporterChequeViewModel.PaymentVoucherNo;
             transporterChequeObj.BankName = transporterChequeViewModel.BankName;
+
             _transporterChequeService.EditTransporterCheque(transporterChequeObj);
+
             return RedirectToAction("Cheques", "Cheque", new { Area = "Finance", transporterID });
         }
 

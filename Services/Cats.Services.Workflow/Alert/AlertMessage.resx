@@ -138,6 +138,15 @@
   <data name="Workflow_DeleteWithParam1" xml:space="preserve">
     <value>{1} Has been Deleted.</value>
   </data>
+  <data name="Workflow_DistributionDetailCreated" xml:space="preserve">
+    <value>"Woreda Stock Distribution Detail has been Created."</value>
+  </data>
+  <data name="Workflow_DistributionDetailDeleted" xml:space="preserve">
+    <value>"Woreda Stock Distribution Detail has been Deleted."</value>
+  </data>
+  <data name="Workflow_DistributionDetailEdited" xml:space="preserve">
+    <value>"Woreda Stock Distribution Detail has been Edited."</value>
+  </data>
   <data name="Workflow_EditwithParam1" xml:space="preserve">
     <value>{1} Has been Edited.</value>
   </data>

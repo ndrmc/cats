@@ -145,86 +145,89 @@
                     {*@
     @*<form ng-submit="submit()" ng-controller="PaymentRequestManagementController">*@
 
-         <input type="text" name="transporterID" id="transporterID" value="@ViewBag.TransporterID" style="display: none" />
-         <input type="text" name="transporterChequeID" id="transporterChequeID" value="" style="display: none" />
-         <div class="form-body">
-             <div class="form-group">
+                    <form ng-submit="submit()" ng-controller="PaymentRequestManagementController">
 
-                 <label class="col-md-4 control-label" for="Transporter">Transporter</label>
-                 <div class="col-md-6">
-                     <input type="text" class="form-control" name="Transporter" id="Transporter" value="{{SelectedCheckInfo.Transporter}}" data-ng-model="SelectedCheckInfo.Transporter"
-                            disabled="disabled" />
-                 </div>
-             </div>
+                        <input type="text" name="transporterID" id="transporterID" value="@ViewBag.TransporterID" style="display: none" />
+                        <input type="text" name="transporterChequeID" id="transporterChequeID" value="" style="display: none" />
+                        <div class="form-body">
+                            <div class="form-group">
 
-             <div class="form-group">
+                                <label class="col-md-4 control-label" for="Transporter">Transporter</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" name="Transporter" id="Transporter" value="{{SelectedCheckInfo.Transporter}}" data-ng-model="SelectedCheckInfo.Transporter"
+                                           disabled="disabled" />
+                                </div>
+                            </div>
 
-                 <label class="col-md-4 control-label" for="PaymentRequestsList">Approved Payment Request List</label>
-                 <div class="col-md-6">
-                     <textarea class="form-control" name="PaymentRequestsList" id="PaymentRequestsList" data-ng-model="SelectedCheckInfo.PaymentRequestsList" disabled="disabled">
-                         {{SelectedCheckInfo.PaymentRequestList}}
-                     </textarea>
-                 </div>
-             </div>
+                            <div class="form-group">
 
-             <div class="form-group">
+                                <label class="col-md-4 control-label" for="PaymentRequestsList">Approved Payment Request List</label>
+                                <div class="col-md-6">
+                                    <textarea class="form-control" name="PaymentRequestsList" id="PaymentRequestsList" data-ng-model="SelectedCheckInfo.PaymentRequestsList" disabled="disabled">
+                                        {{SelectedCheckInfo.PaymentRequestList}}
+                                    </textarea>
+                                </div>
+                            </div>
 
-                 <label class="col-md-4 control-label" for="CheckNo">Check No.</label>
-                 <div class="col-md-6">
-                     <input type="text" class="form-control" value="{{SelectedCheckInfo.CheckNo}}" name="CheckNo" id="CheckNo"
-                            data-ng-model="SelectedCheckInfo.CheckNo" />
-                 </div>
-             </div>
+                            <div class="form-group">
 
-             <div class="form-group">
+                                <label class="col-md-4 control-label" for="CheckNo">Check No.</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" value="{{SelectedCheckInfo.CheckNo}}" name="CheckNo" id="CheckNo"
+                                           data-ng-model="SelectedCheckInfo.CheckNo" />
+                                </div>
+                            </div>
 
-                 <label class="col-md-4 control-label" for="PaymentVoucherNo">Payment Voucher No.</label>
-                 <div class="col-md-6">
-                     <input type="text" class="form-control" value="{{SelectedCheckInfo.PaymentVoucherNo}}" name="PaymentVoucherNo" id="PaymentVoucherNo"
-                            data-ng-model="SelectedCheckInfo.PaymentVoucherNo" />
-                 </div>
-             </div>
+                            <div class="form-group">
 
-             <div class="form-group">
+                                <label class="col-md-4 control-label" for="PaymentVoucherNo">Payment Voucher No.</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" value="{{SelectedCheckInfo.PaymentVoucherNo}}" name="PaymentVoucherNo" id="PaymentVoucherNo"
+                                           data-ng-model="SelectedCheckInfo.PaymentVoucherNo" />
+                                </div>
+                            </div>
 
-                 <label class="col-md-4 control-label" for="BankName">Bank Name</label>
-                 <div class="col-md-6">
-                     <input type="text" class="form-control" value="{{SelectedCheckInfo.BankName}}" name="BankName" id="BankName"
-                            data-ng-model="SelectedCheckInfo.BankName" />
-                 </div>
-             </div>
+                            <div class="form-group">
 
-             <div class="form-group">
+                                <label class="col-md-4 control-label" for="BankName">Bank Name</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" value="{{SelectedCheckInfo.BankName}}" name="BankName" id="BankName"
+                                           data-ng-model="SelectedCheckInfo.BankName" />
+                                </div>
+                            </div>
 
-                 <label class="col-md-4 control-label" for="Amount">Amount</label>
-                 <div class="col-md-6">
-                     @*<input type="text" class="form-control"   value="{{SelectedCheckInfo.Amount}}" name="CheckInfo.Amount" id="CheckInfo_Amount"
-         data-ng-model="SelectedCheckInfo.Amount"/>*@
-                                                            <input type="text" class="form-control" name="Amount" id="Amount" value="{{SelectedCheckInfo.Amount}}" data-ng-model="SelectedCheckInfo.Amount" disabled="disabled" />&nbsp;<span id="errmsgCollectiveCheckInfo_Amount" class="errorText"></span>
-                                                        </div>
-                                                    </div>
+                            <div class="form-group">
 
-                                                    <div class="form-group">
+                                <label class="col-md-4 control-label" for="Amount">Amount</label>
+                                <div class="col-md-6">
+                                    @*<input type="text" class="form-control"   value="{{SelectedCheckInfo.Amount}}" name="CheckInfo.Amount" id="CheckInfo_Amount"
+                        data-ng-model="SelectedCheckInfo.Amount"/>*@
+                                    <input type="text" class="form-control" name="Amount" id="Amount" value="{{SelectedCheckInfo.Amount}}" data-ng-model="SelectedCheckInfo.Amount" disabled="disabled" />&nbsp;<span id="errmsgCollectiveCheckInfo_Amount" class="errorText"></span>
+                                </div>
+                            </div>
 
-                                                        <label class="col-md-4 control-label" for="PreparedBy">Prepared By</label>
-                                                        <div class="col-md-6">
-                                                            <input type="text" class="form-control" value="{{SelectedCheckInfo.PreparedBy}}" name="PreparedBy" id="PreparedBy"
-                                                                   data-ng-model="SelectedCheckInfo.PreparedBy" disabled="disabled" />
-                                                        </div>
-                                                    </div>
-                                                </div>
+                            <div class="form-group">
 
-                                                <div class="form-actions right" style="padding: 10px 10px;">
-                                                    <div class="row">
-                                                        <div class="message-box" style="float: left;" id="messageboxCollectiveCheque"></div>
-                                                    </div>
-                                                    @if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Issue_cheque))
-                                                    {
-                                                        <button id="btnSaveCollectiveCheque" class="btn blue" type="submit" ng-click="submit()">Save</button>
-                                                    }
+                                <label class="col-md-4 control-label" for="PreparedBy">Prepared By</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" value="{{SelectedCheckInfo.PreparedBy}}" name="PreparedBy" id="PreparedBy"
+                                           data-ng-model="SelectedCheckInfo.PreparedBy" disabled="disabled" />
+                                </div>
+                            </div>
+                        </div>
 
-                                                </div>
-                                           @* }*@
+                        <div class="form-actions right" style="padding: 10px 10px;">
+                            <div class="row">
+                                <div class="message-box" style="float: left;" id="messageboxCollectiveCheque"></div>
+                            </div>
+                            @if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Issue_cheque))
+                            {
+                                <button id="btnSaveCollectiveCheque" class="btn blue" type="submit" ng-click="submit()">Save</button>
+                            }
+
+                        </div>
+                        </form>
+                        @* }*@
 </div>
             </div>
         </div>
@@ -284,19 +287,17 @@
             }
 
             angular.module('PaymentRequestManagementModule', []).controller('PaymentRequestManagementController', function ($scope, $http) {
-                $scope.SelectedCheckInfo = [];
+                $scope.SelectedCheckInfo;
                 $scope.TransporterId = 0;
 
 
                 $scope.submit = function () {
-                    //if ($scope.text) {
-                    //    $scope.list.push(this.text);
-                    //    $scope.text = '';
-                    //}
-                    // using (Html.BeginForm("EditChequeInfo", "ValidatedPaymentRequest", FormMethod.Post))
-                    var data = { SelectedCheckInfo : $scope.SelectedCheckInfo ,TransporterId:$scope.TransporterId};
-              var url =      "@Url.Action("EditChequeInfo", "ValidatedPaymentRequest")";
+
+
+                    var url = "@Url.Action("EditChequeInfo", "ValidatedPaymentRequest")";
+
                     $http.post(url, $scope.SelectedCheckInfo);
+
                     wndCollectiveChequeInfo.close();
                 };
                 $scope.loadChequeEditPage = function (transporterChequeID, stateNo) {
@@ -306,15 +307,13 @@
                     $scope.TransporterId=transporterChequeID;
                     $http.post(rootDir + 'Cheque/LoadChequeOne/' + transporterChequeID).
                         success(function (data, status, headers, config) {
-                            //alert(data["ReceivedBy"]);
+
                             $("#transporterChequeID").val(transporterChequeID);
                             $scope.SelectedCheckInfo = data;
                             if (data.AppovedBy == null || data.AppovedBy == "")
                                 $scope.SelectedCheckInfo.AppovedDateString = "";
                             wndCollectiveChequeInfo.center().open();
-                            //if ($scope.SelectedCheckInfo.Amount==null)
-                            //    $scope.SelectedCheckInfo.Amount = $scope.SelectedLabourInfo.Amount + $scope.SelectedLabourInfo.LabourCost - $scope.SelectedLabourInfo.RejectedAmount;
-                        }).
+              }).
                         error(function (data, status, headers, config) {
                             alert("#ERROR - Can't load the GRN for the selected dispatch.");
                         });

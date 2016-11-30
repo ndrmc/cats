@@ -30,4 +30,7 @@ namespace Cats.Areas.Finance.Models
         public string AppovedDateString { get; set; }
         public List<TransporterChequeDetail> TransporterChequeDetails { get; set; }
     }
+
+
+
 }

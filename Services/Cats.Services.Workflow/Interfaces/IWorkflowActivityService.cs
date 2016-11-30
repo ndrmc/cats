@@ -1,5 +1,6 @@
 ﻿using Cats.Models;
 using Cats.Models.Hubs;
+using System.Collections.Generic;
 
 namespace Cats.Services.Workflows
 {
@@ -13,10 +14,10 @@ namespace Cats.Services.Workflows
         bool EnterCreateWorkflow(Models.BusinessProcess documentBusinessProcess, string description = "Workflow_DefaultCreate", string fileName = "");
         bool EnterCreateWorkflow(int? businessProcessID, int finalStateID, string description = "Workflow_DefaultCreate", string fileName = "", bool isHub = false);
         bool EnterDeleteWorkflow(int? businessProcessID, int finalStateID, string description = "Workflow_DefaultDelete", string fileName = "", bool isHub = false);
-        bool EnterDelteteWorkflow(IWorkflowHub workflowImplementer, string description = "Workflow_DefaultDelete", string fileName = "");
-        bool EnterDelteteWorkflow(IWorkflow workflowImplementer, string description = "Workflow_DefaultDelete", string fileName = "");
-        bool EnterDelteteWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, string description = "Workflow_DefaultDelete", string fileName = "");
-        bool EnterDelteteWorkflow(Models.BusinessProcess documentBusinessProcess, string description = "Workflow_DefaultDelete", string fileName = "");
+        bool EnterDeleteWorkflow(IWorkflowHub workflowImplementer, string description = "Workflow_DefaultDelete", string fileName = "");
+        bool EnterDeleteWorkflow(IWorkflow workflowImplementer, string description = "Workflow_DefaultDelete", string fileName = "");
+        bool EnterDeleteWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, string description = "Workflow_DefaultDelete", string fileName = "");
+        bool EnterDeleteWorkflow(Models.BusinessProcess documentBusinessProcess, string description = "Workflow_DefaultDelete", string fileName = "");
         bool EnterEditWorkflow(IWorkflowHub workflowImplementer, string description = "Workflow_DefaultEdit", string fileName = "");
         bool EnterEditWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, string description = "Workflow_DefaultEdit", string fileName = "");
         bool EnterEditWorkflow(IWorkflow workflowImplementer, string description = "Workflow_DefaultEdit", string fileName = "");
@@ -38,6 +39,9 @@ namespace Cats.Services.Workflows
         void InitializeWorkflow(IWorkflow workflowImplementer, string instanceDescription = null);
         Models.BusinessProcess GetBusinessProcess(int businessProcessId);
         Models.Hubs.BusinessProcess GetBusinessProcessHub(int businessProcessId);
+
+        List<WorkflowActivity> GetWorkflowActivity(string pageName, string filter = null);
+
 
     }
 }

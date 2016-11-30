@@ -61,6 +61,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Config\DashboardMapping.cs" />
     <Compile Include="Enum\WorkflowState.cs" />
     <Compile Include="Implementation\FlowTemplateService.cs" />
     <Compile Include="Implementation\Hub\HubBusinessProcessService.cs" />
@@ -96,8 +97,8 @@
     <Compile Include="Implementation\TemplateFieldService.cs" />
     <Compile Include="Implementation\TemplateService.cs" />
     <Compile Include="Implementation\TemplateTypeService.cs" />
-    <Compile Include="Utility\WorkflowBusinessUtils.cs" />
     <Compile Include="Utility\WorkflowActivityUtils.cs" />
+    <Compile Include="Utility\WorkflowBusinessUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Cats.Data.Hub\Cats.Data.Hub.csproj">

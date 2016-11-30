@@ -38,6 +38,7 @@ namespace Cats.Models.Hubs
         public decimal RemainingBalanceInUnit { get; set; }
         public List<Receive> Receives { get; set; }
         public List<Receive> ReceivesList { get; set; }
+        public int BusinessProcessID { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ReceiptAllocationViewModel"/> class.
         /// </summary>

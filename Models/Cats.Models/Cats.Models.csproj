@@ -405,6 +405,7 @@
     <Compile Include="WoredaHubLink.cs" />
     <Compile Include="WoredaViewModelInTransReqWithoutWinner.cs" />
     <Compile Include="Workflow.cs" />
+    <Compile Include="WorkflowActivity.cs" />
     <Compile Include="WorkflowStatus.cs" />
     <Compile Include="ZonesViewModel.cs" />
   </ItemGroup>

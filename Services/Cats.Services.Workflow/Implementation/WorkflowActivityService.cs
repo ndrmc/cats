@@ -225,7 +225,7 @@ namespace Cats.Services.Workflows
             return EnterPrintWorkflow(workflowImplementer.BusinessProcessId, PrintId, description, fileName, true);
 
         }
-        public Boolean EnterDelteteWorkflow(IWorkflow workflowImplementer, String description = "Workflow_DefaultDelete", String fileName = "")
+        public Boolean EnterDeleteWorkflow(IWorkflow workflowImplementer, String description = "Workflow_DefaultDelete", String fileName = "")
         {
             if (workflowImplementer == null) return false;
 
@@ -238,7 +238,7 @@ namespace Cats.Services.Workflows
 
 
         }
-        public Boolean EnterDelteteWorkflow(Models.Hubs.IWorkflowHub workflowImplementer, String description = "Workflow_DefaultDelete", String fileName = "")
+        public Boolean EnterDeleteWorkflow(Models.Hubs.IWorkflowHub workflowImplementer, String description = "Workflow_DefaultDelete", String fileName = "")
         {
             if (workflowImplementer == null) return false;
 
@@ -394,7 +394,7 @@ namespace Cats.Services.Workflows
 
             return true;
         }
-        public Boolean EnterDelteteWorkflow(Models.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
+        public Boolean EnterDeleteWorkflow(Models.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
         {
             if (documentBusinessProcess == null) return false;
 
@@ -404,7 +404,7 @@ namespace Cats.Services.Workflows
 
 
         }
-        public Boolean EnterDelteteWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
+        public Boolean EnterDeleteWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, String description = "Workflow_DefaultDelete", String fileName = "")
         {
             if (documentBusinessProcess == null) return false;
 
@@ -534,6 +534,53 @@ namespace Cats.Services.Workflows
 
             return BusinessProcessService.FindById(businessProcessId);
         }
+
+        public List<WorkflowActivity> GetWorkflowActivity(string pageName, string filter = null)
+        {
+
+            
+            List<WorkflowActivity> mocks = new List<WorkflowActivity>();
+
+            WorkflowActivity mock1 = new WorkflowActivity()
+            {
+                BusinessProcessStateID = 1,
+                PerformedBy = "Ayele",
+                Comment = Alert.AlertMessage.Workflow_DefaultCreate,
+                //TargetObject = get gift certificate from unit of work
+                TargetObjectJsonData = "ID:14 , Name ='GiftCert1'",
+                TargetObjectReferenceId = "14",
+                TargetObjectType = typeof(Models.Hubs.GiftCertificate)
+
+            };
+
+            WorkflowActivity mock2 = new WorkflowActivity()
+            {
+                BusinessProcessStateID = 1,
+                PerformedBy = "Kebede",
+                Comment = Alert.AlertMessage.Workflow_DefaultCreate,
+                //TargetObject = get gift certificate from unit of work
+                TargetObjectJsonData = "ID:14 , Name ='GiftCert1'",
+                TargetObjectReferenceId = "14",
+                TargetObjectType = typeof(Models.Hubs.GiftCertificate)
+
+            };
+
+            mocks.Add(mock1);
+            mocks.Add(mock2);
+
+            return mocks;
+
+
+        }
+
+
+        //public List<WorkflowActivityAgg> GetWorkflowActivityAgg(string pageName, string filter = null)
+
+        //{
+
+        //    return null;
+        //}
+
 
         #endregion
 
