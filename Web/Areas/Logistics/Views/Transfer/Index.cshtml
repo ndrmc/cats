@@ -167,7 +167,7 @@
                                                     </li>
                                                 }
 
-                                                @if (item.Status == "Approved")
+                                                @*@if (item.Status == "Approved")
                                                 {
                                                     <li class="edit_button">
                                                         <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.RejectedId,'Reject',@item.TransferID)" title="Reject">Reject</a>
@@ -179,7 +179,7 @@
                                                     <li class="edit_button">
                                                         <a href="javascript:promot_workflow(@item.BusinessProcessID ,@item.ApprovedId,'Approve',@item.TransferID)" title="Approve">Approve</a>
                                                     </li>
-                                                }
+                                                }*@
 
                                                 <li class="divider"></li>
 

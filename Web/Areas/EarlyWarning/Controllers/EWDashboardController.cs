@@ -23,10 +23,10 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private IHRDDetailService _hrdDetailService;
        
         private readonly IReliefRequisitionService _reliefRequisitionService;
-
+        private readonly IRegionalRequestDetailService _regionalRequestDetailService;
         public EWDashboardController(IEWDashboardService ewDashboardService, IUserAccountService userAccountService,
             ICommonService commonService, IReliefRequisitionService reliefRequisitionService,
-            IHRDDetailService hrdDetailService)
+            IHRDDetailService hrdDetailService,IRegionalRequestDetailService regionalRequestDetailService)
 
         {
             _eWDashboardService = ewDashboardService;
@@ -35,6 +35,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             _hrdDetailService = hrdDetailService;
             _reliefRequisitionService = reliefRequisitionService;
+            _regionalRequestDetailService = regionalRequestDetailService;
         }
 
         public JsonResult GetRation()
@@ -452,10 +453,26 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 foreach (int round in rounds)
                 {
-                    var numberOfZones = _commonService.GetAminUnits(p => p.ParentID == region.AdminUnitID).Count();
+                    //var numberOfZones = _commonService.GetAminUnits(p => p.ParentID == region.AdminUnitID).Count();
+
+                    //var listOfRequests =  filter b plan id and region id 
+                    // number of zones 
+                    var numberOfZones =
+                        _regionalRequestDetailService.FindBy(
+                            r =>
+                                r.RegionalRequest.PlanID == currentHrd.PlanID &&
+                                r.RegionalRequest.RegionID == region.AdminUnitID &&
+                                r.RegionalRequest.Round == round)
+                            .Select(f => f.Fdp.AdminUnit.AdminUnit2.AdminUnitID)
+                            .Distinct()
+                            .Count();
+
+                    //By 'complete' I mean requisitions which EW finished work and sent to Logistics -  with "Sent to Logistics" status
                     var completed =
                         _eWDashboardService.GetRegionalRequestSubmittedToLogistics(region.AdminUnitID, currentHrd.PlanID,
                             round);
+                    //Allocated is meant to represent those records which EW has completed allocation but have not yet sent to Logistics - 
+                    //for lack of a better word I named the column Allocated.
                     var allocated = _eWDashboardService.GetRemainingRequest(region.AdminUnitID, currentHrd.PlanID,round);
                     int expected = numberOfCommodities*numberOfZones;
                     var ratio = expected != 0 ? completed/Convert.ToDouble(expected) : 0;

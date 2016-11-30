@@ -265,6 +265,24 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 }
 
             }
+            if (stateName == "Draft")
+            {
+                var reginalRequest = _regionalRequestService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
+                if (reginalRequest != null)
+                {
+                    int id = reginalRequest.RegionalRequestID;
+                    if (_regionalRequestService.RevertRequestStatus(id))
+                    {
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                        TempData["CustomMsg"] = "Status has been successfully  Reverted!!";
+                     
+                    }
+                    TempData["CustomError"] = "Status Can not be Reverted !Requistions from this Request has been Created and Used in Logistics Caseteam!";
+                    return RedirectToAction("Details", new { id = id });
+                   
+                }
+
+            }
             else
             {
                 _businessProcessService.PromotWorkflow(businessProcessState);

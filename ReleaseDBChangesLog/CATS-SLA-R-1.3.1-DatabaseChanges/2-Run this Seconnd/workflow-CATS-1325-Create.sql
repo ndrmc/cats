@@ -35,6 +35,7 @@ BEGIN
 		declare @id int 
 		declare @draft int 
 		declare @Closed int
+		declare @Rejected int
 		declare @Signed int
 		declare @Failed int 
 		declare @Approved int   
@@ -61,6 +62,14 @@ BEGIN
      VALUES
 		   ( @id,'Approved',0,1,1 )
 		   select @Approved = Scope_Identity() 
+     INSERT INTO [dbo].[StateTemplate]
+           ([ParentProcessTemplateID] ,[Name],[AllowedAccessLevel],[StateNo]
+           ,[StateType]
+           )
+     VALUES
+		   ( @id,'Rejected',0,2,1 )
+		   select @Rejected = Scope_Identity() 
+
 		    INSERT INTO [dbo].[StateTemplate]
            ([ParentProcessTemplateID] ,[Name],[AllowedAccessLevel],[StateNo]
            ,[StateType]
@@ -95,6 +104,8 @@ ROLLBACK /* Rollback of the transaction */
            )
      VALUES
            (@id ,@Draft,@Approved,'Approve'),
+		   (@id ,@Rejected,@Approved,'Approve'),
+		   (@id ,@Approved,@Rejected,'Reject'),
 		   (@id ,@Approved,@Signed,'Sign'),
 		   (@id ,@Approved,@Failed,'Fail'),
 		   (@id ,@Signed,@Closed,'Close')

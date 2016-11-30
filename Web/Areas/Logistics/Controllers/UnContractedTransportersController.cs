@@ -15,7 +15,7 @@ using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 
 namespace Cats.Areas.Logistics.Controllers
-{
+{   
      [Authorize]
     public class UnContractedTransportersController : Controller
     {

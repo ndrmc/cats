@@ -1931,6 +1931,7 @@
     <Content Include="Scripts\angular\angular-dragdrop.min.js" />
     <Content Include="Scripts\angular\angular-kendo.js" />
     <Content Include="Scripts\angular\angular-resource.js" />
+    <Content Include="Scripts\angular\angular-route.js" />
     <Content Include="Scripts\angular\angular.js" />
     <Content Include="Scripts\angular\css\bootstrap.min.css" />
     <Content Include="Scripts\angular\css\jquery-ui.css" />

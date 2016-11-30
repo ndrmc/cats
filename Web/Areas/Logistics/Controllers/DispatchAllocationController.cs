@@ -38,6 +38,7 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly IUserAccountService _userAccountService;
         private readonly ITransactionService _transactionService;
         private readonly IBusinessProcessService _businessProcessService;
+        private readonly IStateTemplateService _stateTemplateService;
         //private readonly IStoreService _storeService;
 
         public DispatchAllocationController(IReliefRequisitionService reliefRequisitionService,
@@ -45,7 +46,7 @@ namespace Cats.Areas.Logistics.Controllers
             INeedAssessmentService needAssessmentService,
             IHubAllocationService hubAllocationService,
             IUserAccountService userAccountService,
-            IAllocationByRegionService allocationByRegionService, ITransactionService transactionService, IBusinessProcessService businessProcessService)
+            IAllocationByRegionService allocationByRegionService, ITransactionService transactionService, IBusinessProcessService businessProcessService, IStateTemplateService stateTemplateService)
         {
             _reliefRequisitionService = reliefRequisitionService;
             _hubService = hubService;
@@ -56,6 +57,7 @@ namespace Cats.Areas.Logistics.Controllers
             _allocationByRegionService = allocationByRegionService;
             _transactionService = transactionService;
             _businessProcessService = businessProcessService;
+            _stateTemplateService = stateTemplateService;
         }
 
 
@@ -427,7 +429,7 @@ namespace Cats.Areas.Logistics.Controllers
         }
 
         [HttpPost]
-        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId)
+        public ActionResult Promote(BusinessProcessStateViewModel st, int? statusId, string  actionname)
         {
             var fileName = "";
             if (st.AttachmentFile.HasFile())
@@ -443,6 +445,9 @@ namespace Cats.Areas.Logistics.Controllers
                 }
                 st.AttachmentFile.SaveAs(path);
             }
+            //var a= st.BaseStateTemplate.Name;
+            string stateName = _stateTemplateService.FindById(st.StateID).Name;
+           
             var businessProcessState = new BusinessProcessState()
             {
                 StateID = st.StateID,
@@ -452,6 +457,16 @@ namespace Cats.Areas.Logistics.Controllers
                 AttachmentFile = fileName,
                 ParentBusinessProcessID = st.ParentBusinessProcessID
             };
+            if (actionname == "Uncommit")
+            {
+
+                var reliefRequisition = _reliefRequisitionService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
+
+                if (reliefRequisition != null)
+                    _transactionService.PostSIAllocationUncommit(reliefRequisition.RequisitionID);
+                _businessProcessService.PromotWorkflow(businessProcessState);
+            }
+            else
             _businessProcessService.PromotWorkflow(businessProcessState);
             if (statusId != null)
                 return RedirectToAction("Index", "DispatchAllocation", new { Area = "Logistics", statusId });
