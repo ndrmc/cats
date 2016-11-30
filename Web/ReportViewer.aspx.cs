@@ -57,6 +57,7 @@ namespace SSRS_Portal
                 serverReport.ReportServerUrl = new Uri(_reportServerUrl);
                 serverReport.ReportPath = Request["path"];
                 serverReport.Refresh();
+               // ScriptManager.RegisterStartupScript(Page, GetType(), "JsStatus", "showDatePicker();", true);
                 var currentUser = UserAccountHelper.GetCurrentUser();
                 if (currentUser.RegionalUser)
                 {

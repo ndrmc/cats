@@ -98,6 +98,31 @@ namespace Cats.Services.Logistics
             }
         }
 
+        public bool Revert(LocalPurchase localPurchase)
+        {
+            try
+            {
+               // localPurchase.StatusID = (int)LocalPurchaseStatus.Approved;
+                //_unitOfWork.LocalPurchaseRepository.Edit(localPurchase);
+                foreach (var localPurchaseDetail in localPurchase.LocalPurchaseDetails)
+                {
+                    var receiptAllocation =
+                        _unitOfWork.ReceiptAllocationReository.Get(
+                            r => r.ReceiptPlanID == localPurchaseDetail.LocalPurchaseDetailID, null, null)
+                            .FirstOrDefault();
+                    if(receiptAllocation!=null)
+                        _unitOfWork.ReceiptAllocationReository.Delete(receiptAllocation);
+                }
+                _unitOfWork.Save();
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+        }
+
         public bool DeleteLocalPurchae(LocalPurchase localPurchase)
         {
             try

@@ -24,6 +24,7 @@ namespace Cats.Services.Logistics
        bool DelteLocalPurchaseAllocation(LocalPurchase localPurchase);
 
 
+       bool Revert(LocalPurchase localPurchase);
    }
 }
 

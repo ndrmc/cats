@@ -67,24 +67,23 @@ namespace Cats.Services.Dashboard
                   m => m.RegionID == regionID && m.PlanID == planID).Count;
           return (totalRequest.Max(m => m.DurationOfAssistance) - requested);
       }
-
+    /// <summary>
+    /// Return count of requests not submitted to logistics
+    /// </summary>
+    /// <param name="regionID"></param>
+    /// <param name="planID"></param>
+    /// <param name="roundId"></param>
+    /// <returns></returns>
       public int GetRemainingRequest(int regionID, int planID,int roundId)
-      {
-          var hrd =
-              _unitOfWork.HRDRepository.FindBy(m => m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Approved")
-                  .FirstOrDefault();
-             var totalRequest = (from hrdDetail in hrd.HRDDetails
-                                  where hrdDetail.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID==regionID
-                                 select new
-                                 {
-                                      
-                                   hrdDetail.DurationOfAssistance
-                                 });
-
-            var requested =
-                _unitOfWork.RegionalRequestRepository.FindBy(
-                    m => m.RegionID == regionID && m.PlanID == planID && m.Round == roundId).Count;
-            return (totalRequest.Max(m=>m.DurationOfAssistance) - requested);
+    {
+        var requsted =
+            _unitOfWork.ReliefRequisitionRepository.FindBy(
+                r =>
+                    r.RegionID == regionID && r.RegionalRequest.PlanID == planID &&
+                    r.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft" &&
+                    r.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Rejected" &&
+                    r.RegionalRequest.Round == roundId).Count();
+            return requsted;
         }
       public  List<Models.GiftCertificate> GetAllGiftCertificate()
       {
@@ -119,11 +118,15 @@ namespace Cats.Services.Dashboard
 
       public int GetRegionalRequestSubmittedToLogistics(int regionId, int planId, int round)
       {
-          var requested =
-              _unitOfWork.RegionalRequestRepository.FindBy(
-                  m => m.RegionID == regionId && m.PlanID == planId && m.Round == round && m.Status == 2).Count; //status = 2 submitted to finance
-            return requested;
-        }
+          var requsted =
+              _unitOfWork.ReliefRequisitionRepository.FindBy(
+                  r =>
+                      r.RegionID == regionId && r.RegionalRequest.PlanID == planId &&
+                      r.BusinessProcess.CurrentState.BaseStateTemplate.Name != "Draft" &&
+                      r.BusinessProcess.CurrentState.BaseStateTemplate.Name != "Rejected" &&
+                      r.RegionalRequest.Round == round).Count();
+          return requsted;
+      }
 
       public void Dispose()
         {
@@ -132,10 +135,10 @@ namespace Cats.Services.Dashboard
         public List<int?> GetDistinctRounds(int planId)
         {
             return
-              _unitOfWork.RegionalRequestRepository.Get(r => r.PlanID == planId)
-                  .Select(p => p.Round)
-                  .Distinct()
-                  .ToList();
+                _unitOfWork.ReliefRequisitionRepository.Get(r => r.RegionalRequest.PlanID == planId)
+                    .Select(p => p.Round)
+                    .Distinct()
+                    .ToList();
         }
     }
 }
