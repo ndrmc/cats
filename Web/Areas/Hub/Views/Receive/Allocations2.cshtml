@@ -90,7 +90,7 @@
         }
 
         columns.Bound(dis => dis.BusinessProcessID).Title("History").ClientTemplate("<a href='javascript:workflow_history_new(\"#=BusinessProcessID#\")'>History</a>");
-        columns.Bound(dis => dis.BusinessProcessID).Title("BusinessProcessID");
+       
     })
 
 )
@@ -147,24 +147,6 @@
                         .ToClientTemplate())
 
 </script>
-
-<div id='dialogDiv' class='modal fade'>
-    <div id='dialogContent'></div>
-</div>
-
-
-@*<div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 id="modalHistoryLabel">Activity History</h4>
-            </div>
-            <div class="modal-body" id="modalHistoryBody">History</div>
-        </div>
-    </div>
-</div>*@
-
 
 
 <script>
