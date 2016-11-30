@@ -300,7 +300,8 @@ namespace Cats.Areas.Hub.Controllers
                         SupplierName = vwReceiptAllocationAggregate.SupplierName,
                         SourceHubID = vwReceiptAllocationAggregate.SourceHubID,
                         OtherDocumentationRef = vwReceiptAllocationAggregate.OtherDocumentationRef,
-                        Remark = vwReceiptAllocationAggregate.Remark
+                        Remark = vwReceiptAllocationAggregate.Remark,
+                        BusinessProcessID = vwReceiptAllocationAggregate.BusinessProcessID
                     };
                 receiptAllocationViewModels.Add(receiptAllocationViewModel);
             }
