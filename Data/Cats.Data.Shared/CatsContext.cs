@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Cats.Models.Shared.DashBoardModels;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.ModelConfiguration.Conventions;
-using System.Linq;
 
 namespace Cats.Data
 {
@@ -17,16 +11,13 @@ namespace Cats.Data
         }
 
         public CatsContext() : base("Name=CatsContext") { }
+        public DbSet<DashboardDataEntry> DashboardWidgets { get; set; }
 
         // TODO: Add properties to access set of Poco classes
-        
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            
+            modelBuilder.Configurations.Add(new DashboardDataEntryMap());
         }
-
     }
-
-
-
 }
