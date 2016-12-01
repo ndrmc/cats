@@ -668,7 +668,6 @@ namespace Cats.Services.Workflows
             }
         }
 
-
         public class Filter
         {
             public string FilterName { get; set; }
