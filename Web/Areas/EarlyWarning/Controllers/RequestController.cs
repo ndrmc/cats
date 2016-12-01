@@ -265,7 +265,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 }
 
             }
-            else if (stateName == "Draft")
+           else if (stateName == "Draft")
             {
                 var reginalRequest = _regionalRequestService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
                 if (reginalRequest != null)
