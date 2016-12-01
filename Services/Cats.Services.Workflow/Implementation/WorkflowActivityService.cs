@@ -645,7 +645,7 @@ namespace Cats.Services.Workflows
             // TODO: need to process result
             //
 
-            return null;
+            return result.ToList();
         }
 
         public IEnumerable<DashboardDataEntry> ExecWithStoreProcedure(string query, params object[] parameters)
