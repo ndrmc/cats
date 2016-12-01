@@ -659,9 +659,9 @@ namespace Cats.Services.Workflows
             {
                 var sqlRow = new SqlDataRecord(new SqlMetaData("Filter", SqlDbType.VarChar, 50));
 
-                foreach (Filter cust in this)
+                foreach (Filter filter in this)
                 {
-                    sqlRow.SetString(0, cust.FilterName);
+                    sqlRow.SetString(0, filter.FilterName);
 
                     yield return sqlRow;
                 }
