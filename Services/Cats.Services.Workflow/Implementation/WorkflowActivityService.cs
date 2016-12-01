@@ -16,18 +16,28 @@ using System.Diagnostics;
 using Cats.Models.Security;
 using Cats.Services.Workflows.Alert;
 using Cats.Services.Hubs;
+using System.Data;
+using Cats.Models.Shared.DashBoardModels;
+using Cats.Data.Shared;
+using Cats.Data.Shared.UnitWork;
+using Microsoft.SqlServer.Server;
+using System.Data.SqlClient;
 
 namespace Cats.Services.Workflows
 {
     public class WorkflowActivityService : IWorkflowActivityService
     {
-
+        private readonly IUnitOfWork _unitOfWork;
         #region Constructor
         public WorkflowActivityService(IBusinessProcessService businessProcessService, IApplicationSettingService applicationSettingService, IHubBusinessProcessService hubBusinessProcessService)
         {
             _businessProcessService = businessProcessService;
             _applicationSettingService = applicationSettingService;
             _hubBusinessProcessService = hubBusinessProcessService;
+        }
+        public WorkflowActivityService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
         }
         #endregion
 
@@ -596,7 +606,7 @@ namespace Cats.Services.Workflows
         public List<WorkflowActivity> GetWorkflowActivity(string pageName, string filter = null)
         {
 
-            
+
             List<WorkflowActivity> mocks = new List<WorkflowActivity>();
 
             WorkflowActivity mock1 = new WorkflowActivity()
@@ -639,8 +649,82 @@ namespace Cats.Services.Workflows
         //    return null;
         //}
 
+        public List<DashboardDataEntry> GetWorkflowActivityAgg(DateTime startDate, DateTime endDate, List<string> workflowDefinitions, List<string> users, List<string> activities)
+        {
+            // Workflow filter collection
+            FilterCollection filterWorkflowDefinitions = new FilterCollection();
+            filterWorkflowDefinitions.AddRange(workflowDefinitions.Select(filterName => new Filter { FilterName = filterName }));
+
+            // User filter collection
+            FilterCollection filterUsers = new FilterCollection();
+            filterUsers.AddRange(users.Select(filterName => new Filter { FilterName = filterName }));
+
+            // Activity filter collection
+            FilterCollection filterActivities = new FilterCollection();
+            filterActivities.AddRange(activities.Select(filterName => new Filter { FilterName = filterName }));
+
+            // Into Param object
+            SqlParameter filterStartDate = new SqlParameter("StartDate", SqlDbType.DateTime) { Value = startDate };
+            SqlParameter filterEndDate = new SqlParameter("EndDate", SqlDbType.DateTime) { Value = endDate };
+            SqlParameter paramWorkflow = new SqlParameter
+            {
+                ParameterName = "WorkflowName_Array",  // proc def
+                SqlDbType = SqlDbType.Structured,
+                Value = filterWorkflowDefinitions,
+                Direction = ParameterDirection.Input
+            };
+
+            SqlParameter paramUser = new SqlParameter
+            {
+                ParameterName = "User_Array", // proc def
+                SqlDbType = SqlDbType.Structured,
+                Value = filterUsers,
+                Direction = ParameterDirection.Input
+            };
+
+            SqlParameter paramActivity = new SqlParameter
+            {
+                ParameterName = "Activity_Array", // proc def
+                SqlDbType = SqlDbType.Structured,
+                Value = filterActivities,
+                Direction = ParameterDirection.Input
+            };
+
+            var result = ExecWithStoreProcedure("EXEC [dbo].[GenericDashboardDataProvider] @StartDate, @EndDate, @WorkflowName_Array, @User_Array, @Activity_Array",
+                filterStartDate, filterEndDate, paramWorkflow, paramUser, paramActivity);
+
+            //
+            // TODO: need to process result
+            //
+
+            return result.ToList();
+        }
+
+        public IEnumerable<DashboardDataEntry> ExecWithStoreProcedure(string query, params object[] parameters)
+        {
+            return _unitOfWork.Database.SqlQuery<DashboardDataEntry>(query, parameters);
+        }
+
+        public class FilterCollection : List<Filter>, IEnumerable<SqlDataRecord>
+        {
+            IEnumerator<SqlDataRecord> IEnumerable<SqlDataRecord>.GetEnumerator()
+            {
+                var sqlRow = new SqlDataRecord(new SqlMetaData("Filter", SqlDbType.VarChar, 50));
+
+                foreach (Filter filter in this)
+                {
+                    sqlRow.SetString(0, filter.FilterName);
+
+                    yield return sqlRow;
+                }
+            }
+        }
+
+        public class Filter
+        {
+            public string FilterName { get; set; }
+        }
 
         #endregion
-
     }
 }
