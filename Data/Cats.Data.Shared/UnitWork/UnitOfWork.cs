@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Data.Entity;
-using Cats.Data.Repository;
 using Cats.Models.Shared.DashBoardModels;
 using log4net;
 using System.Text;
 using System.Data.Entity.Validation;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
+using Cats.Data.Shared.Repository;
 
-namespace Cats.Data.UnitWork
+namespace Cats.Data.Shared.UnitWork
 {
     public class UnitOfWork : IUnitOfWork
     {

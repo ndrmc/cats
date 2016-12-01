@@ -5,7 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Cats.Data.Repository
+namespace Cats.Data.Shared.Repository
 {
    public class GenericRepository<T> :
    IGenericRepository<T>

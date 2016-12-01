@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Cats.Data.Repository
+namespace Cats.Data.Shared.Repository
 {
     public interface IGenericRepository<T> where T : class
     {

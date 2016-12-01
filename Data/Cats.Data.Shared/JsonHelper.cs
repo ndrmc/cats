@@ -9,7 +9,7 @@ using System.Text;
 /// JSON Serialization and Deserialization Assistant Class
 /// </summary>
 
-namespace Cats.Data
+namespace Cats.Data.Shared
 {
     public class JsonHelper
     {

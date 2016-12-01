@@ -1,9 +1,9 @@
 using System;
 using System.Data.Entity;
-using Cats.Data.Repository;
 using Cats.Models.Shared.DashBoardModels;
+using Cats.Data.Shared.Repository;
 
-namespace Cats.Data.UnitWork
+namespace Cats.Data.Shared.UnitWork
 {
     public interface IUnitOfWork : IDisposable
     {

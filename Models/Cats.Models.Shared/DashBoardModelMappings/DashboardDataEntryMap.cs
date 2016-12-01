@@ -6,9 +6,10 @@ namespace Cats.Models.Shared.DashBoardModels
     {
         public DashboardDataEntryMap()
         {
-            this.Property(t => t.UserName).HasColumnName("PerformedBy");
-            this.Property(t => t.ActivityName).HasColumnName("ActivityName");
-            this.Property(t => t.ActivityCount).HasColumnName("ActivityCount");
+            Property(t => t.UserName).HasColumnName("PerformedBy");
+            Property(t => t.WorkflowDefinition).HasColumnName("SettingName");
+            Property(t => t.ActivityName).HasColumnName("ActivityName");
+            Property(t => t.ActivityCount).HasColumnName("ActivityCount");
         }
     }
 }

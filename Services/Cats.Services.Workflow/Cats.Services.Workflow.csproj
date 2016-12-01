@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
       <Private>True</Private>
@@ -105,6 +109,10 @@
       <Project>{b311922a-4002-40b1-aa96-e005b6d436dd}</Project>
       <Name>Cats.Data.Hub</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Data\Cats.Data.Shared\Cats.Data.Shared.csproj">
+      <Project>{b683e705-e480-4fc6-a347-99fff7d9ffb9}</Project>
+      <Name>Cats.Data.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Data\Cats.Data\Cats.Data.csproj">
       <Project>{7cf78855-5a90-441f-9acc-fafbd1cad68a}</Project>
       <Name>Cats.Data</Name>
@@ -116,6 +124,10 @@
     <ProjectReference Include="..\..\Models\Cats.Models.Security\Cats.Models.Security.csproj">
       <Project>{e3c4d9fc-ad84-4e19-a475-6adbd134af68}</Project>
       <Name>Cats.Models.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Models\Cats.Models.Shared\Cats.Models.Shared.csproj">
+      <Project>{647f8dad-7d70-4419-a87c-1802db94190b}</Project>
+      <Name>Cats.Models.Shared</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Models\Cats.Models\Cats.Models.csproj">
       <Project>{abfb63d2-89fc-45bc-aa4e-5d9b21094b85}</Project>

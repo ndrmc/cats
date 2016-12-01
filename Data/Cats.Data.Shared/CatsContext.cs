@@ -1,7 +1,7 @@
 using Cats.Models.Shared.DashBoardModels;
 using System.Data.Entity;
 
-namespace Cats.Data
+namespace Cats.Data.Shared
 {
     public partial class CatsContext : DbContext
     {
