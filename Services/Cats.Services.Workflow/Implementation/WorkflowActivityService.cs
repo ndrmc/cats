@@ -593,53 +593,47 @@ namespace Cats.Services.Workflows
 
         public List<DashboardDataEntry> GetWorkflowActivityAgg(DateTime startDate, DateTime endDate, List<string> workflowDefinitions, List<string> users, List<string> activities)
         {
-            SqlParameter filterStartDate = new SqlParameter("StartDate", SqlDbType.DateTime) { Value = startDate };
-            SqlParameter filterEndDate = new SqlParameter("EndDate", SqlDbType.DateTime) { Value = endDate };
-
             // Workflow filter collection
             FilterCollection filterWorkflowDefinitions = new FilterCollection();
-
-            foreach (string filterName in workflowDefinitions)
-            {
-                filterWorkflowDefinitions.Add(new Filter { FilterName = filterName });
-            }
+            filterWorkflowDefinitions.AddRange(workflowDefinitions.Select(filterName => new Filter { FilterName = filterName }));
 
             // User filter collection
             FilterCollection filterUsers = new FilterCollection();
-
-            foreach (string filterName in users)
-            {
-                filterUsers.Add(new Filter { FilterName = filterName });
-            }
+            filterUsers.AddRange(users.Select(filterName => new Filter { FilterName = filterName }));
 
             // Activity filter collection
             FilterCollection filterActivities = new FilterCollection();
+            filterActivities.AddRange(activities.Select(filterName => new Filter { FilterName = filterName }));
 
-            foreach (string filterName in activities)
+            // Into Param object
+            SqlParameter filterStartDate = new SqlParameter("StartDate", SqlDbType.DateTime) { Value = startDate };
+            SqlParameter filterEndDate = new SqlParameter("EndDate", SqlDbType.DateTime) { Value = endDate };
+            SqlParameter paramWorkflow = new SqlParameter
             {
-                filterActivities.Add(new Filter { FilterName = filterName });
-            }
+                ParameterName = "WorkflowName_Array",  // proc def
+                SqlDbType = SqlDbType.Structured,
+                Value = filterWorkflowDefinitions,
+                Direction = ParameterDirection.Input
+            };
 
-            SqlParameter paramWorkflow = new SqlParameter();
-            paramWorkflow.ParameterName = "WorkflowName_Array";  // proc def
-            paramWorkflow.SqlDbType = SqlDbType.Structured;
-            paramWorkflow.Value = filterWorkflowDefinitions;
-            paramWorkflow.Direction = ParameterDirection.Input;
+            SqlParameter paramUser = new SqlParameter
+            {
+                ParameterName = "User_Array", // proc def
+                SqlDbType = SqlDbType.Structured,
+                Value = filterUsers,
+                Direction = ParameterDirection.Input
+            };
 
-            SqlParameter paramUser = new SqlParameter();
-            paramWorkflow.ParameterName = "User_Array";  // proc def
-            paramWorkflow.SqlDbType = SqlDbType.Structured;
-            paramWorkflow.Value = filterUsers;
-            paramWorkflow.Direction = ParameterDirection.Input;
-
-            SqlParameter paramActivity = new SqlParameter();
-            paramWorkflow.ParameterName = "Activity_Array"; // proc def
-            paramWorkflow.SqlDbType = SqlDbType.Structured;
-            paramWorkflow.Value = filterActivities;
-            paramWorkflow.Direction = ParameterDirection.Input;
+            SqlParameter paramActivity = new SqlParameter
+            {
+                ParameterName = "Activity_Array", // proc def
+                SqlDbType = SqlDbType.Structured,
+                Value = filterActivities,
+                Direction = ParameterDirection.Input
+            };
 
             var result = ExecWithStoreProcedure("EXEC [dbo].[GenericDashboardDataProvider] @StartDate, @EndDate, @WorkflowName_Array, @User_Array, @Activity_Array",
-                filterStartDate, filterEndDate, workflowDefinitions, users, activities);
+                filterStartDate, filterEndDate, paramWorkflow, paramUser, paramActivity);
 
             //
             // TODO: need to process result
