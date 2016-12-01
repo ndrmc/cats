@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Cats.Models
 {
-    public partial class NeedAssessmentDetail
+    public partial class NeedAssessmentDetail :IWorkflow
     {
         public int NAId { get; set; }
         public Nullable<int> NeedAId { get; set; }
@@ -96,5 +96,9 @@ namespace Cats.Models
          
         public virtual AdminUnit AdminUnit { get; set; }
         public virtual NeedAssessmentHeader NeedAssessmentHeader { get; set; }
+
+        public int BusinessProcessId { get; set; }
+
+        public BusinessProcess BusinessProcess { get; set; }
     }
 }
