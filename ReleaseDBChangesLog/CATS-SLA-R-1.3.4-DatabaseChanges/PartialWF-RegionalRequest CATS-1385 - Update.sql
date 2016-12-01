@@ -7,4 +7,4 @@
     <StateTemplate Name="Edited" AllowedAccessLevel="0" StateNo="1" StateType="1" FinalStates="Edited,Approved" Actions="Edit,Approve" />
 	
     </Data>'
-    EXECUTE define_document_action_workflow @h
+    EXECUTE update_action_workflow @h

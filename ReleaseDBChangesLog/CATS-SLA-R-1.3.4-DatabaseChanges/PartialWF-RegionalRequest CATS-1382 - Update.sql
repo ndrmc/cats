@@ -10,4 +10,4 @@
 	<StateTemplate Name="Rejected" AllowedAccessLevel="0" StateNo="1" StateType="1" FinalStates="Deleted" Actions="Delete" /> 
 	<StateTemplate Name="Approved" AllowedAccessLevel="0" StateNo="1" StateType="1" FinalStates="Deleted" Actions="Delete" />
     </Data>'
-    EXECUTE define_document_action_workflow @h
+    EXECUTE update_action_workflow @h
