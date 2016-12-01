@@ -438,29 +438,36 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (needAssessmentlDetails != null && ModelState.IsValid)
             {
                 bool deatilUpdated = false;
+                var needAssessmentId = 0;
+                 
                 foreach (NeedAssessmentDetail details in needAssessmentlDetails)
                 {
                    // details.
-                   deatilUpdated = _needAssessmentDetailService.EditNeedAssessmentDetail(details);
+                   //deatilUpdated = _needAssessmentDetailService.EditNeedAssessmentDetail(details);
                     //details.
-                    NeedAssessmentDetail record = _needAssessmentDetailService.FindById(details.NAId);
-                    if (record != null)
-                    {
-                        result.Add(record);
-                    }
+                    var record = _needAssessmentDetailService.FindById(details.NAId);
+                    record.ProjectedFemale = details.ProjectedFemale;
+                    record.ProjectedMale = details.ProjectedMale;
+                    deatilUpdated = _needAssessmentDetailService.EditNeedAssessmentDetail(record);
+                    //if (record != null)
+                    //{
+                    //    result.Add(record);
+                    //}
+                    needAssessmentId = Convert.ToInt32(record.NeedAId);
+                    var id = record.NAId;
                 }
                 if (deatilUpdated)
                 {
                     var needAssessmentDetail = needAssessmentlDetails.FirstOrDefault();
                     if (needAssessmentDetail != null)
                     {
-                        var needAssessmentId = Convert.ToInt32(needAssessmentDetail.NeedAId);
                         var needAssessment = _needAssessmentService.FindById(needAssessmentId);
-                        _workflowActivityService.EnterEditWorkflow(needAssessment.BusinessProcess);
+                        if (needAssessment != null)
+                            _workflowActivityService.EnterEditWorkflow(needAssessment.BusinessProcess);
                     }
                 }
             }
-            var needAssesmentsViewModel = NeedAssessmentViewModelBinder.ReturnNeedAssessmentDetailViewModel(result);
+            //var needAssesmentsViewModel = NeedAssessmentViewModelBinder.ReturnNeedAssessmentDetailViewModel(result);
             return Json(new[] { needAssessmentlDetails }.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
             //return Json(needAssessmentlDetails.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
            // return Json(ModelState.ToDataSourceResult());

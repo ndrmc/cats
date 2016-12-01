@@ -33,15 +33,17 @@ namespace Cats.Services.EarlyWarning
         {
             //_workflowActivityService.InitializeWorkflow(needAssessmentDetail);
             _unitOfWork.NeedAssessmentDetailRepository.Edit(needAssessmentDetail);
-            _workflowActivityService.EnterEditWorkflow(needAssessmentDetail);
             _unitOfWork.Save();
+            _workflowActivityService.EnterEditWorkflow(needAssessmentDetail);
+
             return true;
 
         }
         public bool DeleteNeedAssessmentDetail(NeedAssessmentDetail needAssessmentDetail)
         {
             if (needAssessmentDetail == null) return false;
-            _unitOfWork.NeedAssessmentDetailRepository.Delete(needAssessmentDetail);
+            //_unitOfWork.NeedAssessmentDetailRepository.Delete(needAssessmentDetail);
+            _workflowActivityService.EnterDelteteWorkflow(needAssessmentDetail);
             _unitOfWork.Save();
             return true;
         }

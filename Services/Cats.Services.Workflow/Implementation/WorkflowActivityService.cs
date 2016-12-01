@@ -428,7 +428,7 @@ namespace Cats.Services.Workflows
             else
                 msg = description;
 
-            EnterWorkflow(businessProcessID, finalStateID, fileName, isHub, msg);
+            EnterWorkflowDelete(businessProcessID, finalStateID, fileName, isHub, msg);
 
 
             return true;
@@ -474,6 +474,14 @@ namespace Cats.Services.Workflows
             else
                 EnterWorkflowHub(businessProcessID, finalStateID, fileName, msg);
         }
+
+        public void EnterWorkflowDelete(int? businessProcessID, int finalStateID, string fileName, bool isHub, string msg)
+        {
+            if (!isHub)
+                EnterWorkflowDelete(businessProcessID, finalStateID, fileName, msg);
+            else
+                EnterWorkflowHubDelete(businessProcessID, finalStateID, fileName, msg);
+        }
         public void EnterWorkflow(int? businessProcessID, int finalStateID, string fileName, string msg)
         {
 
@@ -492,6 +500,31 @@ namespace Cats.Services.Workflows
             DebbuggingTools.ShowHistory(businessProcessID);
 
             BusinessProcessService.PromotWorkflow_WoutUpdatingCurrentStatus(businessProcessState);
+
+
+            Debug.WriteLine("*-----------WORKFLOW COMMEN AFTER ENTERING LOG");
+            DebbuggingTools.ShowHistory(businessProcessID);
+
+        }
+
+        public void EnterWorkflowDelete(int? businessProcessID, int finalStateID, string fileName, string msg)
+        {
+
+            var businessProcessState = new Models.BusinessProcessState()
+            {
+                StateID = finalStateID,
+                PerformedBy = UserName,
+                DatePerformed = DateTime.Now,
+                Comment = msg,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = businessProcessID ?? 0
+            };
+
+
+            Debug.WriteLine("*-----------WORKFLOW COMMEN BEFORE ENTERING LOG");
+            DebbuggingTools.ShowHistory(businessProcessID);
+
+            BusinessProcessService.PromotWorkflow(businessProcessState);
 
 
             Debug.WriteLine("*-----------WORKFLOW COMMEN AFTER ENTERING LOG");
@@ -521,12 +554,37 @@ namespace Cats.Services.Workflows
 
 
         }
+
+        public void EnterWorkflowHubDelete(int? businessProcessID, int finalStateID, string fileName, string msg)
+        {
+
+            var businessProcessState = new Models.Hubs.BusinessProcessState()
+            {
+                StateID = finalStateID,
+                PerformedBy = UserName,
+                DatePerformed = DateTime.Now,
+                Comment = msg,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = businessProcessID ?? 0
+            };
+
+            Debug.WriteLine("*-----------WORKFLOW COMMEN BEFORE ENTERING LOG");
+            DebbuggingTools.ShowHistory(businessProcessID);
+
+            HubBusinessProcessService.PromotWorkflow(businessProcessState);
+
+            Debug.WriteLine("*-----------WORKFLOW COMMEN AFTER ENTERING LOG");
+            DebbuggingTools.ShowHistory(businessProcessID);
+
+
+        }
         Models.Hubs.BusinessProcess IWorkflowActivityService.GetBusinessProcessHub(int businessProcessId)
         {
             if (businessProcessId <= 0) return null;
 
             return HubBusinessProcessService.FindById(businessProcessId);
         }
+
         Models.BusinessProcess IWorkflowActivityService.GetBusinessProcess(int businessProcessId)
         {
 
