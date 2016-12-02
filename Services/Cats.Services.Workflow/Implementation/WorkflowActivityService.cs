@@ -651,53 +651,58 @@ namespace Cats.Services.Workflows
 
         public List<DashboardDataEntry> GetWorkflowActivityAgg(DateTime startDate, DateTime endDate, List<string> workflowDefinitions, List<string> users, List<string> activities)
         {
-            // Workflow filter collection
-            FilterCollection filterWorkflowDefinitions = new FilterCollection();
-            filterWorkflowDefinitions.AddRange(workflowDefinitions.Select(filterName => new Filter { FilterName = filterName }));
-
-            // User filter collection
-            FilterCollection filterUsers = new FilterCollection();
-            filterUsers.AddRange(users.Select(filterName => new Filter { FilterName = filterName }));
-
-            // Activity filter collection
-            FilterCollection filterActivities = new FilterCollection();
-            filterActivities.AddRange(activities.Select(filterName => new Filter { FilterName = filterName }));
-
-            // Into Param object
-            SqlParameter filterStartDate = new SqlParameter("StartDate", SqlDbType.DateTime) { Value = startDate };
-            SqlParameter filterEndDate = new SqlParameter("EndDate", SqlDbType.DateTime) { Value = endDate };
-            SqlParameter paramWorkflow = new SqlParameter
+            try
             {
-                ParameterName = "WorkflowName_Array",  // proc def
-                SqlDbType = SqlDbType.Structured,
-                Value = filterWorkflowDefinitions,
-                Direction = ParameterDirection.Input
-            };
+                // Workflow filter collection
+                FilterCollection filterWorkflowDefinitions = new FilterCollection();
+                filterWorkflowDefinitions.AddRange(workflowDefinitions.Select(filterName => new Filter { FilterName = filterName }));
 
-            SqlParameter paramUser = new SqlParameter
+                // User filter collection
+                FilterCollection filterUsers = new FilterCollection();
+                filterUsers.AddRange(users.Select(filterName => new Filter { FilterName = filterName }));
+
+                // Activity filter collection
+                FilterCollection filterActivities = new FilterCollection();
+                filterActivities.AddRange(activities.Select(filterName => new Filter { FilterName = filterName }));
+
+                // Into Param object
+                SqlParameter filterStartDate = new SqlParameter("StartDate", SqlDbType.DateTime) { Value = startDate };
+                SqlParameter filterEndDate = new SqlParameter("EndDate", SqlDbType.DateTime) { Value = endDate };
+                SqlParameter paramWorkflow = new SqlParameter
+                {
+                    ParameterName = "@WorkflowName_Array",  // proc def
+                    SqlDbType = SqlDbType.Structured,
+                    Value = filterWorkflowDefinitions,
+                    Direction = ParameterDirection.Input,
+                    TypeName = "dbo.FilterArray"
+                };
+                SqlParameter paramUser = new SqlParameter
+                {
+                    ParameterName = "@User_Array", // proc def
+                    SqlDbType = SqlDbType.Structured,
+                    Value = filterUsers,
+                    Direction = ParameterDirection.Input,
+                    TypeName = "dbo.FilterArray"
+                };
+                SqlParameter paramActivity = new SqlParameter
+                {
+                    ParameterName = "@Activity_Array", // proc def
+                    SqlDbType = SqlDbType.Structured,
+                    Value = filterActivities,
+                    Direction = ParameterDirection.Input,
+                    TypeName = "dbo.FilterArray"
+                };
+
+                var result = ExecWithStoreProcedure("EXEC [dbo].[GenericDashboardDataProvider] " +
+                                                    "@StartDate, @EndDate, @WorkflowName_Array, @User_Array, @Activity_Array",
+                    filterStartDate, filterEndDate, paramWorkflow, paramUser, paramActivity);
+
+                return result.ToList();
+            }
+            catch (Exception exception)
             {
-                ParameterName = "User_Array", // proc def
-                SqlDbType = SqlDbType.Structured,
-                Value = filterUsers,
-                Direction = ParameterDirection.Input
-            };
-
-            SqlParameter paramActivity = new SqlParameter
-            {
-                ParameterName = "Activity_Array", // proc def
-                SqlDbType = SqlDbType.Structured,
-                Value = filterActivities,
-                Direction = ParameterDirection.Input
-            };
-
-            var result = ExecWithStoreProcedure("EXEC [dbo].[GenericDashboardDataProvider] @StartDate, @EndDate, @WorkflowName_Array, @User_Array, @Activity_Array",
-                filterStartDate, filterEndDate, paramWorkflow, paramUser, paramActivity);
-
-            //
-            // TODO: need to process result
-            //
-
-            return result.ToList();
+                return null;
+            }
         }
 
         public IEnumerable<DashboardDataEntry> ExecWithStoreProcedure(string query, params object[] parameters)
