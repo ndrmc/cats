@@ -18,6 +18,7 @@ using Cats.Helpers;
 using Cats.Models.ViewModels;
 using Cats.ViewModelBinder;
 using Cats.Security;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -36,7 +37,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
         private readonly IUserAccountService _userAccountService;
         private readonly INotificationService _notificationService;
         private readonly IApplicationSettingService _applicationSettingService;
-
+        private readonly IWorkflowActivityService _workflowActivityService;
         public NeedAssessmentController(INeedAssessmentService needAssessmentService,
                                         IAdminUnitService adminUnitService,
                                         INeedAssessmentHeaderService needAssessmentHeaderService,
@@ -47,7 +48,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                         ICommonService commonService,IUserAccountService userAccountService,
                                         INotificationService notificationService,
                                         IBusinessProcessService businessProcessService, 
-                                        IApplicationSettingService applicationSettingService)
+                                        IApplicationSettingService applicationSettingService,
+                                        IWorkflowActivityService workflowActivityService)
         {
             _needAssessmentService = needAssessmentService;
             _adminUnitService = adminUnitService;
@@ -62,6 +64,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             _notificationService = notificationService;
             _businessProcessService = businessProcessService;
             _applicationSettingService = applicationSettingService;
+            _workflowActivityService = workflowActivityService;
         }
 
       
@@ -434,19 +437,37 @@ namespace Cats.Areas.EarlyWarning.Controllers
             List<NeedAssessmentDetail> result = new List<NeedAssessmentDetail>();
             if (needAssessmentlDetails != null && ModelState.IsValid)
             {
+                bool deatilUpdated = false;
+                var needAssessmentId = 0;
+                 
                 foreach (NeedAssessmentDetail details in needAssessmentlDetails)
                 {
                    // details.
-                    _needAssessmentDetailService.EditNeedAssessmentDetail(details);
+                   //deatilUpdated = _needAssessmentDetailService.EditNeedAssessmentDetail(details);
                     //details.
-                    NeedAssessmentDetail record = _needAssessmentDetailService.FindById(details.NAId);
-                    if (record != null)
+                    var record = _needAssessmentDetailService.FindById(details.NAId);
+                    record.ProjectedFemale = details.ProjectedFemale;
+                    record.ProjectedMale = details.ProjectedMale;
+                    deatilUpdated = _needAssessmentDetailService.EditNeedAssessmentDetail(record);
+                    //if (record != null)
+                    //{
+                    //    result.Add(record);
+                    //}
+                    needAssessmentId = Convert.ToInt32(record.NeedAId);
+                    var id = record.NAId;
+                }
+                if (deatilUpdated)
+                {
+                    var needAssessmentDetail = needAssessmentlDetails.FirstOrDefault();
+                    if (needAssessmentDetail != null)
                     {
-                        result.Add(record);
+                        var needAssessment = _needAssessmentService.FindById(needAssessmentId);
+                        if (needAssessment != null)
+                            _workflowActivityService.EnterEditWorkflow(needAssessment.BusinessProcess);
                     }
                 }
             }
-            var needAssesmentsViewModel = NeedAssessmentViewModelBinder.ReturnNeedAssessmentDetailViewModel(result);
+            //var needAssesmentsViewModel = NeedAssessmentViewModelBinder.ReturnNeedAssessmentDetailViewModel(result);
             return Json(new[] { needAssessmentlDetails }.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
             //return Json(needAssessmentlDetails.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
            // return Json(ModelState.ToDataSourceResult());
