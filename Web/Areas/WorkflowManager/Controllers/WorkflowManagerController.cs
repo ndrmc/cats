@@ -2,36 +2,32 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Cats.Data.Shared.UnitWork;
 using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Models.Shared.DashBoardModels;
 using Cats.Services.Administration;
-using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Workflows;
 using Cats.Services.Workflows.Config;
-using NUnit.Framework;
-using Telerik.Web.Mvc.Extensions;
 
 namespace Cats.Areas.WorkflowManager.Controllers
 {
     public class WorkflowManagerController : Controller
     {
         private readonly IUserProfileService _userProfileService;
-        private readonly IWorkflowActivityService _workflowActivityService;
+        //private readonly IWorkflowActivityService _workflowActivityService;
         private readonly Cats.Services.Workflows.Config.IApplicationSettingService _applicationSettingService;
         private readonly IStateTemplateService _stateTemplateService;
 
         public WorkflowManagerController(IUserProfileService userProfileService,
-            IWorkflowActivityService workflowActivityService,
+            //IWorkflowActivityService workflowActivityService,
             Cats.Services.Workflows.Config.IApplicationSettingService applicationSettingService,
             IStateTemplateService stateTemplateService)
         {
             _userProfileService = userProfileService;
-            _workflowActivityService = workflowActivityService;
+            //_workflowActivityService = workflowActivityService;
             _applicationSettingService = applicationSettingService;
             _stateTemplateService = stateTemplateService;
 
@@ -43,12 +39,16 @@ namespace Cats.Areas.WorkflowManager.Controllers
             return View();
         }
 
-        public List<WorkflowActivityViewModel> GetWorkflowActivity(string pageName, string filter = null)
+        public JsonResult GetWorkflowActivity(string pageName, string filter = null)
         {
             string[] users = GetAllTeamUsers(pageName);
-            string[] workflows = GetAllWorkflows(pageName);
-            string[] activities = GetAllStateTemplate(workflows);
+            List<DashboardFilterModel> dashboardFilterUser = users.Select(user => new DashboardFilterModel { Name = user }).ToList();
 
+            string[] workflows = GetAllWorkflows(pageName);
+            List<DashboardFilterModel> dashboardFilterWorkflow = workflows.Select(workflow => new DashboardFilterModel { Name = workflow }).ToList();
+
+            string[] activities = GetAllStateTemplate(workflows);
+            List<DashboardFilterModel> dashboardFilterActivity = activities.Select(activity => new DashboardFilterModel { Name = activity }).ToList();
 
 
             return null;

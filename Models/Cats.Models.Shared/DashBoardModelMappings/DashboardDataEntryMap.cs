@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity.ModelConfiguration;
+using Cats.Models.Shared.DashBoardModels;
 
-namespace Cats.Models.Shared.DashBoardModels
+namespace Cats.Models.Shared.DashBoardModelMappings
 {
     public class DashboardDataEntryMap : EntityTypeConfiguration<DashboardDataEntry>
     {
