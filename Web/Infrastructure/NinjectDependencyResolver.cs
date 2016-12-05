@@ -303,7 +303,7 @@ namespace Cats.Infrastructure
             kernel.Bind<Cats.Services.Hub.IOtherDispatchAllocationService>().To<Cats.Services.Hub.OtherDispatchAllocationService>();
             kernel.Bind<Cats.Services.Hub.IDispatchDetailService>().To<Cats.Services.Hub.DispatchDetailService>();
             kernel.Bind<Cats.Services.Hub.IPeriodService>().To<Cats.Services.Hub.PeriodService>();
-            kernel.Bind<Cats.Services.Hubs.IHubService>().To<Cats.Services.Hubs.HubService>();
+            kernel.Bind<Cats.Services.Hub.IHubService>().To<Cats.Services.Hub.HubService>();
             kernel.Bind<Cats.Services.Hub.IReceiveService>().To<Cats.Services.Hub.ReceiveService>();
             kernel.Bind<Cats.Web.Hub.IMembershipWrapper>().To<Cats.Web.Hub.MembershipWrapper>(); ;
             kernel.Bind<Cats.Web.Hub.IUrlHelperWrapper>().To<Cats.Web.Hub.UrlHelperWrapper>();

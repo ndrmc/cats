@@ -10,7 +10,7 @@ using Cats.Models.Hubs.ViewModels.Report;
 using Cats.Models.Hubs.ViewModels.Report.Data;
 
 
-namespace Cats.Services.Hubs
+namespace Cats.Services.Hub
 {
     public interface IHubService:IDisposable
     {
@@ -30,7 +30,7 @@ namespace Cats.Services.Hubs
          List<Models.Hubs.Hub> GetAllWithoutId(int hubId);
          List<Models.Hubs.Hub> GetOthersHavingSameOwner(Models.Hubs.Hub hub);
         List<Models.Hubs.Hub> GetOthersWithDifferentOwner(Models.Hubs.Hub hub);
-        Hub GetNearestWarehouse(int woredaID);
+        Models.Hubs.Hub GetNearestWarehouse(int woredaID);
 
 
 

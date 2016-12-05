@@ -15,7 +15,7 @@ using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Dispatch = Cats.Models.Hubs.Dispatch;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
-using IHubService = Cats.Services.Hubs.IHubService;
+using IHubService = Cats.Services.EarlyWarning.IHubService;
 
 namespace Cats.Areas.Logistics.Controllers
 {
