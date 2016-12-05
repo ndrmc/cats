@@ -18,8 +18,7 @@ using Kendo.Mvc.UI;
 using Cats.Helpers;
 using Cats.Models.ViewModels;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
-
-
+using IHubService = Cats.Services.EarlyWarning.IHubService;
 namespace Cats.Areas.Logistics.Controllers
 {
     [Authorize]
