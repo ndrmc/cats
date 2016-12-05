@@ -22,6 +22,7 @@ using Cats.Data.Shared;
 using Cats.Data.Shared.UnitWork;
 using Microsoft.SqlServer.Server;
 using System.Data.SqlClient;
+using IApplicationSettingService = Cats.Services.Workflows.Config.IApplicationSettingService;
 
 namespace Cats.Services.Workflows
 {

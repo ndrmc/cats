@@ -63,7 +63,14 @@ namespace Cats.Data.Repository
        
         public virtual T FindById(int id)
         {
-            return _context.Set<T>().Find(id);
+            try
+            {
+                return _context.Set<T>().Find(id);
+            }
+            catch (Exception exception)
+            {
+                throw;
+            }
         }
    
        public virtual T FindById(Guid id)

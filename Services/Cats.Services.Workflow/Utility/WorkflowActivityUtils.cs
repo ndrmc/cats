@@ -16,6 +16,7 @@ using System.Diagnostics;
 using Cats.Models.Security;
 using Cats.Services.Workflows.Alert;
 using Cats.Services.Hubs;
+using IApplicationSettingService = Cats.Services.Workflows.Config.IApplicationSettingService;
 
 namespace Cats.Services.Workflows
 {
