@@ -19,8 +19,11 @@ namespace Cats.Areas.WorkflowManager.Controllers
 {
     public class WorkflowManagerController : Controller
     {
-        public dynamic GetAllListOfFilterObjects(string pageName)
+        public JsonResult GetAllListOfFilterObjects(string pageName)
         {
+            Random random = new Random(Int32.MinValue);
+
+            string pageName = "FINANCE";
             string constantPageName = string.Empty;
 
             if (pageName.Equals(Constants.FinancePage, StringComparison.InvariantCultureIgnoreCase))
@@ -45,17 +48,22 @@ namespace Cats.Areas.WorkflowManager.Controllers
             }
 
             string[] users = GetAllTeamUsers(pageName);
-            //List<DashboardFilterModel> dashboardFilterUser = users.Select(user => new DashboardFilterModel { Name = user }).ToList();
+            List<DashboardFilterModel> dashboardFilterUser = users.Select(user => new DashboardFilterModel { Name = user, Id = random.Next() }).ToList();
+
+            random = new Random(Int32.MinValue);
 
             string[] workflows = GetAllWorkflows(constantPageName);
-            //List<DashboardFilterModel> dashboardFilterWorkflow = workflows.Select(workflow => new DashboardFilterModel { Name = workflow }).ToList();
+            List<DashboardFilterModel> dashboardFilterWorkflow = workflows.Select(workflow => new DashboardFilterModel { Name = workflow, Id = random.Next() }).ToList();
+
+            random = new Random(Int32.MinValue);
 
             string[] activities = GetAllStateTemplate(workflows);
-            //List<DashboardFilterModel> dashboardFilterActivity = activities.Select(activity => new DashboardFilterModel { Name = activity }).ToList();
+            List<DashboardFilterModel> dashboardFilterActivity = activities.Select(activity => new DashboardFilterModel { Name = activity, Id = random.Next() }).ToList();
 
-            dynamic[] filterObjects = { users, workflows, activities };
+            //dynamic[] filterObjects = { users, workflows, activities };
+            dynamic[] filterObjects = { dashboardFilterUser, dashboardFilterWorkflow, dashboardFilterActivity };
 
-            return filterObjects;
+            return Json(filterObjects, JsonRequestBehavior.AllowGet);
         }
         private string[] GetAllTeamUsers(string pageName)
         {
