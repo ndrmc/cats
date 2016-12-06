@@ -1,8 +1,4 @@
 ﻿
-<!DOCTYPE html>
-<html>
-
-<head>
     <style>
         body {
             padding: 20px;
@@ -50,202 +46,76 @@
     <link href="scripts/font-awesome.min.css" rel="stylesheet" />*@
 
 
-</head>
+@*</head>*@
 
-<body ng-controller="WorkflowActController" ng-app="workflowActApp">
-
-    <div class="container ">
-
-
-        <div class="row dataEntryIndicatorBody">
-
-
-            <div class="col-sm-12 well">
-
-                <div class="col-sm-2 ">
-
-                    <Label><small>Start Date</small></Label>
-                    <input type="text" class="form-control" placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
-                </div>
-                <div class="col-sm-2 ">
-                    <Label><small>End Date</small></Label>
-                    <input type="text" class="form-control" placeholder="End Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedEndDate" title="Enter End Date">
-
-                </div>
-
-                <div class="col-sm-2">
-                    <Label><small>  User</small></Label> <br />
-
-                    <select id="User" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUser" title="User">
-                        <option ng-repeat="user in controlData.lookupUsers" value="{{user.name}}">{{user.name}}</option>
-                    </select>
-
-                </div>
-
-
-                <div class="col-sm-2">
-
-
-                    <Label><small>Activity</small></Label><br />
-
-                    <select id="Activity" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
-                        <option ng-repeat="activity in controlData.lookupActivities" value="{{activity.name}}">{{activity.name}}</option>
-
-                    </select>
-
-                </div>
-
-                <div class="col-sm-2">
-                    <Label><small>Document</small></Label><br />
-                    <select id="Document" class="form-control" data-toggle="tooltip" data-placement="top" title="Document" ng-model="filterData.selectedDocument">
-                        <option ng-repeat="document in controlData.lookupDocument" value="{{document.name}}">{{document.name}}</option>
-
-                    </select>
-                </div>
-
-                <div class="col-sm-1 ">
-                    <Label><small> Search</small></Label>
-                    <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i class="fa fa-search"></i></button>
-                </div>
-
-                <div class="col-sm-1">
-                    <Label><small>Full Screen</small></Label>
-                    <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" ng-click="showFullScreen()" title="Show Full Screen"><i class="fa fa-dropbox"></i></button>
-                </div>
-
-
-
-
-
-
-
-
-
-            </div>
-
-
-            <div class="row dataEntryIndicatorBody ">
-
-                <div class="col-sm-6">
-
-                    <table class="table table-responsive table-hover table-striped table-bordered table-inverse">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>User/Activity</th>
-
-                                <th ng-repeat="activities in displayedWorkflowNames track by $index">
-                                    {{ activities }}
-                                </th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="user in displayedWorkflowContent track by $index">
-                                <td scope="row">{{user.index}}</td>
-                                <td>{{user.userName}}</td>
-                                <td ng-repeat="actCount in user.activityAndCount track by $index">
-                                    {{actCount}}
-                                </td>
-
-                            </tr>
-
-
-                            <tr>
-                                <th colspan="2">Total</th>
-                                <td>20</td>
-                                <td>30</td>
-
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-
-
-                <div class="col-sm-6 well">
-                    <div>
-                        <andy></andy>
-                    </div>
-
-                </div>
-            </div>
-
-
-        </div>
-
-
-        <andy></andy>
-        <div andy></div>
-    </div>
-
+@*<body ng-controller="WorkflowActController" ng-app="workflowActApp">*@
 
     <script>
 
 
-                $(document).ready(function () {
+        $(document).ready(function () {
 
-                    $('#Activity').multiselect({
+            $('#Activity').multiselect({
 
-                        templates: { // Use the Awesome Bootstrap Checkbox structure
+                templates: { // Use the Awesome Bootstrap Checkbox structure
 
-                            li: '<li><div class="checkbox"><label></label></div></li>'
-                        }
+                    li: '<li><div class="checkbox"><label></label></div></li>'
+                }
 
-                    });
+            });
 
-                    $('#Document').multiselect({
+            $('#Document').multiselect({
 
-                        templates: { // Use the Awesome Bootstrap Checkbox structure
+                templates: { // Use the Awesome Bootstrap Checkbox structure
 
-                            li: '<li><div class="checkbox"><label></label></div></li>'
-                        }
+                    li: '<li><div class="checkbox"><label></label></div></li>'
+                }
 
-                    });
+            });
 
-                    $('#User').multiselect({
+            $('#User').multiselect({
 
-                        templates: { // Use the Awesome Bootstrap Checkbox structure
+                templates: { // Use the Awesome Bootstrap Checkbox structure
 
-                            li: '<li><div class="checkbox"><label></label></div></li>'
-                        }
+                    li: '<li><div class="checkbox"><label></label></div></li>'
+                }
 
-                    });
+            });
 
-                    //	$('#Activity').includeSelectAllOption= true;
+            //	$('#Activity').includeSelectAllOption= true;
 
-                    $('.multiselect-container div.checkbox').each(function (index) {
+            $('.multiselect-container div.checkbox').each(function (index) {
 
-                        var id = 'multiselect-' + index,
+                var id = 'multiselect-' + index,
 
-                            $input = $(this).find('input');
+                    $input = $(this).find('input');
 
-                        // Associate the label and the input
+                // Associate the label and the input
 
-                        $(this).find('label').attr('for', id);
+                $(this).find('label').attr('for', id);
 
-                        $input.attr('id', id);
+                $input.attr('id', id);
 
-                        // Remove the input from the label wrapper
+                // Remove the input from the label wrapper
 
-                        $input.detach();
+                $input.detach();
 
-                        // Place the input back in before the label
+                // Place the input back in before the label
 
-                        $input.prependTo($(this));
+                $input.prependTo($(this));
 
-                        $(this).click(function (e) {
+                $(this).click(function (e) {
 
-                            // Prevents the click from bubbling up and hiding the dropdown
+                    // Prevents the click from bubbling up and hiding the dropdown
 
-                            e.stopPropagation();
-
-                        });
-
-
-                    });
+                    e.stopPropagation();
 
                 });
+
+
+            });
+
+        });
 
 
 
@@ -263,9 +133,6 @@
         workflowActApp.constant('URLgetWorkflowList', '\workflow\getWorkflowList');
 
         workflowActApp.controller('WorkflowActController', function WorkflowActController($scope, DataServices, $http) {
-
-
-
 
             $scope.displayedUserNames = [];//ROW STARTERS
             $scope.displayedWorkflowNames = [];//FOR THE COLUMNS
@@ -295,17 +162,12 @@
 
                 var initializeControls = function () {
 
-
-                    $http({ method: 'GET', url: '@Url.Action("GetAllListOfFilterObjects", "WorkflowManager", new {Area = "WorkflowManager" })", "Earlywarning"))' })
-                        .success(function (data, status, headers, config) {
-                            $scope.controlData = data;
-                            console.log(data);
-                        });
-
+                    $scope.controlData = DataServices.getHeaderControlsInitData();
 
 
                     $scope.displayedWorkflowList = DataServices.getWorkflowList();
                 };
+
                 var setFilterControlDefaultValue = function () {
 
 
@@ -341,14 +203,14 @@
 
                 };
 
-
                 var getComboData = function () {
 
                 }
 
-
                 initializeControls();
+
                 setFilterControlDefaultValue();
+
                 buildTableStructure();
             }
 
@@ -377,7 +239,6 @@
                     });
 
                 };
-
 
                 var PopulateRows = function () {
                     if ($scope.displayedWorkflowContent != undefined) {
@@ -445,7 +306,6 @@
                     });
                 }
 
-
                 PopulateColumns();
 
                 PopulateRows();
@@ -457,63 +317,22 @@
 
             }
 
-
             $scope.init();
-
-
-
-
-
-
 
         });
 
-        workflowActApp.factory('DataServices', ['$http', function ($http) {
+        workflowActApp.factory('DataServices', [function ($http) {
             return {
                 ///Get Header Control Initialization Data
                 getHeaderControlsInitData: function () {
-                    var controlData = null;
-                    //var controlData = {
+                    var controlData = {
 
-                    //    lookupUsers: [{ name: 'Andy' }, { name: 'Fits' }],
-                    //    lookupActivities: [{ name: 'Draft' }, { name: 'Approve' }, { name: 'Reject' }],
-                    //    lookupDocument: [{ name: 'Gift Certificate' }, { name: 'Transporter' }],
-                    //    mappingDocumentToActivities: [{ document: 'Gift Certificate', activity: 'Draft' }, { document: 'Transporter', activity: 'Validate' }]
+                        lookupUsers: [{ name: 'Andy' }, { name: 'Fits' }],
+                        lookupActivities: [{ name: 'Draft' }, { name: 'Approve' }, { name: 'Reject' }],
+                        lookupDocument: [{ name: 'Gift Certificate' }, { name: 'Transporter' }],
+                        mappingDocumentToActivities: [{ document: 'Gift Certificate', activity: 'Draft' }, { document: 'Transporter', activity: 'Validate' }]
 
-                    //};
-
-                    //$http.get({
-                    //    method: 'GET',
-                    //    url: '/api/WorkflowManager/GetAllListOfFilterObjects',
-                    //    params: {
-                    //        pageName: 'Earlywarning'
-                    //    }
-                    //}).then(function successCallback(response) {
-
-                    //    controlData = response.data;
-
-                    //}, function errorCallback(response) {
-
-
-
-                    //});
-
-
-                    //this.getCustomers = function () {
-                    //    var deferred = $q.defer();
-                    //    $http({
-                    //        method: 'GET',
-                    //        url: 'api/customer'
-                    //    }).
-                    //     success(function (data, status, headers, config) {
-                    //         deferred.resolve(data)
-                    //     }).
-                    //     error(function (data, status) {
-                    //         deferred.reject(data);
-                    //     });
-
-                    //    return deferred;
-                    //}
+                    };
 
                     return controlData;
 
@@ -524,7 +343,10 @@
                 getWorkflowList: function (filterData) {
                     var workflowData = [
 
-                    { userName: "user1", activityCount: [{ activityName: "Approve", activityCount: 25 }, { activityName: "Reject", activityCount: 5 }, { activityName: "Draft", activityCount: 36 }] },
+                    {
+                        userName: "user1", activityCount:
+                          [{ activityName: "Approve", activityCount: 25 }, { activityName: "Reject", activityCount: 5 }, { activityName: "Draft", activityCount: 36 }]
+                    },
                     { userName: "user2", activityCount: [{ activityName: "Approve", activityCount: 2 }, { activityName: "Reject", activityCount: 50 }, { activityName: "Draft", activityCount: 15 }] }
 
                     ];
@@ -536,27 +358,6 @@
                 }
             }
         }]);
-
-        //workflowActApp.service('DService', function ($http, $q) {
-        //    this.getCustomers = function () {
-        //        var deferred = $q.defer();
-        //        $http({
-        //            method: 'GET',
-        //            url: '/api/WorkflowManager/GetAllListOfFilterObjects',
-        //            params: {
-        //                        pageName: 'Earlywarning'
-        //                    }
-        //        })
-        //        .success(function (data, status, headers, config) {
-        //            // any required additional processing here
-        //            q.resolve(data);
-        //        })
-        //        .error(function (data, status) {
-        //            q.reject(data);
-        //        });
-        //        return deferred.promise;
-        //    }
-        //});
 
         workflowActApp.service('PopulateColumnsAndHeaderNames', [function ($scope) {
 
@@ -603,7 +404,6 @@
 
             };
 
-
             var PopulateCount = function () {
 
                 if ($scope.displayedWorkflowList.length > 0) {
@@ -633,92 +433,6 @@
         }]);
 
 
-        //workflowActApp.directive('d', function ($timeout) {
-        //        var directive = {};
-
-        //        directive.restrict = 'E';
-
-        //        directive.templateUrl = "/Templates/d.htm";
-
-        //        directive.replace = true;
-
-        //        //directive.link = function (scope, element, attributes ) {
-
-        //        //    if(scope.$last===true){
-        //        //        $timeout(function()
-        //        //        {
-        //        //            scope.$emit('ngloadfinished');
-
-        //        //        })
-
-        //        //    };
-
-
-
-
-
-        //        //    element.html("Andy is good<b>  hi </b>");
-
-
-        //        //}
-
-        //    //directive.compile = function (element, attributes) {
-
-        //    //            element.css("border", "1px solid #cccccc");
-
-
-
-        //    //            return linkFunction;
-
-        //    //        }
-
-
-
-        //return directive;
-
-
-        //});
-
-        //workflowActApp.directive('andyCustom', function () {
-
-        //    return {
-
-
-        //        //templateUrl: '/Templates/andy.html'
-        //    };
-        //    //var directive = {};
-
-        //    //directive.restrict = 'E';
-
-        //    //directive.template = "<div id='andy'>Hi andy</div>";
-
-        //    //directive.compile = function (element, attributes) {
-
-        //    //    element.css("border", "1px solid #cccccc");
-
-        //    //    var linkFunction = function ($scope, element, attributes) {
-
-        //    //        element.html("andy is good<b>  hi </b>");
-
-
-        //    //    }
-
-        //    //    return linkFunction;
-
-        //    //}
-
-        //    //return directive;
-
-        //});
-
-
 
     </script>
 
-
-
-
-
-</body>
-
-</html>
