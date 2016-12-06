@@ -134,17 +134,17 @@
                                 <th>#</th>
                                 <th>User/Activity</th>
 
-                                <th ng-repeat="activities in displayedWorkflowNames">
+                                <th ng-repeat="activities in displayedWorkflowNames track by $index">
                                     {{ activities }}
                                 </th>
 
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="user in displayedWorkflowContent">
+                            <tr ng-repeat="user in displayedWorkflowContent track by $index">
                                 <td scope="row">{{user.index}}</td>
                                 <td>{{user.userName}}</td>
-                                <td ng-repeat="actCount in user.activityAndCount">
+                                <td ng-repeat="actCount in user.activityAndCount track by $index">
                                     {{actCount}}
                                 </td>
 
@@ -292,27 +292,18 @@
 
             $scope.init = function () {
 
-                
+
                 var initializeControls = function () {
 
-                    //$scope.controlData = DataServices.getHeaderControlsInitData();
-                    $http.get({
-                        method: 'GET',
-                //  url:'/api/WorkflowTest/GetAllListOfFilterObjects?pageName=Earlywarning'
-                url: 'http://localhost:3325/api/WorkflowTest/GetAllListOfFilterObjects?pageName=Earlywarning'
-                        //,
-                        //params: {
-                        //    pageName: 'Earlywarning'
-                        //}
-                    })
-                       .then(function (response) {
-                           $scope.controlData = response.data;
-                       });
 
-              //          .error(function () {
-              //    alert("error");
-              //});
-         
+                    $http({ method: 'GET', url: '@Url.Action("GetAllListOfFilterObjects", "WorkflowManager", new {Area = "WorkflowManager" })", "Earlywarning"))' })
+                        .success(function (data, status, headers, config) {
+                            $scope.controlData = data;
+                            console.log(data);
+                        });
+
+
+
                     $scope.displayedWorkflowList = DataServices.getWorkflowList();
                 };
                 var setFilterControlDefaultValue = function () {
@@ -352,7 +343,7 @@
 
 
                 var getComboData = function () {
-                
+
                 }
 
 
@@ -477,7 +468,7 @@
 
         });
 
-        workflowActApp.factory('DataServices', [ '$http',function ($http) {
+        workflowActApp.factory('DataServices', ['$http', function ($http) {
             return {
                 ///Get Header Control Initialization Data
                 getHeaderControlsInitData: function () {
@@ -502,7 +493,7 @@
                     //    controlData = response.data;
 
                     //}, function errorCallback(response) {
-                  
+
 
 
                     //});
