@@ -22,8 +22,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
         public JsonResult GetAllListOfFilterObjects(string pageName)
         {
             Random random = new Random(Int32.MinValue);
-
-            string pageName = "FINANCE";
+            
             string constantPageName = string.Empty;
 
             if (pageName.Equals(Constants.FinancePage, StringComparison.InvariantCultureIgnoreCase))
@@ -125,7 +124,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
         }
         private string[] GetAllStateTemplates(string workflowName)
         {
-            Data.UnitWork.IUnitOfWork unitOfWork = new Data.UnitWork.UnitOfWork();
+            IUnitOfWork unitOfWork = new UnitOfWork();
             ApplicationSettingService applicationSettingService = new ApplicationSettingService(unitOfWork);
             StateTemplateService stateTemplateService = new StateTemplateService(unitOfWork);
 
