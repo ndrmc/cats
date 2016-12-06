@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -15,10 +16,10 @@ namespace Cats.Areas.Settings.Controllers
     public class UserWarehouseController : Controller
     {
         private readonly IUserHubService _userHubService;
-        private readonly Cats.Services.Hubs.IHubService _hubService;
+        private readonly  IHubService _hubService;
         private readonly IUserProfileService _userProfileService;
 
-        public UserWarehouseController(IUserHubService userHubService, Cats.Services.Hubs.IHubService hubService, IUserProfileService userProfileService)
+        public UserWarehouseController(IUserHubService userHubService,  IHubService hubService, IUserProfileService userProfileService)
         {
             this._userHubService = userHubService;
             this._hubService = hubService;

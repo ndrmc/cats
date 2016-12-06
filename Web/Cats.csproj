@@ -1950,6 +1950,10 @@
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\Bootstrap\awesome-bootstrap-checkbox.css" />
+    <Content Include="Scripts\Bootstrap\bootstrap-multiselect.css" />
+    <Content Include="Scripts\Bootstrap\bootstrap-multiselect.js" />
+    <Content Include="Scripts\Bootstrap\font-awesome.min.css" />
     <Content Include="Scripts\cats-print-script.js" />
     <Content Include="Scripts\css\bootstrap.min.css" />
     <Content Include="Scripts\css\Bootstrap\loading-image.gif" />
@@ -2190,6 +2194,7 @@
     <Content Include="Scripts\js\bootstrap-timepicker.min.js" />
     <Content Include="Scripts\js\bootstrap.calendars.picker.css" />
     <Content Include="Scripts\js\bootstrap.min.js" />
+    <Content Include="Scripts\js\DataActivityIndictor\DataActivityIndicator.js" />
     <Content Include="Scripts\js\kendo.all.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af-ZA.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af.min.js" />
@@ -2760,7 +2765,11 @@
     <Content Include="Areas\Settings\Views\Users\ForgetPassword.cshtml" />
     <Content Include="Areas\Settings\Views\Users\ForgetPasswordRequest.cshtml" />
     <Content Include="Areas\WorkflowManager\Views\BusinessProcess\Details.cshtml" />
+
     <Content Include="Areas\WorkflowManager\Views\WorkflowManager\Index.cshtml" />
+
+    <Content Include="DataActTester.cshtml" />
+
     <None Include="dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>dataset.Designer.cs</LastGenOutput>
@@ -2795,6 +2804,7 @@
     <Content Include="Scripts\fonts\FontAwesome.otf" />
     <Content Include="Scripts\css\images\KendoUI.ttf" />
     <Content Include="Scripts\css\images\KendoUI.woff" />
+    <Content Include="Scripts\fonts\fontawesome-webfont.woff2" />
     <None Include="Scripts\HubScripts\jquery-1.7.1-vsdoc.js" />
     <Content Include="Scripts\HubScripts\jquery-1.7.1.js" />
     <Content Include="Scripts\HubScripts\jquery-1.7.1.min.js" />
@@ -3499,6 +3509,7 @@
     <Content Include="Web References\ReportPortal\CacheRefreshPlan1.datasource" />
     <Content Include="Web References\ReportPortal\CacheRefreshPlan3.datasource" />
     <Content Include="Web References\ReportPortal\CacheRefreshPlan4.datasource" />
+    <Content Include="Views\Shared\Dashboard\DataActivityIndicator.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

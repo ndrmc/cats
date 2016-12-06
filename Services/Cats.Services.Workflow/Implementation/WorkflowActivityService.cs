@@ -614,11 +614,8 @@ namespace Cats.Services.Workflows
             {
                 BusinessProcessStateID = 1,
                 PerformedBy = "Ayele",
-                Comment = Alert.AlertMessage.Workflow_DefaultCreate,
+                Comment = Alert.AlertMessage.Workflow_DefaultCreate
                 //TargetObject = get gift certificate from unit of work
-                TargetObjectJsonData = "ID:14 , Name ='GiftCert1'",
-                TargetObjectReferenceId = "14",
-                TargetObjectType = typeof(Models.Hubs.GiftCertificate)
 
             };
 
@@ -626,11 +623,8 @@ namespace Cats.Services.Workflows
             {
                 BusinessProcessStateID = 1,
                 PerformedBy = "Kebede",
-                Comment = Alert.AlertMessage.Workflow_DefaultCreate,
+                Comment = Alert.AlertMessage.Workflow_DefaultCreate
                 //TargetObject = get gift certificate from unit of work
-                TargetObjectJsonData = "ID:14 , Name ='GiftCert1'",
-                TargetObjectReferenceId = "14",
-                TargetObjectType = typeof(Models.Hubs.GiftCertificate)
 
             };
 

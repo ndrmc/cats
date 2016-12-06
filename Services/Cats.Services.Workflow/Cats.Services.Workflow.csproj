@@ -79,11 +79,9 @@
     <Compile Include="Implementation\Hub\HubBusinessProcessStateService.cs" />
     <Compile Include="Implementation\Hub\HubFlowTemplateService.cs" />
     <Compile Include="Implementation\Hub\HubProcessTemplateService.cs" />
-    <Compile Include="Implementation\Hub\HubService.cs" />
     <Compile Include="Implementation\Hub\HubStateTemplateService.cs" />
     <Compile Include="Implementation\WorkflowActivityService.cs" />
     <Compile Include="Implementation\WorkflowStatusService.cs" />
-    <Compile Include="Interfaces\Hub\IHubService.cs" />
     <Compile Include="Interfaces\Hub\IHubBusinessProcessService.cs" />
     <Compile Include="Interfaces\Hub\IHubBusinessProcessStateService.cs" />
     <Compile Include="Interfaces\Hub\IHubFlowTemplateService.cs" />

@@ -1,0 +1,717 @@
+﻿
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        .multiselect-container div.checkbox {
+            margin: 0;
+        }
+
+        .multiselect-container label {
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .multiselect-container div.checkbox {
+            padding: 5px 0px 0x 10px;
+        }
+    </style>
+
+
+    <script src="~/Scripts/jquery-1.9.1.js"></script>
+    <script src="~/Content/assetss/global/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/Bootstrap/bootstrap-multiselect.js"></script>
+
+    <script src="~/Scripts/angular/angular.js"></script>
+
+
+    <link href="~/Scripts/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+  
+      <link href="~/Scripts/Bootstrap/awesome-bootstrap-checkbox.css" rel="stylesheet" />
+    <link href="~/Scripts/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/Scripts/Bootstrap/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/assets/css/bootstrap.min.css" rel="stylesheet" />
+
+
+    @*------------Development proj fonts-----*@ 
+    @*<script src="scripts/jquery-1.11.0.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+    <script src="scripts/bootstrap-multiselect.js"></script>
+
+
+    <script src="scripts/A/angular.js"></script>
+
+    <link href="scripts/awesome-bootstrap-checkbox.css" rel="stylesheet" />
+    <link href="scripts/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="scripts/bootstrap.min.css" rel="stylesheet" />
+    <link href="scripts/font-awesome.min.css" rel="stylesheet" />*@
+
+
+</head>
+
+<body ng-controller="WorkflowActController" ng-app="workflowActApp">
+
+    <div class="container">
+
+
+        <div class="row dataEntryIndicatorBody">
+
+
+            <div class="col-sm-12 well">
+
+                <div class="col-sm-2 ">
+
+                    <Label><small>Start Date</small></Label>
+                    <input type="text" class="form-control" placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
+                </div>
+                <div class="col-sm-2 ">
+                    <Label><small>End Date</small></Label>
+                    <input type="text" class="form-control" placeholder="End Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedEndDate" title="Enter End Date">
+
+                </div>
+
+                <div class="col-sm-2">
+                    <Label><small>  User</small></Label> <br />
+
+                    <select id="User" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUser" title="User">
+                        <option ng-repeat="user in controlData.lookupUsers" value="{{user.name}}">{{user.name}}</option>
+                    </select>
+
+                </div>
+
+
+                <div class="col-sm-2">
+
+
+                    <Label><small>Activity</small></Label><br />
+
+                    <select id="Activity" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
+                        <option ng-repeat="activity in controlData.lookupActivities" value="{{activity.name}}">{{activity.name}}</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-sm-2">
+                    <Label><small>Document</small></Label><br />
+                    <select id="Document" class="form-control" data-toggle="tooltip" data-placement="top" title="Document" ng-model="filterData.selectedDocument">
+                        <option ng-repeat="document in controlData.lookupDocument" value="{{document.name}}">{{document.name}}</option>
+
+                    </select>
+                </div>
+
+                <div class="col-sm-1 ">
+                    <Label><small> Search</small></Label>
+                    <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i class="fa fa-search"></i></button>
+                </div>
+
+                <div class="col-sm-1">
+                    <Label><small>Full Screen</small></Label>
+                    <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" ng-click="showFullScreen()" title="Show Full Screen"><i class="fa fa-dropbox"></i></button>
+                </div>
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+            <div class="row dataEntryIndicatorBody ">
+
+                <div class="col-sm-6">
+
+                    <table class="table table-responsive table-hover table-striped table-bordered table-inverse">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>User/Activity</th>
+
+                                <th ng-repeat="activities in displayedWorkflowNames">
+                                    {{ activities }}
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="user in displayedWorkflowContent">
+                                <td scope="row">{{user.index}}</td>
+                                <td>{{user.userName}}</td>
+                                <td ng-repeat="actCount in user.activityAndCount">
+                                    {{actCount}}
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+                                <th colspan="2">Total</th>
+                                <td>20</td>
+                                <td>30</td>
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="col-sm-6 well">
+                    <div>
+                        <andy></andy>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <andy></andy>
+        <div andy></div>
+    </div>
+
+
+
+    <script>
+
+
+        var workflowActApp = angular.module('workflowActApp', []);
+
+        String.prototype.toCamel = function () {
+            return this.replace(/(\-[a-z])/g, function ($1) { return $.toUpperCase().replace('-', ''); });
+        };
+
+        workflowActApp.constant('URLgetWorkflowList', '\workflow\getWorkflowList');
+
+
+        workflowActApp.run(function () {
+            $('#Activity').multiselect({
+
+                templates: { // Use the Awesome Bootstrap Checkbox structure
+
+                    li: '<li><div class="checkbox"><label></label></div></li>'
+                }
+
+            });
+
+            $('#Document').multiselect({
+
+                templates: { // Use the Awesome Bootstrap Checkbox structure
+
+                    li: '<li><div class="checkbox"><label></label></div></li>'
+                }
+
+            });
+
+            $('#User').multiselect({
+
+                templates: { // Use the Awesome Bootstrap Checkbox structure
+
+                    li: '<li><div class="checkbox"><label></label></div></li>'
+                }
+
+            });
+
+            //	$('#Activity').includeSelectAllOption= true;
+
+            $('.multiselect-container div.checkbox').each(function (index) {
+
+                var id = 'multiselect-' + index,
+
+                    $input = $(this).find('input');
+
+                // Associate the label and the input
+
+                $(this).find('label').attr('for', id);
+
+                $input.attr('id', id);
+
+                // Remove the input from the label wrapper
+
+                $input.detach();
+
+                // Place the input back in before the label
+
+                $input.prependTo($(this));
+
+                $(this).click(function (e) {
+
+                    // Prevents the click from bubbling up and hiding the dropdown
+
+                    e.stopPropagation();
+
+                });
+
+
+            });
+
+
+        });
+        workflowActApp.controller('WorkflowActController', function WorkflowActController($scope, DataServices) {
+
+
+
+
+            $scope.displayedUserNames = [];//ROW STARTERS
+            $scope.displayedWorkflowNames = [];//FOR THE COLUMNS
+            $scope.displayedWorkflows = [];
+            $scope.displayedWorkflowContent = [];
+            $scope.displayedWorkflowContentColumns = [];
+            $scope.displayedWorkflowList = [];
+
+            $scope.filterData = {
+                selectedUsers: [],
+                selectedActivities: [],
+                selectedDocument: '',
+                selectedStartDate: '',
+                selectedEndDate: ''
+            }
+
+            $scope.controlData = {
+                lookupUsers: [],
+                lookupActivities: [],
+                lookupDocument: [],
+                mappingDocumentToActivities: []
+
+            };
+
+            $scope.init = function () {
+
+                var initializeControls = function () {
+
+                    $scope.controlData = DataServices.getHeaderControlsInitData();
+
+                    $scope.displayedWorkflowList = DataServices.getWorkflowList();
+                };
+                var setFilterControlDefaultValue = function () {
+
+
+                    var now = new Date();
+                    var aWeekBefore = new Date(new Date().setDate(new Date().getDate() - 5));
+
+
+
+                    $scope.filterData.selectedStartDate = now.toLocaleDateString();
+                    $scope.filterData.selectedEndDate = aWeekBefore.toLocaleDateString();
+
+                    //TODO: use multiselect box setting , ng-model is not working for multiselect boxs
+                    /*
+                            $scope.filterData.selectedUsers=[];
+
+                            angular.forEach($scope.controlData.lookupUsers, function(value, key) {
+                            $scope.filterData.selectedUsers.push(value.name);
+                        });
+
+
+                            $scope.filterData.selectedActivities=[];
+
+                        angular.forEach($scope.controlData.lookupActivities, function(value, key) {
+                            $scope.filterData.selectedActivities.push(value.name);
+                        });
+                        */
+
+                    //	$scope.filterData.selectedActivities=	$scope.controlData.lookupActivities.slice(0);Copy array
+
+                    if ($scope.controlData.lookupDocument.length > 0)
+                    { $scope.filterData.selectedDocument = 'Gift Certificate'; }
+
+
+                };
+
+
+
+
+
+                initializeControls();
+                setFilterControlDefaultValue();
+                buildTableStructure();
+            }
+
+            var buildTableStructure = function () {
+
+                var PopulateColumns = function () {
+                    if ($scope.displayedWorkflowList != undefined) {
+                        if ($scope.displayedWorkflowList.length > 0) {
+                            //Reterive all columns
+                            //first Clear columns list
+                            if ($scope.displayedWorkflowNames.length > 0)
+                                $scope.displayedWorkflowNames.splice($scope.displayedWorkflowNames, A.length);
+
+
+                        }
+                    }
+                    //populate columns list
+                    var name;
+                    var i;
+                    $.each($scope.controlData.lookupActivities, function (index, workflowActObj) {
+
+                        name = workflowActObj.name.trim().toCamel();
+
+                        //Check if already exists or not?
+                        (i = $scope.displayedWorkflowNames.indexOf(name)) < 0 ? $scope.displayedWorkflowNames.push(name) : $scope.displayedWorkflowNames.splice(i, 1);
+                    });
+
+                };
+
+
+                var PopulateRows = function () {
+                    if ($scope.displayedWorkflowContent != undefined) {
+                        if ($scope.displayedWorkflowContent.length > 0) {
+
+                            $scope.displayedWorkflowContent.splice($scope.displayedWorkflowContent, A.length);
+
+                        }
+                    }
+
+                    var name;
+
+                    var tableIndex = 1;
+
+                    var userActivityname;
+
+                    $.each($scope.displayedWorkflowList, function (index, workflowListObj) {
+
+                        var name = workflowListObj.userName.trim().toCamel();;
+
+
+                        var userActivityCountArray = [];
+                        var rowCount = [];
+                        var found = false;
+
+
+                        $.each(workflowListObj.activityCount, function (index, activityCount) {
+                            //BUILD USER X ACTIVITY COUNT
+                            //iterate the activity lookup
+                            found = false;
+                            userActivityname = activityCount.activityName.trim().toCamel();
+                            $.each($scope.controlData.lookupActivities, function (index, headerActivityName) {
+                                //iterate activity count
+
+                                //check if the selected header activity name is equal to the activitycount name
+
+
+                                if (headerActivityName.name == userActivityname) {
+                                    rowCount.push(activityCount.activityCount);
+                                    found = true;
+                                }
+
+
+                            });
+                            if (!found)
+                            { rowCount.push(0); }
+                        });
+
+
+                        userActivityCountArray.push(rowCount);
+
+                        var rowObj =
+                            {
+                                index: tableIndex++,
+                                userName: name,
+                                activityAndCount: rowCount
+
+                            };
+
+                        $scope.displayedWorkflowContent.push(rowObj);
+
+
+                        console.log(rowObj)
+
+                    });
+                }
+
+
+                PopulateColumns();
+
+                PopulateRows();
+
+            }
+
+            $scope.applyFilter = function () {
+                $scope.displayedWorkflows = DataServices.getWorkflowList($scope.filterData);
+
+            }
+
+
+            $scope.init();
+
+
+
+
+
+
+                $('#Activity').multiselect({
+
+                    templates: { // Use the Awesome Bootstrap Checkbox structure
+
+                        li: '<li><div class="checkbox"><label></label></div></li>'
+                    }
+
+                });
+
+                $('#Document').multiselect({
+
+                    templates: { // Use the Awesome Bootstrap Checkbox structure
+
+                        li: '<li><div class="checkbox"><label></label></div></li>'
+                    }
+
+                });
+
+                $('#User').multiselect({
+
+                    templates: { // Use the Awesome Bootstrap Checkbox structure
+
+                        li: '<li><div class="checkbox"><label></label></div></li>'
+                    }
+
+                });
+
+                //	$('#Activity').includeSelectAllOption= true;
+
+                $('.multiselect-container div.checkbox').each(function (index) {
+
+                    var id = 'multiselect-' + index,
+
+                        $input = $(this).find('input');
+
+                    // Associate the label and the input
+
+                    $(this).find('label').attr('for', id);
+
+                    $input.attr('id', id);
+
+                    // Remove the input from the label wrapper
+
+                    $input.detach();
+
+                    // Place the input back in before the label
+
+                    $input.prependTo($(this));
+
+                    $(this).click(function (e) {
+
+                        // Prevents the click from bubbling up and hiding the dropdown
+
+                        e.stopPropagation();
+
+                    });
+
+
+                });
+
+
+
+
+        });
+
+        workflowActApp.factory('DataServices', [function ($http) {
+            return {
+                ///Get Header Control Initialization Data
+                getHeaderControlsInitData: function () {
+                    var controlData = {
+
+                        lookupUsers: [{ name: 'Andy' }, { name: 'Fits' }],
+                        lookupActivities: [{ name: 'Draft' }, { name: 'Approve' }, { name: 'Reject' }],
+                        lookupDocument: [{ name: 'Gift Certificate' }, { name: 'Transporter' }],
+                        mappingDocumentToActivities: [{ document: 'Gift Certificate', activity: 'Draft' }, { document: 'Transporter', activity: 'Validate' }]
+
+                    };
+
+                    return controlData;
+
+
+                },
+
+                //Get usage data
+                getWorkflowList: function (filterData) {
+                    var workflowData = [
+
+                    { userName: "user1", activityCount: [{ activityName: "Approve", activityCount: 25 }, { activityName: "Reject", activityCount: 5 }, { activityName: "Draft", activityCount: 36 }] },
+                    { userName: "user2", activityCount: [{ activityName: "Approve", activityCount: 2 }, { activityName: "Reject", activityCount: 50 }, { activityName: "Draft", activityCount: 15 }] }
+
+                    ];
+
+                    return workflowData;
+
+
+
+                }
+            }
+        }]);
+
+        workflowActApp.service('PopulateColumnsAndHeaderNames', [function ($scope) {
+
+            var PopulateColumns = function () {
+                if ($scope.displayedWorkflowList.length > 0) {
+                    //Reterive all columns
+                    //Clear columns list
+                    $scope.displayedWorkflowNames.splice(0, A.length);
+                    var i;
+
+
+                    //populate columns list
+                    var name;
+                    $.each($scope.displayedWorkflowList, function (index, workflowActObj) {
+
+                        name = workflowActObj.Activity.Trim().toCamel();
+
+                        //Check if already exists or not?
+                        (i = $scope.displayedWorkflowNames.indexOf(name)) < 0 ? $scope.displayedWorkflowNames.push(name) : $scope.displayedWorkflowNames.splice(i, 1);
+                    });
+                }
+            };
+
+            var PopulateRows = function () {
+
+                //-----populate rows list
+
+                if ($scope.displayedWorkflowList.length > 0) {
+                    //Reterive all columns
+                    //Clear columns list
+                    $scope.displayedUserNames.splice(0, A.length);
+                    var i;
+                    name = '';
+                    $.each($scope.displayedWorkflowList, function (index, workflowActObj) {
+
+                        name = workflowActObj.User.Trim().toCamel();
+
+                        //Check if already exists or not?
+                        (i = $scope.displayedUserNames.indexOf(name)) < 0 ? $scope.displayedUserNames.push(name) : $scope.displayedUserNames.splice(i, 1);
+
+                    });
+
+                }
+
+            };
+
+
+            var PopulateCount = function () {
+
+                if ($scope.displayedWorkflowList.length > 0) {
+
+
+
+                }
+
+            }
+
+        }]);
+
+        workflowActApp.factory('WorkflowActObj', [function ($scope) {
+
+            ///Get Header Control Initialization Data
+            var getHeaderControlsInitData = function () {
+
+            };
+
+            //Get usage data
+            var getUsageData = function () {
+
+            };
+
+
+
+        }]);
+
+
+        workflowActApp.directive('d', function ($timeout) {
+                var directive = {};
+
+                directive.restrict = 'E';
+
+                directive.templateUrl = "/Templates/d.htm";
+
+                directive.replace = true;
+
+                //directive.link = function (scope, element, attributes ) {
+
+                //    if(scope.$last===true){
+                //        $timeout(function()
+                //        {
+                //            scope.$emit('ngloadfinished');
+
+                //        })
+
+                //    };
+
+
+
+
+
+                //    element.html("Andy is good<b>  hi </b>");
+
+
+                //}
+
+            //directive.compile = function (element, attributes) {
+
+            //            element.css("border", "1px solid #cccccc");
+
+
+
+            //            return linkFunction;
+
+            //        }
+
+
+
+        return directive;
+
+
+        });
+
+        workflowActApp.directive('andyCustom', function () {
+
+            return {
+
+
+                //templateUrl: '/Templates/andy.html'
+            };
+            //var directive = {};
+
+            //directive.restrict = 'E';
+
+            //directive.template = "<div id='andy'>Hi andy</div>";
+
+            //directive.compile = function (element, attributes) {
+
+            //    element.css("border", "1px solid #cccccc");
+
+            //    var linkFunction = function ($scope, element, attributes) {
+
+            //        element.html("andy is good<b>  hi </b>");
+
+
+            //    }
+
+            //    return linkFunction;
+
+            //}
+
+            //return directive;
+
+        });
+
+
+
+    </script>
+
+
+
+
+
+</body>
+
+</html>

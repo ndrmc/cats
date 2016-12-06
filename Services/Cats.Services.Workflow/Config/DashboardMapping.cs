@@ -10,12 +10,7 @@ namespace Cats.Services.Workflows.Config
         // int, string, string => UniqueKey, PageName, WorkflowDefinition
         public static List<Tuple<int, string, string>> PageNameToWorkflowMappingsList = new List<Tuple<int, string, string>>();
         private static readonly Random Random = new Random(Int32.MinValue);
-        
-        public static void MappingConfig()
-        {
 
-
-        }
         public static void AddMapping(string pageName, string workflowImplementer)
         {
             PageNameToWorkflowMappingsList.Add(new Tuple<int, string, string>(Random.Next(), pageName, workflowImplementer));
@@ -50,6 +45,13 @@ namespace Cats.Services.Workflows.Config
         }
 
         private static void StartupConfiguration_TakeTop(string pageName, int topX)
+        {
+            StartupConfiguration_TakeTop("EarlyWarningDashboard", 100);
+            StartupConfiguration_StartWorkflow("EarlyWarningDashboard", "GiftCertificate");
+
+        }
+        public static void AddMapping(String pageName,Type workflowImplementer )
+
         {
 
         }
