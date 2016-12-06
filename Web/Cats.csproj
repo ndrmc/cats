@@ -540,6 +540,7 @@
     <Compile Include="Areas\WorkflowManager\Controllers\FlowTemplateController.cs" />
     <Compile Include="Areas\WorkflowManager\Controllers\ProcessTemplateController.cs" />
     <Compile Include="Areas\WorkflowManager\Controllers\StateTemplateController.cs" />
+    <Compile Include="Areas\WorkflowManager\Controllers\WorkflowTest.cs" />
     <Compile Include="Areas\WorkflowManager\Models\DashboarDataEntryModel.cs" />
     <Compile Include="Areas\WorkflowManager\Models\WorkflowActivityViewModel.cs" />
     <Compile Include="Areas\WorkflowManager\Controllers\WorkflowManagerController.cs" />
@@ -3785,7 +3786,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>3325</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

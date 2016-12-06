@@ -1,27 +1,29 @@
-﻿using Cats.Areas.WorkflowManager.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
 using System.Web.Mvc;
-using Cats.Data.Shared.UnitWork;
+using Cats.Areas.WorkflowManager.Models;
 using Cats.Models;
 using Cats.Models.Constant;
-using Cats.Models.Shared.DashBoardModels;
 using Cats.Services.Administration;
 using Cats.Services.EarlyWarning;
-using Cats.Services.Workflows;
 using Cats.Services.Workflows.Config;
 
 namespace Cats.Areas.WorkflowManager.Controllers
 {
-    public class WorkflowManagerController : Controller
+    public class WorkflowTestController : ApiController
     {
         private readonly IUserProfileService _userProfileService;
         //private readonly IWorkflowActivityService _workflowActivityService;
         private readonly Cats.Services.Workflows.Config.IApplicationSettingService _applicationSettingService;
         private readonly IStateTemplateService _stateTemplateService;
+        public WorkflowTestController()
+        { }
 
-        public WorkflowManagerController(IUserProfileService userProfileService,
+        public WorkflowTestController(IUserProfileService userProfileService,
             //IWorkflowActivityService workflowActivityService,
             Cats.Services.Workflows.Config.IApplicationSettingService applicationSettingService,
             IStateTemplateService stateTemplateService)
@@ -33,18 +35,34 @@ namespace Cats.Areas.WorkflowManager.Controllers
 
             DashboardMapping.RunConfig();
         }
+        // GET api/<controller>
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
 
-        public ActionResult Index()
+        // GET api/<controller>/5
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
+
+        // POST api/<controller>
+        public void Post([FromBody]string value)
         {
-            return View();
         }
 
-        public JsonResult GetWorkflowActivity(string pageName, string filter = null)
+        // PUT api/<controller>/5
+        public void Put(int id, [FromBody]string value)
         {
-            throw new NotImplementedException();
         }
 
-        public JsonResult GetAllListOfFilterObjects(string pageName)
+        // DELETE api/<controller>/5
+        public void Delete(int id)
+        {
+        }
+
+        public dynamic GetAllListOfFilterObjects(string pageName)
         {
             string[] users = GetAllTeamUsers(pageName);
             List<DashboardFilterModel> dashboardFilterUser = users.Select(user => new DashboardFilterModel { Name = user }).ToList();
@@ -57,42 +75,9 @@ namespace Cats.Areas.WorkflowManager.Controllers
 
             dynamic[] filterObjects = { users, workflows, activities };
 
-            return Json(filterObjects, JsonRequestBehavior.AllowGet);
+            return filterObjects;
         }
 
-        public JsonResult GetAllCaseTeamUsers(string pageName)
-        {
-            return Json(GetAllTeamUsers(pageName), JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult GetAllWorkflowActivities(string pageName)
-        {
-            return Json(string.Empty, JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult GetDataEntryStat(DateTime startDate, DateTime endDate, List<string> workflowDefs,
-            List<string> wfusers, List<string> activities)
-        {
-            IUnitOfWork unitOfWork = new UnitOfWork();
-            WorkflowActivityService wfa = new WorkflowActivityService(unitOfWork);
-            // Sample data seed
-            //List<string> workflowDefs = new List<string> { "PaymentRequestWorkflow", "TransporterChequeWorkflow" };
-            //List<string> wfusers = new List<string> { "AbebaB", "admin" };
-            //List<string> activities = new List<string> { "Cheque Collected", "Cheque Issued", "Approved by finance", "Closed", "Request Verified" };
-
-            List<DashboardDataEntry> result = wfa.GetWorkflowActivityAgg(startDate, endDate, workflowDefs, wfusers,
-                activities);
-
-            List<DashboarDataEntryModel> dashboarDataEntryModels = (from user in wfusers
-                                                                    let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
-                                                                    select new DashboarDataEntryModel
-                                                                    {
-                                                                        Name = user,
-                                                                        DashboardDataEntries = dashboardDataEntries
-                                                                    }).ToList();
-
-            return Json(dashboarDataEntryModels, JsonRequestBehavior.AllowGet);
-        }
 
         private string[] GetAllTeamUsers(string pageName)
         {
