@@ -87,9 +87,8 @@ namespace Cats.Areas.Logistics.Controllers
                         DatePerformed = DateTime.Now,
                         PerformedBy = User.Identity.Name,
                         Comment = "Transfer Receipt Plan Workflow"
-                    };
-
-                    BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "TransferReceiptPlan", createdstate);
+					};
+                   BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "TransferReceiptPlan", createdstate);
 
                     if (bp != null)
                     {
@@ -238,8 +237,7 @@ namespace Cats.Areas.Logistics.Controllers
                         StatusName = _commonService.GetStatusName(WORKFLOW.LocalPUrchase, transfer.StatusID),
                         //BusinessProcess = transfer.BusinessProcess,
                         BusinessProcessID = transfer.BusinessProcessID,
-                        RejectedId = transfer.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>
-                        a.Name == "Reject").Select(s => s.FinalStateID).FirstOrDefault(),
+                        
                         ApprovedId = transfer.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>
                             a.Name == "Approve").Select(s => s.FinalStateID).FirstOrDefault(),
                         Status = transfer.BusinessProcess.CurrentState.BaseStateTemplate.Name
@@ -390,6 +388,10 @@ namespace Cats.Areas.Logistics.Controllers
                 //{
                 //    _businessProcessService.PromotWorkflow(businessProcessState);
                 //}
+                else if (stateName == "Rejected")
+                {
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+            	}
             }
 
             if (statusId != null)
