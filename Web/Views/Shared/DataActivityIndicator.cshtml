@@ -23,19 +23,17 @@
     </style>
 
 
-    <script src="~/Scripts/jquery-1.9.1.js"></script>
-    <script src="~/Content/assetss/global/plugins/bootstrap/js/bootstrap.min.js"></script>
+    @*<script src="~/Scripts/jquery-1.9.1.js"></script>
+    <script src="~/Content/assetss/global/plugins/bootstrap/js/bootstrap.min.js"></script>*@
     <script src="~/Scripts/Bootstrap/bootstrap-multiselect.js"></script>
 
     <script src="~/Scripts/angular/angular.js"></script>
-
-
-    <link href="~/Scripts/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+ 
   
-      <link href="~/Scripts/Bootstrap/awesome-bootstrap-checkbox.css" rel="stylesheet" />
-    <link href="~/Scripts/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
-    <link href="~/Scripts/Bootstrap/font-awesome.min.css" rel="stylesheet" />
-    <link href="~/Content/assets/css/bootstrap.min.css" rel="stylesheet" />
+      @*<link href="~/Scripts/Bootstrap/awesome-bootstrap-checkbox.css" rel="stylesheet" />*@
+    @*<link href="~/Scripts/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />*@
+    @*<link href="~/Scripts/Bootstrap/font-awesome.min.css" rel="stylesheet" />*@
+    @*<link href="~/Content/assets/css/bootstrap.min.css" rel="stylesheet" />*@
 
 
     @*------------Development proj fonts-----*@ 
@@ -56,7 +54,7 @@
 
 <body ng-controller="WorkflowActController" ng-app="workflowActApp">
 
-    <div class="container">
+    <div class="container ">
 
 
         <div class="row dataEntryIndicatorBody">
@@ -182,6 +180,76 @@
     </div>
 
 
+    <script>
+
+
+                $(document).ready(function () {
+
+                    $('#Activity').multiselect({
+
+                        templates: { // Use the Awesome Bootstrap Checkbox structure
+
+                            li: '<li><div class="checkbox"><label></label></div></li>'
+                        }
+
+                    });
+
+                    $('#Document').multiselect({
+
+                        templates: { // Use the Awesome Bootstrap Checkbox structure
+
+                            li: '<li><div class="checkbox"><label></label></div></li>'
+                        }
+
+                    });
+
+                    $('#User').multiselect({
+
+                        templates: { // Use the Awesome Bootstrap Checkbox structure
+
+                            li: '<li><div class="checkbox"><label></label></div></li>'
+                        }
+
+                    });
+
+                    //	$('#Activity').includeSelectAllOption= true;
+
+                    $('.multiselect-container div.checkbox').each(function (index) {
+
+                        var id = 'multiselect-' + index,
+
+                            $input = $(this).find('input');
+
+                        // Associate the label and the input
+
+                        $(this).find('label').attr('for', id);
+
+                        $input.attr('id', id);
+
+                        // Remove the input from the label wrapper
+
+                        $input.detach();
+
+                        // Place the input back in before the label
+
+                        $input.prependTo($(this));
+
+                        $(this).click(function (e) {
+
+                            // Prevents the click from bubbling up and hiding the dropdown
+
+                            e.stopPropagation();
+
+                        });
+
+
+                    });
+
+                });
+
+
+
+    </script>
 
     <script>
 
@@ -194,71 +262,7 @@
 
         workflowActApp.constant('URLgetWorkflowList', '\workflow\getWorkflowList');
 
-
-        workflowActApp.run(function () {
-            $('#Activity').multiselect({
-
-                templates: { // Use the Awesome Bootstrap Checkbox structure
-
-                    li: '<li><div class="checkbox"><label></label></div></li>'
-                }
-
-            });
-
-            $('#Document').multiselect({
-
-                templates: { // Use the Awesome Bootstrap Checkbox structure
-
-                    li: '<li><div class="checkbox"><label></label></div></li>'
-                }
-
-            });
-
-            $('#User').multiselect({
-
-                templates: { // Use the Awesome Bootstrap Checkbox structure
-
-                    li: '<li><div class="checkbox"><label></label></div></li>'
-                }
-
-            });
-
-            //	$('#Activity').includeSelectAllOption= true;
-
-            $('.multiselect-container div.checkbox').each(function (index) {
-
-                var id = 'multiselect-' + index,
-
-                    $input = $(this).find('input');
-
-                // Associate the label and the input
-
-                $(this).find('label').attr('for', id);
-
-                $input.attr('id', id);
-
-                // Remove the input from the label wrapper
-
-                $input.detach();
-
-                // Place the input back in before the label
-
-                $input.prependTo($(this));
-
-                $(this).click(function (e) {
-
-                    // Prevents the click from bubbling up and hiding the dropdown
-
-                    e.stopPropagation();
-
-                });
-
-
-            });
-
-
-        });
-        workflowActApp.controller('WorkflowActController', function WorkflowActController($scope, DataServices) {
+        workflowActApp.controller('WorkflowActController', function WorkflowActController($scope, DataServices, $http) {
 
 
 
@@ -288,10 +292,27 @@
 
             $scope.init = function () {
 
+                
                 var initializeControls = function () {
 
-                    $scope.controlData = DataServices.getHeaderControlsInitData();
+                    //$scope.controlData = DataServices.getHeaderControlsInitData();
+                    $http.get({
+                        method: 'GET',
+                //  url:'/api/WorkflowTest/GetAllListOfFilterObjects?pageName=Earlywarning'
+                url: 'http://localhost:3325/api/WorkflowTest/GetAllListOfFilterObjects?pageName=Earlywarning'
+                        //,
+                        //params: {
+                        //    pageName: 'Earlywarning'
+                        //}
+                    })
+                       .then(function (response) {
+                           $scope.controlData = response.data;
+                       });
 
+              //          .error(function () {
+              //    alert("error");
+              //});
+         
                     $scope.displayedWorkflowList = DataServices.getWorkflowList();
                 };
                 var setFilterControlDefaultValue = function () {
@@ -330,7 +351,9 @@
                 };
 
 
-
+                var getComboData = function () {
+                
+                }
 
 
                 initializeControls();
@@ -451,83 +474,55 @@
 
 
 
-                $('#Activity').multiselect({
-
-                    templates: { // Use the Awesome Bootstrap Checkbox structure
-
-                        li: '<li><div class="checkbox"><label></label></div></li>'
-                    }
-
-                });
-
-                $('#Document').multiselect({
-
-                    templates: { // Use the Awesome Bootstrap Checkbox structure
-
-                        li: '<li><div class="checkbox"><label></label></div></li>'
-                    }
-
-                });
-
-                $('#User').multiselect({
-
-                    templates: { // Use the Awesome Bootstrap Checkbox structure
-
-                        li: '<li><div class="checkbox"><label></label></div></li>'
-                    }
-
-                });
-
-                //	$('#Activity').includeSelectAllOption= true;
-
-                $('.multiselect-container div.checkbox').each(function (index) {
-
-                    var id = 'multiselect-' + index,
-
-                        $input = $(this).find('input');
-
-                    // Associate the label and the input
-
-                    $(this).find('label').attr('for', id);
-
-                    $input.attr('id', id);
-
-                    // Remove the input from the label wrapper
-
-                    $input.detach();
-
-                    // Place the input back in before the label
-
-                    $input.prependTo($(this));
-
-                    $(this).click(function (e) {
-
-                        // Prevents the click from bubbling up and hiding the dropdown
-
-                        e.stopPropagation();
-
-                    });
-
-
-                });
-
-
-
 
         });
 
-        workflowActApp.factory('DataServices', [function ($http) {
+        workflowActApp.factory('DataServices', [ '$http',function ($http) {
             return {
                 ///Get Header Control Initialization Data
                 getHeaderControlsInitData: function () {
-                    var controlData = {
+                    var controlData = null;
+                    //var controlData = {
 
-                        lookupUsers: [{ name: 'Andy' }, { name: 'Fits' }],
-                        lookupActivities: [{ name: 'Draft' }, { name: 'Approve' }, { name: 'Reject' }],
-                        lookupDocument: [{ name: 'Gift Certificate' }, { name: 'Transporter' }],
-                        mappingDocumentToActivities: [{ document: 'Gift Certificate', activity: 'Draft' }, { document: 'Transporter', activity: 'Validate' }]
+                    //    lookupUsers: [{ name: 'Andy' }, { name: 'Fits' }],
+                    //    lookupActivities: [{ name: 'Draft' }, { name: 'Approve' }, { name: 'Reject' }],
+                    //    lookupDocument: [{ name: 'Gift Certificate' }, { name: 'Transporter' }],
+                    //    mappingDocumentToActivities: [{ document: 'Gift Certificate', activity: 'Draft' }, { document: 'Transporter', activity: 'Validate' }]
 
-                    };
+                    //};
+
+                    //$http.get({
+                    //    method: 'GET',
+                    //    url: '/api/WorkflowManager/GetAllListOfFilterObjects',
+                    //    params: {
+                    //        pageName: 'Earlywarning'
+                    //    }
+                    //}).then(function successCallback(response) {
+
+                    //    controlData = response.data;
+
+                    //}, function errorCallback(response) {
+                  
+
+
+                    //});
+
+
+                    //this.getCustomers = function () {
+                    //    var deferred = $q.defer();
+                    //    $http({
+                    //        method: 'GET',
+                    //        url: 'api/customer'
+                    //    }).
+                    //     success(function (data, status, headers, config) {
+                    //         deferred.resolve(data)
+                    //     }).
+                    //     error(function (data, status) {
+                    //         deferred.reject(data);
+                    //     });
+
+                    //    return deferred;
+                    //}
 
                     return controlData;
 
@@ -550,6 +545,27 @@
                 }
             }
         }]);
+
+        //workflowActApp.service('DService', function ($http, $q) {
+        //    this.getCustomers = function () {
+        //        var deferred = $q.defer();
+        //        $http({
+        //            method: 'GET',
+        //            url: '/api/WorkflowManager/GetAllListOfFilterObjects',
+        //            params: {
+        //                        pageName: 'Earlywarning'
+        //                    }
+        //        })
+        //        .success(function (data, status, headers, config) {
+        //            // any required additional processing here
+        //            q.resolve(data);
+        //        })
+        //        .error(function (data, status) {
+        //            q.reject(data);
+        //        });
+        //        return deferred.promise;
+        //    }
+        //});
 
         workflowActApp.service('PopulateColumnsAndHeaderNames', [function ($scope) {
 
@@ -626,83 +642,83 @@
         }]);
 
 
-        workflowActApp.directive('d', function ($timeout) {
-                var directive = {};
+        //workflowActApp.directive('d', function ($timeout) {
+        //        var directive = {};
 
-                directive.restrict = 'E';
+        //        directive.restrict = 'E';
 
-                directive.templateUrl = "/Templates/d.htm";
+        //        directive.templateUrl = "/Templates/d.htm";
 
-                directive.replace = true;
+        //        directive.replace = true;
 
-                //directive.link = function (scope, element, attributes ) {
+        //        //directive.link = function (scope, element, attributes ) {
 
-                //    if(scope.$last===true){
-                //        $timeout(function()
-                //        {
-                //            scope.$emit('ngloadfinished');
+        //        //    if(scope.$last===true){
+        //        //        $timeout(function()
+        //        //        {
+        //        //            scope.$emit('ngloadfinished');
 
-                //        })
+        //        //        })
 
-                //    };
-
-
+        //        //    };
 
 
 
-                //    element.html("Andy is good<b>  hi </b>");
 
 
-                //}
-
-            //directive.compile = function (element, attributes) {
-
-            //            element.css("border", "1px solid #cccccc");
+        //        //    element.html("Andy is good<b>  hi </b>");
 
 
+        //        //}
 
-            //            return linkFunction;
+        //    //directive.compile = function (element, attributes) {
 
-            //        }
+        //    //            element.css("border", "1px solid #cccccc");
 
 
 
-        return directive;
+        //    //            return linkFunction;
+
+        //    //        }
 
 
-        });
 
-        workflowActApp.directive('andyCustom', function () {
-
-            return {
+        //return directive;
 
 
-                //templateUrl: '/Templates/andy.html'
-            };
-            //var directive = {};
+        //});
 
-            //directive.restrict = 'E';
+        //workflowActApp.directive('andyCustom', function () {
 
-            //directive.template = "<div id='andy'>Hi andy</div>";
-
-            //directive.compile = function (element, attributes) {
-
-            //    element.css("border", "1px solid #cccccc");
-
-            //    var linkFunction = function ($scope, element, attributes) {
-
-            //        element.html("andy is good<b>  hi </b>");
+        //    return {
 
 
-            //    }
+        //        //templateUrl: '/Templates/andy.html'
+        //    };
+        //    //var directive = {};
 
-            //    return linkFunction;
+        //    //directive.restrict = 'E';
 
-            //}
+        //    //directive.template = "<div id='andy'>Hi andy</div>";
 
-            //return directive;
+        //    //directive.compile = function (element, attributes) {
 
-        });
+        //    //    element.css("border", "1px solid #cccccc");
+
+        //    //    var linkFunction = function ($scope, element, attributes) {
+
+        //    //        element.html("andy is good<b>  hi </b>");
+
+
+        //    //    }
+
+        //    //    return linkFunction;
+
+        //    //}
+
+        //    //return directive;
+
+        //});
 
 
 

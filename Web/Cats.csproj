@@ -3509,7 +3509,7 @@
     <Content Include="Web References\ReportPortal\CacheRefreshPlan1.datasource" />
     <Content Include="Web References\ReportPortal\CacheRefreshPlan3.datasource" />
     <Content Include="Web References\ReportPortal\CacheRefreshPlan4.datasource" />
-    <Content Include="Views\Shared\Dashboard\DataActivityIndicator.cshtml" />
+    <Content Include="Views\Shared\DataActivityIndicator.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
