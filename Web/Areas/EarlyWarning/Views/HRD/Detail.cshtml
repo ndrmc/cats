@@ -31,7 +31,7 @@ Plans
                             @Url.Action("HRDDetail", "HRD", new {id = ViewBag.HRDID}),
                             EarlyWarningConstants.Operation.Modify_HRD, "<button type=\"button\" class=\"btn btn-primary\"><span class=\"fa fa-list\"></span> HRD Detail</button>", "btn", "btn_edit")
                     }
-                    else if(ViewBag.HrdStatus =="Approved")
+                    else if(ViewBag.HrdStatus == "Reverted")
                     {
                         @Html.EarlyWarningOperationButton(
                             @Url.Action("HRDDetail", "HRD", new { id = ViewBag.HRDID }),

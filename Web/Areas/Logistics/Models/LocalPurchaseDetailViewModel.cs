@@ -35,6 +35,7 @@ namespace Cats.Areas.Logistics.Models
         public string Commodity { get; set; }
         public decimal Quantity { get; set; }
         public string Status { get; set; }
+        public int BusinessProcessID { get; set; }
 
     }
     public class LocalPurchaseFromGiftCertificateInfo

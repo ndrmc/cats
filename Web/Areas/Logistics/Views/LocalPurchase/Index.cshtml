@@ -71,6 +71,7 @@
                   {
                       columns.Command(m => m.Custom("Delete").Click("OnDelete"));
                   }
+                  columns.Command(m => m.Custom("History").Click("OnHistoryClicked"));
               }
 
               )
@@ -92,8 +93,21 @@
     </div>
 </div>
 
-<script>
+<div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id="modalHistoryLabel">Activity History</h4>
+            </div>
+            <div class="modal-body" id="modalHistoryBody">History</div>
 
+        </div>
+    </div>
+</div>
+
+<script>
+    var history_link = "@Url.Action("History", "BusinessProcess", new { Area = "WorkflowManager", id = "0" })";
     function onDataBound(e) {
         //alert("show");
         var grid = $("#grid").data("kendoGrid");
@@ -130,6 +144,19 @@
         $("#no").click(function () {
             window.wnd.close();
         });
+    }
+
+    function OnHistoryClicked(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var businessProcessId = dataItem.BusinessProcessID;
+        $('#modalHistory').modal();
+        $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
+        $.post(history_link + businessProcessId, {},
+            function (data) {
+                $("#modalHistoryBody").html(data);
+            }
+        );
     }
 
     function OnRevert(e) {

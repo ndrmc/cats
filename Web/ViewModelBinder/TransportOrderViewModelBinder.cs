@@ -53,6 +53,7 @@ namespace Cats.ViewModelBinder
                      transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(
                          t => t.Name == "Approve").Select(t => t.FinalStateID).FirstOrDefault();
 
+
             }
             return transportOrderViewModel;
         }

@@ -716,7 +716,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == BP_PR && s.Name == "Edited");
 
                 var dbHrd = _hrdService.FindById(hrd.HRDID);
-
+                
                 if (firstOrDefault != null && dbHrd != null)
                 {
                     var editedStateId = firstOrDefault.StateTemplateID;
