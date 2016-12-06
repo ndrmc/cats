@@ -1,29 +1,12 @@
-use CatsDRMFSS;
 
-/********************************************************************************************************
-********************************************************************************************************
---	Author: Nathnael Getahun (Senior Software Developer @ Neuronet)
---	Type: Stored Procedure
---	Name: Define Document Workflow
---	Description: A Generic Document Workflow Definition Procedure
---	What it does:
---	> Reads a formally formatted XML document 
---	> Inserts a process template
---	> Uses the above inserted process id to insert application setting
---	> Inserts all the states of the document process defined in the xml document
---	> Iterate through each process states trigger a flow template insert query
-********************************************************************************************************
-********************************************************************************************************/
-IF EXISTS(
-    SELECT *
-    FROM sys.procedures 
-    WHERE Object_ID = Object_ID(N'define_document_workflow'))
-BEGIN
-    DROP PROCEDURE define_document_workflow  
-END
-  
-GO  
-CREATE PROCEDURE define_document_workflow  @xmldoc	int        
+GO
+/****** Object:  StoredProcedure [dbo].[define_document_action_workflow]    Script Date: 11/11/2016 1:08:13 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create PROCEDURE [dbo].[update_action_workflow]  @xmldoc	int        
 AS  
 
 /* Begin a transaction that will hold all the statements executed in this procedure */
@@ -32,30 +15,59 @@ BEGIN TRANSACTION
 /* Define the variable that holds the insert_id for the process template */
 DECLARE @ProcessTemplateID INT;
 /* Define the variables that hold the name, the final states, and actions defined for each states in the xml document */
-DECLARE @name varchar(50), @finalstates varchar(50), @actions varchar(50)
+DECLARE @name varchar(50), @finalstates varchar(50), @actions varchar(50);
 
-/* Insert a new process template into the 'ProcessTemplate' table from the <ProcessTemplate /> definition in the xml document */
-INSERT INTO ProcessTemplate SELECT Name, [Description], GraphicsData, PartitionId FROM OPENXML(@xmldoc, '//ProcessTemplate') WITH ProcessTemplate
-/* Check if the above statement failed to execute and rollback the transcation */
-IF(@@error <> 0)  
-	ROLLBACK /* Rollback of the transaction */
-/* Set the insert_id to the above defined variable for later reference */
-SET @ProcessTemplateID = SCOPE_IDENTITY();
 
-/* Insert a new application setting into the 'ApplicationSetting' table from the <ApplicationSetting /> definition in the xml document */
-INSERT INTO ApplicationSetting 
-VALUES ( (SELECT SettingName FROM OPENXML(@xmldoc, '//ApplicationSetting') WITH ApplicationSetting), @ProcessTemplateID, NULL);
-/* Check if the above statement failed to execute and rollback the transcation */
-IF(@@error <> 0)  
-	ROLLBACK /* Rollback of the transaction */
+IF NOT EXISTS ( SELECT * FROM ApplicationSetting WHERE SettingName in (SELECT SettingName FROM OPENXML(@xmldoc, '//ApplicationSetting') WITH ApplicationSetting))
+BEGIN
+   INSERT INTO ProcessTemplate SELECT Name, [Description], GraphicsData, PartitionId FROM OPENXML(@xmldoc, '//ProcessTemplate') WITH ProcessTemplate
+     IF(@@error <> 0)  
+	   ROLLBACK 
+   SET @ProcessTemplateID = SCOPE_IDENTITY();
+      INSERT INTO ApplicationSetting 
+     VALUES ( (SELECT SettingName FROM OPENXML(@xmldoc, '//ApplicationSetting') WITH ApplicationSetting), @ProcessTemplateID, NULL);
+     IF(@@error <> 0)  
+	 ROLLBACK 
+END
+Else
+ set @ProcessTemplateID = (SELECT SettingValue FROM ApplicationSetting 
+  WHERE SettingName like (SELECT SettingName FROM OPENXML(@xmldoc, '//ApplicationSetting') WITH ApplicationSetting))
+
 
 /* Insert new state templates into the 'StateTemplate' table from the list of <StateTemplate /> definitions in the xml document */
 INSERT INTO StateTemplate 
 SELECT @ProcessTemplateID, Name, AllowedAccessLevel, StateNo, StateType, NULL FROM OPENXML(@xmldoc, '//StateTemplate') WITH StateTemplate
+WHERE name NOT IN (SELECT name FROM dbo.StateTemplate st WHERE st.ParentProcessTemplateID = @ProcessTemplateID)
 /* Check if the above statement failed to execute and rollback the transcation */
 IF(@@error <> 0)  
 	ROLLBACK /* Rollback of the transaction */
-	  
+
+--- update state no of all 
+declare @stateName varchar(20);
+declare @Id int;
+DECLARE @stateNo int;
+DECLARE @stateType int;
+
+DECLARE @statTable TABLE (StateTemplateID int,Name varchar(30));
+insert into @statTable SELECT st.StateTemplateID,st.Name FROM [dbo].[StateTemplate] st WHERE st.ParentProcessTemplateID = @ProcessTemplateID
+-- Iterate the existing statetemplate and update with the new stateno and statetype value
+While (Select Count(*) From @statTable) > 0
+Begin
+    Select Top 1 @Id = StateTemplateID, @stateName = Name From @statTable
+    SET @stateNo = (SELECT StateNo FROM OPENXML(@xmldoc, '//StateTemplate') WITH StateTemplate WHERE Name = @stateName)
+    SET @stateType = (SELECT StateType FROM OPENXML(@xmldoc, '//StateTemplate') WITH StateTemplate WHERE Name = @stateName)
+    update dbo.StateTemplate
+    SET       
+        dbo.StateTemplate.StateNo =  @stateNo,
+        dbo.StateTemplate.StateType = @stateType 
+	   Where StateTemplateID = @Id 
+	   AND ParentProcessTemplateID = @ProcessTemplateID
+    DELETE @statTable WHERE [@statTable].StateTemplateID = @Id
+End
+
+IF(@@error <> 0)
+ROLLBACK 
+
 /* Temporary Edge table: that parsesthe xml document into a table like structure */  
 SELECT *   
 INTO #TempEdge   
@@ -64,6 +76,10 @@ FROM OPENXML(@xmldoc, '//StateTemplate')
 IF(@@error <> 0)  
 	ROLLBACK /* Rollback of the transaction */
 
+/*Delete existing flow template*/
+delete FROM dbo.FlowTemplate where ParentProcessTemplateID = @ProcessTemplateID
+IF(@@error <> 0)  
+	ROLLBACK
 /* Define a cursor that maps the aforementioned structure into table containing rows of states name, final states, and actions */
 DECLARE fillfinalstates_cursor CURSOR FOR  
     SELECT CAST(iv.text AS nvarchar(200)) AS name,  
@@ -134,4 +150,4 @@ DEALLOCATE fillfinalstates_cursor
 
 /* The end of the procedure transaction */
 COMMIT
-Go  
+

@@ -269,18 +269,21 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 }
 
             }
-            if (stateName == "Rejected")
+if (stateName == "Draft")
             {
                 var reginalRequest = _regionalRequestService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
                 if (reginalRequest != null)
                 {
                     int id = reginalRequest.RegionalRequestID;
-                    if (!_regionalRequestService.RevertRequestStatus(id))
+                    if (_regionalRequestService.RevertRequestStatus(id))
                     {
-                        TempData["msg"] = "Request can not be Rejected.";
-                        return RedirectToAction("Details", new { id = id });
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                        TempData["CustomMsg"] = "Status has been successfully  Reverted!!";
+                     
                     }
-                    _businessProcessService.PromotWorkflow(businessProcessState);
+                    TempData["CustomError"] = "Status Can not be Reverted !Requistions from this Request has been Created and Used in Logistics Caseteam!";
+                    return RedirectToAction("Details", new { id = id });
+                   
                 }
 
             }
