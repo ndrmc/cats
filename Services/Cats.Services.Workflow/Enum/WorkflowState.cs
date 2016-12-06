@@ -55,7 +55,7 @@ namespace Cats.Services.Workflows
 
     public struct Constants  // this will help identify where a specific document is on
     {
-        public static string Dashbord = "Dashbord";
+        public static string Dashbord = string.Empty; // "Dashbord";
         public static string Workflow = "Workflow";
         public static string EarlywarningPage = "Earlywarning";
         public static string LogisticsPage = "Logistics";

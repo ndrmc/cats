@@ -1,40 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
-using System.Web.Mvc;
 using Cats.Areas.WorkflowManager.Models;
+using Cats.Data.UnitWork;
 using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Services.Administration;
 using Cats.Services.EarlyWarning;
+using Cats.Services.Workflows;
 using Cats.Services.Workflows.Config;
 
 namespace Cats.Areas.WorkflowManager.Controllers
 {
     public class WorkflowTestController : ApiController
     {
-        private readonly IUserProfileService _userProfileService;
-        //private readonly IWorkflowActivityService _workflowActivityService;
-        private readonly Cats.Services.Workflows.Config.IApplicationSettingService _applicationSettingService;
-        private readonly IStateTemplateService _stateTemplateService;
+        //private readonly IUserProfileService _userProfileService;
+        ////private readonly IWorkflowActivityService _workflowActivityService;
+        //private readonly IApplicationSettingService _applicationSettingService;
+        //private readonly IStateTemplateService _stateTemplateService;
         public WorkflowTestController()
         { }
-
-        public WorkflowTestController(IUserProfileService userProfileService,
-            //IWorkflowActivityService workflowActivityService,
-            Cats.Services.Workflows.Config.IApplicationSettingService applicationSettingService,
-            IStateTemplateService stateTemplateService)
-        {
-            _userProfileService = userProfileService;
-            //_workflowActivityService = workflowActivityService;
-            _applicationSettingService = applicationSettingService;
-            _stateTemplateService = stateTemplateService;
-
-            DashboardMapping.RunConfig();
-        }
         // GET api/<controller>
         //public IEnumerable<string> Get()
         //{
@@ -64,14 +50,37 @@ namespace Cats.Areas.WorkflowManager.Controllers
 
         public dynamic GetAllListOfFilterObjects(string pageName)
         {
-            string[] users = GetAllTeamUsers(pageName);
-            List<DashboardFilterModel> dashboardFilterUser = users.Select(user => new DashboardFilterModel { Name = user }).ToList();
+            string constantPageName = string.Empty;
 
-            string[] workflows = GetAllWorkflows(pageName);
-            List<DashboardFilterModel> dashboardFilterWorkflow = workflows.Select(workflow => new DashboardFilterModel { Name = workflow }).ToList();
+            if (pageName.Equals(Constants.FinancePage, StringComparison.InvariantCultureIgnoreCase))
+            {
+                constantPageName = Constants.FinancePage;
+            }
+            else if (pageName.Equals(Constants.EarlywarningPage, StringComparison.InvariantCultureIgnoreCase))
+            {
+                constantPageName = Constants.EarlywarningPage;
+            }
+            else if (pageName.Equals(Constants.PsnpPage, StringComparison.InvariantCultureIgnoreCase))
+            {
+                constantPageName = Constants.PsnpPage;
+            }
+            else if (pageName.Equals(Constants.LogisticsPage, StringComparison.InvariantCultureIgnoreCase))
+            {
+                constantPageName = Constants.LogisticsPage;
+            }
+            else if (pageName.Equals(Constants.ProcurementPage, StringComparison.InvariantCultureIgnoreCase))
+            {
+                constantPageName = Constants.ProcurementPage;
+            }
+
+            string[] users = GetAllTeamUsers(pageName);
+            //List<DashboardFilterModel> dashboardFilterUser = users.Select(user => new DashboardFilterModel { Name = user }).ToList();
+
+            string[] workflows = GetAllWorkflows(constantPageName);
+            //List<DashboardFilterModel> dashboardFilterWorkflow = workflows.Select(workflow => new DashboardFilterModel { Name = workflow }).ToList();
 
             string[] activities = GetAllStateTemplate(workflows);
-            List<DashboardFilterModel> dashboardFilterActivity = activities.Select(activity => new DashboardFilterModel { Name = activity }).ToList();
+            //List<DashboardFilterModel> dashboardFilterActivity = activities.Select(activity => new DashboardFilterModel { Name = activity }).ToList();
 
             dynamic[] filterObjects = { users, workflows, activities };
 
@@ -84,37 +93,40 @@ namespace Cats.Areas.WorkflowManager.Controllers
             UserType.CASETEAM caseteam;
 
             List<UserProfile> userProfiles = new List<UserProfile>();
-            Enum.TryParse(pageName, out caseteam);
+            Enum.TryParse(pageName.ToUpper(), out caseteam);
+
+            IUnitOfWork unitOfWork = new UnitOfWork();
+            UserProfileService userProfileService = new UserProfileService(unitOfWork);
 
             switch (caseteam)
             {
                 case UserType.CASETEAM.FINANCE:
                     {
-                        userProfiles = _userProfileService.FindBy(c => c.CaseTeam == (int)UserType.CASETEAM.FINANCE);
+                        userProfiles = userProfileService.FindBy(c => c.CaseTeam == (int)UserType.CASETEAM.FINANCE);
 
                         break;
                     }
                 case UserType.CASETEAM.EARLYWARNING:
                     {
-                        userProfiles = _userProfileService.FindBy(c => c.CaseTeam == (int)UserType.CASETEAM.EARLYWARNING);
+                        userProfiles = userProfileService.FindBy(c => c.CaseTeam == (int)UserType.CASETEAM.EARLYWARNING);
 
                         break;
                     }
                 case UserType.CASETEAM.LOGISTICS:
                     {
-                        userProfiles = _userProfileService.FindBy(c => c.CaseTeam == (int)UserType.CASETEAM.LOGISTICS);
+                        userProfiles = userProfileService.FindBy(c => c.CaseTeam == (int)UserType.CASETEAM.LOGISTICS);
 
                         break;
                     }
                 case UserType.CASETEAM.PROCUREMENT:
                     {
-                        userProfiles = _userProfileService.FindBy(c => c.CaseTeam == (int)UserType.CASETEAM.PROCUREMENT);
+                        userProfiles = userProfileService.FindBy(c => c.CaseTeam == (int)UserType.CASETEAM.PROCUREMENT);
 
                         break;
                     }
                 case UserType.CASETEAM.PSNP:
                     {
-                        userProfiles = _userProfileService.FindBy(c => c.CaseTeam == (int)UserType.CASETEAM.PSNP);
+                        userProfiles = userProfileService.FindBy(c => c.CaseTeam == (int)UserType.CASETEAM.PSNP);
 
                         break;
                     }
@@ -128,13 +140,19 @@ namespace Cats.Areas.WorkflowManager.Controllers
         {
             List<string> workflowDefinitions = new List<string>();
 
+            if (DashboardMapping.PageNameToWorkflowMappingsList.Count == 0) { DashboardMapping.RunConfig(); }
+
             workflowDefinitions.AddRange(DashboardMapping.PageNameToWorkflowMappingsList.Where(w => w.Item2 == pageName).Select(w => w.Item3));
 
             return workflowDefinitions.ToArray();
         }
         private string[] GetAllStateTemplates(string workflowName)
         {
-            var applicationSetting = _applicationSettingService.GetAllApplicationSetting()
+            IUnitOfWork unitOfWork = new UnitOfWork();
+            ApplicationSettingService applicationSettingService = new ApplicationSettingService(unitOfWork);
+            StateTemplateService stateTemplateService = new StateTemplateService(unitOfWork);
+
+            var applicationSetting = applicationSettingService.GetAllApplicationSetting()
                 .FirstOrDefault(w => w.SettingName == workflowName);
 
             if (applicationSetting != null)
@@ -143,7 +161,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
                 int processId;
                 int.TryParse(settingValue, out processId);
 
-                return _stateTemplateService.GetAll().Where(p => p.ParentProcessTemplateID == processId).Select(p => p.Name).ToArray();
+                return stateTemplateService.GetAll().Where(p => p.ParentProcessTemplateID == processId).Select(p => p.Name).ToArray();
             }
 
             return null;
@@ -153,9 +171,13 @@ namespace Cats.Areas.WorkflowManager.Controllers
         {
             List<string> stateTemplates = new List<string>();
 
+            IUnitOfWork unitOfWork = new UnitOfWork();
+            ApplicationSettingService applicationSettingService = new ApplicationSettingService(unitOfWork);
+            StateTemplateService stateTemplateService = new StateTemplateService(unitOfWork);
+
             foreach (string workflow in workflows)
             {
-                var applicationSetting = _applicationSettingService.GetAllApplicationSetting().FirstOrDefault(w => w.SettingName == workflow);
+                var applicationSetting = applicationSettingService.GetAllApplicationSetting().FirstOrDefault(w => w.SettingName == workflow);
 
                 if (applicationSetting != null)
                 {
@@ -164,7 +186,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
 
                     int.TryParse(settingValue, out processId);
 
-                    stateTemplates.AddRange(_stateTemplateService.GetAll().Where(p => p.ParentProcessTemplateID == processId).Select(p => p.Name));
+                    stateTemplates.AddRange(stateTemplateService.GetAll().Where(p => p.ParentProcessTemplateID == processId).Select(p => p.Name));
                 }
             }
 

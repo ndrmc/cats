@@ -18,12 +18,12 @@ namespace Cats.Areas.WorkflowManager.Controllers
     {
         private readonly IUserProfileService _userProfileService;
         //private readonly IWorkflowActivityService _workflowActivityService;
-        private readonly Cats.Services.Workflows.Config.IApplicationSettingService _applicationSettingService;
+        private readonly IApplicationSettingService _applicationSettingService;
         private readonly IStateTemplateService _stateTemplateService;
 
         public WorkflowManagerController(IUserProfileService userProfileService,
             //IWorkflowActivityService workflowActivityService,
-            Cats.Services.Workflows.Config.IApplicationSettingService applicationSettingService,
+            IApplicationSettingService applicationSettingService,
             IStateTemplateService stateTemplateService)
         {
             _userProfileService = userProfileService;
@@ -47,13 +47,13 @@ namespace Cats.Areas.WorkflowManager.Controllers
         public JsonResult GetAllListOfFilterObjects(string pageName)
         {
             string[] users = GetAllTeamUsers(pageName);
-            List<DashboardFilterModel> dashboardFilterUser = users.Select(user => new DashboardFilterModel { Name = user }).ToList();
+            //List<DashboardFilterModel> dashboardFilterUser = users.Select(user => new DashboardFilterModel { Name = user }).ToList();
 
             string[] workflows = GetAllWorkflows(pageName);
-            List<DashboardFilterModel> dashboardFilterWorkflow = workflows.Select(workflow => new DashboardFilterModel { Name = workflow }).ToList();
+            //List<DashboardFilterModel> dashboardFilterWorkflow = workflows.Select(workflow => new DashboardFilterModel { Name = workflow }).ToList();
 
             string[] activities = GetAllStateTemplate(workflows);
-            List<DashboardFilterModel> dashboardFilterActivity = activities.Select(activity => new DashboardFilterModel { Name = activity }).ToList();
+            //List<DashboardFilterModel> dashboardFilterActivity = activities.Select(activity => new DashboardFilterModel { Name = activity }).ToList();
 
             dynamic[] filterObjects = { users, workflows, activities };
 
@@ -163,7 +163,6 @@ namespace Cats.Areas.WorkflowManager.Controllers
 
             return null;
         }
-
         private string[] GetAllStateTemplate(string[] workflows)
         {
             List<string> stateTemplates = new List<string>();
