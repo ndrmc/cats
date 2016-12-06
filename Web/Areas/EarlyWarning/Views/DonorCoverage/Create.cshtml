@@ -4,48 +4,63 @@
 @model Cats.Models.HrdDonorCoverage
 @{
     ViewBag.Title = "Create";
-    Layout = "~/Views/Shared/_MainLayout.cshtml";  
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("Create HRD Donor Coverage");
+    ViewBag.PageTitleDescription = "";
+
 }
-@section Toolbar
-{
-    <a class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_create_donorCoverage"></a>
-    <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("Index", "DonorCoverage")" title="save"></a>
-}
-<h4>Create HRD Donor Coverage</h4>
-@using (Html.BeginForm("Create", "DonorCoverage", FormMethod.Post, new { id = "frm_create_donorCoverage" }))
-{
-    <div class="well form-horizontal">
-        <div class="control-group">
-            <div class="control-label">
-                @Html.LabelFor(m => m.HRDID,Html.Translate("HRD Name"))
-            </div>
-            <div class="controls">
-                @Html.DropDownList("HRDID",String.Empty)
-                @Html.ValidationMessageFor(m => m.HRDID)
-                
-            </div>
 
+<div class="portlet light">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="icon-list font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("New Donors Coverage")</span>
         </div>
-        <div class="control-group">
-            <div class="control-label">
-                @Html.LabelFor(m => m.DonorID,Html.Translate("Donor/Partner Name"))
-            </div>
-            <div class="controls">
-                @Html.DropDownList("DonorID", String.Empty)
-                @Html.ValidationMessageFor(m => m.DonorID)
-            </div>
-
+        <div class="tools">
+            <a href="#" class="collapse" data-original-title="" title=""></a>
         </div>
+        <div class="actions">
+            <button class="btn green" data-buttontype="btn_save" onclick="javascript: document.getElementById('frm_create_donorCoverage').submit();" type="submit" data-submittedform="frm_create_donorCoverage"><i class="fa fa-save"></i> @Html.Translate("Save")</button>
+            <a class="btn red" data-buttontype="btn_cancel" href="@Url.Action("Index", "DonorCoverage")" title="save"><i class="fa fa-times-circle"></i> @Html.Translate("Cancel")</a>
 
-        <div class="control-group">
-            <div class="control-label">
-                @Html.LabelFor(m => m.Remark)
-            </div>
-            <div class="controls">
-                @Html.TextAreaFor(m=>m.Remark)
-                @Html.ValidationMessageFor(m => m.Remark)
-            </div>
+            <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;"></a>
         </div>
     </div>
-}
+    <div class="portlet-body">
+        @using (Html.BeginForm("Create", "DonorCoverage", FormMethod.Post, new { id = "frm_create_donorCoverage", @class = "form-horizontal" }))
+        {
 
+            <div class="form-group">
+                <div class="control-label col-md-4">
+                    @Html.LabelFor(m => m.HRDID,Html.Translate("HRD Name"))
+                </div>
+                <div class="col-md-4">
+                    @Html.DropDownList("HRDID",null, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.HRDID)
+
+                </div>
+
+            </div>
+            <div class="form-group">
+                <div class="control-label col-md-4">
+                    @Html.LabelFor(m => m.DonorID,Html.Translate("Donor/Partner Name"))
+                </div>
+                <div class="col-md-4">
+                    @Html.DropDownList("DonorID", null, new { @class="form-control" })
+                    @Html.ValidationMessageFor(m => m.DonorID)
+                </div>
+
+            </div>
+            <div class="form-group">
+                <div class="control-label col-md-4">
+                    @Html.LabelFor(m => m.Remark)
+                </div>
+                <div class="col-md-4">
+                    @Html.TextAreaFor(m=>m.Remark, new {@class="form-control"})
+                    @Html.ValidationMessageFor(m => m.Remark)
+                </div>
+            </div>
+
+        }
+    </div>
+</div>
