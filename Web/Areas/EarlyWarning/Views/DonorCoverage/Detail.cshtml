@@ -7,30 +7,38 @@
 @*@model Cats.Models.HrdDonorCoverage*@
 @{
     ViewBag.Title = "Detail";
-    Layout = "~/Views/Shared/_CATSLayout.cshtml";
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("Donor Coverage Detail");
+    ViewBag.PageTitleDescription = "";
+
 }
 
-@section Title
+@section Toolbar
 {
-Donors
+    <a class="btn btn-fit-height gray-salt" href="@Url.Action("Index", "DonorCoverage", new { Area = "EarlyWarning" })"><i class="fa fa-times-circle"></i> @Html.Translate("Back to List")</a>
 }
-@section PageTitle
-{
-     <h1 class="hdr-blck big ">  Donor Coverage Detail</h1>
-   
-}
-<div class="box box-primary">
-    <div class="col-md-12 box-body" style="display: block;">
-        <div class="row">
-            <div class="mrgn5-v text-right col-md-12">
-                 @Html.EarlyWarningOperationButton(
-                    @Url.Action("Index", "DonorCoverage", new { Area = "EarlyWarning" }),
-                    EarlyWarningConstants.Operation.View_HRD_list, "<span class=\"btn btn-primary btn-sm \"><i class=\"fa fa-arrow-left\"></i> Donor Coverage </span>", "", "btn_back_to_list")
 
-                <a id="btnAddWoreda" class="btn btn-success btn-sm " href="@Url.Action("AddWoreda", "DonorCoverage", new { id = ViewBag.DonorCoverageID })" ><span class="fa fa-plus"></span>@Html.Translate(" New Woreda")</a>
-               
-            </div>
+<div class="portlet light bordered ">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="icon-list font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("List Of Donors Coverage")</span>
         </div>
+        <div class="tools">
+            <a href="#" class="collapse" data-original-title="" title=""></a>
+        </div>
+        <div class="actions">
+            @*@Html.EarlyWarningOperationButton(
+                    @Url.Action("Index", "DonorCoverage", new { Area = "EarlyWarning" }),
+                    EarlyWarningConstants.Operation.View_HRD_list, "<span class=\"btn btn-primary btn-sm \"><i class=\"fa fa-arrow-left\"></i> Donor Coverage </span>", "", "btn_back_to_list")*@
+
+            <a id="btnAddWoreda" class="btn green" href="@Url.Action("AddWoreda", "DonorCoverage", new { id = ViewBag.DonorCoverageID })"><span class="fa fa-plus"></span>@Html.Translate(" New Woreda")</a>
+
+            <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;"></a>
+        </div>
+    </div>
+
+    <div class="portlet-body">
         <div class="table-responsive">
             @(Html.Kendo().Grid(Model)
     .Name("Grid")
@@ -42,30 +50,29 @@ Donors
             { columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N2}"); }
             else if (column.DataType == typeof(int))
             {
-                columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N0}"); 
+                columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N0}");
             }
-            else{
+            else
+            {
                 columns.Bound(column.ColumnName);
             }
 
         }
     })
     //.Pageable(t=>t.PageSizes(new []{10,15,20,30,50,100}))
-     
+
     .HtmlAttributes(new { style = "height: 430px" })
     .Sortable()
    .Scrollable()
    .Groupable()
-   
-   
-    )
 
+
+            )
         </div>
-
-       
     </div>
-
 </div>
+
+<div class="modal fade" tabindex="-1" aria-hidden="true" id="addDonorModal"></div>
 
 <div id="cats-modal"></div>
 <script type="text/javascript">
@@ -76,9 +83,13 @@ Donors
                 e.preventDefault();
                 var $remote = $(this).attr('href');
                 var $modal = $('<div class="modal" id="cats-modal"><div class="modal-body"></div></div>');
-                $('body').append($modal);
-                $modal.modal({ backdrop: 'static', keyboard: false });
-                $modal.load($remote);
+                //$('body').append($modal);
+                //$modal.modal({ backdrop: 'static', keyboard: false });
+                //$modal.load($remote);
+                $.get($remote, function(data) {
+                    $("#addDonorModal").html(data);
+                    $("#addDonorModal").modal();
+                });
             return false;
         }
       );
