@@ -25,6 +25,9 @@ using Cats.Helpers;
 using Cats.Services.Common;
 using System.IO;
 using System.ServiceModel.Security;
+using Cats.Models.Hubs;
+using Cats.Services.Workflows;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Procurement.Controllers
 {
@@ -143,7 +146,7 @@ namespace Cats.Areas.Procurement.Controllers
                 }
                 st.AttachmentFile.SaveAs(path);
             }
-            var businessProcessState = new BusinessProcessState()
+            var businessProcessState = new Cats.Models.BusinessProcessState()
             {
                 StateID = st.StateID,
                 PerformedBy = HttpContext.User.Identity.Name,
@@ -154,6 +157,41 @@ namespace Cats.Areas.Procurement.Controllers
             };
             string stateName = _stateTemplateService.FindById(st.StateID).Name;
             if (stateName == "Approved")
+            {
+                var transportOrder =
+                   _transportOrderService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID)
+                       .FirstOrDefault();
+                int orderDetailWithoutTarrif = 0;
+                try
+                {
+                    foreach (var transportOrderDetail in transportOrder.TransportOrderDetails)
+                    {
+                        if (transportOrderDetail.TariffPerQtl <= 0 && transportOrderDetail.WinnerAssignedByLogistics != true)
+                        {
+                            orderDetailWithoutTarrif = 1;
+                            break;
+                        }
+                    }
+                    if (orderDetailWithoutTarrif == 0)
+                    {
+
+
+                        if(_transportOrderService.ApproveTransportOrder(transportOrder, User.Identity.Name,true))
+                            _businessProcessService.PromotWorkflow(businessProcessState);
+                        return RedirectToAction("Index");
+                    }
+                    TempData["CustomError"] = "Transport Order Without Tariff can not be approved! Please Specify Tariff for each transport order detail! ";
+                    return RedirectToAction("Index");
+                    //ModelState.AddModelError("Errors", @"Transport Order Without Tariff can not be approved!");
+                }
+                catch (Exception ex)
+                {
+                    var log = new Logger();
+                    log.LogAllErrorsMesseges(ex, _log);
+                    ModelState.AddModelError("Errors", @"Unable to approve");
+                }
+            }
+            if (stateName == "Signed")
             {
                 var transportOrder =
                     _transportOrderService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID)
@@ -202,6 +240,7 @@ namespace Cats.Areas.Procurement.Controllers
                 }
 
             }
+
             else
                 _businessProcessService.PromotWorkflow(businessProcessState);
             if (statusId != null)
@@ -278,9 +317,10 @@ namespace Cats.Areas.Procurement.Controllers
                 {
                     new RequestStatus() {StatusID = 1, StatusName = "Draft"},
                     new RequestStatus() {StatusID = 2, StatusName = "Approved"},
+                    new RequestStatus() {StatusID = 5, StatusName = "Rejected"},
                     new RequestStatus() {StatusID = 3, StatusName = "Signed"},
                      new RequestStatus() {StatusID = 4, StatusName = "Closed"},
-                     new RequestStatus() {StatusID = 5, StatusName = "Failed"}
+                     new RequestStatus() {StatusID = 6, StatusName = "Failed"}
                 };
             ViewBag.StatusID = new SelectList(transportOrderStatus, "StatusID", "StatusName");
             ViewBag.TargetController = "TransportOrder";
@@ -626,7 +666,7 @@ namespace Cats.Areas.Procurement.Controllers
                         int BP_PR = _applicationSettingService.getTransportOrderWorkflow();
                         if (BP_PR != 0)
                         {
-                            BusinessProcessState createdstate = new BusinessProcessState
+                            Cats.Models.BusinessProcessState createdstate = new Cats.Models.BusinessProcessState
                             {
                                 DatePerformed = DateTime.Now,
                                 PerformedBy = User.Identity.Name,
@@ -635,7 +675,7 @@ namespace Cats.Areas.Procurement.Controllers
                             };
                             //_PaymentRequestservice.Create(request);
 
-                            BusinessProcess bpTR = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                            Cats.Models.BusinessProcess bpTR = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
                                                                                             "TransportOrder", createdstate);
                             if (bpTR != null)
                                 businessProcessID = bpTR.BusinessProcessID;
@@ -656,7 +696,7 @@ namespace Cats.Areas.Procurement.Controllers
                             ContractNumber = Guid.NewGuid().ToString(),
                             TransporterSignedDate = DateTime.Today,
                             RequestedDispatchDate = DateTime.Today,
-                            ConsignerDate = DateTime.Today,
+                            ConsignerDate = DateTime.Today, 
                             BusinessProcessID = businessProcessID,
                             StatusID = (int)TransportOrderStatus.Draft, // change this to workflow 
                             StartDate = DateTime.Today,
@@ -746,7 +786,7 @@ namespace Cats.Areas.Procurement.Controllers
 
             if (failedStateId != null)
             {
-                var createdstate3 = new BusinessProcessState
+                var createdstate3 = new Cats.Models.BusinessProcessState
                 {
                     DatePerformed = DateTime.Now,
                     PerformedBy = User.Identity.Name,
@@ -831,22 +871,22 @@ namespace Cats.Areas.Procurement.Controllers
             return (from detail in transportContractDetail
                     select new TransportOrderDetailViewModel()
                     {
-                        TransportOrderID = detail.TransportOrderID,
-                        TransportOrderDetailID = detail.TransportOrderDetailID,
-                        CommodityID = detail.CommodityID,
-                        SourceWarehouseID = detail.SourceWarehouseID,
-                        QuantityQtl = detail.QuantityQtl.ToPreferedWeightUnit(),
-                        RequisitionID = detail.RequisitionID,
-                        TariffPerQtl = detail.TariffPerQtl,
-                        Commodity = detail.Commodity.Name,
-                        OriginWarehouse = detail.Hub.Name,
-                        HubID = detail.Hub.HubID,
-                        Woreda = detail.FDP.AdminUnit.Name,
-                        FDP = detail.FDP.Name,
-                        RequisitionNo = detail.ReliefRequisition.RequisitionNo,
-                        WinnerAssignedByLogistics = detail.WinnerAssignedByLogistics,
-
-                        SatelliteWarehouseName = GetSName(detail.ReliefRequisition.HubAllocations.First().SatelliteWarehouseID, detail.Hub.HubID)
+                            TransportOrderID = detail.TransportOrderID,
+                            TransportOrderDetailID = detail.TransportOrderDetailID,
+                            CommodityID = detail.CommodityID,
+                            SourceWarehouseID = detail.SourceWarehouseID,
+                            QuantityQtl = detail.QuantityQtl.ToPreferedWeightUnit(),
+                            RequisitionID = detail.RequisitionID,
+                            TariffPerQtl = detail.TariffPerQtl,
+                            Commodity = detail.Commodity.Name,
+                            OriginWarehouse = detail.Hub.Name,
+                            HubID = detail.Hub.HubID,
+                            Woreda = detail.FDP.AdminUnit.Name,
+                            FDP = detail.FDP.Name,
+                            RequisitionNo = detail.ReliefRequisition.RequisitionNo,
+                            WinnerAssignedByLogistics = detail.WinnerAssignedByLogistics,
+                            
+                            SatelliteWarehouseName = GetSName(detail.ReliefRequisition.HubAllocations.First().SatelliteWarehouseID, detail.Hub.HubID)
 
 
                     });
@@ -924,14 +964,14 @@ namespace Cats.Areas.Procurement.Controllers
 
                         if (target != null)
                         {
-                            BusinessProcessState bps = target.BusinessProcess.CurrentState;
+                            Cats.Models.BusinessProcessState bps = target.BusinessProcess.CurrentState;
                             var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
 
                             if (stateTemplate != null)
                             {
                                 int editStateId = stateTemplate.StateTemplateID;
 
-                                var businessProcessState = new BusinessProcessState()
+                                var businessProcessState = new Cats.Models.BusinessProcessState()
                                 {
                                     StateID = editStateId,
                                     PerformedBy = HttpContext.User.Identity.Name,
@@ -959,7 +999,8 @@ namespace Cats.Areas.Procurement.Controllers
             var selectedTransRequision = requisitionWithTransporter.TransReqwithOutTransporters.Where(m => m.Selected == true);
             try
             {
-                var transportOrderId = _transportOrderService.ReAssignTransporter(selectedTransRequision, requisitionWithTransporter.SelectedTransporterID);
+                string username = User.Identity.Name;
+                var transportOrderId = _transportOrderService.ReAssignTransporter(selectedTransRequision, requisitionWithTransporter.SelectedTransporterID, username);
 
                 return RedirectToAction("OrderDetail", new { id = transportOrderId });
             }
@@ -990,7 +1031,7 @@ namespace Cats.Areas.Procurement.Controllers
                 {
 
 
-                    _transportOrderService.ApproveTransportOrder(transportOrder, User.Identity.Name);
+                    _transportOrderService.ApproveTransportOrder(transportOrder, User.Identity.Name, true);
                     return RedirectToAction("Index");
                 }
                 TempData["CustomError"] = "Transport Order Without Tariff can not be approved! Please Specify Tariff for each transport order detail! ";
@@ -1048,6 +1089,13 @@ namespace Cats.Areas.Procurement.Controllers
                 var result = _transportOrderService.GeneratDispatchPlan(id, UserName);
                 if (result)
                 {
+                    var generated = _transportOrderService.GetGeneratedDispatchAllocations();
+                    foreach (var dispatchAllocation in generated)
+                    {
+                        WorkflowActivityUtil.EnterCreateWorkflow(dispatchAllocation);
+
+                    }
+
                     return RedirectToAction("Index", "Dispatch", new { Area = "Hub" });
                 }
                 else
@@ -1132,7 +1180,7 @@ namespace Cats.Areas.Procurement.Controllers
                         }
                         if (orderDetailWithoutTarrif == 0)
                         {
-                            _transportOrderService.ApproveTransportOrder(transportOrder, User.Identity.Name);
+                            _transportOrderService.ApproveTransportOrder(transportOrder, User.Identity.Name, false);
                             ++noOfApproval;
                         }
                     }

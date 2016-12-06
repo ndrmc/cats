@@ -808,7 +808,10 @@
                             <h3>Notifications</h3>
                             @*<a href="extra_profile.html">view all</a>*@
                         </li>
-                        <li>
+                        <li style="height: 215px;overflow: hidden;">
+                            @Html.GetActiveNotifications()
+                        </li>
+                        @*<li>
                             <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 150px;">
                                 <ul class="dropdown-menu-list scroller" style="height: 150px; overflow: hidden; width: auto;" data-handle-color="#637283" data-initialized="1">
                                     <li>
@@ -817,7 +820,7 @@
                                 </ul>
                                 <div class="slimScrollBar" style="width: 7px; position: absolute; top: 0px; opacity: 0.4; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; height: 121.35922330097088px; background: rgb(99, 114, 131);"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(234, 234, 234);"></div>
                             </div>
-                        </li>
+                        </li>*@
                     </ul>
                 </li>
                 <!-- END NOTIFICATION DROPDOWN -->

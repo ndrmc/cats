@@ -17,6 +17,7 @@ using Kendo.Mvc.UI;
 using Cats.Services.Security;
 using Cats.Helpers;
 using Cats.Infrastructure;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Logistics.Controllers
 {

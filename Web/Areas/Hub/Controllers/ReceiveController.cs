@@ -14,6 +14,9 @@ using Cats.Helpers;
 using Cats.Web.Hub;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Cats.Services;
+using Cats.Services.Hubs;
+
 namespace Cats.Areas.Hub.Controllers
 {
     /// <summary>
@@ -297,7 +300,8 @@ namespace Cats.Areas.Hub.Controllers
                         SupplierName = vwReceiptAllocationAggregate.SupplierName,
                         SourceHubID = vwReceiptAllocationAggregate.SourceHubID,
                         OtherDocumentationRef = vwReceiptAllocationAggregate.OtherDocumentationRef,
-                        Remark = vwReceiptAllocationAggregate.Remark
+                        Remark = vwReceiptAllocationAggregate.Remark,
+                        BusinessProcessID = vwReceiptAllocationAggregate.BusinessProcessID
                     };
                 receiptAllocationViewModels.Add(receiptAllocationViewModel);
             }

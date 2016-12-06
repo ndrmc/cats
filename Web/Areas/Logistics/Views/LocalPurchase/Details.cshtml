@@ -55,9 +55,11 @@
                     var currentState = Model.BusinessProcess.CurrentState;
                     var state = currentState != null ? currentState.BaseStateTemplate : null;
                     var isDraft = false;
+                    var isApproved = false;
                     if (state != null)
                     {
                         isDraft = state.Name == "Draft";
+                        isApproved = state.Name == "Approved";
                     }
                 }
                 @if (Model.StatusID == 1 || isDraft)
@@ -75,11 +77,18 @@
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu pull-right">
+                            @ var is 
                             @foreach (FlowTemplate actions in state.InitialStateFlowTemplates)
                             {
                                 //Console.WriteLine(state.Name);
                                 if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_local_purchase) == "Approve_local_purchase" && actions.Name == "Approve" ||
                                     Model.BusinessProcess.CurrentState.BaseStateTemplate.Name == ConventionalAction.Edited)
+                                {
+                                    <li class="edit_button">
+                                        <a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@Model.LocalPurchaseID)" title="@actions.Name">@actions.Name</a>
+                                    </li>
+                                }
+                                if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_local_purchase) == "Approve_local_purchase" && actions.Name == "Revert")
                                 {
                                     <li class="edit_button">
                                         <a href="javascript:promot_workflow(@Model.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@Model.LocalPurchaseID)" title="@actions.Name">@actions.Name</a>
@@ -91,9 +100,11 @@
                         </ul>
 
                     </div>
-                    <a class="btn green btn-xs toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_create_localPurchase"><i class="fa fa-save"></i> @Html.Translate("Save Changes")</a>
-                    <a class="btn red btn-xs toolbar-btn " data-buttontype="btn_cancel" href=""><i class="fa fa-times"></i> @Html.Translate("Cancel Changes")</a>
-
+                    if (!isApproved)
+                    {
+                        <a class="btn green btn-xs toolbar-btn " data-buttontype="btn_save" data-submittedform="frm_create_localPurchase"><i class="fa fa-save"></i> @Html.Translate("Save Changes")</a>
+                        <a class="btn red btn-xs toolbar-btn " data-buttontype="btn_cancel" href=""><i class="fa fa-times"></i> @Html.Translate("Cancel Changes")</a>
+                    }
                 }
             </div>
         </div>

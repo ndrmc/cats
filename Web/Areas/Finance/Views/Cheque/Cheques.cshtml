@@ -73,8 +73,7 @@
                             {
                                 index++;
                                 var state = item.BusinessProcess.CurrentState.BaseStateTemplate;
-                                //if (state.Name == "Approved by finance" || state.Name == "Cheque Issued" || state.Name == "Cheque Cashed")
-                                //{
+  
                                 <tr>
                                     <td>
                                         @item.CheckNo
@@ -105,17 +104,17 @@
                                                 {
                                                     if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Approve_cheque) && actions.Name == "Approve Cheque")
                                                     {
-                                                        <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterChequeId)" title="@actions.Name">@actions.Name</a></li>
+                                                        <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessId ,@actions.FinalStateID,'@actions.Name',@item.TransporterChequeId)" title="@actions.Name">@actions.Name</a></li>
                                                     }
                                                     if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Collect_cheque) && actions.Name == "Collect Cheque")
                                                     {
-                                                        <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@item.TransporterChequeId)" title="@actions.Name">@actions.Name</a></li>
+                                                        <li class="edit_button"><a href="javascript:promot_workflow(@item.BusinessProcessId ,@actions.FinalStateID,'@actions.Name',@item.TransporterChequeId)" title="@actions.Name">@actions.Name</a></li>
                                                     }
                                                 }
                                                 <li class="divider"></li>
                                                 @if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.View_history))
                                                 {
-                                                    <li class="edit_button"><a href = "javascript:workflow_history(@item.BusinessProcessID)" > History </a></li>
+                                                    <li class="edit_button"><a href = "javascript:workflow_history(@item.BusinessProcessId)" > History </a></li>
                                                 }
                                     </ul>
                                     @{
@@ -142,8 +141,12 @@
         <div id="modalCollectiveChequeInfo" class="form-horizontal" style="margin-top: 30px; width: 580px; height: 480px;">
             <div class="portlet margin-bottom-0 ">
                 <div class="portlet-body form">
-                    @using (Html.BeginForm("EditChequeInfo", "ValidatedPaymentRequest", FormMethod.Post))
-                    {
+                                    @*using (Html.BeginForm("EditChequeInfo", "ValidatedPaymentRequest", FormMethod.Post))
+                    {*@
+    @*<form ng-submit="submit()" ng-controller="PaymentRequestManagementController">*@
+
+                    <form ng-submit="submit()" ng-controller="PaymentRequestManagementController">
+
                         <input type="text" name="transporterID" id="transporterID" value="@ViewBag.TransporterID" style="display: none" />
                         <input type="text" name="transporterChequeID" id="transporterChequeID" value="" style="display: none" />
                         <div class="form-body">
@@ -198,7 +201,7 @@
                                 <label class="col-md-4 control-label" for="Amount">Amount</label>
                                 <div class="col-md-6">
                                     @*<input type="text" class="form-control"   value="{{SelectedCheckInfo.Amount}}" name="CheckInfo.Amount" id="CheckInfo_Amount"
-                                    data-ng-model="SelectedCheckInfo.Amount"/>*@
+                        data-ng-model="SelectedCheckInfo.Amount"/>*@
                                     <input type="text" class="form-control" name="Amount" id="Amount" value="{{SelectedCheckInfo.Amount}}" data-ng-model="SelectedCheckInfo.Amount" disabled="disabled" />&nbsp;<span id="errmsgCollectiveCheckInfo_Amount" class="errorText"></span>
                                 </div>
                             </div>
@@ -219,16 +222,16 @@
                             </div>
                             @if (UserAccountHelper.FinanceOperationCheck(FinanceConstants.Operation.Issue_cheque))
                             {
-                                <button id="btnSaveCollectiveCheque" class="btn blue" type="submit">Save</button>
+                                <button id="btnSaveCollectiveCheque" class="btn blue" type="submit" ng-click="submit()">Save</button>
                             }
-                            
-                        </div>
 
-                    }
-                </div>
+                        </div>
+                        </form>
+                        @* }*@
+</div>
             </div>
         </div>
-
+        
     <script>
         var wndCollectiveChequeInfo;
         $(document).ready(function() {
@@ -284,22 +287,33 @@
             }
 
             angular.module('PaymentRequestManagementModule', []).controller('PaymentRequestManagementController', function ($scope, $http) {
-                $scope.SelectedCheckInfo = [];
+                $scope.SelectedCheckInfo;
+                $scope.TransporterId = 0;
 
+
+                $scope.submit = function () {
+
+
+                    var url = "@Url.Action("EditChequeInfo", "ValidatedPaymentRequest")";
+
+                    $http.post(url, $scope.SelectedCheckInfo);
+
+                    wndCollectiveChequeInfo.close();
+                };
                 $scope.loadChequeEditPage = function (transporterChequeID, stateNo) {
                     //$("#" + dispatchId).addClass("selected");
                     //alert(paymentRequestId);
+
+                    $scope.TransporterId=transporterChequeID;
                     $http.post(rootDir + 'Cheque/LoadChequeOne/' + transporterChequeID).
                         success(function (data, status, headers, config) {
-                            //alert(data["ReceivedBy"]);
+
                             $("#transporterChequeID").val(transporterChequeID);
                             $scope.SelectedCheckInfo = data;
                             if (data.AppovedBy == null || data.AppovedBy == "")
                                 $scope.SelectedCheckInfo.AppovedDateString = "";
                             wndCollectiveChequeInfo.center().open();
-                            //if ($scope.SelectedCheckInfo.Amount==null)
-                            //    $scope.SelectedCheckInfo.Amount = $scope.SelectedLabourInfo.Amount + $scope.SelectedLabourInfo.LabourCost - $scope.SelectedLabourInfo.RejectedAmount;
-                        }).
+              }).
                         error(function (data, status, headers, config) {
                             alert("#ERROR - Can't load the GRN for the selected dispatch.");
                         });

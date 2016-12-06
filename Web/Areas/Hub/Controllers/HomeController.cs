@@ -12,8 +12,7 @@ using Cats.Web.Hub;
 using Cats.Web.Hub.Helpers;
 using Cats.Security;
 using Cats.Helpers;
-
-
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Hub.Controllers
 {

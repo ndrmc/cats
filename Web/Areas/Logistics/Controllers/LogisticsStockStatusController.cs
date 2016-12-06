@@ -17,6 +17,7 @@ using Cats.Models.Hubs;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Cats.ViewModelBinder;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Logistics.Controllers
 {

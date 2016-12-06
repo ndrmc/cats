@@ -47,5 +47,6 @@ namespace Cats.Procurement.Models
         public DateTime ExperienceTo { get; set; }
 
         public bool OwnedByDRMFSS { get; set; }
+        public int? BusinessProcessId { get; internal set; }
     }
 }

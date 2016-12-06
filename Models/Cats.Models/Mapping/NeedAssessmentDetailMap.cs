@@ -31,7 +31,7 @@ namespace Cats.Models.Mapping
             this.Property(t => t.NonPSNPFromWoredasFemale).HasColumnName("NonPSNPFromWoredasFemale");
             this.Property(t => t.NonPSNPFromWoredasDOA).HasColumnName("NonPSNPFromWoredasDOA");
             this.Property(t => t.Remark).HasColumnName("Remark");
-
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
             // Relationships
             this.HasOptional(t => t.AdminUnit)
                 .WithMany(t => t.NeedAssessmentDetails)
@@ -39,7 +39,9 @@ namespace Cats.Models.Mapping
             this.HasOptional(t => t.NeedAssessmentHeader)
                 .WithMany(t => t.NeedAssessmentDetails)
                 .HasForeignKey(d => d.NeedAId);
-
+            this.HasRequired(t => t.BusinessProcess)
+                .WithMany(t => t.NeedAssessmentDetails)
+                .HasForeignKey(t => t.BusinessProcessId);
         }
     }
 }

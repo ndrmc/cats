@@ -65,7 +65,7 @@ namespace Cats.Areas.Hub.Controllers
                      {
                          CommodityName = s.CommodityName,
                          FreeStock = s.FreeStock.ToPreferedWeightUnit(),
-                         PhysicalStock = s.PhysicalStock.ToPreferedWeightUnit()
+                         PhysicalStock = (((s.PhysicalStock - s.FreeStock) / ((s.PhysicalStock == 0) ? 1.0M : s.PhysicalStock )) * 100).ToPreferedWeightUnit()
                      });
 
             return Json(q, JsonRequestBehavior.AllowGet);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cats.Models
 {
-    public partial class TransportBidQuotationHeader
+    public partial class TransportBidQuotationHeader:IWorkflow
     {
         public TransportBidQuotationHeader()
         {
@@ -23,5 +23,9 @@ namespace Cats.Models
         public int? PartitionId { get; set; }
         public virtual ICollection<TransportBidQuotation> TransportBidQuotations { get; set; }
         public virtual Transporter Transporter { get; set; }
+
+        public int BusinessProcessId { get; set; }
+
+        public BusinessProcess BusinessProcess { get; set; }
     }
 }

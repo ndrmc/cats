@@ -81,6 +81,7 @@
     <Compile Include="HubService.cs" />
     <Compile Include="HubSettingService.cs" />
     <Compile Include="HubSettingValueService.cs" />
+    <Compile Include="IHubService.cs" />
     <Compile Include="Interfaces\IAccountService.cs" />
     <Compile Include="Interfaces\IAdjustmentReasonService.cs" />
     <Compile Include="Interfaces\IAdjustmentService.cs" />
@@ -103,7 +104,6 @@
     <Compile Include="Interfaces\IGiftCertificateDetailService.cs" />
     <Compile Include="Interfaces\IGiftCertificateService.cs" />
     <Compile Include="Interfaces\IHubOwnerService.cs" />
-    <Compile Include="Interfaces\IHubService.cs" />
     <Compile Include="Interfaces\IHubSettingService.cs" />
     <Compile Include="Interfaces\IHubSettingValueService.cs" />
     <Compile Include="Interfaces\IInternalMovementService.cs" />
@@ -212,6 +212,10 @@
     <ProjectReference Include="..\Cats.Services.Security\Cats.Services.Security.csproj">
       <Project>{0E706780-A5B2-488C-A502-49526946DEB5}</Project>
       <Name>Cats.Services.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cats.Services.Workflow\Cats.Services.Workflow.csproj">
+      <Project>{91b6c6b9-eec7-4436-a24b-5bc33cae1beb}</Project>
+      <Name>Cats.Services.Workflow</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

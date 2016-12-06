@@ -12,6 +12,7 @@ using Cats.Models.Hubs.ViewModels.Report.Data;
 
 
 namespace Cats.Services.Hub
+
 {
     public class HubService : IHubService
     {
@@ -103,7 +104,7 @@ namespace Cats.Services.Hub
         {
             return _unitOfWork.ReportRepository.GetStatusReportBySI(hubID).AsEnumerable();
         }
-
+        
         public IEnumerable<DispatchFulfillmentStatus_Result> GetDispatchFulfillmentStatus(int hubID)
         {
             return _unitOfWork.ReportRepository.GetDispatchFulfillmentStatus(hubID);
@@ -177,7 +178,32 @@ namespace Cats.Services.Hub
                     where v.HubOwnerID != hub.HubOwnerID
                     select v).ToList();
         }
-       
+
+
+
+        public Models.Hubs.Hub GetNearestWarehouse(int woredaID)
+        {
+            var adminUnit = _unitOfWork.AdminUnitRepository.FindById(woredaID);
+            var region = adminUnit.AdminUnit2.AdminUnit2.Name;
+            if (adminUnit != null)
+            {
+                if (region == "Afar" || region == "Oromia" || region == "SNNPR")
+                {
+                    return _unitOfWork.HubRepository.FindById(1);
+                }
+                else if (region == "Amhara" || region == "Tigray" || region == "Gambella")
+                {
+                    return _unitOfWork.HubRepository.FindById(2);
+
+                }
+                else
+                {
+                    return _unitOfWork.HubRepository.FindById(3);
+                }
+
+            }
+            return null;
+        }
         public void Dispose()
         {
             _unitOfWork.Dispose();

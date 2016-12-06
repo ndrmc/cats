@@ -104,7 +104,7 @@ namespace Cats.Models.Hubs.Mapping
             this.HasRequired(t => t.UserProfile)
                 .WithMany(t => t.Receives)
                 .HasForeignKey(d => d.UserProfileID);
-
+            this.HasRequired(t => t.BusinessProcess).WithMany(t => t.Receives).HasForeignKey(t => t.BusinessProcessID);
         }
     }
 }

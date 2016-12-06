@@ -288,6 +288,10 @@ namespace Cats.Services.Hub
 
             //dispatch.DispatchDetails.Add(dispatchDetail);
             dispatch.plannedAmount = dispatchAllocation.Amount;
+
+            dispatch.BusinessProcess = dispatchAllocation.BusinessProcess;
+            dispatch.BusinessProcessId = Convert.ToInt16(dispatchAllocation.BusinessProcessId);
+
             return dispatch;
         }
 

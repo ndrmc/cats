@@ -16,6 +16,7 @@ using Cats.Services.Security;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Cats.Helpers;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Procurement.Controllers
 {

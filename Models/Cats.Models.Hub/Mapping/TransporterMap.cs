@@ -35,6 +35,10 @@ namespace Cats.Models.Hubs.Mapping
             this.Property(t => t.ManagerMobile).HasColumnName("ManagerMobile");
             this.Property(t => t.ExperienceFrom).HasColumnName("ExperienceFrom");
             this.Property(t => t.ExperienceTo).HasColumnName("ExperienceTo");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
+
+            //this.HasOptional(t => t.BusinessProcess).WithMany(t => t.Transporters).HasForeignKey(x => x.BusinessProcessId);
+
         }
     }
 }

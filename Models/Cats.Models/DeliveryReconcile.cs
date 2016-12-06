@@ -25,5 +25,7 @@ namespace Cats.Models
         public virtual FDP FDP { get; set; }
         public virtual Hub Hub { get; set; }
         public virtual TransactionGroup TransactionGroup { get; set; }
+        public int? BusinessProcessID { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }

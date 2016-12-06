@@ -40,6 +40,7 @@ namespace Cats.Models.Hubs.Mapping
             this.Property(t => t.SourceHubID).HasColumnName("SourceHubID");
             this.Property(t => t.OtherDocumentationRef).HasColumnName("OtherDocumentationRef");
             this.Property(t => t.Remark).HasColumnName("Remark");
+            this.Property(t => t.BusinessProcessID).HasColumnName("BusinessProcessID");
 
         }
     }

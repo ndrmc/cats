@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Procurement;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Finance.Controllers
 {

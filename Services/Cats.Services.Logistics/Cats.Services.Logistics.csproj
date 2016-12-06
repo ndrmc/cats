@@ -148,6 +148,10 @@
       <Project>{9B741D92-4B67-4863-BF38-A1ADCAE40870}</Project>
       <Name>Cats.Services.Transaction</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Cats.Services.Workflow\Cats.Services.Workflow.csproj">
+      <Project>{91b6c6b9-eec7-4436-a24b-5bc33cae1beb}</Project>
+      <Name>Cats.Services.Workflow</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

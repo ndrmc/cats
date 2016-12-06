@@ -20,6 +20,8 @@ using log4net;
 using Cats.Security;
 using Cats.Services.Common;
 using StateTemplate = Cats.Models.StateTemplate;
+using Cats.Services;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -714,7 +716,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == BP_PR && s.Name == "Edited");
 
                 var dbHrd = _hrdService.FindById(hrd.HRDID);
-
+                
                 if (firstOrDefault != null && dbHrd != null)
                 {
                     var editedStateId = firstOrDefault.StateTemplateID;

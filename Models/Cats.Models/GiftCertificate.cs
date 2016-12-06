@@ -1,11 +1,11 @@
+using Cats.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cats.Models
 {
-    public partial class GiftCertificate
-    {
+    public partial class GiftCertificate:IWorkflow  {
         public GiftCertificate()
         {
             this.GiftCertificateDetails = new List<GiftCertificateDetail>();
@@ -26,7 +26,7 @@ namespace Cats.Models
         public string PortName { get; set; }
         public int StatusID { get; set; }
         public int? PartitionId { get; set; }
-        public int BusinessProcessID { get; set; }
+        //public int BusinessProcessID { get; set; }
 
         public string DeclarationNumber { get; set; }
         public Nullable<Guid> TransactionGroupID { get; set; }
@@ -36,6 +36,9 @@ namespace Cats.Models
         public virtual IList<GiftCertificateDetail> GiftCertificateDetails { get; set; }
         public virtual ShippingInstruction ShippingInstruction { get; set; }
         public virtual ICollection<LocalPurchase> LocalPurchases  { get; set; }
+
+
+
         public Dictionary<string,string> ToDictionary()
         {
             var dictionary = new Dictionary<string, string>
@@ -75,5 +78,10 @@ namespace Cats.Models
         }
 
         public virtual BusinessProcess BusinessProcess { get; set; }
+
+        public int BusinessProcessId { get; set; }
+
+     
+
     }
 }

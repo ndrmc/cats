@@ -21,6 +21,7 @@
 }
 
 <div class="form-horizontal">
+    @Html.Hidden("BusinessProcessId",Model.BusinessProcessId);
     @using (Html.BeginForm("Edit", "Transporter", FormMethod.Post, new { id = "frm_edit_transporter" }))
     {
         @Html.ValidationSummary(true)

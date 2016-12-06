@@ -39,23 +39,26 @@ namespace Cats.Models.Mapping
             this.Property(t => t.DeclarationNumber).HasColumnName("DeclarationNumber");
             this.Property(t => t.TransactionGroupID).HasColumnName("TransactionGroupID");
             this.Property(t => t.PartitionId).HasColumnName("PartitionId");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessId");
 
             // Relationships
             this.HasRequired(t => t.Detail)
                 .WithMany(t => t.GiftCertificates)
                 .HasForeignKey(d => d.DModeOfTransport);
-            this.HasRequired(t => t.Donor)
-                .WithMany(t => t.GiftCertificates)
-                .HasForeignKey(d => d.DonorID);
-            this.HasRequired(t => t.Program)
-                .WithMany(t => t.GiftCertificates)
-                .HasForeignKey(d => d.ProgramID);
-            this.HasRequired(t => t.ShippingInstruction)
-                .WithMany(t => t.GiftCertificates)
-                .HasForeignKey(t => t.ShippingInstructionID);
-            this.HasRequired(t => t.BusinessProcess)
-             .WithMany(t => t.GiftCertificates)
-             .HasForeignKey(d => d.BusinessProcessID);
+            //this.HasRequired(t => t.Donor)
+            //    .WithMany(t => t.GiftCertificates)
+            //    .HasForeignKey(d => d.DonorID);
+            //this.HasRequired(t => t.Program)
+            //    .WithMany(t => t.GiftCertificates)
+            //    .HasForeignKey(d => d.ProgramID);
+            //this.HasRequired(t => t.ShippingInstruction)
+            //    .WithMany(t => t.GiftCertificates)
+            //    .HasForeignKey(t => t.ShippingInstructionID);
+            //this.HasRequired(t => t.BusinessProcess)
+            // .WithMany(t => t.GiftCertificates)
+            // .HasForeignKey(d => d.BusinessProcessID);
+
+            this.HasRequired(t => t.BusinessProcess).WithMany(t => t.GiftCertificates).HasForeignKey(t => t.BusinessProcessId);
 
         }
     }

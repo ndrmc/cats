@@ -14,6 +14,7 @@ using Cats.Areas.Logistics.Models;
 using Cats.Services.Logistics;
 using Cats.Helpers;
 using FluentMigrator.Expressions;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Logistics.Controllers
 {

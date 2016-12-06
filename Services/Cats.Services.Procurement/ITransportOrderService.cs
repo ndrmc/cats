@@ -36,8 +36,8 @@ namespace Cats.Services.Procurement
 
         bool CreateTransportOrder(int requisitionId, int bidId, string requesterName);
 
-        int ReAssignTransporter(IEnumerable<TransportRequisitionWithoutWinnerModel> transReqWithTransporter, int transporterID);
-        bool ApproveTransportOrder(TransportOrder transportOrder, string userName);
+        int ReAssignTransporter(IEnumerable<TransportRequisitionWithoutWinnerModel> transReqWithTransporter, int transporterID, string userName);
+        bool ApproveTransportOrder(TransportOrder transportOrder, string userName, bool single);
         bool SignTransportOrder(TransportOrder transportOrder);
         List<vwTransportOrder> GeTransportOrderRpt(int id);
         List<Transporter> GetTransporter();
@@ -62,6 +62,11 @@ namespace Cats.Services.Procurement
 
         decimal? CheckIfCommodityIsDipatchedToThisFdp(int fdpId, string bidNo, int transporterId, int transporrtOrderId,
                                                      int commodityId, int requisitionID);
+
+        List<DispatchAllocation> GetGeneratedDispatchAllocations();
+    
+
+        void ClearGeneratedDispatchAllocations();
     }
 }
 

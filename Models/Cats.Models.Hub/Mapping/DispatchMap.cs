@@ -69,6 +69,7 @@ namespace Cats.Models.Hubs.Mapping
             this.Property(t => t.DispatchedByStoreMan).HasColumnName("DispatchedByStoreMan");
             this.Property(t => t.DispatchAllocationID).HasColumnName("DispatchAllocationID");
             this.Property(t => t.OtherDispatchAllocationID).HasColumnName("OtherDispatchAllocationID");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
 
             // Relationships
             this.HasOptional(t => t.DispatchAllocation)
@@ -86,6 +87,8 @@ namespace Cats.Models.Hubs.Mapping
             this.HasRequired(t => t.Transporter)
                 .WithMany(t => t.Dispatches)
                 .HasForeignKey(d => d.TransporterID);
+
+            //this.HasRequired(t => t.BusinessProcess).WithMany(t => t.Dispatches).HasForeignKey(t => t.BusinessProcessId);
 
         }
     }

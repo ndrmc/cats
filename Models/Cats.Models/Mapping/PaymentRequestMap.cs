@@ -12,7 +12,7 @@ namespace Cats.Models.Mapping
 
             this.Property(t => t.TransportOrderID).HasColumnName("TransportOrderID");
 
-            this.Property(t => t.BusinessProcessID).HasColumnName("BusinessProcessID");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
             this.Property(t => t.RequestedAmount).HasColumnName("RequestedAmount");
             this.Property(t => t.TransportedQuantityInQTL).HasColumnName("TransportedQuantityInQTL");
             this.Property(t => t.ReferenceNo).HasColumnName("ReferenceNo");
@@ -25,7 +25,7 @@ namespace Cats.Models.Mapping
 
             this.HasRequired(t => t.BusinessProcess)
               .WithMany(t => t.PaymentRequests)
-              .HasForeignKey(d => d.BusinessProcessID);
+              .HasForeignKey(d => d.BusinessProcessId);
 
             this.HasRequired(t => t.TransportOrder)
               .WithMany(t => t.PaymentRequests)

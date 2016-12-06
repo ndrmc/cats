@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cats.Models
 {
-    public partial class Dispatch
+    public partial class Dispatch:IWorkflow
     {
         public Dispatch()
         {
@@ -40,5 +40,9 @@ namespace Cats.Models
         public virtual Transporter Transporter { get; set; }
         public virtual ICollection<DispatchDetail> DispatchDetails { get; set; }
         public virtual ICollection<DeliveryReconcile> DeliveryReconciles { get; set; }
+
+        public int BusinessProcessId { get; set; }
+
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }
