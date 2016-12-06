@@ -22,6 +22,7 @@ using Cats.Data.Shared;
 using Cats.Data.Shared.UnitWork;
 using Microsoft.SqlServer.Server;
 using System.Data.SqlClient;
+using IApplicationSettingService = Cats.Services.Workflows.Config.IApplicationSettingService;
 
 namespace Cats.Services.Workflows
 {
@@ -613,11 +614,8 @@ namespace Cats.Services.Workflows
             {
                 BusinessProcessStateID = 1,
                 PerformedBy = "Ayele",
-                Comment = Alert.AlertMessage.Workflow_DefaultCreate,
+                Comment = Alert.AlertMessage.Workflow_DefaultCreate
                 //TargetObject = get gift certificate from unit of work
-                TargetObjectJsonData = "ID:14 , Name ='GiftCert1'",
-                TargetObjectReferenceId = "14",
-                TargetObjectType = typeof(Models.Hubs.GiftCertificate)
 
             };
 
@@ -625,11 +623,8 @@ namespace Cats.Services.Workflows
             {
                 BusinessProcessStateID = 1,
                 PerformedBy = "Kebede",
-                Comment = Alert.AlertMessage.Workflow_DefaultCreate,
+                Comment = Alert.AlertMessage.Workflow_DefaultCreate
                 //TargetObject = get gift certificate from unit of work
-                TargetObjectJsonData = "ID:15 , Name ='GiftCert1'",
-                TargetObjectReferenceId = "15",
-                TargetObjectType = typeof(Models.Hubs.GiftCertificate)
 
             };
 

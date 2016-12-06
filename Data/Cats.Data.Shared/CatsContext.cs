@@ -1,5 +1,6 @@
 using Cats.Models.Shared.DashBoardModels;
 using System.Data.Entity;
+using Cats.Models.Shared.DashBoardModelMappings;
 
 namespace Cats.Data.Shared
 {

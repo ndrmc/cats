@@ -53,6 +53,17 @@ namespace Cats.Services.Workflows
 
     }
 
-
+    public struct Constants  // this will help identify where a specific document is on
+    {
+        public static string Dashbord = "Dashbord";
+        public static string Workflow = "Workflow";
+        public static string EarlywarningPage = "Earlywarning";
+        public static string LogisticsPage = "Logistics";
+        public static string HubPage = "Hub";
+        public static string PsnpPage = "Psnp";
+        public static string FinancePage = "Finance";
+        public static string RegionalPage = "Regional";
+        public static string ProcurementPage = "Procurement";
+    }
 
 }
