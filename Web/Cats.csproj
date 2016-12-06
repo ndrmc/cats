@@ -540,9 +540,11 @@
     <Compile Include="Areas\WorkflowManager\Controllers\FlowTemplateController.cs" />
     <Compile Include="Areas\WorkflowManager\Controllers\ProcessTemplateController.cs" />
     <Compile Include="Areas\WorkflowManager\Controllers\StateTemplateController.cs" />
+    <Compile Include="Areas\WorkflowManager\Controllers\WorkflowTest.cs" />
+    <Compile Include="Areas\WorkflowManager\Models\DashboarDataEntryModel.cs" />
     <Compile Include="Areas\WorkflowManager\Models\WorkflowActivityViewModel.cs" />
-    <Compile Include="Areas\WorkflowManager\WorkflowManager.cs" />
-    <Compile Include="Areas\WorkflowManager\WorkflowManagerAreaRegistration.cs" />
+    <Compile Include="Areas\WorkflowManager\Controllers\WorkflowManagerController.cs" />
+    <Compile Include="Areas\WorkflowManager\Controllers\WorkflowManagerAreaRegistration.cs" />
     <Compile Include="CatsMasterDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1949,6 +1951,10 @@
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\Bootstrap\awesome-bootstrap-checkbox.css" />
+    <Content Include="Scripts\Bootstrap\bootstrap-multiselect.css" />
+    <Content Include="Scripts\Bootstrap\bootstrap-multiselect.js" />
+    <Content Include="Scripts\Bootstrap\font-awesome.min.css" />
     <Content Include="Scripts\cats-print-script.js" />
     <Content Include="Scripts\css\bootstrap.min.css" />
     <Content Include="Scripts\css\Bootstrap\loading-image.gif" />
@@ -2189,6 +2195,7 @@
     <Content Include="Scripts\js\bootstrap-timepicker.min.js" />
     <Content Include="Scripts\js\bootstrap.calendars.picker.css" />
     <Content Include="Scripts\js\bootstrap.min.js" />
+    <Content Include="Scripts\js\DataActivityIndictor\DataActivityIndicator.js" />
     <Content Include="Scripts\js\kendo.all.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af-ZA.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af.min.js" />
@@ -2759,6 +2766,11 @@
     <Content Include="Areas\Settings\Views\Users\ForgetPassword.cshtml" />
     <Content Include="Areas\Settings\Views\Users\ForgetPasswordRequest.cshtml" />
     <Content Include="Areas\WorkflowManager\Views\BusinessProcess\Details.cshtml" />
+
+    <Content Include="Areas\WorkflowManager\Views\WorkflowManager\Index.cshtml" />
+
+    <Content Include="DataActTester.cshtml" />
+
     <None Include="dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>dataset.Designer.cs</LastGenOutput>
@@ -2793,6 +2805,7 @@
     <Content Include="Scripts\fonts\FontAwesome.otf" />
     <Content Include="Scripts\css\images\KendoUI.ttf" />
     <Content Include="Scripts\css\images\KendoUI.woff" />
+    <Content Include="Scripts\fonts\fontawesome-webfont.woff2" />
     <None Include="Scripts\HubScripts\jquery-1.7.1-vsdoc.js" />
     <Content Include="Scripts\HubScripts\jquery-1.7.1.js" />
     <Content Include="Scripts\HubScripts\jquery-1.7.1.min.js" />
@@ -3497,6 +3510,7 @@
     <Content Include="Web References\ReportPortal\CacheRefreshPlan1.datasource" />
     <Content Include="Web References\ReportPortal\CacheRefreshPlan3.datasource" />
     <Content Include="Web References\ReportPortal\CacheRefreshPlan4.datasource" />
+    <Content Include="Views\Shared\DataActivityIndicator.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -3609,6 +3623,10 @@
       <Project>{065612ec-b087-492f-abee-029598960744}</Project>
       <Name>Cats.Data.Security</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Data\Cats.Data.Shared\Cats.Data.Shared.csproj">
+      <Project>{b683e705-e480-4fc6-a347-99fff7d9ffb9}</Project>
+      <Name>Cats.Data.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data\Cats.Data\Cats.Data.csproj">
       <Project>{7cf78855-5a90-441f-9acc-fafbd1cad68a}</Project>
       <Name>Cats.Data</Name>
@@ -3636,6 +3654,10 @@
     <ProjectReference Include="..\Models\Cats.Models.Security\Cats.Models.Security.csproj">
       <Project>{e3c4d9fc-ad84-4e19-a475-6adbd134af68}</Project>
       <Name>Cats.Models.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Models\Cats.Models.Shared\Cats.Models.Shared.csproj">
+      <Project>{647f8dad-7d70-4419-a87c-1802db94190b}</Project>
+      <Name>Cats.Models.Shared</Name>
     </ProjectReference>
     <ProjectReference Include="..\Models\Cats.Models\Cats.Models.csproj">
       <Project>{abfb63d2-89fc-45bc-aa4e-5d9b21094b85}</Project>
@@ -3776,7 +3798,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>3325</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

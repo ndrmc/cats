@@ -78,8 +78,10 @@
     <Compile Include="GiftCertificateDetailService.cs" />
     <Compile Include="GiftCertificateService.cs" />
     <Compile Include="HubOwnerService.cs" />
+    <Compile Include="HubService.cs" />
     <Compile Include="HubSettingService.cs" />
     <Compile Include="HubSettingValueService.cs" />
+    <Compile Include="IHubService.cs" />
     <Compile Include="Interfaces\IAccountService.cs" />
     <Compile Include="Interfaces\IAdjustmentReasonService.cs" />
     <Compile Include="Interfaces\IAdjustmentService.cs" />

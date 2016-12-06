@@ -11,7 +11,8 @@ using Cats.Models.Hubs.ViewModels.Report;
 using Cats.Models.Hubs.ViewModels.Report.Data;
 
 
-namespace Cats.Services.Hubs
+namespace Cats.Services.Hub
+
 {
     public class HubService : IHubService
     {
@@ -180,7 +181,7 @@ namespace Cats.Services.Hubs
 
 
 
-        public Hub GetNearestWarehouse(int woredaID)
+        public Models.Hubs.Hub GetNearestWarehouse(int woredaID)
         {
             var adminUnit = _unitOfWork.AdminUnitRepository.FindById(woredaID);
             var region = adminUnit.AdminUnit2.AdminUnit2.Name;

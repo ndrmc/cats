@@ -16,18 +16,29 @@ using System.Diagnostics;
 using Cats.Models.Security;
 using Cats.Services.Workflows.Alert;
 using Cats.Services.Hubs;
+using System.Data;
+using Cats.Models.Shared.DashBoardModels;
+using Cats.Data.Shared;
+using Cats.Data.Shared.UnitWork;
+using Microsoft.SqlServer.Server;
+using System.Data.SqlClient;
+using IApplicationSettingService = Cats.Services.Workflows.Config.IApplicationSettingService;
 
 namespace Cats.Services.Workflows
 {
     public class WorkflowActivityService : IWorkflowActivityService
     {
-
+        private readonly IUnitOfWork _unitOfWork;
         #region Constructor
         public WorkflowActivityService(IBusinessProcessService businessProcessService, IApplicationSettingService applicationSettingService, IHubBusinessProcessService hubBusinessProcessService)
         {
             _businessProcessService = businessProcessService;
             _applicationSettingService = applicationSettingService;
             _hubBusinessProcessService = hubBusinessProcessService;
+        }
+        public WorkflowActivityService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
         }
         #endregion
 
@@ -428,7 +439,7 @@ namespace Cats.Services.Workflows
             else
                 msg = description;
 
-            EnterWorkflow(businessProcessID, finalStateID, fileName, isHub, msg);
+            EnterWorkflowDelete(businessProcessID, finalStateID, fileName, isHub, msg);
 
 
             return true;
@@ -474,6 +485,14 @@ namespace Cats.Services.Workflows
             else
                 EnterWorkflowHub(businessProcessID, finalStateID, fileName, msg);
         }
+
+        public void EnterWorkflowDelete(int? businessProcessID, int finalStateID, string fileName, bool isHub, string msg)
+        {
+            if (!isHub)
+                EnterWorkflowDelete(businessProcessID, finalStateID, fileName, msg);
+            else
+                EnterWorkflowHubDelete(businessProcessID, finalStateID, fileName, msg);
+        }
         public void EnterWorkflow(int? businessProcessID, int finalStateID, string fileName, string msg)
         {
 
@@ -492,6 +511,31 @@ namespace Cats.Services.Workflows
             DebbuggingTools.ShowHistory(businessProcessID);
 
             BusinessProcessService.PromotWorkflow_WoutUpdatingCurrentStatus(businessProcessState);
+
+
+            Debug.WriteLine("*-----------WORKFLOW COMMEN AFTER ENTERING LOG");
+            DebbuggingTools.ShowHistory(businessProcessID);
+
+        }
+
+        public void EnterWorkflowDelete(int? businessProcessID, int finalStateID, string fileName, string msg)
+        {
+
+            var businessProcessState = new Models.BusinessProcessState()
+            {
+                StateID = finalStateID,
+                PerformedBy = UserName,
+                DatePerformed = DateTime.Now,
+                Comment = msg,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = businessProcessID ?? 0
+            };
+
+
+            Debug.WriteLine("*-----------WORKFLOW COMMEN BEFORE ENTERING LOG");
+            DebbuggingTools.ShowHistory(businessProcessID);
+
+            BusinessProcessService.PromotWorkflow(businessProcessState);
 
 
             Debug.WriteLine("*-----------WORKFLOW COMMEN AFTER ENTERING LOG");
@@ -521,12 +565,37 @@ namespace Cats.Services.Workflows
 
 
         }
+
+        public void EnterWorkflowHubDelete(int? businessProcessID, int finalStateID, string fileName, string msg)
+        {
+
+            var businessProcessState = new Models.Hubs.BusinessProcessState()
+            {
+                StateID = finalStateID,
+                PerformedBy = UserName,
+                DatePerformed = DateTime.Now,
+                Comment = msg,
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = businessProcessID ?? 0
+            };
+
+            Debug.WriteLine("*-----------WORKFLOW COMMEN BEFORE ENTERING LOG");
+            DebbuggingTools.ShowHistory(businessProcessID);
+
+            HubBusinessProcessService.PromotWorkflow(businessProcessState);
+
+            Debug.WriteLine("*-----------WORKFLOW COMMEN AFTER ENTERING LOG");
+            DebbuggingTools.ShowHistory(businessProcessID);
+
+
+        }
         Models.Hubs.BusinessProcess IWorkflowActivityService.GetBusinessProcessHub(int businessProcessId)
         {
             if (businessProcessId <= 0) return null;
 
             return HubBusinessProcessService.FindById(businessProcessId);
         }
+
         Models.BusinessProcess IWorkflowActivityService.GetBusinessProcess(int businessProcessId)
         {
 
@@ -538,18 +607,15 @@ namespace Cats.Services.Workflows
         public List<WorkflowActivity> GetWorkflowActivity(string pageName, string filter = null)
         {
 
-            
+
             List<WorkflowActivity> mocks = new List<WorkflowActivity>();
 
             WorkflowActivity mock1 = new WorkflowActivity()
             {
                 BusinessProcessStateID = 1,
                 PerformedBy = "Ayele",
-                Comment = Alert.AlertMessage.Workflow_DefaultCreate,
+                Comment = Alert.AlertMessage.Workflow_DefaultCreate
                 //TargetObject = get gift certificate from unit of work
-                TargetObjectJsonData = "ID:14 , Name ='GiftCert1'",
-                TargetObjectReferenceId = "14",
-                TargetObjectType = typeof(Models.Hubs.GiftCertificate)
 
             };
 
@@ -557,11 +623,8 @@ namespace Cats.Services.Workflows
             {
                 BusinessProcessStateID = 1,
                 PerformedBy = "Kebede",
-                Comment = Alert.AlertMessage.Workflow_DefaultCreate,
+                Comment = Alert.AlertMessage.Workflow_DefaultCreate
                 //TargetObject = get gift certificate from unit of work
-                TargetObjectJsonData = "ID:14 , Name ='GiftCert1'",
-                TargetObjectReferenceId = "14",
-                TargetObjectType = typeof(Models.Hubs.GiftCertificate)
 
             };
 
@@ -581,8 +644,87 @@ namespace Cats.Services.Workflows
         //    return null;
         //}
 
+        public List<DashboardDataEntry> GetWorkflowActivityAgg(DateTime startDate, DateTime endDate, List<string> workflowDefinitions, List<string> users, List<string> activities)
+        {
+            try
+            {
+                // Workflow filter collection
+                FilterCollection filterWorkflowDefinitions = new FilterCollection();
+                filterWorkflowDefinitions.AddRange(workflowDefinitions.Select(filterName => new Filter { FilterName = filterName }));
+
+                // User filter collection
+                FilterCollection filterUsers = new FilterCollection();
+                filterUsers.AddRange(users.Select(filterName => new Filter { FilterName = filterName }));
+
+                // Activity filter collection
+                FilterCollection filterActivities = new FilterCollection();
+                filterActivities.AddRange(activities.Select(filterName => new Filter { FilterName = filterName }));
+
+                // Into Param object
+                SqlParameter filterStartDate = new SqlParameter("StartDate", SqlDbType.DateTime) { Value = startDate };
+                SqlParameter filterEndDate = new SqlParameter("EndDate", SqlDbType.DateTime) { Value = endDate };
+                SqlParameter paramWorkflow = new SqlParameter
+                {
+                    ParameterName = "@WorkflowName_Array",  // proc def
+                    SqlDbType = SqlDbType.Structured,
+                    Value = filterWorkflowDefinitions,
+                    Direction = ParameterDirection.Input,
+                    TypeName = "dbo.FilterArray"
+                };
+                SqlParameter paramUser = new SqlParameter
+                {
+                    ParameterName = "@User_Array", // proc def
+                    SqlDbType = SqlDbType.Structured,
+                    Value = filterUsers,
+                    Direction = ParameterDirection.Input,
+                    TypeName = "dbo.FilterArray"
+                };
+                SqlParameter paramActivity = new SqlParameter
+                {
+                    ParameterName = "@Activity_Array", // proc def
+                    SqlDbType = SqlDbType.Structured,
+                    Value = filterActivities,
+                    Direction = ParameterDirection.Input,
+                    TypeName = "dbo.FilterArray"
+                };
+
+                var result = ExecWithStoreProcedure("EXEC [dbo].[GenericDashboardDataProvider] " +
+                                                    "@StartDate, @EndDate, @WorkflowName_Array, @User_Array, @Activity_Array",
+                    filterStartDate, filterEndDate, paramWorkflow, paramUser, paramActivity);
+
+                return result.ToList();
+            }
+            catch (Exception exception)
+            {
+                return null;
+            }
+        }
+
+        public IEnumerable<DashboardDataEntry> ExecWithStoreProcedure(string query, params object[] parameters)
+        {
+            return _unitOfWork.Database.SqlQuery<DashboardDataEntry>(query, parameters);
+        }
+
+        public class FilterCollection : List<Filter>, IEnumerable<SqlDataRecord>
+        {
+            IEnumerator<SqlDataRecord> IEnumerable<SqlDataRecord>.GetEnumerator()
+            {
+                var sqlRow = new SqlDataRecord(new SqlMetaData("Filter", SqlDbType.VarChar, 50));
+
+                foreach (Filter filter in this)
+                {
+                    sqlRow.SetString(0, filter.FilterName);
+
+                    yield return sqlRow;
+                }
+            }
+        }
+
+        public class Filter
+        {
+            public string FilterName { get; set; }
+        }
 
         #endregion
-
     }
 }

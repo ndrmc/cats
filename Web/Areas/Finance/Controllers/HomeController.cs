@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -36,7 +37,7 @@ namespace Cats.Areas.Finance.Controllers
         private readonly IReliefRequisitionService _reliefRequisitionService;
         private readonly IDispatchDetailService _disptDetailService;
         private readonly Services.Hub.ICommodityService _commodityService;
-        private readonly Services.Hubs.IHubService _hubService;
+        private readonly Services.Hub.IHubService  _hubService;
         private readonly Services.Hub.IVWDdispatchAllocationDistributionService _dispatchAllocationDistributionService;
 
         public HomeController(ITransporterChequeService transporterChequeService,
@@ -54,7 +55,7 @@ namespace Cats.Areas.Finance.Controllers
             IDispatchAllocationService dispatchAllocationService,
             IDispatchDetailService dispatchDetailService,
             Services.Hub.ICommodityService commodityService,
-            Services.Hubs.IHubService hubService,
+            Services.Hub.IHubService hubService,
             Services.Hub.IVWDdispatchAllocationDistributionService vwDdispatchAllocationDistributionService)
         {
             _transporterChequeService = transporterChequeService;

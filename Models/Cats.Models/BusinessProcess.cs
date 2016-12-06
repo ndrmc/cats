@@ -65,7 +65,7 @@ namespace Cats.Models
         public virtual ICollection<TransportBidQuotation> TTransportBidQuotations { get; set; }
         public virtual ICollection<Transporter> Transporters { get; set; }
         public virtual ICollection<Delivery> Deliveries { get; set; }
-
+        public virtual ICollection<NeedAssessmentDetail> NeedAssessmentDetails { get; set; } 
 
     }
 

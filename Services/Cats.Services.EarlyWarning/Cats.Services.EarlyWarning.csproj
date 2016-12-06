@@ -80,6 +80,8 @@
     <Compile Include="AdminUnitTypeService.cs" />
     <Compile Include="AllocationByRegionService.cs" />
     <Compile Include="HRDService.cs" />
+    <Compile Include="HubService.cs" />
+    <Compile Include="IHubService.cs" />
     <Compile Include="IReasonService.cs" />
     <Compile Include="ReasonService.cs" />
     <Compile Include="CommodityService.cs" />
