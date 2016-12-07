@@ -716,6 +716,8 @@
   <ItemGroup>
     <Content Include="AmharicReportViewer.aspx" />
     <Content Include="Areas\EarlyWarning\Views\Home\Index.cshtml" />
+    <Content Include="Scripts\DataActivityIndicator\DataActivityIndicator.JS" />
+    <Content Include="Areas\Finance\Views\Home\D\x.html" />
     <Content Include="Areas\Hub\Models\Views\Receive\EditorTemplates\ComboBox.ascx" />
     <Content Include="Areas\Hub\Models\Views\Receive\EditorTemplates\GridForeignKey.ascx" />
     <Content Include="Areas\Hub\Models\Views\Shared\EditorTemplates\Currency.ascx" />
@@ -923,6 +925,7 @@
     <Content Include="Areas\Logistics\Views\DispatchAllocation\AllocationAdjustment.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\ReliefRequisition\PromotThese.cshtml" />
     <Content Include="Areas\Logistics\Views\DispatchAllocation\UpdateRequisition.cshtml" />
+    <Content Include="Areas\Finance\Views\Home\D\DataActivityIndicator.html" />
     <None Include="Areas\Logistics\Views\DispatchAllocation\_AllocateProjectCode.cshtml" />
     <Content Include="Content\2013.1.219\Black\editor.png" />
     <Content Include="Content\2013.1.219\Black\imagebrowser.png" />
@@ -2739,7 +2742,9 @@
     <Content Include="Areas\Logistics\Views\Home\NoneReportedTransporters.cshtml" />
     <Content Include="Content\assetss\global\plugins\font-awesome\fonts\fontawesome-webfont.eot" />
     <Content Include="Content\assetss\global\plugins\font-awesome\fonts\fontawesome-webfont.ttf" />
-    <Content Include="Content\assetss\global\plugins\font-awesome\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\assetss\global\plugins\font-awesome\fonts\fontawesome-webfont.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\assetss\global\plugins\simple-line-icons\fonts\Simple-Line-Icons.eot" />
     <Content Include="Content\assetss\global\plugins\simple-line-icons\fonts\Simple-Line-Icons.ttf" />
     <Content Include="Content\assetss\global\plugins\simple-line-icons\fonts\Simple-Line-Icons.woff" />
@@ -2766,11 +2771,11 @@
     <Content Include="Areas\Settings\Views\Users\ForgetPassword.cshtml" />
     <Content Include="Areas\Settings\Views\Users\ForgetPasswordRequest.cshtml" />
     <Content Include="Areas\WorkflowManager\Views\BusinessProcess\Details.cshtml" />
-
     <Content Include="Areas\WorkflowManager\Views\WorkflowManager\Index.cshtml" />
-
     <Content Include="DataActTester.cshtml" />
-
+    <Content Include="Content\assetss\global\plugins\font-awesome\fonts\fontawesome-webfont.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>dataset.Designer.cs</LastGenOutput>
@@ -3510,7 +3515,7 @@
     <Content Include="Web References\ReportPortal\CacheRefreshPlan1.datasource" />
     <Content Include="Web References\ReportPortal\CacheRefreshPlan3.datasource" />
     <Content Include="Web References\ReportPortal\CacheRefreshPlan4.datasource" />
-    <Content Include="Views\Shared\DataActivityIndicator.cshtml" />
+    <Content Include="Views\Shared\_DataActivityIndicator.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -3798,11 +3803,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>3325</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:1788/</IISUrl>
+          <IISUrl>http://localhost:4562/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
