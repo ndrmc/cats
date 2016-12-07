@@ -1,10 +1,15 @@
-﻿<div class="col-md-2  col-sm-3 skin-blue ">
-    <div class="row sidebar left-side">
-        <div class="hdr-blck ">Sidebar Menu</div>
-        <ul class="sidebar-menu">
-         
-            <li><a href="@Url.Action("Index", "Contribution")"><i class="fa fa-inbox"></i> Contribution Lists </a></li>
-            <li><a href="@Url.Action("ContributionSummary", "Contribution")"><i class="fa fa-inbox"></i> Contribution Summary </a></li>
+﻿@using Cats.Helpers
+<div class="portlet solid  bordered" style="border-right: 2px solid #e6e9ec !important; border-left: none !important;">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            @*<i class="icon-list font-green-sharp"></i>*@
+            <span class="caption-subject bold uppercase"> @Html.Translate("Contribution")</span>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <ul class="ver-inline-menu tabbable margin-bottom-10">
+            <li><a href="@Url.Action("Index", "Contribution")"><i class="fa fa-list"></i>@Html.Translate("Lists") </a></li>
+            <li><a href="@Url.Action("ContributionSummary", "Contribution")"><i class="fa fa-file-archive-o"></i> @Html.Translate("Summary") </a></li>
         </ul>
     </div>
 </div>
