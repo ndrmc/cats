@@ -27,6 +27,25 @@ angular.module(AngularAppName, []).controller('WorkflowActController', function 
 
     };
 
+    $scope.calcColumnTotal = function (columnName) {
+        console.log(columnName);
+        var sum = 0;
+        angular.forEach($scope.displayedWorkflowList, function ( users) {
+            angular.forEach(users.dashboardDataEntries, function (wf) {
+                var userActivityname = wf.activityName.trim().toCamel();
+                if (columnName == userActivityname) {
+
+                    sum = sum + parseInt(wf.activityCount);
+
+                }
+
+
+            });
+
+
+        });
+        return sum;
+        };
     $scope.init = function () {
 
 
@@ -121,7 +140,7 @@ angular.module(AngularAppName, []).controller('WorkflowActController', function 
 
         setFilterControlDefaultValue();
 
-        getDataEntryStat();
+        //getDataEntryStat();
 
 
 
@@ -160,9 +179,9 @@ $scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(func
             //populate columns list
             var name;
             var i;
-            $.each($scope.controlData.lookupActivities, function (index, workflowActObj) {
+            $.each($scope.filterData.selectedActivities, function (index, workflowActObj) {
 
-                name = workflowActObj.name.trim().toCamel();
+                name = workflowActObj.trim().toCamel();
 
                 //Check if already exists or not?
                 (i = $scope.displayedWorkflowNames.indexOf(name)) < 0 ? $scope.displayedWorkflowNames.push(name) : $scope.displayedWorkflowNames.splice(i, 1);
@@ -200,13 +219,13 @@ $scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(func
                     //iterate the activity lookup
                     found = false;
                     userActivityname = activityCount.activityName.trim().toCamel();
-                    $.each($scope.controlData.lookupActivities, function (index, headerActivityName) {
+                    $.each($scope.filterData.selectedActivities, function (index, headerActivityName) {
                         //iterate activity count
 
                         //check if the selected header activity name is equal to the activitycount name
 
 
-                        if (headerActivityName.name == userActivityname) {
+                        if (headerActivityName == userActivityname) {
                             rowCount.push(activityCount.activityCount);
                             found = true;
                         }
@@ -309,8 +328,7 @@ $scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(func
                                 wfusers: _wfusers,
                                 activities: _activities
                             }
-                        };
-                        return $http.get(urlGetDataEntryStat, config);
+                        };                        return $http.get(urlGetDataEntryStat, config);
 
 
 
@@ -344,6 +362,29 @@ $scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(func
                 };
 
 
-            }]);
+            }]).filter('columnSum', function ($filter) {
+                return function (data,columnName) {
+                    var sum = 0;
+
+                    angular.forEach(data[0].dashboardDataEntries, function (value) {
+                        if (value.activityName == columnName)
+                      
+                            sum = sum + parseInt(value.activityCount);
+                    });
+               
+
+                    return sum;
+                };
+            }).filter('rowSum', function () {
+                return function (data) {        
+                    if (angular.isUndefined(data) && angular.isUndefined(key))
+                        return 0;        
+                    var sum = 0;        
+                    angular.forEach(data,function(value){
+                        sum = sum + parseInt(value);
+                    });        
+                    return sum;
+                };
+            });
 
 

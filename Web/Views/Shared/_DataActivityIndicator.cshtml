@@ -95,6 +95,7 @@
                                             <th ng-repeat="activities in displayedWorkflowNames">
                                                 {{ activities }}
                                             </th>
+                                            <th>Total Activity per User</th>
 
                                         </tr>
                                     </thead>
@@ -103,16 +104,26 @@
                                             <td scope="row">{{user.index}}</td>
                                             <td>{{user.userName}}</td>
                                             <td ng-repeat="actCount in user.activityAndCount track by $index">
-                                                {{actCount}}
+                                                <a ng-click="openDetail(user.userName,$index)">   {{actCount}}</a>
                                             </td>
-
+                                            <td>
+                                                {{ user.activityAndCount| rowSum}}
+                                            </td>
+                                      
                                         </tr>
 
 
                                         <tr>
                                             <th colspan="2">Total</th>
-                                            <td>20</td>
-                                            <td>30</td>
+                                   
+
+                                            <td ng-repeat="activities in displayedWorkflowNames">
+                                                
+                                                {{calcColumnTotal(activities)}}
+
+
+                                            </td>
+                                      
 
                                         </tr>
 
