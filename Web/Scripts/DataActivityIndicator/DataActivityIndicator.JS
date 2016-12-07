@@ -139,13 +139,6 @@ angular.module(AngularAppName, []).controller('WorkflowActController', function 
         DataServices.getDataEntryStat($scope.filterData.selectedStartDate, $scope.filterData.selectedEndDate, $scope.filterData.selectedDocument,
 $scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(function (result) {
 
-    //var workflowData = [
-
-    //          { userName: "user1", activityCount: [{ activityName: "Approve", activityCount: 25 }, { activityName: "Reject", activityCount: 5 }, { activityName: "Draft", activityCount: 36 }] },
-    //          { userName: "user2", activityCount: [{ activityName: "Approve", activityCount: 2 }, { activityName: "Reject", activityCount: 50 }, { activityName: "Draft", activityCount: 15 }] }
-
-    //];
-
     $scope.displayedWorkflowList = result.data;
 
 });
