@@ -89,6 +89,8 @@
     <Compile Include="AdminUnitType.cs" />
     <Compile Include="Audit.cs" />
     <Compile Include="BinCardReport.cs" />
+    <Compile Include="HubBusinessProcess.cs" />
+    <Compile Include="HubBusinessProcessState.cs" />
     <Compile Include="Commodity.cs" />
     <Compile Include="CommodityGrade.cs" />
     <Compile Include="CommoditySource.cs" />
@@ -96,11 +98,20 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Contact.cs" />
+    <Compile Include="HubFlowTemplate.cs" />
     <Compile Include="FreeStockStatus.cs" />
+    <Compile Include="IWorkflow.cs" />
+    <Compile Include="Mapping\BusinessProcessMap.cs" />
+    <Compile Include="Mapping\BusinessProcessStateMap.cs" />
+    <Compile Include="Mapping\FlowTemplateMap.cs" />
+    <Compile Include="Mapping\ProcessTemplateMap.cs" />
+    <Compile Include="Mapping\StateTemplateMap.cs" />
     <Compile Include="Mapping\VWDispatchAllocationMap.cs" />
     <Compile Include="Mapping\VWFreePhysicalStockMap.cs" />
     <Compile Include="Mapping\VWReceiptAllocationAggregateMap.cs" />
     <Compile Include="Mapping\VWDdispatchAllocationDistributionMap.cs" />
+    <Compile Include="HubProcessTemplate.cs" />
+    <Compile Include="HubStateTemplate.cs" />
     <Compile Include="StockAdjustmentViewModel.cs" />
     <Compile Include="SummaryFreeAndPhysicalStockModel.cs" />
     <Compile Include="Mapping\VWTransferredStockMap.cs" />
@@ -736,6 +747,10 @@
     <ProjectReference Include="..\Cats.Models.Security\Cats.Models.Security.csproj">
       <Project>{e3c4d9fc-ad84-4e19-a475-6adbd134af68}</Project>
       <Name>Cats.Models.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cats.Models\Cats.Models.csproj">
+      <Project>{ABFB63D2-89FC-45BC-AA4E-5D9B21094B85}</Project>
+      <Name>Cats.Models</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

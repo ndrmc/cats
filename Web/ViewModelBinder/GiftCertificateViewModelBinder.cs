@@ -44,7 +44,7 @@ namespace Cats.ViewModelBinder
             giftCertificateViewModel.AllowReject = giftCertificateModel.Donor.DonationPlanHeaders.Count > 0; 
             giftCertificateViewModel.IsApprovable = giftCertificateModel.GiftCertificateDetails.Count > 0;
 
-            giftCertificateViewModel.BusinessProcessID = giftCertificateModel.BusinessProcessID;
+            giftCertificateViewModel.BusinessProcessID = Convert.ToInt32( giftCertificateModel.BusinessProcessId);
             giftCertificateViewModel.IsApprovable = giftCertificateModel.GiftCertificateDetails.Count > 0;
 
             giftCertificateViewModel.RejectedId = 
@@ -53,7 +53,7 @@ namespace Cats.ViewModelBinder
 
             giftCertificateViewModel.ApprovedId =
                 giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>
-                a.Name == "Approve" || a.Name== "Print").Select(s => s.FinalStateID).FirstOrDefault();
+                a.Name == "Approve" ).Select(s => s.FinalStateID).FirstOrDefault();
 
             //giftCertificateViewModel.PrintedId =
             //    giftCertificateModel.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>

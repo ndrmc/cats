@@ -100,6 +100,7 @@ namespace Cats.Services.EarlyWarning
                 }
 
             }
+
             return null;
         }
     }

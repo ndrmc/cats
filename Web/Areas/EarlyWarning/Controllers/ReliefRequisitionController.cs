@@ -21,6 +21,9 @@ using System.Web.UI;
 using WebGrease.Css.Ast.Selectors;
 using NUnit.Framework;
 using StateTemplate = Cats.Models.StateTemplate;
+using Cats.Alert;
+using Cats.Services.Workflows.Alert;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -491,7 +494,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 _reliefRequisitionDetailService.AddReliefRequisitionDetail(RequisitionViewModelBinder.BindReliefRequisitionDetail(reliefRequisitionDetailViewModel));
 
-                UpdateEditWorkflow(reliefRequisitionDetailViewModel.RequisitionID, "Relief Requisition Detail has been added to the requisition.");
+                UpdateEditWorkflow(reliefRequisitionDetailViewModel.RequisitionID, AlertMessage.Workflow_ReliiefReqDetailAdded);
             }
 
             return Json(new[] { reliefRequisitionDetailViewModel }.ToDataSourceResult(request, ModelState));
@@ -509,9 +512,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     if(target.BenficiaryNo!= reliefRequisitionDetailViewModel.BenficiaryNo)
                     {
                         UpdateEditWorkflow(reliefRequisitionDetailViewModel.RequisitionID, 
-                            String.Format("Relief Requisition Detail-Beneficiary No for {0} has been changed from {1} to {2}.",target.FDP.Name, target.BenficiaryNo, reliefRequisitionDetailViewModel.BenficiaryNo));
+                            AlertManager.GetWorkflowMessage_ReliefReqDetail( target.FDP.Name, target.BenficiaryNo.ToString(), reliefRequisitionDetailViewModel.BenficiaryNo.ToString()));
 
-                    }
+                   }
 
                     target.Amount = reliefRequisitionDetailViewModel.Amount.ToPreferedWeightUnitForInsert();
                     target.BenficiaryNo = reliefRequisitionDetailViewModel.BenficiaryNo;
@@ -536,7 +539,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 _reliefRequisitionDetailService.DeleteById(reliefRequisitionDetail.RequisitionDetailID);
 
-                UpdateEditWorkflow(reliefRequisitionDetail.RequisitionID, "Relief Requisition Detail has been Deleted from the requisition.");
+                UpdateEditWorkflow(reliefRequisitionDetail.RequisitionID, AlertMessage.Workflow_ReliiefReqDetailDeleted);
 
             }
 
@@ -548,22 +551,11 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
             var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == requisitionid, null,
                                   "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
-            if (requisition != null)
-            {
-                var editFlowTemplate = requisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.FirstOrDefault(t => t.Name == "Edit");
-                if (editFlowTemplate != null)
-                {
-                    var businessProcessState = new BusinessProcessState()
-                    {
-                        StateID = editFlowTemplate.FinalStateID,
-                        PerformedBy = HttpContext.User.Identity.Name,
-                        DatePerformed = DateTime.Now,
-                        Comment = changeNote ?? "Relief Requistion has been Edited.",
-                        ParentBusinessProcessID = requisition.BusinessProcessID
-                    };
-                    _businessProcessService.PromotWorkflow(businessProcessState);
-                }
-            }
+
+         
+            WorkflowActivityUtil.EnterEditWorkflow(requisition.BusinessProcess, changeNote);
+
+
             return true;
         }
         [HttpPost]
@@ -669,7 +661,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             requisitionById.RequestedDate = reliefrequisition.RequestedDate;
             _reliefRequisitionService.EditReliefRequisition(requisitionById);
 
-            UpdateEditWorkflow(reliefrequisition.RequisitionID);
+            UpdateEditWorkflow(reliefrequisition.RequisitionID,AlertMessage.Workflow_DefaultEdit);
 
             return Json(new { status = "Ok", message = string.Empty, Id = requisitionById.RequisitionID});
         }

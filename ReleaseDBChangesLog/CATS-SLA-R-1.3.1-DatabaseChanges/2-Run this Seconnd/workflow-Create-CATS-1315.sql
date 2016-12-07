@@ -33,7 +33,8 @@ BEGIN
 		declare @Closed int
 		declare @FederalApproved int
 		declare @Rejecet int 
-		declare @Approve int   
+		declare @Approve int 
+		declare @Revert int  
 		select @id = Scope_Identity()  
 		 INSERT INTO [dbo].[ApplicationSetting]
            ([SettingName]
@@ -55,6 +56,12 @@ BEGIN
            )
      VALUES
 		   ( @id,'Closed',0,3,1 )  select @Closed = Scope_Identity()
+		    INSERT INTO [dbo].[StateTemplate]
+           ([ParentProcessTemplateID] ,[Name],[AllowedAccessLevel],[StateNo]
+           ,[StateType]
+           )
+     VALUES
+		   ( @id,'Revert',0,4,1 )  select @Revert = Scope_Identity()
 		   INSERT INTO [dbo].[StateTemplate]
            ([ParentProcessTemplateID] ,[Name],[AllowedAccessLevel],[StateNo]
            ,[StateType]
@@ -90,7 +97,8 @@ ROLLBACK /* Rollback of the transaction */
 		   (@id ,@Approve,@Rejecet,'Reject'),
 		   (@id ,@Approve,@FederalApproved,'Federal Approve'),
 		   (@id ,@Rejecet,@Approve,'Approve'),
-		   (@id ,@FederalApproved,@Closed,'Close')
+		   (@id ,@FederalApproved,@Closed,'Close'),
+		   (@id ,@Closed,@Revert,'Revert')
 IF(@@error <> 0)
 ROLLBACK /* Rollback of the transaction */		  
 END

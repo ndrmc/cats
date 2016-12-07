@@ -95,10 +95,16 @@ namespace Cats.Services.Procurement
         {
             //    var transportOrderDetail =
             //        ;
-            var transportOrder = (
-                from c in _unitOfWork.TransportOrderDetailRepository.FindBy(x => x.SourceWarehouseID == hubId)
-                select c.TransportOrder).Where(x => x.StatusID == statusId).Distinct().ToList();
-            return transportOrder;
+            var transportOrderDetailIDs = (
+                from c in _unitOfWork.TransportOrderDetailRepository.Get(x => x.SourceWarehouseID == hubId)
+                select c.TransportOrderID)
+                .Distinct()
+                .ToList();
+            var signedTransportOrders =
+                _unitOfWork.TransportOrderRepository.Get(x => transportOrderDetailIDs.Contains(x.TransportOrderID) && x.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null,
+                    "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                    .Distinct().ToList();
+            return signedTransportOrders;
         }
         public IEnumerable<TransportOrder> GetFilteredTransportOrder(IEnumerable<TransportRequisitionDetail> transportRequsitionDetails, string [] stateNames)
         {
@@ -629,7 +635,7 @@ namespace Cats.Services.Procurement
                 return -1;
             }
         }
-        public int ReAssignTransporter(IEnumerable<TransportRequisitionWithoutWinnerModel> transReqWithTransporter, int transporterID)
+        public int ReAssignTransporter(IEnumerable<TransportRequisitionWithoutWinnerModel> transReqWithTransporter, int transporterID, string userName)
         {
             if (transReqWithTransporter != null && transporterID != 0)
             {
@@ -670,7 +676,29 @@ namespace Cats.Services.Procurement
                     transportOrder.TransporterSignedDate = DateTime.Today;
                     transportOrder.RequestedDispatchDate = DateTime.Today;
                     transportOrder.ConsignerDate = DateTime.Today;
-                    transportOrder.StatusID = (int)TransportOrderStatus.Draft;
+                    transportOrder.StatusID = (int)TransportOrderStatus.Draft;// change this to workflow
+                    int businessProcessID = 0;
+                    int BP_PR = _applicationSettingService.getTransportOrderWorkflow();
+                    if (BP_PR != 0)
+                    {
+                        BusinessProcessState createdstate = new BusinessProcessState
+                        {
+                            DatePerformed = DateTime.Now,
+                            PerformedBy = userName,
+                            Comment = "Transport Order Generated"
+
+                        };
+                        //_PaymentRequestservice.Create(request);
+
+                        BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0,
+                                                                                        "TransportOrder", createdstate);
+                        if (bp != null)
+                            businessProcessID = bp.BusinessProcessID;
+
+
+                    }
+
+                    transportOrder.BusinessProcessID = businessProcessID;
                     var lastOrder = _unitOfWork.TransportOrderRepository.GetAll();
                     if (lastOrder.Count != 0)
                     {
@@ -747,7 +775,7 @@ namespace Cats.Services.Procurement
         {
             return _unitOfWork.HubRepository.GetAll();
         }
-        public bool ApproveTransportOrder(TransportOrder transportOrder, string userName)
+        public bool ApproveTransportOrder(TransportOrder transportOrder, string userName, bool single =true)
         {
             if (transportOrder != null)
             {
@@ -769,36 +797,37 @@ namespace Cats.Services.Procurement
                 }
 
                 //  transportOrder.StatusID = (int)TransportOrderStatus.Approved;
-
-                var approvedStateId =
-                              _stateTemplateService
-                                  .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Approved");
-
-                var bp = _businessProcessService.GetAll().FirstOrDefault(t => t.BusinessProcessID == transportOrder.BusinessProcessID);
-
-                if (approvedStateId != null)
+                if (!single)
                 {
-                    var createdstate3 = new BusinessProcessState
+                    var approvedStateId =
+                        _stateTemplateService
+                            .GetAll()
+                            .FirstOrDefault(
+                                s =>
+                                    s.ParentProcessTemplateID ==
+                                    transportOrder.BusinessProcess.CurrentState.BaseStateTemplate
+                                        .ParentProcessTemplateID && s.Name == "Approved");
+
+                    var bp =
+                        _businessProcessService.GetAll()
+                            .FirstOrDefault(t => t.BusinessProcessID == transportOrder.BusinessProcessID);
+
+                    if (approvedStateId != null)
                     {
-                        DatePerformed = DateTime.Now,
-                        PerformedBy = userName,
-                        Comment = " TransportOrder Approved on multiple approval",
-                        StateID = approvedStateId.StateTemplateID,
-                        ParentBusinessProcessID = transportOrder.BusinessProcessID,
+                        var createdstate3 = new BusinessProcessState
+                        {
+                            DatePerformed = DateTime.Now,
+                            PerformedBy = userName,
+                            Comment = " TransportOrder Approved on multiple approval",
+                            StateID = approvedStateId.StateTemplateID,
+                            ParentBusinessProcessID = transportOrder.BusinessProcessID,
 
-                    };
-                    //_businessProcessStateService.Add(createdstate3);
+                        };
 
-                    //if (bp != null)
-                    //{
-                    //    bp.CurrentState = createdstate3;
-                    //    _businessProcessService.Update(bp);
-                    //}
-                    _businessProcessService.PromotWorkflow(createdstate3);
+                        _businessProcessService.PromotWorkflow(createdstate3);
+                    }
+
                 }
-
-                //_unitOfWork.TransportOrderRepository.Edit(transportOrder);
-                //_unitOfWork.Save();
 
                 return true;
             }
@@ -819,7 +848,17 @@ namespace Cats.Services.Procurement
             return false;
 
         }
+        public List<DispatchAllocation> GeneratedDispatchAllocations = new List<DispatchAllocation>();
 
+        public List<DispatchAllocation> GetGeneratedDispatchAllocations()
+        {
+            return GeneratedDispatchAllocations;
+        }
+
+        public void ClearGeneratedDispatchAllocations()
+        {
+              GeneratedDispatchAllocations.Clear();
+        }
         public bool GeneratDispatchPlan(int transportOrderId, string UserName)
         {
 
@@ -828,6 +867,8 @@ namespace Cats.Services.Procurement
                                 t =>
                                 t.TransportOrderID == transportOrderId && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
             if (transportOrder == null) return false;
+            int appServId = _applicationSettingService.GetDispatchWorkflow();
+
 
             var transportOrderDetails =
                 _unitOfWork.TransportOrderDetailRepository.Get(t => t.TransportOrderID == transportOrderId, null, "ReliefRequisition").ToList();
@@ -913,17 +954,35 @@ namespace Cats.Services.Procurement
                             dispatchAllocation.ShippingInstructionID = t.Code;
                         else if (t.AllocationType == "PC")
                             dispatchAllocation.ProjectCodeID = t.Code;
+
+                        BusinessProcessState createdstate = new BusinessProcessState
+                        {
+                            DatePerformed = DateTime.Now,
+                            PerformedBy = "System Generated",
+                            Comment = "Dispatch Allocation has been  Generated"
+
+                        };
+                        //_PaymentRequestservice.Create(request);
+
+                        BusinessProcess businessPro = _businessProcessService.CreateBusinessProcess(appServId, 0,
+                                                                                        "Dispatch", createdstate);
+
+                        dispatchAllocation.BusinessProcessId = businessPro.BusinessProcessID;
+
                         //dispatchAllocation.Unit //i have no idea where to get it
                         // dispatchAllocation.StoreID  //Would be set null and filled by user later
                         //dispatchAllocation.Year= requisition.Year ; //Year is not available 
                         _unitOfWork.DispatchAllocationRepository.Add(dispatchAllocation);
+
+                        GeneratedDispatchAllocations.Add(dispatchAllocation);
                     }
                 }
             }
             var closedStateId =
                                 _stateTemplateService
-                                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Signed");
-            var bp = _businessProcessService.GetAll().FirstOrDefault(t => t.BusinessProcessID == transportOrder.BusinessProcessID);
+                                    .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == transportOrder.BusinessProcess.CurrentState.BaseStateTemplate.ParentProcessTemplateID && s.Name == "Closed");
+            
+            var bp = _businessProcessService.FindBy(t => t.BusinessProcessID == transportOrder.BusinessProcessID).FirstOrDefault();
             if (closedStateId != null)
             {
                 var createdstate3 = new BusinessProcessState

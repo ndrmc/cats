@@ -22,6 +22,8 @@ using AdminUnit = Cats.Models.AdminUnit;
 using Dispatch = Cats.Models.Hubs.Dispatch;
 using FDP = Cats.Models.FDP;
 using ZonesViewModel = Cats.Areas.Logistics.Models.ZonesViewModel;
+using Cats.Alert;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -39,6 +41,8 @@ namespace Cats.Areas.Logistics.Controllers
         private readonly Cats.Services.Logistics.IDeliveryReconcileService _deliveryReconcileService;
         private readonly IUserAccountService _userAccountService;
         private readonly ILossReasonService _lossReasonService;
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IBusinessProcessService _businessProcessService;
 
         public DeliveryReconcileController(IDispatchAllocationService dispatchAllocationService,
                                       IDeliveryService deliveryService,
@@ -46,7 +50,8 @@ namespace Cats.Areas.Logistics.Controllers
             Cats.Services.EarlyWarning.ICommodityService commodityService, Cats.Services.EarlyWarning.IUnitService unitService, 
             Cats.Services.Transaction.ITransactionService transactionService,
             Cats.Services.EarlyWarning.IAdminUnitService adminUnitService, Cats.Services.EarlyWarning.IFDPService fdpService,
-            Cats.Services.Logistics.IDeliveryReconcileService deliveryReconcileService, IUserAccountService userAccountService, ILossReasonService lossReasonService)
+            Cats.Services.Logistics.IDeliveryReconcileService deliveryReconcileService, IUserAccountService userAccountService, 
+            ILossReasonService lossReasonService,IApplicationSettingService applicationSettingService,IBusinessProcessService businessProcessService)
 
         {
             _dispatchAllocationService = dispatchAllocationService;
@@ -60,6 +65,8 @@ namespace Cats.Areas.Logistics.Controllers
             _deliveryReconcileService = deliveryReconcileService;
             _userAccountService = userAccountService;
             _lossReasonService = lossReasonService;
+            _applicationSettingService = applicationSettingService;
+            _businessProcessService = businessProcessService;
         }
 
         public ActionResult Index(int regionID)
@@ -114,7 +121,9 @@ namespace Cats.Areas.Logistics.Controllers
             {
                 try
                 {
-                    if(dispatchViewModelForReconcile.DeliveryReconcileID!=null)
+                    Cats.Models.BusinessProcess bp = new Cats.Models.BusinessProcess();
+                   
+                    if (dispatchViewModelForReconcile.DeliveryReconcileID!=null)
                     {
                         var deliveryReconcile =
                             _deliveryReconcileService.FindById((int) dispatchViewModelForReconcile.DeliveryReconcileID);
@@ -129,8 +138,21 @@ namespace Cats.Areas.Logistics.Controllers
                         deliveryReconcile.ReceivedDate = (dispatchViewModelForReconcile.ReceivedDate ?? DateTime.Now);
                         deliveryReconcile.LossAmount = dispatchViewModelForReconcile.LossAmount;
                         deliveryReconcile.LossReason = dispatchViewModelForReconcile.LossReasonId;
+                       //action workflow implementation 
+                        //if (deliveryReconcile.BusinessProcess == null)
+                        //{
+                        //    bp = WorkflowActivityUtil.GetNewInstance("Delivery reconsile created");
+                        //    deliveryReconcile.BusinessProcessID = bp.BusinessProcessID;
+                        //}
+                        //else bp = deliveryReconcile.BusinessProcess;
+                        
                         _deliveryReconcileService.EditDeliveryReconcile(deliveryReconcile);
-                        ModelState.AddModelError("Success", @"Success: Delivery Reconcilation Data Updated.");
+                        //WorkflowActivityUtil.EnterEditWorkflow(deliveryReconcile.BusinessProcess, AlertManager.GetWorkflowEdifFDPReceipt("Delivery reconsile with requisition no " + deliveryReconcile.RequsitionNo));
+                        //if (bp != null)
+                        //    WorkflowActivityUtil.EnterEditWorkflow(bp,
+                        //        "Delivery reconcile with requision no " + deliveryReconcile.RequsitionNo +
+                        //        " has been edited.");
+                        //ModelState.AddModelError("Success", @"Success: Delivery Reconcilation Data Updated.");
                     }
                     else
                     {
@@ -154,8 +176,20 @@ namespace Cats.Areas.Logistics.Controllers
                                 LossAmount = dvmfr.LossAmount,
                                 LossReason = dvmfr.LossReasonId
                             };
+                            //Action workflow implemetation 
+                            if (deliveryReconcile.BusinessProcess == null)
+                            {
+                                bp = WorkflowActivityUtil.GetNewInstance("Delivery reconsile created");
+                                if (bp != null) deliveryReconcile.BusinessProcessID = bp.BusinessProcessID;
+                            }
+                            else bp = deliveryReconcile.BusinessProcess;
                             _deliveryReconcileService.AddDeliveryReconcile(deliveryReconcile);
                             _transactionService.PostDeliveryReconcileReceipt(deliveryReconcile.DeliveryReconcileID);
+                            //WorkflowActivityUtil.EnterEditWorkflow(deliveryReconcile.BusinessProcess, AlertManager.GetWorkflowEdifFDPReceipt("Post delivery reconsile with requisition no " + deliveryReconcile.RequsitionNo));
+                            if (bp != null)
+                                WorkflowActivityUtil.EnterEditWorkflow(bp,
+                                    "Delivery reconcile with requision no " + deliveryReconcile.RequsitionNo +
+                                    " has been edited.");
                             ModelState.AddModelError("Success", @"Success: Delivery Reconcilation Data Added.");
                         }
                         else if (dvmfr.GRN == null && dvmfr.LossAmount == null && dvmfr.LossReasonId == 0

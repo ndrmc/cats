@@ -29,6 +29,9 @@ using IFDPService = Cats.Services.EarlyWarning.IFDPService;
 using Workflow = Cats.Models.Constant.WORKFLOW;
 using System.IO;
 using StateTemplate = Cats.Models.StateTemplate;
+using Cats.Alert;
+using Cats.Services.Workflows.Alert;
+using Cats.Services.Workflows;
 
 namespace Cats.Areas.EarlyWarning.Controllers
 {
@@ -102,8 +105,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
         {
             ViewBag.Months = new SelectList(RequestHelper.GetMonthList(), "Id", "Name");
             ViewBag.RegionID = new SelectList(_commonService.GetAminUnits(t => t.AdminUnitTypeID == 2), "AdminUnitID", "Name");
-            ViewBag.Status = new SelectList(_commonService.GetStatus(Workflow.REGIONAL_REQUEST), "StatusID",
-                                            "Description");
+            //ViewBag.Status = new SelectList(_commonService.GetStatus(Workflow.REGIONAL_REQUEST), "StatusID",
+            //                                "Description");
 
             var requests = _regionalRequestService.Get(t => t.Status == id, null, "AdminUnit,Program");
             var statuses = _commonService.GetStatus(WORKFLOW.REGIONAL_REQUEST);
@@ -266,18 +269,21 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 }
 
             }
-            if (stateName == "Rejected")
+if (stateName == "Draft")
             {
                 var reginalRequest = _regionalRequestService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
                 if (reginalRequest != null)
                 {
                     int id = reginalRequest.RegionalRequestID;
-                    if (!_regionalRequestService.RevertRequestStatus(id))
+                    if (_regionalRequestService.RevertRequestStatus(id))
                     {
-                        TempData["msg"] = "Request can not be Rejected.";
-                        return RedirectToAction("Details", new { id = id });
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                        TempData["CustomMsg"] = "Status has been successfully  Reverted!!";
+                     
                     }
-                    _businessProcessService.PromotWorkflow(businessProcessState);
+                    TempData["CustomError"] = "Status Can not be Reverted !Requistions from this Request has been Created and Used in Logistics Caseteam!";
+                    return RedirectToAction("Details", new { id = id });
+                   
                 }
 
             }
@@ -1165,6 +1171,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 {
                     target.Beneficiaries = regionalRequestDetail.Beneficiaries;
                     _regionalRequestDetailService.EditRegionalRequestDetail(target);
+
+                    var req = _regionalRequestService.FindById(regionalRequestDetail.RegionalRequestID);
+
+                    WorkflowActivityUtil.EnterDelteteWorkflow(req.BusinessProcess,AlertMessage.Workflow_AllocationModified);
+
+             
                 }
                 else
                 {
@@ -1684,6 +1696,11 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (commodityID != null)
             {
                 _regionalRequestDetailService.DeleteRequestDetailCommodity((int)commodityID, requestID);
+
+                var request = _regionalRequestService.FindById(requestID);
+
+                WorkflowActivityUtil.EnterDelteteWorkflow(request.BusinessProcess, AlertManager.GetWorkflowMessage_Delete("RegionalRequest with an ID of " + requestID.ToString()));
+
                 return RedirectToAction("Allocation", new { id = requestID });
             }
             return RedirectToAction("Allocation", new { id = requestID });
@@ -1745,6 +1762,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
                     if (_businessProcessService.PromotWorkflow(businessProcessState))
                     {
+
+               
+
                         return File(result.RenderBytes, result.MimeType);
                     }
                 }

@@ -151,6 +151,11 @@ namespace Cats.Services.Common
             return getIntValue(ApplicationSettings.Default.TransportOrderWorkflow);
         }
 
+
+        public int GetDispatchWorkflow()
+        {
+            return getIntValue(ApplicationSettings.Default.DispatchWorkflow);
+        }
         public int getHRDWorkflow()
         {
             return getIntValue(ApplicationSettings.Default.HRDWorkflow);
@@ -200,6 +205,25 @@ namespace Cats.Services.Common
         public int getTransferReceiptPlanWorkflow()
         {
             return getIntValue(ApplicationSettings.Default.TranferReceiptPlanWorkflow);
+        }
+
+        public int getReceiveHubWorkflow()
+        {
+            return getIntValue(ApplicationSettings.Default.ReceiveHubWorkflow);
+    }
+
+        public int getGlobalWorkflow()
+        {
+            return getIntValue(ApplicationSettings.Default.GlobalWorkflow);
+        }
+        public int getDeliveryWorkflow()
+        {
+            return getIntValue(ApplicationSettings.Default.DeliveryWorkflow);
+        }
+
+        public int GetDeliveryWorkflow()
+        {
+            return getIntValue(ApplicationSettings.Default.DeliveryWorkflow);
         }
     }
 }

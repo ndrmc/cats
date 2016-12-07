@@ -132,6 +132,7 @@ namespace Cats.Models.Hubs.ViewModels
         public int? SourceHubId { get; set; }
 
         public int UserProfileId { get; set; }
+        public int BusinessProcessID { get; set; }
 
         public AllocationStatusViewModel AllocationStatusViewModel { get; set; }
 

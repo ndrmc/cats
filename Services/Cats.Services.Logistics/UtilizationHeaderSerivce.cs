@@ -6,22 +6,27 @@ using System.Text;
 using System.Threading.Tasks;
 using Cats.Data.UnitWork;
 using Cats.Models;
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Logistics
 {
     public class UtilizationHeaderSerivce:IUtilizationHeaderSerivce
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWorkflowActivityService _IWorkflowActivityService;
 
 
-        public UtilizationHeaderSerivce(IUnitOfWork unitOfWork)
+        public UtilizationHeaderSerivce(IUnitOfWork unitOfWork, IWorkflowActivityService iWorkflowActivityService)
         {
             this._unitOfWork = unitOfWork;
+            this._IWorkflowActivityService = iWorkflowActivityService;
+            
         }
         #region Default Service Implementation
         public bool AddHeaderDistribution(WoredaStockDistribution HeaderDistribution)
         {
             _unitOfWork.WoredaStockDistributionRepository.Add(HeaderDistribution);
+            _IWorkflowActivityService.EnterCreateWorkflow(HeaderDistribution);
             _unitOfWork.Save();
             return true;
 
@@ -29,6 +34,9 @@ namespace Cats.Services.Logistics
         public bool EditHeaderDistribution(WoredaStockDistribution HeaderDistribution)
         {
             _unitOfWork.WoredaStockDistributionRepository.Edit(HeaderDistribution);
+
+            _IWorkflowActivityService.EnterEditWorkflow(HeaderDistribution);
+
             _unitOfWork.Save();
             return true;
 
@@ -39,7 +47,11 @@ namespace Cats.Services.Logistics
         public bool DeleteHeaderDistribution(WoredaStockDistribution HeaderDistribution)
         {
             if (HeaderDistribution == null) return false;
+            _IWorkflowActivityService.EnterDeleteWorkflow(HeaderDistribution);
+
             _unitOfWork.WoredaStockDistributionRepository.Delete(HeaderDistribution);
+
+
             _unitOfWork.Save();
             return true;
         }
@@ -47,7 +59,11 @@ namespace Cats.Services.Logistics
         {
             var entity = _unitOfWork.WoredaStockDistributionRepository.FindById(id);
             if (entity == null) return false;
+            _IWorkflowActivityService.EnterDeleteWorkflow(entity);
+
             _unitOfWork.WoredaStockDistributionRepository.Delete(entity);
+
+
             _unitOfWork.Save();
             return true;
         }

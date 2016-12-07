@@ -50,7 +50,7 @@
                                     <span>Free Stock {{ StockStatus.freestockPercent|number:2; }}%</span>
                                     </div>
                                     <div class="bar bar-warning" style="width:{{ StockStatus.physicalStockPercent; }}%;">
-                                        <span>Physical Stock {{ StockStatus.physicalStockPercent|number:2; }}%</span>
+                                        <span>Committed Stock {{ StockStatus.physicalStockPercent|number:2; }}%</span>
                                     </div>
                                 </div>
                             </div>
@@ -340,7 +340,7 @@
             for (var i in $scope.data) {
                 $scope.commodities.push($scope.data[i].CommodityName);
                 $scope.freestock.push($scope.data[i].FreeStock);
-                $scope.committedstock.push($scope.data[i].PhysicalStock);
+                $scope.committedstock.push($scope.data[i].PhysicalStock);// it holds the value of committed stock 
             }
         };
 
@@ -411,22 +411,22 @@
                   tooltip: {
                       headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                       pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                          '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                          '<td style="padding:0"><b>{point.y:.1f} </b> </td></tr>',
                       footerFormat: '</table>',
                       shared: true,
                       useHTML: true
                   },
-                  plotOptions: {
+               
+                  series: [{
+                         plotOptions: {
                       column: {
                           pointPadding: 0.2,
                           borderWidth: 0
                       }
-                  },
-                  series: [{
-                      name: 'Free Stock',
+                  },name: 'Free Stock',
                       data: scope.freestock
                   }, {
-                      name: 'Physical Stock',
+                      name: 'Committed Stock', // Physical Stock 
                       data: scope.committedstock
                   }]
               });

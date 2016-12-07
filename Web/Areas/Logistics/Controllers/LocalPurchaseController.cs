@@ -332,27 +332,30 @@ namespace Cats.Areas.Logistics.Controllers
         private IEnumerable<LocalPurchaseViewModel> GetLocalPurchase(IEnumerable<LocalPurchase> localPurchases)
         {
             return (from localPurchase in localPurchases
-                    let status =
-                        localPurchase.BusinessProcess.CurrentState != null
-                            ? localPurchase.BusinessProcess.CurrentState.BaseStateTemplate.Name
-                            : _commonService.GetStatusName(WORKFLOW.LocalPUrchase, localPurchase.StatusID)
-                    select new LocalPurchaseViewModel
-                    {
-                        LocalPurchaseID = localPurchase.LocalPurchaseID,
-                        CommodityID = localPurchase.CommodityID,
-                        Commodity = localPurchase.Commodity.Name,
-                        ProgramID = localPurchase.ProgramID,
-                        Program = localPurchase.Program.Name,
-                        DonorID = localPurchase.DonorID,
-                        DonorName = localPurchase.Donor.Name,
-                        SupplierName = localPurchase.SupplierName,
-                        ReferenceNumber = localPurchase.ReferenceNumber,
-                        SiNumber = localPurchase.ShippingInstruction.Value,
-                        Quantity = localPurchase.Quantity,
-                        ProjectCode = localPurchase.ProjectCode,
-                        Status = status,
-                        //CreatedDate = localPurchase.DateCreated,                     
-                    });
+                let status =
+                    localPurchase.BusinessProcess.CurrentState != null
+                        ? localPurchase.BusinessProcess.CurrentState.BaseStateTemplate.Name
+                        : string.Empty
+                //_commonService.GetStatusName(WORKFLOW.LocalPUrchase, localPurchase.StatusID)
+                select new LocalPurchaseViewModel
+                {
+                    LocalPurchaseID = localPurchase.LocalPurchaseID,
+                    CommodityID = localPurchase.CommodityID,
+                    Commodity = localPurchase.Commodity!=null?localPurchase.Commodity.Name:string.Empty,
+                    ProgramID = localPurchase.ProgramID,
+                    Program = localPurchase.Program.Name,
+                    DonorID = localPurchase.DonorID,
+                    DonorName = localPurchase.Donor.Name,
+                    SupplierName = localPurchase.SupplierName,
+                    ReferenceNumber = localPurchase.ReferenceNumber,
+                    SiNumber = localPurchase.ShippingInstruction.Value,
+                    Quantity = localPurchase.Quantity,
+                    ProjectCode = localPurchase.ProjectCode,
+                    Status = status,
+                    BusinessProcessID = localPurchase.BusinessProcessID,
+                    //BusinessProcess = localPurchase.BusinessProcess
+                    //CreatedDate = localPurchase.DateCreated,                     
+                });
         }
 
         private IEnumerable<LocalPurchaseDetailViewModel> GetNewLocalPurchaseDetail()
@@ -545,7 +548,12 @@ namespace Cats.Areas.Logistics.Controllers
                 if (_localPurchaseService.Approve(localPurchase))
                     _businessProcessService.PromotWorkflow(businessProcessState);
             }
-
+            if (stateName == "Reverted" && localPurchase != null)
+            {
+                //localPurchase.StatusID = (int) LocalPurchaseStatus.Approved;
+                if (_localPurchaseService.Revert(localPurchase))
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+            }
             if (statusId != null)
                 return RedirectToAction("Index", "LocalPurchase", new { Area = "Logistics", statusId });
             return RedirectToAction("Index", "LocalPurchase", new { Area = "Logistics" });

@@ -439,10 +439,10 @@
                     
                 }
             }
-            function workflow_history(BusinessProcessID) {
+            function workflow_history(BusinessProcessId) {
                 $('#modalHistory').modal();
                 $('#modalHistoryBody').html("<div style='text-align:center;'> <img src='/content/images/loading.gif'/></div>");
-                $.post(history_link + BusinessProcessID, {},
+                $.post(history_link + BusinessProcessId, {},
                     function (data) {
                         $("#modalHistoryBody").html(data);
                     }

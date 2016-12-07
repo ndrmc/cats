@@ -20,6 +20,8 @@ using Cats.Services.Security;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using log4net;
+using Cats.Services.Workflows;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Procurement.Controllers
 {
@@ -268,6 +270,7 @@ namespace Cats.Areas.Procurement.Controllers
                         detail.IsWinner = false;
                         try
                         {
+                            WorkflowActivityUtil.EnterEditWorkflow(detail);
                             _transportBidQuotationService.UpdateTransportBidQuotation(detail);
                         }
                         catch (Exception e) { }
@@ -288,6 +291,7 @@ namespace Cats.Areas.Procurement.Controllers
                         newProposal.IsWinner = false;
                         try
                         {
+                            WorkflowActivityUtil.EnterEditWorkflow(detail);
                             _transportBidQuotationService.AddTransportBidQuotation(newProposal);
                         }
                         catch (Exception e) { }
@@ -382,6 +386,7 @@ namespace Cats.Areas.Procurement.Controllers
             var proposal = _transportBidQuotationHeaderService.FindById(id);
             try
             {
+                WorkflowActivityUtil.EnterDelteteWorkflow(proposal);
                 _transportBidQuotationHeaderService.DeleteTransportBidQuotationHeader(proposal);
                 return RedirectToAction("Index");
             }
@@ -412,6 +417,7 @@ namespace Cats.Areas.Procurement.Controllers
         {
             var proposal = _transportBidQuotationHeaderService.FindById(id);
             proposal.Status = 2;
+            WorkflowActivityUtil.EnterEditWorkflow(proposal);
             _transportBidQuotationHeaderService.UpdateTransportBidQuotationHeader(proposal);
             ModelState.AddModelError("Success", @"Bid proposal approved");
             return RedirectToAction("BidProposalHeader");
@@ -435,6 +441,7 @@ namespace Cats.Areas.Procurement.Controllers
                 {
                     bidProposal.Status = 1;
                     bidProposal.BidQuotationDate = DateTime.Now;
+                    WorkflowActivityUtil.EnterCreateWorkflow(bidProposal);
                     _transportBidQuotationHeaderService.AddTransportBidQuotationHeader(bidProposal);
                     TempData["CustomMessage"] = "Bid proposal successfully created";
                     return RedirectToAction("BidProposalHeader");
@@ -499,6 +506,8 @@ namespace Cats.Areas.Procurement.Controllers
 
         public ActionResult DeleteAjax(int TransportBidQuotationID)
         {
+            var transportBidQuatation = _bidQuotationService.FindById(TransportBidQuotationID);
+            WorkflowActivityUtil.EnterDelteteWorkflow(transportBidQuatation);
             _bidQuotationService.DeleteById(TransportBidQuotationID);
             return Json("{}");
         }
@@ -803,6 +812,7 @@ namespace Cats.Areas.Procurement.Controllers
                 foreach (var transportBidQuotationHeader in comparable)
                 {
                     transportBidQuotationHeader.Status = 3;
+                    WorkflowActivityUtil.EnterEditWorkflow(transportBidQuotationHeader);
                     _transportBidQuotationHeaderService.UpdateTransportBidQuotationHeader(transportBidQuotationHeader);
                 }
 
@@ -879,6 +889,7 @@ namespace Cats.Areas.Procurement.Controllers
                 foreach (var transportBidQuotationHeader in comparable)
                 {
                     transportBidQuotationHeader.Status = 1;
+                    WorkflowActivityUtil.EnterEditWorkflow(transportBidQuotationHeader);
                     _transportBidQuotationHeaderService.UpdateTransportBidQuotationHeader(transportBidQuotationHeader);
                 }
             }
@@ -1001,9 +1012,9 @@ namespace Cats.Areas.Procurement.Controllers
             if (ModelState.IsValid)
             {
                 var e = _transportBidQuotationHeaderService.FindById(proposal.TransportBidQuotationHeaderID);
-                
-//                e.BidBondAmount = proposal.BidBondAmount;
 
+                //                e.BidBondAmount = proposal.BidBondAmount;
+                WorkflowActivityUtil.EnterEditWorkflow(e);
                 _transportBidQuotationHeaderService.UpdateTransportBidQuotationHeader(e);
                 ModelState.AddModelError("Success", @"Proposal updated successfully");
                 return RedirectToAction("BidProposalHeader");               
@@ -1071,10 +1082,12 @@ namespace Cats.Areas.Procurement.Controllers
                 // edited.
                 if (existing.Count == 1)
                 {
+                    WorkflowActivityUtil.EnterEditWorkflow(edited);
                     _bidQuotationService.UpdateTransportBidQuotation(edited);
                 }
                 else
                 {
+                    WorkflowActivityUtil.EnterCreateWorkflow(edited);
                     _bidQuotationService.AddTransportBidQuotation(edited);
                 }
                 return Json(new[] { item }.ToDataSourceResult(request, ModelState));
@@ -1112,10 +1125,12 @@ namespace Cats.Areas.Procurement.Controllers
                     edited.Remark = transportQuote.Remark;
                     edited.Position = transportQuote.Position;
                     edited.IsWinner = transportQuote.IsWinner;
+                    WorkflowActivityUtil.EnterEditWorkflow(edited);
                     _bidQuotationService.UpdateTransportBidQuotation(edited);
                 }
                 else
                 {
+                    WorkflowActivityUtil.EnterCreateWorkflow(transportQuote);
                     _bidQuotationService.AddTransportBidQuotation(transportQuote);
                 }
                 return View(transportQuote);
@@ -1151,7 +1166,7 @@ namespace Cats.Areas.Procurement.Controllers
                 try
                 {
                     var detail = GetDetail(bidAddWoredaViewModel);
-
+                    WorkflowActivityUtil.EnterEditWorkflow(detail);
                     if (_transportBidQuotationService.AddWoreda(detail))
                         return RedirectToAction("Details", new { id = bidAddWoredaViewModel.TransportBidQuotationHeaderID });
                     ViewBag.Errors = 1;

@@ -279,7 +279,7 @@ namespace Cats.Areas.Procurement.Controllers
         {
             return paymentRequests.Select(paymentRequest => new PaymentRequestViewModel()
                                                                 {
-                                                                    BusinessProcessID = paymentRequest.BusinessProcessID,
+                                                                    BusinessProcessID =Convert.ToInt16( paymentRequest.BusinessProcessId),
                                                                     PaymentRequestID = paymentRequest.PaymentRequestID,
                                                                     ReferenceNo = paymentRequest.ReferenceNo,
                                                                     RequestedAmount = paymentRequest.RequestedAmount,

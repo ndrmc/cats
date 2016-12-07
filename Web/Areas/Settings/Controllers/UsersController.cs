@@ -12,6 +12,7 @@ using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Cats.Models.Security.ViewModels;
 using Cats.Helpers;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Settings.Controllers
 {

@@ -768,6 +768,36 @@ namespace Cats.Data.Hub
 
         }
 
+        private IGenericRepository<BusinessProcessState> _HubBusinessProcessStateRepository;
+        public IGenericRepository<BusinessProcessState> HubBusinessProcessStateRepository
+        {
+            get { return this._HubBusinessProcessStateRepository ?? (this._HubBusinessProcessStateRepository = new GenericRepository<BusinessProcessState>(_context)); }
+        }
+
+        private IGenericRepository<BusinessProcess> _HubBusinessProcessRepository;
+        public IGenericRepository<BusinessProcess> HubBusinessProcessRepository
+        {
+            get { return this._HubBusinessProcessRepository ?? (this._HubBusinessProcessRepository = new GenericRepository<BusinessProcess>(_context)); }
+        }
+
+        private IGenericRepository<ProcessTemplate> _HubProcessTemplateRepository;
+        public IGenericRepository<ProcessTemplate> HubProcessTemplateRepository
+        {
+            get { return this._HubProcessTemplateRepository ?? (this._HubProcessTemplateRepository = new GenericRepository<ProcessTemplate>(_context)); }
+        }
+
+        private IGenericRepository<StateTemplate> _HubStateTemplateRepository;
+        public IGenericRepository<StateTemplate> HubStateTemplateRepository
+        {
+            get { return this._HubStateTemplateRepository ?? (this._HubStateTemplateRepository = new GenericRepository<StateTemplate>(_context)); }
+        }
+        private IGenericRepository<FlowTemplate> _HubFlowTemplateRepository;
+        public IGenericRepository<FlowTemplate> HubFlowTemplateRepository
+        {
+            get { return this._HubFlowTemplateRepository ?? (this._HubFlowTemplateRepository = new GenericRepository<FlowTemplate>(_context)); }
+        }
+
+
     }
 }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cats.Models
 {
-    public partial class Delivery
+    public partial class Delivery : IWorkflow
     {
         public Delivery()
         {
@@ -38,5 +38,9 @@ namespace Cats.Models
         public Nullable<Guid> TransactionGroupID { get; set; }
         public virtual ICollection<DeliveryDetail> DeliveryDetails { get; set; }
         public virtual ICollection<TransporterPaymentRequest> TransporterPaymentRequests { get; set; }
+
+        public int BusinessProcessId { get; set; }
+
+        public BusinessProcess BusinessProcess { get; set; }
     }
 }

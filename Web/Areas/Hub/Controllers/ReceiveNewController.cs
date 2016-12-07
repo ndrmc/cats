@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Cats.Areas.Hub.Models;
+using Cats.Models.Constant;
 using Cats.Models.Hubs;
 using Cats.Models.Hubs.ViewModels;
+using Cats.Services.Common;
 using Cats.Services.Hub;
 using Cats.Web.Hub;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
-using Newtonsoft.Json;
-using Telerik.Web.Mvc;
-
+using CommoditySource = Cats.Models.Hubs.CommoditySource;
+using Cats.Services;
+using Cats.Services.Hubs;
 
 namespace Cats.Areas.Hub.Controllers
 {
@@ -30,6 +32,9 @@ namespace Cats.Areas.Hub.Controllers
         private readonly ITransporterService _transporterService;
         private readonly IShippingInstructionService _shippingInstructionService;
         private Guid _receiptAllocationId;
+        private readonly IHubBusinessProcessService _businessProcessService;
+        private readonly IHubStateTemplateService _stateTemplateService;
+        private readonly IApplicationSettingService _applicationSettingService;
 
         public ReceiveNewController(IUserProfileService userProfileService,
             IReceiptAllocationService receiptAllocationService,
@@ -40,7 +45,12 @@ namespace Cats.Areas.Hub.Controllers
             ITransactionService transactionService,
             IDonorService donorService,
             IHubService hub,
-            ITransporterService transporterService, IShippingInstructionService shippingInstructionService, IReceiveDetailService receiveDetailService)
+            ITransporterService transporterService,
+            IShippingInstructionService shippingInstructionService,
+            IReceiveDetailService receiveDetailService,
+            IHubBusinessProcessService businessProcessService,
+            IHubStateTemplateService stateTemplateService,
+            IApplicationSettingService applicationSettingService)
             : base(userProfileService)
         {
             _userProfileService = userProfileService;
@@ -55,6 +65,9 @@ namespace Cats.Areas.Hub.Controllers
             _transporterService = transporterService;
             _shippingInstructionService = shippingInstructionService;
             _receiveDetailService = receiveDetailService;
+            _businessProcessService = businessProcessService;
+            _stateTemplateService = stateTemplateService;
+            _applicationSettingService = applicationSettingService;
         }
 
         #region Action
@@ -602,15 +615,64 @@ namespace Cats.Areas.Hub.Controllers
                 //List<ReceiveDetailsViewModel> receiveDetailsViewModels = GetReceiveDetailsViewModels(viewModel);
                 //viewModel.ReceiveDetailsViewModels = receiveDetailsViewModels;
 
-                
+
                 if (viewModel.ReceiveId != Guid.Empty)
                 {
                     //reverse the transaction
                     Receive prevmodel = _receiveService.FindById((viewModel.ReceiveId));
                     recieveUpdated = _transactionService.ReceiptTransaction(ModeltoNewView(prevmodel), true);
+
+                    if (recieveUpdated)
+                    {
+                        BusinessProcess bp = _businessProcessService.FindById(prevmodel.BusinessProcessID);
+                        BusinessProcessState bps = bp.CurrentState;
+
+                        var stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
+                                                                              p.ParentProcessTemplateID ==
+                                                                              bps.BaseStateTemplate
+                                                                                  .ParentProcessTemplateID)
+                            .FirstOrDefault();
+
+                        if (stateTemplate != null)
+                        {
+                            viewModel.BusinessProcessID = bp.BusinessProcessID;
+
+                            var businessProcessState = new BusinessProcessState()
+                            {
+                                StateID = stateTemplate.StateTemplateID, // mark as edited
+                                PerformedBy = HttpContext.User.Identity.Name,
+                                DatePerformed = DateTime.Now,
+                                Comment = "Receive hub is edited, a system internally captured data.",
+                                ParentBusinessProcessID = bps.ParentBusinessProcessID
+                            };
+
+                            _businessProcessService.PromotWorkflow(businessProcessState);
+                        }
+                    }
                 }
                 else
+                {
                     viewModel.ReceiveId = Guid.NewGuid();
+
+                    int BP_PR = _applicationSettingService.getReceiveHubWorkflow();
+
+                    if (BP_PR != 0)
+                    {
+                        BusinessProcessState createdstate = new BusinessProcessState
+                        {
+                            DatePerformed = DateTime.Now,
+                            PerformedBy = User.Identity.Name,
+                            Comment = "Receive Hub workflow is created."
+                        };
+
+                        BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, 0, "ReceiveHubWorkflow", createdstate);
+
+                        if (bp != null)
+                        {
+                            viewModel.BusinessProcessID = bp.BusinessProcessID;
+                        }
+                    }
+                }
 
                 recieveUpdated =_transactionService.ReceiptTransaction(viewModel);
                 if (recieveUpdated && viewModel.ReceiveDetailsViewModels.Any())

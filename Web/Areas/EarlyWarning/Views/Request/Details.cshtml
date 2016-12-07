@@ -121,7 +121,9 @@
                         {
                             <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name',@modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
                         }
-                        if (modelRequest.Program == "Relief")
+                        
+                        if ((UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Reverse_Request) || UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Reverse_Request)) && actions.Name == "Revert")
+
                         {
                             if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Reverse_Request) && actions.Name == "Reject")
                             {
@@ -246,7 +248,7 @@
                     {
                         @*<li><a class="btn green-haze-stripe" href="@Url.Action("RevertRequestStatus", "Request", new { Area = "EarlyWarning", id = modelRequest.RegionalRequestID })">Revert Status</a></li>*@
 
-                    switch (modelRequest.Program)
+                    @*switch (modelRequest.Program)
                     {
                         case "Relief":
                             <li>
@@ -264,7 +266,7 @@
                                 </a>
                             </li>
                                 break;
-                        }
+                        }*@
                     }
                     else if (modelRequest.Status == "Rejected")
                     {

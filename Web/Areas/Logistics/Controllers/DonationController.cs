@@ -21,7 +21,6 @@ using ICommonService = Cats.Services.Common.ICommonService;
 using IHubService = Cats.Services.EarlyWarning.IHubService;
 using IShippingInstructionService = Cats.Services.EarlyWarning.IShippingInstructionService;
 using ITransactionService = Cats.Services.Transaction.ITransactionService;
-using StateTemplate = Cats.Models.StateTemplate;
 
 
 namespace Cats.Areas.Logistics.Controllers
@@ -437,7 +436,7 @@ namespace Cats.Areas.Logistics.Controllers
                 DonationPlanHeader donation = _donationPlanHeaderService.FindById(donationViewModel.DonationHeaderPlanID);
                 BusinessProcess bp = _businessProcessService.FindById(donation.BusinessProcessID);
                 BusinessProcessState bps = bp.CurrentState;
-                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
+                Cats.Models.StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
                 p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                 if (stateTemplate != null)
@@ -743,7 +742,7 @@ namespace Cats.Areas.Logistics.Controllers
                     // _donationPlanHeaderService.DeleteDonationPlanHeader(donation);
 
                     BusinessProcessState bps = donation.BusinessProcess.CurrentState;
-                    StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Deleted &&
+                    Cats.Models.StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Deleted &&
                     p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                     if (stateTemplate != null)

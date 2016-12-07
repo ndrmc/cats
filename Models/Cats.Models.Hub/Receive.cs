@@ -50,5 +50,7 @@ namespace Cats.Models.Hubs
         public int? StoreId { get; set; }
         public int? StackNumber { get; set; }
         public Guid? FromReceiptAllocationID { get; set; }
+        public int BusinessProcessID { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }

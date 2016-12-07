@@ -698,7 +698,7 @@ namespace Cats.Models.Hubs
         public string Zone { get; set; }
         public string Woreda { get; set; }
 
-      
+
         public int? PlanId { get; set; }
         public int? RequisitionId { get; set; }
         [Required]
@@ -709,7 +709,7 @@ namespace Cats.Models.Hubs
         [Required]
         [Display(Name = "Dispatch Date")]
         public DateTime DispatchDate { get; set; }
-         [Display(Name = "Requisition No")]
+        [Display(Name = "Requisition No")]
         public string RequisitionNo { get; set; }
 
         [Required]
@@ -741,7 +741,7 @@ namespace Cats.Models.Hubs
 
         public string Transporter { get; set; }
 
-         [Display(Name = "Project Code")]
+        [Display(Name = "Project Code")]
         public string ProjectNumber { get; set; }
 
         public int Year { get; set; }
@@ -781,7 +781,7 @@ namespace Cats.Models.Hubs
         [Required(ErrorMessage = "Unit is a required field")]
         public int UnitID { get; set; }
         public string Unit { get; set; }
-        
+
         public Guid DispatchAllocationID { get; set; }
         public int TransporterID { get; set; }
 
@@ -802,15 +802,15 @@ namespace Cats.Models.Hubs
             get;
             set;
         }
- [Display(Name = "Created Date")]
+        [Display(Name = "Created Date")]
         public DateTime CreatedDate
         {
             get;
             set;
         }
-        [Display(Name="Created Date")]
+        [Display(Name = "Created Date")]
         public string CreatedDatePref { get; set; }
-        [Display(Name="Dispatched Date")]
+        [Display(Name = "Dispatched Date")]
         public string DispatchDatePref { get; set; }
         public int UserProfileID { get; set; }
         public int? ShippingInstructionID { get; set; }
@@ -820,9 +820,14 @@ namespace Cats.Models.Hubs
         public bool GRNReconciled { get; set; }
         public int DeliveryReconcileID { get; set; }
         public Guid DeliveryID { get; set; }
-        [Display(Name="Quantity Per Unit")]
-        public decimal? QuantityPerUnit  { get; set; }
+        [Display(Name = "Quantity Per Unit")]
+        public decimal? QuantityPerUnit { get; set; }
 
         public decimal plannedAmount { get; set; }
+        public int DeliveryBusinessProcessId { get; set; }
+
+        public int BusinessProcessId { get; set; }
+        public virtual BusinessProcess BusinessProcess { get; set; }
+
     }
 }

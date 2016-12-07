@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -374,11 +375,16 @@ namespace Cats.Areas.Hub.Controllers
                     dispatch.ChildCommodity = _commodityService.FindById((int)dispatch.CommodityChildID).Name;
                 }
                 dispatch.Unit = _unitService.FindById(dispatch.UnitID).Name;
+
+
+
+
             }
             else
             {
                 dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(id, 0);
 
+            
 
             }
 
