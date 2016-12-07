@@ -141,7 +141,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
         {
             List<string> workflowDefinitions = new List<string>();
 
-            if (DashboardMapping.PageNameToWorkflowMappingsList.Count == 0) { DashboardMapping.RunConfig(); }
+            if (DashboardMapping.PageNameToWorkflowMappingsList.Count == 0) { DashboardMapping.RegisterDashboardPage(); }
 
             workflowDefinitions.AddRange(DashboardMapping.PageNameToWorkflowMappingsList.Where(w => w.Item2 == pageName).Select(w => w.Item3));
 

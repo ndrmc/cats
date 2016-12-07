@@ -15,7 +15,7 @@ namespace Cats.Services.Workflows.Config
         {
             PageNameToWorkflowMappingsList.Add(new Tuple<int, string, string>(Random.Next(), pageName, workflowImplementer));
         }
-        public static void RunConfig()
+        public static void RegisterDashboardPage()
         {
             // Workflows that are in Earlywarning
             AddMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.GiftCertificateWorkflow);
@@ -23,6 +23,11 @@ namespace Cats.Services.Workflows.Config
             AddMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.NeedAssessmentWorkflow);
             AddMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.NeedAssessmentPlanWorkflow);
             AddMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.HRDWorkflow);
+            AddMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.RegionalRequestWorkflow);
+            // Workflows that are in Regional
+            AddMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.NeedAssessmentWorkflow);
+            //AddMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.NeedAssessmentWorkflow);
+
             // Workflows that are in Hub
             AddMapping(Constants.HubPage + Constants.Dashbord, ApplicationSettings.Default.ReceiveHubWorkflow);
             AddMapping(Constants.HubPage + Constants.Dashbord, ApplicationSettings.Default.DispatchWorkflow);
@@ -37,21 +42,26 @@ namespace Cats.Services.Workflows.Config
             AddMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.ReciptPlanForLoanWorkflow);
             AddMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.DonationPlanHeaderWorkflow);
             AddMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.DeliveryWorkflow);
+            AddMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanDetailActionWorkflow);
+            AddMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanWorkflow);
+            // Workflows that are in Psnp
+            AddMapping(Constants.PsnpPage + Constants.Dashbord, ApplicationSettings.Default.PSNPWorkflow);
+            // Workflows that are in Procurement
+            AddMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.BidWinnerWorkflow);
+            // Workflows that are in Finance
+            AddMapping(Constants.FinancePage + Constants.Dashbord, ApplicationSettings.Default.TransporterChequeWorkflow);
         }
 
         private static void StartupConfiguration_StartWorkflow(string pageName, String workflowName)
         {
 
         }
-
-        private static void StartupConfiguration_TakeTop(string pageName, int topX)
-        {
-            StartupConfiguration_TakeTop("EarlyWarningDashboard", 100);
-            StartupConfiguration_StartWorkflow("EarlyWarningDashboard", "GiftCertificate");
-
-        }
+        //private static void StartupConfiguration_TakeTop(string pageName, int topX)
+        //{
+        //    StartupConfiguration_TakeTop("EarlyWarningDashboard", 100);
+        //    StartupConfiguration_StartWorkflow("EarlyWarningDashboard", "GiftCertificate");
+        //}
         public static void AddMapping(String pageName,Type workflowImplementer )
-
         {
 
         }

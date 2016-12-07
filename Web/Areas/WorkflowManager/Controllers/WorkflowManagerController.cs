@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http;
 using System.Web.Mvc;
-using Cats.Data.Shared.UnitWork;
 using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Models.Shared.DashBoardModels;
@@ -69,32 +67,29 @@ namespace Cats.Areas.WorkflowManager.Controllers
                 constantPageName = Constants.ProcurementPage;
             }
 
-            return constantPageName;
-        }
+            string[] users = GetAllTeamUsers(pageName);
+            List<DashboardFilterModel> dashboardFilterUser = users.Select(user => new DashboardFilterModel { Name = user, Id = random.Next() }).ToList();
 
-        private ContentResult GetJsonResult(Object list)
-        {
+            random = new Random(Int32.MinValue);
 
-            var camelCaseFormatter = new JsonSerializerSettings();
-            camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            string[] workflows = GetAllWorkflows(constantPageName);
+            List<DashboardFilterModel> dashboardFilterWorkflow = workflows.Select(workflow => new DashboardFilterModel { Name = workflow, Id = random.Next() }).ToList();
 
-            var jsonResult = new ContentResult
-            {
+            random = new Random(Int32.MinValue);
 
-                Content = JsonConvert.SerializeObject(list, camelCaseFormatter),
-                ContentType = "application/json"
-            };
+            string[] activities = GetAllStateTemplate(workflows);
+            List<DashboardFilterModel> dashboardFilterActivity = activities.Select(activity => new DashboardFilterModel { Name = activity, Id = random.Next() }).ToList();
 
-            return jsonResult;
+            //dynamic[] filterObjects = { users, workflows, activities };
+            dynamic[] filterObjects = { dashboardFilterUser, dashboardFilterWorkflow, dashboardFilterActivity };
 
         }
-
-        public ContentResult GetAllTeamUsers(string pageName)
+        private string[] GetAllTeamUsers(string pageName)
         {
             UserType.CASETEAM caseteam;
 
             List<UserProfile> userProfiles = new List<UserProfile>();
-            Enum.TryParse(GetFormalPageName( pageName).ToUpper(), out caseteam);
+            Enum.TryParse(pageName.ToUpper(), out caseteam);
 
             IUnitOfWork unitOfWork = new UnitOfWork();
             UserProfileService userProfileService = new UserProfileService(unitOfWork);
@@ -134,24 +129,14 @@ namespace Cats.Areas.WorkflowManager.Controllers
             }
 
             List<string> users = userProfiles.Select(u => u.UserName).ToList();
-           var  random = new Random(Int32.MinValue);
-
-            List<DashboardFilterModel> dashboardFilterUser = users.Select(user => new DashboardFilterModel { Name = user, Id = random.Next() }).ToList();
-
 
             return GetJsonResult(dashboardFilterUser);
         }
-
-
-        public ContentResult GetAllWorkflows(string pageName)
+        private string[] GetAllWorkflows(string pageName)
         {
-          
-            pageName = GetFormalPageName(pageName);
-          var  random = new Random(Int32.MinValue);
-
             List<string> workflowDefinitions = new List<string>();
 
-            if (DashboardMapping.PageNameToWorkflowMappingsList.Count == 0) { DashboardMapping.RunConfig(); }
+            if (DashboardMapping.PageNameToWorkflowMappingsList.Count == 0) { DashboardMapping.RegisterDashboardPage(); }
 
             workflowDefinitions.AddRange(DashboardMapping.PageNameToWorkflowMappingsList.Where(w => w.Item2 == pageName).Select(w => w.Item3));
 
@@ -175,10 +160,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
                 int processId;
                 int.TryParse(settingValue, out processId);
 
-                var d= stateTemplateService.GetAll().Where(p => p.ParentProcessTemplateID == processId).Select(p => p.Name).ToArray();
-                List<DashboardFilterModel> dashboardFilterActivity = d.Distinct().Select(activity => new DashboardFilterModel { Name = activity, Id = random.Next() }).ToList();
-                return GetJsonResult(dashboardFilterActivity);
-
+                return stateTemplateService.GetAll().Where(p => p.ParentProcessTemplateID == processId).Select(p => p.Name).ToArray();
             }
 
             return null;
@@ -186,7 +168,6 @@ namespace Cats.Areas.WorkflowManager.Controllers
         public ContentResult GetAllStateTemplates(string[] workflows)
         {
             List<string> stateTemplates = new List<string>();
-          var  random = new Random(Int32.MinValue);
 
             IUnitOfWork unitOfWork = new UnitOfWork();
             ApplicationSettingService applicationSettingService = new ApplicationSettingService(unitOfWork);
