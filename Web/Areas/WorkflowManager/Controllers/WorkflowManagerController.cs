@@ -130,6 +130,24 @@ namespace Cats.Areas.WorkflowManager.Controllers
 
                         break;
                     }
+                case UserType.CASETEAM.HUB:
+                    {
+                        userProfiles = userProfileService.FindBy(c => c.DefaultHub != null);
+
+                        break;
+                    }
+                case UserType.CASETEAM.REGIONAL:
+                    {
+                        userProfiles = userProfileService.FindBy(c => c.RegionalUser);
+
+                        break;
+                    }
+                case UserType.CASETEAM.ADMIN:
+                    {
+                        userProfiles = userProfileService.FindBy(null);
+
+                        break;
+                    }
             }
 
             List<string> users = userProfiles.Select(u => u.UserName).ToList();

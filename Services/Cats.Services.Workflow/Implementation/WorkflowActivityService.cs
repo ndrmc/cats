@@ -644,7 +644,7 @@ namespace Cats.Services.Workflows
         //    return null;
         //}
 
-        public List<DashboardDataEntry> GetWorkflowActivityAgg(DateTime startDate, DateTime endDate, List<string> workflowDefinitions, List<string> users, List<string> activities)
+        public dynamic GetWorkflowActivityAgg(DateTime startDate, DateTime endDate, List<string> workflowDefinitions, List<string> users, List<string> activities)
         {
             try
             {
@@ -692,7 +692,28 @@ namespace Cats.Services.Workflows
                                                     "@StartDate, @EndDate, @WorkflowName_Array, @User_Array, @Activity_Array",
                     filterStartDate, filterEndDate, paramWorkflow, paramUser, paramActivity);
 
-                return result.ToList();
+                //List<DashboardDataEntry> dashboardDataEntries = new List<DashboardDataEntry>();
+
+               var dashboardDataEntries = (from dashEntries in result
+
+                                        group dashEntries by new
+                                        {
+                                            dashEntries.ProcessTemplateID,
+                                            dashEntries.StateTemplateID,
+                                            dashEntries.PerformedBy,
+                                            dashEntries.ActivityName,
+                                            dashEntries.SettingName
+                                        }
+                                        into gTrnsRqst
+                            select new
+                            {
+                                gTrnsRqst.Key.PerformedBy,
+                                gTrnsRqst.Key.SettingName,
+                                gTrnsRqst.Key.ActivityName,
+                                ActivityCount = gTrnsRqst.Count()
+                            }).ToList();
+
+                return dashboardDataEntries;
             }
             catch (Exception exception)
             {
