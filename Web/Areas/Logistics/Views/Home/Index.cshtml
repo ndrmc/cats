@@ -10,6 +10,14 @@
     Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
     ViewBag.PageTitle = Html.Translate("Logistics Dashboard");
     ViewBag.PageTitleDescription = "";
+
+    #region Data Activity Indicator ViewBags
+
+    //Data Activity Indicator uses ViewBag.PageName to get  Workflows configured for the page
+    ViewBag.PageName = Cats.Services.Workflows.Constants.LogisticsPage;
+
+    #endregion
+
 }
 
 @{
@@ -43,8 +51,7 @@
 </style>
 
 
-
-<div ng-app="myApp">
+<div ng-app='myApp'>
     
     <div class="">
         <div class="portlet solid bordered " ng-controller="ImportantNumbers">
@@ -133,6 +140,9 @@
         </div>
         
     </div>
+
+    @Html.Partial("_DataActivityIndicator")
+
     <div class="">
         <div class="row">
 
@@ -1018,7 +1028,7 @@
 
     (function () {
 
-    var myApp = angular.module('myApp', ['ngRoute']);
+        var myApp = angular.module('myApp', ['ngRoute', 'DataEntryIndicatorApp']);
 
     myApp.controller('ImportantNumbers', [
         '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
@@ -1603,3 +1613,5 @@
         window.location = "@Url.Action("PaymentRequests", "TransporterPaymentRequest", new {Area = "Logistics"})" + "?transporterID=" + transporterId;
     }
 </script>
+
+<script src="~/Scripts/js/DataActivityIndictor/DataActivityIndicator.JS"></script>
