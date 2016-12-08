@@ -716,8 +716,7 @@
   <ItemGroup>
     <Content Include="AmharicReportViewer.aspx" />
     <Content Include="Areas\EarlyWarning\Views\Home\Index.cshtml" />
-    <Content Include="Scripts\DataActivityIndicator\DataActivityIndicator.JS" />
-    <Content Include="Areas\Finance\Views\Home\D\x.html" />
+    <Content Include="Scripts\js\DataActivityIndictor\DataActivityIndicator.JS" />
     <Content Include="Areas\Hub\Models\Views\Receive\EditorTemplates\ComboBox.ascx" />
     <Content Include="Areas\Hub\Models\Views\Receive\EditorTemplates\GridForeignKey.ascx" />
     <Content Include="Areas\Hub\Models\Views\Shared\EditorTemplates\Currency.ascx" />
@@ -925,7 +924,6 @@
     <Content Include="Areas\Logistics\Views\DispatchAllocation\AllocationAdjustment.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\ReliefRequisition\PromotThese.cshtml" />
     <Content Include="Areas\Logistics\Views\DispatchAllocation\UpdateRequisition.cshtml" />
-    <Content Include="Areas\Finance\Views\Home\D\DataActivityIndicator.html" />
     <None Include="Areas\Logistics\Views\DispatchAllocation\_AllocateProjectCode.cshtml" />
     <Content Include="Content\2013.1.219\Black\editor.png" />
     <Content Include="Content\2013.1.219\Black\imagebrowser.png" />
@@ -2198,7 +2196,7 @@
     <Content Include="Scripts\js\bootstrap-timepicker.min.js" />
     <Content Include="Scripts\js\bootstrap.calendars.picker.css" />
     <Content Include="Scripts\js\bootstrap.min.js" />
-    <Content Include="Scripts\js\DataActivityIndictor\DataActivityIndicator.js" />
+    <Content Include="Scripts\js\jquery-1.11.0.js" />
     <Content Include="Scripts\js\kendo.all.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af-ZA.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af.min.js" />
