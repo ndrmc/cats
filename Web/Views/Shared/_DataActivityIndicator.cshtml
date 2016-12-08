@@ -16,10 +16,10 @@
 
 
     <div class="box box-solid box-primary " ng-app="DataEntryIndicatorApp" ng-controller="WorkflowActController">
-        <div class="portlet light bordered bg-inverse ">
+        <div class="portlet portlet-sortable light bordered ui-sortable-handle">
 
             <div class="portlet-title">
-                <div class="caption font-green-sharp"><i class="fa fa-data font-green-sharp"></i> @Html.Translate("Data Entry Indicator ")</div>
+                <div class="caption font-green-sharp"><i class="fa fa-list-alt font-green-sharp"></i> @Html.Translate("Data Entry Indicator ")</div>
                 <div class="tools">
                     <a href="#" class="collapse" data-original-title="" title=""></a>
                 </div>
@@ -31,7 +31,7 @@
                 <span class="loading-spnr-da da-data-indicator-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>
 
 
-                    <div class="table-responsive" style="overflow-x: hidden; min-height: 330px;">
+                    <div class="table-responsive" style="overflow-x: hidden; min-height: 350px;">
                         <div class="row form-horizontal " style="min-height: 100px;">
                           
 
@@ -74,19 +74,9 @@
                                 </div>
 
                                 <div class="col-sm-2 ">
-                                    <Label><small> Search</small></Label>
+                                    <Label><small> Get</small></Label>
                                     <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i class="fa fa-search"></i></button>
                                 </div>
-
-
-
-
-
-
-
-
-
-
 
                             </div>
 
@@ -94,7 +84,7 @@
                      
                             <div class="col-sm-12">
                            
-                                    <div class="table-responsive" ng-if="!InvalidFilter">
+                                    <div class="table-responsive" ng-if="(InvalidFilter=='VALID')">
 
                                    
 
@@ -144,9 +134,14 @@
                                        
                                     </div>
 
-                                <div class="table-responsive" ng-if="InvalidFilter">
-                                    @*<h2>Filter Entry is not Valid.</h2>*@
+                                <div class="table-responsive" ng-if="(InvalidFilter=='INVALID')">
+                                    <div class="alert alert-danger"><Strong>Your Filter Entry is not valid, Please fill the required fields and try again.</Strong></div>
                                    </div>
+
+
+                                <div class="table-responsive" ng-if="(InvalidFilter=='DEFAULT')">
+                                  
+                                </div>
                                 </div>
 
                             </div>

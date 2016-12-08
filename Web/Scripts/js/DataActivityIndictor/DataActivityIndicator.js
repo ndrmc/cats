@@ -183,26 +183,28 @@
         });
         };
 
-         $scope.InvalidFilter=true;
+         $scope.InvalidFilter="DEFAULT";
 
     var getDataEntryStat = function () {
 
         if(filterIsValid())
         {
 
-             $scope.InvalidFilter=false;
+         $scope.InvalidFilter= "DEFAULT";
 
-        DataServices.getDataEntryStat($scope.filterData.selectedStartDate, $scope.filterData.selectedEndDate, $scope.filterData.selectedDocument,
-$scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(function (result) {
-     $scope.displayedWorkflowList=[];
-        $scope.displayedWorkflowList = result.data;
+            DataServices.getDataEntryStat($scope.filterData.selectedStartDate, $scope.filterData.selectedEndDate, $scope.filterData.selectedDocument,
+            $scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(function (result) {
+             $scope.InvalidFilter="VALID";
+
+             $scope.displayedWorkflowList= [];
+            $scope.displayedWorkflowList = result.data;
 
 
         });
         }
                 else
                 {
-                 $scope.InvalidFilter=true;
+                 $scope.InvalidFilter="INVALID";
 
                 }
 
@@ -330,10 +332,14 @@ return false;
         if(filterIsValid())
         {
 
-             $scope.InvalidFilter=false;
+
+                        $scope.InvalidFilter= "DEFAULT";
 
         DataServices.getDataEntryStat($scope.filterData.selectedStartDate, $scope.filterData.selectedEndDate, $scope.filterData.selectedDocument,
 $scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(function (result) {
+
+                        $scope.InvalidFilter="VALID";
+
      $scope.displayedWorkflowList=[];
         $scope.displayedWorkflowList = result.data;
 
@@ -343,7 +349,8 @@ $scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(func
 }
 else
 {
-                 $scope.InvalidFilter=true;
+                            $scope.InvalidFilter="INVALID";
+
 
                 }
 

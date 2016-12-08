@@ -6,6 +6,13 @@
     ViewBag.PageTitle = "Procurement";
     ViewBag.PageTitleDescription = "";
     const string PAGE_NAME = "EarlyWarning.Index";
+
+    #region Data Activity Indicator ViewBags
+
+    //Data Activity Indicator uses ViewBag.PageName to get  Workflows configured for the page
+    ViewBag.PageName = Cats.Services.Workflows.Constants.ProcurementPage;
+
+    #endregion
 }
 
 @section styles
@@ -68,6 +75,10 @@
                 </div>
             </div>
         </div>
+
+        @Html.Partial("_DataActivityIndicator")
+
+
 
         <div class="row" >
             <div class="col-md-12">
@@ -536,7 +547,7 @@
 
 
     // Declare app level module which depends on filters, and services
-    angular.module('myApp', ['myApp.directives']);
+    angular.module('myApp', ['myApp.directives', 'DataEntryIndicatorApp']);
 
     /* Controllers */
     function RecentBidsController($scope, $http, $filter) {
@@ -751,3 +762,4 @@
    
 
 </script>
+<script src="~/Scripts/js/DataActivityIndictor/DataActivityIndicator.JS"></script>
