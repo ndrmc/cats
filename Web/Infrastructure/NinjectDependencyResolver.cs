@@ -30,7 +30,7 @@ using FDPService = Cats.Services.EarlyWarning.FDPService;
 using ForgetPasswordRequestService = Cats.Services.Security.ForgetPasswordRequestService;
 using GiftCertificateDetailService = Cats.Services.EarlyWarning.GiftCertificateDetailService;
 using GiftCertificateService = Cats.Services.EarlyWarning.GiftCertificateService;
-using HubService = Cats.Services.Administration.HubService;
+using HubService = Cats.Services.Hub.HubService;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using ICommodityService = Cats.Services.EarlyWarning.ICommodityService;
 using ICommonService = Cats.Services.Common.ICommonService;
@@ -39,7 +39,8 @@ using IFDPService = Cats.Services.EarlyWarning.IFDPService;
 using IForgetPasswordRequestService = Cats.Services.Security.IForgetPasswordRequestService;
 using IGiftCertificateDetailService = Cats.Services.EarlyWarning.IGiftCertificateDetailService;
 using IGiftCertificateService = Cats.Services.EarlyWarning.IGiftCertificateService;
-using IHubService = Cats.Services.Administration.IHubService;
+using IHubService = Cats.Services.Hub.IHubService;
+using _IHubService = Cats.Services.Administration.IHubService;
 using ILedgerService = Cats.Services.Common.ILedgerService;
 using ILetterTemplateService = Cats.Services.Common.ILetterTemplateService;
 using IProgramService = Cats.Services.EarlyWarning.IProgramService;
@@ -125,7 +126,8 @@ namespace Cats.Infrastructure
             kernel.Bind<IReliefRequisitionDetailService>().To<ReliefRequisitionDetailService>();
             kernel.Bind<IBidService>().To<BidService>();
 
-            kernel.Bind<IHubService>().To<HubService>();
+            kernel.Bind<Cats.Services.EarlyWarning.IHubService>().To<Cats.Services.EarlyWarning.HubService>();
+            kernel.Bind<Cats.Services.Administration.IHubService>().To<Cats.Services.Administration.HubService>();
             kernel.Bind<ITransporterService>().To<TransporterService>();
             kernel.Bind<ITransportBidPlanService>().To<TransportBidPlanService>();
             kernel.Bind<ITransportBidPlanDetailService>().To<TransportBidPlanDetailService>();
@@ -342,6 +344,7 @@ namespace Cats.Infrastructure
             kernel.Bind<Cats.Services.Hub.IDetailService>().To<Cats.Services.Hub.DetailService>();
             kernel.Bind<Cats.Services.Hub.IVWReceiptAllocationAggregateService>().To<Cats.Services.Hub.VWReceiptAllocationAggregateService>();
             //kernel.Bind<Cats.Services.Hub.Interfaces.IStockStatusService>().To<Cats.Services.Hub.DetailService>();
+            kernel.Bind<Cats.Services.Administration.IHubService>().To<Cats.Services.Administration.HubService>();
 
             kernel.Bind<Cats.Services.Hub.IVWDdispatchAllocationDistributionService>().To<Cats.Services.Hub.VWDdispatchAllocationDistributionService>();
 
