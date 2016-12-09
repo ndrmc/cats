@@ -12,5 +12,7 @@ namespace Cats.Models.Shared.DashBoardModels
         public int ActivityCount { get; set; } // Frequency count for state types
         public int ProcessTemplateID { get; set; }
         public int StateTemplateID { get; set; }
+        public int BusinessProcessID { get; set; }
+        public DateTime DatePerformed { get; set; }
     }
 }

@@ -644,7 +644,7 @@ namespace Cats.Services.Workflows
         //    return null;
         //}
 
-        public dynamic GetWorkflowActivityAgg(DateTime startDate, DateTime endDate, List<string> workflowDefinitions, List<string> users, List<string> activities)
+        public List<DashboardDataEntry> GetWorkflowActivityAgg(DateTime startDate, DateTime endDate, List<string> workflowDefinitions, List<string> users, List<string> activities)
         {
             try
             {
@@ -661,8 +661,8 @@ namespace Cats.Services.Workflows
                 filterActivities.AddRange(activities.Select(filterName => new Filter { FilterName = filterName }));
 
                 // Into Param object
-                SqlParameter filterStartDate = new SqlParameter("StartDate", SqlDbType.DateTime) { Value = startDate };
-                SqlParameter filterEndDate = new SqlParameter("EndDate", SqlDbType.DateTime) { Value = endDate };
+                SqlParameter filterStartDate = new SqlParameter("StartDate", SqlDbType.Date) { Value = startDate.Date.ToString("d") };
+                SqlParameter filterEndDate = new SqlParameter("EndDate", SqlDbType.Date) { Value = endDate.Date.ToString("d") };
                 SqlParameter paramWorkflow = new SqlParameter
                 {
                     ParameterName = "@WorkflowName_Array",  // proc def
@@ -692,28 +692,37 @@ namespace Cats.Services.Workflows
                                                     "@StartDate, @EndDate, @WorkflowName_Array, @User_Array, @Activity_Array",
                     filterStartDate, filterEndDate, paramWorkflow, paramUser, paramActivity);
 
-                //List<DashboardDataEntry> dashboardDataEntries = new List<DashboardDataEntry>();
+                var dashboardDataEntries = (from dashEntries in result
+                                            //where dashEntries.DatePerformed >= startDate && dashEntries.DatePerformed <= endDate
+                                            group dashEntries by new
+                                            {
+                                                dashEntries.ProcessTemplateID,
+                                                dashEntries.StateTemplateID,
+                                                dashEntries.PerformedBy,
+                                                dashEntries.ActivityName,
+                                                dashEntries.SettingName,
+                                                //dashEntries.BusinessProcessID
+                                                //dashEntries.DatePerformed
+                                            }
+                                            into gTrnsRqst
+                                            select new
+                                            {
+                                                gTrnsRqst.Key.PerformedBy,
+                                                gTrnsRqst.Key.SettingName,
+                                                gTrnsRqst.Key.ActivityName,
+                                                ActivityCount = gTrnsRqst.Count()
+                                                //gTrnsRqst.Key.StateTemplateID,
+                                                //gTrnsRqst.Key.ProcessTemplateID,
+                                                //gTrnsRqst.Key.BusinessProcessID
+                                            }).ToList();
 
-               var dashboardDataEntries = (from dashEntries in result
-
-                                        group dashEntries by new
-                                        {
-                                            dashEntries.ProcessTemplateID,
-                                            dashEntries.StateTemplateID,
-                                            dashEntries.PerformedBy,
-                                            dashEntries.ActivityName,
-                                            dashEntries.SettingName
-                                        }
-                                        into gTrnsRqst
-                            select new
-                            {
-                                gTrnsRqst.Key.PerformedBy,
-                                gTrnsRqst.Key.SettingName,
-                                gTrnsRqst.Key.ActivityName,
-                                ActivityCount = gTrnsRqst.Count()
-                            }).ToList();
-
-                return dashboardDataEntries;
+                return dashboardDataEntries.Select(dataEntry => new DashboardDataEntry
+                {
+                    PerformedBy = dataEntry.PerformedBy,
+                    ActivityCount = dataEntry.ActivityCount,
+                    SettingName = dataEntry.SettingName,
+                    ActivityName = dataEntry.ActivityName
+                }).ToList();
             }
             catch (Exception exception)
             {

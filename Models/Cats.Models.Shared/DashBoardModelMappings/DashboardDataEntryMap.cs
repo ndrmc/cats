@@ -13,9 +13,11 @@ namespace Cats.Models.Shared.DashBoardModelMappings
             Property(t => t.PerformedBy).HasColumnName("PerformedBy");
             Property(t => t.SettingName).HasColumnName("SettingName");
             Property(t => t.ActivityName).HasColumnName("ActivityName");
-            //Property(t => t.ActivityCount).HasColumnName("ActivityCount");
+            Property(t => t.ActivityCount).HasColumnName("ActivityCount");
             Property(t => t.ProcessTemplateID).HasColumnName("ProcessTemplateID");
             Property(t => t.StateTemplateID).HasColumnName("StateTemplateID");
+            Property(t => t.BusinessProcessID).HasColumnName("BusinessProcessID");
+            Property(t => t.DatePerformed).HasColumnName("DatePerformed");
         }
     }
 }

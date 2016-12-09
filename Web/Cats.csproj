@@ -716,7 +716,7 @@
   <ItemGroup>
     <Content Include="AmharicReportViewer.aspx" />
     <Content Include="Areas\EarlyWarning\Views\Home\Index.cshtml" />
-    <Content Include="Scripts\js\DataActivityIndictor\DataActivityIndicator.JS" />
+    <Content Include="Scripts\DataActivityIndicator\DataActivityIndicator.JS" />
     <Content Include="Areas\Hub\Models\Views\Receive\EditorTemplates\ComboBox.ascx" />
     <Content Include="Areas\Hub\Models\Views\Receive\EditorTemplates\GridForeignKey.ascx" />
     <Content Include="Areas\Hub\Models\Views\Shared\EditorTemplates\Currency.ascx" />
@@ -2196,7 +2196,7 @@
     <Content Include="Scripts\js\bootstrap-timepicker.min.js" />
     <Content Include="Scripts\js\bootstrap.calendars.picker.css" />
     <Content Include="Scripts\js\bootstrap.min.js" />
-    <Content Include="Scripts\js\jquery-1.11.0.js" />
+    <Content Include="Scripts\js\DataActivityIndictor\DataActivityIndicator.js" />
     <Content Include="Scripts\js\kendo.all.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af-ZA.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af.min.js" />
@@ -3514,7 +3514,6 @@
     <Content Include="Web References\ReportPortal\CacheRefreshPlan3.datasource" />
     <Content Include="Web References\ReportPortal\CacheRefreshPlan4.datasource" />
     <Content Include="Views\Shared\_DataActivityIndicator.cshtml" />
-    <Content Include="Views\Shared\_DataActivityIndicator - OldTheme.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
