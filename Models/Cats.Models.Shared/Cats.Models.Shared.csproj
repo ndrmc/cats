@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="DashBoardModelMappings\DashboardDataEntryMap.cs" />
     <Compile Include="DashBoardModels\DashboardDataEntryModel.cs" />
+    <Compile Include="DashBoardModels\DashboardObjectDefinitions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

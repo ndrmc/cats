@@ -235,15 +235,22 @@ namespace Cats.Areas.WorkflowManager.Controllers
                 activities);
 
             List<DashboarDataEntryModel> dashboarDataEntryModels = (from user in wfusers
-                                                                    let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
-                                                                    select new DashboarDataEntryModel
-                                                                    {
-                                                                        Name = user,
-                                                                        DashboardDataEntries = dashboardDataEntries
-                                                                    }).ToList();
+                let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
+                select new DashboarDataEntryModel
+                {
+                    Name = user,
+                    DashboardDataEntries = dashboardDataEntries
+                }).ToList();
 
             return GetJsonResult(dashboarDataEntryModels);
 
+        }
+
+        public dynamic GetObjectList(DateTime startDate, DateTime endDate , List<string> workflows, string userName,
+            List<string> activities)
+        {
+
+            return null;
         }
     }
 }
