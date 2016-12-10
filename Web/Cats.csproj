@@ -3514,6 +3514,7 @@
     <Content Include="Web References\ReportPortal\CacheRefreshPlan3.datasource" />
     <Content Include="Web References\ReportPortal\CacheRefreshPlan4.datasource" />
     <Content Include="Views\Shared\_DataActivityIndicator.cshtml" />
+    <Content Include="Views\Shared\_DataActivityIndicator - OldTheme.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
