@@ -134,11 +134,11 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr ng-repeat="user in displayedWorkflowContent | orderBy : 'name' track by $index">
+                                                    <tr ng-repeat="user in displayedWorkflowContent track by $index">
                                                         <td scope="row">{{user.index}}</td>
                                                         <td>{{user.name}}</td>
                                                         
-                                                            <td ng-repeat="actCount in user.data | orderBy : 'name' track by $index" class="truseractivity" ng-click="openDetail(user.name,$index)">
+                                                            <td ng-repeat="actCount in user.data  track by $index" class="truseractivity" ng-click="openDetail(user.name,$index)">
                                                                 <a  ng-click="openDetail(user.name,$index)">   {{actCount}}</a>
 
                                                             </td>
