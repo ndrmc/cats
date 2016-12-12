@@ -139,6 +139,8 @@
     }
 
     var populateActivityCombo = function (selectedWorkflow) {
+
+        if (selectedWorkflow == undefined) return;
             
         $scope.ctrlStatus.loadingActivity = true;
 
@@ -392,8 +394,6 @@
     $scope.onWorkflowChange= function()
     {
         populateActivityCombo($scope.filterData.selectedDocument);
-
-
     }
 
     $scope.init();

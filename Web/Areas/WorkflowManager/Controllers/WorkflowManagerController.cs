@@ -65,7 +65,15 @@ namespace Cats.Areas.WorkflowManager.Controllers
             {
                 constantPageName = Constants.ProcurementPage;
             }
-
+            else if (pageName.Equals(Constants.HubPage, StringComparison.InvariantCultureIgnoreCase))
+            {
+                constantPageName = Constants.HubPage;
+            }
+            else if (pageName.Equals(Constants.RegionalPage, StringComparison.InvariantCultureIgnoreCase))
+            {
+                constantPageName = Constants.RegionalPage;
+            }
+ 
             return constantPageName;
         }
         private ContentResult GetJsonResult(Object list)
