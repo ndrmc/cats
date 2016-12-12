@@ -57,6 +57,7 @@ namespace Cats.Services.Workflows
     {
         public static string Dashbord = string.Empty; // "Dashbord";
         public static string Workflow = "Workflow";
+        public static string GlobalWorkflow = "GlobalWorkflow";
         public static string EarlywarningPage = "Earlywarning";
         public static string LogisticsPage = "Logistics";
         public static string HubPage = "Hub";
