@@ -738,12 +738,14 @@ namespace Cats.Services.Workflows
                 return null;
             }
         }
-
-        public IEnumerable<DashboardDataEntry> ExecWithStoreProcedure(string query, params object[] parameters)
+        public void GetMainObject()
+        {
+            
+        }
+         public IEnumerable<DashboardDataEntry> ExecWithStoreProcedure(string query, params object[] parameters)
         {
             return _unitOfWork.Database.SqlQuery<DashboardDataEntry>(query, parameters);
         }
-
         public class FilterCollection : List<Filter>, IEnumerable<SqlDataRecord>
         {
             IEnumerator<SqlDataRecord> IEnumerable<SqlDataRecord>.GetEnumerator()

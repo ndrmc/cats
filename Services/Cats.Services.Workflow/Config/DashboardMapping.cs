@@ -20,12 +20,13 @@ namespace Cats.Services.Workflows.Config
         {
             PageNameToWorkflowMappingsList.Add(new Tuple<int, string, string>(Random.Next(), pageName, workflowImplementer));
         }
+        // This static method has to called or run always on application startup
         public static void AddWorkflowToObjectMapping(string pageName, string workflowDefinition, Type type, string searchField, string uri)
         {
             WorkflowToObjectMappings.Add(new Tuple<int, string, string, Type, string, string>(Random.Next(), pageName, workflowDefinition, type, searchField, uri));
         }
         public static void RegisterDashboardPage()
-        {
+        {            
             // Workflows that are in Earlywarning
             AddDashboarMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.GiftCertificateWorkflow);
             AddDashboarMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.ReliefRequisitionWorkflow);
@@ -33,13 +34,14 @@ namespace Cats.Services.Workflows.Config
             AddDashboarMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.NeedAssessmentPlanWorkflow);
             AddDashboarMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.HRDWorkflow);
             AddDashboarMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.RegionalRequestWorkflow);
+            AddDashboarMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Regional
             AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.NeedAssessmentWorkflow);
-            //AddMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.NeedAssessmentWorkflow);
-
+            AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Hub
             AddDashboarMapping(Constants.HubPage + Constants.Dashbord, ApplicationSettings.Default.ReceiveHubWorkflow);
             AddDashboarMapping(Constants.HubPage + Constants.Dashbord, ApplicationSettings.Default.DispatchWorkflow);
+            AddDashboarMapping(Constants.HubPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Logistics
             AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.TransportOrderWorkflow);
             AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.TransportRequisitionWorkflow);
@@ -53,12 +55,16 @@ namespace Cats.Services.Workflows.Config
             AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.DeliveryWorkflow);
             AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanDetailActionWorkflow);
             AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanWorkflow);
+            AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Psnp
             AddDashboarMapping(Constants.PsnpPage + Constants.Dashbord, ApplicationSettings.Default.PSNPWorkflow);
+            AddDashboarMapping(Constants.PsnpPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Procurement
             AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.BidWinnerWorkflow);
+            AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Finance
             AddDashboarMapping(Constants.FinancePage + Constants.Dashbord, ApplicationSettings.Default.TransporterChequeWorkflow);
+            AddDashboarMapping(Constants.FinancePage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
         }
 
         public static void WorkflowToObject()
