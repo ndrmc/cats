@@ -179,7 +179,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                             var giftCertificate =
                                 GiftCertificateViewModelBinder.BindGiftCertificate(giftcertificateViewModel);
                             
-                            giftCertificate.BusinessProcessId = Convert.ToInt16(bp.BusinessProcessID);
+                            giftCertificate.BusinessProcessId = bp.BusinessProcessID;
 
                             var shippingInstructionID =
                                 _shippingInstructionService.GetSiNumber(giftcertificateViewModel.SINumber)

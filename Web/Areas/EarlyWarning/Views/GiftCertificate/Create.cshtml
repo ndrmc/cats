@@ -38,14 +38,14 @@
                             <div class="col-sm-8">
 
                                 @Html.TextBoxFor(model => model.GiftDate, new { @class = " form-control cats-datepicker2" })
-                                @Html.ValidationMessageFor(model => model.GiftDate)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.GiftDate)</span>
                             </div>
                         </div>
                         <div class="form-group">
                             @Html.LabelFor(model => model.DModeOfTransport, Html.Translate("Mode Of transport"), new { @class = "col-sm-4 control-label" })
                             <div class="col-sm-8">
-                                @Html.DropDownList("DModeOfTransport", null, String.Empty, new { @class = "form-control" })
-                                @Html.ValidationMessageFor(model => model.DModeOfTransport)
+                                @Html.DropDownList("DModeOfTransport", (IEnumerable<SelectListItem>)ViewBag.DModeOfTransport, String.Empty, new { @class = "form-control" })
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.DModeOfTransport)</span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -55,7 +55,7 @@
                             <div class="col-sm-8">
 
                                 @Html.DropDownList("ProgramID", null, String.Empty, new { @class = "form-control" })
-                                @Html.ValidationMessageFor(model => model.ProgramID)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.ProgramID)</span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -65,7 +65,7 @@
                             <div class="col-sm-8">
 
                                 @Html.DropDownList("DonorID", null, String.Empty, new { @class = "form-control" })
-                                @Html.ValidationMessageFor(model => model.DonorID)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.DonorID)</span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -76,7 +76,7 @@
 
                                 @Html.TextBoxFor(model => model.DeclarationNumber, new { @class = " form-control" })
 
-                                @Html.ValidationMessageFor(model => model.DeclarationNumber)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.DeclarationNumber)</span>
 
                             </div>
                         </div>
@@ -88,7 +88,7 @@
 
                                 @Html.DropDownList("CommodityTypeID", null, String.Empty, new { @class = "form-control" })
 
-                                @Html.ValidationMessageFor(model => model.CommodityTypeID)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.CommodityTypeID)</span>
 
                             </div>
                         </div>
@@ -110,7 +110,7 @@
 
                                     )
 
-                                @Html.ValidationMessageFor(model => model.SINumber)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.SINumber)</span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -119,7 +119,7 @@
 
                             <div class="col-sm-8">
                                 @Html.TextBoxFor(model => model.PortName, new { @class = " form-control" })
-                                @Html.ValidationMessageFor(model => model.PortName)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.PortName)</span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -128,7 +128,7 @@
 
                             <div class="col-sm-8">
                                 @Html.TextBoxFor(model => model.ReferenceNo, new { @class = " form-control" })
-                                @Html.ValidationMessageFor(model => model.ReferenceNo)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.ReferenceNo)</span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -137,7 +137,7 @@
 
                             <div class="col-sm-8">
                                 @Html.TextBoxFor(model => model.Vessel, new { @class = " form-control" })
-                                @Html.ValidationMessageFor(model => model.Vessel)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.Vessel)</span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -147,7 +147,7 @@
 
                             <div class="col-sm-8">
                                 @Html.TextBoxFor(model => model.ETA, new { @class = "form-control cats-datepicker2" })
-                                @Html.ValidationMessageFor(model => model.ETA)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.ETA)</span>
                             </div>
                         </div>
 
