@@ -716,7 +716,6 @@
   <ItemGroup>
     <Content Include="AmharicReportViewer.aspx" />
     <Content Include="Areas\EarlyWarning\Views\Home\Index.cshtml" />
-    <Content Include="Scripts\DataActivityIndicator\DataActivityIndicator.JS" />
     <Content Include="Areas\Hub\Models\Views\Receive\EditorTemplates\ComboBox.ascx" />
     <Content Include="Areas\Hub\Models\Views\Receive\EditorTemplates\GridForeignKey.ascx" />
     <Content Include="Areas\Hub\Models\Views\Shared\EditorTemplates\Currency.ascx" />
