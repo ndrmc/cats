@@ -162,7 +162,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
                 {
                     Name = user,
                     Id = random.Next()
-                }).ToList();
+                }).OrderBy(o => o.Name).ToList();
 
             return GetJsonResult(dashboardFilterUser);
         }
@@ -180,7 +180,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
                 {
                     Name = workflow,
                     Id = random.Next()
-                }).ToList();
+                }).OrderBy(o => o.Name).ToList();
 
             return GetJsonResult(dashboardFilterWorkflow);
         }
@@ -211,8 +211,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
                 {
                     Name = activity,
                     Id = random.Next()
-                }).ToList();
-
+                }).OrderBy(o => o.Name).ToList();
 
                 return GetJsonResult(dashboardFilterActivity);
             }
@@ -235,7 +234,6 @@ namespace Cats.Areas.WorkflowManager.Controllers
                 {
                     string settingValue = applicationSetting.SettingValue;
                     int processId;
-
                     int.TryParse(settingValue, out processId);
 
                     stateTemplates.AddRange(stateTemplateService.GetAll().Where(p => p.ParentProcessTemplateID == processId).Select(p => p.Name));
@@ -247,7 +245,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
                 {
                     Name = activity,
                     Id = random.Next()
-                }).ToList();
+                }).OrderBy(o => o.Name).ToList();
 
             return GetJsonResult(dashboardFilterActivity);
         }
@@ -269,7 +267,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
                                                                     {
                                                                         Name = user,
                                                                         DashboardDataEntries = dashboardDataEntries
-                                                                    }).ToList();
+                                                                    }).OrderBy(o => o.Name).ToList();
 
             return GetJsonResult(dashboarDataEntryModels);
         }
