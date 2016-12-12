@@ -245,11 +245,11 @@ namespace Cats.Areas.WorkflowManager.Controllers
             return GetJsonResult(dashboarDataEntryModels);
 
         }
+       
 
         public dynamic GetObjectList(DateTime startDate, DateTime endDate , List<string> workflows, string userName,
             List<string> activities)
         {
-
             return null;
         }
     }
