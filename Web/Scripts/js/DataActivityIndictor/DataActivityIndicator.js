@@ -249,7 +249,7 @@
                     //BUILD USER X ACTIVITY COUNT
                     //iterate the activity lookup
                     found = false;
-                    userActivityname = activityCount.name.trim().toCamel();
+                    userActivityname = activityCount.trim().toCamel();
                     $.each(workflowListObj.dashboardDataEntries, function (index, headerActivityName) {
                         //iterate activity count
 
