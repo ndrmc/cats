@@ -82,7 +82,7 @@
             DataServices.getAllTeamUsers().then(function (result) {
 
                 $scope.controlData.lookupUsers = result.data;
- 
+                
             });
             $scope.ctrlStatus.loadingUser = false;
 

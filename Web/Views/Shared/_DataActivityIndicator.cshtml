@@ -86,7 +86,7 @@
                                     <Label><small>  User</small></Label> 
 
                                     <select id="User" multiple="multiple" ng-disabled ="ctrlStatus.loadingUser" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
-                                        <option ng-repeat="user in controlData.lookupUsers" value="{{user.name}}">{{user.name}}</option>
+                                        <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
                                     </select>
 
                                 </div>
@@ -95,7 +95,7 @@
 
                                     <Label><small>Activity</small></Label>
                                     <select id="Activity" multiple="multiple" ng-disabled ="ctrlStatus.loadingActivity" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
-                                        <option ng-repeat="activity in controlData.lookupActivities" value="{{activity.name}}">{{activity.name}}</option>
+                                        <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
                                     </select>
 
                                 </div>
@@ -104,7 +104,7 @@
                                 <div class="col-sm-2">
                                     <Label><small>Document</small></Label>
                                     <select id="Document" class="form-control" data-toggle="tooltip" ng-disabled ="ctrlStatus.loadingDocument" data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
-                                        <option ng-repeat="document in controlData.lookupDocument" value="{{document.name}}">{{document.name}}</option>
+                                        <option ng-repeat="document in controlData.lookupDocument| orderBy : 'name'" value="{{document.name}}">{{document.name}}</option>
 
                                     </select>
                                 </div>
@@ -134,11 +134,11 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr ng-repeat="user in displayedWorkflowContent track by $index">
+                                                    <tr ng-repeat="user in displayedWorkflowContent | orderBy : 'name' track by $index">
                                                         <td scope="row">{{user.index}}</td>
                                                         <td>{{user.name}}</td>
                                                         
-                                                            <td ng-repeat="actCount in user.data track by $index" class="truseractivity" ng-click="openDetail(user.name,$index)">
+                                                            <td ng-repeat="actCount in user.data | orderBy : 'name' track by $index" class="truseractivity" ng-click="openDetail(user.name,$index)">
                                                                 <a  ng-click="openDetail(user.name,$index)">   {{actCount}}</a>
 
                                                             </td>

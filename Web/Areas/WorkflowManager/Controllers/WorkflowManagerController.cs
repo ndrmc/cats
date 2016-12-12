@@ -158,7 +158,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
             Random random = new Random(int.MinValue);
 
             List<DashboardFilterModel> dashboardFilterUser =
-                users.Select(user => new DashboardFilterModel
+                users. Select(user => new DashboardFilterModel
                 {
                     Name = user,
                     Id = random.Next()
