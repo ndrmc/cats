@@ -916,8 +916,36 @@ namespace Cats.Areas.EarlyWarning.Controllers
                                       }).ToList();
 
                     hrd.HRDDetails = hrdDetails;
-                    // Workflow Implementation
-                    int BP_PR = _applicationSettingService.getHRDWorkflow();
+
+                    int BP_PR = _applicationSettingService.getNeedAssessmentPlanWorkflow();
+                    if (BP_PR != 0)
+                    {
+                        var hrdCreatedState =
+                            _stateTemplateService.FindBy(
+                                f => f.ParentProcessTemplateID == BP_PR && f.Name == "HRDCreated").FirstOrDefault();
+                        int businessProcessID = (int)_planService.FindById(hrd.PlanID).BusinessProcessID;
+                        if (hrdCreatedState != null)
+                        {
+                            var hrdCreated = new BusinessProcessState
+                            {
+                                DatePerformed = DateTime.Now,
+                                PerformedBy = User.Identity.Name,
+                                Comment = "HRD Created from need assessment",
+                                StateID = hrdCreatedState.StateTemplateID,
+                                ParentBusinessProcessID = businessProcessID
+                            };
+                            //_businessProcessStateService.Add(hrdCreated);
+                         
+                            //var bp = 
+                            _businessProcessService.PromotWorkflow(hrdCreated);
+                            //bp.CurrentState = hrdCreated;
+                            //_businessProcessService.Update(bp);
+                        }
+                    }
+
+
+
+                    BP_PR = _applicationSettingService.getHRDWorkflow();
                     if (BP_PR != 0)
                     {
                         var createdstate = new BusinessProcessState
