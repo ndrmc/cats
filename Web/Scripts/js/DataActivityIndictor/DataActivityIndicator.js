@@ -218,7 +218,6 @@
                 //Check if already exists or not?
                 (i = $scope.displayedWorkflowNames.indexOf(name)) < 0 ? $scope.displayedWorkflowNames.push(name) : $scope.displayedWorkflowNames.splice(i, 1);
             });
-            $scope.drawGraph();
         };
 
         var PopulateRows = function () {
@@ -297,6 +296,9 @@
 
         getDataEntryStat_();
 
+        //$scope.drawGraph();
+
+
         $scope.searching = false;
     }
 
@@ -371,7 +373,10 @@
                  $scope.displayedWorkflowList=[];
               $scope.displayedWorkflowList = result.data;
 
-        buildTableStructure();
+              buildTableStructure();
+
+              $scope.drawGraph();
+
 
         });
         }
