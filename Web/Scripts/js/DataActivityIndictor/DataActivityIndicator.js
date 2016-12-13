@@ -140,7 +140,7 @@
 
     var populateActivityCombo = function (selectedWorkflow) {
 
-        if (selectedWorkflow == undefined) return;
+        if (selectedWorkflow == null) return;
             
         $scope.ctrlStatus.loadingActivity = true;
 
