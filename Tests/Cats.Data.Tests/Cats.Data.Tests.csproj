@@ -65,7 +65,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
-       </Reference>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -119,6 +119,10 @@
     <ProjectReference Include="..\..\Services\Cats.Services.Transaction\Cats.Services.Transaction.csproj">
       <Project>{9b741d92-4b67-4863-bf38-a1adcae40870}</Project>
       <Name>Cats.Services.Transaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Services\Cats.Services.Workflow\Cats.Services.Workflow.csproj">
+      <Project>{91b6c6b9-eec7-4436-a24b-5bc33cae1beb}</Project>
+      <Name>Cats.Services.Workflow</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

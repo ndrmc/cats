@@ -193,7 +193,7 @@ namespace Cats.Tests.ControllersTests
                    deliveryDetailService.Object,
                    notificationService.Object, actionTypesService.Object,
                    userAccountService.Object, commodityService.Object, unitService.Object, transactionService.Object,
-                   businessProcessService.Object,applicationSettingService.Object,transporterPaymentRequest.Object
+                   businessProcessService.Object,applicationSettingService.Object,transporterPaymentRequest.Object,null
                );
             _distributionController.ControllerContext = controllerContext.Object;
 
