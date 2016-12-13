@@ -11,6 +11,7 @@ namespace Cats.Areas.WorkflowManager.Models
 
     public class DashboardFilterModel
     {
+        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

@@ -6,4 +6,5 @@
   &lt;Assembly Path="E:\code\cats\packages\FluentAssertions.2.0.1\lib\net45\FluentAssertions.dll" /&gt;&#xD;
   &lt;Assembly Path="E:\code\cats\packages\Moq.4.0.10827\lib\NET40\Moq.dll" /&gt;&#xD;
   &lt;Assembly Path="E:\Code\cats\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll" /&gt;&#xD;
+  &lt;Assembly Path="E:\Code\cats\Web\bin\System.Web.Mvc.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>

@@ -17,6 +17,9 @@ namespace Cats.Models.Constant
             LOGISTICS = 3,
             PROCUREMENT = 4,
             FINANCE = 5,
+            HUB,
+            REGIONAL,
+            ADMIN
         }
         
     }
