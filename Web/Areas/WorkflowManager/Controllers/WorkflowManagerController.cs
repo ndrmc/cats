@@ -282,6 +282,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
         IEnumerable<int> UniqueRandom(int minInclusive, int maxInclusive)
         {
             List<int> candidates = new List<int>();
+
             for (int i = minInclusive; i <= maxInclusive; i++)
             {
                 candidates.Add(i);
