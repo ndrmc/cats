@@ -90,6 +90,8 @@
                                         <Label><small>  User</small></Label>
 
                                         <select id="User" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
+                                            <option value="All">All </option>
+
                                             <option ng-repeat="user in controlData.lookupUsers" value="{{user.name}}">{{user.name}}</option>
                                         </select>
 
@@ -111,7 +113,8 @@
                                     <div class="col-sm-2">
                                         <Label><small>Document</small></Label>
                                         <select id="Document" class="form-control" data-toggle="tooltip" data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
-                                            <option ng-repeat="document in controlData.lookupDocument" value="{{document.name}}">{{document.name}}</option>
+                                        
+                                                <option ng-repeat="document in controlData.lookupDocument" value="{{document.name}}">{{document.name}}</option>
 
                                         </select>
                                     </div>
