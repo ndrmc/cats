@@ -178,6 +178,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
             List<DashboardFilterModel> dashboardFilterWorkflow =
                 workflowDefinitions.Select(workflow => new DashboardFilterModel
                 {
+
                     Name = workflow,
                     Id = random.Next()
                 }).OrderBy(o => o.Name).ToList();
