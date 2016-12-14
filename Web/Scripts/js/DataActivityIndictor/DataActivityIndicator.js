@@ -95,23 +95,23 @@
 
 
                 if ($scope.controlData.lookupDocument.length > 0)
-                { $scope.filterData.selectedDocument = $scope.controlData.lookupDocument[0].name; }
+                { $scope.filterData.selectedDocument = $scope.controlData.lookupDocument[0].name;
 
 
-                populateActivityCombo($scope.filterData.selectedDocument);
+                populateActivityCombo($scope.filterData.selectedDocument); }
  
             });
             $scope.ctrlStatus.loadingDocument = false;
 
 
-            $scope.ctrlStatus.loadingActivity = true;
+            //$scope.ctrlStatus.loadingActivity = true;
 
-            DataServices.getAllStateTemplate().then(function (result) {
+            //DataServices.getAllStateTemplate().then(function (result) {
 
-                $scope.controlData.lookupActivities = result.data;
+            //    $scope.controlData.lookupActivities = result.data;
  
-            });
-            $scope.ctrlStatus.loadingActivity = false;
+            //});
+            //$scope.ctrlStatus.loadingActivity = false;
  
         };
 
@@ -121,9 +121,9 @@
 
             var aWeekBefore = new Date(new Date().setDate(new Date().getDate() - 5));
 
-            $scope.filterData.selectedStartDate = now.toLocaleDateString();
+            $scope.filterData.selectedStartDate =  aWeekBefore.toLocaleDateString();
 
-            $scope.filterData.selectedEndDate = aWeekBefore.toLocaleDateString();
+            $scope.filterData.selectedEndDate = now.toLocaleDateString();
 
         };
 
