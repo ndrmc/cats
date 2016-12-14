@@ -11,7 +11,7 @@
 <link href="~/Scripts/Bootstrap/font-awesome.min.css" rel="stylesheet" />
 
 <script src="~/Scripts/Bootstrap/bootstrap-multiselect.js"></script>*@
-
+@*<script src="~/Content/assetss/global/plugins/angularjs/plugins/ui-bootstrap-tpls.min.js"></script>*@
 <style>
 
 
@@ -138,8 +138,8 @@
                                                         <td scope="row">{{user.index}}</td>
                                                         <td>{{user.name}}</td>
                                                         
-                                                            <td ng-repeat="actCount in user.data  track by $index" class="truseractivity" ng-click="openDetail(user.name,$index)">
-                                                                <a  ng-click="openDetail(user.name,$index)">   {{actCount}}</a>
+                                                            <td ng-repeat="actCount in user.data  track by $index" class="truseractivity" ng-click="toggleModal('Success')" >
+                                                                <a   ng-click="showModal()">   {{actCount}}</a>
 
                                                             </td>
                                                          
@@ -151,6 +151,8 @@
 
 
                                                     <tr>
+                                            
+
                                                         <th colspan="2">Total</th>
 
 

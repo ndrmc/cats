@@ -198,10 +198,10 @@ namespace Cats.Areas.WorkflowManager.Controllers
 
             if (applicationSetting != null || globalApplicationSetting != null)
             {
-                string settingValue = applicationSetting.SettingValue;
+                string settingValue = (applicationSetting==null)?"0": applicationSetting.SettingValue ;
                 int processId;
                 int.TryParse(settingValue, out processId);
-                string globalSettingValue = globalApplicationSetting.SettingValue;
+                string globalSettingValue = (globalApplicationSetting == null) ? "0": globalApplicationSetting.SettingValue ;
                 int globalProcessId;
                 int.TryParse(globalSettingValue, out globalProcessId);
 
