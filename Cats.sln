@@ -111,6 +111,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.Data.Shared", "Data\Ca
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.Models.Shared", "Models\Cats.Models.Shared\Cats.Models.Shared.csproj", "{647F8DAD-7D70-4419-A87C-1802DB94190B}"
 EndProject
+EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

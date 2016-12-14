@@ -124,6 +124,7 @@ namespace Cats.Services.EarlyWarning
             _unitOfWork.Save();
             var plan=_unitOfWork.PlanRepository.FindById(hrd.PlanID);
             plan.Status = (int) PlanStatus.HRDCreated;
+             
             _unitOfWork.PlanRepository.Edit(plan);
             _unitOfWork.Save();
             return true;

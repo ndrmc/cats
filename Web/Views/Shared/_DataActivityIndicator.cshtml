@@ -11,8 +11,45 @@
 <link href="~/Scripts/Bootstrap/font-awesome.min.css" rel="stylesheet" />
 
 <script src="~/Scripts/Bootstrap/bootstrap-multiselect.js"></script>*@
+@*<script src="~/Content/assetss/global/plugins/angularjs/plugins/ui-bootstrap-tpls.min.js"></script>*@
+<style>
 
 
+    .detable{
+
+            border: 1px solid #ddd;
+    }
+
+    
+    .dedivtable{
+
+            /*border: 1px solid #ddd;*/
+                padding-left: 0px;
+                    padding-top: 5px;
+    }
+       .dedivgraph{
+
+            /*border: 1px solid #ddd;*/
+                padding-left: 0px;
+                    padding-top: 5px;
+                    min-height:100px;
+    }
+    .truseractivity{
+
+        cursor:pointer;
+        /*background-color:red;*/
+
+     
+
+    }
+        .truseractivit:hover{
+
+        cursor:pointer;
+        background-color:white;
+     
+
+    }
+</style>
 
 
     <div class="box box-solid box-primary " ng-app="DataEntryIndicatorApp" ng-controller="WorkflowActController">
@@ -28,13 +65,12 @@
                 </div>
             </div>
             <div class="portlet-body">
-                <span class="loading-spnr-da da-data-indicator-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>
+                @*<span class="loading-spnr-da da-data-indicator-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>*@
 
 
-                    <div class="table-responsive" style="overflow-x: hidden; min-height: 350px;">
+                    <div class=" table-responsive" style="overflow-x: hidden; min-height: 350px; ">
+                        
                         <div class="row form-horizontal " style="min-height: 100px;">
-                          
-
                                 <div class="col-sm-2 ">
 
                                     <Label><small>Start Date</small></Label>
@@ -49,8 +85,10 @@
                                 <div class="col-sm-2">
                                     <Label><small>  User</small></Label> 
 
-                                    <select id="User" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
-                                        <option ng-repeat="user in controlData.lookupUsers" value="{{user.name}}">{{user.name}}</option>
+                                    <select id="User" multiple="multiple" ng-disabled ="ctrlStatus.loadingUser" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
+                                        <option value="All">All </option>
+
+                                        <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
                                     </select>
 
                                 </div>
@@ -58,8 +96,9 @@
 
 
                                     <Label><small>Activity</small></Label>
-                                    <select id="Activity" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
-                                        <option ng-repeat="activity in controlData.lookupActivities" value="{{activity.name}}">{{activity.name}}</option>
+                                    <select id="Activity" multiple="multiple" ng-disabled ="ctrlStatus.loadingActivity" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
+                                    
+                                       <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
                                     </select>
 
                                 </div>
@@ -67,28 +106,24 @@
 
                                 <div class="col-sm-2">
                                     <Label><small>Document</small></Label>
-                                    <select id="Document" class="form-control" data-toggle="tooltip" data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
-                                        <option ng-repeat="document in controlData.lookupDocument" value="{{document.name}}">{{document.name}}</option>
+                                    <select id="Document" class="form-control" data-toggle="tooltip" ng-disabled ="ctrlStatus.loadingDocument" data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
+                                        <option ng-repeat="document in controlData.lookupDocument| orderBy : 'name'" value="{{document.name}}">{{document.name}}</option>
 
                                     </select>
                                 </div>
 
                                 <div class="col-sm-2 ">
-                                    <Label><small> Get</small></Label>
-                                    <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i class="fa fa-search"></i></button>
+                                  
+                                    <button type="button" ng-disabled="searching" class="btn green " data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i ng-show="!searching" class ="fa fa-search ">Get</i>  <i class="fa fa-cog fa-spin" ng-show="searching"></i> </button>
                                 </div>
 
                             </div>
-
-
-                     
-                            <div class="col-sm-12">
-                           
+            
+                       <div class="dedivtable col-sm-12">
+                       
                                     <div class="table-responsive" ng-if="(InvalidFilter=='VALID')">
-
-                                   
-
-                                            <table class="table table-responsive table-hover table-striped table-bordered table-inverse">
+                                         
+                                            <table class="detable table table-responsive table-hover table-striped table-bordered table-inverse">
                                                 <thead>
                                                     <tr>
                                                         <th>#</th>
@@ -104,18 +139,23 @@
                                                 <tbody>
                                                     <tr ng-repeat="user in displayedWorkflowContent track by $index">
                                                         <td scope="row">{{user.index}}</td>
-                                                        <td>{{user.userName}}</td>
-                                                        <td ng-repeat="actCount in user.activityAndCount track by $index">
-                                                            <a ng-click="openDetail(user.userName,$index)">   {{actCount}}</a>
-                                                        </td>
+                                                        <td>{{user.name}}</td>
+                                                        
+                                                            <td ng-repeat="actCount in user.data  track by $index" class="truseractivity" ng-click="toggleModal('Success')" >
+                                                                <a   ng-click="showModal()">   {{actCount}}</a>
+
+                                                            </td>
+                                                         
                                                         <td>
-                                                            {{ user.activityAndCount| rowSum}}
+                                                            {{ user.data| rowSum}}
                                                         </td>
 
                                                     </tr>
 
 
                                                     <tr>
+                                            
+
                                                         <th colspan="2">Total</th>
 
 
@@ -143,8 +183,13 @@
                                   
                                 </div>
                                 </div>
-
+                    
+                        <div class="dedivgraph col-sm-12">
+                            <div class="box-body table-responsive" style="display: block;" >
+                                <div id="containerGraph" class="graphWrap"></div>
                             </div>
+                        </div>
+                        </div>
 
                         </div>
                     </div>
@@ -153,61 +198,7 @@
             String.prototype.toCamel = function () {
                 return this.replace(/(\-[a-z])/g, function ($1) { return $.toUpperCase().replace('-', ''); });
             };
-            //$('#User').multiselect({
-
-            //    templates: { // Use the Awesome Bootstrap Checkbox structure
-
-            //        li: '<li><div class="checkbox"><label></label></div></li>'
-            //    }
-
-            //});
-            //$('#Activity').multiselect({
-
-            //    templates: { // Use the Awesome Bootstrap Checkbox structure
-
-            //        li: '<li><div class="checkbox"><label></label></div></li>'
-            //    }
-
-            //});
-
-            //$('#Document').multiselect({
-
-            //    templates: { // Use the Awesome Bootstrap Checkbox structure
-
-            //        li: '<li><div class="checkbox"><label></label></div></li>'
-            //    }
-
-            //});
-            //$('.multiselect-container div.checkbox').each(function (index) {
-
-            //    var id = 'multiselect-' + index,
-
-            //        $input = $(this).find('input');
-
-            //    // Associate the label and the input
-
-            //    $(this).find('label').attr('for', id);
-
-            //    $input.attr('id', id);
-
-            //    // Remove the input from the label wrapper
-
-            //    $input.detach();
-
-            //    // Place the input back in before the label
-
-            //    $input.prependTo($(this));
-
-            //    $(this).click(function (e) {
-
-            //        // Prevents the click from bubbling up and hiding the dropdown
-
-            //        e.stopPropagation();
-
-            //    });
-
-
-            //});
+           
         </script>
 
         <script>
