@@ -13,7 +13,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        @using (Html.BeginForm("Create", "GiftCertificate", FormMethod.Post, new {id = "frm_create_gift"}))
+        @using (Html.BeginForm("Create", "GiftCertificate", FormMethod.Post, new {id = "frm_create_gift", @class= "form-horizontal" }))
         {
             @Html.ValidationSummary(true)
             @Html.HiddenFor(model => model.rowCount)
@@ -32,10 +32,10 @@
                         <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;"></a>
                     </div>
                 </div>
-                <div class="portlet-body">
-                    <div class="col-md-12 box-body" style="display: block;">
+                <div class="portlet-body row">
+                    
                         @Html.ValidationSummary(true)
-                        <div class="col-md-6 col-sm-6 form-horizontal">
+                        <div class="col-md-6 col-sm-6 ">
                             <div class="form-group">
                                 @Html.LabelFor(model => model.GiftDate, Html.Translate("Gift Date"), new {@class = "col-sm-4 control-label cats-date-pref"})
                                 <div class="col-sm-8">
@@ -97,7 +97,7 @@
                             </div>
 
                         </div>
-                        <div class="col-md-6 col-sm-6 form-horizontal">
+                        <div class="col-md-6 col-sm-6 ">
                             <div class="form-group">
 
                                 @Html.LabelFor(model => model.SINumber, Html.Translate("SI/Batch Number"), new {@class = "col-sm-4 control-label"})
@@ -155,7 +155,7 @@
                             </div>
 
                         </div>
-                    </div>
+                   
 
                 </div>
             </div>
