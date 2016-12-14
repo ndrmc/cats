@@ -9,6 +9,19 @@
     $scope.displayedWorkflowContent = [];
     $scope.displayedWorkflowContentColumns = [];
     $scope.displayedWorkflowList = [];
+    $scope.delay = 1;
+    $scope.ctrlStatus =
+    {
+        loadingUser: false,
+        loadingActivity: false,
+        loadingDocument:false
+    };
+    $scope.viewGraphXAxis = [];
+
+    $scope.searching = false;
+
+    $scope.isBusy = false;
+    $scope.subtitleText;
 
     $scope.filterData = {
         selectedUsers: [],
@@ -44,62 +57,37 @@
 
         });
         return sum;
-        };
+    };
+
+    $scope.getSubTitleText = function () {
+
+        if ($scope.selectedStartDate == undefined && $scope.selectedEndDate != undefined)
+            return "After Date " + $scope.selectedEndDate;
+
+        if ($scope.selectedStartDate != undefined && $scope.selectedEndDate == undefined)
+            return "Before Date " + $scope.selectedStartDate;
+
+        if ($scope.selectedStartDate == undefined && $scope.selectedEndDate == undefined)
+            return "";
+
+        var result = $scope.selectedStartDate + " - " + $scope.selectedEndDate;
+        return result;
+    }
+
     $scope.init = function () {
-
-
+ 
         var initializeControls = function () {
-
+ 
+            $scope.ctrlStatus.loadingUser = true;
             DataServices.getAllTeamUsers().then(function (result) {
 
                 $scope.controlData.lookupUsers = result.data;
-
-
-            //    $('#user').multiselect({
-
-            //        templates: {
-
-            //            li: '<li><div class="checkbox"><label></label></div></li>'
-            //        }
-
-            //    });
-
-
-            //    $('.multiselect-container div.checkbox').each(function (index) {
-
-            //        var id = 'multiselect-' +index,
-
-            //            $input = $(this).find('input');
-
-            //        // Associate the label and the input
-
-            //        $(this).find('label').attr('for', id);
-
-            //        $input.attr('id', id);
-
-            //        // Remove the input from the label wrapper
-
-            //        $input.detach();
-
-            //        // Place the input back in before the label
-
-            //        $input.prependTo($(this));
-
-            //        $(this).click(function (e) {
-
-            //// Prevents the click from bubbling up and hiding the dropdown
-
-            //e.stopPropagation();
-
-            //});
-
-
-            //});
-
-
+                
             });
+            $scope.ctrlStatus.loadingUser = false;
 
-
+            
+            $scope.ctrlStatus.loadingDocument = true;
 
             DataServices.getAllWorkflows().then(function (result) {
 
@@ -111,57 +99,31 @@
 
 
                 populateActivityCombo($scope.filterData.selectedDocument);
-
-
-
-            //    buildTableStructure();
-            //    $('#Document').multiselect({
-
-            //        templates: {
-
-            //            li: '<li><div class="checkbox"><label></label></div></li>'
-            //        }
-
-            //    });
+ 
             });
+            $scope.ctrlStatus.loadingDocument = false;
 
+
+            $scope.ctrlStatus.loadingActivity = true;
 
             DataServices.getAllStateTemplate().then(function (result) {
 
                 $scope.controlData.lookupActivities = result.data;
-
-
-            //    $('#Activities').multiselect({
-
-            //        templates: {
-
-            //            li: '<li><div class="checkbox"><label></label></div></li>'
-            //        }
-
-            //    });
+ 
             });
-
-
-
-
-
-
-
+            $scope.ctrlStatus.loadingActivity = false;
+ 
         };
 
         var setFilterControlDefaultValue = function () {
 
-
             var now = new Date();
+
             var aWeekBefore = new Date(new Date().setDate(new Date().getDate() - 5));
 
-
-
             $scope.filterData.selectedStartDate = now.toLocaleDateString();
+
             $scope.filterData.selectedEndDate = aWeekBefore.toLocaleDateString();
-
-
-
 
         };
 
@@ -170,18 +132,26 @@
 
         setFilterControlDefaultValue();
 
-        //getDataEntryStat();
+       // getDataEntryStat_();
 
 
 
     }
 
-    var populateActivityCombo=function(selectedWorkflow){
+    var populateActivityCombo = function (selectedWorkflow) {
+
+        if (selectedWorkflow == null) return;
+            
+        $scope.ctrlStatus.loadingActivity = true;
+
         DataServices.getAllStateTemplate(selectedWorkflow).then(function (result) {
             $scope.controlData.lookupActivities = result.data;
             buildTableStructure();
         });
-        };
+
+        $scope.ctrlStatus.loadingActivity = false;
+
+    };
 
          $scope.InvalidFilter="DEFAULT";
 
@@ -194,33 +164,35 @@
 
             DataServices.getDataEntryStat($scope.filterData.selectedStartDate, $scope.filterData.selectedEndDate, $scope.filterData.selectedDocument,
             $scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(function (result) {
-             $scope.InvalidFilter="VALID";
 
-             $scope.displayedWorkflowList= [];
+            $scope.InvalidFilter = "VALID";
+
+            $scope.displayedWorkflowList= [];
             $scope.displayedWorkflowList = result.data;
 
 
-        });
+            });
+
         }
-                else
-                {
-                 $scope.InvalidFilter="INVALID";
+        else
+        {
+            $scope.InvalidFilter="INVALID";
 
-                }
-
-
-                }
+        }
 
 
-                    var filterIsValid = function() {
-                        if ($scope.filterData.selectedStartDate.trim() =="" && $scope.filterData.selectedEndDate.trim()=="")
-            return false;
-    if($scope.filterData.selectedDocument.trim() =="" ||$scope.filterData.selectedUsers.length==0|| $scope.filterData.selectedActivities.length==0)
-{
-return false;
-}
+        }
+
+
+    var filterIsValid = function () {
+      
+       if ($scope.filterData.selectedStartDate.trim() =="" && $scope.filterData.selectedEndDate.trim()=="")
+        return false;
+       if($scope.filterData.selectedDocument.trim() =="" ||$scope.filterData.selectedUsers.length==0|| $scope.filterData.selectedActivities.length==0)
+        return false;
+    
         return true;
-                    }
+          }
 
     var buildTableStructure = function () {
 
@@ -233,19 +205,21 @@ return false;
                         $scope.displayedWorkflowNames =[];
 
 
-    }
-    }
+                         }
+                      }
             //populate columns list
             var name;
             var i;
+            $scope.subtitleText = $scope.getSubTitleText();
+
+            $scope.viewGraphXAxis = [];
             $.each($scope.filterData.selectedActivities, function (index, workflowActObj) {
 
                 name = workflowActObj.trim().toCamel();
-
+                $scope.viewGraphXAxis.push(name);
                 //Check if already exists or not?
                 (i = $scope.displayedWorkflowNames.indexOf(name)) < 0 ? $scope.displayedWorkflowNames.push(name) : $scope.displayedWorkflowNames.splice(i, 1);
             });
-
         };
 
         var PopulateRows = function () {
@@ -266,7 +240,6 @@ return false;
             $.each($scope.displayedWorkflowList, function (index, workflowListObj) {
 
                 var name = workflowListObj.name.trim().toCamel();;
-
 
                 var userActivityCountArray = [];
                 var rowCount = [];
@@ -297,19 +270,18 @@ return false;
 
 
                 userActivityCountArray.push(rowCount);
-
+            
                 var rowObj =
                     {
                         index: tableIndex++,
-                        userName: name,
-                        activityAndCount: rowCount
+                        name: name,
+                        data: rowCount
 
                     };
 
                 $scope.displayedWorkflowContent.push(rowObj);
 
 
-                console.log(rowObj)
 
             });
         }
@@ -322,10 +294,69 @@ return false;
 
     $scope.applyFilter = function () {
 
+        $scope.searching = true;
+
         getDataEntryStat_();
 
+        //$scope.drawGraph();
+
+
+        $scope.searching = false;
     }
 
+    $scope.drawGraph = function()
+    {
+        var chart;
+        var container = "containerGraph";
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: container,
+                    type: 'column'
+                },
+
+
+                title: {
+                    text: 'Data Entry Users Comparison'
+                },
+                subtitle: {
+                    text: $scope.subtitleText
+                },
+                credits: {
+                    enabled: false
+                },
+                exporting: {
+                    enabled: true
+                },
+                xAxis: {
+                    categories: $scope.viewGraphXAxis
+                },
+                yAxis: {
+                    allowDecimals:false,
+                    min: 0,
+                    title: {
+                        text: 'Activity count'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y} </b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        stacking:null
+            
+                    }
+                },
+                series:
+                   $scope.displayedWorkflowContent
+             
+            });
+
+    }
 
     var getDataEntryStat_ = function () {
 
@@ -335,33 +366,34 @@ return false;
 
                         $scope.InvalidFilter= "DEFAULT";
 
-        DataServices.getDataEntryStat($scope.filterData.selectedStartDate, $scope.filterData.selectedEndDate, $scope.filterData.selectedDocument,
-$scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(function (result) {
 
-                        $scope.InvalidFilter="VALID";
+        DataServices.getDataEntryStat($scope.filterData.selectedStartDate, $scope.filterData.selectedEndDate, 
+        $scope.filterData.selectedDocument,$scope.filterData.selectedUsers, $scope.filterData.selectedActivities)
+        .then(function (result) {
 
-     $scope.displayedWorkflowList=[];
-        $scope.displayedWorkflowList = result.data;
+                        $scope.InvalidFilter = "VALID";
+                 $scope.displayedWorkflowList=[];
+              $scope.displayedWorkflowList = result.data;
 
-        buildTableStructure();
+              buildTableStructure();
 
-});
-}
-else
-{
+              $scope.drawGraph();
+
+
+        });
+        }
+        else
+        {
                             $scope.InvalidFilter="INVALID";
 
 
                 }
 
-
-}
+            }
 
     $scope.onWorkflowChange= function()
     {
         populateActivityCombo($scope.filterData.selectedDocument);
-
-
     }
 
     $scope.init();
@@ -370,7 +402,6 @@ else
 
 
             .factory('DataServices', ["$http", function ($http) {
-
 
                 return {
 
@@ -384,14 +415,12 @@ else
                     },
                     getAllWorkflows: function () {
 
-
                         return $http.get(urlGetAllWorkflows);
 
 
 
                     },
                     getAllStateTemplates: function () {
-
 
                         return $http.get(urlGetAllStateTemplate);
 
@@ -401,13 +430,12 @@ else
 
                     getAllStateTemplate: function (workflowName) {
 
-
                         return $http.get(urlGetAllStateTemplate_ + workflowName);
 
 
 
                     },
-                    getDataEntryStat: function ( _startDate,  _endDate, _workflowDefs, _wfusers,  _activities) {
+                    getDataEntryStat: function (_startDate, _endDate, _workflowDefs, _wfusers, _activities) {
 
                         var config = {
                             params: {
@@ -417,7 +445,8 @@ else
                                 wfusers: _wfusers,
                                 activities: _activities
                             }
-                        };                        return $http.get(urlGetDataEntryStat, config);
+                        };
+                        return $http.get(urlGetDataEntryStat, config);
 
 
 
@@ -474,6 +503,113 @@ else
                     });        
                     return sum;
                 };
+            })
+
+.directive('drawChart', function () {
+    return function (scope, element, attrs) {
+
+        var container = $(element).attr("id");
+      
+        scope.$watch('displayedworkflowcontent', function () {
+            drawplot();
+      
+        }, true);
+
+        var drawplot = function () {
+            var chart;
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: container,
+                    type: 'column'
+                },
+
+
+                title: {
+                    text: 'Data Entry Users Comparison'
+                },
+                subtitle: {
+                    text: scope.subtitleText
+                },
+                credits: {
+                    enabled: false
+                },
+                exporting: {
+                    enabled: true
+                },
+                xAxis: {
+                    categories: scope.viewGraphXAxis
+                },
+                yAxis: {
+                    allowDecimals:false,
+                    min: 0,
+                    title: {
+                        text: 'Activity count'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y} </b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        stacking:null
+            
+                    }
+                },
+                series:
+                   scope.displayedWorkflowContent
+             
             });
+        };
+    };
+                         }).directive('spinner',  
+            function ($timeout) {
+                             return {
+                                 restrict: 'E',
+                                 template: '<i class="fa fa-cog fa-spin"></i>',
+                                 scope: {
+                                     searching: '=',
+                                     delay: '@'
+                                 },
+                                 link: function(scope, elem, attrs) {
+                                     var showTimer;
+ 
+                                     scope.$watch("searching", function (newVal) {
+                                         newVal ? showSpinner() : hideSpinner();
+                                     });
 
+                                     function showSpinner() {
+                               
+                                         if (showTimer) return;
+ 
+                                         showTimer = $timeout(showElement.bind(this, true), getDelay());
+                                     }
 
+                                     function hideSpinner() {
+                                     
+                                         if (showTimer) {
+                                             $timeout.cancel(showTimer);
+                                         }
+
+                                         showTimer = null;
+
+                                         showElement(false);
+                                     }
+
+                                     function showElement(show) {
+                                         show ? elem.css({display:''}) : elem.css({display:'none'});
+                                     }
+
+                                     function getDelay() {
+                                         var delay = parseInt(scope.delay);
+
+                                         return isNaN(delay) ? 200 : delay;
+                                     }
+                                 }
+                             };
+                         }
+);

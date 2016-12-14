@@ -87,20 +87,20 @@ namespace Cats.Services.Workflows
 
         private IApplicationSettingService _applicationSettingService;
 
-        private String userName;
+        private String userName_;
         public string UserName
         {
             get
             {
-                if (String.IsNullOrEmpty(userName))
-                    new WorkflowActivityUtil().GetUserName();
+                if (String.IsNullOrEmpty(userName_))
+                    userName_=   new WorkflowActivityUtil().GetUserName();
 
-                return userName;
+                return userName_;
             }
 
             set
             {
-                userName = value;
+                userName_ = value;
             }
         }
         public String GetUserName()
@@ -109,9 +109,9 @@ namespace Cats.Services.Workflows
             UserInfo info = (UserInfo)System.Web.HttpContext.Current.Session["USER_INFO"];
 
             if (info != null)
-                UserName = info.UserName;
+                userName_ = info.UserName;
 
-            return UserName;
+            return userName_;
 
 
         }
@@ -738,12 +738,14 @@ namespace Cats.Services.Workflows
                 return null;
             }
         }
-
-        public IEnumerable<DashboardDataEntry> ExecWithStoreProcedure(string query, params object[] parameters)
+        public void GetMainObject()
+        {
+            
+        }
+         public IEnumerable<DashboardDataEntry> ExecWithStoreProcedure(string query, params object[] parameters)
         {
             return _unitOfWork.Database.SqlQuery<DashboardDataEntry>(query, parameters);
         }
-
         public class FilterCollection : List<Filter>, IEnumerable<SqlDataRecord>
         {
             IEnumerator<SqlDataRecord> IEnumerable<SqlDataRecord>.GetEnumerator()

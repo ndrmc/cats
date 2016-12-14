@@ -115,7 +115,7 @@
         </text>);
         columns.Bound(request => request.PlanId).Title(
             Html.Translate("Action"))
-            .ClientTemplate("# if (StatusID == 1 || StatusID==5 ) { #" +
+            .ClientTemplate("# if (StateId == 1 || StateId ==5 ) { #" +
                        "<a href='" + Url.Action("Details", "Request", new { id = "#=RegionalRequestID#" }) + " '>Detail</a> &nbsp; " +
                     "# if ('" + UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Request_Allocation) + "' == 'True'" +
                     " || '" + UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Request_Allocation) + "' == 'True'" +

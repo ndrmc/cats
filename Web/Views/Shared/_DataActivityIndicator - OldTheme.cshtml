@@ -1,4 +1,36 @@
 ﻿@using Cats.Helpers
+
+
+<style>
+    .detable {
+        border: 1px solid #ddd;
+    }
+
+
+    .dedivtable {
+        /*border: 1px solid #ddd;*/
+        padding-left: 0px;
+        padding-top: 5px;
+    }
+
+    .dedivgraph {
+        /*border: 1px solid #ddd;*/
+        padding-left: 0px;
+        padding-top: 5px;
+        min-height: 0px;
+    }
+
+    .truseractivity {
+        cursor: pointer;
+        /*background-color:red;*/
+    }
+
+    .truseractivit:hover {
+        cursor: pointer;
+        background-color: white;
+    }
+</style>
+
  <div  ng-app="DataEntryIndicatorApp" ng-controller="WorkflowActController">
     <div class="row" style="border-bottom-width: thin; border-bottom-color: #666; border-bottom-style: inset; margin-top: 5px">
         <div class="pull-left">
@@ -58,6 +90,8 @@
                                         <Label><small>  User</small></Label>
 
                                         <select id="User" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
+                                            <option value="All">All </option>
+
                                             <option ng-repeat="user in controlData.lookupUsers" value="{{user.name}}">{{user.name}}</option>
                                         </select>
 
@@ -79,7 +113,8 @@
                                     <div class="col-sm-2">
                                         <Label><small>Document</small></Label>
                                         <select id="Document" class="form-control" data-toggle="tooltip" data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
-                                            <option ng-repeat="document in controlData.lookupDocument" value="{{document.name}}">{{document.name}}</option>
+                                        
+                                                <option ng-repeat="document in controlData.lookupDocument" value="{{document.name}}">{{document.name}}</option>
 
                                         </select>
                                     </div>
@@ -87,7 +122,7 @@
                                 <td>
                                 <div class="col-sm-2 ">
                                     <Label><small> Get</small></Label>
-                                    <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i class="icon-search"></i></button>
+                                    <button type="button" class="btn  btn-warning" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i class="icon-search"></i></button>
                                 </div>
                                 </td>
                             </tr>
@@ -97,66 +132,78 @@
 
 
 
-                            <div class="col-sm-12">
+                    <div class="dedivtable col-sm-12">
 
-                                <div class="table-responsive" ng-if="(InvalidFilter=='VALID')">
-
-
-
-                                    <table class="table table-responsive table-hover table-striped table-bordered table-inverse">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>User/Activity</th>
-
-                                                <th ng-repeat="activities in displayedWorkflowNames">
-                                                    {{ activities }}
-                                                </th>
-                                                <th>Total Activity per User</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="user in displayedWorkflowContent track by $index">
-                                                <td scope="row">{{user.index}}</td>
-                                                <td>{{user.userName}}</td>
-                                                <td ng-repeat="actCount in user.activityAndCount track by $index">
-                                                    <a ng-click="openDetail(user.userName,$index)">   {{actCount}}</a>
-                                                </td>
-                                                <td>
-                                                    {{ user.activityAndCount| rowSum}}
-                                                </td>
-
-                                            </tr>
+                        <div class="table-responsive" ng-if="(InvalidFilter=='VALID')">
 
 
-                                            <tr>
-                                                <th colspan="2">Total</th>
+
+                            <table class="detable table table-responsive table-hover table-striped table-bordered table-inverse">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>User/Activity</th>
+
+                                        <th ng-repeat="activities in displayedWorkflowNames">
+                                            {{ activities }}
+                                        </th>
+                                        <th>Total Activity per User</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="user in displayedWorkflowContent track by $index">
+                                        <td scope="row">{{user.index}}</td>
+                                        <td>{{user.name}}</td>
+
+                                        <td ng-repeat="actCount in user.data track by $index" class="truseractivity" ng-click="openDetail(user.name,$index)">
+                                            <a ng-click="openDetail(user.name,$index)">   {{actCount}}</a>
+
+                                        </td>
+
+                                        <td>
+                                            {{ user.data| rowSum}}
+                                        </td>
+
+                                    </tr>
 
 
-                                                <td ng-repeat="activities in displayedWorkflowNames">
+                                    <tr>
+                                        @*<th></th>*@
 
-                                                    {{calcColumnTotal(activities)}}
+                                        <th colspan="2">Total</th>
 
+                                        <td ng-repeat="activities in displayedWorkflowNames">
 
-                                                </td>
-
-
-                                            </tr>
-
-                                        </tbody>
-                                    </table>
-
-                                </div>
-
-                                <div class="table-responsive" ng-if="(InvalidFilter=='INVALID')">
-                                    <div class="alert alert-danger"><Strong>Your Filter Entry is not valid, Please fill the required fields and try again.</Strong></div>
-                                </div>
+                                            {{calcColumnTotal(activities)}}
 
 
-                                <div class="table-responsive" ng-if="(InvalidFilter=='DEFAULT')">
+                                        </td>
 
-                                </div>
+
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="table-responsive" ng-if="(InvalidFilter=='INVALID')">
+                            <div class="alert alert-danger"><Strong>Your Filter Entry is not valid, Please fill the required fields and try again.</Strong></div>
+                        </div>
+
+
+                        <div class="table-responsive" ng-if="(InvalidFilter=='DEFAULT')">
+
+                        </div>
+                    </div>
+
+
+                    <div class="dedivgraph col-sm-12">
+                        <div class="box-body table-responsive" style="display: block;" >
+                            <div id="containerGraph" class="graphWrap"></div>
+                        </div>
+                    </div>
                             </div>
 
 
