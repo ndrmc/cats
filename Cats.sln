@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Models", "Models", "{22239E9E-2CFB-4860-A1CF-28A80CF15054}"
 EndProject
@@ -105,14 +105,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.Services.Finance", "Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.Web.Adminstration", "Cats.Web.Adminstration\Cats.Web.Adminstration.csproj", "{7D69AEC0-4CE9-4BFE-BB34-9B92E78DB6E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{DA9589F6-3574-40FD-932B-9A83CC1897EB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.Services.Workflow", "Services\Cats.Services.Workflow\Cats.Services.Workflow.csproj", "{91B6C6B9-EEC7-4436-A24B-5BC33CAE1BEB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.Data.Shared", "Data\Cats.Data.Shared\Cats.Data.Shared.csproj", "{B683E705-E480-4FC6-A347-99FFF7D9FFB9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.Models.Shared", "Models\Cats.Models.Shared\Cats.Models.Shared.csproj", "{647F8DAD-7D70-4419-A87C-1802DB94190B}"
 EndProject
+EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
