@@ -263,7 +263,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
                 activities);
             List<DashboarDataEntryModel> dashboarDataEntryModels;
 
-            if (!wfusers.Contains("All"))
+            if (!wfusers.Contains(Constants.SelectOption_AllwithData))
             {
                 dashboarDataEntryModels = (from user in wfusers
                                            let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
