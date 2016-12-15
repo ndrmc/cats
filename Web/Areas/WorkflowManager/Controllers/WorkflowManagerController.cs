@@ -77,7 +77,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
             {
                 constantPageName = Constants.RegionalPage;
             }
- 
+
             return constantPageName;
         }
         private ContentResult GetJsonResult(object list)
@@ -158,7 +158,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
             Random random = new Random(int.MinValue);
 
             List<DashboardFilterModel> dashboardFilterUser =
-                users. Select(user => new DashboardFilterModel
+                users.Select(user => new DashboardFilterModel
                 {
                     Name = user,
                     Id = random.Next()
@@ -178,6 +178,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
             List<DashboardFilterModel> dashboardFilterWorkflow =
                 workflowDefinitions.Select(workflow => new DashboardFilterModel
                 {
+
                     Name = workflow,
                     Id = random.Next()
                 }).OrderBy(o => o.Name).ToList();
@@ -198,10 +199,10 @@ namespace Cats.Areas.WorkflowManager.Controllers
 
             if (applicationSetting != null || globalApplicationSetting != null)
             {
-                string settingValue = (applicationSetting==null)?"0": applicationSetting.SettingValue ;
+                string settingValue = (applicationSetting == null) ? "0" : applicationSetting.SettingValue;
                 int processId;
                 int.TryParse(settingValue, out processId);
-                string globalSettingValue = (globalApplicationSetting == null) ? "0": globalApplicationSetting.SettingValue ;
+                string globalSettingValue = (globalApplicationSetting == null) ? "0" : globalApplicationSetting.SettingValue;
                 int globalProcessId;
                 int.TryParse(globalSettingValue, out globalProcessId);
 
@@ -260,14 +261,30 @@ namespace Cats.Areas.WorkflowManager.Controllers
             // Get aggregated data
             List<DashboardDataEntry> result = wfa.GetWorkflowActivityAgg(startDate, endDate, workflowDefs, wfusers,
                 activities);
+            List<DashboarDataEntryModel> dashboarDataEntryModels;
 
-            List<DashboarDataEntryModel> dashboarDataEntryModels = (from user in wfusers
-                                                                    let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
-                                                                    select new DashboarDataEntryModel
-                                                                    {
-                                                                        Name = user,
-                                                                        DashboardDataEntries = dashboardDataEntries
-                                                                    }).OrderBy(o => o.Name).ToList();
+            if (!wfusers.Contains("All"))
+            {
+                dashboarDataEntryModels = (from user in wfusers
+                                           let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
+                                           select new DashboarDataEntryModel
+                                           {
+                                               Name = user,
+                                               DashboardDataEntries = dashboardDataEntries
+                                           }).OrderBy(o => o.Name).ToList();
+            }
+            else
+            {
+                List<string> allUsers = result.Select(s => s.PerformedBy).Distinct().ToList();
+
+                dashboarDataEntryModels = (from user in allUsers
+                                           let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
+                                           select new DashboarDataEntryModel
+                                           {
+                                               Name = user,
+                                               DashboardDataEntries = dashboardDataEntries
+                                           }).OrderBy(o => o.Name).ToList();
+            }
 
             return GetJsonResult(dashboarDataEntryModels);
         }
@@ -282,6 +299,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
         IEnumerable<int> UniqueRandom(int minInclusive, int maxInclusive)
         {
             List<int> candidates = new List<int>();
+
             for (int i = minInclusive; i <= maxInclusive; i++)
             {
                 candidates.Add(i);
