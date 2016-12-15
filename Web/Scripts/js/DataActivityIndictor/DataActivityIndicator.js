@@ -1,4 +1,4 @@
-﻿DataEntryIndicatorApp=angular.module("DataEntryIndicatorApp", [])    .controller('WorkflowActController', function WorkflowActController($scope, DataServices, $http) {
+﻿DataEntryIndicatorApp = angular.module("DataEntryIndicatorApp", []).controller('WorkflowActController', function WorkflowActController($scope, DataServices, $http, $timeout) {
 
 
 
@@ -13,8 +13,8 @@
     $scope.ctrlStatus =
     {
         loadingUser: false,
-        loadingActivity: false,
-        loadingDocument:false
+        loadingActivity: true,
+        loadingDocument: false
     };
     $scope.viewGraphXAxis = [];
 
@@ -39,10 +39,22 @@
 
     };
 
+    function getStartDate()
+    {
+        return $scope.filterData.selectedStartDate;
+        //return $("#DIAStartDate").val();
+    }
+
+    function getEndDate() {
+        return $scope.filterData.selectedEndDate;
+
+        //return $("#DIAEndDate").val();
+    }
+
     $scope.calcColumnTotal = function (columnName) {
         console.log(columnName);
         var sum = 0;
-        angular.forEach($scope.displayedWorkflowList, function ( users) {
+        angular.forEach($scope.displayedWorkflowList, function (users) {
             angular.forEach(users.dashboardDataEntries, function (wf) {
                 var userActivityname = wf.activityName.trim().toCamel();
                 if (columnName == userActivityname) {
@@ -75,18 +87,22 @@
     }
 
     $scope.init = function () {
- 
+
         var initializeControls = function () {
- 
+
             $scope.ctrlStatus.loadingUser = true;
             DataServices.getAllTeamUsers().then(function (result) {
 
                 $scope.controlData.lookupUsers = result.data;
-                
-            });
-            $scope.ctrlStatus.loadingUser = false;
-
+ 
+                    $scope.ctrlStatus.loadingUser = false;
             
+
+            });
+
+
+
+
             $scope.ctrlStatus.loadingDocument = true;
 
             DataServices.getAllWorkflows().then(function (result) {
@@ -94,25 +110,28 @@
                 $scope.controlData.lookupDocument = result.data;
 
 
-                if ($scope.controlData.lookupDocument.length > 0)
-                { $scope.filterData.selectedDocument = $scope.controlData.lookupDocument[0].name; }
+                if ($scope.controlData.lookupDocument.length > 0) {
+                    $scope.filterData.selectedDocument = $scope.controlData.lookupDocument[0].name;
 
 
-                populateActivityCombo($scope.filterData.selectedDocument);
- 
+                    populateActivityCombo($scope.filterData.selectedDocument);
+                }
+            
+                    $scope.ctrlStatus.loadingDocument = false;
+        
             });
-            $scope.ctrlStatus.loadingDocument = false;
 
 
-            $scope.ctrlStatus.loadingActivity = true;
 
-            DataServices.getAllStateTemplate().then(function (result) {
+            //$scope.ctrlStatus.loadingActivity = true;
 
-                $scope.controlData.lookupActivities = result.data;
- 
-            });
-            $scope.ctrlStatus.loadingActivity = false;
- 
+            //DataServices.getAllStateTemplate().then(function (result) {
+
+            //    $scope.controlData.lookupActivities = result.data;
+
+            //});
+            //$scope.ctrlStatus.loadingActivity = false;
+
         };
 
         var setFilterControlDefaultValue = function () {
@@ -121,9 +140,9 @@
 
             var aWeekBefore = new Date(new Date().setDate(new Date().getDate() - 5));
 
-            $scope.filterData.selectedStartDate = now.toLocaleDateString();
+            $scope.filterData.selectedStartDate = aWeekBefore.toLocaleDateString();
 
-            $scope.filterData.selectedEndDate = aWeekBefore.toLocaleDateString();
+            $scope.filterData.selectedEndDate = now.toLocaleDateString();
 
         };
 
@@ -132,7 +151,7 @@
 
         setFilterControlDefaultValue();
 
-       // getDataEntryStat_();
+        // getDataEntryStat_();
 
 
 
@@ -141,72 +160,74 @@
     var populateActivityCombo = function (selectedWorkflow) {
 
         if (selectedWorkflow == null) return;
-            
+
         $scope.ctrlStatus.loadingActivity = true;
 
         DataServices.getAllStateTemplate(selectedWorkflow).then(function (result) {
             $scope.controlData.lookupActivities = result.data;
             buildTableStructure();
+            $scope.ctrlStatus.loadingActivity = false;
+
+
         });
 
-        $scope.ctrlStatus.loadingActivity = false;
 
     };
 
-         $scope.InvalidFilter="DEFAULT";
+    $scope.InvalidFilter = "DEFAULT";
 
     var getDataEntryStat = function () {
 
-        if(filterIsValid())
-        {
+        if (filterIsValid()) {
 
-         $scope.InvalidFilter= "DEFAULT";
-
+            $scope.InvalidFilter = "DEFAULT";
+            $scope.filterData.selectedStartDate = getStartDate();
+            $scope.filterData.selectedEndDate = getEndDate();
+             
             DataServices.getDataEntryStat($scope.filterData.selectedStartDate, $scope.filterData.selectedEndDate, $scope.filterData.selectedDocument,
             $scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(function (result) {
 
-            $scope.InvalidFilter = "VALID";
+                $scope.InvalidFilter = "VALID";
 
-            $scope.displayedWorkflowList= [];
-            $scope.displayedWorkflowList = result.data;
+                $scope.displayedWorkflowList = [];
+                $scope.displayedWorkflowList = result.data;
 
 
             });
 
         }
-        else
-        {
-            $scope.InvalidFilter="INVALID";
+        else {
+            $scope.InvalidFilter = "INVALID";
 
         }
 
 
-        }
+    }
 
 
     var filterIsValid = function () {
-      
-       if ($scope.filterData.selectedStartDate.trim() =="" && $scope.filterData.selectedEndDate.trim()=="")
-        return false;
-       if($scope.filterData.selectedDocument.trim() =="" ||$scope.filterData.selectedUsers.length==0|| $scope.filterData.selectedActivities.length==0)
-        return false;
-    
+
+        if ($scope.filterData.selectedStartDate.trim() == "" && $scope.filterData.selectedEndDate.trim() == "")
+            return false;
+        if ($scope.filterData.selectedDocument.trim() == "" || $scope.filterData.selectedUsers.length == 0 || $scope.filterData.selectedActivities.length == 0)
+            return false;
+
         return true;
-          }
+    }
 
     var buildTableStructure = function () {
 
         var PopulateColumns = function () {
             if ($scope.displayedWorkflowList != undefined) {
                 if ($scope.displayedWorkflowList.length > 0) {
-            //Reterive all columns
-                //first Clear columns list
+                    //Reterive all columns
+                    //first Clear columns list
                     if ($scope.displayedWorkflowNames.length > 0)
-                        $scope.displayedWorkflowNames =[];
+                        $scope.displayedWorkflowNames = [];
 
 
-                         }
-                      }
+                }
+            }
             //populate columns list
             var name;
             var i;
@@ -257,7 +278,7 @@
                         //check if the selected header activity name is equal to the activitycount name
 
 
-                        if(headerActivityName.activityName == userActivityname) {
+                        if (headerActivityName.activityName == userActivityname) {
                             rowCount.push(headerActivityName.activityCount);
                             found = true;
                         }
@@ -270,7 +291,7 @@
 
 
                 userActivityCountArray.push(rowCount);
-            
+
                 var rowObj =
                     {
                         index: tableIndex++,
@@ -301,98 +322,99 @@
         //$scope.drawGraph();
 
 
-        $scope.searching = false;
     }
 
-    $scope.drawGraph = function()
-    {
+    $scope.drawGraph = function () {
         var chart;
         var container = "containerGraph";
-            chart = new Highcharts.Chart({
-                chart: {
-                    renderTo: container,
-                    type: 'column'
-                },
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: container,
+                type: 'column'
+            },
 
 
+            title: {
+                text: 'Data Entry Users Comparison'
+            },
+            subtitle: {
+                text: $scope.subtitleText
+            },
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: true
+            },
+            xAxis: {
+                categories: $scope.viewGraphXAxis
+            },
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
                 title: {
-                    text: 'Data Entry Users Comparison'
-                },
-                subtitle: {
-                    text: $scope.subtitleText
-                },
-                credits: {
-                    enabled: false
-                },
-                exporting: {
-                    enabled: true
-                },
-                xAxis: {
-                    categories: $scope.viewGraphXAxis
-                },
-                yAxis: {
-                    allowDecimals:false,
-                    min: 0,
-                    title: {
-                        text: 'Activity count'
-                    }
-                },
-                tooltip: {
-                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                        '<td style="padding:0"><b>{point.y} </b></td></tr>',
-                    footerFormat: '</table>',
-                    shared: true,
-                    useHTML: true
-                },
-                plotOptions: {
-                    column: {
-                        stacking:null
-            
-                    }
-                },
-                series:
-                   $scope.displayedWorkflowContent
-             
-            });
+                    text: 'Activity count'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y} </b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    stacking: null
+
+                }
+            },
+            series:
+               $scope.displayedWorkflowContent
+
+        });
 
     }
 
     var getDataEntryStat_ = function () {
 
-        if(filterIsValid())
-        {
+        if (filterIsValid()) {
 
 
-                        $scope.InvalidFilter= "DEFAULT";
+            $scope.InvalidFilter = "DEFAULT";
+
+            $scope.filterData.selectedStartDate = getStartDate();
+            $scope.filterData.selectedEndDate = getEndDate();
 
 
-        DataServices.getDataEntryStat($scope.filterData.selectedStartDate, $scope.filterData.selectedEndDate, 
-        $scope.filterData.selectedDocument,$scope.filterData.selectedUsers, $scope.filterData.selectedActivities)
-        .then(function (result) {
+            DataServices.getDataEntryStat($scope.filterData.selectedStartDate, $scope.filterData.selectedEndDate,
+            $scope.filterData.selectedDocument, $scope.filterData.selectedUsers, $scope.filterData.selectedActivities)
+            .then(function (result) {
 
-                        $scope.InvalidFilter = "VALID";
-                 $scope.displayedWorkflowList=[];
-              $scope.displayedWorkflowList = result.data;
+                $scope.InvalidFilter = "VALID";
+                $scope.displayedWorkflowList = [];
+                $scope.displayedWorkflowList = result.data;
 
-              buildTableStructure();
+                buildTableStructure();
 
-              $scope.drawGraph();
+                $scope.drawGraph();
+
+                $scope.searching = false;
 
 
-        });
+
+            });
         }
-        else
-        {
-                            $scope.InvalidFilter="INVALID";
+        else {
+            $scope.InvalidFilter = "INVALID";
 
 
-                }
+        }
 
-            }
+    }
 
-    $scope.onWorkflowChange= function()
-    {
+    $scope.onWorkflowChange = function () {
         populateActivityCombo($scope.filterData.selectedDocument);
     }
 
@@ -481,26 +503,26 @@
 
 
             }]).filter('columnSum', function () {
-                return function (data,columnName) {
+                return function (data, columnName) {
                     var sum = 0;
 
                     angular.forEach(data[0].dashboardDataEntries, function (value) {
                         if (value.activityName == columnName)
-                      
+
                             sum = sum + parseInt(value.activityCount);
                     });
-               
+
 
                     return sum;
                 };
             }).filter('rowSum', function () {
-                return function (data) {        
+                return function (data) {
                     if (angular.isUndefined(data) && angular.isUndefined(key))
-                        return 0;        
-                    var sum = 0;        
-                    angular.forEach(data,function(value){
+                        return 0;
+                    var sum = 0;
+                    angular.forEach(data, function (value) {
                         sum = sum + parseInt(value);
-                    });        
+                    });
                     return sum;
                 };
             })
@@ -509,10 +531,10 @@
     return function (scope, element, attrs) {
 
         var container = $(element).attr("id");
-      
+
         scope.$watch('displayedworkflowcontent', function () {
             drawplot();
-      
+
         }, true);
 
         var drawplot = function () {
@@ -540,7 +562,7 @@
                     categories: scope.viewGraphXAxis
                 },
                 yAxis: {
-                    allowDecimals:false,
+                    allowDecimals: false,
                     min: 0,
                     title: {
                         text: 'Activity count'
@@ -556,60 +578,60 @@
                 },
                 plotOptions: {
                     column: {
-                        stacking:null
-            
+                        stacking: null
+
                     }
                 },
                 series:
                    scope.displayedWorkflowContent
-             
+
             });
         };
     };
-                         }).directive('spinner',  
+}).directive('spinner',
             function ($timeout) {
-                             return {
-                                 restrict: 'E',
-                                 template: '<i class="fa fa-cog fa-spin"></i>',
-                                 scope: {
-                                     searching: '=',
-                                     delay: '@'
-                                 },
-                                 link: function(scope, elem, attrs) {
-                                     var showTimer;
- 
-                                     scope.$watch("searching", function (newVal) {
-                                         newVal ? showSpinner() : hideSpinner();
-                                     });
+                return {
+                    restrict: 'E',
+                    template: '<i class="fa fa-cog fa-spin"></i>',
+                    scope: {
+                        searching: '=',
+                        delay: '@'
+                    },
+                    link: function (scope, elem, attrs) {
+                        var showTimer;
 
-                                     function showSpinner() {
-                               
-                                         if (showTimer) return;
- 
-                                         showTimer = $timeout(showElement.bind(this, true), getDelay());
-                                     }
+                        scope.$watch("searching", function (newVal) {
+                            newVal ? showSpinner() : hideSpinner();
+                        });
 
-                                     function hideSpinner() {
-                                     
-                                         if (showTimer) {
-                                             $timeout.cancel(showTimer);
-                                         }
+                        function showSpinner() {
 
-                                         showTimer = null;
+                            if (showTimer) return;
 
-                                         showElement(false);
-                                     }
+                            showTimer = $timeout(showElement.bind(this, true), getDelay());
+                        }
 
-                                     function showElement(show) {
-                                         show ? elem.css({display:''}) : elem.css({display:'none'});
-                                     }
+                        function hideSpinner() {
 
-                                     function getDelay() {
-                                         var delay = parseInt(scope.delay);
+                            if (showTimer) {
+                                $timeout.cancel(showTimer);
+                            }
 
-                                         return isNaN(delay) ? 200 : delay;
-                                     }
-                                 }
-                             };
-                         }
+                            showTimer = null;
+
+                            showElement(false);
+                        }
+
+                        function showElement(show) {
+                            show ? elem.css({ display: '' }) : elem.css({ display: 'none' });
+                        }
+
+                        function getDelay() {
+                            var delay = parseInt(scope.delay);
+
+                            return isNaN(delay) ? 200 : delay;
+                        }
+                    }
+                };
+            }
 );
