@@ -46,7 +46,7 @@
     }
 
     function getEndDate() {
-        return $scope.filterData.selectedStartDate;
+        return $scope.filterData.selectedEndDate;
 
         //return $("#DIAEndDate").val();
     }
@@ -322,7 +322,6 @@
         //$scope.drawGraph();
 
 
-        $scope.searching = false;
     }
 
     $scope.drawGraph = function () {
@@ -400,6 +399,9 @@
                 buildTableStructure();
 
                 $scope.drawGraph();
+
+                $scope.searching = false;
+
 
 
             });
