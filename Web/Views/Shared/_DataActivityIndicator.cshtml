@@ -86,7 +86,7 @@
                                     <Label><small>  User</small></Label> 
 
                                     <select id="User" multiple="multiple" ng-disabled ="ctrlStatus.loadingUser" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
-                                        <option value="All">All </option>
+                                        <option value="All">All with Data </option>
 
                                         <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
                                     </select>

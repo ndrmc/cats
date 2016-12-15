@@ -13,7 +13,7 @@
     $scope.ctrlStatus =
     {
         loadingUser: false,
-        loadingActivity: false,
+        loadingActivity: true,
         loadingDocument: false
     };
     $scope.viewGraphXAxis = [];

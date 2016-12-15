@@ -28,7 +28,10 @@ namespace Cats.Services.Finance
 
             _unitOfWork.TransporterChequeRepository.Add(transporterCheque);
 
+            _workflowActivityService.EnterCreateWorkflow(transporterCheque);
+
             _unitOfWork.Save();
+
             return true;
 
         }
