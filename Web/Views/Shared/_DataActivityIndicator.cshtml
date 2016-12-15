@@ -74,11 +74,11 @@
                                 <div class="col-sm-2 ">
 
                                     <Label><small>Start Date</small></Label>
-                                    <input type="text" class="form-control cats-datepicker2" placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
+                                    <input id="DAIStartDate" type="text" class="form-control " placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
                                 </div>
                                 <div class="col-sm-2 ">
                                     <Label><small>End Date</small></Label>
-                                    <input type="text" class="form-control cats-datepicker2" placeholder="End Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedEndDate" title="Enter End Date">
+                                    <input type="text" id="DAIEndDate" class="form-control  " placeholder="End Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedEndDate" title="Enter End Date">
 
                                 </div>
 
@@ -86,7 +86,7 @@
                                     <Label><small>  User</small></Label> 
 
                                     <select id="User" multiple="multiple" ng-disabled ="ctrlStatus.loadingUser" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
-                                        <option value="All">All </option>
+                                        <option value="All">@Cats.Services.Workflows.Constants.SelectOption_AllwithData </option>
 
                                         <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
                                     </select>
