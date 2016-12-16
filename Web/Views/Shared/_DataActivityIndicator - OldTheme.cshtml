@@ -90,7 +90,8 @@
                                         <Label><small>  User</small></Label>
 
                                         <select id="User" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
-                                            <option value="All">@Cats.Services.Workflows.Constants.SelectOption_AllwithData </option>
+                                            <option value="@Cats.Services.Workflows.Constants.SelectOption_AllwithData">@Cats.Services.Workflows.Constants.SelectOption_AllwithData </option>
+
 
 
                                             <option ng-repeat="user in controlData.lookupUsers" value="{{user.name}}">{{user.name}}</option>
@@ -123,7 +124,7 @@
                                 <td>
                                 <div class="col-sm-2 ">
                                     <Label><small> Get</small></Label>
-                                    <button type="button" class="btn  btn-warning" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i class="icon-search"></i></button>
+                                    <button type="button" ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" class="btn green " data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i ng-show="!searching" class="fa fa-search ">Get</i>  <i class="fa fa-cog fa-spin" ng-show="searching"></i> </button>
                                 </div>
                                 </td>
                             </tr>
@@ -157,7 +158,9 @@
                                         <td scope="row">{{user.index}}</td>
                                         <td>{{user.name}}</td>
 
-                                        <td ng-repeat="actCount in user.data track by $index" class="truseractivity" ng-click="openDetail(user.name,$index)">
+                                        <td ng-repeat="actCount in user.data track by $index" class="truseractivity" ng-click="openDetail(user.name,$index)"
+                                            data-original-title="Click for Detail" data-container="body" data-toggle="tooltip" data-placement="bottom" title="Click to View Records">
+
                                             <a ng-click="openDetail(user.name,$index)">   {{actCount}}</a>
 
                                         </td>

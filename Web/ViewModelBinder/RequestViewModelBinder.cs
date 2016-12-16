@@ -88,6 +88,10 @@ namespace Cats.ViewModelBinder
                 return 4;
             if (stateName == "Rejected")
                 return 5;
+            if (stateName == ConventionalAction.Edited)
+                return 6;
+            if (stateName == ConventionalAction.Deleted)
+                return 7;
 
             return 0;
         }

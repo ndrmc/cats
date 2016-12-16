@@ -6,7 +6,7 @@ namespace Cats.Services.Workflows
 {
     public interface IWorkflowActivityService
     {
-    
+
 
         bool EnterCreateWorkflow(Models.Hubs.BusinessProcess documentBusinessProcess, string description = "Workflow_DefaultCreate", string fileName = "");
         bool EnterCreateWorkflow(IWorkflowHub workflowImplementer, string description = "Workflow_DefaultCreate", string fileName = "");
@@ -39,6 +39,7 @@ namespace Cats.Services.Workflows
         void InitializeWorkflow(IWorkflow workflowImplementer, string instanceDescription = null);
         Models.BusinessProcess GetBusinessProcess(int businessProcessId);
         Models.Hubs.BusinessProcess GetBusinessProcessHub(int businessProcessId);
+        List<IWorkflow> ExcludeDeletedRecords(List<IWorkflow> records);
 
         List<WorkflowActivity> GetWorkflowActivity(string pageName, string filter = null);
 

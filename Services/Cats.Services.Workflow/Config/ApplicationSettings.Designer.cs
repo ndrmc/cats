@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Cats.Services.Common {
+namespace Cats.Services.Workflows.Config {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -245,6 +245,15 @@ namespace Cats.Services.Common {
         public string DeliveryWorkflow {
             get {
                 return ((string)(this["DeliveryWorkflow"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("TransporterWorkflow")]
+        public string TransporterWorkflow {
+            get {
+                return ((string)(this["TransporterWorkflow"]));
             }
         }
     }

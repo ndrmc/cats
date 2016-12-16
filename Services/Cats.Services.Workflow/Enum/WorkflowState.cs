@@ -65,6 +65,7 @@ namespace Cats.Services.Workflows
         public static string FinancePage = "Finance";
         public static string RegionalPage = "Regional";
         public static string ProcurementPage = "Procurement";
+
         public static string SelectOption_AllwithData = "All with Data";
     }
 

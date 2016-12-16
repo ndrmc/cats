@@ -93,7 +93,7 @@ namespace Cats.Services.Workflows
             get
             {
                 if (String.IsNullOrEmpty(userName_))
-                    userName_=   new WorkflowActivityUtil().GetUserName();
+                    userName_ = new WorkflowActivityUtil().GetUserName();
 
                 return userName_;
             }
@@ -162,16 +162,16 @@ namespace Cats.Services.Workflows
         {
             if (workflowImplementer.BusinessProcessId == 0)
             {
-                workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
-                workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
+                //workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
+                workflowImplementer.BusinessProcessId = GetNewInstance(instanceDescription).BusinessProcessID;
             }
         }
         public void InitializeWorkflow(Models.Hubs.IWorkflowHub workflowImplementer, String instanceDescription = null)
         {
             if (workflowImplementer.BusinessProcessId == 0)
             {
-                workflowImplementer.BusinessProcess = GetNewInstanceHub(instanceDescription);
-                workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
+                //workflowImplementer.BusinessProcess = GetNewInstanceHub(instanceDescription);
+                workflowImplementer.BusinessProcessId = GetNewInstanceHub(instanceDescription).BusinessProcessID;
             }
         }
 
@@ -604,6 +604,41 @@ namespace Cats.Services.Workflows
             return BusinessProcessService.FindById(businessProcessId);
         }
 
+        public List<IWorkflow> ExcludeDeletedRecords(List<IWorkflow> records)
+        {
+            if (records == null || !records.Any()) return new List<IWorkflow>();
+
+            int deletedId = _businessProcessService.GetGlobalDeleteStateTempId();
+
+            List<IWorkflow> result = new List<IWorkflow>();
+
+            foreach (IWorkflow workflow in records)
+            {
+                if (workflow.BusinessProcess == null && workflow.BusinessProcessId != 0)
+                    workflow.BusinessProcess = _businessProcessService.FindById(workflow.BusinessProcessId);
+                else
+                {
+
+                    result.Add(workflow);
+
+                    continue;
+                }
+                if (workflow.BusinessProcess.CurrentState != null)
+                {
+                    if (workflow.BusinessProcess.CurrentState.StateID != deletedId)
+                        result.Add(workflow);
+                }
+                else
+                    result.Add(workflow);
+
+            }
+
+            return result.ToList();
+
+
+        }
+
+
         public List<WorkflowActivity> GetWorkflowActivity(string pageName, string filter = null)
         {
 
@@ -740,9 +775,9 @@ namespace Cats.Services.Workflows
         }
         public void GetMainObject()
         {
-            
+
         }
-         public IEnumerable<DashboardDataEntry> ExecWithStoreProcedure(string query, params object[] parameters)
+        public IEnumerable<DashboardDataEntry> ExecWithStoreProcedure(string query, params object[] parameters)
         {
             return _unitOfWork.Database.SqlQuery<DashboardDataEntry>(query, parameters);
         }
