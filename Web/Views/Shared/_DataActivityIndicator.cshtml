@@ -1,207 +1,201 @@
 ﻿@using Cats.Helpers
 @*<script src="~/Scripts/js/jquery-1.11.0.js"></script>
-<script src="~/Scripts/js/bootstrap.min.js"></script>*@
+    <script src="~/Scripts/js/bootstrap.min.js"></script>*@
 
 
 @*<link href="~/Scripts/Bootstrap/awesome-bootstrap-checkbox.css" rel="stylesheet" />
 
-<link href="~/Scripts/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
-<link href="~/Content/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Scripts/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/Content/assets/css/bootstrap.min.css" rel="stylesheet" />
 
-<link href="~/Scripts/Bootstrap/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Scripts/Bootstrap/font-awesome.min.css" rel="stylesheet" />
 
-<script src="~/Scripts/Bootstrap/bootstrap-multiselect.js"></script>*@
+    <script src="~/Scripts/Bootstrap/bootstrap-multiselect.js"></script>*@
 @*<script src="~/Content/assetss/global/plugins/angularjs/plugins/ui-bootstrap-tpls.min.js"></script>*@
 <style>
-
-
-    .detable{
-
-            border: 1px solid #ddd;
+    .detable {
+        border: 1px solid #ddd;
     }
 
-    
-    .dedivtable{
 
-            /*border: 1px solid #ddd;*/
-                padding-left: 0px;
-                    padding-top: 5px;
+    .dedivtable {
+        /*border: 1px solid #ddd;*/
+        padding-left: 0px;
+        padding-top: 5px;
     }
-       .dedivgraph{
 
-            /*border: 1px solid #ddd;*/
-                padding-left: 0px;
-                    padding-top: 5px;
-                    min-height:100px;
+    .dedivgraph {
+        /*border: 1px solid #ddd;*/
+        padding-left: 0px;
+        padding-top: 5px;
+        min-height: 100px;
     }
-    .truseractivity{
 
-        cursor:pointer;
+    .truseractivity {
+        cursor: pointer;
         /*background-color:red;*/
-
-     
-
     }
-        .truseractivit:hover{
 
-        cursor:pointer;
-        background-color:white;
-     
-
+    .truseractivit:hover {
+        cursor: pointer;
+        background-color: white;
     }
 </style>
 
 
-    <div class="box box-solid box-primary " ng-app="DataEntryIndicatorApp" ng-controller="WorkflowActController">
-        <div class="portlet portlet-sortable light bordered ui-sortable-handle">
+<div class="box box-solid box-primary " ng-app="DataEntryIndicatorApp" ng-controller="WorkflowActController">
+    <div class="portlet portlet-sortable light bordered ui-sortable-handle">
 
-            <div class="portlet-title">
-                <div class="caption font-green-sharp"><i class="fa fa-list-alt font-green-sharp"></i> @Html.Translate("Data Entry Indicator ")</div>
-                <div class="tools">
-                    <a href="#" class="collapse" data-original-title="" title=""></a>
+        <div class="portlet-title">
+            <div class="caption font-green-sharp"><i class="fa fa-list-alt font-green-sharp"></i> @Html.Translate("Data Entry Indicator ")</div>
+            <div class="tools">
+                <a href="#" class="collapse" data-original-title="" title=""></a>
+            </div>
+            <div class="actions">
+                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+            </div>
+        </div>
+        <div class="portlet-body">
+            @*<span class="loading-spnr-da da-data-indicator-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>*@
+
+
+            <div class=" table-responsive" style="overflow-x: hidden; min-height: 350px; ">
+
+                <div class="row form-horizontal " style="min-height: 100px;">
+                    <div class="col-sm-2 ">
+
+                        <Label><small>Start Date</small></Label>
+                        <input id="DAIStartDate" type="text" class="form-control " placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
+                    </div>
+                    <div class="col-sm-2 ">
+                        <Label><small>End Date</small></Label>
+                        <input type="text" id="DAIEndDate" class="form-control  " placeholder="End Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedEndDate" title="Enter End Date">
+
+                    </div>
+
+                    <div class="col-sm-2">
+                        <Label><small>  User</small></Label>
+
+                        <select id="User" multiple="multiple" ng-disabled="ctrlStatus.loadingUser" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
+                            <option value="@Cats.Services.Workflows.Constants.SelectOption_AllwithData">@Cats.Services.Workflows.Constants.SelectOption_AllwithData </option>
+
+                            <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
+                        </select>
+
+                    </div>
+                    <div class="col-sm-2">
+
+
+                        <Label><small>Activity</small></Label>
+                        <select id="Activity" multiple="multiple" ng-disabled="ctrlStatus.loadingActivity" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
+
+                            <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-sm-2">
+                        <Label><small>Document</small></Label>
+                        <select id="Document" class="form-control" data-toggle="tooltip" ng-disabled="ctrlStatus.loadingDocument" data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
+                            <option ng-repeat="document in controlData.lookupDocument| orderBy : 'name'" value="{{document.name}}">{{document.name}}</option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-sm-2 ">
+
+                        <button type="button" ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" class="btn green " data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i ng-show="!searching" class="fa fa-search ">Get</i>  <i class="fa fa-cog fa-spin" ng-show="searching"></i> </button>
+
+                    </div>
+
                 </div>
-                <div class="actions">
-                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+
+                <div class="dedivtable col-sm-12">
+
+                    <div class="table-responsive" ng-if="(InvalidFilter=='VALID')">
+
+                        <table class="detable table table-responsive table-hover table-striped table-bordered table-inverse">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>User/Activity</th>
+
+                                    <th ng-repeat="activities in displayedWorkflowNames">
+                                        {{ activities }}
+                                    </th>
+                                    <th>Total Activity per User</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="user in displayedWorkflowContent track by $index">
+                                    <td scope="row">{{user.index}}</td>
+                                    <td>{{user.name}}</td>
+
+                                    <td ng-repeat="actCount in user.data track by $index" class="truseractivity" ng-click="openDetail(user.name,$index)"
+                                        data-original-title="Click for Detail" data-container="body" data-toggle="tooltip" data-placement="bottom" title="Click to View Records">
+
+                                        <a ng-click="showModal()">   {{actCount}}</a>
+
+                                    </td>
+
+                                    <td>
+                                        {{ user.data| rowSum}}
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+
+                                    <th colspan="2">Total</th>
+
+
+                                    <td ng-repeat="activities in displayedWorkflowNames">
+
+                                        {{calcColumnTotal(activities)}}
+
+
+                                    </td>
+
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <div class="table-responsive" ng-if="(InvalidFilter=='INVALID')">
+                        <div class="alert alert-danger"><Strong>Your Filter Entry is not valid, Please fill the required fields and try again.</Strong></div>
+                    </div>
+
+
+                    <div class="table-responsive" ng-if="(InvalidFilter=='DEFAULT')">
+
+                    </div>
+                </div>
+
+                <div class="dedivgraph col-sm-12">
+                    <div class="box-body table-responsive" style="display: block;">
+                        <div id="containerGraph" class="graphWrap"></div>
+                    </div>
                 </div>
             </div>
-            <div class="portlet-body">
-                @*<span class="loading-spnr-da da-data-indicator-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>*@
 
+        </div>
+    </div>
 
-                    <div class=" table-responsive" style="overflow-x: hidden; min-height: 350px; ">
-                        
-                        <div class="row form-horizontal " style="min-height: 100px;">
-                                <div class="col-sm-2 ">
-
-                                    <Label><small>Start Date</small></Label>
-                                    <input id="DAIStartDate" type="text" class="form-control " placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
-                                </div>
-                                <div class="col-sm-2 ">
-                                    <Label><small>End Date</small></Label>
-                                    <input type="text" id="DAIEndDate" class="form-control  " placeholder="End Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedEndDate" title="Enter End Date">
-
-                                </div>
-
-                                <div class="col-sm-2">
-                                    <Label><small>  User</small></Label> 
-
-                                    <select id="User" multiple="multiple" ng-disabled ="ctrlStatus.loadingUser" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
-                                        <option value="All">@Cats.Services.Workflows.Constants.SelectOption_AllwithData </option>
-
-                                        <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
-                                    </select>
-
-                                </div>
-                                <div class="col-sm-2">
-
-
-                                    <Label><small>Activity</small></Label>
-                                    <select id="Activity" multiple="multiple" ng-disabled ="ctrlStatus.loadingActivity" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
-                                    
-                                       <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
-                                    </select>
-
-                                </div>
-
-
-                                <div class="col-sm-2">
-                                    <Label><small>Document</small></Label>
-                                    <select id="Document" class="form-control" data-toggle="tooltip" ng-disabled ="ctrlStatus.loadingDocument" data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
-                                        <option ng-repeat="document in controlData.lookupDocument| orderBy : 'name'" value="{{document.name}}">{{document.name}}</option>
-
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-2 ">
-                                  
-                                    <button type="button" ng-disabled="searching" class="btn green " data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i ng-show="!searching" class ="fa fa-search ">Get</i>  <i class="fa fa-cog fa-spin" ng-show="searching"></i> </button>
-                                </div>
-
-                            </div>
-            
-                       <div class="dedivtable col-sm-12">
-                       
-                                    <div class="table-responsive" ng-if="(InvalidFilter=='VALID')">
-                                         
-                                            <table class="detable table table-responsive table-hover table-striped table-bordered table-inverse">
-                                                <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>User/Activity</th>
-
-                                                        <th ng-repeat="activities in displayedWorkflowNames">
-                                                            {{ activities }}
-                                                        </th>
-                                                        <th>Total Activity per User</th>
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="user in displayedWorkflowContent track by $index">
-                                                        <td scope="row">{{user.index}}</td>
-                                                        <td>{{user.name}}</td>
-                                                        
-                                                            <td ng-repeat="actCount in user.data  track by $index" class="truseractivity" ng-click="toggleModal('Success')" >
-                                                                <a   ng-click="showModal()">   {{actCount}}</a>
-
-                                                            </td>
-                                                         
-                                                        <td>
-                                                            {{ user.data| rowSum}}
-                                                        </td>
-
-                                                    </tr>
-
-
-                                                    <tr>
-                                            
-
-                                                        <th colspan="2">Total</th>
-
-
-                                                        <td ng-repeat="activities in displayedWorkflowNames">
-
-                                                            {{calcColumnTotal(activities)}}
-
-
-                                                        </td>
-
-
-                                                    </tr>
-
-                                                </tbody>
-                                            </table>
-                                       
-                                    </div>
-
-                                <div class="table-responsive" ng-if="(InvalidFilter=='INVALID')">
-                                    <div class="alert alert-danger"><Strong>Your Filter Entry is not valid, Please fill the required fields and try again.</Strong></div>
-                                   </div>
-
-
-                                <div class="table-responsive" ng-if="(InvalidFilter=='DEFAULT')">
-                                  
-                                </div>
-                                </div>
-                    
-                        <div class="dedivgraph col-sm-12">
-                            <div class="box-body table-responsive" style="display: block;" >
-                                <div id="containerGraph" class="graphWrap"></div>
-                            </div>
-                        </div>
-                        </div>
-
-                        </div>
-                    </div>
-               
-        <script>
+    <script>
             String.prototype.toCamel = function () {
                 return this.replace(/(\-[a-z])/g, function ($1) { return $.toUpperCase().replace('-', ''); });
             };
-           
-        </script>
 
-        <script>
+    </script>
+
+    <script>
 
             var urlGetAllTeamUsers = "@Url.Action("GetAllTeamUsers", "WorkflowManager", new { Area = "WorkflowManager" })" + "?pageName=" + "@Html.Raw(ViewBag.PageName)";
             var urlGetAllWorkflows = "@Url.Action("GetAllWorkflows", "WorkflowManager", new { Area = "WorkflowManager"})" + "?pageName=" + "@Html.Raw(ViewBag.PageName)";
@@ -209,6 +203,6 @@
             var urlGetAllStateTemplate_ = "@Url.Action("GetAllStateTemplate", "WorkflowManager", new { Area = "WorkflowManager"})" + "?workflowName=";
             var urlGetDataEntryStat = "@Url.Action("GetDataEntryStat", "WorkflowManager", new { Area = "WorkflowManager"})";
 
-        </script>
-    </div>
+    </script>
+</div>
 

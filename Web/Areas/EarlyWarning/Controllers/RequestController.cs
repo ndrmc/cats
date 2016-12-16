@@ -415,12 +415,12 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     var target = _regionalRequestService.Get(t => t.RegionalRequestID == regionalRequest.RegionalRequestID, null, "AdminUnit,Program").FirstOrDefault();
                     RequestViewModelBinder.BindRegionalRequest(regionalRequest, target);
 
-                    _regionalRequestService.EditRegionalRequest(target);
-
-                    if (target != null)
+                    if (target != null && _regionalRequestService.EditRegionalRequest(target))
                     {
-                        BusinessProcessState bps = target.BusinessProcess.CurrentState;
-                        var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
+                        BusinessProcess bp = _businessProcessService.FindById(target.BusinessProcessID);
+                        BusinessProcessState bps = bp.CurrentState;
+                        StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
+                        p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                         if (stateTemplate != null)
                         {
@@ -838,22 +838,24 @@ namespace Cats.Areas.EarlyWarning.Controllers
         public ActionResult Delete(int id)
         {
             //var regionalRequest = _regionalRequestService.FindById(id);
-            //if (_regionalRequestService.DeleteRegionalRequest(id))
+            if (_regionalRequestService.DeleteRegionalRequest(id))
             {
                 var target = _regionalRequestService.Get(t => t.RegionalRequestID == id, null, "AdminUnit,Program").FirstOrDefault();
 
                 if (target != null)
                 {
-                    BusinessProcessState bps = target.BusinessProcess.CurrentState;
-                    var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Deleted").FirstOrDefault();
+                    BusinessProcess bp = _businessProcessService.FindById(target.BusinessProcessID);
+                    BusinessProcessState bps = bp.CurrentState;
+                    StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Deleted &&
+                    p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                     if (stateTemplate != null)
                     {
-                        int editStateId = stateTemplate.StateTemplateID;
+                        int stateId = stateTemplate.StateTemplateID;
 
                         var businessProcessState = new BusinessProcessState()
                         {
-                            StateID = editStateId,
+                            StateID = stateId,
                             PerformedBy = HttpContext.User.Identity.Name,
                             DatePerformed = DateTime.Now,
                             Comment = "Regional Request is deleted, a system internally captured data.",
