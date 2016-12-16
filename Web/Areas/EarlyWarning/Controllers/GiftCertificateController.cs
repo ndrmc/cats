@@ -631,9 +631,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
                 var giftCertificate = _giftCertificateService.FindById(giftCertificateId);
 
-                WorkflowActivityUtil.EnterEditWorkflow(giftCertificate, String.Format("The document {0} has been Printed", fileName));
+                WorkflowActivityUtil.EnterPrintWorkflow(giftCertificate, String.Format("The document {0} has been Printed", fileName));
 
-                
+
 
             }
             catch (Exception ex)

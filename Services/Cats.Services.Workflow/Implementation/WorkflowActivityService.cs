@@ -614,8 +614,44 @@ namespace Cats.Services.Workflows
 
             foreach (IWorkflow workflow in records)
             {
+                if (workflow == null) continue;
                 if (workflow.BusinessProcess == null && workflow.BusinessProcessId != 0)
                     workflow.BusinessProcess = _businessProcessService.FindById(workflow.BusinessProcessId);
+                else
+                {
+
+                    result.Add(workflow);
+
+                    continue;
+                }
+                if (workflow.BusinessProcess.CurrentState != null)
+                {
+                    if (workflow.BusinessProcess.CurrentState.StateID != deletedId)
+                        result.Add(workflow);
+                }
+                else
+                    result.Add(workflow);
+
+            }
+
+            return result.ToList();
+
+
+        }
+
+        public List<IWorkflowHub> ExcludeDeletedRecordsHub(List<IWorkflowHub> records)
+        {
+            if (records == null || !records.Any()) return new List<IWorkflowHub>();
+
+            int deletedId = _businessProcessService.GetGlobalDeleteStateTempId();
+
+            List<IWorkflowHub> result = new List<IWorkflowHub>();
+
+            foreach (IWorkflowHub workflow in records)
+            {
+                if (workflow == null) continue;
+                if (workflow.BusinessProcess == null && workflow.BusinessProcessId != 0)
+                    workflow.BusinessProcess = _hubBusinessProcessService.FindById(workflow.BusinessProcessId);
                 else
                 {
 
