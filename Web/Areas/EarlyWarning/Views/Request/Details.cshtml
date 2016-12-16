@@ -8,6 +8,7 @@
 @using Cats.Models.ViewModels
 @using Cats.Services.Security
 @using Kendo.Mvc.UI
+@using Cats.Models.Constant
 @{
     ViewBag.Title = "Regional Relief Requests";
     //Layout = "~/Views/Shared/_MainLayout.cshtml";
@@ -113,9 +114,9 @@
                     }
                     @foreach (FlowTemplateViewModel actions in state)
                     {
-                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request) && actions.Name == "Approve")
+                        if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Request) && actions.Name == "Approve" || actions.Name == ConventionalAction.Edited)
                         {
-                            <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'@actions.Name' , @modelRequest.RegionalRequestID)" title="@actions.Name">@actions.Name</a></li>
+                            <li class="edit_button"><a href="javascript:promot_workflow(@modelRequest.BusinessProcessID ,@actions.FinalStateID,'Approve' , @modelRequest.RegionalRequestID)" title="Approve">Approve</a></li>
                         }
                         if (UserAccountHelper.EarlyWarningPsnpOperationCheck(EarlyWarningConstants.Operation.Approve_Need_Assessment) && actions.Name == "Federal Approve")
                         {
@@ -168,7 +169,7 @@
                 <button class="btn green dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis"></i> Action <i class="fa fa-angle-down"></i></button>
                 <ul class="dropdown-menu pull-right" style="-moz-min-width: 120px; -ms-min-width: 120px; -o-min-width: 120px; -webkit-min-width: 120px; min-width: 120px;">
                     @*<li><a id="btnAddFDP"  href="@Url.Action("AddBeneficary", "Request", new { id = modelRequest.RegionalRequestID })" >ADD FDP </a></li>*@
-                    @if (modelRequest.StateId == 1 || modelRequest.StateId == 5)
+                    @if (modelRequest.StateId == 1 || modelRequest.StateId == 5 || modelRequest.StateId == 6)
                     {
                         <li><a class="btn green-haze-stripe" href="@Url.Action("Edit", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Edit</a></li>
                         <li><a class="btn green-haze-stripe" href="@Url.Action("Allocation", "Request", new {Area = "EarlyWarning", id = modelRequest.RegionalRequestID})">Allocation</a></li>

@@ -2196,7 +2196,7 @@
     <Content Include="Scripts\js\bootstrap-timepicker.min.js" />
     <Content Include="Scripts\js\bootstrap.calendars.picker.css" />
     <Content Include="Scripts\js\bootstrap.min.js" />
-    <Content Include="Scripts\js\DataActivityIndictor\DataActivityIndicator.js" />
+    
     <Content Include="Scripts\js\kendo.all.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af-ZA.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af.min.js" />
@@ -3513,7 +3513,6 @@
     <Content Include="Web References\ReportPortal\CacheRefreshPlan1.datasource" />
     <Content Include="Web References\ReportPortal\CacheRefreshPlan3.datasource" />
     <Content Include="Web References\ReportPortal\CacheRefreshPlan4.datasource" />
-    <Content Include="Views\Shared\DataActivityIndicator.cshtml" />
     <Content Include="Views\Shared\DefaultLayout.cshtml" />
     <Content Include="Views\Shared\_DataActivityIndicator.cshtml" />
     <Content Include="Views\Shared\_DataActivityIndicator - OldTheme.cshtml" />

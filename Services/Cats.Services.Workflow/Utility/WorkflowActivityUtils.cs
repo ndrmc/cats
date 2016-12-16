@@ -20,7 +20,7 @@ using IApplicationSettingService = Cats.Services.Workflows.Config.IApplicationSe
 
 namespace Cats.Services.Workflows
 {
-    public class WorkflowActivityUtil 
+    public class WorkflowActivityUtil
     {
         #region  Privte Declarations
 
@@ -165,16 +165,16 @@ namespace Cats.Services.Workflows
         {
             if (workflowImplementer.BusinessProcessId == 0)
             {
-                workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
-                workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
+                //workflowImplementer.BusinessProcess = GetNewInstance(instanceDescription);
+                workflowImplementer.BusinessProcessId = GetNewInstance(instanceDescription).BusinessProcessID;
             }
         }
         public static void InitializeWorkflow(Models.Hubs.IWorkflowHub workflowImplementer, String instanceDescription = null)
         {
             if (workflowImplementer.BusinessProcessId == 0)
             {
-                workflowImplementer.BusinessProcess = GetNewInstanceHub(instanceDescription);
-                workflowImplementer.BusinessProcessId = workflowImplementer.BusinessProcess.BusinessProcessID;
+                //workflowImplementer.BusinessProcess = GetNewInstanceHub(instanceDescription);
+                workflowImplementer.BusinessProcessId = GetNewInstanceHub(instanceDescription).BusinessProcessID;
             }
         }
 
@@ -186,25 +186,25 @@ namespace Cats.Services.Workflows
         {
             if (workflowImplementer == null) return false;
 
-           
-                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
-            
+
+            InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
+
 
             int editId = BusinessProcessService.GetGlobalCreatedStateTempId();
 
             return EnterCreateWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName);
         }
-        public static Boolean EnterCreateWorkflow(Models.Hubs.IWorkflowHub  workflowImplementer, String description = "Workflow_DefaultCreate", String fileName = "")
+        public static Boolean EnterCreateWorkflow(Models.Hubs.IWorkflowHub workflowImplementer, String description = "Workflow_DefaultCreate", String fileName = "")
         {
             if (workflowImplementer == null) return false;
 
-         
-                InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
-        
+
+            InitializeWorkflow(workflowImplementer, AlertMessage.Workflow_DefaultCreate);
+
 
             int editId = BusinessProcessService.GetGlobalCreatedStateTempId();
 
-            return EnterCreateWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName,true);
+            return EnterCreateWorkflow(workflowImplementer.BusinessProcessId, editId, description, fileName, true);
         }
         public static Boolean EnterEditWorkflow(IWorkflow workflowImplementer, String description = "Workflow_DefaultEdit", String fileName = "")
         {
@@ -501,8 +501,8 @@ namespace Cats.Services.Workflows
                 PerformedBy = UserName,
                 DatePerformed = DateTime.Now,
                 Comment = msg,
-                AttachmentFile = fileName, 
-                ParentBusinessProcessID = businessProcessID??0
+                AttachmentFile = fileName,
+                ParentBusinessProcessID = businessProcessID ?? 0
             };
 
 
@@ -541,7 +541,7 @@ namespace Cats.Services.Workflows
         }
         #endregion
 
-        
+
 
     }
 }

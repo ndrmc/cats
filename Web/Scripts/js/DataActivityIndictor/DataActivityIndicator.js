@@ -12,9 +12,9 @@
     $scope.delay = 1;
     $scope.ctrlStatus =
     {
-        loadingUser: false,
+        loadingUser: true,
         loadingActivity: true,
-        loadingDocument: false
+        loadingDocument: true
     };
     $scope.viewGraphXAxis = [];
 
@@ -39,8 +39,7 @@
 
     };
 
-    function getStartDate()
-    {
+    function getStartDate() {
         return $scope.filterData.selectedStartDate;
         //return $("#DIAStartDate").val();
     }
@@ -94,9 +93,9 @@
             DataServices.getAllTeamUsers().then(function (result) {
 
                 $scope.controlData.lookupUsers = result.data;
- 
-                    $scope.ctrlStatus.loadingUser = false;
-            
+
+                $scope.ctrlStatus.loadingUser = false;
+
 
             });
 
@@ -116,9 +115,9 @@
 
                     populateActivityCombo($scope.filterData.selectedDocument);
                 }
-            
-                    $scope.ctrlStatus.loadingDocument = false;
-        
+
+                $scope.ctrlStatus.loadingDocument = false;
+
             });
 
 
@@ -183,7 +182,7 @@
             $scope.InvalidFilter = "DEFAULT";
             $scope.filterData.selectedStartDate = getStartDate();
             $scope.filterData.selectedEndDate = getEndDate();
-             
+
             DataServices.getDataEntryStat($scope.filterData.selectedStartDate, $scope.filterData.selectedEndDate, $scope.filterData.selectedDocument,
             $scope.filterData.selectedUsers, $scope.filterData.selectedActivities).then(function (result) {
 
@@ -409,6 +408,7 @@
         else {
             $scope.InvalidFilter = "INVALID";
 
+            $scope.searching = false;
 
         }
 

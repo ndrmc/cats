@@ -537,6 +537,7 @@ namespace Cats.Services.EarlyWarning
         {
             var regionalRequest = _unitOfWork.RegionalRequestRepository.FindById(id);
             var regionalRequestDetails = _unitOfWork.RegionalRequestDetailRepository.FindBy(r=>r.RegionalRequestID ==id);
+
             if (regionalRequestDetails != null)
             {
                 foreach (var regionalRequestDetail in regionalRequestDetails)
@@ -545,6 +546,7 @@ namespace Cats.Services.EarlyWarning
                 }
                 _unitOfWork.RegionalRequestRepository.Delete(regionalRequest);
                 _unitOfWork.Save();
+
                 return true;
             }
             return false;
