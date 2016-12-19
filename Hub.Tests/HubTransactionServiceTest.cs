@@ -98,7 +98,7 @@ namespace Cats.Tests.Service_Tests
             unitOfWork.Setup(t => t.TransactionRepository).Returns(transactionRepository.Object);
             unitOfWork.Setup(t => t.TransactionGroupRepository).Returns(transactionGroupRepository.Object);
             unitOfWork.Setup(t => t.Save());
-            _hubTransactionService = new TransactionService(unitOfWork.Object,null,null,null,null);
+            _hubTransactionService = new TransactionService(unitOfWork.Object,null,null,null,null,null);
         }
 
         [TearDown]

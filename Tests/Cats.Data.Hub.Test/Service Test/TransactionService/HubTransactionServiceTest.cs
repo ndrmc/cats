@@ -237,7 +237,7 @@ namespace Cats.Data.Tests.Hub.Transaction
             unitOfWork.Setup(t => t.CommodityTypeRepository).Returns(commodityTypeRepository.Object);
             unitOfWork.Setup(t => t.CommodityRepository).Returns(CommodityRepository.Object);
            
-            _accountTransactionService = new TransactionService(unitOfWork.Object,null, MockAccountService.Object, shippingInstructionService, MockProjectCodeService.Object);
+            _accountTransactionService = new TransactionService(unitOfWork.Object,null, MockAccountService.Object, shippingInstructionService, MockProjectCodeService.Object,null);
 
 
         }
