@@ -180,7 +180,7 @@ namespace Cats.Areas.Finance.Controllers
                 if (dispatch != null && request.Delivery.DeliveryDetails.FirstOrDefault() != null)
                 {
                     var deliveryDetail = request.Delivery.DeliveryDetails.FirstOrDefault();
-                    var businessProcess = _businessProcessService.FindById(request.BusinessProcessID);
+                    var businessProcess = _businessProcessService.FindById(request.BusinessProcessId);
                     if (request.LabourCost == null)
                         request.LabourCost = (decimal)0.00;
                     if (request.RejectedAmount == null)
@@ -200,7 +200,7 @@ namespace Cats.Areas.Finance.Controllers
                             ShortageQty = deliveryDetail.SentQuantity.ToQuintal() - deliveryDetail.ReceivedQuantity.ToQuintal(),
                             ShortageBirr = request.ShortageBirr,
                             SentQty = deliveryDetail.SentQuantity,
-                            BusinessProcessID = request.BusinessProcessID,
+                            BusinessProcessID = request.BusinessProcessId,
                             DeliveryID = request.DeliveryID,
                             ReferenceNo = request.ReferenceNo,
                             TransportOrderID = request.TransportOrderID,
@@ -281,7 +281,7 @@ namespace Cats.Areas.Finance.Controllers
                 paymentRequestViewModel.RequestedAmount = firstOrDefault.SentQuantity;
                 paymentRequestViewModel.TransportedQuantityInQtl = firstOrDefault.ReceivedQuantity;
                 paymentRequestViewModel.ReferenceNo = paymentRequestObj.ReferenceNo;
-                paymentRequestViewModel.BusinessProcessID = paymentRequestObj.BusinessProcessID;
+                paymentRequestViewModel.BusinessProcessID = paymentRequestObj.BusinessProcessId;
                 paymentRequestViewModel.LabourCostRate = paymentRequestObj.LabourCostRate;
                 paymentRequestViewModel.LabourCost = paymentRequestObj.LabourCost;
                 paymentRequestViewModel.RejectedAmount = paymentRequestObj.RejectedAmount;
@@ -306,7 +306,7 @@ namespace Cats.Areas.Finance.Controllers
                 paymentRequestViewModel.RequestedAmount = firstOrDefault != null? firstOrDefault.SentQuantity: (decimal) 0.00;
                 paymentRequestViewModel.TransportedQuantityInQtl = firstOrDefault != null ? firstOrDefault.ReceivedQuantity.ToQuintal() : (decimal)0.00;
                 paymentRequestViewModel.ReferenceNo = paymentRequestObj.ReferenceNo;
-                paymentRequestViewModel.BusinessProcessID = paymentRequestObj.BusinessProcessID;
+                paymentRequestViewModel.BusinessProcessID = paymentRequestObj.BusinessProcessId;
                 paymentRequestViewModel.LabourCostRate = paymentRequestObj.LabourCostRate;
                 paymentRequestViewModel.LabourCost = paymentRequestObj.LabourCost;
                 paymentRequestViewModel.RejectedAmount = paymentRequestObj.RejectedAmount;
@@ -334,7 +334,7 @@ namespace Cats.Areas.Finance.Controllers
                     paymentRequestViewModel.RequestedAmount = firstOrDefault != null ? firstOrDefault.SentQuantity : (decimal)0.00;
                     paymentRequestViewModel.TransportedQuantityInQtl = firstOrDefault != null ? firstOrDefault.ReceivedQuantity.ToQuintal() : (decimal)0.00;
                     paymentRequestViewModel.ReferenceNo = paymentRequest.ReferenceNo;
-                    paymentRequestViewModel.BusinessProcessID = paymentRequest.BusinessProcessID;
+                    paymentRequestViewModel.BusinessProcessID = paymentRequest.BusinessProcessId;
                     paymentRequestViewModel.StateNo = paymentRequest.BusinessProcess.CurrentState.BaseStateTemplate.StateNo;
                     paymentRequestViewModel.LabourCostRate = paymentRequest.LabourCostRate;
                     paymentRequestViewModel.LabourCost = paymentRequest.LabourCost;

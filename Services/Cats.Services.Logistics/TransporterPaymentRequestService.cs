@@ -6,15 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Cats.Data.UnitWork;
 using Cats.Models;
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Logistics
 {
     public class TransporterPaymentRequestService : ITransporterPaymentRequestService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWorkflowActivityService _IWorkflowActivityService;
 
-        public TransporterPaymentRequestService(IUnitOfWork unitOfWork)
+        public TransporterPaymentRequestService(IUnitOfWork unitOfWork,IWorkflowActivityService iWorkflowActivityService)
         {
+            this._IWorkflowActivityService = iWorkflowActivityService;
             this._unitOfWork = unitOfWork;
         }
 
@@ -26,6 +29,7 @@ namespace Cats.Services.Logistics
         public bool AddTransporterPaymentRequest(TransporterPaymentRequest transporterPaymentRequest)
         {
             _unitOfWork.TransporterPaymentRequestRepository.Add(transporterPaymentRequest);
+            _IWorkflowActivityService.EnterCreateWorkflow(transporterPaymentRequest);
             _unitOfWork.Save();
             return true;
         }
@@ -50,6 +54,8 @@ namespace Cats.Services.Logistics
         public bool EditTransporterPaymentRequest(TransporterPaymentRequest transporterPaymentRequest)
         {
             _unitOfWork.TransporterPaymentRequestRepository.Edit(transporterPaymentRequest);
+            _IWorkflowActivityService.EnterEditWorkflow(transporterPaymentRequest);
+
             _unitOfWork.Save();
             return true;
         }
