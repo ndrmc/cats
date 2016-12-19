@@ -13,7 +13,7 @@ using Cats.Models.Hubs;
 using Cats.Data.UnitWork;
 using daModel = Cats.Models;
 using Ledger = Cats.Models.Ledger;
-
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Hub
 {
@@ -24,9 +24,13 @@ namespace Cats.Services.Hub
         private readonly IAccountService _accountService;
         private readonly IShippingInstructionService _shippingInstructionService;
         private readonly IProjectCodeService _projectCodeService;
+        private readonly IWorkflowActivityService _IWorkflowActivityService;
 
-        public TransactionService(Data.Hub.UnitWork.IUnitOfWork unitOfWork, Data.UnitWork.IUnitOfWork unitOfWorkNew, IAccountService accountService, IShippingInstructionService shippingInstructionService, IProjectCodeService projectCodeService)
+
+        public TransactionService(Data.Hub.UnitWork.IUnitOfWork unitOfWork, Data.UnitWork.IUnitOfWork unitOfWorkNew, IAccountService accountService, IShippingInstructionService shippingInstructionService, IProjectCodeService projectCodeService, IWorkflowActivityService iWorkflowActivityService)
         {
+
+            this._IWorkflowActivityService = iWorkflowActivityService;
             this._unitOfWork = unitOfWork;
             this._unitOfWorkNew = unitOfWorkNew;
             this._accountService = accountService;
@@ -285,7 +289,7 @@ namespace Cats.Services.Hub
                 receive.ReceiveDetails.Add(receiveDetail);
 
 
-              
+
                 //transaction for goods on hand // previously it was GOODS_ON_HAND_UNCOMMITED
                 var transaction = new Transaction();
                 transaction.TransactionID = Guid.NewGuid();
@@ -367,7 +371,7 @@ namespace Cats.Services.Hub
                 transaction2.Stack = receiveModels.StackNumber;
                 transaction2.TransactionGroupID = tgroup.TransactionGroupID;
                 tgroup.Transactions.Add(transaction2);
-           
+
 
                 #region plan side of the transaction
                 //transaction for statistics
@@ -986,12 +990,12 @@ namespace Cats.Services.Hub
 
                 #region On Positive Side
 
-                var siNumber="";
-                var firstOrDefault = _unitOfWork.ReceiveRepository.Get(r => r.ReceiveID == receiveDetail.ReceiveID,null, "ReceiptAllocation").FirstOrDefault();
+                var siNumber = "";
+                var firstOrDefault = _unitOfWork.ReceiveRepository.Get(r => r.ReceiveID == receiveDetail.ReceiveID, null, "ReceiptAllocation").FirstOrDefault();
                 if (
                     firstOrDefault != null)
                 {
-                     siNumber = firstOrDefault.ReceiptAllocation.SINumber;
+                    siNumber = firstOrDefault.ReceiptAllocation.SINumber;
                 }
                 var transactionOne = new Transaction
                 {
@@ -1230,9 +1234,9 @@ namespace Cats.Services.Hub
             else
             {
                 receive = _unitOfWork.ReceiveRepository.FindById(viewModel.ReceiveId);
-               if(receive != null) existed = true;
+                if (receive != null) existed = true;
             }
-            if(receive == null) receive = new Receive();
+            if (receive == null) receive = new Receive();
 
             receive.ReceiveID = viewModel.ReceiveId;
             receive.GRN = viewModel.Grn;
@@ -1292,7 +1296,7 @@ namespace Cats.Services.Hub
 
                 if (viewModel.ReceiveDetailNewViewModel.ReceiveDetailId != Guid.Empty) //||     viewModel.ReceiveDetailNewViewModel.ReceiveDetailId != null
 
-                { 
+                {
                     var receiveDetail = new ReceiveDetail
                     {
                         ReceiveDetailID = viewModel.ReceiveDetailNewViewModel.ReceiveDetailId,
@@ -1309,24 +1313,24 @@ namespace Cats.Services.Hub
 
                     };
 
-                CreateTransaction(viewModel, transactionsign, receive, receiveDetail);
+                    CreateTransaction(viewModel, transactionsign, receive, receiveDetail);
 
-                //add to receive 
-                receive.ReceiveDetails.Clear();
-                receive.ReceiveDetails.Add(receiveDetail);
+                    //add to receive 
+                    receive.ReceiveDetails.Clear();
+                    receive.ReceiveDetails.Add(receiveDetail);
+                }
             }
-        }
             else
             {
                 foreach (var receiveDetailModel in viewModel.ReceiveDetailsViewModels)
                 {
                     //var receiveDetail = reciev
 
-                    if(receiveDetailModel.ReceiveDetailsId == null) continue;
+                    if (receiveDetailModel.ReceiveDetailsId == null) continue;
 
-                   var  receiveDetail = new ReceiveDetail
+                    var receiveDetail = new ReceiveDetail
                     {
-                        ReceiveDetailID = (Guid) receiveDetailModel.ReceiveDetailsId,
+                        ReceiveDetailID = (Guid)receiveDetailModel.ReceiveDetailsId,
 
                         CommodityID = receiveDetailModel.CommodityId,
                         CommodityChildID = receiveDetailModel.CommodityChildID,
@@ -1338,7 +1342,7 @@ namespace Cats.Services.Hub
 
                     };
 
-                    
+
 
                     try
                     {
@@ -1414,9 +1418,9 @@ namespace Cats.Services.Hub
         /// </summary>
         /// <param name="ediedReceive">Edited receive object</param>
         /// <returns></returns>
-        private bool CanCreateTransaction(ReceiveNewViewModel editedReceiveNewViewModel )
+        private bool CanCreateTransaction(ReceiveNewViewModel editedReceiveNewViewModel)
         {
-            
+
             if (editedReceiveNewViewModel.ReceiveId == Guid.Empty)
             {
                 return true;
@@ -1424,10 +1428,10 @@ namespace Cats.Services.Hub
             var origionalReceive = _unitOfWork.ReceiveRepository.FindById(editedReceiveNewViewModel.ReceiveId);
             if (origionalReceive == null) return true;
             //compare
-           // return true;
+            // return true;
 
             bool result = false;
-           
+
             //if store is changed Create transaction
             if (editedReceiveNewViewModel.StoreId != origionalReceive.StoreId)
             {
@@ -1460,52 +1464,52 @@ namespace Cats.Services.Hub
                 return result;
 
             }
-        //    editedReceiveNewViewModel.ReceiveDetailNewViewModels = new List<ReceiveDetailNewViewModel>();
+            //    editedReceiveNewViewModel.ReceiveDetailNewViewModels = new List<ReceiveDetailNewViewModel>();
 
-         //if (editedReceiveNewViewModel.ReceiveDetailNewViewModel != null)
-                  foreach(var editedRecDetails in editedReceiveNewViewModel.ReceiveDetailsViewModels)
-  {
-               // ReceiveDetailNewViewModel editedRecDetails = editedReceiveNewViewModel.ReceiveDetailNewViewModel;
+            //if (editedReceiveNewViewModel.ReceiveDetailNewViewModel != null)
+            foreach (var editedRecDetails in editedReceiveNewViewModel.ReceiveDetailsViewModels)
+            {
+                // ReceiveDetailNewViewModel editedRecDetails = editedReceiveNewViewModel.ReceiveDetailNewViewModel;
 
 
-      var recDetailCommodities =
-          origionalReceive.ReceiveDetails.Where(
-              u =>
-                  u.CommodityID == editedRecDetails.CommodityId &&
-                  u.CommodityChildID == editedRecDetails.CommodityChildID);
+                var recDetailCommodities =
+                    origionalReceive.ReceiveDetails.Where(
+                        u =>
+                            u.CommodityID == editedRecDetails.CommodityId &&
+                            u.CommodityChildID == editedRecDetails.CommodityChildID);
 
                 //there is no comodity id and CommodityChildID
                 if (recDetailCommodities.Any() && !origionalReceive.ReceiveDetails.Any()) { result = true; return result; }
                 if (!recDetailCommodities.Any() && origionalReceive.ReceiveDetails.Any()) { result = true; return result; }
 
- 
 
-            if (editedRecDetails.UnitId != recDetailCommodities.FirstOrDefault().UnitID)
-            {
-                result = true;
-                return result;
+
+                if (editedRecDetails.UnitId != recDetailCommodities.FirstOrDefault().UnitID)
+                {
+                    result = true;
+                    return result;
+
+                }
+                if (editedRecDetails.ReceivedQuantityInMt != recDetailCommodities.FirstOrDefault().QuantityInMT)
+                {
+                    result = true;
+                    return result;
+
+                }
+                if (editedRecDetails.ReceivedQuantityInUnit != recDetailCommodities.FirstOrDefault().QuantityInUnit)
+                {
+                    result = true;
+                    return result;
+
+                }
 
             }
-            if (editedRecDetails.ReceivedQuantityInMt != recDetailCommodities.FirstOrDefault().QuantityInMT)
-            {
-                result = true;
-                return result;
 
-            }
-            if (editedRecDetails.ReceivedQuantityInUnit != recDetailCommodities.FirstOrDefault().QuantityInUnit)
-            {
-                result = true;
-                return result;
 
-            }
 
-            }
-       
-
-       
             return result;
         }
-         
+
 
         private void CreateTransaction(ReceiveNewViewModel viewModel, int transactionsign, Receive receive, ReceiveDetail receiveDetail)
         {
@@ -1870,6 +1874,9 @@ namespace Cats.Services.Hub
             try
             {
                 _unitOfWork.DispatchRepository.Add(dispatch);
+
+                _IWorkflowActivityService.EnterCreateWorkflow(dispatch);
+
                 _unitOfWork.Save();
                 return true;
                 //repository.Dispatch.Add(dispatch);
@@ -2142,7 +2149,7 @@ namespace Cats.Services.Hub
 
                 if (newDispatchAllocation.RequisitionId.HasValue)
                     PostSIAllocation(newDispatchAllocation.RequisitionId.Value, siPCAllocationID);
-                
+
             }
 
             if (dispatchViewModel.DispatchID != null)
@@ -2329,11 +2336,15 @@ namespace Cats.Services.Hub
                     if (dispatchViewModel.DispatchID == null)
                     {
                         _unitOfWork.DispatchRepository.Add(dispatch);
+                        _IWorkflowActivityService.EnterCreateWorkflow(dispatch);
+
                     }
 
                     else
                     {
                         _unitOfWork.DispatchRepository.Edit(dispatch);
+                        _IWorkflowActivityService.EnterEditWorkflow(dispatch);
+
                     }
                 }
 
@@ -2497,7 +2508,7 @@ namespace Cats.Services.Hub
 
                 _unitOfWorkNew.TransactionRepository.Add(transaction2);
                 allocationDetail.TransactionGroupID = transactionGroup;
-            
+
                 _unitOfWorkNew.SIPCAllocationRepository.Edit(allocationDetail);
                 //result.Add(transaction);
 

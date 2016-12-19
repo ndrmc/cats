@@ -384,7 +384,7 @@ namespace Cats.Areas.Hub.Controllers
             {
                 dispatch = _dispatchService.CreateDispatchFromDispatchAllocation(id, 0);
 
-            
+
 
             }
 
@@ -992,8 +992,8 @@ namespace Cats.Areas.Hub.Controllers
                     // List<Models.DispatchDetailModel> updateCommodities = GetSelectedCommodities(dispatchModel.JSONUpdatedCommodities);
                     dispatch.HubID = user.DefaultHub.Value;
                     dispatch.Update(GenerateDispatchDetail(insertCommodities),
-                        GenerateDispatchDetail(updateCommodities),
-                        GenerateDispatchDetail(deletedCommodities));
+                    GenerateDispatchDetail(updateCommodities),
+                    GenerateDispatchDetail(deletedCommodities));
 
                 }
 
