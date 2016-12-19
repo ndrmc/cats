@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Cats.Data.UnitWork;
 using Cats.Models;
+using Cats.Services.Workflows;
 
 namespace Cats.Services.EarlyWarning
 {
@@ -11,16 +12,28 @@ namespace Cats.Services.EarlyWarning
     public class GiftCertificateDetailService : IGiftCertificateDetailService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWorkflowActivityService _IWorkflowActivityService;
 
 
-        public GiftCertificateDetailService(UnitOfWork unitOfWork)
+
+        public GiftCertificateDetailService(UnitOfWork unitOfWork, IWorkflowActivityService iWorkflowActivityService)
         {
             this._unitOfWork = unitOfWork;
+            this._IWorkflowActivityService = iWorkflowActivityService;
+
+
+
         }
         #region Default Service Implementation
         public bool AddGiftCertificateDetail(GiftCertificateDetail giftCertificateDetail)
         {
             _unitOfWork.GiftCertificateDetailRepository.Add(giftCertificateDetail);
+
+            _IWorkflowActivityService.EnterEditWorkflow(giftCertificateDetail.GiftCertificate, "Child Gift Certificate Have Been Added");
+
+
+
+
             _unitOfWork.Save();
             return true;
 
@@ -28,6 +41,11 @@ namespace Cats.Services.EarlyWarning
         public bool EditGiftCertificateDetail(GiftCertificateDetail giftCertificateDetail)
         {
             _unitOfWork.GiftCertificateDetailRepository.Edit(giftCertificateDetail);
+
+
+            _IWorkflowActivityService.EnterEditWorkflow(giftCertificateDetail.GiftCertificate, "Child Gift Certificate Have Been Edited");
+
+
             _unitOfWork.Save();
             return true;
 

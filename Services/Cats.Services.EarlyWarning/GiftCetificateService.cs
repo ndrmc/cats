@@ -36,9 +36,10 @@ namespace Cats.Services.EarlyWarning
         }
         public bool EditGiftCertificate(GiftCertificate giftCertificate)
         {
-            _unitOfWork.GiftCertificateRepository.Edit(giftCertificate);
 
+            _unitOfWork.GiftCertificateRepository.Edit(giftCertificate);
             _IWorkflowActivityService.EnterEditWorkflow(giftCertificate);
+
 
             _unitOfWork.Save();
             return true;

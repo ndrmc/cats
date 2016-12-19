@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using Cats.Data.Hub;
 using Cats.Data.Hub.UnitWork;
 using Cats.Models.Hubs;
-
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Hub
 {
@@ -16,15 +16,25 @@ namespace Cats.Services.Hub
     {
         private readonly IUnitOfWork _unitOfWork;
 
+        private readonly IWorkflowActivityService _IWorkflowActivityService;
 
-        public GiftCertificateDetailService(IUnitOfWork unitOfWork)
+
+
+        public GiftCertificateDetailService(UnitOfWork unitOfWork, IWorkflowActivityService iWorkflowActivityService)
         {
             this._unitOfWork = unitOfWork;
+            this._IWorkflowActivityService = iWorkflowActivityService;
+
+
+
         }
         #region Default Service Implementation
         public bool AddGiftCertificateDetail(GiftCertificateDetail giftCertificateDetail)
         {
             _unitOfWork.GiftCertificateDetailRepository.Add(giftCertificateDetail);
+
+            _IWorkflowActivityService.EnterEditWorkflow(giftCertificateDetail.GiftCertificate, "Child Gift Certificate Have Been Added");
+
             _unitOfWork.Save();
             return true;
 
@@ -32,6 +42,9 @@ namespace Cats.Services.Hub
         public bool EditGiftCertificateDetail(GiftCertificateDetail giftCertificateDetail)
         {
             _unitOfWork.GiftCertificateDetailRepository.Edit(giftCertificateDetail);
+
+            _IWorkflowActivityService.EnterEditWorkflow(giftCertificateDetail.GiftCertificate,"Child Gift Certificate Have Been Edited");
+
             _unitOfWork.Save();
             return true;
 
