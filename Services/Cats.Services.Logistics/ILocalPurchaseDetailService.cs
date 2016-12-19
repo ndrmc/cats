@@ -15,8 +15,6 @@ namespace Cats.Services.Logistics
        LocalPurchaseDetail FindById(int id);
        List<LocalPurchaseDetail> GetAllLocalPurchaseDetail();
        List<LocalPurchaseDetail> FindBy(Expression<Func<LocalPurchaseDetail, bool>> predicate);
-
-
    }
 }
 
