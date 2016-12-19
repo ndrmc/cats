@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Cats.Models
 {
     [MetadataType(typeof(RequisitionMeta))]
-    public partial class ReliefRequisition
+    public partial class ReliefRequisition:IWorkflow
     {
         public ReliefRequisition()
         {
@@ -20,7 +20,7 @@ namespace Cats.Models
         }
         
         public int RequisitionID { get; set; }
-        public int BusinessProcessID { get; set; }
+        public int BusinessProcessId { get; set; }
         public Nullable<int> CommodityID { get; set; }
         public Nullable<int> RegionID { get; set; }
         public Nullable<int> ZoneID { get; set; }
@@ -51,5 +51,10 @@ namespace Cats.Models
         public virtual ICollection<ReliefRequisitionDetail> ReliefRequisitionDetails { get; set; }
         public virtual ICollection<TransportOrderDetail> TransportOrderDetails { get; set; }
         public virtual ICollection<TransportRequisitionDetail> TransportRequisitionDetails { get; set; }
+        //public int BusinessProcessId { get; set; }
+
+     
+
+
     }
 }

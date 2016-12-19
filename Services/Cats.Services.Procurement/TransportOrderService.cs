@@ -455,7 +455,7 @@ namespace Cats.Services.Procurement
                         DatePerformed = DateTime.Now,
                         Comment = "Transport order has been created for the requisition.",
                         //AttachmentFile = fileName,
-                        ParentBusinessProcessID = reliefRequisition.BusinessProcessID
+                        ParentBusinessProcessID = reliefRequisition.BusinessProcessId
                     };
                     //return 
                     _businessProcessService.PromotWorkflow(businessProcessState);
@@ -1430,7 +1430,7 @@ namespace Cats.Services.Procurement
                                 DatePerformed = DateTime.Now,
                                 Comment = "Requisition has been reverted from 'transport order created' state to 'Approved' state.",
                                 //AttachmentFile = fileName,
-                                ParentBusinessProcessID = requisition.BusinessProcessID
+                                ParentBusinessProcessID = requisition.BusinessProcessId
                             };
                             //return 
                             _businessProcessService.PromotWorkflow(businessProcessState);
@@ -1460,7 +1460,7 @@ namespace Cats.Services.Procurement
                         DatePerformed = DateTime.Now,
                         Comment = "Requisition has been reverted from 'transport order created' state to 'Approved' state.",
                         //AttachmentFile = fileName,
-                        ParentBusinessProcessID = requisition.BusinessProcessID
+                        ParentBusinessProcessID = requisition.BusinessProcessId
                     };
                     //return 
                     _businessProcessService.PromotWorkflow(businessProcessState);

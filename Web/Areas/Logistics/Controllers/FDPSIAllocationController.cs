@@ -280,7 +280,7 @@ namespace Cats.Areas.Logistics.Controllers
 					DatePerformed = DateTime.Now,
 					Comment = "Requisition has been assigned SI/PC",
 					//AttachmentFile = fileName,
-					ParentBusinessProcessID = requisition.BusinessProcessID
+					ParentBusinessProcessID = requisition.BusinessProcessId
 				};
 				//return 
 				_businessProcessService.PromotWorkflow(businessProcessState);

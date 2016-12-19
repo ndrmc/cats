@@ -11,6 +11,7 @@ using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Models.ViewModels;
 using Cats.Services.Common;
+using Cats.Services.Workflows;
 
 namespace Cats.Services.EarlyWarning
 {
@@ -23,12 +24,14 @@ namespace Cats.Services.EarlyWarning
         private readonly IApplicationSettingService _applicationSettingService;
         private readonly IStateTemplateService _stateTemplateService;
         private readonly IBusinessProcessStateService _businessProcessStateService;
+        private readonly IWorkflowActivityService _workflowActivityService;
 
-        public ReliefRequisitionService(IUnitOfWork unitOfWork, IApplicationSettingService applicationSettingService, IBusinessProcessService businessProcessService,
+        public ReliefRequisitionService(IUnitOfWork unitOfWork,IWorkflowActivityService workflowActivityService, IApplicationSettingService applicationSettingService, IBusinessProcessService businessProcessService,
                 IStateTemplateService stateTemplateService,
                              IBusinessProcessStateService paramBusinessProcessStateService)
         {
             this._unitOfWork = unitOfWork;
+            _workflowActivityService = workflowActivityService;
             _applicationSettingService = applicationSettingService;
             _businessProcessService = businessProcessService;
             _stateTemplateService = stateTemplateService;
@@ -39,6 +42,7 @@ namespace Cats.Services.EarlyWarning
         public bool AddReliefRequisition(ReliefRequisition reliefRequisition)
         {
             _unitOfWork.ReliefRequisitionRepository.Add(reliefRequisition);
+            _workflowActivityService.EnterCreateWorkflow(reliefRequisition);
             _unitOfWork.Save();
             return true;
 
@@ -46,6 +50,8 @@ namespace Cats.Services.EarlyWarning
         public bool EditReliefRequisition(ReliefRequisition reliefRequisition)
         {
             _unitOfWork.ReliefRequisitionRepository.Edit(reliefRequisition);
+            _workflowActivityService.EnterEditWorkflow(reliefRequisition);
+
             _unitOfWork.Save();
             return true;
 
@@ -140,6 +146,8 @@ namespace Cats.Services.EarlyWarning
             foreach (var reliefRequisition in reliefRequisitions)
             {
                 this._unitOfWork.ReliefRequisitionRepository.Add(reliefRequisition);
+                _workflowActivityService.EnterCreateWorkflow(reliefRequisition);
+
             }
         }
 
@@ -230,8 +238,10 @@ namespace Cats.Services.EarlyWarning
                     "ReliefRequisition", createdstate);
                 if (bp != null)
                 {
-                    relifRequisition.BusinessProcessID = bp.BusinessProcessID;
+                    relifRequisition.BusinessProcessId = bp.BusinessProcessID;
                     this._unitOfWork.ReliefRequisitionRepository.Add(relifRequisition);
+                    _workflowActivityService.EnterCreateWorkflow(relifRequisition);
+
                 }
                 else
                 {

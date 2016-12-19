@@ -170,7 +170,7 @@ namespace Cats.Services.Logistics
                                 DatePerformed = DateTime.Now,
                                 Comment = "Transport requisition has been created for the requisition.",
                                 //AttachmentFile = fileName,
-                                ParentBusinessProcessID = requisition.BusinessProcessID
+                                ParentBusinessProcessID = requisition.BusinessProcessId
                             };
                             //return 
                             _businessProcessService.PromotWorkflow(businessProcessState);

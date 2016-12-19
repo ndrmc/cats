@@ -8,7 +8,7 @@ using Cats.Models.Constant;
 using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Transaction;
-
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Logistics
 {
@@ -19,10 +19,13 @@ namespace Cats.Services.Logistics
         private readonly IApplicationSettingService _applicationSettingService;
         private readonly IStateTemplateService _stateTemplateService;
         private readonly IBusinessProcessService _businessProcessService;
+        private readonly IWorkflowActivityService _workflowActivityService;
 
-        public TransferService(IUnitOfWork unitOfWork, IApplicationSettingService applicationSettingService,
+        public TransferService(IUnitOfWork unitOfWork, IWorkflowActivityService workflowActivityService ,IApplicationSettingService applicationSettingService,
             IStateTemplateService stateTemplateService, IBusinessProcessService businessProcessService)
         {
+            _workflowActivityService = workflowActivityService;
+
             _unitOfWork = unitOfWork;
             _applicationSettingService = applicationSettingService;
             _stateTemplateService = stateTemplateService;
@@ -186,6 +189,9 @@ namespace Cats.Services.Logistics
                     };
                     _unitOfWork.ReliefRequisitionRepository.Add(relifRequisition);
 
+                    _workflowActivityService.EnterCreateWorkflow(relifRequisition);
+
+
                     var relifRequistionDetail = new ReliefRequisitionDetail();
 
                     relifRequistionDetail.DonorID = 1;
@@ -232,9 +238,9 @@ namespace Cats.Services.Logistics
                         stateTemplate.ParentProcessTemplateID, 0, "ReliefRequisitionWorkflow", businessProcessState);
 
                     if (bp == null) return false;
-                    relifRequisition.BusinessProcessID = bp.BusinessProcessID;
+                    relifRequisition.BusinessProcessId = bp.BusinessProcessID;
 
-                    relifRequisition.BusinessProcessID = businessProcessState.ParentBusinessProcessID;
+                    relifRequisition.BusinessProcessId = businessProcessState.ParentBusinessProcessID;
 
                     if (transfer.Commodity.ParentID == null)
                     {
@@ -465,13 +471,15 @@ namespace Cats.Services.Logistics
                 DatePerformed = DateTime.Now,
                 Comment = "Internally requisition approved",
                 //AttachmentFile = fileName,
-                ParentBusinessProcessID = requisition.BusinessProcessID
+                ParentBusinessProcessID = requisition.BusinessProcessId
             };
 
             // Promot
             _businessProcessService.PromotWorkflow(businessProcessState);
 
             _unitOfWork.ReliefRequisitionRepository.Edit(requisition);
+            _workflowActivityService.EnterEditWorkflow(requisition);
+
             _unitOfWork.Save();
             //return result;
             return true;
