@@ -266,24 +266,24 @@ namespace Cats.Areas.WorkflowManager.Controllers
             if (!wfusers.Contains(Constants.SelectOption_AllwithData))
             {
                 dashboarDataEntryModels = (from user in wfusers
-                                           let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
-                                           select new DashboarDataEntryModel
-                                           {
-                                               Name = user,
-                                               DashboardDataEntries = dashboardDataEntries
-                                           }).OrderBy(o => o.Name).ToList();
+                    let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
+                    select new DashboarDataEntryModel
+                    {
+                        Name = user,
+                        DashboardDataEntries = dashboardDataEntries
+                    }).OrderBy(o => o.Name).ToList();
             }
             else
             {
                 List<string> allUsers = result.Select(s => s.PerformedBy).Distinct().ToList();
 
                 dashboarDataEntryModels = (from user in allUsers
-                                           let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
-                                           select new DashboarDataEntryModel
-                                           {
-                                               Name = user,
-                                               DashboardDataEntries = dashboardDataEntries
-                                           }).OrderBy(o => o.Name).ToList();
+                    let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
+                    select new DashboarDataEntryModel
+                    {
+                        Name = user,
+                        DashboardDataEntries = dashboardDataEntries
+                    }).OrderBy(o => o.Name).ToList();
             }
 
             return GetJsonResult(dashboarDataEntryModels);

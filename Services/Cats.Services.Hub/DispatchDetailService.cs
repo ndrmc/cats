@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using Cats.Data.Hub;
 using Cats.Data.Hub.UnitWork;
 using Cats.Models.Hubs;
-
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Hub
 {
@@ -14,16 +14,21 @@ namespace Cats.Services.Hub
     public class DispatchDetailService : IDispatchDetailService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWorkflowActivityService _IWorkflowActivityService;
 
 
-        public DispatchDetailService(IUnitOfWork unitOfWork)
+
+        public DispatchDetailService(IUnitOfWork unitOfWork, IWorkflowActivityService iWorkflowActivityService)
         {
             this._unitOfWork = unitOfWork;
+            this._IWorkflowActivityService = iWorkflowActivityService;
+
         }
         #region Default Service Implementation
         public bool AddDispatchDetail(DispatchDetail dispatchDetail)
         {
             _unitOfWork.DispatchDetailRepository.Add(dispatchDetail);
+            _IWorkflowActivityService.EnterCreateWorkflow(dispatchDetail.Dispatch);
             _unitOfWork.Save();
             return true;
 
@@ -31,6 +36,8 @@ namespace Cats.Services.Hub
         public bool EditDispatchDetail(DispatchDetail dispatchDetail)
         {
             _unitOfWork.DispatchDetailRepository.Edit(dispatchDetail);
+            _IWorkflowActivityService.EnterEditWorkflow(dispatchDetail.Dispatch);
+
             _unitOfWork.Save();
             return true;
 

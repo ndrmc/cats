@@ -23,10 +23,11 @@ namespace Cats.Services.Hub
         public GiftCertificateService(IUnitOfWork unitOfWork, IWorkflowActivityService iWorkflowActivityService)
         {
             this._unitOfWork = unitOfWork;
+
             this._IWorkflowActivityService = iWorkflowActivityService;
 
 
-            
+
         }
         #region Default Service Implementation
         public bool AddGiftCertificate(GiftCertificate giftCertificate)
@@ -70,7 +71,7 @@ namespace Cats.Services.Hub
         }
         public List<GiftCertificate> GetAllGiftCertificate()
         {
-            var allRecords = _unitOfWork.GiftCertificateRepository.GetAll().Cast<Models.Hubs.IWorkflowHub>().ToList();
+           var allRecords = _unitOfWork.GiftCertificateRepository.GetAll().Cast<Models.Hubs.IWorkflowHub>().ToList();
             return _IWorkflowActivityService.ExcludeDeletedRecordsHub(allRecords).Cast<GiftCertificate>().ToList<GiftCertificate>();
 
 

@@ -5,6 +5,7 @@ using System.Linq;
 using Cats.Data.UnitWork;
 using Cats.Data.Hub;
 using Cats.Models;
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Transaction
 {
@@ -12,10 +13,13 @@ namespace Cats.Services.Transaction
     public class TransactionService : ITransactionService
     {
         private readonly Cats.Data.UnitWork.IUnitOfWork _unitOfWork;
+        private readonly IWorkflowActivityService _workflowActivityService;
 
-        public TransactionService(Cats.Data.UnitWork.IUnitOfWork unitOfWork)
+        public TransactionService(IWorkflowActivityService workflowActivityService, Cats.Data.UnitWork.IUnitOfWork unitOfWork)
         {
             this._unitOfWork = unitOfWork;
+            _workflowActivityService = workflowActivityService;
+
         }
 
         #region generic methods
@@ -450,6 +454,7 @@ namespace Cats.Services.Transaction
             var requisition = _unitOfWork.ReliefRequisitionRepository.FindById(requisitionID);
             requisition.Status = 4;
             _unitOfWork.ReliefRequisitionRepository.Edit(requisition);
+            _workflowActivityService.EnterEditWorkflow(requisition);
             _unitOfWork.Save();
             //return result;
             return true;

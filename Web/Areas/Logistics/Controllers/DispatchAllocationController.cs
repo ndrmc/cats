@@ -247,7 +247,7 @@ namespace Cats.Areas.Logistics.Controllers
                                     DatePerformed = DateTime.Now,
                                     Comment = "Requisition has been re-assigned a hub",
                                     //AttachmentFile = fileName,
-                                    ParentBusinessProcessID = requisition.BusinessProcessID
+                                    ParentBusinessProcessID = requisition.BusinessProcessId
                                 };
                                 //return 
                                 _businessProcessService.PromotWorkflow(businessProcessState);
@@ -271,7 +271,7 @@ namespace Cats.Areas.Logistics.Controllers
                                     DatePerformed = DateTime.Now,
                                     Comment = "Requisition has been assigned a hub",
                                     //AttachmentFile = fileName,
-                                    ParentBusinessProcessID = requisition.BusinessProcessID
+                                    ParentBusinessProcessID = requisition.BusinessProcessId
                                 };
                                 //return 
                                 _businessProcessService.PromotWorkflow(businessProcessState);
@@ -360,7 +360,7 @@ namespace Cats.Areas.Logistics.Controllers
                         DatePerformed = DateTime.Now,
                         Comment = "Requisition has been rejected",
                         //AttachmentFile = fileName,
-                        ParentBusinessProcessID = requisition.BusinessProcessID
+                        ParentBusinessProcessID = requisition.BusinessProcessId
                     };
                     //return 
                     _businessProcessService.PromotWorkflow(businessProcessState);
@@ -387,7 +387,7 @@ namespace Cats.Areas.Logistics.Controllers
                         DatePerformed = DateTime.Now,
                         Comment = "Requisition has been uncommitted",
                         //AttachmentFile = fileName,
-                        ParentBusinessProcessID = requisition.BusinessProcessID
+                        ParentBusinessProcessID = requisition.BusinessProcessId
                     };
                     //return 
                     _transactionService.PostSIAllocationUncommit(id);
@@ -414,7 +414,7 @@ namespace Cats.Areas.Logistics.Controllers
                         DatePerformed = DateTime.Now,
                         Comment = "SI/PC Allocation of requisition has been approved",
                         //AttachmentFile = fileName,
-                        ParentBusinessProcessID = requisition.BusinessProcessID
+                        ParentBusinessProcessID = requisition.BusinessProcessId
                     };
                     //return 
                     _reliefRequisitionService.EditReliefRequisition(requisition);
@@ -458,7 +458,7 @@ namespace Cats.Areas.Logistics.Controllers
             if (actionname == "Uncommit")
             {
 
-                var reliefRequisition = _reliefRequisitionService.FindBy(b => b.BusinessProcessID == st.ParentBusinessProcessID).FirstOrDefault();
+                var reliefRequisition = _reliefRequisitionService.FindBy(b => b.BusinessProcessId == st.ParentBusinessProcessID).FirstOrDefault();
 
                 if (reliefRequisition != null)
                     _transactionService.PostSIAllocationUncommit(reliefRequisition.RequisitionID);

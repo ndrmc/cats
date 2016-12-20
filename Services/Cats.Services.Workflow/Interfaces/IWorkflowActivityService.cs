@@ -40,8 +40,7 @@ namespace Cats.Services.Workflows
         Models.BusinessProcess GetBusinessProcess(int businessProcessId);
         Models.Hubs.BusinessProcess GetBusinessProcessHub(int businessProcessId);
         List<IWorkflow> ExcludeDeletedRecords(List<IWorkflow> records);
-        List<IWorkflowHub> ExcludeDeletedRecordsHub(List<IWorkflowHub> records);
-
+		List<IWorkflowHub> ExcludeDeletedRecordsHub(List<IWorkflowHub> records);
         List<WorkflowActivity> GetWorkflowActivity(string pageName, string filter = null);
 
 

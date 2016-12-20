@@ -512,7 +512,7 @@ namespace Cats.Areas.Logistics.Controllers
 
                     BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, transporterPaymentRequest.TransporterPaymentRequestID,
                                                                                         "PaymentRequest", createdstate);
-                    transporterPaymentRequest.BusinessProcessID = bp.BusinessProcessID;
+                    transporterPaymentRequest.BusinessProcessId = bp.BusinessProcessID;
                     transporterPaymentRequest.RequestedDate = DateTime.Now;
                     _transporterPaymentRequestService.AddTransporterPaymentRequest(transporterPaymentRequest);
                 }

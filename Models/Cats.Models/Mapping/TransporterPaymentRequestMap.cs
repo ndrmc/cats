@@ -34,13 +34,13 @@ namespace Cats.Models.Mapping
             this.Property(t => t.RejectedAmount).HasColumnName("RejectedAmount");
             this.Property(t => t.RejectionReason).HasColumnName("RejectionReason");
             this.Property(t => t.RequestedDate).HasColumnName("RequestedDate");
-            this.Property(t => t.BusinessProcessID).HasColumnName("BusinessProcessID");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
             this.Property(t => t.PartitionId).HasColumnName("PartitionId");
 
             // Relationships
             this.HasRequired(t => t.BusinessProcess)
                 .WithMany(t => t.TransporterPaymentRequests)
-                .HasForeignKey(d => d.BusinessProcessID);
+                .HasForeignKey(d => d.BusinessProcessId);
             this.HasRequired(t => t.Delivery)
                 .WithMany(t => t.TransporterPaymentRequests)
                 .HasForeignKey(d => d.DeliveryID);

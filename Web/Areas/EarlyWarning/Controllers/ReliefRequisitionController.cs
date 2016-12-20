@@ -494,7 +494,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 _reliefRequisitionDetailService.AddReliefRequisitionDetail(RequisitionViewModelBinder.BindReliefRequisitionDetail(reliefRequisitionDetailViewModel));
 
-                UpdateEditWorkflow(reliefRequisitionDetailViewModel.RequisitionID, AlertMessage.Workflow_ReliiefReqDetailAdded);
+                WorkflowActivityUtil.EnterEditWorkflow(new BusinessProcess() { BusinessProcessID = reliefRequisitionDetailViewModel.RequisitionID }, AlertMessage.Workflow_ReliiefReqDetailAdded);
             }
 
             return Json(new[] { reliefRequisitionDetailViewModel }.ToDataSourceResult(request, ModelState));
@@ -511,7 +511,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     //Only create log if there is any change
                     if(target.BenficiaryNo!= reliefRequisitionDetailViewModel.BenficiaryNo)
                     {
-                        UpdateEditWorkflow(reliefRequisitionDetailViewModel.RequisitionID, 
+                        WorkflowActivityUtil.EnterEditWorkflow(new BusinessProcess() { BusinessProcessID = reliefRequisitionDetailViewModel.RequisitionID }, 
                             AlertManager.GetWorkflowMessage_ReliefReqDetail( target.FDP.Name, target.BenficiaryNo.ToString(), reliefRequisitionDetailViewModel.BenficiaryNo.ToString()));
 
                    }
@@ -539,25 +539,14 @@ namespace Cats.Areas.EarlyWarning.Controllers
             {
                 _reliefRequisitionDetailService.DeleteById(reliefRequisitionDetail.RequisitionDetailID);
 
-                UpdateEditWorkflow(reliefRequisitionDetail.RequisitionID, AlertMessage.Workflow_ReliiefReqDetailDeleted);
+                WorkflowActivityUtil.EnterEditWorkflow(new BusinessProcess() { BusinessProcessID = reliefRequisitionDetail.RequisitionID }, AlertMessage.Workflow_ReliiefReqDetailDeleted);
 
             }
 
             return Json(ModelState.ToDataSourceResult());
         }
 
-        public Boolean UpdateEditWorkflow(int requisitionid, String changeNote = null)
-        {
-
-            var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == requisitionid, null,
-                                  "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
-
-         
-            WorkflowActivityUtil.EnterEditWorkflow(requisition.BusinessProcess, changeNote);
-
-
-            return true;
-        }
+    
         [HttpPost]
         public ActionResult RequistionDetailEdit(IEnumerable<ReleifRequisitionDetailEdit.ReleifRequisitionDetailEditInput> input)
         {
@@ -661,7 +650,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
             requisitionById.RequestedDate = reliefrequisition.RequestedDate;
             _reliefRequisitionService.EditReliefRequisition(requisitionById);
 
-            UpdateEditWorkflow(reliefrequisition.RequisitionID,AlertMessage.Workflow_DefaultEdit);
+          
 
             return Json(new { status = "Ok", message = string.Empty, Id = requisitionById.RequisitionID});
         }
@@ -707,7 +696,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                         DatePerformed = DateTime.Now,
                         Comment = "Requisition approved and sent to logistics",
                         //AttachmentFile = fileName,
-                        ParentBusinessProcessID = requisition.BusinessProcessID
+                        ParentBusinessProcessID = requisition.BusinessProcessId
                     };
                     //return 
                     _businessProcessService.PromotWorkflow(businessProcessState);
@@ -951,7 +940,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     ParentBusinessProcessID = rrvm.BusinessProcessID
                 };
 
-                var requisition = _reliefRequisitionService.FindBy(b => b.BusinessProcessID == rrvm.BusinessProcessID).FirstOrDefault();
+                var requisition = _reliefRequisitionService.FindBy(b => b.BusinessProcessId == rrvm.BusinessProcessID).FirstOrDefault();
                 string stateName = _stateTemplateService.FindById(rrvm.ApprovedId).Name;
 
                 if (requisition != null)

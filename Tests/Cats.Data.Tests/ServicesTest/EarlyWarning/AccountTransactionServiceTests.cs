@@ -786,7 +786,7 @@ namespace Cats.Data.Tests.ServicesTest.EarlyWarning
             unitOfWork.Setup(t => t.TransactionGroupRepository).Returns(transactionGroupRepository.Object);
             unitOfWork.Setup(t => t.HubAllocationRepository).Returns(hubAllocationRepository.Object);
             unitOfWork.Setup(t => t.Save());
-            _accountTransactionService=new TransactionService(unitOfWork.Object);
+            _accountTransactionService=new TransactionService(null,unitOfWork.Object);
         }
 
         [TearDown]

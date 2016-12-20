@@ -8,6 +8,7 @@ using Cats.Data.Hub;
 using Cats.Data.Hub.UnitWork;
 using Cats.Models.Hubs;
 using Ledger = Cats.Models.Ledger;
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Hub
 {
@@ -15,16 +16,23 @@ namespace Cats.Services.Hub
     public class DispatchService : IDispatchService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWorkflowActivityService _IWorkflowActivityService;
 
 
-        public DispatchService(IUnitOfWork unitOfWork)
+        public DispatchService(IUnitOfWork unitOfWork, IWorkflowActivityService iWorkflowActivityService)
         {
             this._unitOfWork = unitOfWork;
+
+            this._IWorkflowActivityService = iWorkflowActivityService;
+
+
         }
         #region Default Service Implementation
         public bool AddDispatch(Dispatch dispatch)
         {
             _unitOfWork.DispatchRepository.Add(dispatch);
+
+            _IWorkflowActivityService.EnterCreateWorkflow(dispatch);
 
             _unitOfWork.Save();
             return true;
@@ -33,6 +41,9 @@ namespace Cats.Services.Hub
         public bool EditDispatch(Dispatch dispatch)
         {
             _unitOfWork.DispatchRepository.Edit(dispatch);
+
+            _IWorkflowActivityService.EnterEditWorkflow(dispatch);
+
             _unitOfWork.Save();
             return true;
 
@@ -109,7 +120,7 @@ namespace Cats.Services.Hub
 
             var query =
                 _unitOfWork.DispatchAllocationRepository.Get(t => t.FDPID == FDPID && t.RequisitionNo == RequisitionNo);
-                        
+
 
             FDPBalance balance = new FDPBalance();
             if (query.Count() > 0)
@@ -233,11 +244,11 @@ namespace Cats.Services.Hub
         }
 
         #region Added by banty
-        public DispatchViewModel CreateDispatchFromDispatchAllocation(Guid dispatchAllocationId,decimal quantityInUnit)
+        public DispatchViewModel CreateDispatchFromDispatchAllocation(Guid dispatchAllocationId, decimal quantityInUnit)
         {
-           
+
             var dispatchAllocation = _unitOfWork.DispatchAllocationRepository.FindById(dispatchAllocationId);
-            
+
             var dispatch = new DispatchViewModel();
             dispatch.BidNumber = dispatchAllocation.BidRefNo;
             dispatch.CreatedDate = DateTime.Today;
@@ -249,7 +260,7 @@ namespace Cats.Services.Hub
             dispatch.FDPID = dispatchAllocation.FDPID;
             dispatch.GIN = string.Empty;
             dispatch.HubID = dispatchAllocation.HubID;
-            if(dispatchAllocation.ProgramID.HasValue) dispatch.ProgramID = dispatchAllocation.ProgramID.Value;
+            if (dispatchAllocation.ProgramID.HasValue) dispatch.ProgramID = dispatchAllocation.ProgramID.Value;
             if (dispatchAllocation.Month.HasValue)
                 dispatch.Month = dispatchAllocation.Month.Value;
             if (dispatchAllocation.Year.HasValue)
@@ -259,15 +270,15 @@ namespace Cats.Services.Hub
             dispatch.Remark = string.Empty;
             dispatch.RequisitionNo = dispatchAllocation.RequisitionNo;
             dispatch.RequisitionId = dispatchAllocation.RequisitionId;
-            dispatch.ProgramID = dispatchAllocation.ProgramID.HasValue?dispatchAllocation.ProgramID.Value:0;
+            dispatch.ProgramID = dispatchAllocation.ProgramID.HasValue ? dispatchAllocation.ProgramID.Value : 0;
             if (dispatchAllocation.Round.HasValue)
                 dispatch.Round = dispatchAllocation.Round.Value;
             if (dispatchAllocation.TransporterID.HasValue)
                 dispatch.TransporterID = dispatchAllocation.TransporterID.Value;
-          
+
             dispatch.WeighBridgeTicketNumber = string.Empty;
 
-          //  Dispatch dispatchDetail = new DispatchDetail();
+            //  Dispatch dispatchDetail = new DispatchDetail();
 
             var parentCommodityId =
                 _unitOfWork.CommodityRepository.FindById(dispatchAllocation.CommodityID).ParentID ??
@@ -284,7 +295,7 @@ namespace Cats.Services.Hub
             dispatch.UnitID = dispatchAllocation.Unit;
             dispatch.ShippingInstructionID = dispatchAllocation.ShippingInstructionID;
             dispatch.ProjectCodeID = dispatchAllocation.ProjectCodeID;
-           // dispatch.PartitionId = 0;
+            // dispatch.PartitionId = 0;
 
             //dispatch.DispatchDetails.Add(dispatchDetail);
             dispatch.plannedAmount = dispatchAllocation.Amount;
@@ -303,7 +314,7 @@ namespace Cats.Services.Hub
             return _unitOfWork.DispatchRepository.Get(filter, null, includeProperties);
         }
 
-       
+
 
 
         public decimal GetFDPDispatch(int transportOrderId, int fdpId)
@@ -311,14 +322,14 @@ namespace Cats.Services.Hub
             var dispatchAllocation =
                 _unitOfWork.DispatchAllocationRepository.FindBy(
                     m => m.TransportOrderID == transportOrderId && m.FDPID == fdpId).FirstOrDefault();
-            if (dispatchAllocation!=null)
+            if (dispatchAllocation != null)
             {
                 var dispatch =
                     _unitOfWork.DispatchRepository.FindBy(
                         m => m.DispatchAllocationID == dispatchAllocation.DispatchAllocationID).FirstOrDefault();
-                if (dispatch!=null)
+                if (dispatch != null)
                 {
-                    return dispatch.DispatchDetails.Sum(m => m.DispatchedQuantityInMT*10); //return dispatched amount in quintal
+                    return dispatch.DispatchDetails.Sum(m => m.DispatchedQuantityInMT * 10); //return dispatched amount in quintal
                 }
 
             }
@@ -330,7 +341,7 @@ namespace Cats.Services.Hub
             try
             {
                 var despatchDetail = dispatch.DispatchDetails;
-                if (despatchDetail!=null)
+                if (despatchDetail != null)
                 {
                     var dispatchIds = new List<DispatchDetail>();
                     foreach (var dispatchD in despatchDetail)
@@ -342,7 +353,7 @@ namespace Cats.Services.Hub
                         foreach (var items in transaction)
                         {
                             var newTransactionItem = GetNewTranaction(items);
-                            
+
 
                             if (items.LedgerID == Models.Ledger.Constants.GOODS_IN_TRANSIT)
                             {
@@ -371,7 +382,7 @@ namespace Cats.Services.Hub
                         } //tranaction
 
                         dispatchIds.Add(dispatchD);
-                       
+
                     }
 
                     foreach (var dispatchDetail in dispatchIds)
@@ -380,7 +391,7 @@ namespace Cats.Services.Hub
                     }
                     _unitOfWork.DispatchRepository.Delete(dispatch);
                 }
-                
+
                 _unitOfWork.Save();
                 return true;
             }
@@ -394,27 +405,27 @@ namespace Cats.Services.Hub
         public Transaction GetNewTranaction(Transaction transaction)
         {
             var newTransaction = new Transaction
-                                     {
-                                         TransactionID = Guid.NewGuid(),
+            {
+                TransactionID = Guid.NewGuid(),
 
-                                         AccountID = transaction.AccountID,
-                                         ProgramID = transaction.ProgramID,
-                                         ParentCommodityID = transaction.CommodityID,
-                                         CommodityID = transaction.CommodityID,
-                                         FDPID = transaction.FDPID,
-                                         HubID = transaction.HubID,
-                                         HubOwnerID = transaction.HubOwnerID,
-                                         LedgerID = transaction.LedgerID,
-                                         QuantityInMT = transaction.QuantityInMT,
-                                         QuantityInUnit = transaction.QuantityInUnit,
-                                         ShippingInstructionID = transaction.ShippingInstructionID,
-                                         ProjectCodeID = transaction.ProjectCodeID,
-                                         Round = transaction.Round,
-                                         PlanId = transaction.PlanId,
-                                         TransactionDate = DateTime.Now,
-                                         UnitID = transaction.UnitID,
-                                         TransactionGroupID = transaction.TransactionGroupID
-                                     };
+                AccountID = transaction.AccountID,
+                ProgramID = transaction.ProgramID,
+                ParentCommodityID = transaction.CommodityID,
+                CommodityID = transaction.CommodityID,
+                FDPID = transaction.FDPID,
+                HubID = transaction.HubID,
+                HubOwnerID = transaction.HubOwnerID,
+                LedgerID = transaction.LedgerID,
+                QuantityInMT = transaction.QuantityInMT,
+                QuantityInUnit = transaction.QuantityInUnit,
+                ShippingInstructionID = transaction.ShippingInstructionID,
+                ProjectCodeID = transaction.ProjectCodeID,
+                Round = transaction.Round,
+                PlanId = transaction.PlanId,
+                TransactionDate = DateTime.Now,
+                UnitID = transaction.UnitID,
+                TransactionGroupID = transaction.TransactionGroupID
+            };
             return newTransaction;
 
         }
