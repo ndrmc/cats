@@ -17,7 +17,31 @@
         border: 1px solid #ddd;
     }
 
+    button {
+    border: none;
+    background-color: transparent;
+    outline: none;
+}
+button:focus {
+    border: none;
+}
 
+.loading{
+  float: left;
+    position: relative;
+    left: 600px;
+    top: 0px;
+ 
+      max-width:300px;
+       max-height:300px;
+}
+
+
+.loadingActivity{
+
+      max-width:150px;
+       max-height:150px;
+}
     .dedivtable {
         /*border: 1px solid #ddd;*/
         padding-left: 0px;
@@ -58,22 +82,24 @@
         <div class="portlet-body">
             @*<span class="loading-spnr-da da-data-indicator-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>*@
 
+            <img  class="loading"  ng-show="ctrlStatus.loadingDocument || ctrlStatus.loadingUser" src="~/Content/Icons/loading-x.gif" />
 
-            <div class=" table-responsive" style="overflow-x: hidden; min-height: 350px; ">
+            <div class=" table-responsive" style="overflow-x: hidden; min-height: 350px; " >
 
-                <div class="row form-horizontal " style="min-height: 100px;">
+                <div class="row form-horizontal " style="min-height: 100px;"  ng-hide="ctrlStatus.loadingDocument ||  ctrlStatus.loadingUser">
                     <div class="col-sm-2 ">
 
                         <Label><small>Start Date</small></Label>
-                        <input id="DAIStartDate" type="text" class="form-control " placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
+                        <input id="startDateDataIndicator" type="text" class="form-control cats-datepicker2 " placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
+
                     </div>
                     <div class="col-sm-2 ">
                         <Label><small>End Date</small></Label>
-                        <input type="text" id="DAIEndDate" class="form-control  " placeholder="End Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedEndDate" title="Enter End Date">
+                        <input type="text" id="endDateDataIndicator" class="form-control  cats-datepicker2 " placeholder="End Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedEndDate" title="Enter End Date">
 
                     </div>
 
-                    <div class="col-sm-2">
+                    <div class="col-sm-2" >
                         <Label><small>  User</small></Label>
 
                         <select id="User" multiple="multiple" ng-disabled="ctrlStatus.loadingUser" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
@@ -83,19 +109,20 @@
                         </select>
 
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-2" >
 
 
                         <Label><small>Activity</small></Label>
-                        <select id="Activity" multiple="multiple" ng-disabled="ctrlStatus.loadingActivity" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
+                        <img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading.gif" />
 
+                        <select id="Activity" multiple="multiple" ng-hide="ctrlStatus.loadingActivity" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
                             <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
                         </select>
 
                     </div>
 
 
-                    <div class="col-sm-2">
+                    <div class="col-sm-2"  >
                         <Label><small>Document</small></Label>
                         <select id="Document" class="form-control" data-toggle="tooltip" ng-disabled="ctrlStatus.loadingDocument" data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
                             <option ng-repeat="document in controlData.lookupDocument| orderBy : 'name'" value="{{document.name}}">{{document.name}}</option>
@@ -104,8 +131,10 @@
                     </div>
 
                     <div class="col-sm-2 ">
-
-                        <button type="button" ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" class="btn green " data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i ng-show="!searching" class="fa fa-search ">Get</i>  <i class="fa fa-cog fa-spin" ng-show="searching"></i> </button>
+                        <button type="button"  ng-hide="searching" ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Get Activities based on the Criteria">
+                        <h4 ><img src="~/Content/Icons/Search Icon.png" class="text-warning" style="max-width:45px; max-height:50px;" /><span><strong>Get</strong></span></h4> </button>
+                                    
+                         <p class="text-info" ng-show="searching"><img src="~/Content/Icons/search.gif" style="max-width:65px; max-height:70px;" />Searching... </p>
 
                     </div>
 
