@@ -40,14 +40,14 @@
     };
 
     function getStartDate() {
-        return $scope.filterData.selectedStartDate;
-        //return $("#DIAStartDate").val();
+         
+        return $("#startDateDataIndicator").val();
     }
 
     function getEndDate() {
-        return $scope.filterData.selectedEndDate;
+  
 
-        //return $("#DIAEndDate").val();
+        return $("#endDateDataIndicator").val();
     }
 
     $scope.calcColumnTotal = function (columnName) {
