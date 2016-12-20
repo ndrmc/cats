@@ -112,12 +112,10 @@ button:focus {
                                     <div class="col-sm-2">
                                         <Label><small>  User</small></Label>
 
-                                        <select id="User" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
+                                        <select id="User" multiple="multiple" ng-disabled="ctrlStatus.loadingUser" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
                                             <option value="@Cats.Services.Workflows.Constants.SelectOption_AllwithData">@Cats.Services.Workflows.Constants.SelectOption_AllwithData </option>
 
-
-
-                                            <option ng-repeat="user in controlData.lookupUsers" value="{{user.name}}">{{user.name}}</option>
+                                            <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
                                         </select>
 
                                     </div>
@@ -127,21 +125,19 @@ button:focus {
 
 
                                         <Label><small>Activity</small></Label>
-                                        <img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading-x.gif" />
+                                        <img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading.gif" />
 
-                                        <select id="Activity" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
-                                            <option ng-repeat="activity in controlData.lookupActivities" value="{{activity.name}}">{{activity.name}}</option>
+                                        <select id="Activity" multiple="multiple" ng-hide="ctrlStatus.loadingActivity" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
+                                            <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
                                         </select>
-
                                     </div>
                                 </td>
                                 <td>
 
                                     <div class="col-sm-2">
                                         <Label><small>Document</small></Label>
-                                        <select id="Document" class="form-control" data-toggle="tooltip" data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
-                                        
-                                                <option ng-repeat="document in controlData.lookupDocument" value="{{document.name}}">{{document.name}}</option>
+                                        <select id="Document" class="form-control" data-toggle="tooltip" ng-disabled="ctrlStatus.loadingDocument" data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
+                                            <option ng-repeat="document in controlData.lookupDocument| orderBy : 'name'" value="{{document.name}}">{{document.name}}</option>
 
                                         </select>
                                     </div>
