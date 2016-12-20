@@ -108,6 +108,7 @@
 
                 $scope.controlData.lookupDocument = result.data;
 
+                $scope.ctrlStatus.loadingDocument = false;
 
                 if ($scope.controlData.lookupDocument.length > 0) {
                     $scope.filterData.selectedDocument = $scope.controlData.lookupDocument[0].name;
@@ -116,7 +117,6 @@
                     populateActivityCombo($scope.filterData.selectedDocument);
                 }
 
-                $scope.ctrlStatus.loadingDocument = false;
 
             });
 
@@ -164,7 +164,7 @@
 
         DataServices.getAllStateTemplate(selectedWorkflow).then(function (result) {
             $scope.controlData.lookupActivities = result.data;
-            buildTableStructure();
+            //buildTableStructure();
             $scope.ctrlStatus.loadingActivity = false;
 
 
