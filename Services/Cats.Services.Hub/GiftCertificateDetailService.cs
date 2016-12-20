@@ -33,9 +33,14 @@ namespace Cats.Services.Hub
         {
             _unitOfWork.GiftCertificateDetailRepository.Add(giftCertificateDetail);
 
-            _IWorkflowActivityService.EnterEditWorkflow(giftCertificateDetail.GiftCertificate, "Child Gift Certificate Have Been Added");
+            
 
             _unitOfWork.Save();
+
+            var giftCertificate = _unitOfWork.GiftCertificateRepository.FindById(giftCertificateDetail.GiftCertificateID);
+
+            _IWorkflowActivityService.EnterEditWorkflow(giftCertificate, "Detail of Gift Certificate Have Been Added.");
+
             return true;
 
         }
@@ -52,6 +57,9 @@ namespace Cats.Services.Hub
         public bool DeleteGiftCertificateDetail(GiftCertificateDetail giftCertificateDetail)
         {
             if (giftCertificateDetail == null) return false;
+
+            _IWorkflowActivityService.EnterEditWorkflow(giftCertificateDetail.GiftCertificate, "Detail of Gift Certificate Have Been Deleted.");
+
             _unitOfWork.GiftCertificateDetailRepository.Delete(giftCertificateDetail);
             _unitOfWork.Save();
             return true;
@@ -60,6 +68,9 @@ namespace Cats.Services.Hub
         {
             var entity = _unitOfWork.GiftCertificateDetailRepository.FindById(id);
             if (entity == null) return false;
+
+            _IWorkflowActivityService.EnterEditWorkflow(entity.GiftCertificate, "Detail of Gift Certificate Have Been Deleted.");
+
             _unitOfWork.GiftCertificateDetailRepository.Delete(entity);
             _unitOfWork.Save();
             return true;

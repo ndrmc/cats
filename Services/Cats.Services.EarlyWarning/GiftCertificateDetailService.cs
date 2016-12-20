@@ -29,12 +29,13 @@ namespace Cats.Services.EarlyWarning
         {
             _unitOfWork.GiftCertificateDetailRepository.Add(giftCertificateDetail);
 
-            _IWorkflowActivityService.EnterEditWorkflow(giftCertificateDetail.GiftCertificate, "Child Gift Certificate Have Been Added");
-
-
-
-
+             
             _unitOfWork.Save();
+
+            var giftCertificate = _unitOfWork.GiftCertificateRepository.FindById(giftCertificateDetail.GiftCertificateID);
+
+            _IWorkflowActivityService.EnterEditWorkflow(giftCertificate, "Detail of Gift Certificate Have Been Added.");
+            
             return true;
 
         }
@@ -43,7 +44,7 @@ namespace Cats.Services.EarlyWarning
             _unitOfWork.GiftCertificateDetailRepository.Edit(giftCertificateDetail);
 
 
-            _IWorkflowActivityService.EnterEditWorkflow(giftCertificateDetail.GiftCertificate, "Child Gift Certificate Have Been Edited");
+            _IWorkflowActivityService.EnterEditWorkflow(giftCertificateDetail.GiftCertificate, "Detail of Gift Certificate Have Been Edited.");
 
 
             _unitOfWork.Save();
@@ -53,6 +54,8 @@ namespace Cats.Services.EarlyWarning
         public bool DeleteGiftCertificateDetail(GiftCertificateDetail giftCertificateDetail)
         {
             if (giftCertificateDetail == null) return false;
+            _IWorkflowActivityService.EnterEditWorkflow(giftCertificateDetail.GiftCertificate, "Detail of Gift Certificate Have Been Deleted.");
+
             _unitOfWork.GiftCertificateDetailRepository.Delete(giftCertificateDetail);
             _unitOfWork.Save();
             return true;
@@ -60,8 +63,10 @@ namespace Cats.Services.EarlyWarning
         public bool DeleteById(int id)
         {
             var entity = _unitOfWork.GiftCertificateDetailRepository.FindById(id);
+
             if (entity == null) return false;
-            _unitOfWork.GiftCertificateDetailRepository.Delete(entity);
+            _IWorkflowActivityService.EnterEditWorkflow(entity.GiftCertificate, "Detail of Gift Certificate Have Been Deleted.");
+
             _unitOfWork.Save();
             return true;
         }
