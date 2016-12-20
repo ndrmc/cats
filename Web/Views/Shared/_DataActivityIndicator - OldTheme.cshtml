@@ -6,7 +6,29 @@
         border: 1px solid #ddd;
     }
 
+    
+    button {
+    border: none;
+    background-color: transparent;
+    outline: none;
+}
+button:focus {
+    border: none;
+}
+.loadingActivity{
 
+      max-width:150px;
+       max-height:150px;
+}
+.loading{
+  float: left;
+    position: relative;
+    left: 400px;
+    top: 0px;
+ 
+      max-width:300px;
+       max-height:300px;
+}
     .dedivtable {
         /*border: 1px solid #ddd;*/
         padding-left: 0px;
@@ -64,8 +86,9 @@
              
                     
                     @*<div class="row table-responsive" style="min-height: 100px;">*@
+                    <img class="loading" ng-show="ctrlStatus.loadingDocument || ctrlStatus.loadingUser" src="~/Content/Icons/loading-x.gif" />
 
-                    <div class="col-sm-12  table-responsive ">
+                    <div class="col-sm-12  table-responsive " ng-hide="ctrlStatus.loadingDocument ||  ctrlStatus.loadingUser">
                         <table>
                             <tr>
                                 <td>
@@ -104,6 +127,8 @@
 
 
                                         <Label><small>Activity</small></Label>
+                                        <img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading-x.gif" />
+
                                         <select id="Activity" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
                                             <option ng-repeat="activity in controlData.lookupActivities" value="{{activity.name}}">{{activity.name}}</option>
                                         </select>
@@ -123,9 +148,12 @@
                                 </td>
                                 <td>
                                 <div class="col-sm-2 ">
-                                    <Label><small> Get</small></Label>
-                                    <button type="button" ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" class="btn green " data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i ng-show="!searching" class="fa fa-search ">Get</i>  <i class="fa fa-cog fa-spin" ng-show="searching"></i> </button>
-                                </div>
+                                    <button type="button" ng-hide="searching" ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Get Activities based on the Criteria">
+                                        <h4><img src="~/Content/Icons/Search Icon.png" class="text-warning" style="max-width:45px; max-height:50px;" /><span><strong>Get</strong></span></h4>
+                                    </button>
+
+                                    <p class="text-info" ng-show="searching"><img src="~/Content/Icons/search.gif" style="max-width:65px; max-height:70px;" />Searching... </p>
+    </div>
                                 </td>
                             </tr>
                         </table>
