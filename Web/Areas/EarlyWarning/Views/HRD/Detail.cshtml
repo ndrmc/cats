@@ -5,75 +5,68 @@
 @model System.Data.DataTable
 @{
     ViewBag.Title = "Create";
-    Layout = "~/Views/Shared/_CATSLayout.cshtml";
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("HRD Detail");
+    ViewBag.PageTitleDescription = "";
 }
 
-@section Title
-{
-Plans
-}
-
-@section PageTitle
-{
-    <h1 class="hdr-blck big ">
-        @Html.Translate("HRD Detail")
-    </h1>
-}
 <div class="row">
     @Html.Partial("_HRDLeftBar")
-    <div class="col-md-10  col-sm-9">
-        <div class=" box box-primary ">
-            <div class="box-body row">
-                <div class="text-right col-md-12">
+    <div class="col-md-9">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="icon-list font-green-sharp"></i>
+                    <span class="caption-subject bold uppercase"> @Html.Translate("HRD Details")</span>
+                </div>
+                <div class="tools">
+                    <a href="#" class="collapse" data-original-title="" title=""></a>
+                </div>
+                <div class="actions">
                     @if (ViewBag.HrdStatus == "Draft" || ViewBag.HrdStatus == "Edited")
                     {
                         @Html.EarlyWarningOperationButton(
-                            @Url.Action("HRDDetail", "HRD", new {id = ViewBag.HRDID}),
-                            EarlyWarningConstants.Operation.Modify_HRD, "<button type=\"button\" class=\"btn btn-primary\"><span class=\"fa fa-list\"></span> HRD Detail</button>", "btn", "btn_edit")
+                            @Url.Action("HRDDetail", "HRD", new { id = ViewBag.HRDID }),
+                            EarlyWarningConstants.Operation.Modify_HRD, "<button type=\"button\" class=\"btn green btn-sm\"><span class=\"fa fa-list\"></span> HRD Detail</button>", "btn", "btn_edit")
                     }
-                    else if(ViewBag.HrdStatus == "Reverted")
+                    else if (ViewBag.HrdStatus == "Reverted")
                     {
                         @Html.EarlyWarningOperationButton(
                             @Url.Action("HRDDetail", "HRD", new { id = ViewBag.HRDID }),
-                            EarlyWarningConstants.Operation.Modify_Approved_HRD, "<button type=\"button\" class=\"btn btn-primary\"><span class=\"fa fa-list\"></span> HRD Detail</button>", "btn", "btn_edit")
+                            EarlyWarningConstants.Operation.Modify_Approved_HRD, "<button type=\"button\" class=\"btn green btn-sm\"><span class=\"fa fa-list\"></span> HRD Detail</button>", "btn", "btn_edit")
                     }
+                    <a class="btn btn-icon-only btn-default fullscreen"></a>
                 </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-responsive" style="overflow-x: visible !important;">
+                    @(Html.Kendo().Grid(Model)
+                              .Name("Grid")
+                              .Columns(columns =>
+                              {
+                                  foreach (System.Data.DataColumn column in Model.Columns)
+                                  {
+                                      if (column.DataType == typeof(decimal))
+                                      {
+                                          columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N2}");
+                                      }
+                                      else if (column.DataType == typeof(int))
+                                      {
+                                          columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N0}");
+                                      }
+                                      else
+                                      {
+                                          columns.Bound(column.ColumnName);
+                                      }
 
-                <div class="col-md-12">
-                    <div class="table-responsive">
-                        @(Html.Kendo().Grid(Model)
-    .Name("Grid")
-    .Columns(columns =>
-    {
-        foreach (System.Data.DataColumn column in Model.Columns)
-        {
-            if (column.DataType == typeof(decimal))
-            { columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N2}"); }
-            else if (column.DataType == typeof(int))
-            {
-                columns.Bound(column.ColumnName).HtmlAttributes(new { align = "right" }).Format("{0:N0}");
-            }
-            else
-            {
-                columns.Bound(column.ColumnName);
-            }
-
-        }
-    })
-                                //.Pageable(t=>t.PageSizes(new []{10,15,20,30,50,100}))
-
-    .HtmlAttributes(new { style = "height: 430px" })
-    .Sortable()
-   .Scrollable()
-   .Groupable()
- 
-   
-    )
-
-
-                    </div>
+                                  }
+                              })
+                              .HtmlAttributes(new { style = "height: 430px" })
+                              .Sortable()
+                              .Scrollable()
+                              .Groupable()
+                    )
                 </div>
-
             </div>
         </div>
     </div>
