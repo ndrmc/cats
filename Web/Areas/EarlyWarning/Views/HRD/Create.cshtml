@@ -7,167 +7,135 @@
 
 @{
     ViewBag.Title = "Create";
-    Layout = "~/Views/Shared/_CATSLayout.cshtml";
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("Create HRD");
+    ViewBag.PageTitleDescription = "";
     const string pageName = "EarlyWarning.HRD.Create";
-}
-
-@section Title
-{
-Plans
-}
-
-@section PageTitle
-{
-    <h1 class="hdr-blck big ">
-        @Html.Translate("Creat HRD")
-    </h1>
 }
 
 <div class="row">
     @Html.Partial("_HRDLeftBar")
-    <div class="col-md-10  col-sm-9">
-        <div class=" box box-primary ">
-             @using (Html.BeginForm("Create", "HRD", FormMethod.Post, new { id = "frm_create_hrd" }))
-             {
-            <div class="box-body row">
-               
+    <div class="col-md-9">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="icon-list font-green-sharp"></i>
+                    <span class="caption-subject bold uppercase"> @Html.Translate("HRD Info")</span>
+                </div>
+                <div class="tools">
+                    <a href="#" class="collapse" data-original-title="" title=""></a>
+                </div>
+                <div class="actions">
+                    <a class="btn green btn-sm" data-buttontype="btn_save" onclick="javascript: document.getElementById('frm_create_hrd').submit()" data-submittedform="frm_Edit_hrd"><span class="fa fa-save"></span> @Html.Translate("Save")</a>
+                    <a class="btn red btn-sm" href="@Url.Action("Index", "HRD")"><span class="fa fa-times-circle"></span> @Html.Translate("Cancel")</a>
+                    <a class="btn btn-icon-only btn-default fullscreen"></a>
+                </div>
+            </div>
+            <div class="portlet-body row">
+                @using (Html.BeginForm("Create", "HRD", FormMethod.Post, new {id = "frm_create_hrd", @class = "form-horizontal"}))
+                {
+                    <div class="col-md-offset-1 col-md-6">
+                        <div class="form-group">
 
-                <div class="col-md-6 col-sm-6 form-horizontal">
-           
-                    <div class="form-group">
-                       
-                        @Html.Label(@Html.Translate2(pageName, "HRD Name"), new { @class = "col-sm-4 control-label" })
-                        
-                        <div class="col-sm-8">
-                            @Html.TextBoxFor(m => m.Plan.PlanName, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.Plan.PlanName)
+                            @Html.Label(@Html.Translate2(pageName, "HRD Name"), new {@class = "col-sm-4 control-label"})
+
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(m => m.Plan.PlanName, new {@class = "form-control"})
+                                <span class="help-block"> @Html.ValidationMessageFor(m => m.Plan.PlanName)</span>
+                            </div>
+
                         </div>
+                        <div class="form-group">
 
-                    </div>
-                
-                    <div class="form-group">
-                        
-                        @Html.LabelFor(m => m.Year, Translator.Translate("Year (EC)"), new { @class = "col-sm-4 control-label" })
-                        
-                        <div class="col-sm-8">
-                            @Html.TextBox("Year", @DateTime.Now.Year - 8, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.Year)
-                            @if (@ViewBag.Error != null)
-                            {
-                                <span class="alert alert-error">
+                            @Html.LabelFor(m => m.Year, Translator.Translate("Year (EC)"), new {@class = "col-sm-4 control-label"})
+
+                            <div class="col-sm-8">
+                                @Html.TextBox("Year", @DateTime.Now.Year - 8, new {@class = "form-control"})
+                                <span class="help-block"> @Html.ValidationMessageFor(m => m.Year)</span>
+                                @if (@ViewBag.Error != null)
+                                {
+                                    <span class="alert alert-error">
                                     @ViewBag.Error
                                 </span>
-                            }
-                        </div>
+                                }
+                            </div>
 
-                    </div>
-               
-                    <div class="form-group">
-                       
-                        @Html.Label(Translator.Translate("HRD From"), new { @class = "col-sm-4 control-label cats-date-pref" })
-                       
-                        <div class="col-sm-8">
-                            @Html.TextBoxFor(m => m.Plan.StartDate, new { @class = "form-control cats-datepicker2" })
-                            @Html.ValidationMessageFor(m => m.Plan.StartDate)
                         </div>
-                    </div>
-               
-                    <div class="form-group">
-                       
-                        @Html.LabelFor(m => m.SeasonID, new { @class = "col-sm-4 control-label" })
-                        
-                        <div class="col-sm-8">
-                            @Html.DropDownList("SeasonID", null, String.Empty, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.SeasonID)
-                        </div>
+                        <div class="form-group">
 
-                    </div>
-                
-                    <div class="form-group">
-                        
-                            
-                        @Html.LabelFor(m => m.Plan.Duration, @Html.Translate2(pageName, "Duration"), new { @class = "col-sm-4 control-label" })
-                       
-                        <div class="col-sm-8">
-                            @Html.TextBoxFor(m => m.Plan.Duration, new { @class = "form-control" })
-                            <a id="btnDate"  @*href="@Url.Action("DateInterval", "HRD", new { area = "EarlyWarning", startDate = "4/15/2014", duration = 6 })"*@>View Date Interval</a>
-                       
-                            @Html.ValidationMessageFor(m => m.Plan.Duration)
-                        </div>
+                            @Html.Label(Translator.Translate("HRD From"), new {@class = "col-sm-4 control-label cats-date-pref"})
 
-                    </div>
-                
-                    <div class="form-group">
-                       
-                        @Html.LabelFor(m => m.RationID, "Ration", new { @class = "col-sm-4 control-label" })
-                        
-                        <div class="col-sm-8">
-                            @Html.DropDownList("RationID", null, String.Empty, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.RationID)
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(m => m.Plan.StartDate, new {@class = "form-control cats-datepicker2"})
+                                <span class="help-block"> @Html.ValidationMessageFor(m => m.Plan.StartDate)</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            @Html.LabelFor(m => m.SeasonID, new {@class = "col-sm-4 control-label"})
+
+                            <div class="col-sm-8">
+                                @Html.DropDownList("SeasonID", null, String.Empty, new {@class = "form-control"})
+                                <span class="help-block"> @Html.ValidationMessageFor(m => m.SeasonID)</span>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+
+
+                            @Html.LabelFor(m => m.Plan.Duration, @Html.Translate2(pageName, "Duration"), new {@class = "col-sm-4 control-label"})
+
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(m => m.Plan.Duration, new {@class = "form-control"})
+                                <a id="btnDate" @*href="@Url.Action("DateInterval", "HRD", new { area = "EarlyWarning", startDate = "4/15/2014", duration = 6 })"*@>View Date Interval</a>
+
+                                <span class="help-block"> @Html.ValidationMessageFor(m => m.Plan.Duration)</span>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+
+                            @Html.LabelFor(m => m.RationID, "Ration", new {@class = "col-sm-4 control-label"})
+
+                            <div class="col-sm-8">
+                                @Html.DropDownList("RationID", null, String.Empty, new {@class = "form-control"})
+                                <span class="help-block"> @Html.ValidationMessageFor(m => m.RationID)</span>
+                            </div>
                         </div>
                     </div>
-               
-
-              
-           
-                </div>
-               
-
+                }
             </div>
-                    <div class="box-footer text-center">
-                        <button class="btn btn-primary " data-buttontype="btn_save" type="submit" data-submittedform="frm_create_hrd"><span class="fa fa-save"></span> Save</button>
-                        <a class="btn  btn-default"  href="@Url.Action("Index", "HRD")"><span class="fa fa-lg fa-times-circle"></span> Cancel</a>
-                    </div>
-             }
         </div>
     </div>
 </div>
 
 <div id="cats-modal"></div>
 
-
-
-
-<div id='dialogDiv' class='modal hide fade in' style="width: 620px;margin-right: 10px">
+<div id='dialogDiv' class='modal hide fade in' style="width: 620px; margin-right: 10px">
     <div id='dialogContent'></div>
 </div>
 
-
-   
-
+<div class="modal fade" tabindex="-1" aria-hidden="true" id="dateIntervalDialog"></div>
 
 <script type="text/javascript">
     $(function () {
-        
-        
         $.ajaxSetup({ cache: false });
-
         $('#btnDate').click(function (e) {
-            
             $('#cats-modal').remove();
             e.preventDefault();
             var startDate = new Date($('#Plan_StartDate').val());
             //var startDate = $('#Plan_StartDate').val();
             var duration = $('#Plan_Duration').val();
-
             var fullDate = startDate.getMonth() + 1 + '/' + startDate.getDate() + '/' + startDate.getFullYear();
             var url = '@Url.Action("DateInterval", "HRD")?duration=' + duration + '&startDate=' + fullDate;
                  var $modal = $('<div class="modal" id="cats-modal"><div class="modal-body"></div></div>');
                  console.log(url);
-                 $('body').append($modal);
-                 $modal.modal({ backdrop: 'static', keyboard: false });
-                 $modal.load(url);
+                 $.get(url, function (data) {
+                     $("#dateIntervalDialog").html(data);
+                     $("#dateIntervalDialog").modal();
+                 });
+
         });
 
     });
-
-    @*function GetDateInterval() {
-        var starDate = $('#Plan_StartDate').val();
-        var duration = $('#Plan_Duration').val();
-        alert(startDate);
-                
-        //document.getElementById('content').style.display = 'block';
-        //document.getElementById('content').innerHTML = starDate + ", " + duration;
-        var url="@Url.Action("DateInterval", "HRD")" + "?duration=" + duration + "&startDate=" + starDate;
-    }*@
 </script>
