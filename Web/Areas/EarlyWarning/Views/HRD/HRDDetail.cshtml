@@ -7,160 +7,150 @@
 @using LanguageHelpers.Localization
 @model  Cats.Models.HRD
 @{
-    ViewBag.Title = "HRDDetail";
-    Layout = "~/Views/Shared/_MainLayout.cshtml";    
-}
-
-
-@{
-    
     var user = (UserIdentity)System.Web.HttpContext.Current.User.Identity;
     var unit = user.Profile.PreferedWeightMeasurment;
+    ViewBag.Title = "HRDDetail";
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("HRD Detail for") + " " + ViewBag.SeasonID + " " + ViewBag.Year;
+    ViewBag.PageTitleDescription = "";
 }
+
 @section Toolbar
 {
-
     @Html.EarlyWarningOperationButton(
                         @Url.Action("Detail", "HRD", new {id = ViewBag.HRDID}),
-                        EarlyWarningConstants.Operation.View_HRD_Detail, "<i class=\"icon-list\"></i>", "btn", "btn_back_to_list")
-     <a class="btn toolbar-btn " data-buttontype="btn_save" href="javascript:saverecords()"></a>
-    <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="javascript:cancelChanges()"></a>
-    <a id="btnAddWoreda" class="btn toolbar-btn " href="@Url.Action("AddWoreda", "HRD", new { id = Model.HRDID })">@Html.Translate("Add Woreda")</a>
+                        EarlyWarningConstants.Operation.View_HRD_Detail, "<i class=\"fa fa-list\"></i> " + Html.Translate("Back to List"), "'btn btn-fit-height grey-salt'", "", "btn_back_to_list")
 }
-
-@section LeftBar
-{
-    @Html.Partial("_HRDLeftBar")
-}
-<script type="text/javascript">
-    $(function () {
-
-        //Optional: turn the chache off
-        $.ajaxSetup({ cache: false });
-
-        $('#btnAddWoreda').click(function () {
-
-            // alert("");
-            $('#dialogContent').load(this.href, function () {
-                $('#dialogDiv').modal({
-                    backdrop: 'static',
-                    keyboard: true
-                }, 'show');
-                //bindForm(this);
-            });
-            return false;
-        });
-    });
-</script>
-
-<div id='dialogDiv' class='modal hide fade in'>
-    <div id='dialogContent'></div>
+<div class="modal fade" tabindex="-1" aria-hidden="true" id="dialogDiv">
+    <div class="modal-dialog">
+        <div class="modal-content" id="dialogDivContent">
+        </div>
+    </div>
 </div>
-<div>
-    <h4>HRD Detail for @ViewBag.SeasonID @ViewBag.Year</h4>
-   
-</div>
- <div class="control-group form-horizontal well">
-     <div class="row">
-         <div class="span4">
-         <div class="control-group">
-             <div class="control-label">
-                 @Html.Label(Html.Translate("Ration"))
-             </div>
-             <div class="controls">
-                 @Html.TextBoxFor(m=>m.Ration.RefrenceNumber)
-             </div>
 
-         </div>
-     </div>
-         <div class="span6">
-             <div class="control-group">
-                 <div class="control-label">
-                     @Html.Label(Html.Translate("Year (EC)"))
-                 </div>
-                 <div class="controls">
-                     @Html.TextBoxFor(m=>m.Year)
-                 </div>
+        <div class="row">
+            @Html.Partial("_HRDLeftBar")
+            <div class="col-md-9">
+                <div class="form-horizontal well">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="control-label col-md-6">
+                                    @Html.Label(Html.Translate("Ration"))
+                                </div>
+                                <div class=" col-md-6">
+                                    @Html.TextBoxFor(m => m.Ration.RefrenceNumber, new {@class="form-control"})
+                                </div>
 
-             </div>
-         </div>
-     
-     </div>
-     </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="control-label col-md-6">
+                                    @Html.Label(Html.Translate("Year (EC)"))
+                                </div>
+                                <div class=" col-md-6">
+                                    @Html.TextBoxFor(m => m.Year, new { @class = "form-control" })
+                                </div>
 
-@(Html.Kendo().Grid<Cats.Models.ViewModels.HRD.HRDDetailViewModel>() 
-.Name("grid").Columns(columns =>
-         {
-             columns.Bound(p => p.Region).Width(15).HtmlAttributes(new { style = "background-color:lightgray" });
-             columns.Bound(p => p.Zone).Width(40).HtmlAttributes(new { style = "background-color:lightgray" });
-             columns.Bound(p => p.Woreda).Width(40).HtmlAttributes(new { style = "background-color:lightgray" });
-             columns.Bound(p => p.NumberOfBeneficiaries).Width(40).Title("Beneficiary").ClientGroupFooterTemplate("<div style='float: right'>#= kendo.toString(sum, 'N2') #</div>").HtmlAttributes(new { align = "Right" });
-             columns.Bound(p => p.DurationOfAssistance).Width(40).Title(Html.Translate("Duration")).HtmlAttributes(new { align = "Right" });
-             columns.ForeignKey(p => p.StartingMonth, (IEnumerable) ViewData["Month"], "Id", "Name").Width(40);
-             //columns.Bound(p => p.Cereal).Title("Cereal " + @unit).Format("{0:N}").HtmlAttributes(new { align = "Right" });
-             //columns.Bound(p => p.BlendedFood).Title("BleendedFood " +@unit).Format("{0:N}").Title("B.Food").HtmlAttributes(new { align = "Right" });
-             //columns.Bound(p => p.Oil).Title("Oil " +@unit ).Format("{0:N}").HtmlAttributes(new { align = "Right" });
-             //columns.Bound(p => p.Pulse).Title("Pulse "+@unit).Format("{0:N}").HtmlAttributes(new {align = "Right"});
-             //columns.Bound(p => p.Total).Title("Total" +@unit).Format("{0:N}").HtmlAttributes(new { align = "Right" });
-             //columns.Bound(p => p.subTotalQuantity).ClientFooterTemplate("#= kendo.format('{0:c}', sum)#"); 
-             //ClientFooterTemplate("<div class=aright>#=sum#</div>").Format("{0:N}")
-         })
-         
-      //.ToolBar(toolBar => toolBar.Save())
-      .Editable(editable => editable.Mode(GridEditMode.InCell))
-      .Events(events => events.DataBound("onDataBound"))
-      //.Pageable()
-      .Scrollable()
-      .Groupable()
-      .Sortable()
-      .HtmlAttributes(new { style = "height: 450px" })
-      .Navigatable()
-    .DataSource(datasource=>datasource
-    .Ajax()
-    .Aggregates(aggregates =>
-                    {
-                        aggregates.Add(p => p.NumberOfBeneficiaries).Sum();
-                        //aggregates.Add(p => p.UnitsOnOrder).Average();
-                        //aggregates.Add(p => p.ProductName).Count();
-                        //aggregates.Add(p => p.UnitPrice).Sum();
-                    })
-    .Group(group =>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-green-sharp">
+                            <i class="icon-list font-green-sharp"></i>
+                            <span class="caption-subject bold uppercase"> @Html.Translate("HRD Detail")</span>
+                        </div>
+                        <div class="tools">
+                            <a href="#" class="collapse" data-original-title="" title=""></a>
+                        </div>
+                        <div class="actions">
+                            <a class="btn green btn-sm" data-buttontype="btn_save" href="javascript:saverecords()"><span class="fa fa-save"></span> @Html.Translate("Save")</a>
+                            <a class="btn red btn-sm" data-buttontype="btn_cancel" href="javascript:cancelChanges()"><span class="fa fa-times-circle"></span> @Html.Translate("Cancel")</a>
+                            <a id="btnAddWoreda" class="btn btn-sm btn-default blue-stripe" href="@Url.Action("AddWoreda", "HRD", new { id = Model.HRDID })"><span class="fa fa-plus"></span> @Html.Translate("Add Woreda")</a>
+                            <a class="btn btn-icon-only btn-default fullscreen"></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+
+                        @(Html.Kendo().Grid<Cats.Models.ViewModels.HRD.HRDDetailViewModel>()
+    .Name("grid").Columns(columns =>
+    {
+        columns.Bound(p => p.Region).Width(15).HtmlAttributes(new { style = "background-color:lightgray" });
+        columns.Bound(p => p.Zone).Width(40).HtmlAttributes(new { style = "background-color:lightgray" });
+        columns.Bound(p => p.Woreda).Width(40).HtmlAttributes(new { style = "background-color:lightgray" });
+        columns.Bound(p => p.NumberOfBeneficiaries).Width(40).Title("Beneficiary").ClientGroupFooterTemplate("<div style='float: right'>#= kendo.toString(sum, 'N2') #</div>").HtmlAttributes(new { align = "Right" });
+        columns.Bound(p => p.DurationOfAssistance).Width(40).Title(Html.Translate("Duration")).HtmlAttributes(new { align = "Right" });
+        columns.ForeignKey(p => p.StartingMonth, (IEnumerable)ViewData["Month"], "Id", "Name").Width(40);
+        //columns.Bound(p => p.Cereal).Title("Cereal " + @unit).Format("{0:N}").HtmlAttributes(new { align = "Right" });
+        //columns.Bound(p => p.BlendedFood).Title("BleendedFood " +@unit).Format("{0:N}").Title("B.Food").HtmlAttributes(new { align = "Right" });
+        //columns.Bound(p => p.Oil).Title("Oil " +@unit ).Format("{0:N}").HtmlAttributes(new { align = "Right" });
+        //columns.Bound(p => p.Pulse).Title("Pulse "+@unit).Format("{0:N}").HtmlAttributes(new {align = "Right"});
+        //columns.Bound(p => p.Total).Title("Total" +@unit).Format("{0:N}").HtmlAttributes(new { align = "Right" });
+        //columns.Bound(p => p.subTotalQuantity).ClientFooterTemplate("#= kendo.format('{0:c}', sum)#");
+        //ClientFooterTemplate("<div class=aright>#=sum#</div>").Format("{0:N}")
+    })
+
+          //.ToolBar(toolBar => toolBar.Save())
+          .Editable(editable => editable.Mode(GridEditMode.InCell))
+          .Events(events => events.DataBound("onDataBound"))
+          //.Pageable()
+          .Scrollable()
+          .Groupable()
+          .Sortable()
+          .HtmlAttributes(new { style = "height: 450px" })
+          .Navigatable()
+        .DataSource(datasource => datasource
+        .Ajax()
+        .Aggregates(aggregates =>
+        {
+            aggregates.Add(p => p.NumberOfBeneficiaries).Sum();
+            //aggregates.Add(p => p.UnitsOnOrder).Average();
+            //aggregates.Add(p => p.ProductName).Count();
+            //aggregates.Add(p => p.UnitPrice).Sum();
+        })
+        .Group(group =>
         {
             group.Add(m => m.Region);
             group.Add(m => m.Zone);
         })
-              //.PageSize(15)
-       .Events(events => events.Error("error_handler"))
-       .Events(events => events.Change("onGridKeydown"))
-       .Model(model =>
-                    {
-                        model.Id(p => p.HRDID);
-                        model.Field(p => p.HRDDetailID);
-                        model.Field(p => p.StartingMonth);
-                        //model.Field(p => p.Oil).Editable(false);
-                        //model.Field(p => p.Pulse).Editable(false);
-                        //model.Field(p => p.Cereal).Editable(false);
-                        //model.Field(p => p.BlendedFood).Editable(false);
-                        model.Field(p => p.Region).Editable(false);
-                        model.Field(p => p.Woreda).Editable(false);
-                        model.Field(p => p.Zone).Editable(false);
-                    }) 
-      
-          //.Model(model=>model.Id(p=>p.HRDID))
-          // .Read(read => read.Action("HRDDetail_Read", "HRD", new{ id = Model.HRDID }))
-          .Read(read => read.Action("HRDDetail_Read", "HRD",new{id=Model.HRDID}))
-          .Update(update => update.Action("HRDDetail_Update", "HRD"))
-      )
-      
-)
+           //.PageSize(15)
+           .Events(events => events.Error("error_handler"))
+           .Events(events => events.Change("onGridKeydown"))
+           .Model(model =>
+           {
+               model.Id(p => p.HRDID);
+               model.Field(p => p.HRDDetailID);
+               model.Field(p => p.StartingMonth);
+               //model.Field(p => p.Oil).Editable(false);
+               //model.Field(p => p.Pulse).Editable(false);
+               //model.Field(p => p.Cereal).Editable(false);
+               //model.Field(p => p.BlendedFood).Editable(false);
+               model.Field(p => p.Region).Editable(false);
+               model.Field(p => p.Woreda).Editable(false);
+               model.Field(p => p.Zone).Editable(false);
+           })
 
-<script type="text/javascript">
+              //.Model(model=>model.Id(p=>p.HRDID))
+              // .Read(read => read.Action("HRDDetail_Read", "HRD", new{ id = Model.HRDID }))
+              .Read(read => read.Action("HRDDetail_Read", "HRD", new { id = Model.HRDID }))
+              .Update(update => update.Action("HRDDetail_Update", "HRD"))
+          )
+
+                        )
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
     function error_handler(e) {
         if (e.errors) {
             var message = "Errors:\n";
-            $.each(e.errors, function (key, value) {
+            $.each(e.errors, function(key, value) {
                 if ('errors' in value) {
-                    $.each(value.errors, function () {
+                    $.each(value.errors, function() {
                         message += this + "\n";
                     });
                 }
@@ -168,7 +158,7 @@
             alert(message);
         }
     }
-    
+
     function onGridKeydown(e) {
         if (e.keyCode === kendo.keys.TAB) {
             var grid = $(this).closest("[data-role=grid]").data("kendoGrid");
@@ -185,67 +175,42 @@
             }
         }
     };
-    
+
     function onDataBound(e) {
 
         var grid = $("#grid").data("kendoGrid");
-        $(grid.tbody).on("focus", "input", function (e) {
+        $(grid.tbody).on("focus", "input", function(e) {
             var input = $(this);
-            setTimeout(function () { input.select(); }, 100);
+            setTimeout(function() { input.select(); }, 100);
 
         });
     }
+
     function saverecords() {
         $("#grid").data("kendoGrid").saveChanges();
     }
-    
+
     function cancelChanges() {
         $("#grid").data("kendoGrid").dataSource.cancelChanges();
     }
-</script>
+        </script>
 
+        <script type="text/javascript">
+    $(function () {
 
-@*<script type="text/javascript">
+        //Optional: turn the chache off
+        $.ajaxSetup({ cache: false });
 
-    function onDataBound(e) {
-        rowNumber = 0;
-        var grid = $("#grid").data("kendoGrid");
-        $(grid.tbody).on("change", "td", function (e) {
-            var row = $(this).closest("tr");
-            var rowIdx = $("tr", grid.tbody).index(row);
-            var firstItem = $('#grid').data().kendoGrid.dataSource.data()[rowIdx];
-            var benficiery = firstItem.get('NumberOfBeneficiaries');
-            var duration = firstItem.get('DurationOfAssistance');
-
-
-
-            $.getJSON('/HRD/GetRation', function (data) {
-
-
-                $.each(data, function (key, val) {
-                    if (val.Name == "Cereal") {
-                        firstItem.set('Cereal', val.Value * benficiery * duration);
-                        
-                    }
-                    else if (val.Name == "Blended food") {
-                        firstItem.set('BlendedFood', val.Value * benficiery * duration);
-
-                    } else if (val.Name == "Oil") {
-                        firstItem.set('Oil', val.Value * benficiery * duration);
-
-                    } else if (val.Name == "Pulse") {
-                        firstItem.set('Pulse', val.Value * benficiery * duration);
-
-                    }
-
-
-                });
-
-
+        $('#btnAddWoreda').click(function (e) {
+            e.preventDefault();
+            $('body').css('pointer', 'wait');
+            $.get(this.href, function(data) {
+                $('#dialogDivContent').html(data);
+                $('#dialogDiv').modal();
+                $('body').css('pointer', 'default');
             });
-
-
+            
+            return false;
         });
-    }
-
-</script> *@
+    });
+        </script>
