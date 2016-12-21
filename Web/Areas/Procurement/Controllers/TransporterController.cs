@@ -111,9 +111,7 @@ namespace Cats.Areas.Procurement.Controllers
 
         public ActionResult EditingInline_Update([DataSourceRequest] DataSourceRequest request, Transporter transporter)
         {
-            WorkflowActivityUtil.InitializeWorkflow(transporter);
             transportService.EditTransporter(transporter);
-            WorkflowActivityUtil.EnterEditWorkflow(transporter);
 
             return Json(ModelState.ToDataSourceResult(), JsonRequestBehavior.AllowGet);
         }
@@ -123,11 +121,9 @@ namespace Cats.Areas.Procurement.Controllers
         {
             if (transporter != null && ModelState.IsValid)
             {
-          //      WorkflowActivityUtil.InitializeWorkflow(transporter);
 
                 transportService.AddTransporter(transporter);
-    ///            WorkflowActivityUtil.EnterCreateWorkflow(transporter);
-
+            
             }
 
             return Json(new[] { transporter }.ToDataSourceResult(request, ModelState));
@@ -196,13 +192,11 @@ namespace Cats.Areas.Procurement.Controllers
         public ActionResult Create(Transporter transporter)
         {
             if (!ModelState.IsValid)
-             
+
             {
-             //   WorkflowActivityUtil.InitializeWorkflow(transporter);
 
                 transportService.AddTransporter(transporter);
 
-          //      WorkflowActivityUtil.EnterCreateWorkflow(transporter);
 
             }
             //return RedirectToAction("Edit");
@@ -284,22 +278,15 @@ namespace Cats.Areas.Procurement.Controllers
             {
                 if (transporter.TransporterID == 0)
                 {
-                    //WorkflowActivityUtil.InitializeWorkflow(transporter);
 
                     transportService.AddTransporter(transporter);
-                   //WorkflowActivityUtil.EnterCreateWorkflow(transporter);   
-                 
+                
                 }
                 else
                 {
-                //    WorkflowActivityUtil.InitializeWorkflow(transporter);
-
-
-
                     transportService.EditTransporter(transporter);
 
-             //       WorkflowActivityUtil.EnterEditWorkflow(transporter);
-                     
+
 
                 }
                 return RedirectToAction("Index");
@@ -318,18 +305,14 @@ namespace Cats.Areas.Procurement.Controllers
             {
                 if (transporter.TransporterID == 0)
                 {
-       //     WorkflowActivityUtil.InitializeWorkflow(transporter);
-                    
+
                     transportService.AddTransporter(transporter);
-                 //   WorkflowActivityUtil.EnterCreateWorkflow(transporter);
 
                 }
                 else
                 {
-             //       WorkflowActivityUtil.InitializeWorkflow(transporter);
 
                     transportService.EditTransporter(transporter);
-              //      WorkflowActivityUtil.EnterEditWorkflow(transporter);
 
                 }
                 return Json("{}", JsonRequestBehavior.AllowGet);
@@ -356,7 +339,6 @@ namespace Cats.Areas.Procurement.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Transporter transporter = transportService.FindById(id);
-            WorkflowActivityUtil.EnterDelteteWorkflow(transporter);
 
             transportService.DeleteTransporter(transporter);
             return RedirectToAction("Index");
@@ -367,11 +349,9 @@ namespace Cats.Areas.Procurement.Controllers
         {
             if (transporter != null)
             {
-                
-                WorkflowActivityUtil.EnterDelteteWorkflow(transporter);
+
 
                 transportService.DeleteById(transporter.TransporterID);
-                transportService.DeleteTransporter(transporter);
             }
 
             return Json(ModelState.ToDataSourceResult());
@@ -381,23 +361,23 @@ namespace Cats.Areas.Procurement.Controllers
         {
             var r = (from region in _adminUnitService.GetRegions()
                      select new
-                              {
+                     {
 
-                                  RegionID = region.AdminUnitID,
-                                  RegionName = region.Name,
-                                  Zones = from zone in _adminUnitService.GetZones(region.AdminUnitID)
-                                          select new
-                                              {
-                                                  ZoneID = zone.AdminUnitID,
-                                                  ZoneName = zone.Name,
-                                                  Woredas = from woreda in _adminUnitService.GetWoreda(zone.AdminUnitID)
-                                                            select new
-                                                            {
-                                                                WoredaID = woreda.AdminUnitID,
-                                                                WoredaName = woreda.Name
-                                                            }
-                                              }
-                              }
+                         RegionID = region.AdminUnitID,
+                         RegionName = region.Name,
+                         Zones = from zone in _adminUnitService.GetZones(region.AdminUnitID)
+                                 select new
+                                 {
+                                     ZoneID = zone.AdminUnitID,
+                                     ZoneName = zone.Name,
+                                     Woredas = from woreda in _adminUnitService.GetWoreda(zone.AdminUnitID)
+                                               select new
+                                               {
+                                                   WoredaID = woreda.AdminUnitID,
+                                                   WoredaName = woreda.Name
+                                               }
+                                 }
+                     }
                     );
             return Json(r, JsonRequestBehavior.AllowGet);
         }

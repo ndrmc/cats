@@ -61,6 +61,7 @@ namespace Cats.Services.Workflows.Config
             AddDashboarMapping(Constants.PsnpPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Procurement
             AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.BidWinnerWorkflow);
+            AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.TransporterWorkflow);
             AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Finance
             AddDashboarMapping(Constants.FinancePage + Constants.Dashbord, ApplicationSettings.Default.TransporterChequeWorkflow);
@@ -100,6 +101,7 @@ namespace Cats.Services.Workflows.Config
             AddWorkflowToObjectMapping(Constants.PsnpPage, ApplicationSettings.Default.PSNPWorkflow, typeof(RegionalPSNPPlan), string.Empty, string.Empty);
             
             AddWorkflowToObjectMapping(Constants.ProcurementPage, ApplicationSettings.Default.BidWinnerWorkflow, typeof(BidWinner), string.Empty, string.Empty);
+            AddWorkflowToObjectMapping(Constants.ProcurementPage, ApplicationSettings.Default.TransporterWorkflow, typeof(Models.Transporter), string.Empty, string.Empty);
             
             AddWorkflowToObjectMapping(Constants.FinancePage, ApplicationSettings.Default.TransporterChequeWorkflow, typeof(TransporterCheque), string.Empty, string.Empty);
         }
