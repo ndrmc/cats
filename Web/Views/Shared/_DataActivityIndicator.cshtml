@@ -12,6 +12,11 @@
 
     <script src="~/Scripts/Bootstrap/bootstrap-multiselect.js"></script>*@
 @*<script src="~/Content/assetss/global/plugins/angularjs/plugins/ui-bootstrap-tpls.min.js"></script>*@
+
+<link href="~/Scripts/js/SemanticUI/semantic.min.css" rel="stylesheet" />
+@*<script src="~/Scripts/js/SemanticUI/dropdown.min.js"></script>*@
+<script src="~/Scripts/js/SemanticUI/transition.min.js"></script>
+<script src="~/Scripts/js/SemanticUI/dropdown.js"></script>
 <style>
     .detable {
         border: 1px solid #ddd;
@@ -87,51 +92,50 @@ button:focus {
             <div class=" table-responsive" style="overflow-x: hidden; min-height: 350px; " >
 
                 <div class="row form-horizontal " style="min-height: 100px;"  ng-hide="ctrlStatus.loadingDocument ||  ctrlStatus.loadingUser">
-                    <div class="col-sm-2 ">
+                    <div class="col-md-2">
 
                         <Label><small>Start Date</small></Label>
                         <input id="startDateDataIndicator" type="text" class="form-control cats-datepicker2 " placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
 
                     </div>
-                    <div class="col-sm-2 ">
+                    <div class="col-md-2 ">
                         <Label><small>End Date</small></Label>
                         <input type="text" id="endDateDataIndicator" class="form-control  cats-datepicker2 " placeholder="End Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedEndDate" title="Enter End Date">
 
                     </div>
 
-                    <div class="col-sm-2" >
+                    <div class="col-md-2" >
                         <Label><small>  User</small></Label>
-
-                        <select id="User" multiple="multiple" ng-disabled="ctrlStatus.loadingUser" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
-                            <option value="@Cats.Services.Workflows.Constants.SelectOption_AllwithData">@Cats.Services.Workflows.Constants.SelectOption_AllwithData </option>
+                        <select id="User" multiple="" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
+                            <option value="AllwithData">AllwithData </option>
 
                             <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
                         </select>
 
                     </div>
-                    <div class="col-sm-2" >
+                    <div class="col-md-2" >
 
 
                         <Label><small>Activity</small></Label>
-                        <img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading.gif" />
+                        @*<img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading.gif" />*@
 
-                        <select id="Activity" multiple="multiple" ng-hide="ctrlStatus.loadingActivity" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
+                        <select id="Activity" multiple="multiple"  @*ng-disabled="ctrlStatus.loadingActivity"*@ class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
                             <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
                         </select>
 
                     </div>
 
 
-                    <div class="col-sm-2"  >
+                    <div class="col-md-2"  >
                         <Label><small>Document</small></Label>
-                        <select id="Document" class="form-control" data-toggle="tooltip" ng-disabled="ctrlStatus.loadingDocument" data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
+                        <select id="Document" class="ui selection dropdown form-control" data-toggle="tooltip" @*ng-disabled="ctrlStatus.loadingDocument"*@ data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
                             <option ng-repeat="document in controlData.lookupDocument| orderBy : 'name'" value="{{document.name}}">{{document.name}}</option>
 
                         </select>
                     </div>
 
-                    <div class="col-sm-2 ">
-                        <button type="button"  ng-hide="searching" ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Get Activities based on the Criteria">
+                    <div class="col-md-2 ">
+                        <button type="button"  ng-hide="searching" style="margin-top: 13px;"  ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Get Activities based on the Criteria">
                         <h4 ><img src="~/Content/Icons/Search Icon.png" class="text-warning" style="max-width:45px; max-height:50px;" /><span><strong>Get</strong></span></h4> </button>
                                     
                          <p class="text-info" ng-show="searching"><img src="~/Content/Icons/search.gif" style="max-width:65px; max-height:70px;" />Searching... </p>
