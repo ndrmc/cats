@@ -15,7 +15,7 @@
 
         @*@using (Html.BeginForm("UpdateRequisition", "DispatchAllocation", FormMethod.Post, new { @class = "form", id = "frm_Update_requisition" }))
             {*@
-            @Html.HiddenFor(m => m.BusinessProcessID)
+            @Html.HiddenFor(m => m.BusinessProcessId)
             @Html.HiddenFor(m => m.RequisitionID)
             @Html.HiddenFor(m => m.IsTransfer)
             @Html.HiddenFor(m => m.TransferId)
