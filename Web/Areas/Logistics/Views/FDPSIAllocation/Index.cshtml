@@ -104,7 +104,7 @@
 
                 <div class="portlet-title">
                     <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("Requisition") </div>
-                
+
                 </div>
                 <div class="portlet-body"  >
                    <div><i class="cats-unit-pref"> Preferred Measurement </i> </div>
@@ -219,7 +219,7 @@
                             <div class="drag-reciever {{si.type}}" style="padding:4px;">
 
                                 <div style="padding: 10px;">{{si.name}} <span style="font-style:italic">[Available={{si.availableAmount}}]</span></div>
-                                <div class="allocated-list" style="background: rgb(248, 248, 248); overflow: hidden; border-radius: 4px; height: 200px;" data-drop="true" ng-model='list1' id="SIPC{{si.index}}" data-index="{{si.index}}" data-jqyoui-options="optionsList1" jqyoui-droppable="{multiple:true,onDrop:dropCallback,onDrop:'dropCallback',onOver: 'overCallback', onOut: 'outCallback'}">
+                                <div class="allocated-list"  set-height  style="background: rgb(248, 248, 248); overflow: hidden; border-radius: 4px; " data-drop="true" ng-model='list1' id="SIPC{{si.index}}" data-index="{{si.index}}" data-jqyoui-options="optionsList1" jqyoui-droppable="{multiple:true,onDrop:dropCallback,onDrop:'dropCallback',onOver: 'overCallback', onOut: 'outCallback'}">
                                     <ul class="nav nav-list ">
                                         <li class="btn-draggable" data-allocated="1" ng-repeat="item in si.allocatedRequests" data-drag="1" data-jqyoui-options="{revert: 'invalid'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}" data-index="{{item.index}}">
                                             @*  <button class="btn red btn-xs " ng-click="showEdit(item.type)"><i class="fa fa-times-circle"></i></button>*@
@@ -1184,6 +1184,15 @@
                     });
                 }
             };
+        });
+
+        App    .directive('setHeight', function($window){
+            return{
+                link: function(scope, element, attrs){
+                    element.css('height', $window.innerHeight/4 + 'px');
+                    //element.height($window.innerHeight/3);
+                }
+            }
         });
 
         function dump(arr,level) {
