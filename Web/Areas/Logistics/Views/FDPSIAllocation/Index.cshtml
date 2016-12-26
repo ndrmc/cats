@@ -40,6 +40,8 @@
 
     .button-remove {
         display: none;
+            width: 40px;
+    height: 22px;
     }
 
     #accordion_zone .ui-draggable-disabled .icon-move {
@@ -154,12 +156,14 @@
                                                              jqyoui-draggable="{index: {{fdp.id}},placeholder:'keep',animate:true, onStart:'startCallback(fdp, $index)', onStop: 'stopCallback', onDrag: 'dragCallback'}">
                                                             <i class="icon-move"></i>
 
-                                                            <button ng-show="fdp.totalAllocatedAmount>0" class="btn red btn-xs button-remove" ng-click="on_remove_allocation(fdp.index)"><i class="fa fa-times-circle"></i></button>
+
 
                                                             {{fdp.name}} [{{fdp.totalAllocatedAmount | number:2}} of {{fdp.requestedAmount | number:2}}]
                                                             <!--
                                                             <span ng-repeat="allocation in fdp.Allocations"> {{allocation.Code}} {{allocation.AllocatedAmount}}  </span>
                                                             -->
+
+                                                            <button ng-show="fdp.totalAllocatedAmount>0" class="btn red btn-xs button-remove"  ng-click="on_remove_allocation(fdp.index)"><i class="fa fa-times-circle"></i></button>
                                                         </div>
 
                                                     </div>
