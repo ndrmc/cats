@@ -42,7 +42,15 @@
             </div>
 
         </div>
+
         <div class="col-md-2">
+            <div class="form-group form-md-line-input has-info">
+                @Html.DropDownList("StatusID", null, new { @class = "form-control" })
+                <label for="ProgramID">@Html.Translate("Status")</label>
+            </div>
+        </div>
+
+             <div class="col-md-2">
             <span class="input-group-btn btn-right">
                 <a class="btn green-haze" style=" margin-top: 15px;" onclick=" reloadGrid() "><i class="fa fa-search"></i> @Html.Translate("Search")</a>
             </span>
@@ -134,7 +142,8 @@
         var reqNo = $("#reqNoFilter").val();
         var programId = $("#ProgramID").val();
         var round = $("#roundFilter").val();
-        var obj = { reqNoFilter: reqNo, programFilter: programId, roundFilter: round };
+        var stateId = $("#StatusID").val();
+        var obj = { reqNoFilter: reqNo, programFilter: programId, roundFilter: round, statusID: stateId };
         return obj;
     }
 
