@@ -36,7 +36,8 @@ namespace Cats.Models
         public int? RationID { get; set; }
         public Nullable<int> RegionalRequestID { get; set; }
         public int? PartitionId { get; set; }
-
+        public bool IsTransfer { get; set; }
+        public Nullable<int> TransferId { get; set; }
         public virtual AdminUnit AdminUnit { get; set; }
         public virtual AdminUnit AdminUnit1 { get; set; }
         public virtual Commodity Commodity { get; set; }
