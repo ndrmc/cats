@@ -34,5 +34,7 @@ namespace Cats.Models
         public int RejectStateID { get; set; }
         public int UncommitStateID { get; set; }
         public int ApproveStateID { get; set; }
+        public bool IsTransfer { get; set; }
+        public Nullable<int> TransferId { get; set; }
     }
 }
