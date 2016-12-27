@@ -184,7 +184,7 @@
                     <div class="caption font-green-sharp">
                         <div class="form-group form-md-line-input">
 
-                            <select class="form-control" ng-model="selectedHub" id="hubSelector" ng-disabled="requests[0].allocatedAmount> 0.1">
+                            <select class="form-control" ng-model="selectedHub" id="hubSelector" ng-disabled="true">
                                 @foreach (var hub in ViewBag.Hubs)
                                 {
                                     <option value="@hub.HubID">@hub.Name [@hub.HubOwner.Name]</option>
