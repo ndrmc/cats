@@ -44,7 +44,8 @@ namespace Cats.Areas.EarlyWarning.Models
         public bool IsDraft { get; set; }
 
 
-
+        [Display(Name = "Plan Name")]
+        public string PlanName { get; set; }
 
 
         public string MonthRound
