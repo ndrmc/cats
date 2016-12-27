@@ -49,7 +49,9 @@ namespace Cats.ViewModelBinder
                 requisition.Ration = reliefRequisition.RegionalRequest.Ration.RefrenceNumber;
                 requisition.RationID = reliefRequisition.RegionalRequest.RationID;
             }
-            
+            if (reliefRequisition.RegionalRequest != null)
+                requisition.PlanName = reliefRequisition.RegionalRequest.Plan.PlanName;
+            else requisition.PlanName = "No HRD Plan";
             return requisition;
         }
 
