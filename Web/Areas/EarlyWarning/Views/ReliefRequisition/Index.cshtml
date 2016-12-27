@@ -26,9 +26,58 @@ Requistions
     </h1>
 }*@
 
+<style>
+    .action-link {
+        display: none;
+    }
 
+    .assign-code3 {
+        display: block;
+    }
+
+    .k-grid td {
+        overflow: visible;
+    }
+</style>
+
+<style>
+    .k-window-titlebar {
+        margin-top: -30px;
+        height: 30px;
+    }
+
+    hr {
+        margin: 5px 0;
+    }
+</style>
+
+
+<script type="text/javascript">
+    function PromotTo(promotTo) {
+
+        var regionId = @Html.Raw(ViewBag.Filter.RegionID);
+        var programId = @Html.Raw(ViewBag.Filter.ProgramID);
+        var url = '@Url.Action("PromotThese", "ReliefRequisition")?regionId=' + regionId + "&programId=" + programId + "&promotTo=" + promotTo;
+
+        //Optional: turn the chache off
+        $.ajaxSetup({ cache: false });
+
+        $('#dialogContent').load(url, function () {
+            $('#dialogDiv').modal({
+                backdrop: 'static',
+                keyboard: true
+            }, 'show');
+
+            $(".modal-dialog").removeClass("modal-sm").addClass("modal-lg");
+        });
+    }
+</script>
 <div id="div_filter" class="well">
     @Html.Partial("_RequisitionsFilter")
+</div>
+
+<div id='dialogDiv' class='modal fade bs-modal-lg'>
+    <div id='dialogContent'></div>
 </div>
 
 <div class="portlet light bordered">
@@ -43,7 +92,22 @@ Requistions
                         <a href="javascript:;" class="remove" data-original-title="" title=""></a>
                     </div>*@
                 <div class="actions">
-                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                    @*<a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
+                    <div class="btn-group">
+                        <button type="button" id="" class="btn btn-default dropdown-toggle btn-xs green-stripe" data-toggle="dropdown">
+                            <i class="fa fa-ellipsis-horizontal"></i> @Html.Translate("Workflow") <i class="fa fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu pull-right">
+
+                            <li class="edit_button">
+                                <a onclick="PromotTo('Approve')">Approve</a>
+                            </li>
+
+                            @*<li class="edit_button">                    <a onclick="PromotTo('Uncommit')">Uncommit</a>                </li>*@
+
+                        </ul>
+
+                    </div>
                 </div>
             </div>
 

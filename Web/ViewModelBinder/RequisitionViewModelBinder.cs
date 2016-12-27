@@ -40,6 +40,10 @@ namespace Cats.ViewModelBinder
             requisition.IsDraft = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft";
             requisition.BusinessProcessID = reliefRequisition.BusinessProcessID;
 
+            requisition.ApprovedId =
+             reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>
+             a.Name == "Approve").Select(s => s.FinalStateID).FirstOrDefault();
+
             if (reliefRequisition.RationID != null && reliefRequisition.RationID > 0)
             {
                 requisition.RationID = (int) reliefRequisition.RationID;
