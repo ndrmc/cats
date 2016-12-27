@@ -758,16 +758,23 @@ namespace Cats.Areas.Hub.Controllers.Allocations
             //return PartialView("Close", closeAllocation);
             DispatchAllocation allocation = _dispatchAllocationService.FindById(Guid.Parse(id));
             DispatchAllocationViewModel alloc = GetAllocationModelForClose(allocation);
+            TempData["DispatchAllocationID"] = id;
             return PartialView("Close", alloc);
         }
 
         [HttpPost, ActionName("Close")]
         public ActionResult CloseConfirmed(string DispatchAllocationID)
         {
-            var closeAllocation = _dispatchAllocationService.FindById(Guid.Parse(DispatchAllocationID));
+            var id = Guid.Empty;
+            if (DispatchAllocationID == string.Empty || DispatchAllocationID == "")
+                id = Guid.Parse(TempData["DispatchAllocationID"].ToString());
+            else id = Guid.Parse(DispatchAllocationID);
+
+            var closeAllocation = _dispatchAllocationService.FindById(id);
+
             if (closeAllocation != null)
             {
-                _dispatchAllocationService.CloseById(Guid.Parse(DispatchAllocationID));
+                _dispatchAllocationService.CloseById(id);
                 return Json(new { status=1,gridNum = 1 }, JsonRequestBehavior.AllowGet);
                 //if (this.Request.UrlReferrer != null) return Redirect(Request.UrlReferrer.PathAndQuery);
                 //else return RedirectToAction("Index");
