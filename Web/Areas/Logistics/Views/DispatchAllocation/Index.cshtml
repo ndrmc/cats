@@ -12,6 +12,10 @@
     ViewBag.PageTitleDescription = "";
 }
 
+<div id='dialogDiv' class='modal fade bs-modal-lg'>
+    <div id='dialogContent'></div>
+</div>
+
 <div class="portlet light bordered">
     <div class="portlet-title">
         <div class="caption font-green-sharp">
@@ -32,78 +36,82 @@
                     </button>
                 }
                 <ul class="dropdown-menu pull-right">
-                                       
-                   
-                    
 
-                    <li>@Html.LogisticsOperationButton(
+
+
+
+                    <li>
+                        @Html.LogisticsOperationButton(
                                                 @Url.Action("Hub", "DispatchAllocation", new { regionid = ViewBag.regionId }),
-                                               LogisticsConstants.Operation.Hub_allocation, @Html.Translate("Hub allocation"))</li>
-                    @*<li><a class="btn green-haze-stripe" href="@Url.Action("Hub", "DispatchAllocation", new {regionid = ViewBag.regionId})">@Html.Translate("Hub allocation")</a></li>*@
-                    <!--<li><a class="btn green-haze-stripe" href="@Url.Action("Index", "SIAllocation", new {Area = "Logistics", regionid = ViewBag.regionId})">PC/SI code allocation</a></li>-->
-                     <li>@Html.LogisticsOperationButton(
+                                               LogisticsConstants.Operation.Hub_allocation, @Html.Translate("Hub allocation"))
+                </li>
+                @*<li><a class="btn green-haze-stripe" href="@Url.Action("Hub", "DispatchAllocation", new {regionid = ViewBag.regionId})">@Html.Translate("Hub allocation")</a></li>*@
+                <!--<li><a class="btn green-haze-stripe" href="@Url.Action("Index", "SIAllocation", new {Area = "Logistics", regionid = ViewBag.regionId})">PC/SI code allocation</a></li>-->
+                <li>
+                    @Html.LogisticsOperationButton(
                                                 @Url.Action("CreateTransportRequisition", "TransportRequisition", new { regionId = ViewBag.regionId }),
-                                               LogisticsConstants.Operation.Generate_transport_requisition, @Html.Translate("Generate Transport Requisition"))</li>
-                   @* <li><a class="btn green-haze-stripe" href="@Url.Action("CreateTransportRequisition", "TransportRequisition", new {regionId = ViewBag.regionId})">@Html.Translate("Generate Transport Requisition"),</a></li>*@
-                </ul>
-            </div>
-            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
-        </div>
+                                               LogisticsConstants.Operation.Generate_transport_requisition, @Html.Translate("Generate Transport Requisition"))
+            </li>
+            @* <li><a class="btn green-haze-stripe" href="@Url.Action("CreateTransportRequisition", "TransportRequisition", new {regionId = ViewBag.regionId})">@Html.Translate("Generate Transport Requisition"),</a></li>*@
+        </ul>
     </div>
-    <div class="portlet-body">
-        <div class="row">
-            <div class="col-sm-3">
-                <div class="well">
-                    @{var ddl = Html.Kendo().DropDownList().Name("Region").OptionLabel(@Html.Translate("Select a Region...")).DataTextField("Name").DataValueField("AdminUnitID")
+    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+</div>
+</div>
+<div class="portlet-body">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="well">
+                @{var ddl = Html.Kendo().DropDownList().Name("Region").OptionLabel(@Html.Translate("Select a Region...")).DataTextField("Name").DataValueField("AdminUnitID")
                             .HtmlAttributes(new { style = "width:200px" }).Events(e => e.Change("regionsChange")).DataSource(source => source.Read("GetRegions", "DispatchAllocation"));
                     ddl.Render(); //displays the dropdown list
                     var selected = ddl.ToComponent().Value;//gets the selected value
-                    }
-                </div>
-                <div id="HubAllocationPartial">
-                    @Html.Partial("HubAllocation", (int)ViewBag.regionId)
-                </div>
+                }
             </div>
-            <div class="col-sm-9">
-                <div class="tabbable-line">
-                    <ul class="nav nav-tabs ">
-                        <li class="active">
-                            <a href="#tab1" data-toggle="tab" aria-expanded="false">
-                                @Html.Translate("Approved Requisitions")
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#tab2" data-toggle="tab" aria-expanded="false">
-                                @Html.Translate("Hub Allocated Requisitions")
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#tab3" data-toggle="tab" aria-expanded="true">
-                                @Html.Translate("Project /SI Code Allocated")
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div id="tab1" class="tab-pane active">
-                            <div id="ApprovedRequisitionPartial">
-                                @Html.Partial("_ApprovedRequisitions", new List<int?>() { { ViewBag.regionId } })
-                            </div>
+            <div id="HubAllocationPartial">
+                @Html.Partial("HubAllocation", (int)ViewBag.regionId)
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="tabbable-line">
+                <ul class="nav nav-tabs ">
+                    <li class="active">
+                        <a href="#tab1" data-toggle="tab" aria-expanded="false">
+                            @Html.Translate("Approved Requisitions")
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab2" data-toggle="tab" aria-expanded="false">
+                            @Html.Translate("Hub Allocated Requisitions")
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab3" data-toggle="tab" aria-expanded="true">
+                            @Html.Translate("Project /SI Code Allocated")
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab1" class="tab-pane active">
+                        <div id="ApprovedRequisitionPartial">
+                            @Html.Partial("_ApprovedRequisitions", new List<int?>() { { ViewBag.regionId } })
                         </div>
-                        <div id="tab2" class="tab-pane">
-                            <div id="HubAllocatedPartial">
-                                @Html.Partial("AllocateProjectCode", new List<int?>() { { ViewBag.regionId } })
-                            </div>
+                    </div>
+                    <div id="tab2" class="tab-pane">
+                        <div id="HubAllocatedPartial">
+                            @Html.Partial("AllocateProjectCode", new List<int?>() { { ViewBag.regionId } })
                         </div>
-                        <div id="tab3" class="tab-pane">
-                            <div id="ProjectCodeAllocatedPartial">
-                                @Html.Partial("_AllocateProjectCode", new List<int?>() { { ViewBag.regionId } })
-                            </div>
+                    </div>
+                    <div id="tab3" class="tab-pane">
+                        <div id="ProjectCodeAllocatedPartial">
+                            @Html.Partial("_AllocateProjectCode", new List<int?>() { { ViewBag.regionId } })
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">

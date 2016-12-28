@@ -28,16 +28,22 @@
     .Columns(columns =>
     {
 
-        columns.Bound(e => e.RequisitionNo).Width(120).Title(@Html.Translate("Requisition No")).Filterable(false);
+        columns.Bound(e => e.RequisitionNo)
+                 .ClientTemplate("# if (IsTransfer) { #" +
+                                   "<a href=\"javascript: UpdateRequisitionNumber(#=RequisitionId#)\" '>#=RequisitionNo#</a>  " +
+                               "# } else { #" +
+                               "#=RequisitionNo#"
+                               + "#} #").Width(120).Title(@Html.Translate("Requisition No")).Filterable(false);
+
         columns.Bound(e => e.Program).Width(120).Title(@Html.Translate("Program")).Filterable(true);
         columns.Bound(e => e.MonthName).Width(120).Title(@Html.Translate("Month")).Filterable(true);
         columns.Bound(e => e.Round).Width(80).Title(@Html.Translate("Round"));
         columns.Bound(e => e.Region).Width(120).Title(@Html.Translate("Region")).Filterable(false);
         columns.Bound(e => e.Zone).Width(120).Title(@Html.Translate("Zone")).Filterable(false);
         columns.Bound(e => e.Commodity).Title(@Html.Translate("Commodity")).Width(110).Filterable(false);
-        columns.Bound(e => e.Amount).Width(140).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal; ", title =@Html.Translate("Amount Allocated"), @class = "cats-unit-pref-grid" }).Format("{0:N2}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).Filterable(false);
+        columns.Bound(e => e.Amount).Width(140).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal; ", title = @Html.Translate("Amount Allocated"), @class = "cats-unit-pref-grid" }).Format("{0:N2}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).Filterable(false);
         //columns.Bound(e => e.StrRequisitionDate).Title("Requested On").Width(140);
-        columns.Bound(e => e.BenficiaryNo).Title("Beneficiaries").Width(120).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title =@Html.Translate("Benficiary No") }).Format("{0:n0}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).Filterable(false);
+        columns.Bound(e => e.BenficiaryNo).Title("Beneficiaries").Width(120).HeaderHtmlAttributes(new { style = "overflow: visible; white-space: normal;", title = @Html.Translate("Benficiary No") }).Format("{0:n0}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).Filterable(false);
         //columns.Bound(e => e.Status).Title("").Width(120).ClientTemplate("<a class='action-link assign-code#=Status#' href='" + @Url.Action("Index", "FDPSIAllocation", new { Area = "Logistics", regionid = ViewBag.regionId }) + "&RequisitionID=#=RequisitionId#'>PC/SI Allocate</a>  ").Filterable(false);
         //columns.Bound(e => e.Status).Width(90).Title("Status");
         //@Url.Action("Create", "GiftCertificate", new { Area = "EarlyWarning" }),
@@ -85,27 +91,45 @@
     .Sortable()
     .HtmlAttributes(new { style = "height:450px;" })
     //.Pageable()
-    )
+)
 
 
 <script>
 
-        function roundChange(e) {
-            e.preventDefault();
-            var value = this.value();
-            var grid = $("#ProjectCodegrid" + '@gridid').data("kendoGrid");
-            if (value) {
-                grid.dataSource.filter({ field: "Round", operator: "eq", value: parseInt(value) });
+    function roundChange(e) {
+        e.preventDefault();
+        var value = this.value();
+        var grid = $("#ProjectCodegrid" + '@gridid').data("kendoGrid");
+        if (value) {
+            grid.dataSource.filter({ field: "Round", operator: "eq", value: parseInt(value) });
 
-            } else {
-                grid.dataSource.filter({});
-            }
+        } else {
+            grid.dataSource.filter({});
         }
+    }
 
-        function onReject(e) {
-            e.preventDefault();
+    function onReject(e) {
+        e.preventDefault();
 
-            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-            window.location = "@Url.Action("RejectRequsition", "DispatchAllocation")" + "/" + dataItem.RequisitionId;
-        }
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location = "@Url.Action("RejectRequsition", "DispatchAllocation")" + "/" + dataItem.RequisitionId;
+    }
+
+    function UpdateRequisitionNumber(requisitionId) {
+
+        //var requisitionNumber = $('#RequisitionNumber').val();
+        var url = '@Url.Action("UpdateRequisition", "DispatchAllocation")?requisitionId=' + requisitionId;
+
+        //Optional: turn the chache off
+        $.ajaxSetup({ cache: false });
+
+        $('#dialogContent').load(url, function () {
+            $('#dialogDiv').modal({
+                backdrop: 'static',
+                keyboard: true
+            }, 'show');
+
+            $(".modal-dialog").removeClass("modal-sm").addClass("modal-lg");
+        });
+    }
 </script>

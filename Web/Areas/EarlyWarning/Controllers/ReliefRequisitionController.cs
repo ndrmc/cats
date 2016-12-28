@@ -872,6 +872,68 @@ namespace Cats.Areas.EarlyWarning.Controllers
             return result;
         }
 
+        public ActionResult PromotThese(int regionId, int programId, string promotTo)
+        {
+            var requests = _reliefRequisitionService.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft" ||
+            t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Rejected" && t.RegionID == regionId && t.ProgramID == programId);
+            var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
+            var requestViewModels = RequisitionViewModelBinder.BindReliefRequisitionListViewModel(requests, datePref).OrderByDescending(m => m.RequisitionID);
+
+            return View(requestViewModels.ToList());
+        }
+
+        [HttpPost]
+        public ActionResult PromotThese(List<ReliefRequisitionViewModel> reliefRequisitionViewModels)
+        {
+            foreach (var rrvm in reliefRequisitionViewModels)
+            {
+                if (!rrvm.IsSelected) continue;
+
+                var fileName = string.Empty;
+
+                if (rrvm.AttachmentFile.HasFile())
+                {
+                    //save the file
+                    fileName = rrvm.AttachmentFile.FileName;
+
+                    var path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+
+                    if (System.IO.File.Exists(path))
+                    {
+                        var indexOfDot = fileName.IndexOf(".", StringComparison.Ordinal);
+                        fileName = fileName.Insert(indexOfDot - 1, GetRandomAlphaNumeric(6));
+                        path = Path.Combine(Server.MapPath("~/Content/Attachment/"), fileName);
+                    }
+
+                    rrvm.AttachmentFile.SaveAs(path);
+                }
+
+                var businessProcessState = new BusinessProcessState()
+                {
+                    StateID = rrvm.ApprovedId,
+                    PerformedBy = HttpContext.User.Identity.Name,
+                    DatePerformed = DateTime.Now,
+                    Comment = rrvm.Comment,
+                    AttachmentFile = fileName,
+                    ParentBusinessProcessID = rrvm.BusinessProcessID
+                };
+
+                var requisition = _reliefRequisitionService.FindBy(b => b.BusinessProcessID == rrvm.BusinessProcessID).FirstOrDefault();
+                string stateName = _stateTemplateService.FindById(rrvm.ApprovedId).Name;
+
+                if (requisition != null)
+                {
+                    int requisitionId = requisition.RequisitionID;
+
+                    if (stateName == "Approved" && OnApprove(requisitionId))
+                    {
+                        _businessProcessService.PromotWorkflow(businessProcessState);
+                    }
+                }
+            }
+
+            return RedirectToAction("Index", "ReliefRequisition", new { Area = "EarlyWarning" });
+        }
 
         //public  JsonResult CancelChanges(List<DataFromGrid> input)
         //{
@@ -886,5 +948,22 @@ namespace Cats.Areas.EarlyWarning.Controllers
         //    }
         //    return Json(ids, JsonRequestBehavior.AllowGet);
         //}
+    
+    #region Transaction process methods - these will be called upon workflow promotion
+
+    public bool OnApprove(int requisitionId)
+    {
+        var requisition = _reliefRequisitionService.Get(t => t.RequisitionID == requisitionId, null,
+                       "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+        if (requisition != null)
+        {
+            SendNotification(requisition);
+            return _transactionService.PostRequestAllocation(requisitionId);
+        }
+
+        return false;
     }
+
+    #endregion
+}
 }
