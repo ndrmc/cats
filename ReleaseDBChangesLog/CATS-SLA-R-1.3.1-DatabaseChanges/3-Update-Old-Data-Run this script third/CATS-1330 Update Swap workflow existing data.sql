@@ -23,7 +23,7 @@ IF(@@error <> 0)
 ROLLBACK /* Rollback of the transaction */
 
 DECLARE document_table CURSOR FOR
-SELECT TransferID FROM [dbo].[Transfer]   
+SELECT TransferID FROM [dbo].[Transfer] where CommoditySourceID = 9  -- it is swap
 /* Check if the above statement failed to execute and rollback the transcation */
 IF(@@error <> 0)
 ROLLBACK /* Rollback of the transaction */

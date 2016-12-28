@@ -13,7 +13,7 @@ DECLARE @rowid int, @currentStateID int;
 IF(@@error <> 0)
 ROLLBACK /* Rollback of the transaction */
 DECLARE document_table CURSOR FOR 
-SELECT TransferId FROM Transfer
+SELECT TransferId FROM  [dbo].[Transfer] where CommoditySourceID = 5 -- it is Transfer
 /* Check if the above statement failed to execute and rollback the transcation */
 IF(@@error <> 0)
 ROLLBACK /* Rollback of the transaction */

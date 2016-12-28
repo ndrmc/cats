@@ -107,7 +107,7 @@ namespace Cats.Services.Logistics
         {
             if (transfer != null)
             {
-                var processTemplate = _applicationSettingService.FindBy(t => t.SettingName == "LocalPurchaseReceiptPlanWorkflow").FirstOrDefault();
+                var processTemplate = _applicationSettingService.FindBy(t => t.SettingName == "SwapWorkflow").FirstOrDefault();
                 var processTemplateId = int.Parse(processTemplate.SettingValue);
                 var processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
                 var stateTemplate = processStates.FirstOrDefault(t => t.Name == "Approved");
@@ -119,12 +119,12 @@ namespace Cats.Services.Logistics
                     StateID = stateTemplate.StateTemplateID,
                     PerformedBy = username,
                     DatePerformed = DateTime.Now,
-                    Comment = "local purchase approved",
+                    Comment = "Swap approved",
                     //AttachmentFile = fileName,
                     ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
                 };
                 BusinessProcess bp = _businessProcessService.CreateBusinessProcess(
-                    stateTemplate.ParentProcessTemplateID, 0, "LocalPurchaseReceiptPlanWorkflow", businessProcessState);
+                    stateTemplate.ParentProcessTemplateID, 0, "SwapWorkflow", businessProcessState);
 
                 if (bp == null) return false;
 
