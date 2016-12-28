@@ -73,6 +73,8 @@ namespace Cats.ViewModelBinder
                 regionalRequestViewModel.StateId =
                     BindStateTemplateViewModel(regionalRequest.BusinessProcess.CurrentState.BaseStateTemplate.Name);
             }
+            if (regionalRequest.Plan != null) regionalRequestViewModel.PlanName = regionalRequest.Plan.PlanName;
+            else regionalRequestViewModel.PlanName = "No HRD Plan";
             return regionalRequestViewModel;
         }
 
