@@ -214,7 +214,7 @@ namespace Cats.Services.Logistics
                     var processTemplate = _applicationSettingService.FindBy(t => t.SettingName == "ReliefRequisitionWorkflow").FirstOrDefault();
                     var processTemplateId = int.Parse(processTemplate.SettingValue);
                     var processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
-                    var stateTemplate = processStates.FirstOrDefault(t => t.Name == "Approved");
+                    var stateTemplate = processStates.FirstOrDefault(t => t.Name == "Hub Assigned");
 
                     if (stateTemplate == null) return false;
 
@@ -223,7 +223,7 @@ namespace Cats.Services.Logistics
                         StateID = stateTemplate.StateTemplateID,
                         PerformedBy = "",
                         DatePerformed = DateTime.Now,
-                        Comment = "Requisition Approved",
+                        Comment = "Requisition hub assigned",
                         //AttachmentFile = fileName,
                         ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
                     };
