@@ -47,5 +47,7 @@ namespace Cats.Areas.EarlyWarning.Models
         public List<FlowTemplateViewModel> CurrentStateNo { get; set; }
         public int StateId { get; set; }
         public bool IsApprovable { get; set; }
+       
+        public string PlanName { get; set; }
     }
 }
