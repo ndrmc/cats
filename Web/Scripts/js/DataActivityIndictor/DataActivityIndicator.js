@@ -40,14 +40,14 @@
     };
 
     function getStartDate() {
-        return $scope.filterData.selectedStartDate;
-        //return $("#DIAStartDate").val();
+
+        return $("#startDateDataIndicator").val();
     }
 
     function getEndDate() {
-        return $scope.filterData.selectedEndDate;
 
-        //return $("#DIAEndDate").val();
+
+        return $("#endDateDataIndicator").val();
     }
 
     $scope.calcColumnTotal = function (columnName) {
@@ -89,12 +89,18 @@
 
         var initializeControls = function () {
 
+
             $scope.ctrlStatus.loadingUser = true;
             DataServices.getAllTeamUsers().then(function (result) {
 
                 $scope.controlData.lookupUsers = result.data;
 
                 $scope.ctrlStatus.loadingUser = false;
+
+                useLabels: false
+                $("#User").Xdropdown({
+                    useLabels: false
+                });
 
 
             });
@@ -108,6 +114,7 @@
 
                 $scope.controlData.lookupDocument = result.data;
 
+                $scope.ctrlStatus.loadingDocument = false;
 
                 if ($scope.controlData.lookupDocument.length > 0) {
                     $scope.filterData.selectedDocument = $scope.controlData.lookupDocument[0].name;
@@ -116,20 +123,18 @@
                     populateActivityCombo($scope.filterData.selectedDocument);
                 }
 
-                $scope.ctrlStatus.loadingDocument = false;
+
+
+                var dd = $("#Document").Xdropdown({
+                    useLabels: false
+                });
+
+                dd.Xdropdown('set text', $scope.filterData.selectedDocument);
+                dd.Xdropdown('set value', $scope.filterData.selectedDocument);
 
             });
 
 
-
-            //$scope.ctrlStatus.loadingActivity = true;
-
-            //DataServices.getAllStateTemplate().then(function (result) {
-
-            //    $scope.controlData.lookupActivities = result.data;
-
-            //});
-            //$scope.ctrlStatus.loadingActivity = false;
 
         };
 
@@ -164,9 +169,17 @@
 
         DataServices.getAllStateTemplate(selectedWorkflow).then(function (result) {
             $scope.controlData.lookupActivities = result.data;
-            buildTableStructure();
-            $scope.ctrlStatus.loadingActivity = false;
 
+            $scope.filterData.selectedActivities = [];
+
+
+            $("#Activity").Xdropdown({
+                //placeholder: 'Your placeholder',
+                useLabels: false
+            });
+            $("#Activity").Xdropdown("restore defaults");
+
+            $scope.ctrlStatus.loadingActivity = false;
 
         });
 
