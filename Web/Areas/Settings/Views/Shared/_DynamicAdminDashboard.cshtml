@@ -26,14 +26,14 @@
 <div class="row">
     @for (int c = 0; c < cols; c++)
     { 
-        <div class="span6">
+        <div class="col-md-6">
             @foreach (UIWidget widget in widgets)
             {
                 //int cc = i % cols;
                 i++;
                 if (i % cols == c)
                 { 
-                <div>
+                <div class="portlet light bg-inverse bordered">
                     @if (widget.Source == "")
                     {
                         <div><a>No contents </a></div>

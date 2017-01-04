@@ -1,30 +1,32 @@
-﻿<div class="widget stacked">
-    <div id="usersHeader" class="widget-header">
-        <i class=""></i>
-        <h3>Users and Roles</h3>
-    </div>
+﻿@using Cats.Helpers
 
-    <div id="usersContent" class="widget-content">
-
-        <div class="">
-            <a href="@Url.Action("Index", "Users", new { Area = "Settings" })" class="shortcut"><i class="shortcut-icon icon-list-alt"></i>
-                <span class="shortcut-label">Users</span>
-            </a>
-            <br />
-            <a href="@Url.Action("", "", new { Area = "Settings" })" class="shortcut"><i class="shortcut-icon icon-signal"></i>
-                <span class="shortcut-label">Roles</span>
-            </a>
-            <br />
-            <a href="@Url.Action("New", "Users", new { Area = "Settings" })" ><i class="shortcut-icon icon-inbox"></i>
-                <span class="shortcut-label"> Create New User</span>
-            </a>
-            <br />
-            @*<a href="@Url.Action("", "", new { Area = "Settings" })" class="shortcut"><i class="shortcut-icon icon-tasks"></i>
-                <span class="shortcut-label">Edit User</span>
-            </a>*@
-        </div>
+<div id="usersHeader" class="portlet-title">
+    <div class="caption font-green-sharp">
+        <span class="caption-subject bold uppercase"> @Html.Translate("Users and Roles")</span>
     </div>
 </div>
+
+<div id="usersContent" class="portlet-body">
+
+    <ul>
+        <li>
+            <a href="@Url.Action("Index", "Users", new {Area = "Settings"})" class="shortcut">
+                <span class="shortcut-label">Users</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("", "", new {Area = "Settings"})" class="shortcut">
+                <span class="shortcut-label">Roles</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("New", "Users", new { Area = "Settings" })">
+                <span class="shortcut-label"> Create New User</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
 
 <script>
     $("#usersHeader").click(function () {
