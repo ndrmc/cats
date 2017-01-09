@@ -30,8 +30,32 @@ namespace Cats.Rest.Controllers
         public List<Models.Commodity> GetCommodities()
         {
             var c = _commonService.GetCommodities();
-            return c.Select(commodity => new Models.Commodity(commodity.CommodityID, commodity.Name)).ToList();
+            return c.Select(commodity => new Models.Commodity(commodity.CommodityID, commodity.Name, commodity.LongName, commodity.NameAM, commodity.CommodityCode, commodity.CommodityTypeID, commodity.CommodityType.Name, commodity.ParentID, GetCommodityParentName(commodity.ParentID))).ToList();
         }
+
+        public string GetCommodityById(int id)
+        {
+            var commodity = _commodityService.FindById(id);
+            return commodity != null ? commodity.Name : null;
+        }
+
+        public int GetCommodityByName(string name)
+        {
+            var commodity = _commodityService.FindBy(n => n.Name == name).FirstOrDefault();
+            return commodity != null ? commodity.CommodityID : -1;
+        }
+        private string GetCommodityParentName(int? ParentId)
+        {
+            if (ParentId == null) return null;
+            var firstOrDefault = _commonService.FindBy(i => i.ParentID == ParentId).FirstOrDefault();
+            if (firstOrDefault != null)
+            {
+                var name = firstOrDefault.Name;
+                return name;
+            }
+            return null;
+        }
+
 
       #region AdminUnits
      

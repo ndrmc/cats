@@ -7,13 +7,28 @@ namespace Cats.Rest.Models
 {
     public class Commodity
     {
-        public int CommodityId { get; set; }
-        public string CommodityName { get; set; }
 
-        public Commodity(int Id, string Name)
+        public int CommodityID { get; set; }
+        public string Name { get; set; }
+        public string LongName { get; set; }
+        public string NameAM { get; set; }
+        public string CommodityCode { get; set; }
+        public int CommodityTypeID { get; set; }
+        public string CommodityTypeName { get; set; }
+        public Nullable<int> ParentID { get; set; }
+        public string ParentCommodityName { get; set; }
+
+        public Commodity(int _commodityId, string _name, string _longName, string _NameAM, string _commodityCode, int _commodtyTypeId, string _commodityTypeName, int? _parentId, string _parentCommodityName)
         {
-            CommodityId = Id;
-            CommodityName = Name;
+            CommodityID = _commodityId;
+            Name = _name;
+            LongName = _longName;
+            NameAM = _NameAM;
+            CommodityTypeID = _commodtyTypeId;
+            CommodityTypeName = _commodityTypeName;
+            ParentID = _parentId;
+            ParentCommodityName = _parentCommodityName;
+
 
         }
     }
