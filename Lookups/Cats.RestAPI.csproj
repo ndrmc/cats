@@ -145,6 +145,9 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AdminUnitController.cs" />
+    <Compile Include="Controllers\AdminUnitTypeController.cs" />
+    <Compile Include="Controllers\CommodityGradeController.cs" />
     <Compile Include="Controllers\CommodityTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -153,6 +156,7 @@
     <Compile Include="Models\AdminUnit.cs" />
     <Compile Include="Models\AdminUnitType.cs" />
     <Compile Include="Models\Commodity.cs" />
+    <Compile Include="Models\CommodityGrade.cs" />
     <Compile Include="Models\CommodityType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

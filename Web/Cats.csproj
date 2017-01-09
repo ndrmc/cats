@@ -31,6 +31,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
+    <UseGlobalApplicationHostFile />
     <!--<RunOctoPack>True</RunOctoPack>-->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -542,7 +543,6 @@
     <Compile Include="Controllers\UserPreferenceController.cs" />
     <Compile Include="CTSDataSet.cs">
       <DependentUpon>CTSDataSet.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="CTSDataSet.Designer.cs">
       <AutoGen>True</AutoGen>

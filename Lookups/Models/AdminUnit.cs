@@ -13,8 +13,8 @@ namespace Cats.Rest.Models
         public string NameAM { get; set; }
         public Nullable<int> AdminUnitTypeID { get; set; }
         public Nullable<int> ParentID { get; set; }
-
-        public AdminUnit(int _adminUnitId, int _code, string _name, string _nameAM,int _adminUnitTypeId,int _parentId)
+        public string AdminUnitTypeName { get; set; }
+        public AdminUnit(int _adminUnitId, int _code, string _name, string _nameAM,int _adminUnitTypeId,int _parentId,string _adminUnitTypeName)
         {
             AdminUnitID = _adminUnitTypeId;
             code = _code;
@@ -22,6 +22,7 @@ namespace Cats.Rest.Models
             NameAM = _nameAM;
             AdminUnitTypeID = _adminUnitTypeId;
             ParentID = _parentId;
+            AdminUnitTypeName = _adminUnitTypeName;
         }
     }
 }

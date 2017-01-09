@@ -1,6 +1,8 @@
-﻿namespace Cats {
-    
-    
-    public partial class CTSDataSet {
+﻿namespace Cats
+{
+
+
+    public partial class CTSDataSet
+    {
     }
 }
