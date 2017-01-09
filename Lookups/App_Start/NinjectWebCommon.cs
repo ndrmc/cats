@@ -67,6 +67,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<ICommodityService>().To<CommodityService>();
             kernel.Bind<ICommonService>().To<CommonService>();
             kernel.Bind<IAdminUnitService>().To<AdminUnitService>();
+            kernel.Bind<IAdminUnitTypeService>().To<AdminUnitTypeService>();
         }        
     }
 }

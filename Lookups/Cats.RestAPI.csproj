@@ -145,6 +145,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AdminUnit.cs" />
+    <Compile Include="Models\AdminUnitType.cs" />
     <Compile Include="Models\Commodity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -4,6 +4,7 @@ using System.Web.Http;
 using Cats.Models;
 using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
+using AdminUnitType = Cats.Rest.Models.AdminUnitType;
 
 namespace Cats.Rest.Controllers
 {
@@ -14,12 +15,14 @@ namespace Cats.Rest.Controllers
         private ICommodityService _commodityService;
         private readonly ICommonService _commonService;
         private readonly IAdminUnitService _adminUnitService;
-        public HomeController( ICommodityService commodityService, ICommonService _common, IAdminUnitService adminUnitService)
+        private readonly IAdminUnitTypeService _adminUnitTypeService;
+        public HomeController( ICommodityService commodityService, ICommonService _common, IAdminUnitService adminUnitService, IAdminUnitTypeService adminUnitTypeService)
         {
 
             _commodityService = commodityService;
             _commonService = _common;
             _adminUnitService = adminUnitService;
+            _adminUnitTypeService = adminUnitTypeService;
         }
 
 
@@ -53,5 +56,26 @@ namespace Cats.Rest.Controllers
             return adminUnit != null ? adminUnit.AdminUnitID : -1;
         }
       #endregion
+
+      #region Admin Unit Type
+
+        public List<Models.AdminUnitType> GetAdminUnitTypes()
+        {
+            var adminUnitTypes = _adminUnitTypeService.GetAllAdminUnitType();
+            return adminUnitTypes.Select(adminUnitType => new Models.AdminUnitType(adminUnitType.AdminUnitTypeID, adminUnitType.Name, adminUnitType.NameAM)).ToList();
+        }
+
+        public string GetAdminUnitTypesById(int id)
+        {
+            var adminUnitType = _adminUnitTypeService.FindById(id);
+            return adminUnitType != null ? adminUnitType.Name : "";
+        }
+
+        public int GetAdminUnitTypesByName(string name)
+        {
+            var adminUnitType = _adminUnitTypeService.FindBy(n => n.Name == name).FirstOrDefault();
+            return adminUnitType != null ? adminUnitType.AdminUnitTypeID : -1;
+        }
+        #endregion
     }
 }
