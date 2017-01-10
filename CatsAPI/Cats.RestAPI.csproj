@@ -149,6 +149,8 @@
     <Compile Include="Controllers\AdminUnitController.cs" />
     <Compile Include="Controllers\AdminUnitTypeController.cs" />
     <Compile Include="Controllers\CommodityController.cs" />
+    <Compile Include="Controllers\CommodityGradeController.cs" />
+    <Compile Include="Controllers\CommodityTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -156,6 +158,8 @@
     <Compile Include="Models\AdminUnit.cs" />
     <Compile Include="Models\AdminUnitType.cs" />
     <Compile Include="Models\Commodity.cs" />
+    <Compile Include="Models\CommodityGrade.cs" />
+    <Compile Include="Models\CommodityType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -270,6 +274,10 @@
       <Project>{7cf78855-5a90-441f-9acc-fafbd1cad68a}</Project>
       <Name>Cats.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Models\Cats.Models.Hub\Cats.Models.Hub.csproj">
+      <Project>{1467c728-3071-4798-997c-61314b26ef2e}</Project>
+      <Name>Cats.Models.Hub</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Models\Cats.Models\Cats.Models.csproj">
       <Project>{ABFB63D2-89FC-45BC-AA4E-5D9B21094B85}</Project>
       <Name>Cats.Models</Name>
@@ -281,6 +289,10 @@
     <ProjectReference Include="..\Services\Cats.Services.EarlyWarning\Cats.Services.EarlyWarning.csproj">
       <Project>{a08cf415-6299-41ab-9d69-c3ce9b49ccd6}</Project>
       <Name>Cats.Services.EarlyWarning</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\Cats.Services.Hub\Cats.Services.Hub.csproj">
+      <Project>{9fba0283-ee84-49f2-8305-f038bbf29658}</Project>
+      <Name>Cats.Services.Hub</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
