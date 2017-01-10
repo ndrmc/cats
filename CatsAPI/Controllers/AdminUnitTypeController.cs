@@ -25,7 +25,7 @@ namespace Cats.Rest.Controllers
         /// Returns all admin unit types
         /// </summary>
         /// <returns>List</returns>
-        public List<Models.AdminUnitType> Get()
+        public List<Models.AdminUnitType> GetAdminUnitTypes()
         {
             var adminUnitTypes = _adminUnitTypeService.GetAllAdminUnitType();
             return adminUnitTypes.Select(adminUnitType => new Models.AdminUnitType(adminUnitType.AdminUnitTypeID, adminUnitType.Name, adminUnitType.NameAM)).ToList();
@@ -35,7 +35,7 @@ namespace Cats.Rest.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Models.AdminUnitType Get(int id)
+        public Models.AdminUnitType GetAdminUnitType(int id)
         {
             var adminUnitType = _adminUnitTypeService.FindById(id);
             if (adminUnitType != null)

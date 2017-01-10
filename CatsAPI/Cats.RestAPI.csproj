@@ -22,6 +22,11 @@
     <IISExpressUseClassicPipelineMode />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>E:\code\cats\Backup7\</UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -151,6 +156,7 @@
     <Compile Include="Controllers\CommodityController.cs" />
     <Compile Include="Controllers\CommodityGradeController.cs" />
     <Compile Include="Controllers\CommodityTypeController.cs" />
+    <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\FDPController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HubController.cs" />
@@ -162,6 +168,7 @@
     <Compile Include="Models\Commodity.cs" />
     <Compile Include="Models\CommodityGrade.cs" />
     <Compile Include="Models\CommodityType.cs" />
+    <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\FDP.cs" />
     <Compile Include="Models\Hub.cs" />
     <Compile Include="Controllers\ShippingInstructionController.cs" />
@@ -287,6 +294,10 @@
     <ProjectReference Include="..\Models\Cats.Models\Cats.Models.csproj">
       <Project>{ABFB63D2-89FC-45BC-AA4E-5D9B21094B85}</Project>
       <Name>Cats.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\Cats.Services.Administration\Cats.Services.Administration.csproj">
+      <Project>{2f5baa46-25c9-4b3b-aaf6-7df39e9a696a}</Project>
+      <Name>Cats.Services.Administration</Name>
     </ProjectReference>
     <ProjectReference Include="..\Services\Cats.Services.Common\Cats.Services.Common.csproj">
       <Project>{083d007c-dd3b-42c0-b11c-a7015a909085}</Project>
