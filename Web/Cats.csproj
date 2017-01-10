@@ -543,6 +543,7 @@
     <Compile Include="Controllers\UserPreferenceController.cs" />
     <Compile Include="CTSDataSet.cs">
       <DependentUpon>CTSDataSet.xsd</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="CTSDataSet.Designer.cs">
       <AutoGen>True</AutoGen>

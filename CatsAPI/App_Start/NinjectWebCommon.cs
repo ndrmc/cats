@@ -1,11 +1,23 @@
 using Cats.Rest.App_Start;
-using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
 using System;
 using System.Web;
+using Cats.Services.Hub;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Ninject;
 using Ninject.Web.Common;
+using AdminUnitService = Cats.Services.EarlyWarning.AdminUnitService;
+using CommodityService = Cats.Services.EarlyWarning.CommodityService;
+using CommonService = Cats.Services.Common.CommonService;
+using FDPService = Cats.Services.EarlyWarning.FDPService;
+using HubService = Cats.Services.EarlyWarning.HubService;
+using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
+using ICommodityService = Cats.Services.EarlyWarning.ICommodityService;
+using ICommonService = Cats.Services.Common.ICommonService;
+using IFDPService = Cats.Services.EarlyWarning.IFDPService;
+using IHubService = Cats.Services.EarlyWarning.IHubService;
+using IShippingInstructionService = Cats.Services.EarlyWarning.IShippingInstructionService;
+using ShippingInstructionService = Cats.Services.EarlyWarning.ShippingInstructionService;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(NinjectWebCommon), "Stop")]
@@ -64,13 +76,15 @@ namespace Cats.Rest.App_Start
         {
             
             kernel.Bind<Cats.Data.UnitWork.IUnitOfWork>().To<Cats.Data.UnitWork.UnitOfWork>();
+            kernel.Bind<Data.Hub.UnitWork.IUnitOfWork>().To<Cats.Data.Hub.UnitOfWork>();
             kernel.Bind<ICommodityService>().To<CommodityService>();
             kernel.Bind<ICommonService>().To<CommonService>();
             kernel.Bind<IAdminUnitService>().To<AdminUnitService>();
             kernel.Bind<IAdminUnitTypeService>().To<AdminUnitTypeService>();
             kernel.Bind<IFDPService>().To<FDPService>();
             kernel.Bind<IHubService>().To<HubService>();
-            kernel.Bind < IShippingInstructionService >().To<ShippingInstructionService>();
+            kernel.Bind <IShippingInstructionService>().To<ShippingInstructionService>();
+            kernel.Bind<IStoreService>().To<StoreService>();
         }        
     }
 }
