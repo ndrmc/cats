@@ -25,9 +25,9 @@ namespace Cats.Rest.Models
         public int? PartitionId { get; set; }
 
         public Ration Ration { get; set; }
-        public List<HRDDetail> HRDDetails { get; set; }
+        public List<Detail> HRDDetails { get; set; }
     }
-    public class HRDDetail
+    public class Detail
     {
         public int HRDDetailID { get; set; }
         public int WoredaID { get; set; }

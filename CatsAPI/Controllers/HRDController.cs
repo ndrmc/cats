@@ -27,7 +27,7 @@ namespace Cats.Rest.Controllers
                     CreatedBY = hrd.CreatedBY,
                     CreatedDate = hrd.CreatedDate,
                     HRDDetails = (from d in hrd.HRDDetails
-                                  select new Models.HRDDetail()
+                                  select new Models.Detail()
                                   {
                                       WoredaName = d.AdminUnit.Name,
                                       DurationOfAssistance = d.DurationOfAssistance,
@@ -68,7 +68,7 @@ namespace Cats.Rest.Controllers
                 CreatedBY = hrd.CreatedBY,
                 CreatedDate = hrd.CreatedDate,
                 HRDDetails = (from d in hrd.HRDDetails
-                              select new Models.HRDDetail()
+                              select new Models.Detail()
                               {
                                   WoredaName = d.AdminUnit.Name,
                                   DurationOfAssistance = d.DurationOfAssistance,

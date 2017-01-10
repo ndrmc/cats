@@ -78,6 +78,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<Services.Administration.IContactService>().To<Services.Administration.ContactService>();
             kernel.Bind<Cats.Services.Hub.ICommodityGradeService>().To<Cats.Services.Hub.CommodityGradeService>();
             kernel.Bind<IHRDService>().To<HRDService>();
+            kernel.Bind<IHRDDetailService>().To<HRDDetailService>();
         }        
     }
 }
