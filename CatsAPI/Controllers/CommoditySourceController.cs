@@ -25,7 +25,7 @@ namespace Cats.Rest.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public dynamic GetAll()
+        public dynamic GetCommoditySources()
         {
             var bids = _icommoditySourceService.GetAllCommoditySource().Select(item => new
             {
@@ -41,7 +41,7 @@ namespace Cats.Rest.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public dynamic Get(int id)
+        public dynamic GetCommoditySource(int id)
         {
             var bid = _icommoditySourceService.FindById(id);
 
