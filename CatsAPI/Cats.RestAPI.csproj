@@ -154,6 +154,7 @@
     <Compile Include="Controllers\AdminUnitController.cs" />
     <Compile Include="Controllers\AdminUnitTypeController.cs" />
     <Compile Include="Controllers\BidController.cs" />
+    <Compile Include="Controllers\BidDetailController.cs" />
     <Compile Include="Controllers\CommodityController.cs" />
     <Compile Include="Controllers\CommodityGradeController.cs" />
     <Compile Include="Controllers\CommodityTypeController.cs" />
