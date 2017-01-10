@@ -102,7 +102,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.Services.Finance", "Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.Web.Adminstration", "Cats.Web.Adminstration\Cats.Web.Adminstration.csproj", "{7D69AEC0-4CE9-4BFE-BB34-9B92E78DB6E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.RestAPI", "Lookups\Cats.RestAPI.csproj", "{502A44AF-2544-4CBC-89D4-74C1F71F44F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.RestAPI", "CatsAPI\Cats.RestAPI.csproj", "{502A44AF-2544-4CBC-89D4-74C1F71F44F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
