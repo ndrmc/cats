@@ -81,6 +81,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IBidService>().To<BidService>();
             kernel.Bind<IBidDetailService>().To<BidDetailService>();
             kernel.Bind<IBidWinnerService>().To<BidWinnerService>();
+            kernel.Bind<Services.Hub.ICommoditySourceService>().To<Services.Hub.CommoditySourceService>();
 
         }        
     }

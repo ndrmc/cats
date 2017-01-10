@@ -157,6 +157,7 @@
     <Compile Include="Controllers\BidDetailController.cs" />
     <Compile Include="Controllers\CommodityController.cs" />
     <Compile Include="Controllers\CommodityGradeController.cs" />
+    <Compile Include="Controllers\CommoditySourceController.cs" />
     <Compile Include="Controllers\CommodityTypeController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\FDPController.cs" />
