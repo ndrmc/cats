@@ -12,8 +12,7 @@ namespace Cats.Rest.Controllers
         private readonly IAdminUnitService _adminUnitService;
         //
         // GET: /AdminUnit/
-      
-
+     
         public AdminUnitController(IAdminUnitService adminUnitService)
         {
             _adminUnitService = adminUnitService;
@@ -23,7 +22,7 @@ namespace Cats.Rest.Controllers
         /// </summary>
         /// <returns></returns>
         [System.Web.Mvc.HttpGet]
-        public  List<Models.AdminUnit> Get()
+        public  List<Models.AdminUnit> GetAdminUnits()
         {
             var adminUnits = _adminUnitService.GetAllAdminUnit().ToList();
 
@@ -35,7 +34,7 @@ namespace Cats.Rest.Controllers
       /// <param name="id"></param>
       /// <returns></returns>
         [System.Web.Http.HttpGet]
-        public Models.AdminUnit Get(int id)
+        public Models.AdminUnit GetAdminUnit(int id)
         {
             var adminUnit = _adminUnitService.FindById(id);
            if (adminUnit!=null)

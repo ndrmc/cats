@@ -15,7 +15,7 @@ namespace Cats.Rest.Controllers
         //
         // GET: /Commody/
 
-       private ICommodityService _commodityService;
+       private readonly ICommodityService _commodityService;
         
 
 

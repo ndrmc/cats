@@ -13,7 +13,7 @@ namespace Cats.Rest.Controllers
             _commodityTypeService = commodityTypeService;
         }
         [HttpGet]
-        public List<CommodityType> Get()
+        public List<CommodityType> GetCommodityTypes()
         {
             return (from c in _commodityTypeService.GetAllCommodityType()
                     select new CommodityType()
@@ -22,6 +22,15 @@ namespace Cats.Rest.Controllers
                         Name = c.Name
                     }).ToList();
         }
-
+        [HttpGet]
+        public List<CommodityType> GetCommodityType(int id)
+        {
+            return (from c in _commodityTypeService.GetAllCommodityType().Where(c => c.CommodityTypeID == id)
+                    select new CommodityType()
+                    {
+                        Id = c.CommodityTypeID,
+                        Name = c.Name
+                    }).ToList();
+        }
     }
 }
