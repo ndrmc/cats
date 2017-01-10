@@ -24,8 +24,6 @@
     <RestorePackages>true</RestorePackages>
     <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
     <FileUpgradeFlags>40</FileUpgradeFlags>
-    <UpgradeBackupLocation>E:\code\cats\Backup8\</UpgradeBackupLocation>
-    <UpgradeBackupLocation>E:\code\cats\Backup10\</UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
     <UseGlobalApplicationHostFile />
   </PropertyGroup>
@@ -161,6 +159,7 @@
     <Compile Include="Controllers\CommoditySourceController.cs" />
     <Compile Include="Controllers\CommodityTypeController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
+    <Compile Include="Controllers\CurrencySourceController.cs" />
     <Compile Include="Controllers\FDPController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HRDController.cs" />
