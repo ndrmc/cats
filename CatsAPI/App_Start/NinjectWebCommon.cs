@@ -70,6 +70,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IAdminUnitTypeService>().To<AdminUnitTypeService>();
             kernel.Bind<IFDPService>().To<FDPService>();
             kernel.Bind<IHubService>().To<HubService>();
+            kernel.Bind < IShippingInstructionService >().To<ShippingInstructionService>();
         }        
     }
 }

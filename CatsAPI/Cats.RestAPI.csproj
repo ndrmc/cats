@@ -164,6 +164,8 @@
     <Compile Include="Models\CommodityType.cs" />
     <Compile Include="Models\FDP.cs" />
     <Compile Include="Models\Hub.cs" />
+    <Compile Include="Controllers\ShippingInstructionController.cs" />
+    <Compile Include="Models\ShippingInstruction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
