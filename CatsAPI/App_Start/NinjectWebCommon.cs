@@ -78,11 +78,14 @@ namespace Cats.Rest.App_Start
             kernel.Bind<Cats.Services.EarlyWarning.ICommodityTypeService>().To<Cats.Services.EarlyWarning.CommodityTypeService>();
             kernel.Bind<Services.Administration.IContactService>().To<Services.Administration.ContactService>();
             kernel.Bind<Cats.Services.Hub.ICommodityGradeService>().To<Cats.Services.Hub.CommodityGradeService>();
+
             kernel.Bind<IBidService>().To<BidService>();
             kernel.Bind<IBidDetailService>().To<BidDetailService>();
             kernel.Bind<IBidWinnerService>().To<BidWinnerService>();
             kernel.Bind<Services.Hub.ICommoditySourceService>().To<Services.Hub.CommoditySourceService>();
 
+            kernel.Bind<IHRDService>().To<HRDService>();
+            kernel.Bind<IHRDDetailService>().To<HRDDetailService>();
         }        
     }
 }

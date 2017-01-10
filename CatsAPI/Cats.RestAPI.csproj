@@ -25,7 +25,7 @@
     <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
     <FileUpgradeFlags>40</FileUpgradeFlags>
     <UpgradeBackupLocation>E:\code\cats\Backup8\</UpgradeBackupLocation>
-    <UpgradeBackupLocation>E:\code\cats\Backup9\</UpgradeBackupLocation>
+    <UpgradeBackupLocation>E:\code\cats\Backup10\</UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
     <UseGlobalApplicationHostFile />
   </PropertyGroup>
@@ -164,6 +164,7 @@
     <Compile Include="Controllers\FDPController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HRDController.cs" />
+    <Compile Include="Controllers\HRDDetailController.cs" />
     <Compile Include="Controllers\HubController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -176,6 +177,7 @@
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\FDP.cs" />
     <Compile Include="Models\HRD.cs" />
+    <Compile Include="Models\HRDDetail.cs" />
     <Compile Include="Models\Hub.cs" />
     <Compile Include="Controllers\ShippingInstructionController.cs" />
     <Compile Include="Models\ShippingInstruction.cs" />
