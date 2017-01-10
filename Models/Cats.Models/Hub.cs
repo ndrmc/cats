@@ -34,6 +34,7 @@ namespace Cats.Models
         public int HubID { get; set; }
         public string Name { get; set; }
         public int HubOwnerID { get; set; }
+        public int HubParentID { get; set; }
         public virtual HubOwner HubOwner { get; set; }
         public virtual ICollection<DispatchAllocation> DispatchAllocations { get; set; }
         public virtual ICollection<HubAllocation> HubAllocations { get; set; }
