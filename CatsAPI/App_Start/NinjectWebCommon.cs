@@ -17,8 +17,10 @@ using ICommonService = Cats.Services.Common.ICommonService;
 using IFDPService = Cats.Services.EarlyWarning.IFDPService;
 using IHubService = Cats.Services.EarlyWarning.IHubService;
 using IProgramService = Cats.Services.EarlyWarning.IProgramService;
+using IProjectCodeService = Cats.Services.EarlyWarning.IProjectCodeService;
 using IShippingInstructionService = Cats.Services.EarlyWarning.IShippingInstructionService;
 using ProgramService = Cats.Services.EarlyWarning.ProgramService;
+using ProjectCodeService = Cats.Services.EarlyWarning.ProjectCodeService;
 using ShippingInstructionService = Cats.Services.EarlyWarning.ShippingInstructionService;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
@@ -88,6 +90,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind <IShippingInstructionService>().To<ShippingInstructionService>();
             kernel.Bind<IStoreService>().To<StoreService>();
             kernel.Bind<IProgramService>().To<ProgramService>();
+            kernel.Bind<IProjectCodeService>().To<ProjectCodeService>();
         }        
     }
 }
