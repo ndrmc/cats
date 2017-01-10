@@ -31,25 +31,32 @@ namespace Cats.Rest.Controllers
             return adminUnitTypes.Select(adminUnitType => new Models.AdminUnitType(adminUnitType.AdminUnitTypeID, adminUnitType.Name, adminUnitType.NameAM)).ToList();
         }
         /// <summary>
-        /// returns the name of the Admin unit Type
+        /// Used to get a single object of Admin Unit by Id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public string Get(int id)
+        public Models.AdminUnitType Get(int id)
         {
             var adminUnitType = _adminUnitTypeService.FindById(id);
-            return adminUnitType != null ? adminUnitType.Name : "";
+            if (adminUnitType != null)
+            {
+                var _adminUnitType = new Models.AdminUnitType(adminUnitType.AdminUnitTypeID, adminUnitType.Name,
+                                                              adminUnitType.NameAM);
+                return _adminUnitType;
+            }
+            return null;
+           
         }
         /// <summary>
         /// Returns the id of an AdminUnitType 
         /// </summary>
         /// <param name="name"></param>
         /// <returns>Id of Admin Unit Type</returns>
-        public int GetAdminUnitTypesByName(string name)
-        {
-            var adminUnitType = _adminUnitTypeService.FindBy(n => n.Name == name).FirstOrDefault();
-            return adminUnitType != null ? adminUnitType.AdminUnitTypeID : -1;
-        }
+        //public int GetAdminUnitTypesByName(string name)
+        //{
+        //    var adminUnitType = _adminUnitTypeService.FindBy(n => n.Name == name).FirstOrDefault();
+        //    return adminUnitType != null ? adminUnitType.AdminUnitTypeID : -1;
+        //}
         #endregion
 
     }
