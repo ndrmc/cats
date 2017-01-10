@@ -153,6 +153,7 @@
     <Compile Include="Controllers\CommodityTypeController.cs" />
     <Compile Include="Controllers\FDPController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HubController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -162,6 +163,7 @@
     <Compile Include="Models\CommodityGrade.cs" />
     <Compile Include="Models\CommodityType.cs" />
     <Compile Include="Models\FDP.cs" />
+    <Compile Include="Models\Hub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
