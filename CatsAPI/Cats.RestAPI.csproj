@@ -161,6 +161,7 @@
     <Compile Include="Controllers\CommodityTypeController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\CurrencySourceController.cs" />
+    <Compile Include="Controllers\DonorSourceController .cs" />
     <Compile Include="Controllers\FDPController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HRDController.cs" />
