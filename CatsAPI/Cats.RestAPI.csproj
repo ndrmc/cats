@@ -25,6 +25,7 @@
     <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
     <FileUpgradeFlags>40</FileUpgradeFlags>
     <UpgradeBackupLocation>E:\code\cats\Backup8\</UpgradeBackupLocation>
+    <UpgradeBackupLocation>E:\code\cats\Backup9\</UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
     <UseGlobalApplicationHostFile />
   </PropertyGroup>
@@ -153,8 +154,11 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AdminUnitController.cs" />
     <Compile Include="Controllers\AdminUnitTypeController.cs" />
+    <Compile Include="Controllers\BidController.cs" />
+    <Compile Include="Controllers\BidDetailController.cs" />
     <Compile Include="Controllers\CommodityController.cs" />
     <Compile Include="Controllers\CommodityGradeController.cs" />
+    <Compile Include="Controllers\CommoditySourceController.cs" />
     <Compile Include="Controllers\CommodityTypeController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\FDPController.cs" />
@@ -312,6 +316,10 @@
     <ProjectReference Include="..\Services\Cats.Services.Hub\Cats.Services.Hub.csproj">
       <Project>{9fba0283-ee84-49f2-8305-f038bbf29658}</Project>
       <Name>Cats.Services.Hub</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\services\Cats.Services.Procurement\Cats.Services.Procurement.csproj">
+      <Project>{B0410B11-91E0-40EC-9F16-55FC5E2C4090}</Project>
+      <Name>Cats.Services.Procurement</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
