@@ -8,6 +8,7 @@ using Ninject;
 using Ninject.Web.Common;
 using Cats.Services.Administration;
 using Cats.Services.Hub;
+using Cats.Services.Procurement;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(NinjectWebCommon), "Stop")]
@@ -77,6 +78,9 @@ namespace Cats.Rest.App_Start
             kernel.Bind<Cats.Services.EarlyWarning.ICommodityTypeService>().To<Cats.Services.EarlyWarning.CommodityTypeService>();
             kernel.Bind<Services.Administration.IContactService>().To<Services.Administration.ContactService>();
             kernel.Bind<Cats.Services.Hub.ICommodityGradeService>().To<Cats.Services.Hub.CommodityGradeService>();
+            kernel.Bind<IBidService>().To<BidService>();
+            kernel.Bind<IBidDetailService>().To<BidDetailService>();
+            kernel.Bind<IBidWinnerService>().To<BidWinnerService>();
 
         }        
     }
