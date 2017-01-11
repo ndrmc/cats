@@ -129,7 +129,7 @@
                               }
                               columns.Bound(c => c.ReceivedAmount).Width(45).Title("Rec. Qty. (Qtl)").HtmlAttributes(new {style = "text-align:right"});
                               columns.Bound(c => c.LossAmount).Width(25).Title("Loss Qty. (Qtl)").HtmlAttributes(new {style = "text-align:right"});
-                              ;
+                              
                               columns.ForeignKey(c => c.LossReasonId, (System.Collections.IEnumerable) ViewData["LossReasons"], "Id", "name").Title("Loss code - Reason").Width(40);
                               //columns.Bound(c => c.LossReason).Width(15);
 
@@ -171,8 +171,6 @@
 
                           )
                           .Events(e => e.Edit("onEdit"))
-
-
                           .Resizable(resize => resize.Columns(true))
                           )
                 </div>
@@ -186,11 +184,7 @@
     </div>
 
 
-
-
-
-        <script>
-
+<script type="text/javascript">
 
             function error_handler(e) {
                 if (e.errors) {
@@ -203,6 +197,33 @@
                         }
                     });
                     alert(message);
+                }
+
+                if (e.errors) {
+                    var message = "Error:\n";
+                    var grid = $('#locationGrid').data('kendoGrid');
+                    var gridElement = grid.editable.element;
+                    var validationMessageTemplate = kendo.template(
+                        "<div id='#=field#_validationMessage' " +
+                            "class='k-widget k-tooltip k-tooltip-validation " +
+                                "k-invalid-msg field-validation-error' " +
+                            "style='margin: 0.5em;' data-for='#=field#' " +
+                            "data-val-msg-for='#=field#' role='alert'>" +
+                            "<span class='k-icon k-warning'></span>" +
+                            "#=message#" +
+                            "<div class='k-callout k-callout-n'></div>" +
+                        "</div>");
+
+                    $.each(e.errors, function (key, value) {
+                        if (value.errors) {
+                            gridElement.find("[data-valmsg-for=" + key + "],[data-val-msg-for=" + key + "]")
+                                .replaceWith(validationMessageTemplate({ field: key, message: value.errors[0] }));
+                            gridElement.find("input[name=" + key + "]").focus();
+                        }
+                    });
+                    grid.one("dataBinding", function (e) {
+                        e.preventDefault();   // cancel grid rebind
+                    });
                 }
             }
 
