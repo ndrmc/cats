@@ -27,11 +27,8 @@
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
     <UseGlobalApplicationHostFile />
-
     <UpgradeBackupLocation>E:\code\cats\Backup11\</UpgradeBackupLocation>
-
     <UpgradeBackupLocation />
-
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -168,6 +165,7 @@
     <Compile Include="Controllers\CurrencySourceController.cs" />
     <Compile Include="Controllers\FDPController.cs" />
     <Compile Include="Controllers\GiftCertificateController.cs" />
+    <Compile Include="Controllers\GiftCertificateDetailController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HRDController.cs" />
     <Compile Include="Controllers\HRDDetailController.cs" />
