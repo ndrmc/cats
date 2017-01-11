@@ -127,6 +127,8 @@ namespace Cats.Rest.App_Start
             kernel.Bind<ILossReasonService>().To<LossReasonService>();
             kernel.Bind<IPlanService>().To<PlanService>();
             kernel.Bind<IRationService>().To<RationService>();
+            kernel.Bind<IRationDetailService>().To<RationDetailService>();
+
         }        
     }
 }

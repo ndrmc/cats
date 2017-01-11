@@ -157,6 +157,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AdminUnitController.cs" />
     <Compile Include="Controllers\AdminUnitTypeController.cs" />
+    <Compile Include="Controllers\RationDetailController.cs" />
     <Compile Include="Controllers\PlanController.cs" />
     <Compile Include="Controllers\BidController.cs" />
     <Compile Include="Controllers\BidDetailController.cs" />
