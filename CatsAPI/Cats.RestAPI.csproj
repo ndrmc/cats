@@ -182,6 +182,7 @@
     <Compile Include="Controllers\ProjectCodeController.cs" />
     <Compile Include="Controllers\RationController.cs" />
     <Compile Include="Controllers\RegionalRequestController.cs" />
+    <Compile Include="Controllers\SeasonController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Global.asax.cs">
@@ -210,6 +211,7 @@
     <Compile Include="Models\Ration.cs" />
     <Compile Include="Models\RegionalRequest.cs" />
     <Compile Include="Models\RegionalRequestDetail.cs" />
+    <Compile Include="Models\Season.cs" />
     <Compile Include="Models\ShippingInstruction.cs" />
     <Compile Include="Models\Store.cs" />
     <Compile Include="Models\Unit.cs" />
