@@ -170,6 +170,7 @@
     <Compile Include="Controllers\HRDController.cs" />
     <Compile Include="Controllers\HRDDetailController.cs" />
     <Compile Include="Controllers\HubController.cs" />
+    <Compile Include="Controllers\HubOwnerController.cs" />
     <Compile Include="Controllers\ProgramController.cs" />
     <Compile Include="Controllers\ProjectCodeController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Models\HRDDetail.cs" />
     <Compile Include="Models\Hub.cs" />
     <Compile Include="Controllers\ShippingInstructionController.cs" />
+    <Compile Include="Models\HubOwner.cs" />
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\ProjectCode.cs" />
     <Compile Include="Models\ShippingInstruction.cs" />
