@@ -197,6 +197,8 @@
     <Compile Include="Controllers\ShippingInstructionController.cs" />
     <Compile Include="Models\HubOwner.cs" />
     <Compile Include="Models\Ledger.cs" />
+    <Compile Include="Models\LedgerType.cs" />
+    <Compile Include="Models\LedgerTypeController.cs" />
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\ProjectCode.cs" />
     <Compile Include="Models\ShippingInstruction.cs" />
