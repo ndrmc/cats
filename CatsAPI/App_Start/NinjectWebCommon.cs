@@ -119,6 +119,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<Services.EarlyWarning.IGiftCertificateService>().To<Services.EarlyWarning.GiftCertificateService>();
             kernel.Bind<Services.EarlyWarning.IGiftCertificateDetailService>().To<Services.EarlyWarning.GiftCertificateDetailService>();
             kernel.Bind<IHubOwnerService>().To<HubOwnerService>();
+            kernel.Bind<ILedgerService>().To<LedgerService>();
         }        
     }
 }
