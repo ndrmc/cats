@@ -2,6 +2,7 @@ using Cats.Rest.App_Start;
 using Cats.Services.EarlyWarning;
 using System;
 using System.Web;
+using Cats.Services.Administration;
 using Cats.Services.Hub;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Ninject;
@@ -25,7 +26,8 @@ using ProjectCodeService = Cats.Services.EarlyWarning.ProjectCodeService;
 using ShippingInstructionService = Cats.Services.EarlyWarning.ShippingInstructionService;
 
 using Cats.Services.Procurement;
-
+using HubOwnerService = Cats.Services.Hub.HubOwnerService;
+using IHubOwnerService = Cats.Services.Hub.IHubOwnerService;
 using IStoreService = Cats.Services.Hub.IStoreService;
 using IUnitService = Cats.Services.EarlyWarning.IUnitService;
 
@@ -121,6 +123,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IHubOwnerService>().To<HubOwnerService>();
             kernel.Bind<ILedgerService>().To<LedgerService>();
             kernel.Bind<ILedgerTypeService>().To<LedgerTypeService>();
+            kernel.Bind<ILossReasonService>().To<LossReasonService>();
         }        
     }
 }
