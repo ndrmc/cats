@@ -32,7 +32,7 @@ namespace Cats.Rest.Controllers
                 item.StartDate,
                 item.EndDate,
                 item.ProgramID,
-                item.Program,
+                item.Program.Name,
                 item.Status,
                 item.Duration
             }).ToList();
@@ -45,7 +45,7 @@ namespace Cats.Rest.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public dynamic GetBid(int id)
+        public dynamic GetPlan(int id)
         {
             var obj = _iplanService.FindById(id);
             var element = new
@@ -55,7 +55,7 @@ namespace Cats.Rest.Controllers
                 obj.StartDate,
                 obj.EndDate,
                 obj.ProgramID,
-                obj.Program,
+                obj.Program.Name,
                 obj.Status,
                 obj.Duration
             };
