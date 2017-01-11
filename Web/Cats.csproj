@@ -2202,6 +2202,10 @@
     <Content Include="Scripts\js\bootstrap.min.js" />
     <Content Include="Scripts\js\DataActivityIndictor\DataActivityIndicator.js" />
     <Content Include="Scripts\js\kendo.all.min.js" />
+    <Content Include="Scripts\js\SemanticUI\dropdown.js" />
+    <Content Include="Scripts\js\SemanticUI\dropdown.min.js" />
+    <Content Include="Scripts\js\SemanticUI\semantic.min.css" />
+    <Content Include="Scripts\js\SemanticUI\transition.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af-ZA.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.am-ET.min.js" />

@@ -127,6 +127,7 @@ namespace Cats.Areas.Hub.Controllers
                 viewModel.PurchaseOrder = receiptAllocation.PurchaseOrder;
             }
 
+ 
 
             if (String.IsNullOrEmpty(viewModel.SupplierName))
                 viewModel.SupplierName = receive.SupplierName;

@@ -90,7 +90,7 @@
         }
 
         columns.Bound(dis => dis.BusinessProcessID).Title("History").ClientTemplate("<a href='javascript:workflow_history_new(\"#=BusinessProcessID#\")'>History</a>");
-       
+
     })
 
 )
@@ -179,6 +179,27 @@
     function dataBound() {
         if (document.getElementById('FilterGRN').value !== "") this.expandRow(this.tbody.find("tr.k-master-row").first());
     }
+        function workflow_history_new(BusinessProcessID) {
+          @*var url = '@Url.Action("Close", "ReceiptAllocation")';*@
+          var attribs = { id: BusinessProcessID };
+        //var title = "Close Receipt Plan";
+        openModalEditor(history_link + BusinessProcessID);
+        //showModalEditor(history_link, attribs, '');
+    }
+    function openModalEditor(url, attribs) {
+        //$("#modal_label").html(title);
+        $("#modal_message").html("...Loading");
+        $("#modalHistoryBody").html("");
+        $('#modalHistory').modal();
 
+        $.get(url, attribs, function (data) {
+            $("#modal_message").html("");
+            $("#modalHistoryBody").html(data);
+            setTimeout(function () {
+                initValidation();
+            }, 1000);
+
+        });
+    }
 </script>
 
