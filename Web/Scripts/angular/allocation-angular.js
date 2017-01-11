@@ -5,9 +5,13 @@
 var $$scope;
 var timer;
 var HubId, StoreId;
-// Create app Module 
+// Create app Module
 function onsaveAllocation() {
-    $$scope.saveAllocation();
+    var result = $$scope.saveAllocation();
+    //if(result ===true)
+  //  {
+        window.location.href = backBtn;
+
 }
 
 var app = angular.module("dragDrop", ['ngResource']);
@@ -17,15 +21,15 @@ app.factory("dragDropService", function ($resource)
 {
 
     return {
-        
+
         getRequisitions: $resource(Url + "?regionId=" + regionId)
-        
-        
+
+
     };
-    
-   
-    
-    
+
+
+
+
 
 
 });
@@ -33,96 +37,97 @@ app.factory("hubService", function ($resource)
 {
 
     return {
-        
+
         getSWarehouse: $resource("Logistics/DispatchAllocation/ReadSWarehouse"  + 1)
-        
-        
+
+
     };
-    
-   
-    
-    
+
+
+
+
 
 
 });
 app.factory("savefactory", function ($http) {
-   
+
     return {
         save: function (hubAllocated) {
-          
+
             $http.post(UrlPOST, { allocation: hubAllocated }).success(function (responseData) {
                 var msg = '<div class="cats_success">Success: Hub allocation saved successfully.</div>';
-                $(".message-window").html(msg).delay(800).hide().fadeIn(); // Don't change this line. 
+                $(".message-window").html(msg).delay(800).hide().fadeIn(); // Don't change this line.
                 clearTimeout(timer); // Don't change this line.
                 timer = setTimeout(function () { // Don't change this line.
                     $(".message-window").fadeOut("normal", function () { $(this).html(''); }); // Don't change this line.
                 }, 5000); // Here is the millisecond duration in which the message will be displayed. Can be changed.
-               
+                return true;
             }).error(function (responseData) {
                 var msg = '<div class="cats_error">Error: Hub allocation couldn\'t be saved.</div>';
-                $(".message-window").html(msg).delay(800).hide().fadeIn(); // Don't change this line. 
+                $(".message-window").html(msg).delay(800).hide().fadeIn(); // Don't change this line.
                 clearTimeout(timer); // Don't change this line.
                 timer = setTimeout(function () { // Don't change this line.
                     $(".message-window").fadeOut("normal", function () { $(this).html(''); }); // Don't change this line.
                 }, 5000); // Here is the millisecond duration in which the message will be displayed. Can be changed.
-               
+                return false;
+
             });
         }
     };
-   
+
 });
 
 app.controller("DragDroController", function ($scope, $http ,dragDropService, savefactory)
 {
     $scope.showModal = false;
     $scope.WarehouseName = "";
-    
-    
+
+
     $scope.Warehouse;
     $scope.WarehouseList = [];
     $scope.SWarehouseName ;
     $scope.handleDrop = function (index) {
-       
+
 
         HubId = index;
         StoreId = 0;
         if (index.indexOf(' ') === -1) {
-            
-            
+
+
         } else {
             var spaceIndex = index.indexOf(' ');
-           
+
             HubId = index.substring(1, spaceIndex - 1);
             StoreId = index.substring(spaceIndex + 2);
         }
-        
+
 
         $scope.allocated[0].StoreId = StoreId;
         $scope.allocated[0].HubId = HubId;
        // $scope.showModal = !$scope.showModal;
 
-        
-      
+
+
       $scope.GetWarehouseList1(index);
-      
-       
+
+
         $scope.showModal = !$scope.showModal;
         $scope.allocated[0].HubId = index;
-       
-        
-       
+
+
+
 
     };
     $scope.saveWarehouse = function (SWarehouse) {
-        
-       
+
+
         $scope.showModal = !$scope.showModal;
         $scope.allocated[0].SatelliteWarehouseID = SWarehouse;
-        
+
     };
-   
-   
-    
+
+
+
     $scope.GetWarehouseList1 = function (index) {
 
         $http({ method: 'GET', url: '../DispatchAllocation/ReadSWarehouse?hubId=' + index })
@@ -131,11 +136,12 @@ app.controller("DragDroController", function ($scope, $http ,dragDropService, sa
 
             });
 
-       
+
     };
     $scope.saveAllocation = function () {
 
-        savefactory.save($scope.allocated);
+        var result = savefactory.save($scope.allocated);
+        return result;
     };
 
     $scope.RemoveRequisitionFromStore = function(requisition)
@@ -143,7 +149,7 @@ app.controller("DragDroController", function ($scope, $http ,dragDropService, sa
         //Get parent
         var req = document.getElementById(requisition);
         //Remove from parent div
-        
+
         req.parentElement.removeChild(req);
         //Remove req from allocations
         for (var i = 0; i < $$scope.allocated.length; i++) {
@@ -165,9 +171,9 @@ app.controller("DragDroController", function ($scope, $http ,dragDropService, sa
     $scope.Requisitions = dragDropService.getRequisitions.query({}, isArray = true);
     $scope.allocated = [];
 
-    
+
     $scope.newRequisitions = {
-        
+
         0: "    No requisitions in " + RegionName +" region ",
         other: "{} requisitions  in " +  RegionName
     };
@@ -178,15 +184,15 @@ app.controller("DragDroController", function ($scope, $http ,dragDropService, sa
 
 
 app.directive('draggable', function () {
-    
-    
+
+
     return function (scope, element) {
-       
+
         // this gives us the native JS object
         var el = element[0];
-        
+
         el.draggable = true;
-        
+
         el.addEventListener(
             'dragstart',
             function (e) {
@@ -201,7 +207,7 @@ app.directive('draggable', function () {
         el.addEventListener(
             'dragend',
             function (e) {
-               
+
                 this.classList.remove('drag');
                 return false;
             },
@@ -263,12 +269,12 @@ app.directive('droppable', function () {
 
                     var item = document.getElementById(e.dataTransfer.getData('Text'));
                     this.appendChild(item);
-                    
+
 
                     for (var i = 0; i < $$scope.allocated.length; i++) {
                         if ($$scope.allocated[i].reqId == item.id) {
                             $$scope.allocated.splice(i, 1);//Removes the list from the allocaated array
-                            
+
                         }
                     }
                     $$scope.allocated.splice(0, 0, { reqId: item.id, HubId: 'index',StoreId: StoreId });

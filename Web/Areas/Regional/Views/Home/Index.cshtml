@@ -6,6 +6,15 @@
     Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
     ViewBag.PageTitle = Html.Translate("Regional Dashboard");
     ViewBag.PageTitleDescription = "[ "  + ViewBag.RegionName + " ]";
+
+    #region Data Activity Indicator ViewBags
+
+    //Data Activity Indicator uses ViewBag.PageName to get  Workflows configured for the page
+    ViewBag.PageName = Cats.Services.Workflows.Constants.RegionalPage;
+
+    #endregion
+
+
 }
 
 
@@ -25,10 +34,10 @@
             border-bottom-left-radius: 12px;
             margin: 5px 5px 5px 5px;
         }
-        
+
         .flag.flag-somali {
             background-position: 0 0;
-        
+
         }
 
         .flag.flag-tigray {
@@ -73,7 +82,7 @@
     </style>
 }
 
-<div ng-app="myApp" class="container">
+<div ng-app="myApp" >
     <div class="row">
         <div class="portlet solid bordered" ng-controller="ImportantNumbersController">
             <div class="portlet-title">
@@ -134,251 +143,514 @@
         </div>
     </div>
 
-    <div ng-controller="RegionalDashboardController" class="container">
-        <div class="portlet light bordered bg-inverse" ng-controller="ImportantNumbersController">
-            <div class="portlet-title">
-                <div class="caption font-green-sharp">
-                    <i class="icon-list font-green-sharp"></i>
-                    <span class="caption-subject bold uppercase"> Assesments</span>
+    <div class="row">
+
+        @Html.Partial("_DataActivityIndicator")
+    </div>
+
+
+        <div ng-controller="RegionalDashboardController" >
+            <div class="portlet light bordered bg-inverse" ng-controller="ImportantNumbersController">
+                <div class="portlet-title">
+                    <div class="caption font-green-sharp">
+                        <i class="icon-list font-green-sharp"></i>
+                        <span class="caption-subject bold uppercase"> Assesments</span>
+                    </div>
+                    <div class="tools">
+                        <a href="#" class="collapse" data-original-title="" title=""></a>
+                    </div>
+                    <div class="actions">
+                        <a class="btn btn-icon-only btn-default fullscreen"></a>
+                    </div>
                 </div>
-                <div class="tools">
-                    <a href="#" class="collapse" data-original-title="" title=""></a>
-                </div>
-                <div class="actions">
-                    <a class="btn btn-icon-only btn-default fullscreen"></a>
-                </div>
-            </div>
-            
-            <div class="portlet-body" id="_RequestContent">
-                <div class="table-responsive">
-                    <table id="" class="table table-striped table-checkable">
-                        <thead>
-                        <tr>
-                            @*<th class="hidden-xs">Plan ID</th>*@
-                            @*<th class="string">Season</th>*@
-                            <th>Assessment Name</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Status</th>
-                            @*<th class="number">Amount(QT)</th>
+
+                <div class="portlet-body" id="_RequestContent">
+                    <div class="table-responsive">
+                        <table id="" class="table table-striped table-checkable">
+                            <thead>
+                                <tr>
+                                    @*<th class="hidden-xs">Plan ID</th>*@
+                                    @*<th class="string">Season</th>*@
+                                    <th>Assessment Name</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Status</th>
+                                    @*<th class="number">Amount(QT)</th>
                                         <th>Status</th>
                                         <th>Detail</th>*@
-                        </tr>
-                        </thead>
-                        <tbody ng-cloak>
-                        <tr class="" ng-repeat="assessment in Assesments">
-                            @*<td class="hidden-xs">{{assessment.PlanID}}</td>*@
-                            @*<td class="number">{{assessment.Season}}</td>*@
-                            <td>{{assessment.PlanName}}</td>
-                            <td>{{assessment.StartDate}} </td>
-                            <td>{{assessment.EndDate}} </td>
-                            <td><span class="label label-success">{{assessment.StatusDescription}}</span></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-            </div>
-        </div>
+                                </tr>
+                            </thead>
+                            <tbody ng-cloak>
+                                <tr class="" ng-repeat="assessment in Assesments">
+                                    @*<td class="hidden-xs">{{assessment.PlanID}}</td>*@
+                                    @*<td class="number">{{assessment.Season}}</td>*@
+                                    <td>{{assessment.PlanName}}</td>
+                                    <td>{{assessment.StartDate}} </td>
+                                    <td>{{assessment.EndDate}} </td>
+                                    <td><span class="label label-success">{{assessment.StatusDescription}}</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-       <div ng-controller="stageController">
-          <div class="portlet light bordered">
-                <div class="portlet-title">
-                    <div class="caption font-green-sharp">
-                        <i class="icon-list font-green-sharp"></i>
-                        <span class="caption-subject bold uppercase"> Requests </span>
-                    </div>
-                    <div class="tools">
-                        <a href="#" class="collapse" data-original-title="" title=""></a>
-                    </div>
-                    <div class="actions">
-                        <a class="btn btn-icon-only btn-default fullscreen"></a>
-                    </div>
                 </div>
-                <div class="portlet-body">
-                    <div class="row">
-                        <div class="col-md-8 col-sm-12">
-                            <div class="portlet solid bordered">
-                                <div class="portlet-title">
-                                    <div class="caption font-green-sharp">
-                                        @*<i class="icon-speech font-green-sharp"></i>*@
-                                        <span class="caption-subject bold uppercase"> Recent Requests </span>
+            </div>
+
+            <div ng-controller="stageController">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-green-sharp">
+                            <i class="icon-list font-green-sharp"></i>
+                            <span class="caption-subject bold uppercase"> Requests </span>
+                        </div>
+                        <div class="tools">
+                            <a href="#" class="collapse" data-original-title="" title=""></a>
+                        </div>
+                        <div class="actions">
+                            <a class="btn btn-icon-only btn-default fullscreen"></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-md-8 col-sm-12">
+                                <div class="portlet solid bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption font-green-sharp">
+                                            @*<i class="icon-speech font-green-sharp"></i>*@
+                                            <span class="caption-subject bold uppercase"> Recent Requests </span>
+                                        </div>
+                                        <div class="tools">
+                                            @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
+                                        </div>
+                                        <div class="actions">
+                                            <a class="btn green" onclick="window.location.href = '../EarlyWarning/Request';"><i class="fa fa-list"></i> Show More</a>
+                                            <a class="btn green" onclick="window.location.href = '../EarlyWarning/Request/New';"><i class="fa fa-plus"></i> New Request</a>
+                                            @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
+                                        </div>
                                     </div>
-                                    <div class="tools">
-                                        @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
-                                    </div>
-                                    <div class="actions">
-                                        <a class="btn green" onclick="window.location.href = '../EarlyWarning/Request';"><i class="fa fa-list"></i> Show More</a>
-                                        <a class="btn green" onclick="window.location.href = '../EarlyWarning/Request/New';"><i class="fa fa-plus"></i> New Request</a>
-                                        @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
+                                    <div class="portlet-body">
+                                        <div class="table-responsive">
+                                            <table id="" class="table table-condensed table-striped table-checkable">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="hidden-xs">Number</th>
+                                                        <th class="number">FDPS</th>
+                                                        <th class="number">Beneficiaries</th>
+                                                        <th class="number">Amount(QT)</th>
+                                                        <th>Status</th>
+                                                        <th>Detail</th>
+                                                        @*<th class="align-center">Action</th>*@
+                                                    </tr>
+                                                </thead>
+                                                <tbody ng-cloak>
+
+                                                    <tr class="" ng-repeat="request in Requests">
+                                                        <td class="hidden-xs">{{request.RequestNumber}}</td>
+                                                        <td class="number">{{request.Month}}</td>
+                                                        <td class="number">{{request.Beneficiaries|number}}</td>
+                                                        <th class="number">{{request.Amount|number}} QT</th>
+                                                        <td>
+                                                            <div>
+                                                                <span>
+
+                                                                    @*{{request.Status}}*@ Draft
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                        <th>
+                                                            <a ng-click="viewRequest(request)" class="btn default btn-xs green-sharp-stripe">
+                                                                View <i class="icon-chevron-right"></i>
+                                                            </a>
+                                                        </th>
+
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="portlet-body">
-                                    <div class="table-responsive">
-                                        <table id="" class="table table-condensed table-striped table-checkable">
-                                            <thead>
-                                            <tr>
-                                                <th class="hidden-xs">Number</th>
-                                                <th class="number">FDPS</th>
-                                                <th class="number">Beneficiaries</th>
-                                                <th class="number">Amount(QT)</th>
-                                                <th>Status</th>
-                                                <th>Detail</th>
-                                                @*<th class="align-center">Action</th>*@
-                                            </tr>
-                                        </thead>
-                                            <tbody ng-cloak>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <div class="portlet solid bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption font-green-sharp">
+                                            @*<i class="icon-speech font-green-sharp"></i>*@
+                                            <span class="caption-subject bold uppercase"> Requests Percentage </span>
+                                        </div>
+                                        <div class="tools">
+                                            @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
+                                        </div>
+                                        <div class="actions">
+                                            @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div id="containerPIE" class="chartWrap" draw-pie-chart=""></div>
+                                    </div>
+                                </div>
 
-                                            <tr class="" ng-repeat="request in Requests">
-                                                <td class="hidden-xs">{{request.RequestNumber}}</td>
-                                                <td class="number">{{request.Month}}</td>
-                                                <td class="number">{{request.Beneficiaries|number}}</td>
-                                                <th class="number">{{request.Amount|number}} QT</th>
-                                                <td>
-                                                    <div>
-                                                        <span>
-                                                            
-                                                                        @*{{request.Status}}*@ Draft
-                                                                    </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="portlet light bordered bg-inverse">
+                    <div class="portlet-title">
+                        <div class="caption font-green-sharp">
+                            <i class="icon-list font-green-sharp"></i>
+                            <span class="caption-subject bold uppercase"> Requisitions </span>
+                        </div>
+
+                        <div class="tools">
+                            <a href="#" class="collapse" data-original-title="" title=""></a>
+                        </div>
+                        <div class="actions">
+                            <a class="btn btn-icon-only btn-default fullscreen"></a>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body" id="RequisitionContent">
+                        <div class="row">
+                            <div class="col-md-8 col-sm-12">
+                                <div class="portlet solid bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption font-green-sharp">
+                                            @*<i class="icon-speech font-green-sharp"></i>*@
+                                            <span class="caption-subject bold uppercase"> Recent Requisitions </span>
+                                        </div>
+                                        <div class="tools">
+                                            @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
+                                        </div>
+                                        <div class="actions">
+                                            <a class="btn green" onclick="window.location.href = 'RegionRequisitions'"><i class="fa fa-list"></i> Show More</a>
+                                            @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="table-responsive">
+                                            <table id="" class="table table-striped table-checkable">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="hidden-xs">Number</th>
+                                                        <th>Commodity</th>
+                                                        <th class="number">Beneficiaries</th>
+                                                        <th class="number">Amount(QT)</th>
+                                                        <th>Status</th>
+
+                                                    </tr>
+
+                                                </thead>
+                                                <tbody ng-cloak>
+                                                    <tr class="" ng-repeat="requisition in Requisitions">
+
+                                                        <td>{{requisition.RequisitionNo}}</td>
+                                                        <th>{{requisition.Name}}</th>
+                                                        <td class="number">{{requisition.BenficiaryNo|number}}</td>
+                                                        <th class="number">{{requisition.Amount|number}} QT</th>
+                                                        <td><span class="label label-danger">Approved</span></td>
+
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4 col-sm-12">
+                                <div class="portlet solid bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption font-green-sharp">
+                                            @*<i class="icon-speech font-green-sharp"></i>*@
+                                            <span class="caption-subject bold uppercase"> Requisitions Percentage </span>
+                                        </div>
+                                        <div class="tools">
+                                            @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
+                                        </div>
+                                        <div class="actions">
+                                            @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div id="_container" class="chartWrap" draw-requisitions-chart=""></div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-green-sharp">
+                            <i class="icon-list font-green-sharp"></i>
+                            <span class="caption-subject bold uppercase"> Dispatches </span>
+                        </div>
+
+                        <div class="tools">
+                            <a href="#" class="collapse" data-original-title="" title=""></a>
+                        </div>
+                        <div class="actions">
+                            <a class="btn btn-icon-only btn-default fullscreen"></a>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body" id="DispatchContent">
+                        <div class="row">
+                            <div class="col-md-9 col-sm-12">
+                                <div class="portlet solid bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption font-green-sharp">
+                                            @*<i class="icon-speech font-green-sharp"></i>*@
+                                            <span class="caption-subject bold uppercase"> Incoming Dispatches </span>
+                                        </div>
+                                        <div class="tools">
+                                            @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
+                                        </div>
+                                        <div class="actions">
+                                            <a class="btn green" href="@Url.Action("Index", "Dispatch", new {Area = "Regional", regionID = ViewBag.RegionID})"><i class="fa fa-list"></i> Show More</a>
+                                            <a class="btn green" href="@Url.Action("Index", "DeliveryReconcile", new {Area = "Logistics", regionID = ViewBag.RegionID})"> FDP Commodity Receipt</a>
+                                            @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-condensed table-striped table-checkable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>FDP</th>
+                                                        <th>Woreda</th>
+                                                        <th>Commodity</th>
+                                                        <th class="number">Quantity(QT)</th>
+                                                        <th>Source Hub</th>
+                                                        <th>Transporter</th>
+                                                        <th>GIN</th>
+                                                    </tr>
+
+                                                </thead>
+                                                <tbody ng-cloak>
+                                                    <tr class="" ng-repeat="dispatch in Dispatches">
+                                                        <td>{{dispatch[0].Value}}</td>
+                                                        <th>{{dispatch[1].Value}}</th>
+                                                        <td>{{dispatch[2].Value}}</td>
+                                                        <th class="number">{{dispatch[5].Value|number:2}} QT</th>
+                                                        <td>{{dispatch[3].Value}}</td>
+                                                        <th>{{dispatch[4].Value}}</th>
+                                                        <th>{{dispatch[6].Value}}</th>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3 col-sm-12">
+                                <div class="portlet solid bordered">
+
+
+                                    <div class="portlet-body">
+                                        <div class="row">
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="dashboard-stat green-haze">
+                                                    <div class="visual">
+                                                        <i class="fa fa-truck"></i>
                                                     </div>
-                                                </td>
-                                                <th>
-                                                    <a ng-click="viewRequest(request)" class="btn default btn-xs green-sharp-stripe">
-                                                        View <i class="icon-chevron-right"></i>
-                                                    </a>
-                                                </th>
+                                                    <div class="details">
+                                                        <div class="number" ng-cloak>{{Census.IncomingDispatches|number}}</div>
+                                                        <div class="desc">Incoming Dispatches</div>
+                                                    </div><a class="more" href="#">more...</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="dashboard-stat green-haze">
+                                                    <div class="visual">
+                                                        <i class="fa fa-cubes"></i>
+                                                    </div>
+                                                    <div class="details">
+                                                        <div class="number" ng-cloak>
+                                                            {{Census.IncomingCommodity|number}} <i class="cats-unit-pref"></i>
+                                                        </div>
+                                                        <div class="desc">Total Incoming Commodity</div>
+                                                    </div><a class="more" href="#">more...</a>
+                                                </div>
+                                            </div>
 
-                                            </tr>
-                                        </tbody>
-                                        </table>
+
+                                        </div>
+
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-<div class="col-md-4 col-sm-12">
-                            <div class="portlet solid bordered">
-                                <div class="portlet-title">
-                                    <div class="caption font-green-sharp">
-                                        @*<i class="icon-speech font-green-sharp"></i>*@
-                                        <span class="caption-subject bold uppercase"> Requests Percentage </span>
-                                    </div>
-                                    <div class="tools">
-                                        @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
-                                    </div>
-                                    <div class="actions">
-                                        @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
-                                    </div>
-                                </div>
-                                <div class="portlet-body">
-                                    <div id="containerPIE" class="chartWrap" draw-pie-chart=""></div>
-                                </div>
+
                             </div>
 
                         </div>
 
                     </div>
-
                 </div>
+
+
+                <!-- BEGIN DISTRIBUTION -->
+                <div class="portlet light bordered bg-inverse">
+                    <div class="portlet-title">
+                        <div class="caption font-green-sharp">
+                            <i class="icon-list font-green-sharp"></i>
+                            <span class="caption-subject bold uppercase"> Distribution </span>
+                        </div>
+
+                        <div class="tools">
+                            <a href="#" class="collapse" data-original-title="" title=""></a>
+                        </div>
+                        <div class="actions">
+                            <a class="btn btn-icon-only btn-default fullscreen"></a>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body" id="DistributionContent">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <div class="portlet solid bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption font-green-sharp">
+                                            @*<i class="icon-speech font-green-sharp"></i>*@
+                                            <span class="caption-subject bold uppercase"> Current Distributions </span>
+                                        </div>
+                                        <div class="tools">
+                                            @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
+                                        </div>
+                                        <div class="actions">
+                                            <a class="btn green" href="@Url.Action("Index", "WoredaStockDistribution", new {Area = "Logistics", regionID = ViewBag.RegionID})"><i class="fa fa-list"></i> Show More</a>
+                                            @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="table-responsive">
+                                            <table id="" class="table table-striped table-checkable">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="hidden-xs">Plan</th>
+                                                        <th>Woreda</th>
+                                                        <th class="number">FDPs</th>
+                                                        <th class="align-center"></th>
+                                                    </tr>
+
+                                                </thead>
+                                                <tbody ng-cloak>
+                                                    <tr class="" ng-repeat="Distribution in Distribtion">
+                                                        <td>{{Distribution.plan}}</td>
+                                                        <th>{{Distribution.Woreda}}</th>
+                                                        <th>{{Distribution.Fdps}}</th>
+
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4 col-sm-12">
+                                <div class="portlet solid bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption font-green-sharp">
+                                            @*<i class="icon-speech font-green-sharp"></i>*@
+                                            <span class="caption-subject bold uppercase"> Age Percentage </span>
+                                            <span class="caption-helper" ng-cloak> Current HRD:{{Census.AgeGroupPlanName}}</span>
+                                        </div>
+
+                                        <div class="tools">
+                                            @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
+                                        </div>
+
+                                        <div class="actions">
+                                            @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
+                                        </div>
+
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div id="Age" class="chartWrap" draw-age-chart></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <div class="portlet solid bordered">
+                                    <div class="portlet-body">
+                                        <div class="row">
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="dashboard-stat green-haze">
+                                                    <div class="visual">
+                                                        <i class="fa fa-female"></i>
+                                                    </div>
+                                                    <div class="details">
+                                                        <div class="number" ng-cloak>{{Census.Female|number}}</div>
+                                                        <div class="desc">Female</div>
+                                                    </div><a class="more" href="#"></a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="dashboard-stat green-haze">
+                                                    <div class="visual">
+                                                        <i class="fa fa-male"></i>
+                                                    </div>
+                                                    <div class="details">
+                                                        <div class="number" ng-cloak>
+                                                            {{Census.Male|number}}
+                                                        </div>
+                                                        <div class="desc">Male</div>
+                                                    </div><a class="more" href="#"></a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="dashboard-stat green-haze">
+                                                    <div class="visual">
+                                                        <i class="fa fa-users"></i>
+                                                    </div>
+                                                    <div class="details">
+                                                        <div class="number" ng-cloak>
+                                                            {{Census.Male+Census.Female|number}}
+                                                        </div>
+                                                        <div class="desc">Total</div>
+                                                    </div><a class="more" href="#"></a>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END DISTRIBUTION -->
+
             </div>
 
 
-            <div class="portlet light bordered bg-inverse">
-                <div class="portlet-title">
-                    <div class="caption font-green-sharp">
-                        <i class="icon-list font-green-sharp"></i>
-                        <span class="caption-subject bold uppercase"> Requisitions </span>
-                    </div>
-
-                    <div class="tools">
-                        <a href="#" class="collapse" data-original-title="" title=""></a>
-                    </div>
-                    <div class="actions">
-                        <a class="btn btn-icon-only btn-default fullscreen"></a>
-                    </div>
-                </div>
-
-                <div class="portlet-body" id="RequisitionContent">
-                    <div class="row">
-                        <div class="col-md-8 col-sm-12">
-                            <div class="portlet solid bordered">
-                                <div class="portlet-title">
-                                    <div class="caption font-green-sharp">
-                                        @*<i class="icon-speech font-green-sharp"></i>*@
-                                        <span class="caption-subject bold uppercase"> Recent Requisitions </span>
-                                    </div>
-                                    <div class="tools">
-                                        @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
-                                    </div>
-                                    <div class="actions">
-                                        <a class="btn green" onclick="window.location.href = 'RegionRequisitions'"><i class="fa fa-list"></i> Show More</a>
-                                        @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
-                                    </div>
-                                </div>
-                                <div class="portlet-body">
-                                    <div class="table-responsive">
-                                        <table id="" class="table table-striped table-checkable">
-                                            <thead>
-                                            <tr>
-                                                <th class="hidden-xs">Number</th>
-                                                <th>Commodity</th>
-                                                <th class="number">Beneficiaries</th>
-                                                <th class="number">Amount(QT)</th>
-                                                <th>Status</th>
-
-                                            </tr>
-                                        
-                                            </thead>
-                                            <tbody ng-cloak>
-                                            <tr class="" ng-repeat="requisition in Requisitions">
-
-                                                <td>{{requisition.RequisitionNo}}</td>
-                                                <th>{{requisition.Name}}</th>
-                                                <td class="number">{{requisition.BenficiaryNo|number}}</td>
-                                                <th class="number">{{requisition.Amount|number}} QT</th>
-                                                <td><span class="label label-danger">Approved</span></td>
-
-                                            </tr>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                
-                        </div>
-
-                        <div class="col-md-4 col-sm-12">
-                            <div class="portlet solid bordered">
-                                <div class="portlet-title">
-                                    <div class="caption font-green-sharp">
-                                        @*<i class="icon-speech font-green-sharp"></i>*@
-                                        <span class="caption-subject bold uppercase"> Requisitions Percentage </span>
-                                    </div>
-                                    <div class="tools">
-                                        @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
-                                    </div>
-                                    <div class="actions">
-                                        @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
-                                    </div>
-                                </div>
-                                <div class="portlet-body">
-                                    <div id="_container" class="chartWrap" draw-requisitions-chart=""></div>
-                                </div>
-                            </div>
-
-                        </div>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-
-            
+            <!-- Begin Allocation Changes -->
             <div class="portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption font-green-sharp">
                         <i class="icon-list font-green-sharp"></i>
-                        <span class="caption-subject bold uppercase"> Dispatches </span>
+                        <span class="caption-subject bold uppercase"> Allocation Changes</span>
+                        <span class="caption-helper"> Recent Allocation Changes</span>
                     </div>
 
                     <div class="tools">
@@ -389,295 +661,38 @@
                     </div>
                 </div>
 
-                <div class="portlet-body" id="DispatchContent">
-                    <div class="row">
-                        <div class="col-md-9 col-sm-12">
-                            <div class="portlet solid bordered">
-                                <div class="portlet-title">
-                                    <div class="caption font-green-sharp">
-                                        @*<i class="icon-speech font-green-sharp"></i>*@
-                                        <span class="caption-subject bold uppercase"> Incoming Dispatches </span>
-                                    </div>
-                                    <div class="tools">
-                                        @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
-                                    </div>
-                                    <div class="actions">
-                                        <a class="btn green" href="@Url.Action("Index", "Dispatch", new {Area = "Regional", regionID = ViewBag.RegionID})"><i class="fa fa-list"></i> Show More</a>
-                                        <a class="btn green" href="@Url.Action("Index", "DeliveryReconcile", new {Area = "Logistics", regionID = ViewBag.RegionID})"> FDP Commodity Receipt</a>
-                                        @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
-                                    </div>
-                                </div>
-                                <div class="portlet-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-condensed table-striped table-checkable">
-                                            <thead>
-                                            <tr>
-                                                <th>FDP</th>
-                                                <th>Woreda</th>
-                                                <th>Commodity</th>
-                                                <th class="number">Quantity(QT)</th>
-                                                <th>Source Hub</th>
-                                                <th>Transporter</th>
-                                                <th>GIN</th>
-                                            </tr>
+                <div class="portlet-body" id="AllocationChangeContent">
+                    <div class="table-responsive">
+                        <table id="" class="table table-condensed table-striped table-checkable">
+                            <thead>
+                                <tr>
+                                    <th class="hidden-xs">Number</th>
+                                    <th class="number">FDPS</th>
+                                    <th class="number">Beneficiaries</th>
+                                    <th class="number">Requested Amount(QT)</th>
+                                    <th class="number">Allocated Amount(QT)</th>
+                                    @*<th class="align-center">Action</th>*@
+                                </tr>
+                            </thead>
+                            <tbody ng-cloak>
 
-                                            </thead>
-                                            <tbody ng-cloak>
-                                            <tr class="" ng-repeat="dispatch in Dispatches">
-                                                <td>{{dispatch[0].Value}}</td>
-                                                <th>{{dispatch[1].Value}}</th>
-                                                <td>{{dispatch[2].Value}}</td>
-                                                <th class="number">{{dispatch[5].Value|number:2}} QT</th>
-                                                <td>{{dispatch[3].Value}}</td>
-                                                <th>{{dispatch[4].Value}}</th>
-                                                <th>{{dispatch[6].Value}}</th>
-                                            </tr>
 
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                           
-                        </div>
-                       
-                        <div class="col-md-3 col-sm-12">
-                            <div class="portlet solid bordered">
-
-                        
-                                <div class="portlet-body">
-                                    <div class="row">
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="dashboard-stat green-haze">
-                                                <div class="visual">
-                                                    <i class="fa fa-truck"></i>
-                                                </div>
-                                                <div class="details">
-                                                    <div class="number" ng-cloak>{{Census.IncomingDispatches|number}}</div>
-                                                    <div class="desc">Incoming Dispatches</div>
-                                                </div><a class="more" href="#">more...</a>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="dashboard-stat green-haze">
-                                                <div class="visual">
-                                                    <i class="fa fa-cubes"></i>
-                                                </div>
-                                                <div class="details">
-                                                    <div class="number" ng-cloak>
-                                                        {{Census.IncomingCommodity|number}} <i class="cats-unit-pref"></i>
-                                                    </div>
-                                                    <div class="desc">Total Incoming Commodity</div>
-                                                </div><a class="more" href="#">more...</a>
-                                            </div>
-                                        </div>
-
-                            
-                                    </div>
-                                
-                                </div>
-                            </div>
-
-                        </div>
-                       
+                                <tr class="" ng-repeat="allocationChange in AllocationChanges">
+                                    <td class="hidden-xs">{{allocationChange.RequestNumber}}</td>
+                                    <td class="number">{{allocationChange.Month}}</td>
+                                    <td class="number">{{allocationChange.Beneficiaries|number}}</td>
+                                    <th class="number">{{allocationChange.RequestedAmount|number}} QT</th>
+                                    <th class="number">{{allocationChange.AllocatedAmount|number}} QT</th>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    
                 </div>
             </div>
-
-            
-            <!-- BEGIN DISTRIBUTION -->
-            <div class="portlet light bordered bg-inverse">
-                <div class="portlet-title">
-                    <div class="caption font-green-sharp">
-                        <i class="icon-list font-green-sharp"></i>
-                        <span class="caption-subject bold uppercase"> Distribution </span>
-                    </div>
-                    
-                    <div class="tools">
-                        <a href="#" class="collapse" data-original-title="" title=""></a>
-                    </div>
-                    <div class="actions">
-                        <a class="btn btn-icon-only btn-default fullscreen"></a>
-                    </div>
-                </div>
-                
-                <div class="portlet-body" id="DistributionContent">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-12">
-                            <div class="portlet solid bordered">
-                                <div class="portlet-title">
-                                    <div class="caption font-green-sharp">
-                                        @*<i class="icon-speech font-green-sharp"></i>*@
-                                        <span class="caption-subject bold uppercase"> Current Distributions </span>
-                                    </div>
-                                    <div class="tools">
-                                        @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
-                                    </div>
-                                    <div class="actions">
-                                        <a class="btn green" href="@Url.Action("Index", "WoredaStockDistribution", new {Area = "Logistics", regionID = ViewBag.RegionID})"><i class="fa fa-list"></i> Show More</a>
-                                        @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
-                                    </div>
-                                </div>
-                                <div class="portlet-body">
-                                    <div class="table-responsive">
-                                        <table id="" class="table table-striped table-checkable">
-                                            <thead>
-                                            <tr>
-                                                <th class="hidden-xs">Plan</th>
-                                                <th>Woreda</th>
-                                                <th class="number">FDPs</th>
-                                                <th class="align-center"></th>
-                                            </tr>
-
-                                            </thead>
-                                            <tbody ng-cloak>
-                                            <tr class="" ng-repeat="Distribution in Distribtion">
-                                                <td>{{Distribution.plan}}</td>
-                                                <th>{{Distribution.Woreda}}</th>
-                                                <th>{{Distribution.Fdps}}</th>
-
-                                            </tr>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-                        
-                        <div class="col-md-4 col-sm-12">
-                            <div class="portlet solid bordered">
-                                <div class="portlet-title">
-                                    <div class="caption font-green-sharp">
-                                        @*<i class="icon-speech font-green-sharp"></i>*@
-                                        <span class="caption-subject bold uppercase"> Age Percentage </span>
-                                        <span class="caption-helper" ng-cloak> Current HRD:{{Census.AgeGroupPlanName}}</span>
-                                    </div>
-                                    
-                                    <div class="tools">
-                                        @*<a href="#" class="collapse" data-original-title="" title=""></a>*@
-                                    </div>
-                                
-                                    <div class="actions">
-                                        @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
-                                    </div>
-                                    
-                                </div>
-                                <div class="portlet-body">
-                                    <div id="Age" class="chartWrap" draw-age-chart></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-sm-12">
-                            <div class="portlet solid bordered">
-                                <div class="portlet-body">
-                                    <div class="row">
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="dashboard-stat green-haze">
-                                                <div class="visual">
-                                                    <i class="fa fa-female"></i>
-                                                </div>
-                                                <div class="details">
-                                                    <div class="number" ng-cloak>{{Census.Female|number}}</div>
-                                                    <div class="desc">Female</div>
-                                                </div><a class="more" href="#"></a>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="dashboard-stat green-haze">
-                                                <div class="visual">
-                                                    <i class="fa fa-male"></i>
-                                                </div>
-                                                <div class="details">
-                                                    <div class="number" ng-cloak>
-                                                        {{Census.Male|number}}
-                                                    </div>
-                                                    <div class="desc">Male</div>
-                                                </div><a class="more" href="#"></a>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="dashboard-stat green-haze">
-                                                <div class="visual">
-                                                    <i class="fa fa-users"></i>
-                                                </div>
-                                                <div class="details">
-                                                    <div class="number" ng-cloak>
-                                                        {{Census.Male+Census.Female|number}}
-                                                    </div>
-                                                    <div class="desc">Total</div>
-                                                </div><a class="more" href="#"></a>
-                                            </div>
-                                        </div>
-
-                            
-                                    </div>
-                                
-                                </div>
-                            </div>
-                            
-                        </div>
-                      
-                    </div>
-                    
-                </div>
-            </div>
-            <!-- END DISTRIBUTION -->
+            <!-- End Allocation Changes -->
 
         </div>
-
-
-        <!-- Begin Allocation Changes -->
-        <div class="portlet light bordered" >
-            <div class="portlet-title">
-                <div class="caption font-green-sharp">
-                    <i class="icon-list font-green-sharp"></i>
-                    <span class="caption-subject bold uppercase"> Allocation Changes</span>
-                    <span class="caption-helper"> Recent Allocation Changes</span>
-                </div>
-                
-                <div class="tools">
-                    <a href="#" class="collapse" data-original-title="" title=""></a>
-                </div>
-                <div class="actions">
-                    <a class="btn btn-icon-only btn-default fullscreen"></a>
-                </div>
-            </div>
-            
-            <div class="portlet-body" id="AllocationChangeContent">
-                <div class="table-responsive">
-                    <table id="" class="table table-condensed table-striped table-checkable">
-                        <thead>
-                            <tr>
-                                <th class="hidden-xs">Number</th>
-                                <th class="number">FDPS</th>
-                                <th class="number">Beneficiaries</th>
-                                <th class="number">Requested Amount(QT)</th>
-                                <th class="number">Allocated Amount(QT)</th>
-                                @*<th class="align-center">Action</th>*@
-                            </tr>
-                        </thead>
-                        <tbody ng-cloak>
-
-                        
-                            <tr class="" ng-repeat="allocationChange in AllocationChanges">
-                                <td class="hidden-xs">{{allocationChange.RequestNumber}}</td>
-                                <td class="number">{{allocationChange.Month}}</td>
-                                <td class="number">{{allocationChange.Beneficiaries|number}}</td>
-                                <th class="number">{{allocationChange.RequestedAmount|number}} QT</th>
-                                <th class="number">{{allocationChange.AllocatedAmount|number}} QT</th>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- End Allocation Changes -->
-
     </div>
-</div>
 
 <script>
     $("#RequestHeader").click(function () {
@@ -826,7 +841,7 @@
     'use strict';
 
     // Declare app level module which depends on filters, and services
-    angular.module('myApp', ['myApp.directives']);
+    angular.module('myApp', ['myApp.directives', 'DataEntryIndicatorApp']);
 
     /* Controllers */
     function stageController($scope, $http) {
@@ -958,7 +973,7 @@
         });
 
     angular.module('myApp.directives').
-    
+
         directive('drawPieChart', function() {
             // return the directive link function. (compile function not needed)
             return function(scope, element, attrs) {
@@ -1017,7 +1032,7 @@
         });
 
     angular.module('myApp.directives').
-    
+
         directive('drawAgeChart', function() {
             // return the directive link function. (compile function not needed)
             return function(scope, element, attrs) {
@@ -1074,3 +1089,5 @@
             margin-right: 15px;
         }
 </style>
+
+<script src="~/Scripts/js/DataActivityIndictor/DataActivityIndicator.JS"></script>
