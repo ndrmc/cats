@@ -115,6 +115,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IHRDService>().To<HRDService>();
             kernel.Bind<IHRDDetailService>().To<HRDDetailService>();
             kernel.Bind<Services.EarlyWarning.IGiftCertificateService>().To<Services.EarlyWarning.GiftCertificateService>();
+            kernel.Bind<Services.EarlyWarning.IGiftCertificateDetailService>().To<Services.EarlyWarning.GiftCertificateDetailService>();
         }        
     }
 }
