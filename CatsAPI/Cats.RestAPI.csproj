@@ -178,6 +178,7 @@
     <Compile Include="Controllers\LossReasonController.cs" />
     <Compile Include="Controllers\ProgramController.cs" />
     <Compile Include="Controllers\ProjectCodeController.cs" />
+    <Compile Include="Controllers\RationController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Global.asax.cs">
@@ -203,6 +204,7 @@
     <Compile Include="Models\LossReason.cs" />
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\ProjectCode.cs" />
+    <Compile Include="Models\Ration.cs" />
     <Compile Include="Models\ShippingInstruction.cs" />
     <Compile Include="Models\Store.cs" />
     <Compile Include="Models\Unit.cs" />

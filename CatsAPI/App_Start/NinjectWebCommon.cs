@@ -124,6 +124,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<ILedgerService>().To<LedgerService>();
             kernel.Bind<ILedgerTypeService>().To<LedgerTypeService>();
             kernel.Bind<ILossReasonService>().To<LossReasonService>();
+            kernel.Bind<IRationService>().To<RationService>();
         }        
     }
 }

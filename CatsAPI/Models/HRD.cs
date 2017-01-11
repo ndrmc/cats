@@ -37,14 +37,5 @@ namespace Cats.Rest.Models
         public string WoredaName { get; set; }
     }
 
-    public class Ration
-    {
-        public int RationID { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public Nullable<int> CreatedBy { get; set; }
-        public Nullable<DateTime> UpdatedDate { get; set; }
-        public Nullable<int> UpdatedBy { get; set; }
-        public bool? IsDefaultRation { get; set; }
-        public string RefrenceNumber { get; set; }
-    }
+   
 }
