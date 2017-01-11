@@ -162,6 +162,7 @@
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\CurrencySourceController.cs" />
     <Compile Include="Controllers\FDPController.cs" />
+    <Compile Include="Controllers\GiftCertificateController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HRDController.cs" />
     <Compile Include="Controllers\HRDDetailController.cs" />
@@ -176,6 +177,8 @@
     <Compile Include="Models\CommodityType.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\FDP.cs" />
+    <Compile Include="Models\GiftCerteficate.cs" />
+    <Compile Include="Models\GiftCertificateDetail.cs" />
     <Compile Include="Models\HRD.cs" />
     <Compile Include="Models\HRDDetail.cs" />
     <Compile Include="Models\Hub.cs" />
