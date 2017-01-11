@@ -187,6 +187,9 @@
     <Compile Include="Controllers\ShippingInstructionController.cs" />
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\ProjectCode.cs" />
+    <Compile Include="Models\RationDetail.cs" />
+    <Compile Include="Models\ReliefRequisition.cs" />
+    <Compile Include="Models\ReliefRequisitionDetail.cs" />
     <Compile Include="Models\ShippingInstruction.cs" />
     <Compile Include="Models\Store.cs" />
     <Compile Include="Models\Unit.cs" />
