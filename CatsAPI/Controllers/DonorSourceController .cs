@@ -47,9 +47,18 @@ namespace Cats.Rest.Controllers
         [HttpGet]
         public dynamic GetDonor(int id)
         {
-            var bid = _idonorService.FindById(id);
+            var obj = _idonorService.FindById(id);
+            var element = new
+            {
+                obj.DonorID,
+                obj.Name,
+                obj.DonorCode,
+                obj.IsResponsibleDonor,
+                obj.IsSourceDonor,
+                obj.LongName
+            };
 
-            return bid;
+            return element;
         }
     }
 }
