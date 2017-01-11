@@ -62,9 +62,26 @@ namespace Cats.Rest.Controllers
         [HttpGet]
         public dynamic GetBid(int id)
         {
-            var bid = _ibidService.FindById(id);
+            var obj = _ibidService.FindById(id);
+            var element = new
+            {
+                obj.BidID,
+                obj.RegionID,
+                obj.StartDate,
+                obj.EndDate,
+                obj.BidNumber,
+                obj.OpeningDate,
+                obj.StatusID,
+                obj.Status,
+                obj.TransportBidPlanID,
+                obj.BidBondAmount,
+                obj.startTime,
+                obj.endTime,
+                obj.BidOpeningTime,
+                obj.BidDetails
+            };
 
-            return bid;
+            return element;
         }
     }
 }

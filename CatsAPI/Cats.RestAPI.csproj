@@ -25,8 +25,12 @@
     <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
     <FileUpgradeFlags>40</FileUpgradeFlags>
     <UpgradeBackupLocation>E:\Code\Cats\Backup12\</UpgradeBackupLocation>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
     <UseGlobalApplicationHostFile />
+    <UpgradeBackupLocation>E:\code\cats\Backup11\</UpgradeBackupLocation>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -163,10 +167,17 @@
     <Compile Include="Controllers\CurrencySourceController.cs" />
     <Compile Include="Controllers\DonorSourceController .cs" />
     <Compile Include="Controllers\FDPController.cs" />
+    <Compile Include="Controllers\GiftCertificateController.cs" />
+    <Compile Include="Controllers\GiftCertificateDetailController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HRDController.cs" />
     <Compile Include="Controllers\HRDDetailController.cs" />
     <Compile Include="Controllers\HubController.cs" />
+    <Compile Include="Controllers\HubOwnerController.cs" />
+    <Compile Include="Controllers\ProgramController.cs" />
+    <Compile Include="Controllers\ProjectCodeController.cs" />
+    <Compile Include="Controllers\StoreController.cs" />
+    <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -177,11 +188,18 @@
     <Compile Include="Models\CommodityType.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\FDP.cs" />
+    <Compile Include="Models\GiftCerteficate.cs" />
+    <Compile Include="Models\GiftCertificateDetail.cs" />
     <Compile Include="Models\HRD.cs" />
     <Compile Include="Models\HRDDetail.cs" />
     <Compile Include="Models\Hub.cs" />
     <Compile Include="Controllers\ShippingInstructionController.cs" />
+    <Compile Include="Models\HubOwner.cs" />
+    <Compile Include="Models\Program.cs" />
+    <Compile Include="Models\ProjectCode.cs" />
     <Compile Include="Models\ShippingInstruction.cs" />
+    <Compile Include="Models\Store.cs" />
+    <Compile Include="Models\Unit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +310,10 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Data\Cats.Data.Hub\Cats.Data.Hub.csproj">
+      <Project>{b311922a-4002-40b1-aa96-e005b6d436dd}</Project>
+      <Name>Cats.Data.Hub</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data\Cats.Data\Cats.Data.csproj">
       <Project>{7cf78855-5a90-441f-9acc-fafbd1cad68a}</Project>
       <Name>Cats.Data</Name>
