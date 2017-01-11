@@ -27,6 +27,7 @@ using ShippingInstructionService = Cats.Services.EarlyWarning.ShippingInstructio
 using Cats.Services.Procurement;
 
 using IStoreService = Cats.Services.Hub.IStoreService;
+using IUnitService = Cats.Services.EarlyWarning.IUnitService;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(NinjectWebCommon), "Stop")]
@@ -97,7 +98,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IShippingInstructionService>().To<ShippingInstructionService>();
             kernel.Bind<IStoreService>().To<Cats.Services.Hub.StoreService>();
             kernel.Bind<IProgramService>().To<ProgramService>();
-           
+            kernel.Bind<IUnitService>().To<Cats.Services.EarlyWarning.UnitService>();
             
 
            
