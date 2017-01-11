@@ -122,8 +122,10 @@ namespace Cats.Rest.App_Start
             kernel.Bind<Services.EarlyWarning.IGiftCertificateDetailService>().To<Services.EarlyWarning.GiftCertificateDetailService>();
             kernel.Bind<IHubOwnerService>().To<HubOwnerService>();
             kernel.Bind<ILedgerService>().To<LedgerService>();
+
             kernel.Bind<ILedgerTypeService>().To<LedgerTypeService>();
             kernel.Bind<ILossReasonService>().To<LossReasonService>();
+            kernel.Bind<IPlanService>().To<PlanService>();
         }        
     }
 }
