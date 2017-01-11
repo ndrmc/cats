@@ -17,9 +17,21 @@ namespace Cats.Rest.Controllers
         }
 
         [HttpGet]
-        public List<CommodityGrade> Get()
+        public List<CommodityGrade> GetCommodityGrades()
         {
             var data = _commodityGradeService.GetAllCommodityGrade();
+            return (from cg in data
+                    select new CommodityGrade()
+                    {
+                        CommodityGradeID = cg.CommodityGradeID,
+                        Name = cg.Name,
+                        Description = cg.Description
+                    }).ToList();
+        }
+
+        public List<CommodityGrade> GetCommodityGrade(int id)
+        {
+            var data = _commodityGradeService.GetAllCommodityGrade().Where(cg=>cg.CommodityGradeID == id);
             return (from cg in data
                     select new CommodityGrade()
                     {

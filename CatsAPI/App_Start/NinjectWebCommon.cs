@@ -6,6 +6,7 @@ using Cats.Services.Hub;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Ninject;
 using Ninject.Web.Common;
+
 using AdminUnitService = Cats.Services.EarlyWarning.AdminUnitService;
 using CommodityService = Cats.Services.EarlyWarning.CommodityService;
 using CommonService = Cats.Services.Common.CommonService;
@@ -22,6 +23,10 @@ using IShippingInstructionService = Cats.Services.EarlyWarning.IShippingInstruct
 using ProgramService = Cats.Services.EarlyWarning.ProgramService;
 using ProjectCodeService = Cats.Services.EarlyWarning.ProjectCodeService;
 using ShippingInstructionService = Cats.Services.EarlyWarning.ShippingInstructionService;
+
+using Cats.Services.Procurement;
+
+using IStoreService = Cats.Services.Hub.IStoreService;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(NinjectWebCommon), "Stop")]
@@ -80,6 +85,7 @@ namespace Cats.Rest.App_Start
         {
             
             kernel.Bind<Cats.Data.UnitWork.IUnitOfWork>().To<Cats.Data.UnitWork.UnitOfWork>();
+
             kernel.Bind<Data.Hub.UnitWork.IUnitOfWork>().To<Cats.Data.Hub.UnitOfWork>();
             kernel.Bind<ICommodityService>().To<CommodityService>();
             kernel.Bind<ICommonService>().To<CommonService>();
@@ -87,10 +93,27 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IAdminUnitTypeService>().To<AdminUnitTypeService>();
             kernel.Bind<IFDPService>().To<FDPService>();
             kernel.Bind<IHubService>().To<HubService>();
-            kernel.Bind <IShippingInstructionService>().To<ShippingInstructionService>();
-            kernel.Bind<IStoreService>().To<StoreService>();
-            kernel.Bind<IProgramService>().To<ProgramService>();
             kernel.Bind<IProjectCodeService>().To<ProjectCodeService>();
+            kernel.Bind<IShippingInstructionService>().To<ShippingInstructionService>();
+            kernel.Bind<IStoreService>().To<Cats.Services.Hub.StoreService>();
+            kernel.Bind<IProgramService>().To<ProgramService>();
+           
+            
+
+           
+            kernel.Bind<Cats.Services.EarlyWarning.ICommodityTypeService>().To<Cats.Services.EarlyWarning.CommodityTypeService>();
+            kernel.Bind<Services.Administration.IContactService>().To<Services.Administration.ContactService>();
+            kernel.Bind<Cats.Services.Hub.ICommodityGradeService>().To<Cats.Services.Hub.CommodityGradeService>();
+
+            kernel.Bind<IBidService>().To<BidService>();
+            kernel.Bind<IBidDetailService>().To<BidDetailService>();
+            kernel.Bind<IBidWinnerService>().To<BidWinnerService>();
+            kernel.Bind<Services.Hub.ICommoditySourceService>().To<Services.Hub.CommoditySourceService>();
+            kernel.Bind<ICurrencyService>().To<CurrencyService>();
+
+            kernel.Bind<IHRDService>().To<HRDService>();
+            kernel.Bind<IHRDDetailService>().To<HRDDetailService>();
+
         }        
     }
 }

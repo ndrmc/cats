@@ -14,7 +14,7 @@ namespace Cats.Rest.Controllers
         // GET: /ProjectCode/
 
         public IProjectCodeService _ProjectCodeService;
-        ProjectCodeController(IProjectCodeService projectCodeService)
+       public ProjectCodeController(IProjectCodeService projectCodeService)
         {
             _ProjectCodeService = projectCodeService;
         }
