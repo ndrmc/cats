@@ -97,8 +97,8 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IAdminUnitTypeService>().To<AdminUnitTypeService>();
             kernel.Bind<IFDPService>().To<FDPService>();
             kernel.Bind<IHubService>().To<HubService>();
-            kernel.Bind<IProjectCodeService>().To<ProjectCodeService>();
-            kernel.Bind<IShippingInstructionService>().To<ShippingInstructionService>();
+            kernel.Bind<Cats.Services.Hub.IProjectCodeService>().To<Cats.Services.Hub.ProjectCodeService>();
+            kernel.Bind<Cats.Services.Hub.IShippingInstructionService>().To<Cats.Services.Hub.ShippingInstructionService>();
             kernel.Bind<IStoreService>().To<Cats.Services.Hub.StoreService>();
             kernel.Bind<IProgramService>().To<ProgramService>();
             kernel.Bind<IUnitService>().To<Cats.Services.EarlyWarning.UnitService>();
@@ -106,7 +106,8 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IRationDetailService>().To<RationDetailService>();
             kernel.Bind<IUserProfileService>().To<Cats.Services.Administration.UserProfileService>();
             kernel.Bind<IReliefRequisitionService>().To<ReliefRequisitionService>();
-           
+            kernel.Bind<ITransactionService>().To<TransactionService>();
+            kernel.Bind<IAccountService>().To<AccountService>();
             kernel.Bind<Cats.Services.EarlyWarning.ICommodityTypeService>().To<Cats.Services.EarlyWarning.CommodityTypeService>();
             kernel.Bind<Services.Administration.IContactService>().To<Services.Administration.ContactService>();
             kernel.Bind<Cats.Services.Hub.ICommodityGradeService>().To<Cats.Services.Hub.CommodityGradeService>();

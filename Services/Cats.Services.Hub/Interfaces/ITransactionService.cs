@@ -12,7 +12,8 @@ using Cats.Models.Hubs.ViewModels.Report.Data;
 namespace Cats.Services.Hub
 {
    public interface  ITransactionService
-    {
+   {
+       List<Transaction> GetAll();
         /// <summary>
         /// Gets the active accounts for ledger.
         /// </summary>

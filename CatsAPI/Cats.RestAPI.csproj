@@ -182,8 +182,8 @@
     <Compile Include="Controllers\ProjectCodeController.cs" />
     <Compile Include="Controllers\ReleifRequisitionController.cs" />
     <Compile Include="Controllers\RationController.cs" />
-
     <Compile Include="Controllers\StoreController.cs" />
+    <Compile Include="Controllers\TransactionController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -208,15 +208,13 @@
     <Compile Include="Models\LossReason.cs" />
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\ProjectCode.cs" />
-
     <Compile Include="Models\RationDetail.cs" />
     <Compile Include="Models\ReliefRequisition.cs" />
     <Compile Include="Models\ReliefRequisitionDetail.cs" />
-
     <Compile Include="Models\Ration.cs" />
-
     <Compile Include="Models\ShippingInstruction.cs" />
     <Compile Include="Models\Store.cs" />
+    <Compile Include="Models\Transaction.cs" />
     <Compile Include="Models\Unit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

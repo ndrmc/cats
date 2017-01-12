@@ -56,7 +56,11 @@ namespace Cats.Services.Hub
             return accounts;
         }
 
-
+        public List<Transaction> GetAll()
+        {
+            return _unitOfWork.TransactionRepository.GetAll();
+           
+        }
         /// <summary>
         /// Gets the transactions for ledger.
         /// </summary>
