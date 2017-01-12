@@ -186,6 +186,7 @@
     <Compile Include="Controllers\SeasonController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\TransportBidPlanController.cs" />
+    <Compile Include="Controllers\TransportBidPlanDetailController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -210,7 +211,6 @@
     <Compile Include="Models\LossReason.cs" />
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\ProjectCode.cs" />
-
     <Compile Include="Models\RationDetail.cs" />
     <Compile Include="Models\ReliefRequisition.cs" />
     <Compile Include="Models\ReliefRequisitionDetail.cs" />

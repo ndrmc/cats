@@ -134,6 +134,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IRegionalRequestService>().To<RegionalRequestService>();
             kernel.Bind<ISeasonService>().To<SeasonService>();
             kernel.Bind<ITransportBidPlanService>().To<TransportBidPlanService>();
+            kernel.Bind<ITransportBidPlanDetailService>().To<TransportBidPlanDetailService>();
         }        
     }
 }
