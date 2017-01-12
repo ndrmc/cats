@@ -30,6 +30,7 @@ using HubOwnerService = Cats.Services.Hub.HubOwnerService;
 using IHubOwnerService = Cats.Services.Hub.IHubOwnerService;
 using IStoreService = Cats.Services.Hub.IStoreService;
 using IUnitService = Cats.Services.EarlyWarning.IUnitService;
+using IUserProfileService = Cats.Services.Administration.IUserProfileService;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(NinjectWebCommon), "Stop")]
@@ -101,8 +102,10 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IStoreService>().To<Cats.Services.Hub.StoreService>();
             kernel.Bind<IProgramService>().To<ProgramService>();
             kernel.Bind<IUnitService>().To<Cats.Services.EarlyWarning.UnitService>();
-            
-
+            kernel.Bind<IStatusService>().To<StatusService>();
+            kernel.Bind<IRationDetailService>().To<RationDetailService>();
+            kernel.Bind<IUserProfileService>().To<Cats.Services.Administration.UserProfileService>();
+            kernel.Bind<IReliefRequisitionService>().To<ReliefRequisitionService>();
            
             kernel.Bind<Cats.Services.EarlyWarning.ICommodityTypeService>().To<Cats.Services.EarlyWarning.CommodityTypeService>();
             kernel.Bind<Services.Administration.IContactService>().To<Services.Administration.ContactService>();
