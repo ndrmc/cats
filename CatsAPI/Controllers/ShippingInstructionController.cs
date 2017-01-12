@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Web.Http;
 using System.Web.Mvc;
-using Cats.Services.EarlyWarning;
+using Cats.Services.Hub;
 
 namespace Cats.Rest.Controllers
 {

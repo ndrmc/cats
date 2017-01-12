@@ -182,8 +182,13 @@
     <Compile Include="Controllers\ProjectCodeController.cs" />
     <Compile Include="Controllers\ReleifRequisitionController.cs" />
     <Compile Include="Controllers\RationController.cs" />
-    <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\TransactionController.cs" />
+    <Compile Include="Controllers\RegionalRequestController.cs" />
+    <Compile Include="Controllers\SeasonController.cs" />
+    <Compile Include="Controllers\StoreController.cs" />
+    <Compile Include="Controllers\TransportBidPlanController.cs" />
+    <Compile Include="Controllers\TransportBidPlanDetailController.cs" />
+    <Compile Include="Controllers\TransportBidQuotationController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -212,9 +217,15 @@
     <Compile Include="Models\ReliefRequisition.cs" />
     <Compile Include="Models\ReliefRequisitionDetail.cs" />
     <Compile Include="Models\Ration.cs" />
+    <Compile Include="Models\Transaction.cs" />
+    <Compile Include="Models\RegionalRequest.cs" />
+    <Compile Include="Models\RegionalRequestDetail.cs" />
+    <Compile Include="Models\Season.cs" />
     <Compile Include="Models\ShippingInstruction.cs" />
     <Compile Include="Models\Store.cs" />
-    <Compile Include="Models\Transaction.cs" />
+    <Compile Include="Models\TransportBidPlan.cs" />
+    <Compile Include="Models\TransportBidPlanDetail.cs" />
+    <Compile Include="Models\TransportBidQuotation.cs" />
     <Compile Include="Models\Unit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -361,6 +372,10 @@
     <ProjectReference Include="..\services\Cats.Services.Procurement\Cats.Services.Procurement.csproj">
       <Project>{B0410B11-91E0-40EC-9F16-55FC5E2C4090}</Project>
       <Name>Cats.Services.Procurement</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\Cats.Services.PSNP\Cats.Services.PSNP.csproj">
+      <Project>{8eda6b56-c5c9-4744-a356-1af76ad96159}</Project>
+      <Name>Cats.Services.PSNP</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
