@@ -44,9 +44,15 @@ namespace Cats.Rest.Controllers
         [HttpGet]
         public dynamic GetCurrency(int id)
         {
-            var bid = _icurrencyService.FindById(id);
+            var obj = _icurrencyService.FindById(id);
+            var element = new
+            {
+                obj.CurrencyID,
+                obj.Code,
+                obj.Name
+            };
 
-            return bid;
+            return element;
         }
     }
 }

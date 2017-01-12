@@ -2,6 +2,7 @@ using Cats.Rest.App_Start;
 using Cats.Services.EarlyWarning;
 using System;
 using System.Web;
+using Cats.Services.Administration;
 using Cats.Services.Hub;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Ninject;
@@ -25,9 +26,11 @@ using ProjectCodeService = Cats.Services.EarlyWarning.ProjectCodeService;
 using ShippingInstructionService = Cats.Services.EarlyWarning.ShippingInstructionService;
 
 using Cats.Services.Procurement;
-
+using HubOwnerService = Cats.Services.Hub.HubOwnerService;
+using IHubOwnerService = Cats.Services.Hub.IHubOwnerService;
 using IStoreService = Cats.Services.Hub.IStoreService;
 using IUnitService = Cats.Services.EarlyWarning.IUnitService;
+using IUserProfileService = Cats.Services.Administration.IUserProfileService;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(NinjectWebCommon), "Stop")]
@@ -101,7 +104,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IUnitService>().To<Cats.Services.EarlyWarning.UnitService>();
             kernel.Bind<IStatusService>().To<StatusService>();
             kernel.Bind<IRationDetailService>().To<RationDetailService>();
-            kernel.Bind<IUserProfileService>().To<UserProfileService>();
+            kernel.Bind<IUserProfileService>().To<Cats.Services.Administration.UserProfileService>();
             kernel.Bind<IReliefRequisitionService>().To<ReliefRequisitionService>();
            
             kernel.Bind<Cats.Services.EarlyWarning.ICommodityTypeService>().To<Cats.Services.EarlyWarning.CommodityTypeService>();
@@ -114,8 +117,20 @@ namespace Cats.Rest.App_Start
             kernel.Bind<Services.Hub.ICommoditySourceService>().To<Services.Hub.CommoditySourceService>();
             kernel.Bind<ICurrencyService>().To<CurrencyService>();
 
+            kernel.Bind<Services.EarlyWarning.IDonorService>().To<Services.EarlyWarning.DonorService>();
+
             kernel.Bind<IHRDService>().To<HRDService>();
             kernel.Bind<IHRDDetailService>().To<HRDDetailService>();
+            kernel.Bind<Services.EarlyWarning.IGiftCertificateService>().To<Services.EarlyWarning.GiftCertificateService>();
+            kernel.Bind<Services.EarlyWarning.IGiftCertificateDetailService>().To<Services.EarlyWarning.GiftCertificateDetailService>();
+            kernel.Bind<IHubOwnerService>().To<HubOwnerService>();
+            kernel.Bind<ILedgerService>().To<LedgerService>();
+
+            kernel.Bind<ILedgerTypeService>().To<LedgerTypeService>();
+            kernel.Bind<ILossReasonService>().To<LossReasonService>();
+            kernel.Bind<IPlanService>().To<PlanService>();
+            kernel.Bind<IRationService>().To<RationService>();
+            kernel.Bind<IRationDetailService>().To<RationDetailService>();
 
         }        
     }

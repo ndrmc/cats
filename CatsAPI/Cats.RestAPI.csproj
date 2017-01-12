@@ -23,10 +23,13 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>E:\Code\Cats\Backup12\</UpgradeBackupLocation>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
     <UseGlobalApplicationHostFile />
+    <UpgradeBackupLocation>E:\code\cats\Backup11\</UpgradeBackupLocation>
     <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -154,6 +157,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AdminUnitController.cs" />
     <Compile Include="Controllers\AdminUnitTypeController.cs" />
+    <Compile Include="Controllers\RationDetailController.cs" />
+    <Compile Include="Controllers\PlanController.cs" />
     <Compile Include="Controllers\BidController.cs" />
     <Compile Include="Controllers\BidDetailController.cs" />
     <Compile Include="Controllers\CommodityController.cs" />
@@ -162,14 +167,22 @@
     <Compile Include="Controllers\CommodityTypeController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\CurrencySourceController.cs" />
+    <Compile Include="Controllers\DonorSourceController .cs" />
     <Compile Include="Controllers\FDPController.cs" />
+    <Compile Include="Controllers\GiftCertificateController.cs" />
+    <Compile Include="Controllers\GiftCertificateDetailController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HRDController.cs" />
     <Compile Include="Controllers\HRDDetailController.cs" />
     <Compile Include="Controllers\HubController.cs" />
+    <Compile Include="Controllers\HubOwnerController.cs" />
+    <Compile Include="Controllers\LedgerController.cs" />
+    <Compile Include="Controllers\LossReasonController.cs" />
     <Compile Include="Controllers\ProgramController.cs" />
     <Compile Include="Controllers\ProjectCodeController.cs" />
     <Compile Include="Controllers\ReleifRequisitionController.cs" />
+    <Compile Include="Controllers\RationController.cs" />
+
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Global.asax.cs">
@@ -182,15 +195,26 @@
     <Compile Include="Models\CommodityType.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\FDP.cs" />
+    <Compile Include="Models\GiftCerteficate.cs" />
+    <Compile Include="Models\GiftCertificateDetail.cs" />
     <Compile Include="Models\HRD.cs" />
     <Compile Include="Models\HRDDetail.cs" />
     <Compile Include="Models\Hub.cs" />
     <Compile Include="Controllers\ShippingInstructionController.cs" />
+    <Compile Include="Models\HubOwner.cs" />
+    <Compile Include="Models\Ledger.cs" />
+    <Compile Include="Models\LedgerType.cs" />
+    <Compile Include="Models\LedgerTypeController.cs" />
+    <Compile Include="Models\LossReason.cs" />
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\ProjectCode.cs" />
+
     <Compile Include="Models\RationDetail.cs" />
     <Compile Include="Models\ReliefRequisition.cs" />
     <Compile Include="Models\ReliefRequisitionDetail.cs" />
+
+    <Compile Include="Models\Ration.cs" />
+
     <Compile Include="Models\ShippingInstruction.cs" />
     <Compile Include="Models\Store.cs" />
     <Compile Include="Models\Unit.cs" />

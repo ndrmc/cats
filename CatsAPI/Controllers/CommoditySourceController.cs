@@ -43,9 +43,14 @@ namespace Cats.Rest.Controllers
         [HttpGet]
         public dynamic GetCommoditySource(int id)
         {
-            var bid = _icommoditySourceService.FindById(id);
+            var obj = _icommoditySourceService.FindById(id);
+            var element = new
+            {
+                obj.CommoditySourceID,
+                obj.Name
+            };
 
-            return bid;
+            return element;
         }
     }
 }

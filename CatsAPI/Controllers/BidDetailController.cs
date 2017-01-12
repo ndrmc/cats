@@ -52,9 +52,16 @@ namespace Cats.Rest.Controllers
         [HttpGet]
         public dynamic GetBidDetail(int id)
         {
-            var bid = _ibidDetailService.FindById(id);
+            var obj = _ibidDetailService.FindById(id);
+            var element = new
+            {
+                obj.AmountForReliefProgram,
+                obj.AmountForPSNPProgram,
+                obj.BidDocumentPrice,
+                obj.CPO
+            };
 
-            return bid;
+            return element;
         }
     }
 }
