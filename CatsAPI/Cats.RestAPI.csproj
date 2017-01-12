@@ -187,6 +187,7 @@
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\TransportBidPlanController.cs" />
     <Compile Include="Controllers\TransportBidPlanDetailController.cs" />
+    <Compile Include="Controllers\TransportBidQuotationController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -222,6 +223,7 @@
     <Compile Include="Models\Store.cs" />
     <Compile Include="Models\TransportBidPlan.cs" />
     <Compile Include="Models\TransportBidPlanDetail.cs" />
+    <Compile Include="Models\TransportBidQuotation.cs" />
     <Compile Include="Models\Unit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
