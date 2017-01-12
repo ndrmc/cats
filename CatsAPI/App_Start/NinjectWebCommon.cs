@@ -26,6 +26,7 @@ using ProjectCodeService = Cats.Services.EarlyWarning.ProjectCodeService;
 using ShippingInstructionService = Cats.Services.EarlyWarning.ShippingInstructionService;
 
 using Cats.Services.Procurement;
+using Cats.Services.PSNP;
 using HubOwnerService = Cats.Services.Hub.HubOwnerService;
 using IHubOwnerService = Cats.Services.Hub.IHubOwnerService;
 using IStoreService = Cats.Services.Hub.IStoreService;
@@ -136,6 +137,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<ITransportBidPlanService>().To<TransportBidPlanService>();
             kernel.Bind<ITransportBidPlanDetailService>().To<TransportBidPlanDetailService>();
             kernel.Bind<ITransportBidQuotationService>().To<TransportBidQuotationService>();
+            kernel.Bind<IRegionalPSNPPlanDetailService>().To<RegionalPSNPPlanDetailService>();
         }        
     }
 }
