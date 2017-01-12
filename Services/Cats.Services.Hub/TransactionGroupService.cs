@@ -51,7 +51,7 @@ namespace Cats.Services.Hub
        {
            return _unitOfWork.TransactionGroupRepository.GetAll();
        } 
-       public TransactionGroup FindById(int id)
+       public TransactionGroup FindById(Guid id)
        {
            return _unitOfWork.TransactionGroupRepository.FindById(id);
        }

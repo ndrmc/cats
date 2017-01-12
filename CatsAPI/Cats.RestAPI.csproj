@@ -186,6 +186,7 @@
     <Compile Include="Controllers\RegionalRequestController.cs" />
     <Compile Include="Controllers\SeasonController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
+    <Compile Include="Controllers\TransactionGroupController.cs" />
     <Compile Include="Controllers\TransportBidPlanController.cs" />
     <Compile Include="Controllers\TransportBidPlanDetailController.cs" />
     <Compile Include="Controllers\TransportBidQuotationController.cs" />
@@ -223,6 +224,7 @@
     <Compile Include="Models\Season.cs" />
     <Compile Include="Models\ShippingInstruction.cs" />
     <Compile Include="Models\Store.cs" />
+    <Compile Include="Models\TransactionGroup.cs" />
     <Compile Include="Models\TransportBidPlan.cs" />
     <Compile Include="Models\TransportBidPlanDetail.cs" />
     <Compile Include="Models\TransportBidQuotation.cs" />

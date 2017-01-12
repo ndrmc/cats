@@ -14,7 +14,7 @@ namespace Cats.Services.Hub
         bool DeleteTransactionGroup(TransactionGroup entity);
         bool DeleteById(int id);
         bool EditTransactionGroup(TransactionGroup entity);
-        TransactionGroup FindById(int id);
+        TransactionGroup FindById(Guid id);
         List<TransactionGroup> GetAllTransactionGroup();
         List<TransactionGroup> FindBy(Expression<Func<TransactionGroup, bool>> predicate);
 

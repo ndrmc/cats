@@ -108,6 +108,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IUserProfileService>().To<Cats.Services.Administration.UserProfileService>();
             kernel.Bind<IReliefRequisitionService>().To<ReliefRequisitionService>();
             kernel.Bind<ITransactionService>().To<TransactionService>();
+            kernel.Bind<ITransactionGroupService>().To<TransactionGroupService>();
             kernel.Bind<IAccountService>().To<AccountService>();
             kernel.Bind<Cats.Services.EarlyWarning.ICommodityTypeService>().To<Cats.Services.EarlyWarning.CommodityTypeService>();
             kernel.Bind<Services.Administration.IContactService>().To<Services.Administration.ContactService>();
