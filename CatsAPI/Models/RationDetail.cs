@@ -16,7 +16,7 @@ namespace Cats.Rest.Models
         public string UnitName { get; set; }
 
         public RationDetail(int rationDetailId, int rationId, int commodityId, string commodityName, decimal amount,
-                            int unitId, string unitName)
+                            int? unitId, string unitName)
         {
             RationDetailID = rationDetailId;
             RationID = rationId;

@@ -24,21 +24,21 @@ namespace Cats.Rest.Models
         public string ApprovedByName { get; set; }
         public Nullable<System.DateTime> ApprovedDate { get; set; }
         public Nullable<int> Status { get; set; }
-        public string StatusName { get; set; }
+        public string StatusName { get; set; } 
         public int ProgramID { get; set; }
         public string ProgramName { get; set; }
         public int? RationID { get; set; }
         public Nullable<int> RegionalRequestID { get; set; }
-        public RationDetail RationDetail { get; set; }
-        public ReliefRequisitionDetail ReliefRequisitionDetail { get; set; }
+        public ICollection<Cats.Rest.Models.RationDetail> RationDetail { get; set; }
+        public ICollection<Cats.Rest.Models.ReliefRequisitionDetail> ReliefRequisitionDetail { get; set; }
 
         public ReliefRequisition(int requisitionId, int? commodityId, string commodityName, int? regionId,
-                                 string regionName, int zoneId, string zoneName, int? round, int month,
+                                 string regionName, int? zoneId, string zoneName, int? round, int month,
                                  string requisitionNo, int? requestedBy,
                                  string requestedByName, DateTime? requestedDate, int? approvedBy, string approvedByName,
                                  DateTime? approvedDate,
                                  int? status, string statusName, int programId, string programName, int? rationId,
-                                 int? regionalRequestId,RationDetail rationDetail,ReliefRequisitionDetail reliefRequisitionDetail)
+                                 int? regionalRequestId,ICollection<RationDetail> rationDetail,ICollection<Cats.Rest.Models.ReliefRequisitionDetail> reliefRequisitionDetail)
         {
             RequisitionID = requisitionId;
             CommodityID = commodityId;

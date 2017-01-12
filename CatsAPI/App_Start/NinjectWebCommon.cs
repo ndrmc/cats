@@ -99,8 +99,10 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IStoreService>().To<Cats.Services.Hub.StoreService>();
             kernel.Bind<IProgramService>().To<ProgramService>();
             kernel.Bind<IUnitService>().To<Cats.Services.EarlyWarning.UnitService>();
-            
-
+            kernel.Bind<IStatusService>().To<StatusService>();
+            kernel.Bind<IRationDetailService>().To<RationDetailService>();
+            kernel.Bind<IUserProfileService>().To<UserProfileService>();
+            kernel.Bind<IReliefRequisitionService>().To<ReliefRequisitionService>();
            
             kernel.Bind<Cats.Services.EarlyWarning.ICommodityTypeService>().To<Cats.Services.EarlyWarning.CommodityTypeService>();
             kernel.Bind<Services.Administration.IContactService>().To<Services.Administration.ContactService>();

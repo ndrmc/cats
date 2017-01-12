@@ -19,7 +19,8 @@ namespace Cats.Rest.Models
         public string   DonorName { get; set; }
         public decimal? Contingency { get; set; }
 
-        public ReliefRequisitionDetail(int requisitionDetailId, int requisitionId, int commodityId, string commodityName, int beneficiaryNo,decimal amount, int fdpId, string fdpName, int donorId, string donorNamae,decimal? contigency)
+        public ReliefRequisitionDetail(int requisitionDetailId, int requisitionId, int commodityId, string commodityName, 
+            int beneficiaryNo,decimal amount, int fdpId, string fdpName, int? donorId, string donorNamae,decimal? contigency)
         {
             RequisitionDetailID = requisitionDetailId;
             RequisitionID = requisitionId;
