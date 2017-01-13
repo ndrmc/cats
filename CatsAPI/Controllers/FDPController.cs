@@ -48,13 +48,25 @@ namespace Cats.Rest.Controllers
             return null;
 
         }
-        // [System.Web.Http.HttpGet] 
-        //public List<Models.FDP> GetByWoreda(int woredaId)
-        //{
-        //    var fdpList = _ifdpService.FindBy(w => w.AdminUnitID == woredaId).ToList();
-        //    return fdpList.Select(fdp => new Models.FDP(fdp.FDPID, fdp.Name, fdp.NameAM, fdp.AdminUnitID, fdp.Latitude, fdp.Longitude, fdp.HubID)).ToList();
-            
-        //}
+        [System.Web.Http.HttpGet]
+        public List<Models.FDP> Region(int id)
+        {
+            var fdpList = _ifdpService.FindBy(t => t.AdminUnit.AdminUnit2.ParentID == id).ToList();
+            return fdpList.Select(fdp => new Models.FDP(fdp.FDPID, fdp.Name, fdp.NameAM, fdp.AdminUnitID, fdp.Latitude, fdp.Longitude, fdp.HubID)).ToList();
+
+        }
+         [System.Web.Http.HttpGet]
+        public List<Models.FDP> Zone(int id)
+        {
+            var fdpList = _ifdpService.FindBy(t => t.AdminUnit.AdminUnit2.AdminUnitID == id).ToList();
+            return fdpList.Select(fdp => new Models.FDP(fdp.FDPID, fdp.Name, fdp.NameAM, fdp.AdminUnitID, fdp.Latitude, fdp.Longitude, fdp.HubID)).ToList();
+        }
+         [System.Web.Http.HttpGet]
+        public List<Models.FDP> Woreda(int id)
+        {
+            var fdpList = _ifdpService.FindBy(t => t.AdminUnit.AdminUnitID == id).ToList();
+            return fdpList.Select(fdp => new Models.FDP(fdp.FDPID, fdp.Name, fdp.NameAM, fdp.AdminUnitID, fdp.Latitude, fdp.Longitude, fdp.HubID)).ToList();
+        } 
         
     }
 }
