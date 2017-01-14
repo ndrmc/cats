@@ -90,7 +90,8 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 _hrdService.Get(
                     m =>
                         m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft" ||
-                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Edited")
+                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Edited" ||
+                        m.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Reverted")
                     .OrderByDescending(m => m.HRDID);
             var hrdsToDisplay = GetHrds(hrds).ToList();
             ViewBag.TargetController = "HRD";

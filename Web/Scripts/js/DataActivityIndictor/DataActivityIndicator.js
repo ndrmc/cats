@@ -82,8 +82,8 @@ DataEntryIndicatorApp = angular.module("DataEntryIndicatorApp", []).controller('
         angular.forEach(detailData, function (valueDetail, detail) {
             msg = msg+(index++).toString()+") ";
             angular.forEach(valueDetail, function (value, key) {
-                msg = msg + value+separator;
-                msg = msg + key + " , ";
+                msg = msg + key + separator;
+                msg = msg + value + " , ";
             });
             msg = msg + breakIndicator;
 
