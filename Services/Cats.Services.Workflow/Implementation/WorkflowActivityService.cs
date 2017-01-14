@@ -639,7 +639,7 @@ namespace Cats.Services.Workflows
 
         }
 
-    
+
 
 
         public List<IWorkflowHub> ExcludeDeletedRecordsHub(List<IWorkflowHub> records)
@@ -767,45 +767,45 @@ namespace Cats.Services.Workflows
                                                     "@StartDate, @EndDate, @WorkflowName_Array, @User_Array, @Activity_Array",
                     filterStartDate, filterEndDate, paramWorkflow, paramUser, paramActivity);
 
-                //Debug.Assert(startDate != null, "_sc.From_Date != null");
-                //string shortFromDate = startDate.ToString("yyyy-MM-dd");
-                ////Debug.Assert(_sc.To_Date != null, "_sc.To_Date != null");
-                //string shortToDate = endDate.ToString("yyyy-MM-dd");
 
-                //DateTime fromdDate = Convert.ToDateTime(shortFromDate);
-                //DateTime toDate = Convert.ToDateTime(shortToDate);              
 
                 var dashboardDataEntries = (from dashEntries in result
                                             where dashEntries.DatePerformed >= startDate && dashEntries.DatePerformed <= endDate
                                             group dashEntries by new
                                             {
-                                                dashEntries.ProcessTemplateID,
-                                                dashEntries.StateTemplateID,
+                                                //dashEntries.ProcessTemplateID,
+                                                //dashEntries.StateTemplateID,
                                                 dashEntries.PerformedBy,
                                                 dashEntries.ActivityName,
-                                                dashEntries.SettingName,
-                                                //dashEntries.BusinessProcessID
+                                                //,
+                                                //dashEntries.SettingName
+                                                //,
+                                                //dashEntries.BusinessProcessID,
                                                 //dashEntries.DatePerformed
                                             }
                                             into gTrnsRqst
                                             select new
                                             {
+
                                                 gTrnsRqst.Key.PerformedBy,
-                                                gTrnsRqst.Key.SettingName,
+                                                SettingName = gTrnsRqst.Select(i => i.SettingName).First(),
                                                 gTrnsRqst.Key.ActivityName,
                                                 ActivityCount = gTrnsRqst.Count(),
                                                 //gTrnsRqst.Key.StateTemplateID,
                                                 //gTrnsRqst.Key.ProcessTemplateID,
-                                                //gTrnsRqst.Key.BusinessProcessID
+                                                //gTrnsRqst.Key.SettingName,
+                                                Detail = gTrnsRqst
+                                                //gTrnsRqst.Key.BusinessProcessID,
                                                 //gTrnsRqst.Key.DatePerformed
                                             }).ToList();
 
                 return dashboardDataEntries.Select(dataEntry => new DashboardDataEntry
                 {
-                    PerformedBy = dataEntry.PerformedBy,
+                    PerformedBy = dataEntry.PerformedBy!=""?dataEntry.PerformedBy:"No Name",
                     ActivityCount = dataEntry.ActivityCount,
                     SettingName = dataEntry.SettingName,
-                    ActivityName = dataEntry.ActivityName
+                    ActivityName = dataEntry.ActivityName,
+                    Detail = dataEntry.Detail
                 }).ToList();
             }
             catch (Exception exception)

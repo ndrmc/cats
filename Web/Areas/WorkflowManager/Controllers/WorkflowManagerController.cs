@@ -22,6 +22,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
         public WorkflowManagerController()
         {
             if (DashboardMapping.PageNameToWorkflowMappingsList.Count == 0) { DashboardMapping.RegisterDashboardPage(); }
+            DashboardMapping.InitializeNonGloablWorkflowList();
         }
         public dynamic GetAllListOfFilterObjects(string pageName)
         {
@@ -253,40 +254,49 @@ namespace Cats.Areas.WorkflowManager.Controllers
         public ContentResult GetDataEntryStat(DateTime startDate, DateTime endDate, List<string> workflowDefs,
          List<string> wfusers, List<string> activities)
         {
-            if (!workflowDefs.Contains(Constants.GlobalWorkflow)) workflowDefs.Add(Constants.GlobalWorkflow);
+            AddGlobalWorkflowToWorkflowList(workflowDefs);
 
             Data.Shared.UnitWork.IUnitOfWork unitOfWork = new Data.Shared.UnitWork.UnitOfWork();
             WorkflowActivityService wfa = new WorkflowActivityService(unitOfWork);
 
             // Get aggregated data
-            List<DashboardDataEntry> result = wfa.GetWorkflowActivityAgg(startDate, endDate, workflowDefs, wfusers,
-                activities);
-            List<DashboarDataEntryModel> dashboarDataEntryModels;
+            List<DashboardDataEntry> result = wfa.GetWorkflowActivityAgg(startDate, endDate, workflowDefs, wfusers,                activities);
 
+            List<DashboarDataEntryModel> dashboarDataEntryModels;
+            if (result == null) return null;
             if (!wfusers.Contains(Constants.SelectOption_AllwithData))
             {
                 dashboarDataEntryModels = (from user in wfusers
-                    let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
-                    select new DashboarDataEntryModel
-                    {
-                        Name = user,
-                        DashboardDataEntries = dashboardDataEntries
-                    }).OrderBy(o => o.Name).ToList();
+                                           let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
+                                           select new DashboarDataEntryModel
+                                           {
+                                               Name = user,
+                                               DashboardDataEntries = dashboardDataEntries
+                                           }).OrderBy(o => o.Name).ToList();
             }
             else
             {
                 List<string> allUsers = result.Select(s => s.PerformedBy).Distinct().ToList();
 
                 dashboarDataEntryModels = (from user in allUsers
-                    let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
-                    select new DashboarDataEntryModel
-                    {
-                        Name = user,
-                        DashboardDataEntries = dashboardDataEntries
-                    }).OrderBy(o => o.Name).ToList();
+                                           let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
+                                           select new DashboarDataEntryModel
+                                           {
+                                               Name = user,
+                                               DashboardDataEntries = dashboardDataEntries
+                                           }).OrderBy(o => o.Name).ToList();
             }
 
             return GetJsonResult(dashboarDataEntryModels);
+        }
+
+        private static void AddGlobalWorkflowToWorkflowList(List<string> workflowDefs)
+        {
+            if(workflowDefs.Any())
+            if (!DashboardMapping.GlobalWorkflowExcluded.Contains(workflowDefs.FirstOrDefault()))
+            {
+                if (!workflowDefs.Contains(Constants.GlobalWorkflow)) workflowDefs.Add(Constants.GlobalWorkflow);
+            }
         }
 
         public dynamic GetObjectList(DateTime startDate, DateTime endDate, List<string> workflows, string userName, List<string> activities)

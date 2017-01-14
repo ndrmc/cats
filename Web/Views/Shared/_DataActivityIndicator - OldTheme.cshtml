@@ -87,8 +87,8 @@
                 <!-- /.portlet-header -->
 
                 <div class="portlet-content">
-             
-                    
+
+
                     @*<div class="row table-responsive" style="min-height: 100px;">*@
                     <img class="loading" ng-show="ctrlStatus.loadingDocument || ctrlStatus.loadingUser" src="~/Content/Icons/loading-x.gif" />
 
@@ -100,10 +100,10 @@
 
                                         <Label><small>Start Date</small></Label>
                                         <input id="startDateDataIndicator" type="text" class="form-control cats-datepicker2 " placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
-   
+
                                 </div>
                                 </td>
-                               
+
                                 <td>
                                     <div  class="col-md-2 ">
                                         <Label><small>End Date</small></Label>
@@ -128,7 +128,7 @@
 
 
                                         <Label><small>Activity</small></Label>
-                                        @*<img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading.gif" />*@
+                                        <img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading.gif" />
 
                                         <select id="Activity" multiple="multiple" @*ng-disabled="ctrlStatus.loadingActivity"*@ class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
                                             <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
@@ -250,7 +250,7 @@
 
 
 
-               
+
         <script>
             String.prototype.toCamel = function () {
                 return this.replace(/(\-[a-z])/g, function ($1) { return $.toUpperCase().replace('-', ''); });
