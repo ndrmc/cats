@@ -88,12 +88,12 @@
                                      </li>
                                  }
                              }
-                            <li class="divider"></li>
-                            <li class="edit_button"><a href="javascript:workflow_history(@Model.BusinessProcessID)"> History </a></li>
+                         
                             @*<li><a id="btnApprove" class="btn green-sharp-stripe" href="@Url.Action("Approve", "Swap", new {id = Model.TransferID})">@Html.Translate("Approve(Send to Hub)")</a></li>*@
                         }
                     }
-
+                    <li class="divider"></li>
+                    <li class="edit_button"><a href="javascript:workflow_history(@Model.BusinessProcessID)"> History </a></li>
                 </ul>
             </div>
 

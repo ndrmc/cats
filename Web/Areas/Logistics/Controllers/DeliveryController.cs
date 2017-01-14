@@ -246,7 +246,8 @@ namespace Cats.Areas.Logistics.Controllers
                     DriverName = delivery.DriverName,
                     DispatchID = delivery.DispatchID,
                     BusinessProcessId = delivery.BusinessProcessId,
-                RefNo = _transporterPaymentRequestService.FindBy(r => r.GIN == delivery.InvoiceNo).Select(t => t.ReferenceNo).FirstOrDefault()
+                    DeliveryBusinessProcessId = delivery.BusinessProcessId,
+                    RefNo = _transporterPaymentRequestService.FindBy(r => r.GIN == delivery.InvoiceNo).Select(t => t.ReferenceNo).FirstOrDefault()
                 };
             }
             return deliveryViewModel;
