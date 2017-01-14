@@ -243,7 +243,8 @@ namespace Cats.Areas.Logistics.Controllers
                         businessProcessState.PerformedBy = HttpContext.User.Identity.Name;
                         businessProcessState.DatePerformed = DateTime.Now;
                         businessProcessState.Comment = "Local Purchase is edited, a system internally captured data.";
-                        businessProcessState.ParentBusinessProcessID = bps.ParentBusinessProcessID;
+                        businessProcessState.ParentBusinessProcessID = localPurchase.BusinessProcessID;
+                        _businessProcessService.InsertBusinessProcessState(businessProcessState);
                         //};
 
                         // Promot
