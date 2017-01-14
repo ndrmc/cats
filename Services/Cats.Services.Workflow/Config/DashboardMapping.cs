@@ -15,8 +15,8 @@ namespace Cats.Services.Workflows.Config
         public static List<Tuple<int, string, string, Type, string, string>> WorkflowToObjectMappings = new List<Tuple<int, string, string, Type, string, string>>();
         private static readonly Random Random = new Random(int.MinValue);
         /// <summary>
-        /// This are lists of workflow types that was implemented using the old way of adding states to the flow template.
-        /// the reason for keeping this workflows is we need not to process Global workflow activities for the document.
+        /// These are lists of workflow types that were implemented using the old way of adding states to the flow template.
+        /// the reason for keeping this workflows is that we need not to process Global workflow activities for the document bc activity operations are implemented as if they are normal wf.
         /// </summary>
         public static List<String> GlobalWorkflowExcluded = new List<string>();
 
@@ -55,6 +55,7 @@ namespace Cats.Services.Workflows.Config
             AddDashboarMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Regional
             AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.NeedAssessmentWorkflow);
+            AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.DistributionWorkflow);
             AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Hub
             AddDashboarMapping(Constants.HubPage + Constants.Dashbord, ApplicationSettings.Default.ReceiveHubWorkflow);
@@ -97,6 +98,7 @@ namespace Cats.Services.Workflows.Config
             AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.RegionalRequestWorkflow, typeof(RegionalRequest), string.Empty, string.Empty);
 
             AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.NeedAssessmentWorkflow, typeof(NeedAssessment), string.Empty, string.Empty); // ?
+            AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.DistributionWorkflow, typeof(WoredaStockDistribution), string.Empty, string.Empty); // ?
 
             AddWorkflowToObjectMapping(Constants.HubPage, ApplicationSettings.Default.ReceiveHubWorkflow, typeof(Receive), string.Empty, string.Empty);
             AddWorkflowToObjectMapping(Constants.HubPage, ApplicationSettings.Default.DispatchWorkflow, typeof(Models.Dispatch), string.Empty, string.Empty); // ?
