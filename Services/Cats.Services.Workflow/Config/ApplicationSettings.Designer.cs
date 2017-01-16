@@ -256,5 +256,14 @@ namespace Cats.Services.Workflows.Config {
                 return ((string)(this["TransporterWorkflow"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DistributionWorkflow")]
+        public string DistributionWorkflow {
+            get {
+                return ((string)(this["DistributionWorkflow"]));
+            }
+        }
     }
 }

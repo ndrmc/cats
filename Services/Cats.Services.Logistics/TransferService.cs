@@ -110,29 +110,30 @@ namespace Cats.Services.Logistics
         {
             if (transfer != null)
             {
-                var processTemplate = _applicationSettingService.FindBy(t => t.SettingName == "SwapWorkflow").FirstOrDefault();
-                var processTemplateId = int.Parse(processTemplate.SettingValue);
-                var processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
-                var stateTemplate = processStates.FirstOrDefault(t => t.Name == "Approved");
+                //var processTemplate = _applicationSettingService.FindBy(t => t.SettingName == "SwapWorkflow").FirstOrDefault();
+                //var processTemplateId = int.Parse(processTemplate.SettingValue);
+                //var processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
+                //var stateTemplate = processStates.FirstOrDefault(t => t.Name == "Approved");
 
-                if (stateTemplate == null) return false;
+                //if (stateTemplate == null) return false;
 
-                var businessProcessState = new BusinessProcessState()
-                {
-                    StateID = stateTemplate.StateTemplateID,
-                    PerformedBy = username,
-                    DatePerformed = DateTime.Now,
-                    Comment = "swap approved",
-                    //AttachmentFile = fileName,
-                    ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
-                };
-                BusinessProcess bp = _businessProcessService.CreateBusinessProcess(
-                    stateTemplate.ParentProcessTemplateID, 0, "SwapWorkflow", businessProcessState);
+                //var businessProcessState = new BusinessProcessState()
+                //{
+                //    StateID = stateTemplate.StateTemplateID,
+                //    PerformedBy = username,
+                //    DatePerformed = DateTime.Now,
+                //    Comment = "Swap approved",
+                //    //AttachmentFile = fileName,
+                //    ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
+                //};
+                //BusinessProcess bp = _businessProcessService.CreateBusinessProcess(
+                //    stateTemplate.ParentProcessTemplateID, 0, "SwapWorkflow", businessProcessState);
 
-                if (bp == null) return false;
+                //if (bp == null) return false;
+                //transfer.BusinessProcessID = bp.BusinessProcessID;
 
                 transfer.StatusID = (int)LocalPurchaseStatus.Approved;
-                transfer.BusinessProcessID = bp.BusinessProcessID;
+                
                 _unitOfWork.TransferRepository.Edit(transfer);
 
                 var reciptAllocaltion = new ReceiptAllocation()

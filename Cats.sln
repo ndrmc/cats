@@ -106,6 +106,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.Web.Adminstration", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.RestAPI", "CatsAPI\Cats.RestAPI.csproj", "{502A44AF-2544-4CBC-89D4-74C1F71F44F0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.Data.Shared", "Data\Cats.Data.Shared\Cats.Data.Shared.csproj", "{B683E705-E480-4FC6-A347-99FFF7D9FFB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cats.Models.Shared", "Models\Cats.Models.Shared\Cats.Models.Shared.csproj", "{647F8DAD-7D70-4419-A87C-1802DB94190B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

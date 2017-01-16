@@ -236,5 +236,12 @@ namespace Cats.Services.EarlyWarning
             _unitOfWork.Save();
             return true;
         }
+
+        public bool InsertBusinessProcessState(BusinessProcessState businessProcessState)
+        {
+            _unitOfWork.BusinessProcessStateRepository.Add(businessProcessState);
+            _unitOfWork.Save();
+            return true;
+        }
     }
  }
