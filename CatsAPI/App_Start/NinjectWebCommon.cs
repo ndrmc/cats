@@ -105,7 +105,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IProgramService>().To<ProgramService>();
             kernel.Bind<IUnitService>().To<Cats.Services.EarlyWarning.UnitService>();
             kernel.Bind<IStatusService>().To<StatusService>();
-            kernel.Bind<IRationDetailService>().To<RationDetailService>();
+          
             kernel.Bind<IUserProfileService>().To<Cats.Services.Administration.UserProfileService>();
             kernel.Bind<IReliefRequisitionService>().To<ReliefRequisitionService>();
             kernel.Bind<ITransactionService>().To<TransactionService>();

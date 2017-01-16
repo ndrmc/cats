@@ -19,22 +19,22 @@ namespace Cats.Rest.Controllers
             _irationDetailService = irationDetailService;
         }
         /// <summary>
-        /// Returns list of RagionDetail objects
+        /// Returns list of RationDetail objects
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public dynamic GetRagionDetails()
         {
-            var bids = _irationDetailService.GetAllRationDetail().Select(item => new
-            {
-                item.RationDetailID,
-                item.RationID,
-                item.CommodityID,
-                CommodityName = item.Commodity.Name,
-                item.Amount,
-                item.UnitID,
-                UnitName = item.Unit.Name
-            }).ToList();
+            var bids = _irationDetailService.GetAllRationDetail().Select(item => item.Unit != null ? (item.Commodity != null ? new
+                                                                                                                                   {
+                                                                                                                                       item.RationDetailID,
+                                                                                                                                       item.RationID,
+                                                                                                                                       item.CommodityID,
+                                                                                                                                       CommodityName = item.Commodity.Name,
+                                                                                                                                       item.Amount,
+                                                                                                                                       item.UnitID,
+                                                                                                                                       UnitName = item.Unit.Name
+                                                                                                                                   } : null) : null).ToList();
 
             return bids;
         }
