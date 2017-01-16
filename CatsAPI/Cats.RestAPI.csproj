@@ -157,6 +157,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AdminUnitController.cs" />
     <Compile Include="Controllers\AdminUnitTypeController.cs" />
+    <Compile Include="Controllers\IDPSReasonTypeController.cs" />
     <Compile Include="Controllers\RationDetailController.cs" />
     <Compile Include="Controllers\PlanController.cs" />
     <Compile Include="Controllers\BidController.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Controllers\ProjectCodeController.cs" />
     <Compile Include="Controllers\ReleifRequisitionController.cs" />
     <Compile Include="Controllers\RationController.cs" />
+    <Compile Include="Controllers\SupportTypeController.cs" />
     <Compile Include="Controllers\TransactionController.cs" />
     <Compile Include="Controllers\RegionalRequestController.cs" />
     <Compile Include="Controllers\SeasonController.cs" />
@@ -209,6 +211,7 @@
     <Compile Include="Models\Hub.cs" />
     <Compile Include="Controllers\ShippingInstructionController.cs" />
     <Compile Include="Models\HubOwner.cs" />
+    <Compile Include="Models\IDPSReasonType.cs" />
     <Compile Include="Models\Ledger.cs" />
     <Compile Include="Models\LedgerType.cs" />
     <Compile Include="Models\LedgerTypeController.cs" />
@@ -219,6 +222,7 @@
     <Compile Include="Models\ReliefRequisition.cs" />
     <Compile Include="Models\ReliefRequisitionDetail.cs" />
     <Compile Include="Models\Ration.cs" />
+    <Compile Include="Models\SupportType.cs" />
     <Compile Include="Models\Transaction.cs" />
     <Compile Include="Models\RegionalRequest.cs" />
     <Compile Include="Models\RegionalRequestDetail.cs" />
@@ -372,6 +376,10 @@
     <ProjectReference Include="..\Services\Cats.Services.Hub\Cats.Services.Hub.csproj">
       <Project>{9fba0283-ee84-49f2-8305-f038bbf29658}</Project>
       <Name>Cats.Services.Hub</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\Cats.Services.Logistics\Cats.Services.Logistics.csproj">
+      <Project>{eef1ddeb-a6e9-493d-975d-c551a73a79b9}</Project>
+      <Name>Cats.Services.Logistics</Name>
     </ProjectReference>
     <ProjectReference Include="..\services\Cats.Services.Procurement\Cats.Services.Procurement.csproj">
       <Project>{B0410B11-91E0-40EC-9F16-55FC5E2C4090}</Project>

@@ -4,6 +4,7 @@ using System;
 using System.Web;
 using Cats.Services.Administration;
 using Cats.Services.Hub;
+using Cats.Services.Logistics;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Ninject;
 using Ninject.Web.Common;
@@ -140,6 +141,8 @@ namespace Cats.Rest.App_Start
             kernel.Bind<ITransportBidPlanDetailService>().To<TransportBidPlanDetailService>();
             kernel.Bind<ITransportBidQuotationService>().To<TransportBidQuotationService>();
             kernel.Bind<IRegionalPSNPPlanDetailService>().To<RegionalPSNPPlanDetailService>();
+            kernel.Bind<ISupportTypeService>().To<SupportTypeService>();
+            kernel.Bind<IIDPSReasonTypeServices>().To<IDPSReasonTypeServices>();
         }        
     }
 }
