@@ -57,7 +57,7 @@
     }
 </style>
 
- <div  ng-app="DataEntryIndicatorApp" ng-controller="WorkflowActController">
+<div ng-app="DataEntryIndicatorApp" ng-controller="WorkflowActController">
     <div class="row" style="border-bottom-width: thin; border-bottom-color: #666; border-bottom-style: inset; margin-top: 5px">
         <div class="pull-left">
             <h4>Data Entry</h4>
@@ -72,7 +72,7 @@
             </div>
         </div>
     </div>
-    <div   class="row">
+    <div class="row">
         <div>&nbsp;</div>
         <div class="span12">
             <div class="portlet">
@@ -101,26 +101,27 @@
                                         <Label><small>Start Date</small></Label>
                                         <input id="startDateDataIndicator" type="text" class="form-control cats-datepicker2 " placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
 
-                                </div>
+                                    </div>
                                 </td>
 
                                 <td>
-                                    <div  class="col-md-2 ">
+                                    <div class="col-md-2 ">
                                         <Label><small>End Date</small></Label>
                                         <input type="text" id="endDateDataIndicator" class="form-control  cats-datepicker2 " placeholder="End Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedEndDate" title="Enter End Date">
 
 
 
-                                </div>  </td>
+                                    </div>
+                                </td>
+                    
                                 <td>
+
                                     <div class="col-md-2">
-                                        <Label><small>  User</small></Label>
-                                        <select id="User" multiple="" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
-                                            <option value="AllwithData">AllwithData </option>
+                                        <Label><small>Document</small></Label>
+                                        <select id="Document" class="ui selection dropdown form-control" data-toggle="tooltip" @*ng-disabled="ctrlStatus.loadingDocument"*@ data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
+                                            <option ng-repeat="document in controlData.lookupDocument| orderBy : 'name'" value="{{document.name}}">{{document.name}}</option>
 
-                                            <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
                                         </select>
-
                                     </div>
                                 </td>
                                 <td>
@@ -136,28 +137,29 @@
                                     </div>
                                 </td>
                                 <td>
-
                                     <div class="col-md-2">
-                                        <Label><small>Document</small></Label>
-                                        <select id="Document" class="ui selection dropdown form-control" data-toggle="tooltip" @*ng-disabled="ctrlStatus.loadingDocument"*@ data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
-                                            <option ng-repeat="document in controlData.lookupDocument| orderBy : 'name'" value="{{document.name}}">{{document.name}}</option>
+                                        <Label><small>  User</small></Label>
+                                        <select id="User" multiple="" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
+                                            <option value="AllwithData">AllwithData </option>
 
+                                            <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
                                         </select>
+
                                     </div>
                                 </td>
                                 <td>
-                                <div class="col-md-2 ">
-                                    <button type="button" ng-hide="searching" ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Get Activities based on the Criteria">
-                                        <h4><img src="~/Content/Icons/Search Icon.png" class="text-warning" style="max-width:45px; max-height:50px;" /><span><strong>Get</strong></span></h4>
-                                    </button>
+                                    <div class="col-md-2 ">
+                                        <button type="button" ng-hide="searching" ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Get Activities based on the Criteria">
+                                            <h4><img src="~/Content/Icons/Search Icon.png" class="text-warning" style="max-width:45px; max-height:50px;" /><span><strong>Get</strong></span></h4>
+                                        </button>
 
-                                    <p class="text-info" ng-show="searching"><img src="~/Content/Icons/search.gif" style="max-width:65px; max-height:70px;" />Searching... </p>
-    </div>
+                                        <p class="text-info" ng-show="searching"><img src="~/Content/Icons/search.gif" style="max-width:65px; max-height:70px;" />Searching... </p>
+                                    </div>
                                 </td>
                             </tr>
                         </table>
                     </div>
-                            @*</div>*@
+                    @*</div>*@
 
 
 
@@ -231,19 +233,19 @@
 
 
                     <div class="dedivgraph col-sm-12">
-                        <div class="box-body table-responsive" style="display: block;" >
+                        <div class="box-body table-responsive" style="display: block;">
                             <div id="containerGraph" class="graphWrap"></div>
                         </div>
                     </div>
-                            </div>
+                </div>
 
 
 
 
-                        </div>
-                    </div>
+            </div>
         </div>
     </div>
+</div>
 
 
 
@@ -251,7 +253,7 @@
 
 
 
-        <script>
+<script>
             String.prototype.toCamel = function () {
                 return this.replace(/(\-[a-z])/g, function ($1) { return $.toUpperCase().replace('-', ''); });
             };
@@ -310,9 +312,9 @@
 
 
             //});
-        </script>
+</script>
 
-        <script>
+<script>
 
             var urlGetAllTeamUsers = "@Url.Action("GetAllTeamUsers", "WorkflowManager", new { Area = "WorkflowManager" })" + "?pageName=" + "@Html.Raw(ViewBag.PageName)";
             var urlGetAllWorkflows = "@Url.Action("GetAllWorkflows", "WorkflowManager", new { Area = "WorkflowManager"})" + "?pageName=" + "@Html.Raw(ViewBag.PageName)";
@@ -320,6 +322,6 @@
             var urlGetAllStateTemplate_ = "@Url.Action("GetAllStateTemplate", "WorkflowManager", new { Area = "WorkflowManager"})" + "?workflowName=";
             var urlGetDataEntryStat = "@Url.Action("GetDataEntryStat", "WorkflowManager", new { Area = "WorkflowManager"})";
 
-        </script>
+</script>
     </div>
 
