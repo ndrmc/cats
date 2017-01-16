@@ -205,13 +205,13 @@
                       "# if (Status == 'Draft' || Status == 'Edited') { #" +
                       "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_transport_order).ToString() + "' == 'Approve_transport_order') { #" +
                       "<li class='edit_button'><a href = \"javascript:promot_workflow('#=BusinessProcessID#','#=ApproveStateID#','Approve','#=TransportOrderID#')\" title='Approve TransportOrder'>Approve</a></li>" +
-                      " # } #" + " # } #" +
+                      " # } #" + " # } #" + " # } #" +
 
                       " # if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Approve_transport_order).ToString() + "' == 'Approve_transport_order') { #" +
                       "<li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
                       " # } #" +
 
-                      "</ul></div>");
+                "</ul></div>");
 
 
           })
