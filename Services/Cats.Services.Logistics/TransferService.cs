@@ -133,7 +133,7 @@ namespace Cats.Services.Logistics
                 //transfer.BusinessProcessID = bp.BusinessProcessID;
 
                 transfer.StatusID = (int)LocalPurchaseStatus.Approved;
-               
+                
                 _unitOfWork.TransferRepository.Edit(transfer);
 
                 var reciptAllocaltion = new ReceiptAllocation()

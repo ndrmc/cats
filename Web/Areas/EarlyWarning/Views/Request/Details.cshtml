@@ -395,9 +395,17 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    @Html.Label("Year(EC)", new { @class = "col-md-4 control-label" })
+                                    @Html.Label("Year(EC)", new {@class = "col-md-4 control-label"})
                                     <div class="col-md-7">
-                                        @Html.TextBoxFor(m => modelRequest.Year, new { Disabled = true, @class = "form-control" })
+                                        @Html.TextBoxFor(m => modelRequest.Year, new {Disabled = true, @class = "form-control"})
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.Label("Plan Name", new { @class = "col-md-4 control-label" })
+                                    <div class="col-md-7">
+                                        @Html.TextBoxFor(m => modelRequest.PlanName, new { Disabled = true, @class = "form-control" })
                                     </div>
                                 </div>
                             </div>

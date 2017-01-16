@@ -1165,6 +1165,10 @@ namespace Cats.Areas.Procurement.Controllers
             {
                 try
                 {
+                    if (string.IsNullOrEmpty(bidAddWoredaViewModel.Remark))
+                    {
+                        bidAddWoredaViewModel.Remark = "No remark";
+                    }
                     var detail = GetDetail(bidAddWoredaViewModel);
                     WorkflowActivityUtil.EnterEditWorkflow(detail);
                     if (_transportBidQuotationService.AddWoreda(detail))

@@ -4,7 +4,7 @@
 @{
     ViewBag.Title = Html.Translate("hub");
     Layout = "~/Views/Shared/_MainLayout.cshtml";
-   
+
 }
 
 
@@ -21,21 +21,21 @@
           <fieldset style="left: 120px">
               <legend> <ng-pluralize style="left: 120px" count="Requisitions.length" when="newRequisitions"></ng-pluralize></legend>
           </fieldset>
-                                                                                      
+
               <div class="span3" >
                   @*<div ng-model="allocated" ng-repeat="item in allocated">
-                            
+
                             ReqId: {{item.reqId}} | HubId: {{item.HubId}}
                             <button ng-click='saveAllocation()' id="save">save</button>
                         </div>*@
-                         
-                        
-                  
+
+
+
                       <div  ng-model='Requisitions' id="container" style=" overflow-y:scroll;height: 800px" >
                           <div  class="btn btn-navbar btn-draggable " id="{{item.RequisitionId}}"  draggable=""   ng-repeat="item in Requisitions" >
 
                               <i  style="border:none;display: none;" id="Remove" data-toggle="tooltip" data-placement="left" title="Remove" ng-click="RemoveRequisitionFromStore(item.RequisitionId)"  class="icon-remove-circle"></i>
-                              
+
                               <div class="accordion" id="accordion2">
                                   <div class="accordion-group">
                                       <div class="accordion-heading">
@@ -54,24 +54,24 @@
                                       </div>
                                   </div>
 
-                                
+
                               </div>
-   
+
                           </div>
                       </div>
                   </div>
-             
+
               <div class="span8">
-                 
+
                     @{
-                    
+
                         var enumerable = ViewData["Hubs"] as IEnumerable<Hub>;
-                       
-                             
+
+
                         if (enumerable != null)
                         {
                             var hubs = enumerable as Hub[] ?? enumerable.ToArray();
-                            
+
                              <div id="Hub">
                             @foreach (var hub in  hubs)
                             {
@@ -93,7 +93,7 @@
                                         <div class="btn btn-navbar btn-droppable"  >@hub.Name (@hub.HubOwner.Name)</div>
                                     </div>
                                 }*@
-                                
+
                             }
                             </div>
                             @*<div id="Store">
@@ -108,44 +108,44 @@
                                  }
 
                             </div>*@
-                           
+
                         }
-                    
-                    } 
-                
+
+                    }
+
                 </div>
-            
+
          <modal title="Satellite Warehouse " visible="showModal">
     <form role="form">
       <div class="form-group">
           <label for="SatelliteWarehouse">Satellite Warehouse</label>
-          
-        
-           <select data-ng-model="s.selected"   
-                data-ng-options="s.Id as s.Name for s in WarehouseList">  
-                <option value="">--Select Warehouse--</option>  
-            </select> 
+
+
+           <select data-ng-model="s.selected"
+                data-ng-options="s.Id as s.Name for s in WarehouseList">
+                <option value="">--Select Warehouse--</option>
+            </select>
           {{s.Id}}
       </div>
-     
+
       <button type="submit" class="btn btn-default" ng-click="saveWarehouse(s.selected)">Select</button>
     </form>
   </modal>
-                
+
                 </div>
-    
+
             </div>
-       
+
    <script src="~/Scripts/angular/allocation-angular.js"></script>
     <script>
         var regionId = '@ViewBag.regionId';
         var RegionName = '@ViewBag.RegionName';
         var Url = '@Url.Action("ReadRequisitions", "DispatchAllocation", new { area = "Logistics" })';
         var UrlPOST = '@Url.Action("Save","DispatchAllocation",new {area = "Logistics"})';
-      
-       
+
+
         $('a#btnToggle').click(function () {
-        
+
             $(this).text($(this).text() == 'Hub' ? 'Store' : 'Hub');
             if ($(this).text() == 'Hub') {
                 document.getElementById("Store").style.display = "none";
@@ -153,13 +153,13 @@
             } else if ($(this).text() == 'Store') {
                 document.getElementById("Hub").style.display = "none";
                 document.getElementById("Store").style.display = "block";
-                
+
             }
         });
-        
-       
 
-       
+        var backBtn="@Url.Action("Index","DispatchAllocation",new {regionId= Request.QueryString["regionid"]})";
+
+
     </script>
     <style>
         .thumbnail { height: 280px; }
