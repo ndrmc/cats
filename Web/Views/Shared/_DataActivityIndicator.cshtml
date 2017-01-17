@@ -104,26 +104,7 @@ button:focus {
 
                     </div>
 
-                    <div class="col-md-2" >
-                        <Label><small>  User</small></Label>
-                        <select id="User" multiple="" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
-                            <option value="AllwithData">AllwithData </option>
 
-                            <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
-                        </select>
-
-                    </div>
-                    <div class="col-md-2" >
-
-
-                        <Label><small>Activity</small></Label>
-                        <img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading.gif" />
-
-                        <select id="Activity" multiple="multiple"  @*ng-disabled="ctrlStatus.loadingActivity"*@ class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
-                            <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
-                        </select>
-
-                    </div>
 
 
                     <div class="col-md-2"  >
@@ -134,13 +115,37 @@ button:focus {
                         </select>
                     </div>
 
-                    <div class="col-md-2 ">
-                        <button type="button"  ng-hide="searching" style="margin-top: 13px;"  ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Get Activities based on the Criteria">
-                        <h4 ><img src="~/Content/Icons/Search Icon.png" class="text-warning" style="max-width:45px; max-height:50px;" /><span><strong>Get</strong></span></h4> </button>
+                    <div class="col-md-2">
 
-                         <p class="text-info" ng-show="searching"><img src="~/Content/Icons/search.gif" style="max-width:65px; max-height:70px;" />Searching... </p>
+
+                        <Label><small>Activity</small></Label>
+                        <img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading.gif" />
+
+                        <select id="Activity" multiple="multiple" @*ng-disabled="ctrlStatus.loadingActivity"*@ class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
+                            <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
+                        </select>
 
                     </div>
+
+                    <div class="col-md-2">
+                        <Label><small>  User</small></Label>
+                        <select id="User" multiple="" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
+                            <option value="AllwithData">AllwithData </option>
+
+                            <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-2 ">
+                        <button type="button" ng-hide="searching" style="margin-top: 13px;" ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Get Activities based on the Criteria">
+                            <h4><img src="~/Content/Icons/Search Icon.png" class="text-warning" style="max-width:45px; max-height:50px;" /><span><strong>Get</strong></span></h4>
+                        </button>
+
+                        <p class="text-info" ng-show="searching"><img src="~/Content/Icons/search.gif" style="max-width:65px; max-height:70px;" />Searching... </p>
+
+                    </div>
+
 
                 </div>
 
