@@ -971,8 +971,9 @@ namespace Cats.Areas.Procurement.Controllers
 
                         if (target != null)
                         {
-                            Cats.Models.BusinessProcessState bps = target.BusinessProcess.CurrentState;
-                            var stateTemplate = _stateTemplateService.FindBy(p => p.Name == "Edited").FirstOrDefault();
+                            Cats.Models.BusinessProcessState bps = target.BusinessProcess.CurrentState;     
+                            var stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
+                            p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
                             if (stateTemplate != null)
                             {
