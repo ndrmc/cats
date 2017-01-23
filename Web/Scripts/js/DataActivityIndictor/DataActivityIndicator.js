@@ -61,7 +61,7 @@ DataEntryIndicatorApp = angular.module("DataEntryIndicatorApp", []).controller('
             $.each(workflowListObj.dashboardDataEntries, function (index, dashBoardEntry) {
 
                 if (dashBoardEntry.activityName == selectedActivityName && name == userName) {
-                    alert(buildDetailMsg(dashBoardEntry.detail));
+                    console.log(buildDetailMsg(dashBoardEntry.detail));
                     return false;
                 }
 
