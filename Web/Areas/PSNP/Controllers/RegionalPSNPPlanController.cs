@@ -214,9 +214,9 @@ namespace Cats.Areas.PSNP
             var endDate = firstDayOfTheMonth.AddMonths(regionalpsnpplan.Duration).AddDays(-1);
             UserProfile user = _userProfileService.GetUser(User.Identity.Name);
              if (ModelState.IsValid)
-                {
-                    
-                        _regionalPSNPPlanService.AddPsnpPlan(planName, firstDayOfTheMonth, endDate);
+             {
+                
+                _regionalPSNPPlanService.AddPsnpPlan(planName, firstDayOfTheMonth, endDate);
                         var plan = _planService.Get(m => m.PlanName == planName,null,"Program").FirstOrDefault();
                          regionalpsnpplan.Plan = plan;
 
