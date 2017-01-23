@@ -89,45 +89,47 @@ namespace Cats.Services.Workflows.Config
             AddDashboarMapping(Constants.FinancePage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
         }
 
-        public static void WorkflowToObject()
-        {
-            //
-            AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.GiftCertificateWorkflow, typeof(GiftCertificate), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.ReliefRequisitionWorkflow, typeof(ReliefRequisition), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.NeedAssessmentWorkflow, typeof(NeedAssessment), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.NeedAssessmentPlanWorkflow, typeof(NeedAssessmentHeader), string.Empty, string.Empty); // ?
-            AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.HRDWorkflow, typeof(HRD), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.RegionalRequestWorkflow, typeof(RegionalRequest), string.Empty, string.Empty);
+        //public static void WorkflowToObject()
+        //{
+        //    //
+        //    AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.GiftCertificateWorkflow, typeof(GiftCertificate), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.ReliefRequisitionWorkflow, typeof(ReliefRequisition), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.NeedAssessmentWorkflow, typeof(NeedAssessment), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.NeedAssessmentPlanWorkflow, typeof(NeedAssessmentHeader), string.Empty, string.Empty); // ?
+        //    AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.HRDWorkflow, typeof(HRD), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.RegionalRequestWorkflow, typeof(RegionalRequest), string.Empty, string.Empty);
 
-            AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.NeedAssessmentWorkflow, typeof(NeedAssessment), string.Empty, string.Empty); // ?
-            AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.DistributionWorkflow, typeof(WoredaStockDistribution), string.Empty, string.Empty); // ?
-            AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.FDPReceiptWorkflow, typeof(DeliveryReconcile), string.Empty, string.Empty); // ?
+        //    AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.NeedAssessmentWorkflow, typeof(NeedAssessment), string.Empty, string.Empty); // ?
+        //    AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.DistributionWorkflow, typeof(WoredaStockDistribution), string.Empty, string.Empty); // ?
+        //    AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.FDPReceiptWorkflow, typeof(DeliveryReconcile), string.Empty, string.Empty); // ?
 
-            AddWorkflowToObjectMapping(Constants.HubPage, ApplicationSettings.Default.ReceiveHubWorkflow, typeof(Receive), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.HubPage, ApplicationSettings.Default.DispatchWorkflow, typeof(Models.Dispatch), string.Empty, string.Empty); // ?
+        //    AddWorkflowToObjectMapping(Constants.HubPage, ApplicationSettings.Default.ReceiveHubWorkflow, typeof(Receive), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.HubPage, ApplicationSettings.Default.DispatchWorkflow, typeof(Models.Dispatch), string.Empty, string.Empty); // ?
 
-            //AddWorkflowToObjectMapping(ApplicationSettings.Default.DispatchWorkflow, typeof(Models.Hubs.Dispatch)); // ?
+        //    //AddWorkflowToObjectMapping(ApplicationSettings.Default.DispatchWorkflow, typeof(Models.Hubs.Dispatch)); // ?
 
-            AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransportOrderWorkflow, typeof(TransportOrder), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransportRequisitionWorkflow, typeof(TransportRequisition), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransporterChequeWorkflow, typeof(TransporterCheque), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransporterPaymentRequestWorkflow, typeof(TransporterPaymentRequest), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TranferReceiptPlanWorkflow, typeof(Transfer), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.SwapWorkflow, typeof(Transfer), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.LocalPurchaseReceiptPlanWorkflow, typeof(LocalPurchase), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.ReciptPlanForLoanWorkflow, typeof(ReceiptPlan), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.DonationPlanHeaderWorkflow, typeof(DonationPlanHeader), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.DeliveryWorkflow, typeof(Delivery), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.BidPlanDetailActionWorkflow, typeof(TransportBidPlan), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.BidPlanWorkflow, typeof(TransportBidPlanDetail), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransportOrderWorkflow, typeof(TransportOrder), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransportRequisitionWorkflow, typeof(TransportRequisition), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransporterChequeWorkflow, typeof(TransporterCheque), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransporterPaymentRequestWorkflow, typeof(TransporterPaymentRequest), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TranferReceiptPlanWorkflow, typeof(Transfer), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.SwapWorkflow, typeof(Transfer), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.LocalPurchaseReceiptPlanWorkflow, typeof(LocalPurchase), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.ReciptPlanForLoanWorkflow, typeof(ReceiptPlan), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.DonationPlanHeaderWorkflow, typeof(DonationPlanHeader), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.DeliveryWorkflow, typeof(Delivery), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.BidPlanDetailActionWorkflow, typeof(TransportBidPlan), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.BidPlanWorkflow, typeof(TransportBidPlanDetail), string.Empty, string.Empty);
 
-            AddWorkflowToObjectMapping(Constants.PsnpPage, ApplicationSettings.Default.PSNPWorkflow, typeof(RegionalPSNPPlan), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.PsnpPage, ApplicationSettings.Default.PSNPWorkflow, typeof(RegionalPSNPPlan), string.Empty, string.Empty);
 
-            AddWorkflowToObjectMapping(Constants.ProcurementPage, ApplicationSettings.Default.BidWinnerWorkflow, typeof(BidWinner), string.Empty, string.Empty);
-            AddWorkflowToObjectMapping(Constants.ProcurementPage, ApplicationSettings.Default.TransporterWorkflow, typeof(Models.Transporter), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.ProcurementPage, ApplicationSettings.Default.BidWinnerWorkflow, typeof(BidWinner), string.Empty, string.Empty);
+        //    AddWorkflowToObjectMapping(Constants.ProcurementPage, ApplicationSettings.Default.TransporterWorkflow, typeof(Models.Transporter), string.Empty, string.Empty);
 
-            AddWorkflowToObjectMapping(Constants.FinancePage, ApplicationSettings.Default.TransporterChequeWorkflow, typeof(TransporterCheque), string.Empty, string.Empty);
-        }
+        //    AddWorkflowToObjectMapping(Constants.FinancePage, ApplicationSettings.Default.TransporterPaymentRequestWorkflow, typeof(TransporterPaymentRequest), string.Empty, string.Empty);
+
+        //    AddWorkflowToObjectMapping(Constants.FinancePage, ApplicationSettings.Default.TransporterChequeWorkflow, typeof(TransporterCheque), string.Empty, string.Empty);
+        //}
         //private static void StartupConfiguration_StartWorkflow(string pageName, string workflowName)
         //{
 
