@@ -29,6 +29,7 @@ namespace Cats.Services.Workflows.Config
         public static void AddWorkflowToObjectMapping(string pageName, string workflowDefinition, Type type, string searchField, string uri)
         {
             WorkflowToObjectMappings.Add(new Tuple<int, string, string, Type, string, string>(Random.Next(), pageName, workflowDefinition, type, searchField, uri));
+            WorkflowToObjectMappings.Add(new Tuple<int, string, string, Type, string, string>(Random.Next(), pageName, workflowDefinition, type, searchField, uri));
         }
 
         private static Boolean alreadyInitialized=false;
@@ -38,10 +39,23 @@ namespace Cats.Services.Workflows.Config
             if (alreadyInitialized) return;
 
             GlobalWorkflowExcluded.Add(ApplicationSettings.Default.LocalPurchaseReceiptPlanWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.DeliveryWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.TranferReceiptPlanWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.ReciptPlanForLoanWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.DonationPlanHeaderWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.TransportOrderWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.SwapWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.RegionalRequestWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.ReceiveHubWorkflow);
+
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.HRDWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.BidPlanWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.NeedAssessmentPlanWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.NeedAssessmentWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.BidWinnerWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.PSNPWorkflow);
 
             alreadyInitialized = true;
-
-
         }
         public static void RegisterDashboardPage()
         {
@@ -58,7 +72,7 @@ namespace Cats.Services.Workflows.Config
             AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.NeedAssessmentWorkflow);
             AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.DistributionWorkflow);
             AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
-            AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanWorkflow);
+           
             // Workflows that are in Hub
             AddDashboarMapping(Constants.HubPage + Constants.Dashbord, ApplicationSettings.Default.ReceiveHubWorkflow);
             AddDashboarMapping(Constants.HubPage + Constants.Dashbord, ApplicationSettings.Default.DispatchWorkflow);
@@ -84,6 +98,8 @@ namespace Cats.Services.Workflows.Config
             AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.BidWinnerWorkflow);
             AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.TransporterWorkflow);
             AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
+            AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanWorkflow);
+            AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanDetailActionWorkflow);
             // Workflows that are in Finance
             AddDashboarMapping(Constants.FinancePage + Constants.Dashbord, ApplicationSettings.Default.TransporterChequeWorkflow);
             AddDashboarMapping(Constants.FinancePage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow

@@ -338,7 +338,7 @@ namespace Cats.Areas.PSNP.Controllers
             // update the psnp plan 
             if (planId != 0 && (isAdded || isUpdated||isDeleted))
             {
-                int globalActionWorkFlowId = _applicationSettingService.getGlobalWorkflow();
+                int globalActionWorkFlowId = _applicationSettingService.getPSNPWorkflow();
                 var firstOrDefault = _stateTemplateService
                     .GetAll().FirstOrDefault(s => s.ParentProcessTemplateID == globalActionWorkFlowId && s.Name == "Edited");
 

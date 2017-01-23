@@ -214,9 +214,9 @@ namespace Cats.Areas.PSNP
             var endDate = firstDayOfTheMonth.AddMonths(regionalpsnpplan.Duration).AddDays(-1);
             UserProfile user = _userProfileService.GetUser(User.Identity.Name);
              if (ModelState.IsValid)
-                {
-                    
-                        _regionalPSNPPlanService.AddPsnpPlan(planName, firstDayOfTheMonth, endDate);
+             {
+                
+                _regionalPSNPPlanService.AddPsnpPlan(planName, firstDayOfTheMonth, endDate);
                         var plan = _planService.Get(m => m.PlanName == planName,null,"Program").FirstOrDefault();
                          regionalpsnpplan.Plan = plan;
 
@@ -233,9 +233,8 @@ namespace Cats.Areas.PSNP
                                  BusinessProcessState createdstate = new BusinessProcessState
                                  {
                                      DatePerformed = DateTime.Now,
-                                     PerformedBy = "System",
+                                     PerformedBy = User.Identity.Name,
                                      Comment = "Created workflow for PSNP Plan"
-
                                  };
 
                          var psnpPlan=  _regionalPSNPPlanService.CreatePsnpPlan(regionalpsnpplan.Year,regionalpsnpplan.Duration,regionalpsnpplan.RationID,regionalpsnpplan.StatusID,plan.PlanID,user.UserProfileID);
