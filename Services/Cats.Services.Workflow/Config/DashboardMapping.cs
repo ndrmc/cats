@@ -54,9 +54,11 @@ namespace Cats.Services.Workflows.Config
             AddDashboarMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.RegionalRequestWorkflow);
             AddDashboarMapping(Constants.EarlywarningPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Regional
+            AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.FDPReceiptWorkflow);
             AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.NeedAssessmentWorkflow);
             AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.DistributionWorkflow);
             AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
+            AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanWorkflow);
             // Workflows that are in Hub
             AddDashboarMapping(Constants.HubPage + Constants.Dashbord, ApplicationSettings.Default.ReceiveHubWorkflow);
             AddDashboarMapping(Constants.HubPage + Constants.Dashbord, ApplicationSettings.Default.DispatchWorkflow);
@@ -99,6 +101,7 @@ namespace Cats.Services.Workflows.Config
 
             AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.NeedAssessmentWorkflow, typeof(NeedAssessment), string.Empty, string.Empty); // ?
             AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.DistributionWorkflow, typeof(WoredaStockDistribution), string.Empty, string.Empty); // ?
+            AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.FDPReceiptWorkflow, typeof(DeliveryReconcile), string.Empty, string.Empty); // ?
 
             AddWorkflowToObjectMapping(Constants.HubPage, ApplicationSettings.Default.ReceiveHubWorkflow, typeof(Receive), string.Empty, string.Empty);
             AddWorkflowToObjectMapping(Constants.HubPage, ApplicationSettings.Default.DispatchWorkflow, typeof(Models.Dispatch), string.Empty, string.Empty); // ?

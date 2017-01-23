@@ -6,21 +6,25 @@ using System.Text;
 using System.Threading.Tasks;
 using Cats.Data.UnitWork;
 using Cats.Models;
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Logistics
 {
     public class DeliveryReconcileService : IDeliveryReconcileService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public DeliveryReconcileService(IUnitOfWork unitOfWork)
+        private readonly IWorkflowActivityService iWorkflowActivityService;
+        public DeliveryReconcileService(IUnitOfWork unitOfWork, IWorkflowActivityService iWorkflowActivityService)
         {
             this._unitOfWork = unitOfWork;
+            this.iWorkflowActivityService = iWorkflowActivityService;
         }
         #region Implementation of IDeliveryReconcileService
 
         public bool AddDeliveryReconcile(DeliveryReconcile deliveryReconcile)
         {
             _unitOfWork.DeliveryReconcileRepository.Add(deliveryReconcile);
+            iWorkflowActivityService.EnterCreateWorkflow(deliveryReconcile);
             _unitOfWork.Save();
             return true;
         }
@@ -45,6 +49,8 @@ namespace Cats.Services.Logistics
         public bool EditDeliveryReconcile(DeliveryReconcile deliveryReconcile)
         {
             _unitOfWork.DeliveryReconcileRepository.Edit(deliveryReconcile);
+            iWorkflowActivityService.EnterEditWorkflow(deliveryReconcile);
+
             _unitOfWork.Save();
             return true;
         }

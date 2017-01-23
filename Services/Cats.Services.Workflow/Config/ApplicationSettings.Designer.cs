@@ -265,5 +265,14 @@ namespace Cats.Services.Workflows.Config {
                 return ((string)(this["DistributionWorkflow"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("FDPReceiptWorkflow")]
+        public string FDPReceiptWorkflow {
+            get {
+                return ((string)(this["FDPReceiptWorkflow"]));
+            }
+        }
     }
 }
