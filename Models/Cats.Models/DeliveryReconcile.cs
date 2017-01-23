@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cats.Models
 {
-    public partial class DeliveryReconcile
+    public partial class DeliveryReconcile:IWorkflow
     {
         public int DeliveryReconcileID { get; set; }
         public string GRN { get; set; }
@@ -25,7 +25,8 @@ namespace Cats.Models
         public virtual FDP FDP { get; set; }
         public virtual Hub Hub { get; set; }
         public virtual TransactionGroup TransactionGroup { get; set; }
-        public int? BusinessProcessID { get; set; }
+        //public int? BusinessProcessID { get; set; }
+        public int BusinessProcessId { get; set; }
         public virtual BusinessProcess BusinessProcess { get; set; }
     }
 }
