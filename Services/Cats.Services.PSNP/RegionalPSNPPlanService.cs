@@ -75,6 +75,7 @@ namespace Cats.Services.PSNP
             var oldPlan = _unitOfWork.PlanRepository.FindBy(m => m.PlanName == planName).SingleOrDefault();
             if (oldPlan == null)
             {
+                
                 var psnpProgram = _unitOfWork.ProgramRepository.FindBy(m => m.Name == "PSNP").SingleOrDefault();
                 var plan = new Plan
                 {
@@ -82,9 +83,10 @@ namespace Cats.Services.PSNP
                     StartDate = startDate,
                     EndDate = endDate,
                     Program = psnpProgram,
-                    Status = (int)PlanStatus.PSNPCreated
-
+                    Status = (int) PlanStatus.PSNPCreated,
+                    BusinessProcessID = 0
                 };
+                
                 _unitOfWork.PlanRepository.Add(plan);
                 _unitOfWork.Save();
             }
