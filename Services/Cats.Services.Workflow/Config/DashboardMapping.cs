@@ -29,6 +29,7 @@ namespace Cats.Services.Workflows.Config
         public static void AddWorkflowToObjectMapping(string pageName, string workflowDefinition, Type type, string searchField, string uri)
         {
             WorkflowToObjectMappings.Add(new Tuple<int, string, string, Type, string, string>(Random.Next(), pageName, workflowDefinition, type, searchField, uri));
+            WorkflowToObjectMappings.Add(new Tuple<int, string, string, Type, string, string>(Random.Next(), pageName, workflowDefinition, type, searchField, uri));
         }
 
         private static Boolean alreadyInitialized=false;
@@ -52,7 +53,7 @@ namespace Cats.Services.Workflows.Config
             GlobalWorkflowExcluded.Add(ApplicationSettings.Default.NeedAssessmentPlanWorkflow);
             GlobalWorkflowExcluded.Add(ApplicationSettings.Default.NeedAssessmentWorkflow);
             GlobalWorkflowExcluded.Add(ApplicationSettings.Default.BidWinnerWorkflow);
-
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.PSNPWorkflow);
 
             alreadyInitialized = true;
         }

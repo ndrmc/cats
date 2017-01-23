@@ -233,9 +233,8 @@ namespace Cats.Areas.PSNP
                                  BusinessProcessState createdstate = new BusinessProcessState
                                  {
                                      DatePerformed = DateTime.Now,
-                                     PerformedBy = "System",
+                                     PerformedBy = User.Identity.Name,
                                      Comment = "Created workflow for PSNP Plan"
-
                                  };
 
                          var psnpPlan=  _regionalPSNPPlanService.CreatePsnpPlan(regionalpsnpplan.Year,regionalpsnpplan.Duration,regionalpsnpplan.RationID,regionalpsnpplan.StatusID,plan.PlanID,user.UserProfileID);
