@@ -38,10 +38,23 @@ namespace Cats.Services.Workflows.Config
             if (alreadyInitialized) return;
 
             GlobalWorkflowExcluded.Add(ApplicationSettings.Default.LocalPurchaseReceiptPlanWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.DeliveryWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.TranferReceiptPlanWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.ReciptPlanForLoanWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.DonationPlanHeaderWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.TransportOrderWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.SwapWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.RegionalRequestWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.ReceiveHubWorkflow);
+
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.HRDWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.BidPlanWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.NeedAssessmentPlanWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.NeedAssessmentWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.BidWinnerWorkflow);
+
 
             alreadyInitialized = true;
-
-
         }
         public static void RegisterDashboardPage()
         {
