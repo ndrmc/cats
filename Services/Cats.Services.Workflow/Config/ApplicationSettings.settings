@@ -83,5 +83,8 @@
     <Setting Name="DistributionWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">DistributionWorkflow</Value>
     </Setting>
+    <Setting Name="FDPReceiptWorkflow" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">FDPReceiptWorkflow</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -163,6 +163,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Config\ApplicationSettings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>ApplicationSettings.Designer.cs</LastGenOutput>
