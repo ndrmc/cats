@@ -38,6 +38,7 @@
 
 @{
     int allocationType = ViewBag.CommoditySourceType;
+    var filterGRN = ViewBag.FilterGRN;
     string quanityColumnHeader = "MT";
     decimal toqt = 1;
 
@@ -59,7 +60,7 @@
     .DataSource(dataSource => dataSource
         .Ajax()
         .Model(model => model.Id(p => p.ReceiptAllocationID))
-        .Read(read => read.Action("AllocationListAjax", "Receive", new { type = allocationType, grn = Request.QueryString["FilterGRN"] }))
+        .Read(read => read.Action("AllocationListAjax", "Receive", new { type = allocationType, grn = filterGRN }))
         .Destroy(update => update.Action("DeleteAjax", "Receive"))
 
         ).Events(events => events.DataBound("dataBound"))
@@ -108,7 +109,7 @@
         .DataSource(dataSource => dataSource
             .Ajax()
             .ServerOperation(false)
-            .Read(read => read.Action("ReceiveListAjax", "Receive", new { ReceiptAllocationID = "#=ReceiptAllocationID#", grn = Request.QueryString["FilterGRN"] }))
+            .Read(read => read.Action("ReceiveListAjax", "Receive", new { ReceiptAllocationID = "#=ReceiptAllocationID#", grn = filterGRN }))
 
             )
     .HtmlAttributes(new { style = "max-height:250px;" })

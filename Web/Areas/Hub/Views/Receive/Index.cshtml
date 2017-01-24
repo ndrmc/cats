@@ -78,7 +78,7 @@
         <div class="actions">
             <a class="btn   btn-icon-only btn-default fullscreen" href=" javascript:;" data-original-title="" title=""></a>
         </div>
- 
+
         <div class="row  bordered">
 
             <div class="col-md-2 col-md-offset-1">
@@ -102,6 +102,12 @@
 
             <div class="form-horizontal">
                 <div class="row">
+                    <div class="col-md-2 col-md-offset-1">
+                        <div class="form-group">
+                            <label>@Html.Translate("Search by GRN")</label>
+                            @Html.TextBox("FilterGRN", null, new { @class = "form-control",@placeholder="GRN#" })
+                        </div>
+                    </div>
                     <div class="col-md-2 col-md-offset-1">
                         <div class="form-group">
                             <label>@Html.Translate("hub")</label>
@@ -268,7 +274,6 @@
     }
     $(function () {
 
-
         $("#FilterCommodityTypeID").change(dataRefresh);
         $("#HubsID").change(dataRefresh);
         $("#FilterGRN").on('keyup', function (e) {
@@ -286,11 +291,11 @@
             closed = "true";
         }
 
-        if (document.getElementById("chk_receivable").checked) {
-            receivable = "true";
-        }
+        //if (document.getElementById("chk_receivable").checked) {
+        //    receivable = "true";
+        //}
         var commodityType = $("#FilterCommodityTypeID").val();
-        var GRN = $("#FilterGRN").val();
+      var   GRN = $("#FilterGRN").val();
         var HubID = $("#HubsID").val();
         return { closed: closed, commodityType: commodityType, HubID: HubID, receivable: receivable, grn: GRN };
     }
@@ -336,7 +341,9 @@
         if (target == "#from_donation") {
 
             if (!fromDonationLLoaded) {
-                $(target).load('@(Url.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.DONATION }))');
+
+
+                $(target).load('@(Url.Action("Allocationlist2", "Receive", new { type = Cats.Models.Hubs.CommoditySource.Constants.DONATION}))');
                 fromDonationLLoaded = true;
             }
         }

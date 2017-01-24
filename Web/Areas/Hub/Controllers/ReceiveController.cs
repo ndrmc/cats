@@ -174,6 +174,7 @@ namespace Cats.Areas.Hub.Controllers
             {
                 UserProfile user = _userProfileService.GetUser(User.Identity.Name);
                 HubID = HubID > 0 ? HubID : user.DefaultHub.Value;
+                ViewBag.FilterGRN = grn;
                 //HubID=user.DefaultHub.HubID
                 //list = _receiptAllocationService.GetUnclosedAllocationsDetached(HubID, type, closed, user.PreferedWeightMeasurment, commodityType, receivable, grn);
                 var list = _vwReceiptAllocationAggregateService.GetAllRAAggr(HubID, type, closed, user.PreferedWeightMeasurment, commodityType, receivable, grn);
