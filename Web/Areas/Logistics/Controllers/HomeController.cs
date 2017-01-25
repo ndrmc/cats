@@ -23,6 +23,7 @@ using System.Data;
 using Cats.Models.ViewModels.Dashboard;
 using Cats.Services.Dashboard;
 using TransporterViewModel = Cats.Models.ViewModels.TransporterViewModel;
+using Telerik.Web.Mvc;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -624,6 +625,13 @@ namespace Cats.Areas.Logistics.Controllers
             }
 
             return Json(dashboardUserViewModels, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetIncommingGrns(DateTime startDate, DateTime endDate, string transporterName, int takeTheFirst)
+        {
+            var dispatchs = _dispatchService.GetIncommingGrn(transporterName, startDate, endDate, takeTheFirst);
+
+            return Json(dispatchs, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

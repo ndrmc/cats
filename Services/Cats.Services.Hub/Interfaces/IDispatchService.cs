@@ -52,6 +52,8 @@ namespace Cats.Services.Hub
         List<DispatchModelModelDto> ByHubIdAndOtherAllocationIDetached(int hubId, Guid otherDispatchAllocationId);
         DispatchViewModel CreateDispatchFromDispatchAllocation(Guid dispatchAllocationId, decimal quantityInUnit);
 
+        dynamic GetIncommingGrn(string transporterName, DateTime startDate, DateTime endDate, int takeTheFirst);
+
 
         IEnumerable<Dispatch> Get(Expression<Func<Dispatch, bool>> filter = null,
                                             Func<IQueryable<Dispatch>, IOrderedQueryable<Dispatch>>
