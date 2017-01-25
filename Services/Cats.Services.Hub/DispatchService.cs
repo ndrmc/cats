@@ -243,6 +243,24 @@ namespace Cats.Services.Hub
             return query.ToList();
         }
 
+        public dynamic GetIncommingGrn(string transporterName, DateTime startDate, DateTime endDate, int takeTheFirst)
+        {
+            List<DispatchModelModelDto> dispatchs = new List<DispatchModelModelDto>();
+            var tempDispatches =
+                _unitOfWork.DispatchRepository.Get(
+                    t => (t.DispatchDate >= startDate && t.DispatchDate <= endDate) && t.Transporter.Name == transporterName).Take(takeTheFirst);
+            var query = (from r in tempDispatches
+                         select new 
+                         {
+                             DispatchDate = r.DispatchDate.ToShortDateString(),
+                             GIN = r.GIN,
+                             DispatchedByStoreMan = r.DispatchedByStoreMan,
+                             DispatchID = r.DispatchID
+                         });
+
+            return query.ToList();
+        }
+
         #region Added by banty
         public DispatchViewModel CreateDispatchFromDispatchAllocation(Guid dispatchAllocationId, decimal quantityInUnit)
         {
