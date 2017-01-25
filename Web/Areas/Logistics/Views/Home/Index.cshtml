@@ -28,6 +28,7 @@
     .portlet .dashboard-stat:last-child {
         margin-bottom: 25px;
     }
+
     .loading-spnr-round {
         position: absolute;
         top: 20%;
@@ -35,6 +36,7 @@
         display: none;
         z-index: 9;
     }
+
     .loading-spnr-da {
         position: absolute;
         top: 35%;
@@ -42,9 +44,11 @@
         display: none;
         z-index: 9;
     }
+
     td.number.ng-binding {
-        text-align: center
+        text-align: center;
     }
+
     .align-center {
         text-align: center;
     }
@@ -52,7 +56,7 @@
 
 
 <div ng-app='myApp'>
-    
+
     <div class="">
         <div class="portlet solid bordered " ng-controller="ImportantNumbers">
             <div class="portlet-title">
@@ -75,7 +79,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="actions">
 
@@ -86,7 +90,8 @@
                     <div class="row">
                         <div class="col-md-2 col-sm-4 col-xs-6">
                             <div class="dashboard-stat green-haze">
-                                <div class="visual"><i class="fa fa-archive"></i>
+                                <div class="visual">
+                                    <i class="fa fa-archive"></i>
                                 </div>
                                 <div class="details">
                                     <div class="number" ng-cloak>{{DonationAmount}}</div>
@@ -103,7 +108,7 @@
                                 </div><a class="more" href="#">.</a>
                             </div>
                         </div>
-<div class="col-md-2 col-sm-4 col-xs-6">
+                        <div class="col-md-2 col-sm-4 col-xs-6">
                             <div class="dashboard-stat green-haze">
                                 <div class="visual"><i class="fa fa-envelope-square"></i></div>
                                 <div class="details">
@@ -118,7 +123,7 @@
                                 <div class="visual"><i class="fa fa-home"></i></div>
                                 <div class="details">
                                     <div class="number" ng-cloak>{{pendingHubAloocation}}</div>
-                                    <div class="desc">Hub Assigned</div> 
+                                    <div class="desc">Hub Assigned</div>
                                 </div><a class="more" href="#">.</a>
                             </div>
                         </div>
@@ -132,13 +137,13 @@
                                 </div><a class="more" href="#">.</a>
                             </div>
                         </div>
-                        
-                        
+
+
                     </div>
                 </div>
             </div>
         </div>
-        
+
     </div>
 
     @Html.Partial("_DataActivityIndicator")
@@ -146,224 +151,223 @@
     <div class="">
         <div class="row">
 
-        <div class="col-md-12">
-            <div class="box box-solid box-primary" ng-controller="DispatchAllocationIndicatorController">
-                <div class="portlet light bordered bg-inverse">
-                    <div class="portlet-title">
-                        <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("Dispatch Allocation Data Entry Indicator")</div>
-                        <div class="tools">
-                            <a href="#" class="collapse" data-original-title="" title=""></a>
-                        </div>
-                        <div class="actions">
-                            <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <div class="table-responsive" style="overflow-x: hidden; min-height: 250px;">
-                            <div class="row form-horizontal ">
-                                <div class="col-md-3 form-group">
-                                    <label class="control-label col-md-6">Round</label>
-                                    <div class="col-md-5">
-                                        <!--
-                                        <select ng-model="round" class="form-control">
-                                            <option ng-repeat="rnd in rounds" value="{{rnd}}">{{rnd}}</option>
-                                        </select>-->
-                                        <select class="form-control" id="rounds" ng-model="round" ng-options="r as r for r in rounds">
-                                        </select>
-                                        <span class="loading-spnr-round round-filter-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 form-group">
-                                    <label class="control-label col-md-6">Start Date</label>
-                                    <div class="col-md-6">
-                                        <input id="startDate" class="cats-datepicker2  form-control" type="text" placeholder="mm/dd/yyyy">
-                                    </div>
-                                </div>
-                                <div class="col-md-3 form-group">
-                                    <label class="control-label col-md-6">End Date</label>
-                                    <div class="col-md-6">
-                                        <input id="endDate" class="cats-datepicker2 form-control" type="text" placeholder="mm/dd/yyyy">
-                                    </div>
-                                </div>
-                                <div class="col-md-3 form-group">
-                                    <div class="col-md-5">
-                                        <button type="button" class="btn green " ng-click="getDispatchAllocationIndicator()">Get</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="loading-spnr-da da-data-indicator-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>
-                            <div class="col-md-12">
-                                <table class="table table-striped table-checkable">
-                                    <thead>
-                                    <tr>
-                                        <th class="hidden-xs">Region</th>
-                                        <th class="number">Estimated Requisitions</th>
-                                        <th class="number">Approved Requisitions</th>
-                                        <th class="number">Hub Allocated Requisitions</th>
-                                        <th class="number">SIPC Allocated Requisitions</th>
-                                        <th class="number">Committed Requisitions</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr ng-repeat="region in DispatchAllocationIndicator">
-                                        <td>{{region.RegionName}}</td>
-                                        <td class="number">{{region.NumberOfEstimatedRequisitions|number}}</td>
-                                        <td class="number">{{region.NumberOfApprovedRequisitions|number}}</td>
-                                        <td class="number">{{region.NumberOfHubAllocatedRequisitions|number}}</td>
-                                        <td class="number">{{region.NumberOfSipcAlloRequisitions|number}}</td>
-                                        <td class="number">{{region.NumberOfCommitedRequisitions|number}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Total:</td>
-                                        <td class="number">{{TotalNumberOfEstimatedRequisitions}}</td>
-                                        <td class="number">{{TotalNumberOfApprovedRequisitions}}</td>
-                                        <td class="number">{{TotalNumberOfHubAllocatedRequisitions}}</td>
-                                        <td class="number">{{TotalNumberOfSipcAlloRequisitions}}</td>
-                                        <td class="number">{{TotalNumberOfCommitedRequisitions}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            @*<div class="col-md-4" style="min-height: 250px;">
-                                <div class="portlet-content">
-                                    <div id="containerPIE" class="chartWrap" draw-column-chart=""></div>
-                                </div>
-                            </div>*@
-                            <div class="col-md-12">* Only requisitions under the current HRD "{{HrdName}}" are listed here.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="box box-solid box-primary" ng-controller="BidPlanningIndicatorController">
-                <div class="portlet light bordered bg-inverse">
-                    <div class="portlet-title">
-                        <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("Bid Planning Data Entry Indicator")</div>
-                        <div class="tools">
-                            <a href="#" class="collapse" data-original-title="" title=""></a>
-                        </div>
-                        <div class="actions">
-                            <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <div class="table-responsive" style="overflow-x: hidden; min-height: 250px;">
-                            @*<div class="row form-horizontal ">
-                                <div class="col-md-3 form-group">
-                                    <label class="control-label col-md-6">User</label>
-                                    <div class="col-md-5">
-                                     <select class="form-control" id="lgusers" ng-model="lguser" ng-options="u as u for u in lgusers"></select>
-                                        <select id="lgusers" ng-model="lguser" class="form-control">
-                                            <option ng-repeat="lguser in lgusers" value="{{lguser.UserProfileId}}">{{lguser.UserName}}</option>
-                                        </select>
-                                        <span class="loading-spnr-round user-filter-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 form-group">
-                                    <label class="control-label col-md-6">Start Date</label>
-                                    <div class="col-md-6">
-                                        <input id="startDateBidPlan" class="cats-datepicker2  form-control" type="text" placeholder="mm/dd/yyyy">
-                                    </div>
-                                </div>
-                                <div class="col-md-3 form-group">
-                                    <label class="control-label col-md-6">End Date</label>
-                                    <div class="col-md-6">
-                                        <input id="endDateBidPlan" class="cats-datepicker2 form-control" type="text" placeholder="mm/dd/yyyy">
-                                    </div>
-                                </div>
-                                <div class="col-md-3 form-group">
-                                    <div class="col-md-5">
-                                        <button type="button" class="btn green " ng-click="getBidPlanningIndicator()">Get</button>
-                                    </div>
-                                </div>
-                            </div>*@
-                            <span class="loading-spnr-da bp-data-indicator-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class=""></span>
-                            <div class="col-md-12">
-                                <table class="table table-striped table-checkable">
-                                    <thead>
-                                    <tr>
-                                        <th class="hidden-xs align-center">Region</th>
-                                        <th class="number align-center">Number of Woredas</th>
-                                        <th class="number align-center">Hub Assigned Woredas</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr ng-repeat="region in BidPlanningIndicator">
-                                        <td class="align-center">{{region.Region}}</td>
-                                        <td class="number align-center">{{region.NumberOfWoredas|number}}</td>
-                                        <td class="number align-center">{{region.NumberOfHubAssignedWoredas|number}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="align-center">Total:</td>
-                                        <td class="number align-center">{{TotalNumberOfEstimatedRequisitions}}</td>
-                                        <td class="number align-center">{{TotalNumberOfApprovedRequisitions}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-md-12">* Warehouses assigned for Bid Plan "{{BidPlanName}}" are listed here.</div>
-
-                  
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="ApprovedRequestContent">
-                <div ng-controller="ApprovedRequestsController">
+            <div class="col-md-12">
+                <div class="box box-solid box-primary" ng-controller="DispatchAllocationIndicatorController">
                     <div class="portlet light bordered bg-inverse">
                         <div class="portlet-title">
-                            <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("Approved Requests")</div>
+                            <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("Dispatch Allocation Data Entry Indicator")</div>
                             <div class="tools">
                                 <a href="#" class="collapse" data-original-title="" title=""></a>
                             </div>
                             <div class="actions">
-                                <a class="btn green" ng-click="Detail()"><i class="fa fa-list"></i> @Html.Translate("Detail")</a>
                                 <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
                             </div>
                         </div>
                         <div class="portlet-body">
-                            <div class="table-responsive">
-                                <table id="" class="table table-striped table-checkable table-condensed">
-                                    <thead>
-                                    <tr>
-                                        <th class="hidden-xs">Number</th>
-                                        <th>Req No</th>
-                                        <th>Zone</th>
-                                        <th>Round</th>
-                                        <th>Year</th>
-                                        <th>Month</th>
-                                        <th class="number">Beneficiaries</th>
-                                        <th class="number">Amount(mt)</th>
-                                        <th>Commodity</th>
-                                        <th></th>
-                                        <th class="align-center">Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr ng-repeat="req in requests.request   | filter:{RegionName:regionName  }  | limitTo:5" ng-cloak>
-                                        <td class="hidden-xs">{{$index + 1}}</td>
-                                        <td>{{req.reqNo}}</td>
-                                        <td>{{req.zone}}</td>
-                                        <td>{{req.round}}</td>
-                                        <td>{{req.year}}</td>
-                                        <td>{{req.month}}</td>
-                                        <td class="number">{{req.beneficiaries | number}}</td>
-                                        <td class="number">{{req.amount | number}}</td>
-                                        <td>{{req.commodity}}</td>
-                                        <td><span class="label label-danger label-sm">Pending</span></td>
-                                        <td class="align-center">
-                                            <a class="btn btn-xs default green-sharp-stripe" data-original-title="Approve" ng-click="assignHub(req)"> Assign Hub </a>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                            <div class="table-responsive" style="overflow-x: hidden; min-height: 250px;">
+                                <div class="row form-horizontal ">
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label col-md-6">Round</label>
+                                        <div class="col-md-5">
+                                            <!--
+                                            <select ng-model="round" class="form-control">
+                                                <option ng-repeat="rnd in rounds" value="{{rnd}}">{{rnd}}</option>
+                                            </select>-->
+                                            <select class="form-control" id="rounds" ng-model="round" ng-options="r as r for r in rounds"></select>
+                                            <span class="loading-spnr-round round-filter-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label col-md-6">Start Date</label>
+                                        <div class="col-md-6">
+                                            <input id="startDate" class="cats-datepicker2  form-control" type="text" placeholder="mm/dd/yyyy">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label col-md-6">End Date</label>
+                                        <div class="col-md-6">
+                                            <input id="endDate" class="cats-datepicker2 form-control" type="text" placeholder="mm/dd/yyyy">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <div class="col-md-5">
+                                            <button type="button" class="btn green " ng-click="getDispatchAllocationIndicator()">Get</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="loading-spnr-da da-data-indicator-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>
+                                <div class="col-md-12">
+                                    <table class="table table-striped table-checkable">
+                                        <thead>
+                                            <tr>
+                                                <th class="hidden-xs">Region</th>
+                                                <th class="number">Estimated Requisitions</th>
+                                                <th class="number">Approved Requisitions</th>
+                                                <th class="number">Hub Allocated Requisitions</th>
+                                                <th class="number">SIPC Allocated Requisitions</th>
+                                                <th class="number">Committed Requisitions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="region in DispatchAllocationIndicator">
+                                                <td>{{region.RegionName}}</td>
+                                                <td class="number">{{region.NumberOfEstimatedRequisitions|number}}</td>
+                                                <td class="number">{{region.NumberOfApprovedRequisitions|number}}</td>
+                                                <td class="number">{{region.NumberOfHubAllocatedRequisitions|number}}</td>
+                                                <td class="number">{{region.NumberOfSipcAlloRequisitions|number}}</td>
+                                                <td class="number">{{region.NumberOfCommitedRequisitions|number}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Total:</td>
+                                                <td class="number">{{TotalNumberOfEstimatedRequisitions}}</td>
+                                                <td class="number">{{TotalNumberOfApprovedRequisitions}}</td>
+                                                <td class="number">{{TotalNumberOfHubAllocatedRequisitions}}</td>
+                                                <td class="number">{{TotalNumberOfSipcAlloRequisitions}}</td>
+                                                <td class="number">{{TotalNumberOfCommitedRequisitions}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @*<div class="col-md-4" style="min-height: 250px;">
+                                        <div class="portlet-content">
+                                            <div id="containerPIE" class="chartWrap" draw-column-chart=""></div>
+                                        </div>
+                                    </div>*@
+                                <div class="col-md-12">* Only requisitions under the current HRD "{{HrdName}}" are listed here.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box box-solid box-primary" ng-controller="BidPlanningIndicatorController">
+                    <div class="portlet light bordered bg-inverse">
+                        <div class="portlet-title">
+                            <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("Bid Planning Data Entry Indicator")</div>
+                            <div class="tools">
+                                <a href="#" class="collapse" data-original-title="" title=""></a>
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="table-responsive" style="overflow-x: hidden; min-height: 250px;">
+                                @*<div class="row form-horizontal ">
+                                        <div class="col-md-3 form-group">
+                                            <label class="control-label col-md-6">User</label>
+                                            <div class="col-md-5">
+                                             <select class="form-control" id="lgusers" ng-model="lguser" ng-options="u as u for u in lgusers"></select>
+                                                <select id="lgusers" ng-model="lguser" class="form-control">
+                                                    <option ng-repeat="lguser in lgusers" value="{{lguser.UserProfileId}}">{{lguser.UserName}}</option>
+                                                </select>
+                                                <span class="loading-spnr-round user-filter-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 form-group">
+                                            <label class="control-label col-md-6">Start Date</label>
+                                            <div class="col-md-6">
+                                                <input id="startDateBidPlan" class="cats-datepicker2  form-control" type="text" placeholder="mm/dd/yyyy">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 form-group">
+                                            <label class="control-label col-md-6">End Date</label>
+                                            <div class="col-md-6">
+                                                <input id="endDateBidPlan" class="cats-datepicker2 form-control" type="text" placeholder="mm/dd/yyyy">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 form-group">
+                                            <div class="col-md-5">
+                                                <button type="button" class="btn green " ng-click="getBidPlanningIndicator()">Get</button>
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                <span class="loading-spnr-da bp-data-indicator-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class=""></span>
+                                <div class="col-md-12">
+                                    <table class="table table-striped table-checkable">
+                                        <thead>
+                                            <tr>
+                                                <th class="hidden-xs align-center">Region</th>
+                                                <th class="number align-center">Number of Woredas</th>
+                                                <th class="number align-center">Hub Assigned Woredas</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="region in BidPlanningIndicator">
+                                                <td class="align-center">{{region.Region}}</td>
+                                                <td class="number align-center">{{region.NumberOfWoredas|number}}</td>
+                                                <td class="number align-center">{{region.NumberOfHubAssignedWoredas|number}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="align-center">Total:</td>
+                                                <td class="number align-center">{{TotalNumberOfEstimatedRequisitions}}</td>
+                                                <td class="number align-center">{{TotalNumberOfApprovedRequisitions}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-12">* Warehouses assigned for Bid Plan "{{BidPlanName}}" are listed here.</div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ApprovedRequestContent">
+                    <div ng-controller="ApprovedRequestsController">
+                        <div class="portlet light bordered bg-inverse">
+                            <div class="portlet-title">
+                                <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("Approved Requests")</div>
+                                <div class="tools">
+                                    <a href="#" class="collapse" data-original-title="" title=""></a>
+                                </div>
+                                <div class="actions">
+                                    <a class="btn green" ng-click="Detail()"><i class="fa fa-list"></i> @Html.Translate("Detail")</a>
+                                    <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="table-responsive">
+                                    <table id="" class="table table-striped table-checkable table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th class="hidden-xs">Number</th>
+                                                <th>Req No</th>
+                                                <th>Zone</th>
+                                                <th>Round</th>
+                                                <th>Year</th>
+                                                <th>Month</th>
+                                                <th class="number">Beneficiaries</th>
+                                                <th class="number">Amount(mt)</th>
+                                                <th>Commodity</th>
+                                                <th></th>
+                                                <th class="align-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="req in requests.request   | filter:{RegionName:regionName  }  | limitTo:5" ng-cloak>
+                                                <td class="hidden-xs">{{$index + 1}}</td>
+                                                <td>{{req.reqNo}}</td>
+                                                <td>{{req.zone}}</td>
+                                                <td>{{req.round}}</td>
+                                                <td>{{req.year}}</td>
+                                                <td>{{req.month}}</td>
+                                                <td class="number">{{req.beneficiaries | number}}</td>
+                                                <td class="number">{{req.amount | number}}</td>
+                                                <td>{{req.commodity}}</td>
+                                                <td><span class="label label-danger label-sm">Pending</span></td>
+                                                <td class="align-center">
+                                                    <a class="btn btn-xs default green-sharp-stripe" data-original-title="Approve" ng-click="assignHub(req)"> Assign Hub </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
             <div class="col-md-12">
                 <div id="CurrentHRDContent">
@@ -421,7 +425,7 @@
                                                     }
                                                 </tr>
 
-                                            }
+                                                        }
 
                                         </tbody>
                                         <tfoot>
@@ -569,56 +573,130 @@
 
             <!--Added by Nigus-->
             <!--UI Region for bid winners with date expired without signing a contract-->
-            <div class="col-md-12">
-                <div id="IncommingGRNContent">
-                    <div ng-controller="IncommingGRNController">
-                        <div class="portlet light bordered">
-                            <div class="portlet-title">
-                                <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("Incomming GRN")</div>
-                                <div class="tools">
-                                    <a href="#" class="collapse" data-original-title="" title=""></a>
-                                </div>
-                                <div class="actions">
-                                    <input type="text" id="hiddenTransporterIdValue" name="myText" style="display:none">
-                                    <a class="btn green" onclick="DetailGRN()"><i class="fa fa-list"></i> @Html.Translate("Detail")</a>
-                                    <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
-                                </div>
-                            </div>
-                            <div class="portlet-body">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <select class="form-control" id="incommingGRN" ng-change="onChange(transporter)" ng-model="transporter" ng-options="transporter.TransporterId as transporter.name for transporter in transporters">
-                                                <option> Choose a Transporter </option>
-                                            </select>       
-                                            <label for="incommingGRN">Transporter: </label>                                           
-                                        </div>
+            @*<div class="col-md-12">
+                    <div id="IncommingGRNContent">
+                        <div ng-controller="IncommingGRNController">
+                            <div class="portlet light bordered">
+                                <div class="portlet-title">
+                                    <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @Html.Translate("Incomming GRN")</div>
+                                    <div class="tools">
+                                        <a href="#" class="collapse" data-original-title="" title=""></a>
+                                    </div>
+                                    <div class="actions">
+                                        <input type="text" id="hiddenTransporterIdValue" name="myText" style="display:none">
+                                        <a class="btn green" onclick="DetailGRN()"><i class="fa fa-list"></i> @Html.Translate("Detail")</a>
+                                        <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
                                     </div>
                                 </div>
+                                <div class="portlet-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group form-md-line-input">
+                                                <select class="form-control" id="incommingGRN" ng-change="onChange(transporter)" ng-model="transporter" ng-options="transporter.TransporterId as transporter.name for transporter in transporters">
+                                                    <option> Choose a Transporter </option>
+                                                </select>
+                                                <label for="incommingGRN">Transporter: </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table id="tableIncommingGRN" class="table table-striped table-checkable">
+                                            <thead>
+                                                <tr>
+                                                    <th class="hidden-xs">Number</th>
+                                                    <th>Dispatch Date</th>
+                                                    <th>GIN</th>
+                                                    <th>Dispatched by Store Man</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="req in IncommingGRNs.GRN" >
+                                                    <td class="hidden-xs">{{$index + 1}}</td>
+                                                    <td>{{req.DispatchDate}}</td>
+                                                    <td>{{req.GIN}}</td>
+                                                    <th>{{req.DispatchedByStoreMan}}</th>
+                                                    <th>{{req.DispatchID}}</th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                     /.table-responsive
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+
+
+            <div class="col-md-12 column " ng-controller="IncommingGrnController">
+
+                <div class="portlet light bordered ">
+                    <div class="portlet-title">
+                        <div class="caption font-green-sharp"><i class="fa fa-car font-green-sharp"></i> @Html.Translate("Incomming Grns")</div>
+                        <div class="tools">
+                            <a href="#" class="collapse" data-original-title="" title=""></a>
+                        </div>
+                        <div class="actions">
+                            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-responsive" style="overflow-x: hidden; min-height: 250px;">
+                            <div class="row form-horizontal ">
+                                <div class="col-md-3 form-group">
+                                    <label class="control-label col-md-6">Start Date</label>
+                                    <div class="col-md-6">
+                                        <input id="startDateIncommingGrn" class="cats-datepicker2  form-control" type="text" placeholder="mm/dd/yyyy">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 form-group">
+                                    <label class="control-label col-md-6">End Date</label>
+                                    <div class="col-md-6">
+                                        <input id="endDateIncommingGrn" class="cats-datepicker2 form-control" type="text" placeholder="mm/dd/yyyy">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 form-group">
+                                    <label class="control-label col-md-4">Transporter</label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" id="idTransporterid" ng-change="onChange(transporterValue)" ng-model="transporterValue" ng-options="r.name as r.name for r in Transporters">
+                                            <option value=''> Select Transporter </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 form-group">
+                                    <!--<label class="control-label col-md-8">Enter number of records to view</label>-->
+                                    <div class="col-md-12">
+                                        <input type="text" placeholder="Enter number of records to view" class="form-control" id="takeFirstId" ng-model="search.transportOrderNo" value="10">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
                                 <div class="table-responsive">
                                     <table id="tableIncommingGRN" class="table table-striped table-checkable">
                                         <thead>
                                             <tr>
-                                                <th class="hidden-xs">Number</th>
-                                                <th>Reference No</th>
-                                                <th>Contact No</th>                                              
-                                                <th>Requisition</th>                                            
-                                                <th>GRN</th>
+                                                @*<th class="hidden-xs">Number</th>*@
+                                                <th style="overflow: visible; white-space: normal;" scope="col" data-title="Dispatched Date" data-field="DispatchDate" class="cats-date-pref-grid">
+                                                    <span>Dispatched Date</span>
+                                                </th>
+
+                                                <th>GIN</th>
+                                                <th>Dispatched by Store Man</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="req in IncommingGRNs.GRN" >
-                                                <td class="hidden-xs">{{$index + 1}}</td>
-                                                <td>{{req.ReferenceNo}}</td>
-                                                <td>{{req.ContractNumber}}</td>                                              
-                                                <th>{{req.RequisitionNo}}</th>                                            
-                                                <th>{{req.GRN}}</th>                                              
+                                            <tr ng-repeat="req in IncommingGrns">
+                                                @*<td class="hidden-xs">{{$index + 1}}</td>*@
+                                                <td>{{req.DispatchDate}}</td>
+                                                <td>{{req.GIN}}</td>
+                                                <th>{{req.DispatchedByStoreMan}}</th>
+                                                @*<th>{{req.DispatchID}}</th>*@
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                                <!-- /.table-responsive -->
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -626,8 +704,7 @@
 
 
 
-
-        <div class="col-md-12">
+            <div class="col-md-12">
                 <div id="SIPCContent">
                     <div ng-controller="SIPCController">
                         <div class="portlet light bordered bg-inverse">
@@ -952,9 +1029,9 @@
         text-decoration: none;
     }
 
-    .collapser :hover {
-        /*background:#ffd800;*/
-    }
+        .collapser :hover {
+            /*background:#ffd800;*/
+        }
 
     .portlet-collapsed .portlet-content {
     }
@@ -1030,101 +1107,100 @@
 
         var myApp = angular.module('myApp', ['ngRoute', 'DataEntryIndicatorApp']);
 
-    myApp.controller('ImportantNumbers', [
-        '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
-            $rootScope.totalRequisitions = 0;
-            $rootScope.totalApproved = 0;
-            $rootScope.pendingHubAloocation = 0;
-            $rootScope.pendingSIPCAllocation = 0;
-            $rootScope.pendingTransportOrder = 0;
-            $rootScope.DonationAmount = 0;
-        }
-    ]);
+        myApp.controller('ImportantNumbers', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+                $rootScope.totalRequisitions = 0;
+                $rootScope.totalApproved = 0;
+                $rootScope.pendingHubAloocation = 0;
+                $rootScope.pendingSIPCAllocation = 0;
+                $rootScope.pendingTransportOrder = 0;
+                $rootScope.DonationAmount = 0;
+            }
+        ]);
 
-    myApp.controller('CurrentHRDController', [
-        '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
+        myApp.controller('CurrentHRDController', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 
-            $scope.qty = 6;
-            $scope.currentHRD = {};
-            $http({ method: 'GET', url: '@Url.Action("CurrentHrdRead", "Home")' }).success(function(data, status, headers, config) {
-                $.each(data, function(i, item) {
+                $scope.qty = 6;
+                $scope.currentHRD = {};
+                $http({ method: 'GET', url: '@Url.Action("CurrentHrdRead", "Home")' }).success(function (data, status, headers, config) {
+                    $.each(data, function (i, item) {
 
-                    $scope.currentHRD[i] = item;
+                        $scope.currentHRD[i] = item;
+                    });
+
+                });
+                $rootScope.regionName = "";
+            }
+        ]);
+
+        myApp.controller('BidWinnersController', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+
+
+                $scope.bidWinners = {};
+                $rootScope.regionName = "";
+
+                $scope.bids = [];
+                $http({ method: 'GET', url: '@Url.Action("GetBids", "Home")' }).success(function (data, status, headers, config) {
+                    $scope.bids = data;
                 });
 
-            });
-            $rootScope.regionName = "";
-        }
-    ]);
 
-    myApp.controller('BidWinnersController', [
-        '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
+                $scope.onChange = function (bidId) {
 
+                    $http({ method: 'GET', params: { id: bidId }, url: '@Url.Action("GetListOfBidWinners", "Home")' }).success(function (data, status, headers, config) { $scope.bidWinners.bid = data; });
+                };
 
-            $scope.bidWinners = {};
-            $rootScope.regionName = "";
-
-            $scope.bids = [];
-            $http({ method: 'GET', url: '@Url.Action("GetBids", "Home")' }).success(function(data, status, headers, config) {
-                $scope.bids = data;
-            });
+            }
+        ]);
 
 
-            $scope.onChange = function(bidId) {
-
-                $http({ method: 'GET', params: { id: bidId }, url: '@Url.Action("GetListOfBidWinners", "Home")' }).success(function(data, status, headers, config) { $scope.bidWinners.bid = data; });
-            };
-
-        }
-    ]);
+        myApp.controller('UnContractedBidWinnersController', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 
 
-    myApp.controller('UnContractedBidWinnersController', [
-        '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
+                $scope.bidWinners = {};
+                $rootScope.regionName = "";
+                $rootScope.BidId = 0;
+                $rootScope.Bidz = [];
 
+                $scope.bids = [];
+                $http({ method: 'GET', url: '@Url.Action("GetBids", "Home")' }).success(function (data, status, headers, config) {
+                    $scope.bids = data;
+                    $rootScope.Bidz = data;
+                });
 
-            $scope.bidWinners = {};
-            $rootScope.regionName = "";
-            $rootScope.BidId = 0;
-            $rootScope.Bidz = [];
+                $scope.onChange = function (bidId) {
 
-            $scope.bids = [];
-            $http({ method: 'GET', url: '@Url.Action("GetBids", "Home")' }).success(function(data, status, headers, config) {
-                $scope.bids = data;
-                $rootScope.Bidz = data;
-            });
-
-            $scope.onChange = function(bidId) {
-
-                var id = bidId;
-                for (var i = 0; i < $rootScope.Bidz.length; ++i) {
-                    if ($rootScope.Bidz[i]["BidNo"] == id) {
-                        $rootScope.BidId = $rootScope.Bidz[i]["BidId"];
+                    var id = bidId;
+                    for (var i = 0; i < $rootScope.Bidz.length; ++i) {
+                        if ($rootScope.Bidz[i]["BidNo"] == id) {
+                            $rootScope.BidId = $rootScope.Bidz[i]["BidId"];
+                        }
                     }
-                }
 
-                $http({ method: 'GET', params: { id: bidId }, url: '@Url.Action("GetListOfUnContractedBidWinners", "Home")' }).success(function(data, status, headers, config) { $scope.bidWinners.bid = data; });
-            };
-
-
-            $scope.Detail = function(bid) {
+                    $http({ method: 'GET', params: { id: bidId }, url: '@Url.Action("GetListOfUnContractedBidWinners", "Home")' }).success(function (data, status, headers, config) { $scope.bidWinners.bid = data; });
+                };
 
 
-//alert($rootScope.BidNo);
-
-                window.location = "@Url.Action("List", "UnContractedTransporters", new {Area = "Logistics"})" + "/" + $rootScope.BidId; //+ "/" + bidId ;
+                $scope.Detail = function (bid) {
 
 
-            };
+                    //alert($rootScope.BidNo);
 
-        }
-    ]);
+                    window.location = "@Url.Action("List", "UnContractedTransporters", new {Area = "Logistics"})" + "/" + $rootScope.BidId; //+ "/" + bidId ;
 
 
-    //Added by Nigus
-    myApp.controller('IncommingGRNController', [
+                };
+
+            }
+        ]);
+
+
+        //Added by Nigus
+        @*myApp.controller('IncommingGRNController', [
         '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
-
 
             $scope.IncommingGRNs = {};
             $rootScope.regionName = "";
@@ -1154,294 +1230,324 @@
                 window.location = "@Url.Action("PaymentRequests", "TransporterPaymentRequest", new {Area = "Logistics"})" + "?transporterID =" + transporterId; //+Transport "/" + bidId ;
             };
         }
-    ]);
+    ]);*@
+
+        myApp.controller('IncommingGrnController', [
+    '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+        $scope.Transporters = [];
+        $scope.reqParam = { startDate: new Date(), endDate: new Date(), transporterName: '', takeTheFirst: 10 };
+        $scope.IncommingGrns = [];
+
+        var onIncommingGrns = function (data) {
+            $scope.IncommingGrns = data;
+        };
+
+        $http({ method: 'GET', url: '@Url.Action("GetTransporters", "Home")' }).success(function (data, status, headers, config) { $scope.Transporters = data; })
+            .error(function (data, status, headers, config) {
+            });
+
+        $scope.onChange = function (transporter) {
+            $scope.reqParam.transporterName = transporter;
+            $scope.reqParam.takeTheFirst = $("#takeFirstId").val();
+
+            var takeTheFirst = $("#takeFirstId").val();
+            $scope.reqParam.startDate = $("#startDateIncommingGrn").val();
+            $scope.reqParam.endDate = $("#endDateIncommingGrn").val();
+
+            if (takeTheFirst === '' || takeTheFirst == null) {
+                $scope.reqParam.takeTheFirst = 10;
+            }
+
+            $http.post("@Url.Action("GetIncommingGrns", "Home", new {Area = "Logistics" })", $scope.reqParam).success(onIncommingGrns);
+        };
+    }]);
 
 
-    myApp.controller('ApprovedRequestsController', [
-        '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
+        myApp.controller('ApprovedRequestsController', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 
-            $scope.qty = 6;
-            $scope.requests = {};
-            $http({ method: 'GET', url: '@Url.Action("GetRequisitions", "Home", new {id = 2})' })
-                .success(function(data, status, headers, config) {
-                    $scope.requests.request = data;
-                    console.log($scope.requests.request);
-                });
-            $rootScope.regionName = "";
-            $rootScope.requestType = "";
+                $scope.qty = 6;
+                $scope.requests = {};
+                $http({ method: 'GET', url: '@Url.Action("GetRequisitions", "Home", new {id = 2})' })
+                    .success(function (data, status, headers, config) {
+                        $scope.requests.request = data;
+                        console.log($scope.requests.request);
+                    });
+                $rootScope.regionName = "";
+                $rootScope.requestType = "";
 
 
-            $scope.assignHub = function(url) {
+                $scope.assignHub = function (url) {
 
-                window.location = "@Url.Action("AssignHubFromLogisticsDashboard", "DispatchAllocation", new {Area = "Logistics"})" + "?paramRegionId=" + url.regionId;
-            };
+                    window.location = "@Url.Action("AssignHubFromLogisticsDashboard", "DispatchAllocation", new {Area = "Logistics"})" + "?paramRegionId=" + url.regionId;
+                };
 
-            $scope.Detail = function() {
-                window.location = "@Url.Action("Index", "DispatchAllocation", new {Area = "Logistics"})";
-            };
-        }
-    ]);
+                $scope.Detail = function () {
+                    window.location = "@Url.Action("Index", "DispatchAllocation", new {Area = "Logistics"})";
+                };
+            }
+        ]);
 
-    myApp.controller('HubAllocationController', [
-        '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
-            $scope.qty = 6;
-            $scope.requestsApproved = {};
-            $http({ method: 'GET', url: '@Url.Action("GetRequisitions", "Home", new {id = 3})' }).success(function(data, status, headers, config) { $scope.requestsApproved.request = data; })
-            $rootScope.regionName = "";
-        }
-    ]);
-    myApp.controller('SIPCController', [
-        '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
+        myApp.controller('HubAllocationController', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+                $scope.qty = 6;
+                $scope.requestsApproved = {};
+                $http({ method: 'GET', url: '@Url.Action("GetRequisitions", "Home", new {id = 3})' }).success(function (data, status, headers, config) { $scope.requestsApproved.request = data; })
+                $rootScope.regionName = "";
+            }
+        ]);
+        myApp.controller('SIPCController', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 
-            $scope.qty = 6;
-            $scope.requestsSIPCAllocated = {};
-            $http({ method: 'GET', url: '@Url.Action("GetSiPcAllocation", "Home")' }).success(function(data, status, headers, config) {
+                $scope.qty = 6;
+                $scope.requestsSIPCAllocated = {};
+                $http({ method: 'GET', url: '@Url.Action("GetSiPcAllocation", "Home")' }).success(function (data, status, headers, config) {
                     $scope.requestsSIPCAllocated.request = data;
                     console.log(data);
                 })
-                .error(function(data, status, headers, config) {
-                });
-
-
-            $rootScope.regionName = "";
-        }
-    ]);
-
-
-    myApp.controller('TransportOrderController', [
-        '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
-
-
-            $scope.TransportOrder = [];
-            $http({ method: 'GET', url: '@Url.Action("GetTransporters", "Home")' }).success(function(data, status, headers, config) {
-                $.each(data, function(i, item) {
-
-                    $scope.TransportOrder[i] = item;
-
-                });
-
-            });
-
-        }
-    ]);
-
-    myApp.controller('DelayedTransportController', [
-        '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
-
-
-            $scope.qty = 6;
-            $scope.DelayedTransportOrders = {};
-            $http({ method: 'GET', url: '@Url.Action("GetDelayedTOs", "Home")' }).success(function(data, status, headers, config) { $scope.DelayedTransportOrders.request = data; })
-                .error(function(data, status, headers, config) {
-
-                });
-
-            $rootScope.regionName = "";
-        }
-    ]);
-
-    myApp.controller('NonReportedTransportController', [
-        '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
-
-
-            $scope.qty = 6;
-            $scope.NonReportedTransporters = {};
-            $http({ method: 'GET', url: '@Url.Action("GetNonReportedTransporters", "Home")' }).success(function(data, status, headers, config) { $scope.NonReportedTransporters.request = data; })
-                .error(function(data, status, headers, config) {
-
-                });
-
-            $rootScope.regionName = "";
-        }
-    ]);
-
-    myApp.controller('TransportRequisitionController', [
-        '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
-
-            $scope.qty = 6;
-            $scope.TransportRequestion = {};
-            $http({ method: 'GET', url: '@Url.Action("GetRequisitions", "Home", new {id = 5})' }).success(function(data, status, headers, config) { $scope.TransportRequestion.request = data; })
-                .error(function(data, status, headers, config) {
-
-                });
-
-            $rootScope.regionName = "";
-        }
-    ]);
-
-
-    myApp.controller('Regions', [
-        '$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
-
-            $scope.regions = [];
-            $scope.requestType = [];
-            $rootScope.DonationAmount = [];
-            $rootScope.DonationAmount = 0;
-            $http({ method: 'GET', url: '@Url.Action("GetRegions", "Home")' }).success(function(data, status, headers, config) { $scope.regions = data; })
-                .error(function(data, status, headers, config) {
-
-                });
-
-
-            $http({ method: 'GET', url: '@Url.Action("GetDonation", "Home")' })
-                .success(function(data, status, headers, config) { $rootScope.DonationAmount = data; })
-                .error(function(data, status, headers, config) {
-
-                });
-
-            $http({ method: 'GET', url: '@Url.Action("GetRequestType", "Home")' })
-                .success(function(data, status, headers, config) { $scope.requestType = data; })
-                .error(function(data, status, headers, config) {
-
-                });
-
-            $scope.onChange = function(name) {
-                $rootScope.regionName = name;
-
-                $http({ method: 'GET', params: { id: name }, url: '@Url.Action("ImportantNumbers", "Home")' }).success(function(data, status, headers, config) {
-
-                        $rootScope.totalRequisitions = 0;
-                        $rootScope.totalApproved = 0;
-                        $rootScope.pendingHubAloocation = 0;
-                        $rootScope.pendingSIPCAllocation = 0;
-                        $rootScope.pendingTransportOrder = 0;
-
-                        $.each(data, function(i, item) {
-
-                            switch (item.Status) {
-                            case 1:
-                                $rootScope.totalRequisitions = item.Count;
-                                break;
-                            case 2:
-                                $rootScope.totalApproved = item.Count;
-                                break;
-                            case 3:
-                                $rootScope.pendingHubAloocation = item.Count;
-                                break;
-                            case 4:
-                                $rootScope.pendingSIPCAllocation = item.Count;
-                                break;
-                            case 5:
-                                $rootScope.pendingTransportOrder = item.Count;
-                                break;
-                            case 6:
-                                break;
-                            default:
-                            }
-
-                        });
-
-
-                    })
-                    .error(function(data, status, headers, config) {
-
+                    .error(function (data, status, headers, config) {
                     });
-            };
-
-            $scope.onRequestTypeChange = function(name) {
-                $rootScope.requestName = name;
-
-                $http({ method: 'GET', params: { id: $rootScope.regionName, requestName: name }, url: '@Url.Action("ImportantNumbers", "Home")' }).success(function(data, status, headers, config) {
-
-                        $rootScope.totalRequisitions = 0;
-                        $rootScope.totalApproved = 0;
-                        $rootScope.pendingHubAloocation = 0;
-                        $rootScope.pendingSIPCAllocation = 0;
-                        $rootScope.pendingTransportOrder = 0;
-
-                        $.each(data, function(i, item) {
-
-                            switch (item.Status) {
-                            case 1:
-                                $rootScope.totalRequisitions = item.Count;
-                                break;
-                            case 2:
-                                $rootScope.totalApproved = item.Count;
-                                break;
-                            case 3:
-                                $rootScope.pendingHubAloocation = item.Count;
-                                break;
-                            case 4:
-                                $rootScope.pendingSIPCAllocation = item.Count;
-                                break;
-                            case 5:
-                                $rootScope.pendingTransportOrder = item.Count;
-                                break;
-                            case 6:
-                                break;
-                            default:
-                            }
-
-                        });
 
 
-                    })
-                    .error(function(data, status, headers, config) {
-
-                    });
-            };
-
-        }
-    ]);
-
-
-    myApp.factory("interceptors", [function () {
-
-        return {
-
-            // if beforeSend is defined call it
-            'request': function (request) {
-
-                if (request.beforeSend)
-                    request.beforeSend();
-
-                return request;
-            },
-
-
-            // if complete is defined call it
-            'response': function (response) {
-
-                if (response.config.complete)
-                    response.config.complete(response);
-
-                return response;
+                $rootScope.regionName = "";
             }
-        };
-
-    }]);
-
-    //myApp.config(["$routeProvider", "$httpProvider", function ($routeProvider, $httpProvider) {
-    myApp.config([ '$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider){
-        // Register interceptors service
-        $httpProvider.interceptors.push('interceptors');
-
-        $routeProvider.when("/", { templateUrl: "views/index.html" })
+        ]);
 
 
-        .otherwise({ redirectTo: "/" });
-    }]);
+        myApp.controller('TransportOrderController', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 
 
-    myApp.controller('DispatchAllocationIndicatorController', [
-        '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+                $scope.TransportOrder = [];
+                $http({ method: 'GET', url: '@Url.Action("GetTransporters", "Home")' }).success(function (data, status, headers, config) {
+                    $.each(data, function (i, item) {
 
-            $scope.DispatchAllocationIndicator = [];
-            $scope.HrdName = "";
-            $scope.BidPlanName = "";
-            $scope.TotalNumberOfEstimatedRequisitions = 0;
-            $scope.TotalNumberOfApprovedRequisitions = 0;
-            $scope.TotalNumberOfHubAllocatedRequisitions = 0;
-            $scope.TotalNumberOfSipcAlloRequisitions = 0;
-            $scope.TotalNumberOfCommitedRequisitions = 0;
+                        $scope.TransportOrder[i] = item;
 
-            $scope.round = 0;
-            $scope.rounds = [];
-            $scope.startDate = "dd/m/yyyy";
-            $scope.endDate = "dd/m/yyyy";
+                    });
+
+                });
+
+            }
+        ]);
+
+        myApp.controller('DelayedTransportController', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 
 
-            @*$http({ method: 'GET', url: '@Url.Action("GetRounds", "Home")' })
+                $scope.qty = 6;
+                $scope.DelayedTransportOrders = {};
+                $http({ method: 'GET', url: '@Url.Action("GetDelayedTOs", "Home")' }).success(function (data, status, headers, config) { $scope.DelayedTransportOrders.request = data; })
+                    .error(function (data, status, headers, config) {
+
+                    });
+
+                $rootScope.regionName = "";
+            }
+        ]);
+
+        myApp.controller('NonReportedTransportController', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+
+
+                $scope.qty = 6;
+                $scope.NonReportedTransporters = {};
+                $http({ method: 'GET', url: '@Url.Action("GetNonReportedTransporters", "Home")' }).success(function (data, status, headers, config) { $scope.NonReportedTransporters.request = data; })
+                    .error(function (data, status, headers, config) {
+
+                    });
+
+                $rootScope.regionName = "";
+            }
+        ]);
+
+        myApp.controller('TransportRequisitionController', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+
+                $scope.qty = 6;
+                $scope.TransportRequestion = {};
+                $http({ method: 'GET', url: '@Url.Action("GetRequisitions", "Home", new {id = 5})' }).success(function (data, status, headers, config) { $scope.TransportRequestion.request = data; })
+                    .error(function (data, status, headers, config) {
+
+                    });
+
+                $rootScope.regionName = "";
+            }
+        ]);
+
+
+        myApp.controller('Regions', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+
+                $scope.regions = [];
+                $scope.requestType = [];
+                $rootScope.DonationAmount = [];
+                $rootScope.DonationAmount = 0;
+                $http({ method: 'GET', url: '@Url.Action("GetRegions", "Home")' }).success(function (data, status, headers, config) { $scope.regions = data; })
+                    .error(function (data, status, headers, config) {
+
+                    });
+
+
+                $http({ method: 'GET', url: '@Url.Action("GetDonation", "Home")' })
+                    .success(function (data, status, headers, config) { $rootScope.DonationAmount = data; })
+                    .error(function (data, status, headers, config) {
+
+                    });
+
+                $http({ method: 'GET', url: '@Url.Action("GetRequestType", "Home")' })
+                    .success(function (data, status, headers, config) { $scope.requestType = data; })
+                    .error(function (data, status, headers, config) {
+
+                    });
+
+                $scope.onChange = function (name) {
+                    $rootScope.regionName = name;
+
+                    $http({ method: 'GET', params: { id: name }, url: '@Url.Action("ImportantNumbers", "Home")' }).success(function (data, status, headers, config) {
+
+                        $rootScope.totalRequisitions = 0;
+                        $rootScope.totalApproved = 0;
+                        $rootScope.pendingHubAloocation = 0;
+                        $rootScope.pendingSIPCAllocation = 0;
+                        $rootScope.pendingTransportOrder = 0;
+
+                        $.each(data, function (i, item) {
+
+                            switch (item.Status) {
+                                case 1:
+                                    $rootScope.totalRequisitions = item.Count;
+                                    break;
+                                case 2:
+                                    $rootScope.totalApproved = item.Count;
+                                    break;
+                                case 3:
+                                    $rootScope.pendingHubAloocation = item.Count;
+                                    break;
+                                case 4:
+                                    $rootScope.pendingSIPCAllocation = item.Count;
+                                    break;
+                                case 5:
+                                    $rootScope.pendingTransportOrder = item.Count;
+                                    break;
+                                case 6:
+                                    break;
+                                default:
+                            }
+
+                        });
+
+
+                    })
+                        .error(function (data, status, headers, config) {
+
+                        });
+                };
+
+                $scope.onRequestTypeChange = function (name) {
+                    $rootScope.requestName = name;
+
+                    $http({ method: 'GET', params: { id: $rootScope.regionName, requestName: name }, url: '@Url.Action("ImportantNumbers", "Home")' }).success(function (data, status, headers, config) {
+
+                        $rootScope.totalRequisitions = 0;
+                        $rootScope.totalApproved = 0;
+                        $rootScope.pendingHubAloocation = 0;
+                        $rootScope.pendingSIPCAllocation = 0;
+                        $rootScope.pendingTransportOrder = 0;
+
+                        $.each(data, function (i, item) {
+
+                            switch (item.Status) {
+                                case 1:
+                                    $rootScope.totalRequisitions = item.Count;
+                                    break;
+                                case 2:
+                                    $rootScope.totalApproved = item.Count;
+                                    break;
+                                case 3:
+                                    $rootScope.pendingHubAloocation = item.Count;
+                                    break;
+                                case 4:
+                                    $rootScope.pendingSIPCAllocation = item.Count;
+                                    break;
+                                case 5:
+                                    $rootScope.pendingTransportOrder = item.Count;
+                                    break;
+                                case 6:
+                                    break;
+                                default:
+                            }
+
+                        });
+
+
+                    })
+                        .error(function (data, status, headers, config) {
+
+                        });
+                };
+
+            }
+        ]);
+
+
+        myApp.factory("interceptors", [function () {
+
+            return {
+
+                // if beforeSend is defined call it
+                'request': function (request) {
+
+                    if (request.beforeSend)
+                        request.beforeSend();
+
+                    return request;
+                },
+
+
+                // if complete is defined call it
+                'response': function (response) {
+
+                    if (response.config.complete)
+                        response.config.complete(response);
+
+                    return response;
+                }
+            };
+
+        }]);
+
+        //myApp.config(["$routeProvider", "$httpProvider", function ($routeProvider, $httpProvider) {
+        myApp.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
+            // Register interceptors service
+            $httpProvider.interceptors.push('interceptors');
+
+            $routeProvider.when("/", { templateUrl: "views/index.html" })
+
+
+            .otherwise({ redirectTo: "/" });
+        }]);
+
+
+        myApp.controller('DispatchAllocationIndicatorController', [
+            '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+
+                $scope.DispatchAllocationIndicator = [];
+                $scope.HrdName = "";
+                $scope.BidPlanName = "";
+                $scope.TotalNumberOfEstimatedRequisitions = 0;
+                $scope.TotalNumberOfApprovedRequisitions = 0;
+                $scope.TotalNumberOfHubAllocatedRequisitions = 0;
+                $scope.TotalNumberOfSipcAlloRequisitions = 0;
+                $scope.TotalNumberOfCommitedRequisitions = 0;
+
+                $scope.round = 0;
+                $scope.rounds = [];
+                $scope.startDate = "dd/m/yyyy";
+                $scope.endDate = "dd/m/yyyy";
+
+
+                @*$http({ method: 'GET', url: '@Url.Action("GetRounds", "Home")' })
                 .success(function(data, status, headers, config) {
                     $scope.rounds = data;
                     $scope.onGetRoundsSuccess(data[0]);
@@ -1449,61 +1555,61 @@
                 .error(function (data, status, headers, config) { });*@
 
 
-            $http({
-                method: 'POST',
-                url: '@Url.Action("GetRounds", "Home")',
-                //data: model,
-                beforeSend: function () {
-                    $(".round-filter-ldng").show();
-                    console.log("Before Send triggered");
-                },
-                complete: function () {
-                    $(".round-filter-ldng").hide();
-                    console.log("Complete triggered");
-                }
-            }).success(function (data, status, headers, config) {
-                $scope.rounds = data;
-                //$scope.onGetRoundsSuccess(data[0]);
-
-            }).error(function (data, status, headers, config) { });;
-
-            $scope.getDispatchAllocationIndicator = function () {
-                console.log("startDate:" + $("#startDate").val());
-                console.log("endDate:" + $("#endDate").val());
                 $http({
-                    method: 'GET',
-                    params: { round: $scope.round, startDate: $("#startDate").val(), endDate: $("#endDate").val() },
-                    url: '@Url.Action("DispatchAllocationIndicator", "Home", new { Area = "Logistics" })',
+                    method: 'POST',
+                    url: '@Url.Action("GetRounds", "Home")',
+                    //data: model,
                     beforeSend: function () {
-                        $(".da-data-indicator-ldng").show();
-                        console.log("DispatchAllocationIndicator: Before Send triggered");
+                        $(".round-filter-ldng").show();
+                        console.log("Before Send triggered");
                     },
                     complete: function () {
-                        $(".da-data-indicator-ldng").hide();
-                        console.log("DispatchAllocationIndicator: Complete triggered");
+                        $(".round-filter-ldng").hide();
+                        console.log("Complete triggered");
                     }
-                })
-                    .success(function (data, status, headers, config) {
-                        $scope.DispatchAllocationIndicator = data;
-                        $scope.HrdName = data[0].HrdName;
-                        $scope.TotalNumberOfEstimatedRequisitions = 0;
-                        $scope.TotalNumberOfApprovedRequisitions = 0;
-                        $scope.TotalNumberOfHubAllocatedRequisitions = 0;
-                        $scope.TotalNumberOfSipcAlloRequisitions = 0;
-                        $scope.TotalNumberOfCommitedRequisitions = 0;
-                        for (var i = 0; i < data.length; i++) {
-                            $scope.TotalNumberOfEstimatedRequisitions += data[i].NumberOfEstimatedRequisitions;
-                            $scope.TotalNumberOfApprovedRequisitions += data[i].NumberOfApprovedRequisitions;
-                            $scope.TotalNumberOfHubAllocatedRequisitions += data[i].NumberOfHubAllocatedRequisitions;
-                            $scope.TotalNumberOfSipcAlloRequisitions += data[i].NumberOfSipcAlloRequisitions;
-                            $scope.TotalNumberOfCommitedRequisitions += data[i].NumberOfCommitedRequisitions;
-                        }
-                    });
-            };
+                }).success(function (data, status, headers, config) {
+                    $scope.rounds = data;
+                    //$scope.onGetRoundsSuccess(data[0]);
 
-            $scope.getDispatchAllocationIndicator();
-        }
-    ]);
+                }).error(function (data, status, headers, config) { });;
+
+                $scope.getDispatchAllocationIndicator = function () {
+                    console.log("startDate:" + $("#startDate").val());
+                    console.log("endDate:" + $("#endDate").val());
+                    $http({
+                        method: 'GET',
+                        params: { round: $scope.round, startDate: $("#startDate").val(), endDate: $("#endDate").val() },
+                        url: '@Url.Action("DispatchAllocationIndicator", "Home", new { Area = "Logistics" })',
+                        beforeSend: function () {
+                            $(".da-data-indicator-ldng").show();
+                            console.log("DispatchAllocationIndicator: Before Send triggered");
+                        },
+                        complete: function () {
+                            $(".da-data-indicator-ldng").hide();
+                            console.log("DispatchAllocationIndicator: Complete triggered");
+                        }
+                    })
+                        .success(function (data, status, headers, config) {
+                            $scope.DispatchAllocationIndicator = data;
+                            $scope.HrdName = data[0].HrdName;
+                            $scope.TotalNumberOfEstimatedRequisitions = 0;
+                            $scope.TotalNumberOfApprovedRequisitions = 0;
+                            $scope.TotalNumberOfHubAllocatedRequisitions = 0;
+                            $scope.TotalNumberOfSipcAlloRequisitions = 0;
+                            $scope.TotalNumberOfCommitedRequisitions = 0;
+                            for (var i = 0; i < data.length; i++) {
+                                $scope.TotalNumberOfEstimatedRequisitions += data[i].NumberOfEstimatedRequisitions;
+                                $scope.TotalNumberOfApprovedRequisitions += data[i].NumberOfApprovedRequisitions;
+                                $scope.TotalNumberOfHubAllocatedRequisitions += data[i].NumberOfHubAllocatedRequisitions;
+                                $scope.TotalNumberOfSipcAlloRequisitions += data[i].NumberOfSipcAlloRequisitions;
+                                $scope.TotalNumberOfCommitedRequisitions += data[i].NumberOfCommitedRequisitions;
+                            }
+                        });
+                };
+
+                $scope.getDispatchAllocationIndicator();
+            }
+        ]);
         myApp.controller('BidPlanningIndicatorController', [
         '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 
@@ -1574,7 +1680,7 @@
         $scope.requestRows = [];
 
 
-        var onSuccess = function(data) {
+        var onSuccess = function (data) {
             $scope.summaryData = data;
             var f = 0;
             var p = 0;
@@ -1586,17 +1692,17 @@
             $scope.physicalStockSum = p;
         };
 
-        var onProgramGetSuccess = function(data) {
+        var onProgramGetSuccess = function (data) {
             $scope.ProgramsCollection = data;
         };
 
-        $scope.getSummary = function() {
+        $scope.getSummary = function () {
             console.log("Dispatch Date: " + $("#txtDate1").val());
             $scope.reqParam.date = $("#txtDate1").val();
             $http.post("@Url.Action("GetDispatchAllocation", "Home", new {Area = "Logistics"})", $scope.reqParam).success(onSuccess);
         };
 
-        $scope.getPrograms = function() {
+        $scope.getPrograms = function () {
 
 
             $http.post("@Url.Action("GetPrograms", "LogisticsStockStatus", new {Area = "Logistics"})", null).success(onProgramGetSuccess);
@@ -1609,7 +1715,7 @@
 </script>
 <script>
     function DetailGRN() {
-        var transporterId = $('#hiddenTransporterIdValue').val();    
+        var transporterId = $('#hiddenTransporterIdValue').val();
         window.location = "@Url.Action("PaymentRequests", "TransporterPaymentRequest", new {Area = "Logistics"})" + "?transporterID=" + transporterId;
     }
 </script>

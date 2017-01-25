@@ -84,7 +84,7 @@
                                       var ewCache = UserAccountHelper.GetUserPermissionCache(CatsGlobals.Applications.EarlyWarning);
                                   }
 
-                                  @if (item.Status == "Draft")
+                                  @if (item.Status == "Draft" || item.Status == "Rejected")
                                   {
                                       @Html.EarlyWarningOperationButton(
                                           @Url.Action("Edit", new {id = item.GiftCertificateID}),
