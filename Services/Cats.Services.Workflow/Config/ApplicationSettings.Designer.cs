@@ -274,5 +274,14 @@ namespace Cats.Services.Workflows.Config {
                 return ((string)(this["FDPReceiptWorkflow"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("RFQWorkflow")]
+        public string RFQWorkflow {
+            get {
+                return ((string)(this["RFQWorkflow"]));
+            }
+        }
     }
 }

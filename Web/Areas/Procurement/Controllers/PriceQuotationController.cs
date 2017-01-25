@@ -270,7 +270,9 @@ namespace Cats.Areas.Procurement.Controllers
                         detail.IsWinner = false;
                         try
                         {
-                            WorkflowActivityUtil.EnterEditWorkflow(detail);
+                            var transporteHeader =
+                                _transportBidQuotationHeaderService.FindById(detail.TransportBidQuotationHeaderID);
+                            WorkflowActivityUtil.EnterEditWorkflow(transporteHeader);
                             _transportBidQuotationService.UpdateTransportBidQuotation(detail);
                         }
                         catch (Exception e) { }
@@ -291,7 +293,9 @@ namespace Cats.Areas.Procurement.Controllers
                         newProposal.IsWinner = false;
                         try
                         {
-                            WorkflowActivityUtil.EnterEditWorkflow(detail);
+                            var transporteHeader =
+                              _transportBidQuotationHeaderService.FindById(bidProposal.HeaderId);
+                            WorkflowActivityUtil.EnterEditWorkflow(transporteHeader);
                             _transportBidQuotationService.AddTransportBidQuotation(newProposal);
                         }
                         catch (Exception e) { }
@@ -346,7 +350,7 @@ namespace Cats.Areas.Procurement.Controllers
                          TransportBidQuotationHeaderID = proposal.TransportBidQuotationHeaderID,
                          BidNumber = proposal.Bid.BidNumber,
                          //BidBondAmount = proposal.BidBondAmount,
-                         OffersCount = proposal.TransportBidQuotations.Count,
+                         OffersCount = proposal.TransportBidQuotations!=null?proposal.TransportBidQuotations.Count:0,
                          Region = proposal.AdminUnit.Name,
                          Status = _transportBidQuotationHeaderService.GetStatus(proposal.TransportBidQuotationHeaderID),//  proposal.Status == 1 ? "Draft" : "Approved",
                          Transporter = proposal.Transporter.Name,
@@ -507,7 +511,7 @@ namespace Cats.Areas.Procurement.Controllers
         public ActionResult DeleteAjax(int TransportBidQuotationID)
         {
             var transportBidQuatation = _bidQuotationService.FindById(TransportBidQuotationID);
-            WorkflowActivityUtil.EnterDelteteWorkflow(transportBidQuatation);
+            WorkflowActivityUtil.EnterDelteteWorkflow(transportBidQuatation.TransportBidQuotationHeader);
             _bidQuotationService.DeleteById(TransportBidQuotationID);
             return Json("{}");
         }
@@ -1082,12 +1086,12 @@ namespace Cats.Areas.Procurement.Controllers
                 // edited.
                 if (existing.Count == 1)
                 {
-                    WorkflowActivityUtil.EnterEditWorkflow(edited);
+                    WorkflowActivityUtil.EnterEditWorkflow(edited.TransportBidQuotationHeader);
                     _bidQuotationService.UpdateTransportBidQuotation(edited);
                 }
                 else
                 {
-                    WorkflowActivityUtil.EnterCreateWorkflow(edited);
+                    WorkflowActivityUtil.EnterCreateWorkflow(edited.TransportBidQuotationHeader);
                     _bidQuotationService.AddTransportBidQuotation(edited);
                 }
                 return Json(new[] { item }.ToDataSourceResult(request, ModelState));
@@ -1125,12 +1129,12 @@ namespace Cats.Areas.Procurement.Controllers
                     edited.Remark = transportQuote.Remark;
                     edited.Position = transportQuote.Position;
                     edited.IsWinner = transportQuote.IsWinner;
-                    WorkflowActivityUtil.EnterEditWorkflow(edited);
+                    WorkflowActivityUtil.EnterEditWorkflow(edited.TransportBidQuotationHeader);
                     _bidQuotationService.UpdateTransportBidQuotation(edited);
                 }
                 else
                 {
-                    WorkflowActivityUtil.EnterCreateWorkflow(transportQuote);
+                    WorkflowActivityUtil.EnterCreateWorkflow(transportQuote.TransportBidQuotationHeader);
                     _bidQuotationService.AddTransportBidQuotation(transportQuote);
                 }
                 return View(transportQuote);
@@ -1170,7 +1174,9 @@ namespace Cats.Areas.Procurement.Controllers
                         bidAddWoredaViewModel.Remark = "No remark";
                     }
                     var detail = GetDetail(bidAddWoredaViewModel);
-                    WorkflowActivityUtil.EnterEditWorkflow(detail);
+                    var transportBidQuatation =
+                        _transportBidQuotationHeaderService.FindById(detail.TransportBidQuotationHeaderID);
+                    WorkflowActivityUtil.EnterEditWorkflow(transportBidQuatation);
                     if (_transportBidQuotationService.AddWoreda(detail))
                         return RedirectToAction("Details", new { id = bidAddWoredaViewModel.TransportBidQuotationHeaderID });
                     ViewBag.Errors = 1;
