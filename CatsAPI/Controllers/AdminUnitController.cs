@@ -59,5 +59,16 @@ namespace Cats.Rest.Controllers
             return adminUnits.Select(adminUnit => new Models.AdminUnit(adminUnit.AdminUnitID,adminUnit.code, adminUnit.Name, adminUnit.NameAM, adminUnit.AdminUnitTypeID, adminUnit.ParentID)).ToList();
         } 
 
+        /// <summary>
+        /// Returns a list of admin Units under a given admin unit id - a region id, zone id or  a woreda id.
+        /// </summary>
+        /// <param name="id">region id, zone id, or woreda id</param>
+        /// <returns>admin units</returns>
+        public List<Models.AdminUnit> GetAdminUnitDetails(int id)
+        {
+            var adminUnits = _adminUnitService.FindBy(r=>r.ParentID == id).ToList();
+
+            return adminUnits.Select(adminUnit => adminUnit.ParentID != null ? new Models.AdminUnit(adminUnit.AdminUnitID, adminUnit.AdminUnitID, adminUnit.Name, adminUnit.NameAM, adminUnit.AdminUnitID, (int)adminUnit.ParentID) : null).ToList(); 
+        }
     }
 }

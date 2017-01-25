@@ -31,8 +31,10 @@ using Cats.Services.PSNP;
 using HubOwnerService = Cats.Services.Hub.HubOwnerService;
 using IHubOwnerService = Cats.Services.Hub.IHubOwnerService;
 using IStoreService = Cats.Services.Hub.IStoreService;
+using ITransporterService = Cats.Services.Procurement.ITransporterService;
 using IUnitService = Cats.Services.EarlyWarning.IUnitService;
 using IUserProfileService = Cats.Services.Administration.IUserProfileService;
+using TransporterService = Cats.Services.Procurement.TransporterService;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(NinjectWebCommon), "Stop")]
@@ -120,7 +122,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IBidWinnerService>().To<BidWinnerService>();
             kernel.Bind<Services.Hub.ICommoditySourceService>().To<Services.Hub.CommoditySourceService>();
             kernel.Bind<ICurrencyService>().To<CurrencyService>();
-
+            kernel.Bind<ITransporterService>().To<TransporterService>();
             kernel.Bind<Services.EarlyWarning.IDonorService>().To<Services.EarlyWarning.DonorService>();
 
             kernel.Bind<IHRDService>().To<HRDService>();
