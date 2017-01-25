@@ -29,7 +29,7 @@ namespace Cats.Rest.Controllers
             return adminUnits.Select(adminUnit => adminUnit.ParentID != null ? new Models.AdminUnit(adminUnit.AdminUnitID, adminUnit.AdminUnitID, adminUnit.Name, adminUnit.NameAM, adminUnit.AdminUnitID, (int)adminUnit.ParentID) : null).ToList();
         }
       /// <summary>
-      /// Used to get a single  object by Id
+      ///Returns a single object given an Id
       /// </summary>
       /// <param name="id"></param>
       /// <returns></returns>
@@ -39,12 +39,25 @@ namespace Cats.Rest.Controllers
             var adminUnit = _adminUnitService.FindById(id);
            if (adminUnit!=null)
            {
-               var _adminUnit = new Models.AdminUnit(adminUnit.AdminUnitID, adminUnit.AdminUnitID, adminUnit.Name,
-                                                     adminUnit.NameAM, adminUnit.AdminUnitID, adminUnit.ParentID);
-               return _adminUnit;
+               if (adminUnit.AdminUnitTypeID != null)
+               {
+                   var _adminUnit = new Models.AdminUnit(adminUnit.AdminUnitID, adminUnit.code, adminUnit.Name,
+                                                         adminUnit.NameAM, adminUnit.AdminUnitTypeID, adminUnit.ParentID);
+                   return _adminUnit;
+               }
            }
           return null;
         }
+        /// <summary>
+        /// Returns list of admin units given an admin unit type id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public List<Models.AdminUnit> GetAdminUnitsByAdminUnitType(int id)
+        {
+            var adminUnits = _adminUnitService.FindBy(t=>t.AdminUnitTypeID ==id).ToList();
+            return adminUnits.Select(adminUnit => new Models.AdminUnit(adminUnit.AdminUnitID,adminUnit.code, adminUnit.Name, adminUnit.NameAM, adminUnit.AdminUnitTypeID, adminUnit.ParentID)).ToList();
+        } 
 
     }
 }

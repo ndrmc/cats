@@ -14,9 +14,9 @@ namespace Cats.Rest.Models
         public Nullable<int> AdminUnitTypeID { get; set; }
         public Nullable<int> ParentID { get; set; }
 
-        public AdminUnit(int _adminUnitId, int _code, string _name, string _nameAM,int _adminUnitTypeId,int? _parentId)
+        public AdminUnit(int _adminUnitId, int? _code, string _name, string _nameAM,int? _adminUnitTypeId,int? _parentId)
         {
-            AdminUnitID = _adminUnitTypeId;
+            AdminUnitID = _adminUnitId;
             code = _code;
             Name = _name;
             NameAM = _nameAM;
