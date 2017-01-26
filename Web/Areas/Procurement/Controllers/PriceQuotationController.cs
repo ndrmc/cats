@@ -202,6 +202,27 @@ namespace Cats.Areas.Procurement.Controllers
             return ret;
         }
 
+        public ActionResult DeleteTransportBidQuotation(int id)
+        {
+            var transportBidQuatation =
+                        _transportBidQuotationService.FindById(id);
+            //        if (transportBidQuatation == null) return RedirectToAction("Index");
+
+            //WorkflowActivityUtil.EnterDelteteWorkflow(transportBidQuatation);
+
+
+            var result=    _transportBidQuotationService.DeleteWoreda(id);
+
+        if(!result) return RedirectToAction("Index");
+
+
+
+
+            return RedirectToAction("Details", new { id = transportBidQuatation.TransportBidQuotationHeaderID });
+
+
+        }
+
         public List<PriceQuotationDetailViewModel> populateForm(PriceQuotationFilterViewModel model)
         {
             Session["PriceQuotationFilter"] = model;
@@ -304,7 +325,7 @@ namespace Cats.Areas.Procurement.Controllers
                     //int region = _adminUnitService.FindById(bidProposal.DestinationID).AdminUnit2.AdminUnit2.AdminUnitID;
                     //var changeable = _transportBidQuotationService.FindBy(t =>
                     //                                                     t.BidID == bidProposal.BidID);
-                       
+
 
                     //foreach (var transportBidQuotation in changeable)
                     //{
@@ -337,7 +358,7 @@ namespace Cats.Areas.Procurement.Controllers
             if (TempData["CustomError"] != null) { ModelState.AddModelError("Errors", TempData["CustomError"].ToString()); }
 
             if (TempData["CustomMessage"] != null) { ModelState.AddModelError("Success", TempData["CustomMessage"].ToString()); }
-            
+
             return View();
         }
 
@@ -433,7 +454,7 @@ namespace Cats.Areas.Procurement.Controllers
             ViewBag.BIDS = new SelectList(_bidService.GetAllBid(), "BidID", "BidNumber");
             ViewBag.Regions = new SelectList(_adminUnitService.FindBy(t => t.AdminUnitTypeID == 2), "AdminUnitID", "Name");
             ViewBag.Transporters = new SelectList(_transporterService.GetAllTransporter(), "TransporterID", "Name");
-           
+
             if (ModelState.IsValid)
             {
 
@@ -454,7 +475,7 @@ namespace Cats.Areas.Procurement.Controllers
                 {
                     TempData["CustomError"] = "Such a bid proposal has already been proposed";
                 }
-                
+
             }
             return RedirectToAction("BidProposalHeader");
         }
@@ -520,7 +541,7 @@ namespace Cats.Areas.Procurement.Controllers
         {
 
             //var d = _transportBidQuotationService.FindBy(t=>t.BidID==bidPlanID
-            //                                             && t.TransporterID==transporterID 
+            //                                             && t.TransporterID==transporterID
             //                                             && t.Destination.AdminUnit2.AdminUnit2.AdminUnitID==regionID
             //                                             );
             //var bid= _bidService.FindById(bidPlanID);
@@ -653,7 +674,8 @@ namespace Cats.Areas.Procurement.Controllers
                             HeaderId = bidProposalId,
                             TransportBidQuotationID = detail.TransportBidQuotationID * 10 + transporterID,
                             //
-                            TransporterID = detail.TransporterID
+                            TransporterID = detail.TransporterID,
+                            Id= detail.TransportBidQuotationID
 
                         };
                         result.Add(t);
@@ -676,6 +698,7 @@ namespace Cats.Areas.Procurement.Controllers
                         //
                         TransportBidQuotationID = transportBidPlanDetail.TransportBidPlanDetailID * 10 + transporterID,
                         TransporterID = transporterID
+
                     };
                     result.Add(n);
                 }
@@ -720,8 +743,8 @@ namespace Cats.Areas.Procurement.Controllers
                     return RedirectToAction("GenerateWinners", "PriceQuotation");
                 }
             }
-            
-            
+
+
             var bidWinners = _bidWinnerService.FindBy(m=>m.BidID==bidNumber);
             if (bidWinners != null)
             {
@@ -730,29 +753,29 @@ namespace Cats.Areas.Procurement.Controllers
                 {
                     _bidWinnerService.DeleteBidWinner(winner);
                 }
-                
+
             }
             else
             {
                 comparable = _transportBidQuotationHeaderService.FindBy(m => m.RegionID == regionID && m.BidId == bidNumber && m.Status == 2);
-           
+
             }
             ViewBag.Status = comparable==null ? 1 : 2;
 
-            
+
             //TempData["Error"] = "There are no new proposals, winners may already have been identified";
             var tr = new List<TransportBidQuotation>();
 
             foreach (var transportBidQuotationHeader in comparable)
             {
-                   
+
                         tr.AddRange(transportBidQuotationHeader.TransportBidQuotations);
-                   
+
 
                 //transportBidQuotationHeader.TransportBidQuotations
             }
 
-          
+
             var rawData = tr;
 
 
@@ -820,22 +843,22 @@ namespace Cats.Areas.Procurement.Controllers
                     _transportBidQuotationHeaderService.UpdateTransportBidQuotationHeader(transportBidQuotationHeader);
                 }
 
-                
+
 
                 //result = true;
             }
-            
+
             _bidWinnerService.Save();
-            
+
             return RedirectToAction("Winners", new {BidID = bidNumber, RegionID=regionID});
-          
+
         }
 
         public ActionResult RevertWinners()
         {
             if (TempData["TOCreatedErrorMessage"] != null) { ModelState.AddModelError("Errors", TempData["TOCreatedErrorMessage"].ToString()); }
             if (TempData["RevertedIsSuccess"] != null) { ModelState.AddModelError("Success", TempData["RevertedIsSuccess"].ToString()); }
-             
+
             return View();
         }
         public ActionResult ReadGeneratedProposals([DataSourceRequest] DataSourceRequest request)
@@ -861,7 +884,7 @@ namespace Cats.Areas.Procurement.Controllers
 
         }
 
-        
+
         public ActionResult RevertWinner(int bidNumber, int regionID,string remark)
         {
             var comparable = new List<TransportBidQuotationHeader>();
@@ -913,7 +936,7 @@ namespace Cats.Areas.Procurement.Controllers
             }
             else
             {
-                ModelState.AddModelError("info", @"Showing already generated winners");   
+                ModelState.AddModelError("info", @"Showing already generated winners");
             }
 
             //ViewBag.filter = filter;
@@ -952,7 +975,7 @@ namespace Cats.Areas.Procurement.Controllers
             //if (bidPlanID != 0 && regionID != 0)
             //{
            // var s = _bidWinnerService.GetAllBidWinner();
-            
+
             var dr = _bidWinnerService.FindBy(t =>
                     t.BidID == bidNumber
                     && t.AdminUnit.AdminUnit2.AdminUnit2.AdminUnitID == regionID
@@ -1005,7 +1028,7 @@ namespace Cats.Areas.Procurement.Controllers
             return View(header);
         }
 
-    
+
         [HttpPost]
         public ActionResult Edit_proposal(TransportBidQuotationHeader proposal)
         {
@@ -1021,7 +1044,7 @@ namespace Cats.Areas.Procurement.Controllers
                 WorkflowActivityUtil.EnterEditWorkflow(e);
                 _transportBidQuotationHeaderService.UpdateTransportBidQuotationHeader(e);
                 ModelState.AddModelError("Success", @"Proposal updated successfully");
-                return RedirectToAction("BidProposalHeader");               
+                return RedirectToAction("BidProposalHeader");
             }
            return View(proposal);
         }
@@ -1056,7 +1079,7 @@ namespace Cats.Areas.Procurement.Controllers
             List<PriceQuotationDetailViewModel> qoutation = populateForm(model);
             return Json(qoutation.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
-       
+
         public ActionResult EditAjax([DataSourceRequest] DataSourceRequest request, PriceQuotationDetailViewModel item)
         {
             if (ModelState.IsValid)
@@ -1099,7 +1122,7 @@ namespace Cats.Areas.Procurement.Controllers
             }
             return Json("{}", JsonRequestBehavior.AllowGet);
         }
-        
+
         //GET: /Procurement/RFQ/EditStart
         [HttpPost]
         public ActionResult EditStart(PriceQuotationFilterViewModel model)
@@ -1174,9 +1197,11 @@ namespace Cats.Areas.Procurement.Controllers
                         bidAddWoredaViewModel.Remark = "No remark";
                     }
                     var detail = GetDetail(bidAddWoredaViewModel);
+
                     var transportBidQuatation =
                         _transportBidQuotationHeaderService.FindById(detail.TransportBidQuotationHeaderID);
                     WorkflowActivityUtil.EnterEditWorkflow(transportBidQuatation);
+
                     if (_transportBidQuotationService.AddWoreda(detail))
                         return RedirectToAction("Details", new { id = bidAddWoredaViewModel.TransportBidQuotationHeaderID });
                     ViewBag.Errors = 1;
