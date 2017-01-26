@@ -23,30 +23,30 @@
     }
 
     button {
-        border: none;
-        background-color: transparent;
-        outline: none;
-    }
+    border: none;
+    background-color: transparent;
+    outline: none;
+}
+button:focus {
+    border: none;
+}
 
-        button:focus {
-            border: none;
-        }
+.loading{
+  float: left;
+    position: relative;
+    left: 600px;
+    top: 0px;
 
-    .loading {
-        float: left;
-        position: relative;
-        left: 600px;
-        top: 0px;
-        max-width: 300px;
-        max-height: 300px;
-    }
+      max-width:300px;
+       max-height:300px;
+}
 
 
-    .loadingActivity {
-        max-width: 150px;
-        max-height: 150px;
-    }
+.loadingActivity{
 
+      max-width:150px;
+       max-height:150px;
+}
     .dedivtable {
         /*border: 1px solid #ddd;*/
         padding-left: 0px;
@@ -87,11 +87,11 @@
         <div class="portlet-body">
             @*<span class="loading-spnr-da da-data-indicator-ldng"><img src="~/Content/images/loading.gif" alt="loading..." class="loading-spinner"></span>*@
 
-            <img class="loading" ng-show="ctrlStatus.loadingDocument || ctrlStatus.loadingUser" src="~/Content/Icons/loading-x.gif" />
+            <img  class="loading"  ng-show="ctrlStatus.loadingDocument || ctrlStatus.loadingUser" src="~/Content/Icons/loading-x.gif" />
 
-            <div class=" table-responsive" style="overflow-x: hidden; min-height: 350px; ">
+            <div class=" table-responsive" style="overflow-x: hidden; min-height: 350px; " >
 
-                <div class="row form-horizontal " style="min-height: 100px;" ng-hide="ctrlStatus.loadingDocument ||  ctrlStatus.loadingUser">
+                <div class="row form-horizontal " style="min-height: 100px;"  ng-hide="ctrlStatus.loadingDocument ||  ctrlStatus.loadingUser">
                     <div class="col-md-2">
 
                         <Label><small>Start Date</small></Label>
@@ -104,6 +104,29 @@
 
                     </div>
 
+
+
+
+                    <div class="col-md-2"  >
+                        <Label><small>Document</small></Label>
+                        <select id="Document" class="ui selection dropdown form-control" data-toggle="tooltip" @*ng-disabled="ctrlStatus.loadingDocument"*@ data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
+                            <option ng-repeat="document in controlData.lookupDocument| orderBy : 'name'" value="{{document.name}}">{{document.name}}</option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+
+
+                        <Label><small>Activity</small></Label>
+                        <img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading.gif" />
+
+                        <select id="Activity" multiple="multiple" @*ng-disabled="ctrlStatus.loadingActivity"*@ class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
+                            <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
+                        </select>
+
+                    </div>
+
                     <div class="col-md-2">
                         <Label><small>  User</small></Label>
                         <select id="User" multiple="" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
@@ -112,26 +135,6 @@
                             <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
                         </select>
 
-                    </div>
-                    <div class="col-md-2">
-
-
-                        <Label><small>Activity</small></Label>
-                        @*<img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading.gif" />*@
-
-                        <select id="Activity" multiple="multiple" @*ng-disabled="ctrlStatus.loadingActivity"*@ class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
-                            <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
-                        </select>
-
-                    </div>
-
-
-                    <div class="col-md-2">
-                        <Label><small>Document</small></Label>
-                        <select id="Document" class="ui selection dropdown form-control" data-toggle="tooltip" @*ng-disabled="ctrlStatus.loadingDocument"*@ data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
-                            <option ng-repeat="document in controlData.lookupDocument| orderBy : 'name'" value="{{document.name}}">{{document.name}}</option>
-
-                        </select>
                     </div>
 
                     <div class="col-md-2 ">
@@ -142,6 +145,7 @@
                         <p class="text-info" ng-show="searching"><img src="~/Content/Icons/search.gif" style="max-width:65px; max-height:70px;" />Searching... </p>
 
                     </div>
+
 
                 </div>
 
@@ -170,7 +174,7 @@
                                     <td ng-repeat="actCount in user.data track by $index" class="truseractivity" ng-click="openDetail(user.name,$index)"
                                         data-original-title="Click for Detail" data-container="body" data-toggle="tooltip" data-placement="bottom" title="Click to View Records">
 
-                                        <a ng-click="showModal()">   {{actCount}}</a>
+                                        <a ng-click="openDetail(user.name,$index)">   {{actCount}}</a>
 
                                     </td>
 
@@ -239,3 +243,4 @@
 
     </script>
 </div>
+

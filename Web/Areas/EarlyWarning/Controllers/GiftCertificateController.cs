@@ -290,7 +290,11 @@ namespace Cats.Areas.EarlyWarning.Controllers
             if (giftCertificateDetailsViewModel != null && id.HasValue)
             {
                 giftCertificateDetailsViewModel.GiftCertificateID = id.Value;
+ 
                 var giftcertifiateDtail = GiftCertificateViewModelBinder.BindGiftCertificateDetail(giftCertificateDetailsViewModel);
+                //var gc = _giftCertificateService.FindById(id.Value);
+                //if (gc != null)giftcertifiateDtail.GiftCertificate = gc;
+
                 _giftCertificateDetailService.AddGiftCertificateDetail(giftcertifiateDtail);
                 return RedirectToAction("Index");
             }
@@ -631,9 +635,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
 
                 var giftCertificate = _giftCertificateService.FindById(giftCertificateId);
 
-                WorkflowActivityUtil.EnterEditWorkflow(giftCertificate, String.Format("The document {0} has been Printed", fileName));
+                WorkflowActivityUtil.EnterPrintWorkflow(giftCertificate, String.Format("The document {0} has been Printed", fileName));
 
-                
+
 
             }
             catch (Exception ex)

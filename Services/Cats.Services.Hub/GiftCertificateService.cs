@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using Cats.Data.Hub;
 using Cats.Data.Hub.UnitWork;
 using Cats.Models.Hubs;
-
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Hub
 {
@@ -16,16 +16,26 @@ namespace Cats.Services.Hub
     public class GiftCertificateService : IGiftCertificateService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWorkflowActivityService _IWorkflowActivityService;
 
 
-        public GiftCertificateService(IUnitOfWork unitOfWork)
+
+        public GiftCertificateService(IUnitOfWork unitOfWork, IWorkflowActivityService iWorkflowActivityService)
         {
             this._unitOfWork = unitOfWork;
+
+            this._IWorkflowActivityService = iWorkflowActivityService;
+
+
+
         }
         #region Default Service Implementation
         public bool AddGiftCertificate(GiftCertificate giftCertificate)
         {
             _unitOfWork.GiftCertificateRepository.Add(giftCertificate);
+
+            _IWorkflowActivityService.EnterCreateWorkflow(giftCertificate);
+
             _unitOfWork.Save();
             return true;
 
@@ -33,6 +43,9 @@ namespace Cats.Services.Hub
         public bool EditGiftCertificate(GiftCertificate giftCertificate)
         {
             _unitOfWork.GiftCertificateRepository.Edit(giftCertificate);
+
+            _IWorkflowActivityService.EnterEditWorkflow(giftCertificate);
+
             _unitOfWork.Save();
             return true;
 
@@ -40,7 +53,10 @@ namespace Cats.Services.Hub
         public bool DeleteGiftCertificate(GiftCertificate giftCertificate)
         {
             if (giftCertificate == null) return false;
-            _unitOfWork.GiftCertificateRepository.Delete(giftCertificate);
+            _IWorkflowActivityService.EnterDeleteWorkflow(giftCertificate);
+
+            _unitOfWork.GiftCertificateRepository.Edit(giftCertificate);
+
             _unitOfWork.Save();
             return true;
         }
@@ -48,21 +64,34 @@ namespace Cats.Services.Hub
         {
             var entity = _unitOfWork.GiftCertificateRepository.FindById(id);
             if (entity == null) return false;
-            _unitOfWork.GiftCertificateRepository.Delete(entity);
-            _unitOfWork.Save();
+            _IWorkflowActivityService.EnterEditWorkflow(entity);
+            
+            DeleteGiftCertificate(entity);
             return true;
         }
         public List<GiftCertificate> GetAllGiftCertificate()
         {
-            return _unitOfWork.GiftCertificateRepository.GetAll();
+           var allRecords = _unitOfWork.GiftCertificateRepository.GetAll().Cast<Models.Hubs.IWorkflowHub>().ToList();
+            return _IWorkflowActivityService.ExcludeDeletedRecordsHub(allRecords).Cast<GiftCertificate>().ToList<GiftCertificate>();
+
+
         }
         public GiftCertificate FindById(int id)
         {
-            return _unitOfWork.GiftCertificateRepository.FindById(id);
+            List<IWorkflowHub> lst = new List<IWorkflowHub>();
+
+            lst.Add(_unitOfWork.GiftCertificateRepository.FindById(id));
+
+            return _IWorkflowActivityService.ExcludeDeletedRecordsHub(lst).Cast<GiftCertificate>().FirstOrDefault<GiftCertificate>();
+
         }
         public List<GiftCertificate> FindBy(Expression<Func<GiftCertificate, bool>> predicate)
         {
-            return _unitOfWork.GiftCertificateRepository.FindBy(predicate);
+            var allRecords = _unitOfWork.GiftCertificateRepository.FindBy(predicate).Cast<IWorkflowHub>().ToList();
+            return _IWorkflowActivityService.ExcludeDeletedRecordsHub(allRecords).Cast<GiftCertificate>().ToList<GiftCertificate>();
+
+
+          
         }
         #endregion
         /// <summary>
@@ -157,12 +186,24 @@ namespace Cats.Services.Hub
         /// <returns></returns>
         public GiftCertificate FindBySINumber(int SINumber)
         {
-            return _unitOfWork.GiftCertificateRepository.Get(p => p.ShippingInstructionID == SINumber).FirstOrDefault();
+            List<IWorkflowHub> lst = new List<IWorkflowHub>();
+
+            lst.Add(_unitOfWork.GiftCertificateRepository.Get(p => p.ShippingInstructionID == SINumber).FirstOrDefault());
+
+            return _IWorkflowActivityService.ExcludeDeletedRecordsHub(lst).Cast<GiftCertificate>().FirstOrDefault<GiftCertificate>();
+
+            
         }
 
         public GiftCertificate FindBySINumber(string SINumber)
         {
-            return _unitOfWork.GiftCertificateRepository.Get(p => p.ShippingInstruction.Value == SINumber).FirstOrDefault();
+            List<IWorkflowHub> lst = new List<IWorkflowHub>();
+
+            lst.Add(_unitOfWork.GiftCertificateRepository.Get(p => p.ShippingInstruction.Value == SINumber).FirstOrDefault());
+
+            return _IWorkflowActivityService.ExcludeDeletedRecordsHub(lst).Cast<GiftCertificate>().FirstOrDefault<GiftCertificate>();
+
+ 
         }
         /// <summary>
         /// Gets the SI balances.
@@ -187,7 +228,11 @@ namespace Cats.Services.Hub
 
         public IEnumerable<GiftCertificate> Get(Expression<Func<GiftCertificate, bool>> filter = null, Func<IQueryable<GiftCertificate>, IOrderedQueryable<GiftCertificate>> orderBy = null, string includeProperties = "")
         {
-            return _unitOfWork.GiftCertificateRepository.Get(filter, orderBy, includeProperties);
+            var allRecords = _unitOfWork.GiftCertificateRepository.Get(filter, orderBy, includeProperties).Cast<IWorkflowHub>().ToList();
+
+            return _IWorkflowActivityService.ExcludeDeletedRecordsHub(allRecords).Cast<GiftCertificate>().ToList<GiftCertificate>();
+
+          
         }
     }
 }

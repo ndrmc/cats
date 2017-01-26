@@ -68,6 +68,10 @@
       <Project>{9fba0283-ee84-49f2-8305-f038bbf29658}</Project>
       <Name>Cats.Services.Hub</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Services\Cats.Services.Workflow\Cats.Services.Workflow.csproj">
+      <Project>{91b6c6b9-eec7-4436-a24b-5bc33cae1beb}</Project>
+      <Name>Cats.Services.Workflow</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

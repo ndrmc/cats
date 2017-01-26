@@ -393,7 +393,7 @@
                     .Columns(columns =>
                     {
                         //columns.ForeignKey(p => p.CommodityId, (IEnumerable<Cats.Models.Hubs.CommodityModel>) ViewBag.Commodities, "Id", "Name").EditorTemplateName("CommodityEditor").Width(150).Title(Html.Translate("Commodity"))
-                        //.ClientTemplate( 
+                        //.ClientTemplate(
                         // "<input type='hidden' name='ReceiveDetailsViewModels[#= index(data)#].CommodityId' value='#=CommodityId#' />");
                         columns.ForeignKey(p => p.CommodityId, (IEnumerable<Cats.Models.Hubs.CommodityModel>)ViewBag.Commodities, "Id", "Name").EditorTemplateName("CommodityEditor").Width(150).Title(Html.Translate("Commodity"));
                         columns.Bound(p => p.CommodityId).Hidden().EditorTemplateName("CommodityEditor").Width(150).Title(Html.Translate("Commodity"))
@@ -434,7 +434,7 @@
                             .ToolBar(toolbar =>
                             {
                                 toolbar.Create();
- 
+
                             })
                             .Editable(editable => editable.Mode(Kendo.Mvc.UI.GridEditMode.InCell))
                     .Pageable()
@@ -535,7 +535,7 @@
                                 <div class="form-group col-md-12">
                                     <div class="col-md-4 control-label">@Html.LabelFor(model => model.ResponsibleDonorId)</div>
                                     <div class="col-md-8">
-                                        @*@(Html.Kendo().ComboBoxFor(m => m.ResponsibleDonorId)
+                                        @(Html.Kendo().ComboBoxFor(m => m.ResponsibleDonorId)
                                               .Name("ResponsibleDonorId")
                                               .Placeholder("--Select Responsible Donor--")
                                               .DataTextField("Name")
@@ -545,19 +545,6 @@
                                               .DataSource(source => source.Read(read => read.Action("GetResponsibleDonor", "ReceiveNew"))
                                               )
                                         )
-                                        <span class="help-block"> @Html.ValidationMessageFor(model => model.ResponsibleDonorId)</span>*@
-                                        @(Html.Kendo().ComboBox()
-                                              .Name("ResponsibleDonorId")
-                                              .Placeholder("--Select Responsible Donor--")
-                                              .DataTextField("Name")
-                                              .DataValueField("DonorId")
-                                              .Filter(FilterType.Contains)
-                                              .HtmlAttributes(new { @class = "form-control" })
-                                              .DataSource(source => source.Read(read => read.Action("GetResponsibleDonor", "ReceiveNew")
-                                              .Data("filterStacks"))
-                                              .ServerFiltering(true))
-                                              .AutoBind(false)
-                                              .CascadeFrom("DonorId"))
                                         <span class="help-block"> @Html.ValidationMessageFor(model => model.ResponsibleDonorId)</span>
                                     </div>
                                 </div>
@@ -565,7 +552,7 @@
                                     <div class="col-md-4 control-label">@Html.LabelFor(model => model.SourceDonorId)</div>
                                     <div class="col-md-8">
                                         <span class="help-block"> @Html.ValidationMessageFor(model => model.SourceDonorId)</span>
-                                        @*@(Html.Kendo().ComboBoxFor(s => s.SourceDonorId)
+                                        @(Html.Kendo().ComboBoxFor(s => s.SourceDonorId)
                                               .Name("SourceDonorId")
                                               .Placeholder("--Select Source Donor--")
                                               .DataTextField("Name")
@@ -576,19 +563,6 @@
                                               )
                                       )
                                         )
-                                        <span class="help-block"> @Html.ValidationMessageFor(model => model.SourceDonorId)</span>*@
-                                        @(Html.Kendo().ComboBox()
-                                              .Name("SourceDonorId")
-                                              .Placeholder("--Select Source Donor--")
-                                              .DataTextField("Name")
-                                              .DataValueField("SourceDonorId")
-                                              .Filter(FilterType.Contains)
-                                              .HtmlAttributes(new { @class = "form-control" })
-                                              .DataSource(source => source.Read(read => read.Action("GetSourceDonor", "ReceiveNew")
-                                              .Data("filterStacks"))
-                                              .ServerFiltering(true))
-                                              .AutoBind(false)
-                                              .CascadeFrom("DonorId"))
                                         <span class="help-block"> @Html.ValidationMessageFor(model => model.SourceDonorId)</span>
 
                                     </div>
@@ -621,7 +595,7 @@
                             <div class="form-group col-md-12">
                                 <div class="col-md-4 control-label">@Html.LabelFor(model => model.TransporterId)</div>
                                 <div class="col-md-8">
-                                    @*@(Html.Kendo().ComboBoxFor(m => m.TransporterId)
+                                    @(Html.Kendo().ComboBoxFor(m => m.TransporterId)
                                        .Name("TransporterID")
                                        .Placeholder("--Select Transporter--")
                                        .DataTextField("Name")
@@ -633,19 +607,6 @@
                                        )
 
                                     )
-                                    <span class="help-block">@Html.ValidationMessageFor(model => model.TransporterId)</span>*@
-                                    @(Html.Kendo().ComboBox()
-                                       .Name("Transporter")
-                                       .Placeholder("--Select Transporter--")
-                                       .DataTextField("Name")
-                                       .DataValueField("TransporterId")
-                                       .Filter(FilterType.Contains)
-                                       .HtmlAttributes(new { @class = "form-control" })
-                                       .DataSource(source => source.Read(read => read.Action("GetTransporter", "ReceiveNew")
-                                       .Data("filterStacks"))
-                                       .ServerFiltering(true))
-                                       .AutoBind(false)
-                                       .CascadeFrom("TransporterId"))
                                     <span class="help-block">@Html.ValidationMessageFor(model => model.TransporterId)</span>
 
                                 </div>
@@ -770,7 +731,7 @@
     }
 
     function onEdit(e) {
-       
+
 
         changedColumn = e.container[0].cellIndex;
         selectedRowModel = e.model;
@@ -892,14 +853,14 @@
         var allRowsJson = JSON.stringify(allRows);
         return allRowsJson;
     }
- 
+
     function makeKendoDirty() {
         var grid = $("#grid").data("kendoGrid");
         var kdata = grid.dataSource.data();
         for (var i = 0; i < kdata.length; i++) {
             kdata[i].dirty = true;
 
-            
+
             var rci = kendo.toString(receiveCommodityId.value);
             kdata[i].CommodityId = rci == null ? receiveCommodityId.value : rci;
 
@@ -915,7 +876,7 @@
     //            $(this).button('loading');
     //            $("#frm_receive").submit();
 
- 
+
     //    });
     //});
 </script>

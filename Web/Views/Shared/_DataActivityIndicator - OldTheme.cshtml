@@ -1,11 +1,37 @@
 ﻿@using Cats.Helpers
-
-
+<link href="~/Scripts/js/SemanticUI/semantic.min.css" rel="stylesheet" />
+@*<script src="~/Scripts/js/SemanticUI/dropdown.min.js"></script>*@
+<script src="~/Scripts/js/SemanticUI/transition.min.js"></script>
+<script src="~/Scripts/js/SemanticUI/dropdown.js"></script>
 <style>
-    .detable {
+    <style > .detable {
         border: 1px solid #ddd;
     }
 
+
+    button {
+        border: none;
+        background-color: transparent;
+        outline: none;
+    }
+
+        button:focus {
+            border: none;
+        }
+
+    .loadingActivity {
+        max-width: 150px;
+        max-height: 150px;
+    }
+
+    .loading {
+        float: left;
+        position: relative;
+        left: 400px;
+        top: 0px;
+        max-width: 300px;
+        max-height: 300px;
+    }
 
     .dedivtable {
         /*border: 1px solid #ddd;*/
@@ -31,154 +57,261 @@
     }
 </style>
 
-<div class="portlet light bordered bg-inverse" ng-app="DataEntryIndicatorApp" ng-controller="WorkflowActController">
-    <div class="portlet-title">
-        <div class="caption font-green-sharp">
-            <i class="icon-list font-green-sharp"></i>
-            <span class="caption-subject bold uppercase"> Data Entry Indicator</span>
+<div ng-app="DataEntryIndicatorApp" ng-controller="WorkflowActController">
+    <div class="row" style="border-bottom-width: thin; border-bottom-color: #666; border-bottom-style: inset; margin-top: 5px">
+        <div class="pull-left">
+            <h4>Data Entry</h4>
         </div>
-        <div class="tools">
-            <a href="#" class="collapse" data-original-title="" title=""></a>
-        </div>
-        <div class="actions">
-            <a class="btn btn-icon-only btn-default fullscreen"></a>
+        <div class="pull-right">
+            <div class="btn-group">
+                <button id="dataEntrytHeader" type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                    <i class="icon-arrow-up"></i>
+                    <i class="icon-arrow-down"></i>
+                </button>
+
+            </div>
         </div>
     </div>
-    <div class="portlet-body">
-        <div class="table-responsive ">
-            <table>
-                <tr>
-                    <td>
-                        <div class="col-sm-12 ">
+    <div class="row">
+        <div>&nbsp;</div>
+        <div class="span12">
+            <div class="portlet">
+                <div class="portlet-header">
+                    <h3>
+                        <i class=""></i>
+                        Data Entry Indicator
+                    </h3>
 
-                            <Label><small>Start Date</small></Label>
-                            <input type="text" class="form-control date-picker cats-date-pref" placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
+                </div>
+
+                <!-- /.portlet-header -->
+
+                <div class="portlet-content">
+
+
+                    @*<div class="row table-responsive" style="min-height: 100px;">*@
+                    <img class="loading" ng-show="ctrlStatus.loadingDocument || ctrlStatus.loadingUser" src="~/Content/Icons/loading-x.gif" />
+
+                    <div class="col-sm-12  table-responsive " ng-hide="ctrlStatus.loadingDocument ||  ctrlStatus.loadingUser">
+                        <table>
+                            <tr>
+                                <td>
+                                    <div class="col-md-2 ">
+
+                                        <Label><small>Start Date</small></Label>
+                                        <input id="startDateDataIndicator" type="text" class="form-control cats-datepicker2 " placeholder="Start Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedStartDate" title="Enter Start Date">
+
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="col-md-2 ">
+                                        <Label><small>End Date</small></Label>
+                                        <input type="text" id="endDateDataIndicator" class="form-control  cats-datepicker2 " placeholder="End Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedEndDate" title="Enter End Date">
+
+
+
+                                    </div>
+                                </td>
+                    
+                                <td>
+
+                                    <div class="col-md-2">
+                                        <Label><small>Document</small></Label>
+                                        <select id="Document" class="ui selection dropdown form-control" data-toggle="tooltip" @*ng-disabled="ctrlStatus.loadingDocument"*@ data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
+                                            <option ng-repeat="document in controlData.lookupDocument| orderBy : 'name'" value="{{document.name}}">{{document.name}}</option>
+
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="col-md-2">
+
+
+                                        <Label><small>Activity</small></Label>
+                                        <img class="loadingActivity" ng-show="ctrlStatus.loadingActivity" src="~/Content/Icons/loading.gif" />
+
+                                        <select id="Activity" multiple="multiple" @*ng-disabled="ctrlStatus.loadingActivity"*@ class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
+                                            <option ng-repeat="activity in controlData.lookupActivities| orderBy : 'name'" value="{{activity.name}}">{{activity.name}}</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="col-md-2">
+                                        <Label><small>  User</small></Label>
+                                        <select id="User" multiple="" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
+                                            <option value="AllwithData">AllwithData </option>
+
+                                            <option ng-repeat="user in controlData.lookupUsers| orderBy : 'name'" value="{{user.name}}">{{user.name}}</option>
+                                        </select>
+
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="col-md-2 ">
+                                        <button type="button" ng-hide="searching" ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Get Activities based on the Criteria">
+                                            <h4><img src="~/Content/Icons/Search Icon.png" class="text-warning" style="max-width:45px; max-height:50px;" /><span><strong>Get</strong></span></h4>
+                                        </button>
+
+                                        <p class="text-info" ng-show="searching"><img src="~/Content/Icons/search.gif" style="max-width:65px; max-height:70px;" />Searching... </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    @*</div>*@
+
+
+
+                    <div class="dedivtable col-sm-12">
+
+                        <div class="table-responsive" ng-if="(InvalidFilter=='VALID')">
+
+
+
+                            <table class="detable table table-responsive table-hover table-striped table-bordered table-inverse">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>User/Activity</th>
+
+                                        <th ng-repeat="activities in displayedWorkflowNames">
+                                            {{ activities }}
+                                        </th>
+                                        <th>Total Activity per User</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="user in displayedWorkflowContent track by $index">
+                                        <td scope="row">{{user.index}}</td>
+                                        <td>{{user.name}}</td>
+
+                                        <td ng-repeat="actCount in user.data track by $index" class="truseractivity" ng-click="openDetail(user.name,$index)"
+                                            data-original-title="Click for Detail" data-container="body" data-toggle="tooltip" data-placement="bottom" title="Click to View Records">
+
+                                            <a ng-click="openDetail(user.name,$index)">   {{actCount}}</a>
+
+                                        </td>
+
+                                        <td>
+                                            {{ user.data| rowSum}}
+                                        </td>
+
+                                    </tr>
+
+
+                                    <tr>
+                                        @*<th></th>*@
+
+                                        <th colspan="2">Total</th>
+
+                                        <td ng-repeat="activities in displayedWorkflowNames">
+
+                                            {{calcColumnTotal(activities)}}
+
+
+                                        </td>
+
+
+                                    </tr>
+
+                                </tbody>
+                            </table>
 
                         </div>
-                    </td>
-                    <td>
-                        <div class="col-sm-12 ">
-                            <Label><small>End Date</small></Label>
-                            <input type="text" class="form-control date-picker cats-date-pref" placeholder="End Date" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedEndDate" title="Enter End Date">
+
+                        <div class="table-responsive" ng-if="(InvalidFilter=='INVALID')">
+                            <div class="alert alert-danger"><Strong>Your Filter Entry is not valid, Please fill the required fields and try again.</Strong></div>
+                        </div>
+
+
+                        <div class="table-responsive" ng-if="(InvalidFilter=='DEFAULT')">
 
                         </div>
-                    </td>
-                    <td>
-                        <div class="col-sm-12">
-                            <Label><small>  User</small></Label>
+                    </div>
 
-                            <select id="User" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" ng-model="filterData.selectedUsers" title="User">
-                                <option value="@Cats.Services.Workflows.Constants.SelectOption_AllwithData">@Cats.Services.Workflows.Constants.SelectOption_AllwithData </option>
 
-                                <option ng-repeat="user in controlData.lookupUsers" value="{{user.name}}">{{user.name}}</option>
-                            </select>
-
+                    <div class="dedivgraph col-sm-12">
+                        <div class="box-body table-responsive" style="display: block;">
+                            <div id="containerGraph" class="graphWrap"></div>
                         </div>
-                    </td>
-                    <td>
-                        <div class="col-sm-12">
-                            <Label><small>Activity</small></Label>
-                            <select id="Activity" multiple="multiple" class="form-control" data-toggle="tooltip" data-placement="top" title="Activity" ng-model="filterData.selectedActivities">
-                                <option ng-repeat="activity in controlData.lookupActivities" value="{{activity.name}}">{{activity.name}}</option>
-                            </select>
-                        </div>
-                    </td>
-                    <td>
-
-                        <div class="col-sm-12">
-                            <Label><small>Document</small></Label>
-                            <select id="Document" class="form-control" data-toggle="tooltip" data-placement="top" title="Document" ng-change="onWorkflowChange()" ng-model="filterData.selectedDocument">
-                                <option ng-repeat="document in controlData.lookupDocument" value="{{document.name}}">{{document.name}}</option>
-                            </select>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="col-sm-12 ">
-                            <Label><small> Get</small></Label>
-                            <button type="button" ng-disabled="searching || ctrlStatus.loadingDocument || ctrlStatus.loadingActivity || ctrlStatus.loadingUser" class="btn green " data-toggle="tooltip" data-placement="top" ng-click="applyFilter()" title="Search"><i ng-show="!searching" class="fa fa-search ">Get</i>  <i class="fa fa-cog fa-spin" ng-show="searching"></i> </button>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="dedivtable">
-
-            <div class="table-responsive" ng-if="(InvalidFilter=='VALID')">
-                <table class="detable table table-responsive table-hover table-striped table-bordered table-inverse">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>User/Activity</th>
-
-                            <th ng-repeat="activities in displayedWorkflowNames">
-                                {{ activities }}
-                            </th>
-                            <th>Total Activity per User</th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="user in displayedWorkflowContent track by $index">
-                            <td scope="row">{{user.index}}</td>
-                            <td>{{user.name}}</td>
-
-                            <td ng-repeat="actCount in user.data track by $index" class="truseractivity" ng-click="openDetail(user.name,$index)"
-                                data-original-title="Click for Detail" data-container="body" data-toggle="tooltip" data-placement="bottom" title="Click to View Records">
-
-                                <a ng-click="openDetail(user.name,$index)">   {{actCount}}</a>
-
-                            </td>
-
-                            <td>
-                                {{ user.data| rowSum}}
-                            </td>
-
-                        </tr>
+                    </div>
+                </div>
 
 
-                        <tr>
-                            @*<th></th>*@
-
-                            <th colspan="2">Total</th>
-
-                            <td ng-repeat="activities in displayedWorkflowNames">
-
-                                {{calcColumnTotal(activities)}}
 
 
-                            </td>
-
-
-                        </tr>
-
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="table-responsive" ng-if="(InvalidFilter=='INVALID')">
-                <div class="alert alert-danger"><Strong>Your Filter Entry is not valid, Please fill the required fields and try again.</Strong></div>
-            </div>
-
-            <div class="table-responsive" ng-if="(InvalidFilter=='DEFAULT')">
-
-            </div>
-
-        </div>
-
-        <div class="dedivgraph">
-            <div class="box-body table-responsive" style="display: block;">
-                <div id="containerGraph" class="graphWrap"></div>
             </div>
         </div>
     </div>
 </div>
 
+
+
+
+
+
+
 <script>
             String.prototype.toCamel = function () {
                 return this.replace(/(\-[a-z])/g, function ($1) { return $.toUpperCase().replace('-', ''); });
             };
-            
+            //$('#User').multiselect({
+
+            //    templates: { // Use the Awesome Bootstrap Checkbox structure
+
+            //        li: '<li><div class="checkbox"><label></label></div></li>'
+            //    }
+
+            //});
+            //$('#Activity').multiselect({
+
+            //    templates: { // Use the Awesome Bootstrap Checkbox structure
+
+            //        li: '<li><div class="checkbox"><label></label></div></li>'
+            //    }
+
+            //});
+
+            //$('#Document').multiselect({
+
+            //    templates: { // Use the Awesome Bootstrap Checkbox structure
+
+            //        li: '<li><div class="checkbox"><label></label></div></li>'
+            //    }
+
+            //});
+            //$('.multiselect-container div.checkbox').each(function (index) {
+
+            //    var id = 'multiselect-' + index,
+
+            //        $input = $(this).find('input');
+
+            //    // Associate the label and the input
+
+            //    $(this).find('label').attr('for', id);
+
+            //    $input.attr('id', id);
+
+            //    // Remove the input from the label wrapper
+
+            //    $input.detach();
+
+            //    // Place the input back in before the label
+
+            //    $input.prependTo($(this));
+
+            //    $(this).click(function (e) {
+
+            //        // Prevents the click from bubbling up and hiding the dropdown
+
+            //        e.stopPropagation();
+
+            //    });
+
+
+            //});
 </script>
 
 <script>
@@ -190,5 +323,5 @@
             var urlGetDataEntryStat = "@Url.Action("GetDataEntryStat", "WorkflowManager", new { Area = "WorkflowManager"})";
 
 </script>
-
+    </div>
 

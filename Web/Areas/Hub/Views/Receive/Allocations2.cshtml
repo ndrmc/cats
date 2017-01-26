@@ -38,6 +38,7 @@
 
 @{
     int allocationType = ViewBag.CommoditySourceType;
+    var filterGRN = ViewBag.FilterGRN;
     string quanityColumnHeader = "MT";
     decimal toqt = 1;
 
@@ -59,7 +60,7 @@
     .DataSource(dataSource => dataSource
         .Ajax()
         .Model(model => model.Id(p => p.ReceiptAllocationID))
-        .Read(read => read.Action("AllocationListAjax", "Receive", new { type = allocationType, grn = Request.QueryString["FilterGRN"] }))
+        .Read(read => read.Action("AllocationListAjax", "Receive", new { type = allocationType, grn = "" }))
         .Destroy(update => update.Action("DeleteAjax", "Receive"))
 
         ).Events(events => events.DataBound("dataBound"))
@@ -90,7 +91,7 @@
         }
 
         columns.Bound(dis => dis.BusinessProcessID).Title("History").ClientTemplate("<a href='javascript:workflow_history_new(\"#=BusinessProcessID#\")'>History</a>");
-       
+
     })
 
 )
@@ -108,16 +109,17 @@
         .DataSource(dataSource => dataSource
             .Ajax()
             .ServerOperation(false)
-            .Read(read => read.Action("ReceiveListAjax", "Receive", new { ReceiptAllocationID = "#=ReceiptAllocationID#", grn = Request.QueryString["FilterGRN"] }))
+            .Read(read => read.Action("ReceiveListAjax", "Receive", new { ReceiptAllocationID = "#=ReceiptAllocationID#", grn = "" }).Data("AddFilter"))
 
             )
     .HtmlAttributes(new { style = "max-height:250px;" })
     .Scrollable()
     .Sortable()
     .ClientDetailTemplateId("template_receive_detail")
-    .ToClientTemplate())
-
-</script>
+          .ToClientTemplate())
+    
+    
+ </script>
 
 <script id="template_receive_detail" type="text/kendo-tmpl">
 
@@ -150,6 +152,9 @@
 
 
 <script>
+    function AddFilter() {
+        return { grn: $("#FilterGRN").val() };
+    }
 
     function numberWithCommas(x) {
         var parts = x.toFixed(3).toString().split(".");
@@ -179,6 +184,27 @@
     function dataBound() {
         if (document.getElementById('FilterGRN').value !== "") this.expandRow(this.tbody.find("tr.k-master-row").first());
     }
+        function workflow_history_new(BusinessProcessID) {
+          @*var url = '@Url.Action("Close", "ReceiptAllocation")';*@
+          var attribs = { id: BusinessProcessID };
+        //var title = "Close Receipt Plan";
+        openModalEditor(history_link + BusinessProcessID);
+        //showModalEditor(history_link, attribs, '');
+    }
+    function openModalEditor(url, attribs) {
+        //$("#modal_label").html(title);
+        $("#modal_message").html("...Loading");
+        $("#modalHistoryBody").html("");
+        $('#modalHistory').modal();
 
+        $.get(url, attribs, function (data) {
+            $("#modal_message").html("");
+            $("#modalHistoryBody").html(data);
+            setTimeout(function () {
+                initValidation();
+            }, 1000);
+
+        });
+    }
 </script>
 

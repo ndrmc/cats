@@ -231,22 +231,24 @@ namespace Cats.Areas.Logistics.Controllers
                 StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Edited &&
                 p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
 
+                BusinessProcessState businessProcessState = new BusinessProcessState();
                 // Partial workflow implementation
                 if (_localPurchaseService.EditLocalPurchase(localPurchase))
                 {
                     if (stateTemplate != null)
                     {
-                        var businessProcessState = new BusinessProcessState()
-                        {
-                            StateID = stateTemplate.StateTemplateID, // mark as edited
-                            PerformedBy = HttpContext.User.Identity.Name,
-                            DatePerformed = DateTime.Now,
-                            Comment = "Local Purchase is edited, a system internally captured data.",
-                            ParentBusinessProcessID = bps.ParentBusinessProcessID
-                        };
+                        //businessProcessState = new BusinessProcessState()
+                        //{
+                        businessProcessState.StateID = stateTemplate.StateTemplateID; // mark as edited
+                        businessProcessState.PerformedBy = HttpContext.User.Identity.Name;
+                        businessProcessState.DatePerformed = DateTime.Now;
+                        businessProcessState.Comment = "Local Purchase is edited, a system internally captured data.";
+                        businessProcessState.ParentBusinessProcessID = localPurchase.BusinessProcessID;
+                        _businessProcessService.InsertBusinessProcessState(businessProcessState);
+                        //};
 
                         // Promot
-                        _businessProcessService.PromotWorkflow(businessProcessState);
+                        //_businessProcessService.PromotWorkflow(businessProcessState);
                     }
                 }
 
@@ -273,20 +275,23 @@ namespace Cats.Areas.Logistics.Controllers
                     // Partial workflow implementation
                     if (stateTemplate != null)
                     {
-                        var businessProcessState = new BusinessProcessState()
-                        {
-                            StateID = stateTemplate.StateTemplateID, // mark as edited
-                            PerformedBy = HttpContext.User.Identity.Name,
-                            DatePerformed = DateTime.Now,
-                            Comment =
-                                "Local Purchase detail is edited, " + localPurchaseDetails +
-                                "\n a system internally captured data.",
-                            ParentBusinessProcessID = bps.ParentBusinessProcessID
-                        };
-
-                        // Promot
-                        _businessProcessService.PromotWorkflow(businessProcessState);
+                        businessProcessState.StateID = stateTemplate.StateTemplateID; // mark as edited
+                        businessProcessState.PerformedBy = HttpContext.User.Identity.Name;
+                        businessProcessState.DatePerformed = DateTime.Now;
+                        businessProcessState.Comment = businessProcessState.Comment + " Local Purchase detail is edited, " + localPurchaseDetails +
+                                                       "\n a system internally captured data.";
+                        businessProcessState.ParentBusinessProcessID = bps.ParentBusinessProcessID;
                     }
+                }
+
+                try
+                {
+                    // Promot
+                    _businessProcessService.PromotWorkflow(businessProcessState);
+                }
+                catch (Exception exc)
+                {
+                    
                 }
 
                 TempData["success"] = "Local Purchase Sucessfully Updated";
@@ -332,30 +337,30 @@ namespace Cats.Areas.Logistics.Controllers
         private IEnumerable<LocalPurchaseViewModel> GetLocalPurchase(IEnumerable<LocalPurchase> localPurchases)
         {
             return (from localPurchase in localPurchases
-                let status =
-                    localPurchase.BusinessProcess.CurrentState != null
-                        ? localPurchase.BusinessProcess.CurrentState.BaseStateTemplate.Name
-                        : string.Empty
-                //_commonService.GetStatusName(WORKFLOW.LocalPUrchase, localPurchase.StatusID)
-                select new LocalPurchaseViewModel
-                {
-                    LocalPurchaseID = localPurchase.LocalPurchaseID,
-                    CommodityID = localPurchase.CommodityID,
-                    Commodity = localPurchase.Commodity!=null?localPurchase.Commodity.Name:string.Empty,
-                    ProgramID = localPurchase.ProgramID,
-                    Program = localPurchase.Program.Name,
-                    DonorID = localPurchase.DonorID,
-                    DonorName = localPurchase.Donor.Name,
-                    SupplierName = localPurchase.SupplierName,
-                    ReferenceNumber = localPurchase.ReferenceNumber,
-                    SiNumber = localPurchase.ShippingInstruction.Value,
-                    Quantity = localPurchase.Quantity,
-                    ProjectCode = localPurchase.ProjectCode,
-                    Status = status,
-                    BusinessProcessID = localPurchase.BusinessProcessID,
-                    //BusinessProcess = localPurchase.BusinessProcess
-                    //CreatedDate = localPurchase.DateCreated,                     
-                });
+                    let status =
+                        localPurchase.BusinessProcess.CurrentState != null
+                            ? localPurchase.BusinessProcess.CurrentState.BaseStateTemplate.Name
+                            : string.Empty
+                    //_commonService.GetStatusName(WORKFLOW.LocalPUrchase, localPurchase.StatusID)
+                    select new LocalPurchaseViewModel
+                    {
+                        LocalPurchaseID = localPurchase.LocalPurchaseID,
+                        CommodityID = localPurchase.CommodityID,
+                        Commodity = localPurchase.Commodity != null ? localPurchase.Commodity.Name : string.Empty,
+                        ProgramID = localPurchase.ProgramID,
+                        Program = localPurchase.Program.Name,
+                        DonorID = localPurchase.DonorID,
+                        DonorName = localPurchase.Donor.Name,
+                        SupplierName = localPurchase.SupplierName,
+                        ReferenceNumber = localPurchase.ReferenceNumber,
+                        SiNumber = localPurchase.ShippingInstruction.Value,
+                        Quantity = localPurchase.Quantity,
+                        ProjectCode = localPurchase.ProjectCode,
+                        Status = status,
+                        BusinessProcessID = localPurchase.BusinessProcessID,
+                        //BusinessProcess = localPurchase.BusinessProcess
+                        //CreatedDate = localPurchase.DateCreated,                     
+                    });
         }
 
         private IEnumerable<LocalPurchaseDetailViewModel> GetNewLocalPurchaseDetail()

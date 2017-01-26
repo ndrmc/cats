@@ -25,6 +25,7 @@ namespace Cats.ViewModelBinder
             var giftCertificateViewModel = new GiftCertificateViewModel();
 
             giftCertificateViewModel.GiftCertificateID = giftCertificateModel.GiftCertificateID;
+            
             giftCertificateViewModel.GiftDate = giftCertificateModel.GiftDate;
             giftCertificateViewModel.DonorID = giftCertificateModel.DonorID;
             giftCertificateViewModel.SINumber = giftCertificateModel.ShippingInstruction.Value;
@@ -125,7 +126,6 @@ namespace Cats.ViewModelBinder
             giftCertificateDetail.DCurrencyID = giftCertificateDetailsViewModel.DCurrencyID;
             giftCertificateDetail.DFundSourceID = giftCertificateDetailsViewModel.DFundSourceID;
             giftCertificateDetail.DBudgetTypeID = giftCertificateDetailsViewModel.DBudgetTypeID;
-            giftCertificateDetail.GiftCertificateDetailID = giftCertificateDetailsViewModel.GiftCertificateDetailID;
             giftCertificateDetail.GiftCertificateDetailID = giftCertificateDetailsViewModel.GiftCertificateDetailID;
             giftCertificateDetail.GiftCertificateID = giftCertificateDetailsViewModel.GiftCertificateID;
             giftCertificateDetail.TransactionGroupID = giftCertificateDetailsViewModel.TransactionGroupID;

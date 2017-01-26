@@ -13,17 +13,19 @@ namespace Cats.Services.Hub
     public class TransporterService : ITransporterService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWorkflowActivityService _IWorkflowActivityService;
 
-        public TransporterService(IUnitOfWork unitOfWork)
+        public TransporterService(IUnitOfWork unitOfWork, IWorkflowActivityService _IWorkflowActivityService)
         {
-            _unitOfWork = unitOfWork;
+            this._unitOfWork = unitOfWork;
+            this._IWorkflowActivityService = _IWorkflowActivityService;
         }
 
         public bool AddTransporter(Transporter entity)
        {
             
            _unitOfWork.TransporterRepository.Add(entity);
-            WorkflowActivityUtil.EnterCreateWorkflow(entity);
+            _IWorkflowActivityService.EnterCreateWorkflow(entity);
             _unitOfWork.Save();
            return true;
            
@@ -31,40 +33,58 @@ namespace Cats.Services.Hub
        public bool EditTransporter(Transporter entity)
        {
            _unitOfWork.TransporterRepository.Edit(entity);
-           _unitOfWork.Save();
+            _IWorkflowActivityService.EnterEditWorkflow(entity);
+
+            _unitOfWork.Save();
            return true;
 
        }
          public bool DeleteTransporter(Transporter entity)
         {
              if(entity==null) return false;
-           _unitOfWork.TransporterRepository.Delete(entity);
-           _unitOfWork.Save();
-           return true;
+            _IWorkflowActivityService.EnterDeleteWorkflow(entity);
+
+            _unitOfWork.TransporterRepository.Edit(entity);
+
+            _unitOfWork.Save();
+            return true;
         }
        public  bool DeleteById(int id)
        {
            var entity = _unitOfWork.TransporterRepository.FindById(id);
            if(entity==null) return false;
-           _unitOfWork.TransporterRepository.Delete(entity);
-           _unitOfWork.Save();
-           return true;
+            DeleteTransporter(entity);
+
+            return true;
        }
        public List<Transporter> GetAllTransporter()
        {
-           return _unitOfWork.TransporterRepository.GetAll();
-       } 
-       public Transporter FindById(int id)
+         
+            var allRecords = _unitOfWork.TransporterRepository.GetAll().Cast<IWorkflowHub>().ToList();
+            return _IWorkflowActivityService.ExcludeDeletedRecordsHub(allRecords).Cast<Transporter>().ToList<Transporter>();
+
+        }
+        public Transporter FindById(int id)
        {
-           return _unitOfWork.TransporterRepository.FindById(id);
-       }
-       public List<Transporter> FindBy(Expression<Func<Transporter, bool>> predicate)
+           var record= _unitOfWork.TransporterRepository.FindById(id);
+
+            List<IWorkflowHub> lst = new List<IWorkflowHub>();
+            lst.Add((IWorkflowHub)record);
+            return _IWorkflowActivityService.ExcludeDeletedRecordsHub(lst).Cast<Transporter>().FirstOrDefault<Transporter>();
+             
+
+        }
+        public List<Transporter> FindBy(Expression<Func<Transporter, bool>> predicate)
        {
-           return _unitOfWork.TransporterRepository.FindBy(predicate);
-       }
-       
-       
-       public void Dispose()
+     
+
+            var allRecords = _unitOfWork.TransporterRepository.FindBy(predicate).Cast<IWorkflowHub>().ToList();
+            return _IWorkflowActivityService.ExcludeDeletedRecordsHub(allRecords).Cast<Transporter>().ToList<Transporter>();
+
+        }
+
+
+        public void Dispose()
        {
            _unitOfWork.Dispose();
            
@@ -74,8 +94,13 @@ namespace Cats.Services.Hub
         {
              
        
-           var trans = _unitOfWork.TransporterRepository.FindBy(t=>t.Name == name && t.TransporterID!=transporterID).Any();
-           if (trans == false) return false;
+           var trans = _unitOfWork.TransporterRepository.FindBy(t=>t.Name == name && t.TransporterID!=transporterID)                ;
+
+            List<IWorkflowHub> lst = new List<IWorkflowHub>();
+            lst.Add((IWorkflowHub)trans);
+            var tr = _IWorkflowActivityService.ExcludeDeletedRecordsHub(lst).Any();
+
+            if (tr == false) return false;
            return true;
 
        

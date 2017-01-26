@@ -246,7 +246,8 @@ namespace Cats.Areas.Logistics.Controllers
                     DriverName = delivery.DriverName,
                     DispatchID = delivery.DispatchID,
                     BusinessProcessId = delivery.BusinessProcessId,
-                RefNo = _transporterPaymentRequestService.FindBy(r => r.GIN == delivery.InvoiceNo).Select(t => t.ReferenceNo).FirstOrDefault()
+                    DeliveryBusinessProcessId = delivery.BusinessProcessId,
+                    RefNo = _transporterPaymentRequestService.FindBy(r => r.GIN == delivery.InvoiceNo).Select(t => t.ReferenceNo).FirstOrDefault()
                 };
             }
             return deliveryViewModel;
@@ -512,7 +513,7 @@ namespace Cats.Areas.Logistics.Controllers
 
                     BusinessProcess bp = _businessProcessService.CreateBusinessProcess(BP_PR, transporterPaymentRequest.TransporterPaymentRequestID,
                                                                                         "PaymentRequest", createdstate);
-                    transporterPaymentRequest.BusinessProcessID = bp.BusinessProcessID;
+                    transporterPaymentRequest.BusinessProcessId = bp.BusinessProcessID;
                     transporterPaymentRequest.RequestedDate = DateTime.Now;
                     _transporterPaymentRequestService.AddTransporterPaymentRequest(transporterPaymentRequest);
                 }

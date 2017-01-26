@@ -42,7 +42,7 @@ namespace Cats.ViewModelBinder
                 BindFlowTemplateViewModel(
                     reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates).ToList();
             requisition.IsDraft = reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Draft";
-            requisition.BusinessProcessID = reliefRequisition.BusinessProcessID;
+            requisition.BusinessProcessID = reliefRequisition.BusinessProcessId;
 
             requisition.ApprovedId =
               reliefRequisition.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(a =>

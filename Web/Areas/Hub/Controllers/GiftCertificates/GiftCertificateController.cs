@@ -6,6 +6,8 @@ using Cats.Services.Hub;
 using Cats.Web.Hub;
 using Newtonsoft.Json;
 using Telerik.Web.Mvc;
+using Cats.Services.Workflows;
+using System;
 
 namespace Cats.Areas.Hub.Controllers
 {
@@ -76,6 +78,10 @@ namespace Cats.Areas.Hub.Controllers
 
         public ActionResult Print(int id)
         {
+            var giftCertificate = _giftCertificateService.FindById(id);
+
+            WorkflowActivityUtil.EnterPrintWorkflow(giftCertificate, String.Format("The document {0} has been Printed"));
+
             return RedirectToAction("LetterPreview", "LetterTemplate", new { certificateId = id });
         }
 

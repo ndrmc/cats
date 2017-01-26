@@ -36,9 +36,10 @@ namespace Cats.Services.EarlyWarning
         }
         public bool EditGiftCertificate(GiftCertificate giftCertificate)
         {
-            _unitOfWork.GiftCertificateRepository.Edit(giftCertificate);
 
+            _unitOfWork.GiftCertificateRepository.Edit(giftCertificate);
             _IWorkflowActivityService.EnterEditWorkflow(giftCertificate);
+
 
             _unitOfWork.Save();
             return true;
@@ -47,9 +48,11 @@ namespace Cats.Services.EarlyWarning
         public bool DeleteGiftCertificate(GiftCertificate giftCertificate)
         {
             if (giftCertificate == null) return false;
-            _IWorkflowActivityService.EnterEditWorkflow(giftCertificate);
+   
+            _IWorkflowActivityService.EnterDeleteWorkflow(giftCertificate);
 
-            _unitOfWork.GiftCertificateRepository.Delete(giftCertificate);
+            _unitOfWork.GiftCertificateRepository.Edit(giftCertificate);
+
             _unitOfWork.Save();
             return true;
         }
@@ -60,21 +63,33 @@ namespace Cats.Services.EarlyWarning
 
             _IWorkflowActivityService.EnterEditWorkflow(entity);
 
-            _unitOfWork.GiftCertificateRepository.Delete(entity);
-            _unitOfWork.Save();
+            DeleteGiftCertificate(entity);
+             
             return true;
         }
         public List<GiftCertificate> GetAllGiftCertificate()
         {
-            return _unitOfWork.GiftCertificateRepository.GetAll();
+            var allRecords = _unitOfWork.GiftCertificateRepository.GetAll().Cast<IWorkflow>().ToList();
+            return _IWorkflowActivityService.ExcludeDeletedRecords(allRecords).Cast<GiftCertificate>().ToList<GiftCertificate>();
+
+         
         }
         public GiftCertificate FindById(int id)
         {
-            return _unitOfWork.GiftCertificateRepository.FindById(id);
+            List<IWorkflow> lst = new List<IWorkflow>();
+
+            lst.Add(_unitOfWork.GiftCertificateRepository.FindById(id));
+
+            return _IWorkflowActivityService.ExcludeDeletedRecords(lst).Cast<GiftCertificate>().FirstOrDefault<GiftCertificate>();
+
+           
         }
         public List<GiftCertificate> FindBy(Expression<Func<GiftCertificate, bool>> predicate)
         {
-            return _unitOfWork.GiftCertificateRepository.FindBy(predicate);
+            var allRecords = _unitOfWork.GiftCertificateRepository.FindBy(predicate).Cast<IWorkflow>().ToList();
+            return _IWorkflowActivityService.ExcludeDeletedRecords(allRecords).Cast<GiftCertificate>().ToList<GiftCertificate>();
+
+           
         }
         #endregion
 
@@ -91,7 +106,13 @@ namespace Cats.Services.EarlyWarning
 
         public GiftCertificate FindBySINumber(string siNumber)
         {
-            return _unitOfWork.GiftCertificateRepository.FindBy(t => t.ShippingInstruction.Value == siNumber).FirstOrDefault();
+            List<IWorkflow> lst = new List<IWorkflow>();
+
+            lst.Add(_unitOfWork.GiftCertificateRepository.FindBy(t => t.ShippingInstruction.Value == siNumber).FirstOrDefault());
+
+            return _IWorkflowActivityService.ExcludeDeletedRecords(lst).Cast<GiftCertificate>().FirstOrDefault<GiftCertificate>();
+
+          
         }
 
         public bool IsSINumberNewOrEdit(string siNumber, int giftCertificateID)
@@ -106,11 +127,15 @@ namespace Cats.Services.EarlyWarning
 
         public bool IsBillOfLoadingDuplicate(string billOfLoading)
         {
-            return _unitOfWork.GiftCertificateDetailRepository.Get(p => p.BillOfLoading == billOfLoading).Any();
+            var allRecords= _unitOfWork.GiftCertificateDetailRepository.Get(p => p.BillOfLoading == billOfLoading).Cast<IWorkflow>().ToList();
+            return _IWorkflowActivityService.ExcludeDeletedRecords(allRecords).Any();
+ 
         }
         public IEnumerable<GiftCertificate> Get(Expression<Func<GiftCertificate, bool>> filter = null, Func<IQueryable<GiftCertificate>, IOrderedQueryable<GiftCertificate>> orderBy = null, string includeProperties = "")
         {
-            return _unitOfWork.GiftCertificateRepository.Get(filter, orderBy, includeProperties);
+            var allRecords = _unitOfWork.GiftCertificateRepository.Get(filter, orderBy, includeProperties).Cast<IWorkflow>().ToList();
+
+            return _IWorkflowActivityService.ExcludeDeletedRecords(allRecords).Cast<GiftCertificate>().ToList<GiftCertificate>();
         }
         
       

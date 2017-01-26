@@ -78,8 +78,9 @@
 
 @using (Html.BeginForm("Close", "DispatchAllocation", FormMethod.Post, new { @id = "frm_edit_inline" }))
     {
-           @Html.HiddenFor(model => model.DispatchAllocationID)
-    <!--
+
+          @Html.HiddenFor(model => model.DispatchAllocationID)
+    
     <p style="clear: both">
         <input type="submit" style="width: 80px; height: 25px; horiz-align: center" class="t-button" value="@Html.Translate("Close")"
             onclick="return CloseDispatchAllocationForm(this)" />
@@ -87,5 +88,5 @@
         value="@Html.Translate("Cancel")"
             onclick="cancel()" />
     </p>
-        -->
+
 }

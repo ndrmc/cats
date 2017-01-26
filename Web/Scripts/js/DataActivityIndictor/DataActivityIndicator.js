@@ -1,4 +1,13 @@
-﻿DataEntryIndicatorApp = angular.module("DataEntryIndicatorApp", []).controller('WorkflowActController', function WorkflowActController($scope, DataServices, $http, $timeout) {
+﻿/*
+ * TODO:
+ * I need to refactor this  file to separate  js files of service , factory and directive.
+ * refactor the variable names,make mnemonic
+ * Add comments
+ *
+ */
+
+
+DataEntryIndicatorApp = angular.module("DataEntryIndicatorApp", []).controller('WorkflowActController', function WorkflowActController($scope, DataServices, $http, $timeout) {
 
 
 
@@ -31,6 +40,7 @@
         selectedEndDate: ''
     }
 
+
     $scope.controlData = {
         lookupUsers: [],
         lookupActivities: [],
@@ -38,6 +48,50 @@
         mappingDocumentToActivities: []
 
     };
+
+    $scope.openDetail = function(userName, indexOfActivity)
+    {
+
+        var selectedActivityName = $scope.displayedWorkflowNames[indexOfActivity];
+
+        $.each($scope.displayedWorkflowList, function (index, workflowListObj) {
+
+            var name = workflowListObj.name.trim().toCamel();;
+
+            $.each(workflowListObj.dashboardDataEntries, function (index, dashBoardEntry) {
+
+                if (dashBoardEntry.activityName == selectedActivityName && name == userName) {
+                    console.log(buildDetailMsg(dashBoardEntry.detail));
+                    return false;
+                }
+
+            })
+        })
+
+
+    }
+
+    function buildDetailMsg(detailData)
+    {
+
+        var index = 1;
+        var msg = "";
+        var breakIndicator = "\n *------------------------------------------------------------* \n";
+        var separator = " => ";
+
+        angular.forEach(detailData, function (valueDetail, detail) {
+            msg = msg+(index++).toString()+") ";
+            angular.forEach(valueDetail, function (value, key) {
+                msg = msg + key + separator;
+                msg = msg + value + " , ";
+            });
+            msg = msg + breakIndicator;
+
+        });
+
+        return msg;
+
+      }
 
     function getStartDate() {
 
@@ -216,7 +270,6 @@
 
     }
 
-
     var filterIsValid = function () {
 
         if ($scope.filterData.selectedStartDate.trim() == "" && $scope.filterData.selectedEndDate.trim() == "")
@@ -283,20 +336,23 @@
                     //BUILD USER X ACTIVITY COUNT
                     //iterate the activity lookup
                     found = false;
+
                     userActivityname = activityCount.trim().toCamel();
+
                     $.each(workflowListObj.dashboardDataEntries, function (index, headerActivityName) {
                         //iterate activity count
 
                         //check if the selected header activity name is equal to the activitycount name
 
-
                         if (headerActivityName.activityName == userActivityname) {
+
                             rowCount.push(headerActivityName.activityCount);
+
                             found = true;
                         }
 
-
                     });
+
                     if (!found)
                     { rowCount.push(0); }
                 });
@@ -509,7 +565,9 @@
                             name = workflowActObj.Activity.Trim().toCamel();
 
                             //Check if already exists or not?
-                            (i = $scope.displayedWorkflowNames.indexOf(name)) < 0 ? $scope.displayedWorkflowNames.push(name) : $scope.displayedWorkflowNames.splice(i, 1);
+                            (i = $scope.displayedWorkflowNames.indexOf(name)) < 0 ?
+                            $scope.displayedWorkflowNames.push(name) : $scope.displayedWorkflowNames.splice(i, 1);
+
                         });
                     }
                 };
@@ -521,7 +579,6 @@
 
                     angular.forEach(data[0].dashboardDataEntries, function (value) {
                         if (value.activityName == columnName)
-
                             sum = sum + parseInt(value.activityCount);
                     });
 

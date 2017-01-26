@@ -8,7 +8,7 @@ using Cats.Models.Constant;
 using Cats.Services.Common;
 using Cats.Services.EarlyWarning;
 using Cats.Services.Transaction;
-
+using Cats.Services.Workflows;
 
 namespace Cats.Services.Logistics
 {
@@ -19,10 +19,13 @@ namespace Cats.Services.Logistics
         private readonly IApplicationSettingService _applicationSettingService;
         private readonly IStateTemplateService _stateTemplateService;
         private readonly IBusinessProcessService _businessProcessService;
+        private readonly IWorkflowActivityService _workflowActivityService;
 
-        public TransferService(IUnitOfWork unitOfWork, IApplicationSettingService applicationSettingService,
+        public TransferService(IUnitOfWork unitOfWork, IWorkflowActivityService workflowActivityService ,IApplicationSettingService applicationSettingService,
             IStateTemplateService stateTemplateService, IBusinessProcessService businessProcessService)
         {
+            _workflowActivityService = workflowActivityService;
+
             _unitOfWork = unitOfWork;
             _applicationSettingService = applicationSettingService;
             _stateTemplateService = stateTemplateService;
@@ -107,29 +110,30 @@ namespace Cats.Services.Logistics
         {
             if (transfer != null)
             {
-                var processTemplate = _applicationSettingService.FindBy(t => t.SettingName == "LocalPurchaseReceiptPlanWorkflow").FirstOrDefault();
-                var processTemplateId = int.Parse(processTemplate.SettingValue);
-                var processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
-                var stateTemplate = processStates.FirstOrDefault(t => t.Name == "Approved");
+                //var processTemplate = _applicationSettingService.FindBy(t => t.SettingName == "SwapWorkflow").FirstOrDefault();
+                //var processTemplateId = int.Parse(processTemplate.SettingValue);
+                //var processStates = _stateTemplateService.FindBy(t => t.ParentProcessTemplateID == processTemplateId);
+                //var stateTemplate = processStates.FirstOrDefault(t => t.Name == "Approved");
 
-                if (stateTemplate == null) return false;
+                //if (stateTemplate == null) return false;
 
-                var businessProcessState = new BusinessProcessState()
-                {
-                    StateID = stateTemplate.StateTemplateID,
-                    PerformedBy = username,
-                    DatePerformed = DateTime.Now,
-                    Comment = "local purchase approved",
-                    //AttachmentFile = fileName,
-                    ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
-                };
-                BusinessProcess bp = _businessProcessService.CreateBusinessProcess(
-                    stateTemplate.ParentProcessTemplateID, 0, "LocalPurchaseReceiptPlanWorkflow", businessProcessState);
+                //var businessProcessState = new BusinessProcessState()
+                //{
+                //    StateID = stateTemplate.StateTemplateID,
+                //    PerformedBy = username,
+                //    DatePerformed = DateTime.Now,
+                //    Comment = "Swap approved",
+                //    //AttachmentFile = fileName,
+                //    ParentBusinessProcessID = stateTemplate.ParentProcessTemplateID
+                //};
+                //BusinessProcess bp = _businessProcessService.CreateBusinessProcess(
+                //    stateTemplate.ParentProcessTemplateID, 0, "SwapWorkflow", businessProcessState);
 
-                if (bp == null) return false;
+                //if (bp == null) return false;
+                //transfer.BusinessProcessID = bp.BusinessProcessID;
 
                 transfer.StatusID = (int)LocalPurchaseStatus.Approved;
-                transfer.BusinessProcessID = bp.BusinessProcessID;
+                
                 _unitOfWork.TransferRepository.Edit(transfer);
 
                 var reciptAllocaltion = new ReceiptAllocation()
@@ -186,6 +190,9 @@ namespace Cats.Services.Logistics
                     };
                     _unitOfWork.ReliefRequisitionRepository.Add(relifRequisition);
 
+                    _workflowActivityService.EnterCreateWorkflow(relifRequisition);
+
+
                     var relifRequistionDetail = new ReliefRequisitionDetail();
 
                     relifRequistionDetail.DonorID = 1;
@@ -232,9 +239,9 @@ namespace Cats.Services.Logistics
                         stateTemplate.ParentProcessTemplateID, 0, "ReliefRequisitionWorkflow", businessProcessState);
 
                     if (bp == null) return false;
-                    relifRequisition.BusinessProcessID = bp.BusinessProcessID;
+                    relifRequisition.BusinessProcessId = bp.BusinessProcessID;
 
-                    relifRequisition.BusinessProcessID = businessProcessState.ParentBusinessProcessID;
+                    relifRequisition.BusinessProcessId = businessProcessState.ParentBusinessProcessID;
 
                     if (transfer.Commodity.ParentID == null)
                     {
@@ -465,13 +472,15 @@ namespace Cats.Services.Logistics
                 DatePerformed = DateTime.Now,
                 Comment = "Internally requisition approved",
                 //AttachmentFile = fileName,
-                ParentBusinessProcessID = requisition.BusinessProcessID
+                ParentBusinessProcessID = requisition.BusinessProcessId
             };
 
             // Promot
             _businessProcessService.PromotWorkflow(businessProcessState);
 
             _unitOfWork.ReliefRequisitionRepository.Edit(requisition);
+            _workflowActivityService.EnterEditWorkflow(requisition);
+
             _unitOfWork.Save();
             //return result;
             return true;

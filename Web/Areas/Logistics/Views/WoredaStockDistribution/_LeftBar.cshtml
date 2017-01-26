@@ -15,7 +15,7 @@
 
     @using (Html.BeginForm("Create", "WoredaStockDistribution", FormMethod.Get, new {@class="form"}))
     {
-        
+
         <div class="portlet solid  bordered" style="border-right: 2px solid #e6e9ec !important; border-left: none !important;">
                 <div class="portlet-title">
                     <div class="caption font-green-sharp">
@@ -90,20 +90,21 @@
                     </div>
                 </div>
             </div>
-        
+
     }
 
 <script>
-    
+
     var admin_region_hash = {};
     var admin_zone_hash = {};
 
     $(function() {
         $.getJSON("@Url.Action("GetAdminUnits", "WoredaStockDistribution", new { Area = "Logistics" })", {}, function(data) {
-            
-            document.getElementById("ZoneID").disabled = true;
-            document.getElementById("WoredaID").disabled = true;
-            
+
+            //document.getElementById("ZoneID").disabled = true;
+            //document.getElementById("WoredaID").disabled = true;
+            $("select#ZoneID").prop("disable",  true);
+            $("select#WoredaID").prop("disable", true);
             var msg = "";
             for (var i in data) {
                 msg += "\n" + data[i].RegionName;
@@ -111,7 +112,7 @@
                 admin_region_hash[key] = data[i];
 
                 var count = data[i].Zones.length;
-      
+
 
                 for (var j = 0; j < count; j++) {
                     var keyz = data[i].Zones[j].ZoneID;
@@ -125,17 +126,17 @@
             $.each(data, function (i, program) {
                 programs += "<option value='" + program.ProgramID + "'>" + program.ProgramName + "</option>";
             });
-            $("#ProgramID").html(programs);
+            $("select#ProgramID").html(programs);
         });
 
         $("#RegionID").change(function () {
             var regionId = $("#RegionID").val();
             var region = admin_region_hash[regionId];
             var zones = region.Zones;
-            document.getElementById("ZoneID").disabled = false;
-
+            //document.getElementById("ZoneID").disabled = false;
+            $("select#ZoneID").prop("disable", false);
             //var msg = "";
-            
+
             var htm = "<select name='Zone' id ='ZoneID'  class='form-control' ><option value=''>-- Select Zone --</option> ";
             for (var z in zones) {
                 //htm += "<option value='" + zones[z].AdminUnitID + "'>" + zones[z].Name + "</option>";
@@ -152,8 +153,10 @@
         });
 
         function popoulateWoredas() {
-            document.getElementById("ProgramID").disabled = false;
-            document.getElementById("WoredaID").disabled = false;
+            //document.getElementById("ProgramID").disabled = false;
+            //document.getElementById("WoredaID").disabled = false;
+            $("select#ProgramID").prop("disable", false);
+            $("select#WoredaID").prop("disable", false);
             var zoneId = $("#ZoneID").val();
             //alert(zoneId);
             var woredas = admin_zone_hash[zoneId];
@@ -167,17 +170,22 @@
 
         $("#ZoneID").change(function () {
             popoulateWoredas();
-            
+
         });
     });
     $(function () {
-        document.getElementById("ProgramID").disabled = true;
-        document.getElementById("PlanID").disabled = true;
-        document.getElementById("month").disabled = true;
+        //document.getElementById("ProgramID").disabled = true;
+        //document.getElementById("PlanID").disabled = true;
+        //document.getElementById("month").disabled = true;
 
-        $("#ProgramID").change(function () {
+        $("select#ProgramID").prop("disable", true);
+        $("select#PlanID").prop("disable", true);
+        $("select#month").prop("disable", true);
+
+        $("select#ProgramID").change(function () {
             //if (($("#ZoneID").val() == null) || ($("#ZoneID").val() == "")) {}else{
-                document.getElementById("PlanID").disabled = false;
+            //document.getElementById("PlanID").disabled = false;
+            $("select#PlanID").prop("disable", false);
                 $("#div_round").hide();
                 $("#div_month").hide();
                 $.getJSON("@Url.Action("GetPlans", "WoredaStockDistribution")" + "?id=" + $("#ProgramID").val() + "&zoneID=" + $("#ZoneID").val(), function (data) {
@@ -185,20 +193,21 @@
                 $.each(data, function (i, plan) {
                     plans += "<option value='" + plan.Value + "'>" + plan.Text + "</option>";
                 });
-                $("#PlanID").html(plans);
+                $("select#PlanID").html(plans);
             });
             //}
 
 
         });
-        $("#PlanID").change(function() {
-            document.getElementById("month").disabled = false;
-            $.getJSON("@Url.Action("GetMonth", "WoredaStockDistribution")" + "?id=" + $("#PlanID").val() + "&zoneID=" + $("#ZoneID").val() + "&programId=" + $("#ProgramID").val(), function (data) {
+        $("select#PlanID").change(function() {
+            //document.getElementById("month").disabled = false;
+            $("select#month").prop("disable", false);
+            $.getJSON("@Url.Action("GetMonth", "WoredaStockDistribution")" + "?id=" + $("select#PlanID").val() + "&zoneID=" + $("#ZoneID").val() + "&programId=" + $("select#ProgramID").val(), function (data) {
                 var months = "<option value=''>-- Select Month/Round --</option>";
                 $.each(data, function(i, m) {
                     months += "<option value='" + m.Value + "'>" + m.Text + "</option>";
                 });
-                $("#month").html(months);
+                $("select#month").html(months);
             });
         });
     });

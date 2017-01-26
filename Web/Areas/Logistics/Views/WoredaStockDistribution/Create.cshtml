@@ -33,7 +33,7 @@
     @Html.HiddenFor(m => m.WoredaStockDistributionID)
 
     @Html.Hidden("DatePref", datepref);
-    
+
     <style>
         .summaryview {
             /*   width:90%;
@@ -486,7 +486,7 @@
     $(function () {
         {
 
- 
+
 
             dateprefJS = $("#DatePref").val();
         }
@@ -531,7 +531,7 @@
                    distributionEndDate.value = kendo.toString(kendo.parseDate(data.DistributionEndDate), "MM/dd/yy");
                }
 
-             
+
 
                if (validatEndingBalance(data)) {
                    save = true;
@@ -539,10 +539,10 @@
                } else {
                    save = false;
                }
-       
+
             });
         });
-   
+
 
 
     }
@@ -679,7 +679,7 @@
         var kdata = grid.dataSource.data();
         for (var i = 0; i < kdata.length; i++) {
             kdata[i].dirty = true;
-          
+
                 var distributionStartDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionStartDate");
                 var distributionEndDate = document.getElementById("WoredaDistributionDetailViewModels[" + i + "].DistributionEndDate");
                 var dsd = kendo.toString(kendo.parseDate(distributionStartDate.value), "MM/dd/yy");
@@ -688,12 +688,12 @@
                 kdata[i].DistributionEndDate = ded == null ? distributionEndDate.value : ded;
                 distributionStartDate.value = kdata[i].DistributionStartDate;
                 distributionEndDate.value = kdata[i].DistributionEndDate;
-        
+
         }
         return true;
     }
     $(function () {
- 
+
         $("#SubmitButton").click(function () {
 
             if (validateNoOfBeneficiaries() == true && validateDirectAndPublic() == true && save == true) {
@@ -701,7 +701,7 @@
                 save = false;
                 document.getElementById("frm_create_utilization").submit();
                 $(this).button('Saving...');
-               
+
 
             } else {
                 alert("You haven't make any change or  \n There is an error on the page. \n please correct the error and try again to save!");
@@ -717,10 +717,10 @@
 
     var selectedDateisStartDate = false;
     var selectedDateisEndDate = false;
-    
+
     function SetModelStartDate( startDate)
         {
-    
+
         if (currentIndex == null) return;
 
         var distributionStartDate = document.getElementById("WoredaDistributionDetailViewModels[" + currentIndex + "].DistributionStartDate");
@@ -773,7 +773,7 @@
 
     function onEdit(e) {
 
-     
+
         currentIndex = e.sender._data.indexOf(e.model);
 
 
@@ -793,7 +793,7 @@
 
             $("input[class='cats-datepicker2'][id='DistributionStartDatePref']").on("dateEditorValueChanged", function (event) {
                 SetModelStartDate(event.newDateGregorian);
-                        
+
                 var value = event.newDateEthiopian == null ? "" : event.newDateEthiopian.toString();
 
                 e.model.set('DistributionStartDatePref', value);
@@ -822,7 +822,7 @@
 
         //---------------END DATE
 
-        try{ 
+        try{
 
         if (DistributionEndDatePrefHidden != null)
             DistributionEndDatePrefHidden.val(e.model.DistributionEndDatePref);
@@ -864,8 +864,8 @@
         }
         catch (e) { }
 
-     
+
 
     }
-     
+
 </script>

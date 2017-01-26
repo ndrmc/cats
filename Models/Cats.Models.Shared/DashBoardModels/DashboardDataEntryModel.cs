@@ -13,6 +13,9 @@ namespace Cats.Models.Shared.DashBoardModels
         public int ProcessTemplateID { get; set; }
         public int StateTemplateID { get; set; }
         public int BusinessProcessID { get; set; }
+        public Object Detail { get; set; }
+
+        //public String Comment { get; set; }
         public DateTime DatePerformed { get; set; }
     }
 }

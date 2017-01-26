@@ -923,7 +923,7 @@
     <Content Include="Areas\Logistics\Views\DispatchAllocation\AllocationAdjustment.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\ReliefRequisition\PromotThese.cshtml" />
     <Content Include="Areas\Logistics\Views\DispatchAllocation\UpdateRequisition.cshtml" />
-    <Content Include="Areas\EarlyWarning\Views\Request\Allocation_old.cshtml" />
+    <Content Include="Areas\EarlyWarning\Views\Request\Allocation.cshtml" />
     <None Include="Areas\Logistics\Views\DispatchAllocation\_AllocateProjectCode.cshtml" />
     <Content Include="Content\2013.1.219\Black\editor.png" />
     <Content Include="Content\2013.1.219\Black\imagebrowser.png" />
@@ -1565,6 +1565,10 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Dashboard\dashboardcomponents.css" />
+    <Content Include="Content\Icons\loading-x.gif" />
+    <Content Include="Content\Icons\loading.gif" />
+    <Content Include="Content\Icons\Search Icon.png" />
+    <Content Include="Content\Icons\search.gif" />
     <Content Include="Content\images\CATS.png" />
     <Content Include="Content\images\CatsLogo.ico" />
     <Content Include="Content\images\CATS_Blue.ico" />
@@ -1882,7 +1886,7 @@
     <!--<Content Include="Areas\Logistics\Views\HubAllocation\Index.cshtml" />
     <Content Include="Areas\Logistics\Views\Edit.cshtml" />-->
     <!--<Content Include="Areas\Logistics\Views\HubAllocation\Edit.cshtml" />-->
-    <Content Include="Areas\EarlyWarning\Views\Request\Allocation.cshtml" />
+    <Content Include="Areas\EarlyWarning\Views\Request\Allocation_new.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\Request\Index.cshtml" />
     <Content Include="Areas\EarlyWarning\Views\Request\New.cshtml" />
     <Content Include="Helpers\Images\ajax-loader.gif" />
@@ -2196,8 +2200,12 @@
     <Content Include="Scripts\js\bootstrap-timepicker.min.js" />
     <Content Include="Scripts\js\bootstrap.calendars.picker.css" />
     <Content Include="Scripts\js\bootstrap.min.js" />
-    
+    <Content Include="Scripts\js\DataActivityIndictor\DataActivityIndicator.js" />
     <Content Include="Scripts\js\kendo.all.min.js" />
+    <Content Include="Scripts\js\SemanticUI\dropdown.js" />
+    <Content Include="Scripts\js\SemanticUI\dropdown.min.js" />
+    <Content Include="Scripts\js\SemanticUI\semantic.min.css" />
+    <Content Include="Scripts\js\SemanticUI\transition.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af-ZA.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.af.min.js" />
     <Content Include="Scripts\kendo\2013.1.319\cultures\kendo.culture.am-ET.min.js" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cats.Models
 {
-    public class TransporterPaymentRequest
+    public class TransporterPaymentRequest:IWorkflow
     {
         public int TransporterPaymentRequestID { get; set; }
         public string ReferenceNo { get; set; }
@@ -18,7 +18,7 @@ namespace Cats.Models
         public Nullable<decimal> RejectedAmount { get; set; }
         public string RejectionReason { get; set; }
         public DateTime RequestedDate { get; set; }
-        public int BusinessProcessID { get; set; }
+        public int BusinessProcessId { get; set; }
         public int? ShortageQty { get; set; }
         public string LossReason { get; set; }
         public string GIN { get; set; }

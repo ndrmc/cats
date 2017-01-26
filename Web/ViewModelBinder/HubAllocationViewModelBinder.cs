@@ -72,7 +72,7 @@ namespace Cats.ViewModelBinder
                 n.ApproveStateID =
                      req.BusinessProcess.CurrentState.BaseStateTemplate.InitialStateFlowTemplates.Where(
                          t => t.Name == "Approve SI/PC Allocation").Select(t => t.FinalStateID).FirstOrDefault();
-                n.BusinessProcessID = req.BusinessProcessID;
+                n.BusinessProcessID = req.BusinessProcessId;
                 n.IsTransfer = req.IsTransfer;
                 n.TransferId = req.TransferId;
 

@@ -47,11 +47,11 @@ namespace Cats.Areas.Logistics.Controllers
         public DeliveryReconcileController(IDispatchAllocationService dispatchAllocationService,
                                       IDeliveryService deliveryService,
             IDispatchService dispatchService,
-            Cats.Services.EarlyWarning.ICommodityService commodityService, Cats.Services.EarlyWarning.IUnitService unitService, 
+            Cats.Services.EarlyWarning.ICommodityService commodityService, Cats.Services.EarlyWarning.IUnitService unitService,
             Cats.Services.Transaction.ITransactionService transactionService,
             Cats.Services.EarlyWarning.IAdminUnitService adminUnitService, Cats.Services.EarlyWarning.IFDPService fdpService,
-            Cats.Services.Logistics.IDeliveryReconcileService deliveryReconcileService, IUserAccountService userAccountService, 
-            ILossReasonService lossReasonService,IApplicationSettingService applicationSettingService,IBusinessProcessService businessProcessService)
+            Cats.Services.Logistics.IDeliveryReconcileService deliveryReconcileService, IUserAccountService userAccountService,
+            ILossReasonService lossReasonService, IApplicationSettingService applicationSettingService, IBusinessProcessService businessProcessService)
 
         {
             _dispatchAllocationService = dispatchAllocationService;
@@ -76,12 +76,12 @@ namespace Cats.Areas.Logistics.Controllers
             var zonesList = _adminUnitService.GetAllZones(regionID);
             ViewBag.ZoneCollection = BindZoneViewModel(zonesList);
             var lossReasons = _lossReasonService.GetAllLossReason().Select(t => new
-                                                                                    {
-                                                                                        name =
+            {
+                name =
                                                                                     t.LossReasonCodeEg + "-" +
                                                                                     t.LossReasonEg,
-                                                                                        Id = t.LossReasonId
-                                                                                    });
+                Id = t.LossReasonId
+            });
 
             ViewData["LossReasons"] = lossReasons;
             return View();
@@ -107,10 +107,10 @@ namespace Cats.Areas.Logistics.Controllers
                     dispatchViewModelForReconcile.ReceivedDate = deliveryReconcile.ReceivedDate;
                     dispatchViewModelForReconcile.ReceivedDatePref = deliveryReconcile.ReceivedDate.ToCtsPreferedDateFormatShort(datePref);
                     dispatchViewModelForReconcile.LossAmount = deliveryReconcile.LossAmount;
-                    dispatchViewModelForReconcile.LossReasonId = (int) deliveryReconcile.LossReason;
+                    dispatchViewModelForReconcile.LossReasonId = (int)deliveryReconcile.LossReason;
                     dispatchViewModelForReconcile.TransactionGroupID = deliveryReconcile.TransactionGroupID;
                 }
-                    
+
             }
             var dispatchView = SetDatePreference(dispatchViewModelForReconciled).ToList();
             return Json(dispatchView.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
@@ -119,14 +119,16 @@ namespace Cats.Areas.Logistics.Controllers
         {
             if (ModelState.IsValid)
             {
+                // validate input before save
+                CustomValidateModel(dispatchViewModelForReconcile);
                 try
                 {
                     Cats.Models.BusinessProcess bp = new Cats.Models.BusinessProcess();
-                   
-                    if (dispatchViewModelForReconcile.DeliveryReconcileID!=null)
+
+                    if (dispatchViewModelForReconcile.DeliveryReconcileID != null)
                     {
                         var deliveryReconcile =
-                            _deliveryReconcileService.FindById((int) dispatchViewModelForReconcile.DeliveryReconcileID);
+                            _deliveryReconcileService.FindById((int)dispatchViewModelForReconcile.DeliveryReconcileID);
                         deliveryReconcile.GRN = dispatchViewModelForReconcile.GRN;
                         deliveryReconcile.FDPID = dispatchViewModelForReconcile.FDPID;
                         deliveryReconcile.DispatchID = dispatchViewModelForReconcile.DispatchID;
@@ -138,14 +140,14 @@ namespace Cats.Areas.Logistics.Controllers
                         deliveryReconcile.ReceivedDate = (dispatchViewModelForReconcile.ReceivedDate ?? DateTime.Now);
                         deliveryReconcile.LossAmount = dispatchViewModelForReconcile.LossAmount;
                         deliveryReconcile.LossReason = dispatchViewModelForReconcile.LossReasonId;
-                       //action workflow implementation 
+                        //action workflow implementation 
                         //if (deliveryReconcile.BusinessProcess == null)
                         //{
                         //    bp = WorkflowActivityUtil.GetNewInstance("Delivery reconsile created");
                         //    deliveryReconcile.BusinessProcessID = bp.BusinessProcessID;
                         //}
                         //else bp = deliveryReconcile.BusinessProcess;
-                        
+
                         _deliveryReconcileService.EditDeliveryReconcile(deliveryReconcile);
                         //WorkflowActivityUtil.EnterEditWorkflow(deliveryReconcile.BusinessProcess, AlertManager.GetWorkflowEdifFDPReceipt("Delivery reconsile with requisition no " + deliveryReconcile.RequsitionNo));
                         //if (bp != null)
@@ -157,7 +159,7 @@ namespace Cats.Areas.Logistics.Controllers
                     else
                     {
                         var dvmfr = dispatchViewModelForReconcile;
-                        if (dvmfr.GRN != null  && dvmfr.RequisitionNo != null && dvmfr.GIN != null 
+                        if (dvmfr.GRN != null && dvmfr.RequisitionNo != null && dvmfr.GIN != null
                             && dvmfr.ReceivedAmount != null && dvmfr.ReceivedDate != null)
                         {
                             var deliveryReconcile = new DeliveryReconcile
@@ -177,19 +179,19 @@ namespace Cats.Areas.Logistics.Controllers
                                 LossReason = dvmfr.LossReasonId
                             };
                             //Action workflow implemetation 
-                            if (deliveryReconcile.BusinessProcess == null)
-                            {
-                                bp = WorkflowActivityUtil.GetNewInstance("Delivery reconsile created");
-                                if (bp != null) deliveryReconcile.BusinessProcessID = bp.BusinessProcessID;
-                            }
-                            else bp = deliveryReconcile.BusinessProcess;
+                            //if (deliveryReconcile.BusinessProcess == null)
+                            //{
+                            //    bp = WorkflowActivityUtil.GetNewInstance("Delivery reconsile created");
+                            //    if (bp != null) deliveryReconcile.BusinessProcessId = bp.BusinessProcessID;
+                            //}
+                            //else bp = deliveryReconcile.BusinessProces/*s*/;
                             _deliveryReconcileService.AddDeliveryReconcile(deliveryReconcile);
                             _transactionService.PostDeliveryReconcileReceipt(deliveryReconcile.DeliveryReconcileID);
                             //WorkflowActivityUtil.EnterEditWorkflow(deliveryReconcile.BusinessProcess, AlertManager.GetWorkflowEdifFDPReceipt("Post delivery reconsile with requisition no " + deliveryReconcile.RequsitionNo));
-                            if (bp != null)
-                                WorkflowActivityUtil.EnterEditWorkflow(bp,
-                                    "Delivery reconcile with requision no " + deliveryReconcile.RequsitionNo +
-                                    " has been edited.");
+                            //if (bp != null)
+                            //    WorkflowActivityUtil.EnterEditWorkflow(bp,
+                            //        "Delivery reconcile with requision no " + deliveryReconcile.RequsitionNo +
+                            //        " has been edited.");
                             ModelState.AddModelError("Success", @"Success: Delivery Reconcilation Data Added.");
                         }
                         else if (dvmfr.GRN == null && dvmfr.LossAmount == null && dvmfr.LossReasonId == 0
@@ -203,15 +205,38 @@ namespace Cats.Areas.Logistics.Controllers
                             ModelState.AddModelError("Errors", @"Error: FDP not registered. All fields need to be filled.");
                         }
                     }
-                    
+
                     //return RedirectToAction("Index", new {regionID = });
                 }
                 catch (Exception ex)
                 {
-                   // ModelState.AddModelError("Errors", @"Error: FDP not registered. All fields need to be filled.");
+                    // ModelState.AddModelError("Errors", @"Error: FDP not registered. All fields need to be filled.");
                 }
             }
             return Json(new[] { dispatchViewModelForReconcile }.ToDataSourceResult(request, ModelState));
+        }
+
+        private void CustomValidateModel(DispatchViewModelForReconcile model)
+        {
+            var existingEntity2 =
+                _deliveryReconcileService
+                    .GetAllDeliveryReconciles().FirstOrDefault(d => d.DeliveryReconcileID == model.DeliveryReconcileID);
+
+            if (existingEntity2 != null)
+            {
+                var dispatch = _dispatchService.FindById(model.DispatchID);
+                var firstOrDefault = dispatch.DispatchDetails.FirstOrDefault();
+
+                if (firstOrDefault != null)
+                {
+                    var dispatchedQuantity = firstOrDefault.RequestedQuantityInMT;
+
+                    if (model.ReceivedAmount > dispatchedQuantity)
+                        ModelState.AddModelError("ReceivedAmount", @"Received quantity/amount cannot exceed from dispatched amount.");
+                    else if (model.LossAmount > dispatchedQuantity)
+                        ModelState.AddModelError("LossAmount", @"Loss quantity/amount cannot exceed from dispatched amount.");
+                }
+            }
         }
         public ActionResult ReadFDPs([DataSourceRequest]DataSourceRequest request, int selectedWoreda)
         {
@@ -235,7 +260,7 @@ namespace Cats.Areas.Logistics.Controllers
                 zoneViewModel.Zone = zone.Name;
                 foreach (var woreda in zone.AdminUnit1)
                 {
-                    var woredaViewModel = new WoredaViewModel {Woreda = woreda.Name, AdminUnitID = woreda.AdminUnitID};
+                    var woredaViewModel = new WoredaViewModel { Woreda = woreda.Name, AdminUnitID = woreda.AdminUnitID };
                     var woreda1 = woreda;
                     var fdpsInWoreda = _fdpService.Get(t => t.AdminUnitID == woreda1.AdminUnitID, null, "AdminUnit").ToList();
                     woredaViewModel.FDPs = BindFDPViewModel(fdpsInWoreda);
@@ -250,7 +275,7 @@ namespace Cats.Areas.Logistics.Controllers
             var fdpViewModels = new List<FDPViewModel>();
             foreach (var fdp in fdps)
             {
-                var fdpViewModel = new FDPViewModel {Name = fdp.Name, FDPID = fdp.FDPID, AdminUnitID = fdp.AdminUnitID};
+                var fdpViewModel = new FDPViewModel { Name = fdp.Name, FDPID = fdp.FDPID, AdminUnitID = fdp.AdminUnitID };
                 fdpViewModels.Add(fdpViewModel);
             }
             return fdpViewModels;
@@ -276,16 +301,16 @@ namespace Cats.Areas.Logistics.Controllers
                     {
                         dispatchViewModelForReconcile.MonthYear = dispatch.DispatchAllocation.Month.ToString() + " - " + dispatch.DispatchAllocation.Year.ToString();
                     }
-                    dispatchViewModelForReconcile.WeighBridgeTicketNumber = dispatch.WeighBridgeTicketNumber??"";
+                    dispatchViewModelForReconcile.WeighBridgeTicketNumber = dispatch.WeighBridgeTicketNumber ?? "";
                     dispatchViewModelForReconcile.CreatedDate = dispatch.CreatedDate;
-                    dispatchViewModelForReconcile.DispatchAllocationID = dispatch.DispatchAllocationID??new Guid();
-                    dispatchViewModelForReconcile.FDPID = dispatch.FDPID??0;
+                    dispatchViewModelForReconcile.DispatchAllocationID = dispatch.DispatchAllocationID ?? new Guid();
+                    dispatchViewModelForReconcile.FDPID = dispatch.FDPID ?? 0;
                     dispatchViewModelForReconcile.Region = dispatch.FDP.AdminUnit.AdminUnit2.AdminUnit2.Name;
                     dispatchViewModelForReconcile.Zone = dispatch.FDP.AdminUnit.AdminUnit2.Name;
                     dispatchViewModelForReconcile.Woreda = dispatch.FDP.AdminUnit.Name;
                     dispatchViewModelForReconcile.HubID = dispatch.HubID;
                     dispatchViewModelForReconcile.PlateNo_Prime = dispatch.PlateNo_Prime;
-                    dispatchViewModelForReconcile.PlateNo_Trailer = dispatch.PlateNo_Trailer??"";
+                    dispatchViewModelForReconcile.PlateNo_Trailer = dispatch.PlateNo_Trailer ?? "";
                     dispatchViewModelForReconcile.Remark = dispatch.Remark ?? "";
                     dispatchViewModelForReconcile.Round = dispatch.Round;
                     dispatchViewModelForReconcile.TransporterID = dispatch.TransporterID;

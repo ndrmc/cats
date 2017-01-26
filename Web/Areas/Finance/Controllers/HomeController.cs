@@ -269,7 +269,7 @@ namespace Cats.Areas.Finance.Controllers
                 if (dispatch != null && request.Delivery.DeliveryDetails.FirstOrDefault() != null)
                 {
                     var deliveryDetail = request.Delivery.DeliveryDetails.FirstOrDefault();
-                    var businessProcess = _businessProcessService.FindById(request.BusinessProcessID);
+                    var businessProcess = _businessProcessService.FindById(request.BusinessProcessId);
                     if (request.LabourCost == null)
                         request.LabourCost = (decimal)0.00;
                     if (request.RejectedAmount == null)
@@ -289,7 +289,7 @@ namespace Cats.Areas.Finance.Controllers
                             ShortageQty = deliveryDetail.SentQuantity.ToQuintal() - deliveryDetail.ReceivedQuantity.ToQuintal(),
                             ShortageBirr = request.ShortageBirr,
                             SentQty = deliveryDetail.SentQuantity,
-                            BusinessProcessID = request.BusinessProcessID,
+                            BusinessProcessID = request.BusinessProcessId,
                             DeliveryID = request.DeliveryID,
                             ReferenceNo = request.ReferenceNo,
                             TransportOrderID = request.TransportOrderID,

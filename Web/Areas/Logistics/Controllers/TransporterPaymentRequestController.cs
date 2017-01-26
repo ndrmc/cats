@@ -323,7 +323,7 @@ namespace Cats.Areas.Logistics.Controllers
                 }
                 _transporterPaymentRequestService.EditTransporterPaymentRequest(transporterPaymentRequest);
 
-                WorkflowActivityUtil.EnterEditWorkflow(transporterPaymentRequest.BusinessProcess, "Commodity Tarrif has been Adjusted.");
+                //WorkflowActivityUtil.EnterEditWorkflow(transporterPaymentRequest.BusinessProcess, "Commodity Tarrif has been Adjusted.");
 
                 return RedirectToAction("PaymentRequests", "TransporterPaymentRequest",
                                         new
@@ -348,7 +348,7 @@ namespace Cats.Areas.Logistics.Controllers
             if (transporterPaymentRequest != null)
             {
                 _transporterPaymentRequestService.Reject(transporterPaymentRequest);
-                WorkflowActivityUtil.EnterDelteteWorkflow(transporterPaymentRequest.BusinessProcess, AlertMessage.Workflow_RejectedDocument);
+                //WorkflowActivityUtil.EnterDelteteWorkflow(transporterPaymentRequest.BusinessProcess, AlertMessage.Workflow_RejectedDocument);
                 return Json(new[] { true }.ToDataSourceResult(request, ModelState));
             }
             else
@@ -417,7 +417,7 @@ namespace Cats.Areas.Logistics.Controllers
                     }
                 }
                 var deliveryDetail = request.Delivery.DeliveryDetails.FirstOrDefault();
-                var businessProcess = _BusinessProcessService.FindById(request.BusinessProcessID);
+                var businessProcess = _BusinessProcessService.FindById(request.BusinessProcessId);
                 if (request.LabourCost == null)
                     request.LabourCost = (decimal)0.00;
                 if (request.RejectedAmount == null)
@@ -445,7 +445,7 @@ namespace Cats.Areas.Logistics.Controllers
                     ShortageBirr = request.ShortageBirr,
                     SentQty = deliveryDetail.SentQuantity,
                     BusinessProcessID =
-                        request.BusinessProcessID,
+                        request.BusinessProcessId,
                     DeliveryID = request.DeliveryID,
                     ReferenceNo = request.ReferenceNo,
                     TransportOrderID = request.TransportOrderID,
@@ -514,7 +514,7 @@ namespace Cats.Areas.Logistics.Controllers
 
                     _transporterPaymentRequestService.EditTransporterPaymentRequest(transporterPaymentRequest);
 
-                    WorkflowActivityUtil.EnterEditWorkflow(transporterPaymentRequest.BusinessProcess,AlertMessage.Workflow_LossEntry);
+                    //WorkflowActivityUtil.EnterEditWorkflow(transporterPaymentRequest.BusinessProcess,AlertMessage.Workflow_LossEntry);
 
 
                     return RedirectToAction("PaymentRequests", "TransporterPaymentRequest",
