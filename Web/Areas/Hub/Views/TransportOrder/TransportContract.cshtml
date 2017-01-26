@@ -6,158 +6,194 @@
 
 @{
     ViewBag.Title = "TransportContract";
-    Layout = "~/Views/Shared/_MainLayout.cshtml";    
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("Transport Contract");
+    ViewBag.PageTitleDescription = "";
 }
 
-<h4>Transport Contract</h4>
-<div class="control-group form-horizontal well">
-    <div class="row">
-        <div class="span6">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(m => m.Transporter)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(m => m.Transporter, new { Disabled = true })
-                    @*<a href="@Url.Action("TransportContract","TransportOrder")">Change</a>*@
-                </div>
-            </div>
+<div class="portlet light bordered bg-inverse">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="icon-list font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("Transport Contract Header")</span>
         </div>
-        <div class="span4">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(m => m.BidDocumentNo)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(m => m.BidDocumentNo, new { Disabled = true })
-                </div>
-
-            </div>
+        <div class="tools">
+            <a href="#" class="collapse" data-original-title="" title=""></a>
+        </div>
+        <div class="actions">
+            @*< a class="btn btn-icon-only btn-default fullscreen" href="javascript:;"></a>*@
         </div>
     </div>
-    <div class="row">
-        <div class="span6">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.Label(Html.Translate("Requisition No"))
+    <div class="portlet-body">
+        <div class="form-horizontal">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="control-label col-md-4">
+                            @Html.LabelFor(m => m.Transporter)
+                        </div>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.Transporter, new { Disabled = true, @class="form-control"  })
+                            @*<a href="@Url.Action("TransportContract","TransportOrder")">Change</a>*@
+                        </div>
+                    </div>
                 </div>
-                <div class="controls">
-                    @Html.TextBoxFor(m => m.RequisitionNo, new { Disabled = true })
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="control-label col-md-4">
+                            @Html.LabelFor(m => m.BidDocumentNo)
+                        </div>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.BidDocumentNo, new { Disabled = true, @class="form-control"  })
+                        </div>
+
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="span4">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.Label(Html.Translate("Contract Number"))
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="control-label col-md-4">
+                            @Html.Label(Html.Translate("Requisition No"))
+                        </div>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.RequisitionNo, new { Disabled = true, @class="form-control"  })
+                        </div>
+                    </div>
                 </div>
-                <div class="controls">
-                    @Html.TextBoxFor(m => m.ContractNumber, new { Disabled = true })
-                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="control-label col-md-4">
+                            @Html.Label(Html.Translate("Contract Number"))
+                        </div>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.ContractNumber, new { Disabled = true, @class="form-control"  })
+                        </div>
 
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="span6">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.Label(Html.Translate("Dispatch Date"), new { @class = "cats-date-pref" })
-                </div>
-                <div class="controls">
-                    @*@foreach (var detail in Model.TransportOrderDetails)
-                    {
-                       
-                    }*@
-                    @Html.TextBoxFor(m => m.RequestedDispatchDate, new { Disabled = true })
+                    </div>
                 </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="control-label col-md-4">
+                            @Html.Label(Html.Translate("Dispatch Date"), new { @class = "cats-date-pref" })
+                        </div>
+                        <div class="col-md-6">
+                            @*@foreach (var detail in Model.TransportOrderDetails)
+                                {
 
-        <div class="span4">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.Label(Html.Translate("Transport Order Expiry"))
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(m => m.OrderExpiryDate, new { Disabled = true })
+                                }*@
+                            @Html.TextBoxFor(m => m.RequestedDispatchDate, new { Disabled = true, @class="form-control"  })
+                        </div>
+                    </div>
                 </div>
 
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="control-label col-md-4">
+                            @Html.Label(Html.Translate("Transport Order Expiry"))
+                        </div>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.OrderExpiryDate, new { Disabled = true, @class="form-control"  })
+                        </div>
+
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="span6">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.Label(Html.Translate("Region"))
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(m => m.Region, new { Disabled = true })
-                </div>
-            </div>
-        </div>
-
-        <div class="span4">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.Label(Html.Translate("Zone"))
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(m => m.Zone, new { Disabled = true })
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="control-label col-md-4">
+                            @Html.Label(Html.Translate("Region"))
+                        </div>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.Region, new { Disabled = true, @class="form-control"  })
+                        </div>
+                    </div>
                 </div>
 
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="control-label col-md-4">
+                            @Html.Label(Html.Translate("Zone"))
+                        </div>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.Zone, new { Disabled = true, @class="form-control"  })
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="icon-list font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("Transport Contract Detail")</span>
+        </div>
+        <div class="tools">
+            <a href="#" class="collapse" data-original-title="" title=""></a>
+        </div>
+        <div class="actions">
 
-@(Html.Kendo().Grid<Cats.Areas.Procurement.Models.TransportOrderDetailViewModel>()
+            <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;"></a>
+        </div>
+    </div>
+    <div class="portlet-body">
+
+        @(Html.Kendo().Grid<Cats.Areas.Procurement.Models.TransportOrderDetailViewModel>()
     .Name("grid")
     .Columns(columns =>
-        {
+    {
 
-            columns.Bound(p => p.Woreda);
-            columns.Bound(p => p.RequisitionNo);
-            columns.Bound(p => p.Commodity);
-            columns.Bound(p => p.FDP);
-            columns.ForeignKey(p => p.HubID, (IEnumerable)ViewBag.HubID, "hubID", "Name").Width(100).Title(Html.Translate("Origin Warehouse")).ClientFooterTemplate(Html.Translate("Total")); 
-           // columns.Bound(p => p.DistanceFromOrigin);
-            columns.Bound(p => p.QuantityQtl).Title("Qantity").ClientFooterTemplate("<b>#=kendo.format('{0:N0}', sum)#</b>").HtmlAttributes(new { align = "right" }).Format("{0:n2}").HeaderHtmlAttributes(new { @class = "cats-unit-pref-grid" });
-           // columns.Bound(p => p.TariffPerQtl).Title("Tariff").HtmlAttributes(new { style = "background-color:lightgray" }).Format("{0:n2}").Width(100).HtmlAttributes(new { align = "Right" });
-            columns.Bound(p => p.TotalAmount).Title("Total Amount (Qty * Tariff)").ClientFooterTemplate("<b>#=kendo.format('{0:N0}', sum)#</b>").Format("{0:N0}").HtmlAttributes(new {align="Right"}); 
+    columns.Bound(p => p.Woreda);
+    columns.Bound(p => p.RequisitionNo);
+    columns.Bound(p => p.Commodity);
+    columns.Bound(p => p.FDP);
+    columns.ForeignKey(p => p.HubID, (IEnumerable)ViewBag.HubID, "hubID", "Name").Width(100).Title(Html.Translate("Origin Warehouse")).ClientFooterTemplate(Html.Translate("<div style='text-align:right;'><b>Total</b></div>"));
+    // columns.Bound(p => p.DistanceFromOrigin);
+    columns.Bound(p => p.QuantityQtl).Title("Qantity").ClientFooterTemplate("<div style='text-align:right;'><b>#=kendo.format('{0:N0}', sum)#</b></div>").HtmlAttributes(new { align = "right" }).Format("{0:n2}").HeaderHtmlAttributes(new { @class = "cats-unit-pref-grid" });
+            // columns.Bound(p => p.TariffPerQtl).Title("Tariff").HtmlAttributes(new { style = "background-color:lightgray" }).Format("{0:n2}").Width(100).HtmlAttributes(new { align = "Right" });
+            columns.Bound(p => p.TotalAmount).Title("Total Amount (Qty * Tariff)").ClientFooterTemplate("<div style='text-align:right;'><b>#=kendo.format('{0:N0}', sum)#</b></div>").Format("{0:N0}").HtmlAttributes(new { align = "Right" });
 
-        })   
-            
-            
+        })
+
+
              .Events(events => events.DataBound("onDataBound"))
             .Pageable()
             .Sortable()
             .Filterable()
             .DataSource(dataSource => dataSource
                   .Ajax()
-                  .Aggregates(aggregates =>aggregates.Add(p => p.QuantityQtl).Sum())
-                  .Aggregates(aggregates =>aggregates.Add(p => p.TotalAmount).Sum())
+                  .Aggregates(aggregates => aggregates.Add(p => p.QuantityQtl).Sum())
+                  .Aggregates(aggregates => aggregates.Add(p => p.TotalAmount).Sum())
                   .PageSize(8)
                     .Model(model =>
-                        {
-                            model.Id(p => p.TransportOrderID);
-                            model.Field(p=>p.TransportOrderDetailID).Editable(false);
-                            model.Field(p => p.TariffPerQtl).Editable(false);
-                            model.Field(p => p.RequisitionNo).Editable(false);
-                            model.Field(p => p.Woreda).Editable(false);
-                            model.Field(p => p.Commodity).Editable(false);
-                            model.Field(p => p.FDP).Editable(false);
-                            model.Field(p => p.QuantityQtl).Editable(false);
-                            model.Field(p => p.TotalAmount).Editable(false);
-                            model.Field(p => p.HubID).Editable(false);
-                        })
+                    {
+            model.Id(p => p.TransportOrderID);
+            model.Field(p => p.TransportOrderDetailID).Editable(false);
+            model.Field(p => p.TariffPerQtl).Editable(false);
+            model.Field(p => p.RequisitionNo).Editable(false);
+            model.Field(p => p.Woreda).Editable(false);
+            model.Field(p => p.Commodity).Editable(false);
+            model.Field(p => p.FDP).Editable(false);
+            model.Field(p => p.QuantityQtl).Editable(false);
+            model.Field(p => p.TotalAmount).Editable(false);
+            model.Field(p => p.HubID).Editable(false);
+        })
                     .Read(read => read.Action("Contract_Read", "TransportOrder", new { id = Model.TransportOrderID }))
-                    //.Update(update => update.Action("TransportOrder_Update", "TransportOrder"))
+             //.Update(update => update.Action("TransportOrder_Update", "TransportOrder"))
 
              )
 
-      )
+        )
+
+
+    </div>
+</div>
 <script>
     $(function () {
         var printurl = "@Url.Action("Print", "TransportOrder",new{id= ViewBag.TransportOrderID })";

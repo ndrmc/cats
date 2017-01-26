@@ -1,27 +1,29 @@
-﻿<div class="widget stacked">
-    <div id="locHeader" class="widget-header">
-        <i class=""></i>
-        <h3>Locations and FDPs</h3>
-    </div>
+﻿@using Cats.Helpers
 
-    <div id="locContent" class="widget-content">
-        <div class="">
-            <a href="@Url.Action("ManageZones", "AdminUnit", new { Area = "Settings" })" class="shortcut">
-                <i class="shortcut-icon icon-list-alt"></i>
+<div id="locHeader" class="portlet-title">
+    <div class="caption font-green-sharp">
+        <span class="caption-subject bold uppercase"> @Html.Translate("Locations and FDPs")</span>
+    </div>
+</div>
+
+<div id="locContent" class="portlet-body">
+    <ul>
+        <li>
+            <a href="@Url.Action("ManageZones", "AdminUnit", new {Area = "Settings"})" class="shortcut">
                 <span class="shortcut-label">Zones</span>
             </a>
-            <br/>
-            <a href="@Url.Action("Index", "AdminUnit", new { Area = "Settings" })" class="shortcut">
-                <i class="shortcut-icon icon-list-alt"></i>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "AdminUnit", new {Area = "Settings"})" class="shortcut">
                 <span class="shortcut-label">Woredas</span>
             </a>
-            <br/>
-            <a href="@Url.Action("Index", "FDP", new { Area = "Settings" })" class="shortcut"><i class="shortcut-icon icon-signal"></i>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "FDP", new { Area = "Settings" })" class="shortcut">
                 <span class="shortcut-label">FDPs</span>
             </a>
-            <br/>
-        </div>
-    </div>
+        </li>
+    </ul>
 </div>
 
 <script>
