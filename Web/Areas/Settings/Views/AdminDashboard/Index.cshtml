@@ -1,18 +1,15 @@
-﻿@{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_MainLayout.cshtml";
+﻿@using Cats.Helpers
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/NewTheme _MainLayout_Sidebar.cshtml";
+    ViewBag.PageTitle = Html.Translate("Administration Dashboard");
+    ViewBag.PageTitleDescription = "";
 }
 
-
-
-@section Leftbar
-{
+@section SIDEBAR{
     @Html.Partial("_AdminLeftBar")
 }
 
-
-
-<h4> Administration Dashboard </h4>
     <ul>
         @Html.Partial("_DynamicAdminDashboard")
-</ul>
+    </ul>
