@@ -23,7 +23,7 @@ namespace Cats.Rest.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public dynamic GetRagionDetails()
+        public dynamic GetRationDetails()
         {
             var bids = _irationDetailService.GetAllRationDetail().Select(item => item.Unit != null ? (item.Commodity != null ? new
                                                                                                                                    {
@@ -39,12 +39,12 @@ namespace Cats.Rest.Controllers
             return bids;
         }
         /// <summary>
-        /// Given an id returns a RagionDetail object
+        /// Given an id returns a RationDetail object
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public dynamic GetRagionDetail(int id)
+        public dynamic GetRationDetail(int id)
         {
             var obj = _irationDetailService.FindById(id);
             var element = new

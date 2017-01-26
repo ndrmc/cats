@@ -19,9 +19,13 @@ namespace Cats.Rest.Controllers
         {
             _rationService = rationService;
         }
-
+        /// <summary>
+        /// Returns all list of Rations
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public IEnumerable<Ration> GetraRations()
+        
+        public IEnumerable<Ration> GetRations()
         {
             return (from r in _rationService.GetAllRation()
                 select new Ration()
@@ -37,6 +41,11 @@ namespace Cats.Rest.Controllers
         }
 
         // GET api/<controller>/5
+        /// <summary>
+        /// Return a single object of Ration given a ration id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Ration GetRation(int id)
         {
             var ration = _rationService.FindById(id);
