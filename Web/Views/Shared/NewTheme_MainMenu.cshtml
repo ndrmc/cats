@@ -1370,10 +1370,13 @@
                     <ul class="dropdown-menu">
                         <li class="external">
                             <h3>Notifications</h3>
+                            @Html.GetMoreNotificationLink((int) Html.GetUnreadNotifications())
                             @*<a href="extra_profile.html">view all</a>*@
                         </li>
-                        <li style="height: 215px;overflow: hidden;">
-                            @Html.GetActiveNotifications()
+                        <li style="">
+                            <div class="slimScrollDiv">
+                                @Html.GetActiveNotifications(false)
+                            </div>
                         </li>
                         @*<li>
                             <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 150px;">

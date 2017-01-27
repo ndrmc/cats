@@ -64,7 +64,7 @@ namespace Cats.Helpers
         //    }
         //}
 
-        public static HtmlString GetActiveNotifications(this HtmlHelper helper)
+        public static HtmlString GetActiveNotifications(this HtmlHelper helper, bool isOldTheme = true)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace Cats.Helpers
 
 
 
-                var str = "<ul>";
+                var str = "<ul class='dropdown-menu-list scroller'>";
 
 
                 int max = 0;
@@ -105,21 +105,17 @@ namespace Cats.Helpers
                 {
                     str = str + "<li>";
                     // str = str + "<a href=" + totallUnread[i].Url + ">";
-                    str = str + "<a href=" + GetRelativeURL(totallUnread[i].Url) + ">";
+                    str = str + "<a style='padding: 10px 5px' href=" + GetRelativeURL(totallUnread[i].Url) + ">";
                     str = str + totallUnread[i].Text;
                     str = str + "</li>";
                     str = str + "</a>";
                 }
 
                 str = str + "</ul>";
-                if (totallUnread.Count > 5)
+                if (totallUnread.Count > 5 && isOldTheme)
                 {
-                    string local = System.Web.HttpContext.Current.Request.Url.ToString();
-                    if (local.Contains("/trunk"))
-                        str = str + "<a href=/trunk/Home/GetUnreadNotificationDetail>" + "More...</a>";
-                    else
-                        str = str + "<a href=/Home/GetUnreadNotificationDetail>" + "More...</a>";
-
+                    var webAppDir = (HttpContext.Current.Request.ApplicationPath == "/") ? "" : HttpContext.Current.Request.ApplicationPath;
+                    str += "<a href='" + webAppDir + "/Home/GetUnreadNotificationDetail'> View More </a>";
                 }
 
                 return MvcHtmlString.Create(str);
@@ -130,6 +126,17 @@ namespace Cats.Helpers
             }
         }
 
+        public static MvcHtmlString GetMoreNotificationLink(this HtmlHelper helper, int notificationCount)
+        {
+            string webAppDir = "";
+            if (notificationCount > 5)
+            {
+                webAppDir = (HttpContext.Current.Request.ApplicationPath == "/") ? "" : HttpContext.Current.Request.ApplicationPath;
+                webAppDir = "<a href='" + webAppDir + "/Home/GetUnreadNotificationDetail'> View More </a>";
+
+            }
+            return MvcHtmlString.Create(webAppDir); ;
+        }
         public static string GetRelativeURL(string AbsURL)
         {
             string[] CaseTeams =
