@@ -674,6 +674,11 @@
         });
     });
     $(document).ready(function () {
+      
+        if ($('#ReceiptDate').is('[readonly]')) {
+            $('#ReceiptDate').prop('disabled', true);
+        }
+
         $("#ReceiveDetailNewViewModel_ReceivedQuantityInUnit").on('input', function () {
             // alert("why ?");
             var mesarement = $('#ReceiveDetailNewViewModel_UnitId').val();
