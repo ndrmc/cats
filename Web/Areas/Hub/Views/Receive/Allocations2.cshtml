@@ -60,7 +60,7 @@
     .DataSource(dataSource => dataSource
         .Ajax()
         .Model(model => model.Id(p => p.ReceiptAllocationID))
-        .Read(read => read.Action("AllocationListAjax", "Receive", new { type = allocationType, grn = filterGRN }))
+        .Read(read => read.Action("AllocationListAjax", "Receive", new { type = allocationType, grn = "" }))
         .Destroy(update => update.Action("DeleteAjax", "Receive"))
 
         ).Events(events => events.DataBound("dataBound"))
@@ -109,16 +109,17 @@
         .DataSource(dataSource => dataSource
             .Ajax()
             .ServerOperation(false)
-            .Read(read => read.Action("ReceiveListAjax", "Receive", new { ReceiptAllocationID = "#=ReceiptAllocationID#", grn = filterGRN }))
+            .Read(read => read.Action("ReceiveListAjax", "Receive", new { ReceiptAllocationID = "#=ReceiptAllocationID#", grn = "" }).Data("AddFilter"))
 
             )
     .HtmlAttributes(new { style = "max-height:250px;" })
     .Scrollable()
     .Sortable()
     .ClientDetailTemplateId("template_receive_detail")
-    .ToClientTemplate())
-
-</script>
+          .ToClientTemplate())
+    
+    
+ </script>
 
 <script id="template_receive_detail" type="text/kendo-tmpl">
 
@@ -151,6 +152,9 @@
 
 
 <script>
+    function AddFilter() {
+        return { grn: $("#FilterGRN").val() };
+    }
 
     function numberWithCommas(x) {
         var parts = x.toFixed(3).toString().split(".");

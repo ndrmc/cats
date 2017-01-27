@@ -2,7 +2,7 @@
 
 namespace Cats.Models
 {
-    public partial class TransportBidQuotation:IWorkflow
+    public partial class TransportBidQuotation
     {
         public int TransportBidQuotationID { get; set; }
         public int TransportBidQuotationHeaderID { get; set; }
@@ -28,8 +28,5 @@ namespace Cats.Models
         public virtual TransportBidQuotationHeader TransportBidQuotationHeader { get; set; }
         public virtual Bid Bid { get; set; }
 
-        public int BusinessProcessId { get; set; }
-
-        public BusinessProcess BusinessProcess { get; set; }
     }
 }

@@ -7,6 +7,7 @@
     Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
     ViewBag.PageTitle = "Reports";
     ViewBag.PageTitleDescription = "";
+    var caseTeam = ViewBag.caseTeam;
 }
 <script type="text/javascript">
 
@@ -46,10 +47,10 @@
             <div class="portlet-body">
                 <div class="tab-content">
                     <div class="tab-pane active" id="GC_tab">
-                        @Html.ReportList()
+                        @Html.ReportList((string)caseTeam)
                     </div>
                     <div class="tab-pane" id="EC_tab">
-                        @Html.AmharicReportList()
+                        @Html.AmharicReportList((string)caseTeam)
                     </div>
 
                 </div>

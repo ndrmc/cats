@@ -27,13 +27,13 @@ namespace Cats.Services.Procurement
         public bool AddWoreda(TransportBidQuotation transportBidQuotation)
         {
             //var detail = _unitOfWork.TransportBidQuotationRepository.FindBy(
-            //        m => m.TransportBidQuotationHeaderID == transportBidQuotation.TransportBidQuotationHeaderID 
+            //        m => m.TransportBidQuotationHeaderID == transportBidQuotation.TransportBidQuotationHeaderID
             //        && m.DestinationID == transportBidQuotation.DestinationID).FirstOrDefault();
             var bid =
                 _unitOfWork.BidRepository.Get(b => b.BidID == transportBidQuotation.BidID).FirstOrDefault();
             var bidPlanDetail =
                 _unitOfWork.TransportBidPlanDetailRepository.Get(t => t.BidPlanID == bid.TransportBidPlanID).FirstOrDefault();
-            
+
             //if (detail == null)
             //{
                 if (bidPlanDetail != null)
@@ -51,11 +51,36 @@ namespace Cats.Services.Procurement
                     _unitOfWork.Save();
                     return true;
                 }
-                
+
             //}
             return false;
         }
 
+        public bool DeleteWoreda(int transportBidQuotationId)
+        {
+            try
+            {
+                var transportBidQuotation = _unitOfWork.TransportBidQuotationRepository.FindById(transportBidQuotationId);
+
+                var bid = _unitOfWork.BidRepository.Get(b => b.BidID == transportBidQuotation.BidID).FirstOrDefault();
+
+                var bidPlanDetail = _unitOfWork.TransportBidPlanDetailRepository.Get(t => t.BidPlanID == bid.TransportBidPlanID).FirstOrDefault();
+
+                if (bidPlanDetail != null)
+                    _unitOfWork.TransportBidPlanDetailRepository.Delete(bidPlanDetail);
+
+
+                _unitOfWork.TransportBidQuotationRepository.Delete(transportBidQuotation);
+
+                _unitOfWork.Save();
+            }
+            catch
+            {
+
+            }
+
+            return true;
+        }
 
         public bool UpdateTransportBidQuotation(TransportBidQuotation item)
         {
@@ -107,7 +132,7 @@ namespace Cats.Services.Procurement
         private List<Cats.Models.Transporter> GetDrmfssTransporters()
         {
             return _unitOfWork.TransporterRepository.FindBy(t => t.OwnedByDRMFSS);
-            
+
         }
         public List<TransportBidQuotation> GetSecondWinner(int transporterId, int woredaId, string bidDocumentNo)// BidId should also be used to filter the data
         {
@@ -130,8 +155,8 @@ namespace Cats.Services.Procurement
                 //    .Select(s => new { Qoutation = s.ToList() })
                 //    .ToList()[secondTransporter - 1].Qoutation;
                 var topwinners = bidQoutation.OrderBy(g => g.Tariff).ToList();
-              
-                  
+
+
                 int count = 0;
                 foreach (var topwinner in topwinners)
                 {
@@ -152,7 +177,7 @@ namespace Cats.Services.Procurement
                 }
 
             }
-            
+
             //DRMFSS
             var drmfssTransporters =
                 GetDrmfssTransporters()
@@ -180,6 +205,6 @@ namespace Cats.Services.Procurement
 
 
 
-        //public 
+        //public
     }
 }
