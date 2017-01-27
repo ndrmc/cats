@@ -88,7 +88,7 @@ namespace Cats.Services.Workflows.Config
             AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.ReciptPlanForLoanWorkflow);
             AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.DonationPlanHeaderWorkflow);
             AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.DeliveryWorkflow);
-            AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanDetailActionWorkflow);
+            //AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanDetailActionWorkflow);
             AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanWorkflow);
             AddDashboarMapping(Constants.LogisticsPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Psnp
@@ -99,8 +99,8 @@ namespace Cats.Services.Workflows.Config
             AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.RFQWorkflow);
             AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.TransporterWorkflow);
             AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
-            AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanWorkflow);
-            AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanDetailActionWorkflow);
+            AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanWorkflow);
+            //AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanDetailActionWorkflow);
             // Workflows that are in Finance
             AddDashboarMapping(Constants.FinancePage + Constants.Dashbord, ApplicationSettings.Default.TransporterChequeWorkflow);
             AddDashboarMapping(Constants.FinancePage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
