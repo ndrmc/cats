@@ -24,10 +24,10 @@
 
 @section Toolbar{
     @* <a class="btn toolbar-btn " data-buttontype="btn_save" href="javascript:saverecords()"></a>*@
-<a id="btnAddWoreda" class="btn toolbar-btn " href="@Url.Action("AddWoreda", "PriceQuotation", new { id = Model.TransportBidQuotationHeaderID })">@Html.Translate("Add Woreda")</a>
+    <a id="btnAddWoreda" class="btn toolbar-btn " href="@Url.Action("AddWoreda", "PriceQuotation", new { id = Model.TransportBidQuotationHeaderID })">@Html.Translate("Add Woreda")</a>
     <a id="btnAddProposal" data-buttontype="btn_back_to_list" class="btn grey-salt" href="@Url.Action("BidProposalHeader", "PriceQuotation")"><i class="fa fa-list"></i> @Html.Translate("Back to list")</a>
 }
- 
+
 @*<h4>Bid Proposal Data Entry</h4>*@
 
 <div class="well form-horizontal span12" id="ContractHeader">
@@ -38,7 +38,7 @@
                     @Html.LabelFor(m => m.BidNumber)
                 </div>
                 <div class="span7">
-                    @Html.TextBoxFor(m => m.BidNumber, new { Disabled = true, @class="form-control" })
+                    @Html.TextBoxFor(m => m.BidNumber, new { Disabled = true, @class = "form-control" })
                 </div>
             </div>
         </div>
@@ -152,9 +152,13 @@
                       columns.Bound(p => p.SourceWarehouse);
                       columns.Bound(p => p.Zone);
                       columns.Bound(p => p.Woreda);
-                      columns.Bound(p => p.Tariff).Title("Tariff").HtmlAttributes(new {align = "Right"}).Format("{0:N}");
+                      columns.Bound(p => p.Tariff).Title("Tariff").HtmlAttributes(new { align = "Right" }).Format("{0:N}");
                       ;
                       columns.Bound(p => p.Remark);
+
+                      columns.Bound(p => p.Zone).Title(Html.Translate("Delete")).ClientTemplate(
+               @"<div class='btn-group'><span href='' onclick='OnDelete(#=Id#)' title='Delete Donation' class='btn btn-xs btn-error delete_btn'>Delete</span></li>" +
+               "</div>");
                   })
                   .Scrollable()
                   .Filterable()
@@ -171,7 +175,7 @@
                       }
                   })
                   .Events(events => events.DataBound("onDataBound"))
-                  .HtmlAttributes(new {style = "height:430px;"})
+                  .HtmlAttributes(new { style = "height:430px;" })
                   .Events(ev => ev.Save(@"function(e){
                     setTimeout(function(){
                         $('#grid').data('kendoGrid').dataSource.sync()
@@ -192,7 +196,7 @@
                           model.Field(r => r.Zone).Editable(false);
                           model.Field(r => r.SourceWarehouse).Editable(false);
                       })
-                      .Read(read => read.Action("Read_Proposals", "PriceQuotation", new {bidProposalId = @headerID}))
+                      .Read(read => read.Action("Read_Proposals", "PriceQuotation", new { bidProposalId = @headerID }))
                       .Update(update => update.Action("SaveBidProposals", "PriceQuotation"))
                   ))
         </div>
@@ -208,7 +212,8 @@
             </div>
             <div class="modal-body">
                 <p style="font-weight: bold">@Html.Translate("You don't have a previlage to edit Price Quotation")</p>
-                <p style="font-weight: bold" class="text-warning"><small>@Html.Translate("Please contact the system administrator.")</small>
+                <p style="font-weight: bold" class="text-warning">
+                    <small>@Html.Translate("Please contact the system administrator.")</small>
                 </p>
             </div>
             <div class="modal-footer">
@@ -221,8 +226,26 @@
 <div id="dialogDiv" class="modal hide fade in">
     <div id="dialogContent"></div>
 </div>
+<div id="modalWindow">
+    <h4>Are You Sure You Want to Delete this Woreda?</h4>
+    <button id="yes" class="k-button">Yes</button>
+    <button id="no" class="k-button">No</button>
+</div>
+<script>
+    var wnd;
+    $(document).ready(function () {
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Delete confirmation",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+    });
+</script>
+<script type="text/javascript">
 
-            <script type="text/javascript">
+
                 $(function () {
 
                     //Optional: turn the chache off
@@ -230,7 +253,7 @@
 
                     $('#btnAddWoreda').click(function () {
 
-                         
+
                         $('#dialogContent').load(this.href, function () {
                             $('#dialogDiv').modal({
                                 backdrop: 'static',
@@ -272,7 +295,20 @@
                     }
                     return false; // default to not editable
                 }
+                function OnDelete(TransportBidQuotationID) {
 
+                    wnd.center().open();
+
+                    $("#yes").click(function () {
+
+                        window.location = "@Url.Action("DeleteTransportBidQuotation", "PriceQuotation")" + "/" + TransportBidQuotationID;
+                        wnd.close();
+                    });
+
+                    $("#no").click(function () {
+                        window.wnd.close();
+                    });
+                }
 
 
 
@@ -293,5 +329,5 @@
                 //    }
                 //};
 
-            </script>
+</script>
 

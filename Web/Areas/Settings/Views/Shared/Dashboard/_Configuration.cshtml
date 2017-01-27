@@ -1,38 +1,39 @@
-﻿<div class="widget stacked">
-    <div id="configHeader" class="widget-header">
-        <i class=""></i>
-        <h3>Configuration</h3>
-    </div>
+﻿@using Cats.Helpers
 
-    <div id="configContent" class="widget-content">
-        <div class="">
-            @*<a href="@Url.Action("", "", new { Area = "Settings" })" class="shortcut"><i class="shortcut-icon icon-list-alt"></i>
-                <span class="shortcut-label">Warehouses</span>
-            </a>*@
-            @*<br/>*@
-            <a href="@Url.Action("Index", "Hubs", new { Area = "Settings" })" class="shortcut"><i class="shortcut-icon icon-signal"></i>
+<div id="configHeader" class="portlet-title">
+    <div class="caption font-green-sharp">
+        <span class="caption-subject bold uppercase"> @Html.Translate("Configuration")</span>
+    </div>
+</div>
+
+<div id="configContent" class="portlet-body">
+    <ul>
+        <li>
+            <a href="@Url.Action("Index", "Hubs", new {Area = "Settings"})" class="shortcut">
                 <span class="shortcut-label">Hubs</span>
             </a>
-            <br/>
-            <a href="@Url.Action("Index", "UserWarehouse", new { Area = "Settings" })" class="shortcut"><i class="shortcut-icon icon-signal"></i>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "UserWarehouse", new {Area = "Settings"})" class="shortcut">
                 <span class="shortcut-label">Hub Users</span>
             </a>
-            <br/>
-            <a href="@Url.Action("Index", "HubOwner", new { Area = "Settings" })" class="shortcut"><i class="shortcut-icon icon-inbox"></i>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "HubOwner", new { Area = "Settings" })" class="shortcut">
                 <span class="shortcut-label">Hub Owners</span>
             </a>
-            <br/>
-            <a href="@Url.Action("Index", "Store", new { Area = "Settings" })" class="shortcut"><i class="shortcut-icon icon-tasks"></i>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Store", new {Area = "Settings"})" class="shortcut">
                 <span class="shortcut-label">Stores</span>
             </a>
-            <br />
-            <a href="@Url.Action("Index","Currency",new {Area="Settings"})"><i class="icon-folder-open"></i>Currency
+        </li>
+        <li>
+            <a href="@Url.Action("Index","Currency",new {Area="Settings"})">
+                Currency
             </a>
-            
-            <br/>
-        </div>
-    </div>
-
+        </li>
+    </ul>
 </div>
 
 

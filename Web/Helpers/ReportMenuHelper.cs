@@ -24,8 +24,18 @@ namespace Cats.Helpers
             var html = AmharicReportList();
             return MvcHtmlString.Create(html);
         }
-     
-        public static string AmharicReportList()
+        public static MvcHtmlString ReportList(this HtmlHelper helper, string caseTeam)
+        {
+            var html = ReportList(caseTeam);
+            return MvcHtmlString.Create(html);
+        }
+
+        public static MvcHtmlString AmharicReportList(this HtmlHelper helper, string caseTeam)
+        {
+            var html = AmharicReportList(caseTeam);
+            return MvcHtmlString.Create(html);
+        }
+        public static string AmharicReportList(string caseTeam="")
         {
             var html = string.Empty;
             var userName = System.Configuration.ConfigurationManager.AppSettings["CatsReportUserName"];
@@ -49,7 +59,11 @@ namespace Cats.Helpers
                 //if (folder.TypeName == "Folder" && folder.Name != "Data Sources" && folder.Name != "Datasets")
                 //{
                 var reports = new CatalogItem[100];
-                if (currentUser.RegionalUser)
+                if (currentUser.UserName == "globaluser")
+                {
+                    reports = rs.ListChildren("/" + caseTeam + "/AM", false);
+                }
+                else if (currentUser.RegionalUser)
                 {
                     reports = rs.ListChildren("/Regional/AM", false);
                 }
@@ -107,7 +121,7 @@ namespace Cats.Helpers
 
             return html;
         }
-        public static string ReportList()
+        public static string ReportList(string caseTeam="")
     
         {
             var html = string.Empty;
@@ -133,7 +147,12 @@ namespace Cats.Helpers
                     //if (folder.TypeName == "Folder" && folder.Name != "Data Sources" && folder.Name != "Datasets")
                     //{
                         var reports = new CatalogItem[100];
-                        if(currentUser.RegionalUser)
+
+                        if (currentUser.UserName == "globaluser")
+                        {
+                            reports = rs.ListChildren("/" + caseTeam, false);
+                        }
+                        else if(currentUser.RegionalUser)
                         {
                             reports = rs.ListChildren("/Regional", false);
                         }

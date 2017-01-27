@@ -62,7 +62,7 @@ namespace Cats.Models
         public virtual ICollection<Dispatch> Dispatches { get; set; }
         public virtual ICollection<DispatchAllocation> DispatchAllocations { get; set; }
         public virtual ICollection<TransportBidQuotationHeader> TransportBidQuotationHeaders { get; set; }
-        public virtual ICollection<TransportBidQuotation> TTransportBidQuotations { get; set; }
+        //public virtual ICollection<TransportBidQuotation> TransportBidQuotations { get; set; }
         public virtual ICollection<Transporter> Transporters { get; set; }
         public virtual ICollection<Delivery> Deliveries { get; set; }
         public virtual ICollection<NeedAssessmentDetail> NeedAssessmentDetails { get; set; } 

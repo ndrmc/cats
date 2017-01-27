@@ -161,6 +161,7 @@
                       columns.Template(@<text>
                                            <a href="@Url.Action("Destinations", "TransportRequisition", new {id = item.RequisitionID, transportRequistionId = Model.TransportRequisitionID})">@Html.Translate("Destinations") (@item.DestinationsCount) </a>
                                         </text>);
+
                   }).Scrollable()
                   .Groupable()
                   .Sortable()

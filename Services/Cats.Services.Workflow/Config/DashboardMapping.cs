@@ -96,6 +96,7 @@ namespace Cats.Services.Workflows.Config
             AddDashboarMapping(Constants.PsnpPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             // Workflows that are in Procurement
             AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.BidWinnerWorkflow);
+            AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.RFQWorkflow);
             AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.TransporterWorkflow);
             AddDashboarMapping(Constants.ProcurementPage + Constants.Dashbord, ApplicationSettings.Default.GlobalWorkflow); // Unique, GlobalWorkflow
             AddDashboarMapping(Constants.RegionalPage + Constants.Dashbord, ApplicationSettings.Default.BidPlanWorkflow);

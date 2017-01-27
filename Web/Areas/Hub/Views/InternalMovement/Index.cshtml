@@ -2,24 +2,33 @@
 @using Cats.Web.Hub.Helpers
 @using Cats.Security
 @{
-    ViewBag.Title = Html.Translate("Internal Movment");
-    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.PageTitle = Html.Translate("Internal Movment");
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+
 }
 
+<div class="container-fluid   full-height-content " style="margin-top:-30px;">
+ 
+    <div class=" row">
+        <div class="portlet light bordered bg-inverse">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp"><i class="fa fa-list font-green-sharp"></i> @ViewBag.PageTitle </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href=" javascript:;" data-original-title="" title=""></a>
+                </div>
+            </div>
+            <div class="portlet-body">
 
+                @*@Html.Partial("DisplayHub")*@
+                @*@if (HubConstants.isValidOperation(HubConstants.Operation.New_internal_movement).ToString() == "New_internal_movement")
+                {*@
+                    <p>
+                        List of Internal Movments in your current warehouse, Please click @Html.ActionLink("New internal movement", "Create", "InternalMovement") to move itmes.
+                    </p>
+                @*}*@
 
-@Html.Partial("DisplayHub")
-                      @if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.New_internal_movement) )
-                      {
-<p>
-
-    List of Internal Movments in your current warehouse, Please click @Html.ActionLink("New internal movement", "Create", "InternalMovement") to move itmes.
-</p>
-}
-<div style="margin-bottom:20px;">
-        
-</div>
-@{Html.Telerik().Window()
+                @{Html.Telerik().Window()
             .Name("internalMovementWindow")
             .Title("Internal Movment Detail")
             .Draggable(true)
@@ -28,39 +37,35 @@
             .Height(530)
             .Width(600)
             .Render();
-    
-}
 
+                }
 
-@(Html.Telerik().Grid(Model)
+                @(Html.Telerik().Grid(Model)
             .Name("InternalMovementGrid")
             .Columns(columns =>
             {
                 columns.Bound(o => o.TransactionId).Hidden(true);
                 columns.Bound(o => o.SelectedDate).Width(100);
-                columns.Bound(o => o.CommodityName).Width(70);
-                columns.Bound(o => o.FromStore);
-                columns.Bound(o => o.FromStack).Width(20);
-                columns.Bound(o => o.ToStore);
-                columns.Bound(o => o.ToStack).Width(20);
-                columns.Bound(o => o.Unit).Width(60);
-                columns.Bound(o => o.QuantityInUnit).Width(70).Format("{0:N3}").HtmlAttributes(new { align = "right" }); ;
-                columns.Bound(o => o.QuantityInMt).Width(70).Format("{0:N3}").HtmlAttributes(new { align = "right" });
+                columns.Bound(o => o.CommodityName).Width(170);
+                columns.Bound(o => o.FromStore).Width(160);
+                columns.Bound(o => o.FromStack).HeaderHtmlAttributes(new { style = "height:30px; background-color:lightgray, align = center; overflow: visible; white-space: normal;" }).Width(160);
+                columns.Bound(o => o.ToStore).Width(140);
+                columns.Bound(o => o.ToStack).Width(144);
+                columns.Bound(o => o.Unit).Width(160);
+                columns.Bound(o => o.QuantityInUnit).Width(150).Format("{0:N3}").HtmlAttributes(new { align = "right" }); ;
+                columns.Bound(o => o.QuantityInMt).Width(250).Format("{0:N3}").HtmlAttributes(new { align = "right" });
                 columns.Template(@<text> <input type="button" value="Detail" onclick="onDetailClick('@item.TransactionId')" />  </text>);
-                //columns.Command(commands => commands
-                //            .Custom("ViewDetails")
-                //            .Text("Detail")
-                //            .DataRouteValues(route => route.Add(o => o.TransactionId).RouteKey("TransactionId"))
-                //            .Ajax(true)
-                //    );
-                
+
             })
-            .Pageable(pagger => pagger.Enabled(true))
-            .Sortable(sorting => sorting.Enabled(true))
-            .Footer(true)
-)
+.Pageable(pagger => pagger.Enabled(true))
+.Sortable(sorting => sorting.Enabled(true)).Scrollable(p => p.Height(450))
+.Footer(true)
 
-
+                )
+            </div>
+        </div>
+    </div>
+</div>
 
 <script type="text/javascript">
     function onDetailClick(id) {
@@ -68,7 +73,4 @@
         window.ajaxRequest("@Url.Action("ViewDetial","InternalMovement")", { TransactionId: id });
         window.center().open();
     }
-
-   
 </script>
-

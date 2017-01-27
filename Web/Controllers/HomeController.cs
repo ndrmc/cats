@@ -289,8 +289,9 @@ namespace Cats.Controllers
             return View();
         }
 
-        public ActionResult ReportListing()
+        public ActionResult ReportListing(string id="")
         {
+            ViewBag.caseTeam = id;
             return View();
         }
 
