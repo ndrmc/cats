@@ -258,7 +258,7 @@ namespace Cats.Services.Hub
                              DispatchID = r.DispatchID
                          });
 
-            return query.ToList();
+            return query.OrderBy(o => o.DispatchDate).ToList();
         }
 
         #region Added by banty
