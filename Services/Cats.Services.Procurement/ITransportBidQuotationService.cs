@@ -12,14 +12,14 @@ namespace Cats.Services.Procurement
     {
         bool AddTransportBidQuotation(TransportBidQuotation item);
 
-       
+
         bool UpdateTransportBidQuotation(TransportBidQuotation item);
 
         bool DeleteTransportBidQuotation(TransportBidQuotation item);
         bool DeleteById(int id);
 
         bool AddWoreda(TransportBidQuotation transportBidQuotation);
-
+        bool DeleteWoreda(int transportBidQuotationId);
         TransportBidQuotation FindById(int id);
         List<TransportBidQuotation> GetAllTransportBidQuotation();
         List<TransportBidQuotation> FindBy(Expression<Func<TransportBidQuotation, bool>> predicate);

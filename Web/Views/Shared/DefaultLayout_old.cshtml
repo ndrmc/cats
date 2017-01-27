@@ -85,6 +85,13 @@ Like: www.facebook.com/Eng.Biruk.Tilahun
         });
     </script>
 
+    <style type="text/css">
+        
+        footer {
+            bottom: 0;
+        }
+        </style>
+
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <!--<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=all" rel="stylesheet" type="text/css" />-->
     <link href="~/Content/assetss/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -364,14 +371,17 @@ Like: www.facebook.com/Eng.Biruk.Tilahun
             </div>
 
             <!-- BEGIN FOOTER -->
-            <div class="page-footer">
+            @*<div class="page-footer">
                 <div class="page-footer-inner">
                     @Html.Partial("_Version")
                 </div>
                 <div class="scroll-to-top">
                     <i class="icon-arrow-up"></i>
                 </div>
-            </div>
+            </div>*@
+                    <footer>
+                        @Html.Partial("_Version")
+                    </footer>
             <!-- END FOOTER -->
         </div>
         @RenderSection("EndAngular", required: false)

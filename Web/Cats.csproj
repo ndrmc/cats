@@ -2782,6 +2782,7 @@
     <Content Include="Content\assetss\global\plugins\font-awesome\fonts\fontawesome-webfont.woff2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Areas\Procurement\Views\PriceQuotation\AddWoreda.cshtml" />
     <None Include="dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>dataset.Designer.cs</LastGenOutput>
@@ -3815,7 +3816,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>3325</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:4562/</IISUrl>
+          <IISUrl>http://localhost:4569/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
