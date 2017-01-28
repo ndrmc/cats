@@ -202,7 +202,7 @@
                     <li><a href="@Url.Action("Delete", "RegionalPSNPPlan", new { Area = "PSNP", id = plan.RegionalPSNPPlanID })">@Html.Translate("Delete")</a></li>
                 }*@</ul>
                 </div>
-                @if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Print_request))
+                @if (UserAccountHelper.PsnpOperationCheck(PsnpConstants.Operation.Print_request) && Model.Rows.Count >0)
                 {
                     <a class="btn green dropdown-toggle toolbar-btn" href="#" target="_blank" id="toolbar_button_print" title="Print"><i class="fa fa-print"></i> @Html.Translate("Print")</a>
                 }
