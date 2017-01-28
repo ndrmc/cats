@@ -206,19 +206,15 @@ namespace Cats.Areas.Procurement.Controllers
 
         public ActionResult DeleteTransportBidQuotation(int id)
         {
-            var transportBidQuatation =
-                        _transportBidQuotationService.FindById(id);
-            //        if (transportBidQuatation == null) return RedirectToAction("Index");
+            var transportBidQuatation = _transportBidQuotationService.FindById(id);
+            // if (transportBidQuatation == null) return RedirectToAction("Index");
 
             //WorkflowActivityUtil.EnterDelteteWorkflow(transportBidQuatation);
 
+            var result=_transportBidQuotationService.DeleteWoreda(id);
 
-            var result=    _transportBidQuotationService.DeleteWoreda(id);
-
-     /*   if(!result) */return RedirectToAction("Index");
-
-
-
+            /*   if(!result) */
+            return RedirectToAction("Index");
 
             //return RedirectToAction("Details", new { id = transportBidQuatation.TransportBidQuotationHeaderID });
 

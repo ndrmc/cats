@@ -11,6 +11,8 @@ using Cats.Data.Hub;
 using Cats.Models.Hubs;
 //using Cats.Helpers;
 using Ledger = Cats.Models.Ledger;
+using Cats.Services.Workflows;
+
 namespace Cats.Services.Hub
 {
     public class StockStatusService : IStockStatusService
@@ -18,14 +20,18 @@ namespace Cats.Services.Hub
         private readonly IUnitOfWork _unitOfWork;
         private readonly IProgramService _programService;
         private readonly ITransactionService _transactionService;
+        private readonly IWorkflowActivityService _IWorkflowActivityService;
 
         public StockStatusService(IUnitOfWork unitOfWork,
                                    IProgramService programService,
-                                   ITransactionService transactionService)
+                                   ITransactionService transactionService, IWorkflowActivityService iWorkflowActivityService)
         {
+            this._IWorkflowActivityService = iWorkflowActivityService;
+
             _unitOfWork = unitOfWork;
             _programService = programService;
             _transactionService = transactionService;
+
         }
 
         public IOrderedEnumerable<HubView> GetHubs()
@@ -368,6 +374,8 @@ FROM            dbo.Receive INNER JOIN
             try
             {
                 _unitOfWork.AdjustmentRepository.Add(lossAndAdjustment);
+                _IWorkflowActivityService.EnterCreateWorkflow(lossAndAdjustment);
+
                 _unitOfWork.Save();
             }
             catch (Exception exp)
@@ -467,6 +475,8 @@ FROM            dbo.Receive INNER JOIN
             try
             {
                 _unitOfWork.AdjustmentRepository.Add(lossAndAdjustment);
+                _IWorkflowActivityService.EnterCreateWorkflow(lossAndAdjustment);
+
                 _unitOfWork.Save();
             }
             catch (Exception exp)

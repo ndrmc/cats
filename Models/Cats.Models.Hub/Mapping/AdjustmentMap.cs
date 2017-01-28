@@ -45,6 +45,7 @@ namespace Cats.Models.Hubs.Mapping
             this.Property(t => t.UserProfileID).HasColumnName("UserProfileID");
             this.Property(t => t.ReferenceNumber).HasColumnName("ReferenceNumber");
             this.Property(t => t.StoreManName).HasColumnName("StoreManName");
+            this.Property(t => t.BusinessProcessId).HasColumnName("BusinessProcessID");
 
             // Relationships
             this.HasRequired(t => t.AdjustmentReason)

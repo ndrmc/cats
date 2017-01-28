@@ -53,7 +53,7 @@ namespace Cats.Services.Hub
         /// </summary>
         /// <param name="LedgerID">The ledger ID.</param>
         /// <returns></returns>
-        /// 
+        ///
 
         public List<Account> GetActiveAccountsForLedger(int LedgerID)
         {
@@ -230,7 +230,7 @@ namespace Cats.Services.Hub
         /// <param name="user">The user.</param>
         public Boolean SaveReceiptTransaction(ReceiveViewModel receiveModels, UserProfile user, Boolean reverse = false)
         {
-            // Populate more details of the reciept object 
+            // Populate more details of the reciept object
             // Save it when you are done.
             int transactionsign = reverse ? -1 : 1;
             Receive receive;
@@ -402,7 +402,7 @@ namespace Cats.Services.Hub
                 tgroup.Transactions.Add(transaction);
 
 
-                // transaction for Receivable 
+                // transaction for Receivable
                 transaction2 = new Transaction();
                 transaction2.TransactionID = Guid.NewGuid();
                 transaction2.TransactionGroupID = transactionGroupId;
@@ -495,7 +495,7 @@ namespace Cats.Services.Hub
 
         public bool ReceiptTransactionForLoanFromNGOs(ReceiveNewViewModel viewModel, Boolean reverse = false)
         {
-            //Todo: Construct Receive from the viewModel .... refactor 
+            //Todo: Construct Receive from the viewModel .... refactor
             int transactionsign = reverse ? -1 : 1;
 
             #region BindReceiveFromViewModel
@@ -555,7 +555,7 @@ namespace Cats.Services.Hub
 
             #endregion
 
-            //Todo: Construct ReceiveDetail from the viewModel Transaction 
+            //Todo: Construct ReceiveDetail from the viewModel Transaction
 
             var transactionGroup = new TransactionGroup { TransactionGroupID = Guid.NewGuid() };
 
@@ -566,9 +566,9 @@ namespace Cats.Services.Hub
             //    ReceiveSingleTransaction(viewModel, receiveDetailNewViewModel, receive, transactionGroup);
             //}
 
-            //Tem implantation for one Receive 
+            //Tem implantation for one Receive
 
-            //check for non food 
+            //check for non food
 
             #region
 
@@ -580,13 +580,13 @@ namespace Cats.Services.Hub
 
             #endregion
 
-            //Construct receive detail from viewModel 
+            //Construct receive detail from viewModel
 
             #region
 
             var receiveDetail = new ReceiveDetail
             {
-                ReceiveDetailID = Guid.NewGuid(), //Todo: if there is existing id dont give new one  
+                ReceiveDetailID = Guid.NewGuid(), //Todo: if there is existing id dont give new one
 
                 CommodityID = viewModel.ReceiveDetailNewViewModel.CommodityId,
                 CommodityChildID = viewModel.ReceiveDetailNewViewModel.CommodityChildID,
@@ -603,7 +603,7 @@ namespace Cats.Services.Hub
 
             #endregion
 
-            //add to receive 
+            //add to receive
             receive.ReceiveDetails.Clear();
             receive.ReceiveDetails.Add(receiveDetail);
 
@@ -620,11 +620,11 @@ namespace Cats.Services.Hub
 
 
 
-            //physical stock movement 
+            //physical stock movement
 
             #region
 
-            //transaction for goods on hand 
+            //transaction for goods on hand
 
             #region On Positive Side
 
@@ -637,7 +637,7 @@ namespace Cats.Services.Hub
                 CommodityID = receiveDetail.CommodityID,
                 CommodityChildID = receiveDetail.CommodityChildID,
                 LedgerID = Ledger.Constants.GOODS_ON_HAND,
-                //HubOwnerID = 
+                //HubOwnerID =
                 DonorID = receive.SourceDonorID,
                 AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, receive.HubID),
                 ShippingInstructionID =
@@ -648,7 +648,7 @@ namespace Cats.Services.Hub
                 QuantityInMT = transactionsign * viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt,
                 QuantityInUnit = transactionsign * viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInUnit,
 
-                //CommodityGradeID = 
+                //CommodityGradeID =
                 ProgramID = viewModel.ProgramId,
                 StoreID = viewModel.StoreId,
                 Stack = viewModel.StackNumber,
@@ -658,7 +658,7 @@ namespace Cats.Services.Hub
 
             #endregion
 
-            // transaction for goods under care, receivable, liabilities 
+            // transaction for goods under care, receivable, liabilities
 
             #region Negative Side
 
@@ -673,7 +673,7 @@ namespace Cats.Services.Hub
                 LedgerID = Ledger.Constants.GOODS_ON_HAND,//Ledger.Constants.GOODS_UNDER_CARE,
                 AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB,
                         viewModel.SourceHubId.GetValueOrDefault(0)),
-                //HubOwnerID = 
+                //HubOwnerID =
                 DonorID = receive.SourceDonorID, //
 
                 ShippingInstructionID =
@@ -684,7 +684,7 @@ namespace Cats.Services.Hub
                 QuantityInMT = transactionsign * (-viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt),
                 QuantityInUnit = transactionsign * (-viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInUnit),
 
-                //CommodityGradeID = 
+                //CommodityGradeID =
                 ProgramID = viewModel.ProgramId,
                 StoreID = viewModel.StoreId,
                 Stack = viewModel.StackNumber,
@@ -734,7 +734,7 @@ namespace Cats.Services.Hub
                 CommodityID = receiveDetail.CommodityID,
                 CommodityChildID = receiveDetail.CommodityChildID,
                 LedgerID = Ledger.Constants.STATISTICS_FREE_STOCK,
-                //HubOwnerID = 
+                //HubOwnerID =
                 DonorID = receive.SourceDonorID,
                 AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, receive.HubID),
                 ShippingInstructionID =
@@ -745,7 +745,7 @@ namespace Cats.Services.Hub
                 QuantityInMT = transactionsign * viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt,
                 QuantityInUnit = transactionsign * viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInUnit,
 
-                //CommodityGradeID = 
+                //CommodityGradeID =
                 ProgramID = viewModel.ProgramId,
                 StoreID = viewModel.StoreId,
                 Stack = viewModel.StackNumber,
@@ -769,7 +769,7 @@ namespace Cats.Services.Hub
                 LedgerID = Ledger.Constants.STATISTICS_FREE_STOCK,
                 AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB,
                     viewModel.SourceHubId.GetValueOrDefault(0)),
-                //HubOwnerID = 
+                //HubOwnerID =
                 DonorID = receive.SourceDonorID,
                 ShippingInstructionID =
                     _shippingInstructionService.GetSINumberIdWithCreate(viewModel.SiNumber).ShippingInstructionID,
@@ -779,7 +779,7 @@ namespace Cats.Services.Hub
                 QuantityInMT = transactionsign * (-viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt),
                 QuantityInUnit = transactionsign * (-viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInUnit),
 
-                //CommodityGradeID = 
+                //CommodityGradeID =
                 ProgramID = viewModel.ProgramId,
                 StoreID = viewModel.StoreId,
                 Stack = viewModel.StackNumber,
@@ -814,7 +814,7 @@ namespace Cats.Services.Hub
 
             #endregion
 
-            //Todo: Save Receive 
+            //Todo: Save Receive
 
             try
             {
@@ -844,7 +844,7 @@ namespace Cats.Services.Hub
         public bool ReceiptDetailsTransaction(ReceiveNewViewModel viewModel, Boolean reverse = false, bool isOnEdit = false)
         {
 
-            //Todo: Construct Receive from the viewModel .... refactor 
+            //Todo: Construct Receive from the viewModel .... refactor
             int transactionsign = reverse ? -1 : 1;
 
             #region BindReceiveFromViewModel
@@ -924,7 +924,7 @@ namespace Cats.Services.Hub
 
             #endregion
 
-            //Todo: Construct ReceiveDetail from the viewModel Transaction 
+            //Todo: Construct ReceiveDetail from the viewModel Transaction
 
             TransactionGroup transactionGroup = new TransactionGroup { TransactionGroupID = Guid.NewGuid() };
 
@@ -935,9 +935,9 @@ namespace Cats.Services.Hub
             //    ReceiveSingleTransaction(viewModel, receiveDetailNewViewModel, receive, transactionGroup);
             //}
 
-            //Tem implantation for one Receive 
+            //Tem implantation for one Receive
 
-            //check for non food 
+            //check for non food
 
             #region
 
@@ -959,7 +959,7 @@ namespace Cats.Services.Hub
 
                 receiveDetail = new ReceiveDetail
                 {
-                    //, //Todo: if there is existing id dont give new one  
+                    //, //Todo: if there is existing id dont give new one
 
                     ReceiveDetailID = Guid.NewGuid(),
                     CommodityID = receiveDetailsViewModel.CommodityId,
@@ -974,7 +974,7 @@ namespace Cats.Services.Hub
                     SiNumber = receiveDetailsViewModel.SiNumber ?? 0
 
                 };
-                //add to receive 
+                //add to receive
                 receive.ReceiveDetails.Add(receiveDetail);
 
 
@@ -982,11 +982,11 @@ namespace Cats.Services.Hub
                 //    _unitOfWork.CommodityRepository.FindById(viewModel.ReceiveDetailNewViewModel.CommodityId).ParentID ??
                 //    viewModel.ReceiveDetailNewViewModel.CommodityId;
 
-                //physical stock movement 
+                //physical stock movement
 
 
 
-                //transaction for goods on hand 
+                //transaction for goods on hand
 
                 #region On Positive Side
 
@@ -1006,7 +1006,7 @@ namespace Cats.Services.Hub
                     CommodityID = receiveDetail.CommodityID,
                     CommodityChildID = receiveDetail.CommodityChildID,
                     LedgerID = Ledger.Constants.GOODS_ON_HAND,
-                    //HubOwnerID = 
+                    //HubOwnerID =
                     DonorID = receive.SourceDonorID,
                     AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, receive.HubID),
                     ShippingInstructionID =
@@ -1018,7 +1018,7 @@ namespace Cats.Services.Hub
                     QuantityInMT = transactionsign * receiveDetailsViewModel.ReceivedQuantityInMt,
                     QuantityInUnit = transactionsign * receiveDetailsViewModel.ReceivedQuantityInUnit,
 
-                    //CommodityGradeID = 
+                    //CommodityGradeID =
                     ProgramID = viewModel.ProgramId,
                     StoreID = viewModel.StoreId,
                     Stack = viewModel.StackNumber,
@@ -1028,7 +1028,7 @@ namespace Cats.Services.Hub
 
                 #endregion
 
-                // transaction for goods under care, receivable, liabilities 
+                // transaction for goods under care, receivable, liabilities
 
                 #region Negative Side
 
@@ -1042,7 +1042,7 @@ namespace Cats.Services.Hub
                     CommodityChildID = receiveDetail.CommodityChildID,
                     LedgerID = Ledger.Constants.GOODS_UNDER_CARE,
 
-                    //HubOwnerID = 
+                    //HubOwnerID =
                     DonorID = receive.SourceDonorID, //
 
                     ShippingInstructionID =
@@ -1054,7 +1054,7 @@ namespace Cats.Services.Hub
                     QuantityInMT = transactionsign * (-receiveDetailsViewModel.ReceivedQuantityInMt),
                     QuantityInUnit = transactionsign * (-receiveDetailsViewModel.ReceivedQuantityInUnit),
 
-                    //CommodityGradeID = 
+                    //CommodityGradeID =
                     ProgramID = viewModel.ProgramId,
                     StoreID = viewModel.StoreId,
                     Stack = viewModel.StackNumber,
@@ -1104,7 +1104,7 @@ namespace Cats.Services.Hub
                     CommodityID = receiveDetail.CommodityID,
                     CommodityChildID = receiveDetail.CommodityChildID,
                     LedgerID = Ledger.Constants.STATISTICS_FREE_STOCK,
-                    //HubOwnerID = 
+                    //HubOwnerID =
                     DonorID = receive.SourceDonorID,
                     AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, receive.HubID),
                     ShippingInstructionID =
@@ -1116,7 +1116,7 @@ namespace Cats.Services.Hub
                     QuantityInMT = transactionsign * receiveDetailsViewModel.ReceivedQuantityInMt,
                     QuantityInUnit = transactionsign * receiveDetailsViewModel.ReceivedQuantityInUnit,
 
-                    //CommodityGradeID = 
+                    //CommodityGradeID =
                     ProgramID = viewModel.ProgramId,
                     StoreID = viewModel.StoreId,
                     Stack = viewModel.StackNumber,
@@ -1137,7 +1137,7 @@ namespace Cats.Services.Hub
                     ParentCommodityID = null,
                     CommodityID = receiveDetail.CommodityID,
                     CommodityChildID = receiveDetail.CommodityChildID,
-                    //HubOwnerID = 
+                    //HubOwnerID =
                     DonorID = receive.SourceDonorID,
                     ShippingInstructionID =
                         _shippingInstructionService.GetSINumberIdWithCreate(siNumber)
@@ -1148,7 +1148,7 @@ namespace Cats.Services.Hub
                     QuantityInMT = transactionsign * (-receiveDetailsViewModel.ReceivedQuantityInMt),
                     QuantityInUnit = transactionsign * (-receiveDetailsViewModel.ReceivedQuantityInUnit),
 
-                    //CommodityGradeID = 
+                    //CommodityGradeID =
                     ProgramID = viewModel.ProgramId,
                     StoreID = viewModel.StoreId,
                     Stack = viewModel.StackNumber,
@@ -1183,7 +1183,7 @@ namespace Cats.Services.Hub
 
                 #endregion
 
-                //Todo: Save Receive 
+                //Todo: Save Receive
 
                 try
                 {
@@ -1215,7 +1215,7 @@ namespace Cats.Services.Hub
         }
         public bool ReceiptTransaction(ReceiveNewViewModel viewModel, Boolean reverse = false)
         {
-            //Todo: Construct Receive from the viewModel .... refactor 
+            //Todo: Construct Receive from the viewModel .... refactor
             int transactionsign = reverse ? -1 : 1;
             bool canCreateTransaction = false;
             bool existed = false;
@@ -1300,7 +1300,7 @@ namespace Cats.Services.Hub
                     var receiveDetail = new ReceiveDetail
                     {
                         ReceiveDetailID = viewModel.ReceiveDetailNewViewModel.ReceiveDetailId,
-                        //Guid.NewGuid(), //Todo: if there is existing id dont give new one  
+                        //Guid.NewGuid(), //Todo: if there is existing id dont give new one
 
                         CommodityID = viewModel.ReceiveDetailNewViewModel.CommodityId,
                         CommodityChildID = viewModel.ReceiveDetailNewViewModel.CommodityChildID,
@@ -1315,7 +1315,7 @@ namespace Cats.Services.Hub
 
                     CreateTransaction(viewModel, transactionsign, receive, receiveDetail);
 
-                    //add to receive 
+                    //add to receive
                     receive.ReceiveDetails.Clear();
                     receive.ReceiveDetails.Add(receiveDetail);
                 }
@@ -1414,7 +1414,7 @@ namespace Cats.Services.Hub
             return true;
         }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="ediedReceive">Edited receive object</param>
         /// <returns></returns>
@@ -1515,18 +1515,18 @@ namespace Cats.Services.Hub
         {
             #region transaction for receiveDetail
 
-            //Construct receive detail from viewModel 
+            //Construct receive detail from viewModel
             var transactionGroup = new TransactionGroup { TransactionGroupID = Guid.NewGuid() };
 
 
             receiveDetail.TransactionGroupID = transactionGroup.TransactionGroupID;
             receiveDetail.TransactionGroup = transactionGroup;
 
-            //physical stock movement 
+            //physical stock movement
 
             #region
 
-            //transaction for goods on hand 
+            //transaction for goods on hand
 
             #region On Positive Side
 
@@ -1539,7 +1539,7 @@ namespace Cats.Services.Hub
                 CommodityID = receiveDetail.CommodityID,
                 CommodityChildID = receiveDetail.CommodityChildID,
                 LedgerID = Ledger.Constants.GOODS_ON_HAND,
-                //HubOwnerID = 
+                //HubOwnerID =
                 DonorID = receive.SourceDonorID,
                 AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, receive.HubID),
                 ShippingInstructionID =
@@ -1550,7 +1550,7 @@ namespace Cats.Services.Hub
                 QuantityInMT = transactionsign * viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt,
                 QuantityInUnit = transactionsign * viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInUnit,
 
-                //CommodityGradeID = 
+                //CommodityGradeID =
                 ProgramID = viewModel.ProgramId,
                 StoreID = viewModel.StoreId,
                 Stack = viewModel.StackNumber,
@@ -1560,7 +1560,7 @@ namespace Cats.Services.Hub
 
             #endregion
 
-            // transaction for goods under care, receivable, liabilities 
+            // transaction for goods under care, receivable, liabilities
 
             #region Negative Side
 
@@ -1574,7 +1574,7 @@ namespace Cats.Services.Hub
                 CommodityChildID = receiveDetail.CommodityChildID,
                 LedgerID = Ledger.Constants.GOODS_UNDER_CARE,
 
-                //HubOwnerID = 
+                //HubOwnerID =
                 DonorID = receive.SourceDonorID, //
 
                 ShippingInstructionID =
@@ -1585,7 +1585,7 @@ namespace Cats.Services.Hub
                 QuantityInMT = transactionsign * (-viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt),
                 QuantityInUnit = transactionsign * (-viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInUnit),
 
-                //CommodityGradeID = 
+                //CommodityGradeID =
                 ProgramID = viewModel.ProgramId,
                 StoreID = viewModel.StoreId,
                 Stack = viewModel.StackNumber,
@@ -1635,7 +1635,7 @@ namespace Cats.Services.Hub
                 CommodityID = receiveDetail.CommodityID,
                 CommodityChildID = receiveDetail.CommodityChildID,
                 LedgerID = Ledger.Constants.STATISTICS_FREE_STOCK,
-                //HubOwnerID = 
+                //HubOwnerID =
                 DonorID = receive.SourceDonorID,
                 AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, receive.HubID),
                 ShippingInstructionID =
@@ -1646,7 +1646,7 @@ namespace Cats.Services.Hub
                 QuantityInMT = transactionsign * viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt,
                 QuantityInUnit = transactionsign * viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInUnit,
 
-                //CommodityGradeID = 
+                //CommodityGradeID =
                 ProgramID = viewModel.ProgramId,
                 StoreID = viewModel.StoreId,
                 Stack = viewModel.StackNumber,
@@ -1667,7 +1667,7 @@ namespace Cats.Services.Hub
                 ParentCommodityID = null,
                 CommodityID = receiveDetail.CommodityID,
                 CommodityChildID = receiveDetail.CommodityChildID,
-                //HubOwnerID = 
+                //HubOwnerID =
                 DonorID = receive.SourceDonorID,
                 ShippingInstructionID =
                     _shippingInstructionService.GetSINumberIdWithCreate(viewModel.SiNumber).ShippingInstructionID,
@@ -1677,7 +1677,7 @@ namespace Cats.Services.Hub
                 QuantityInMT = transactionsign * (-viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInMt),
                 QuantityInUnit = transactionsign * (-viewModel.ReceiveDetailNewViewModel.ReceivedQuantityInUnit),
 
-                //CommodityGradeID = 
+                //CommodityGradeID =
                 ProgramID = viewModel.ProgramId,
                 StoreID = viewModel.StoreId,
                 Stack = viewModel.StackNumber,
@@ -1961,10 +1961,10 @@ namespace Cats.Services.Hub
                     }
 
                     // I see some logical error here
-                    // what happens when hub x was selected and the allocation was made from hub y? 
-                    //TOFIX: 
+                    // what happens when hub x was selected and the allocation was made from hub y?
+                    //TOFIX:
                     // Hub is required for this transaction
-                    // Try catch is danger!! Either throw the exception or use conditional statement. 
+                    // Try catch is danger!! Either throw the exception or use conditional statement.
 
                     //if (hubID1 != 0)
                     //{
@@ -2412,10 +2412,10 @@ namespace Cats.Services.Hub
                 transaction.HubID = allocationDetail.HubID;
 
                 // I see some logical error here
-                // what happens when hub x was selected and the allocation was made from hub y? 
-                //TOFIX: 
+                // what happens when hub x was selected and the allocation was made from hub y?
+                //TOFIX:
                 // Hub is required for this transaction
-                // Try catch is danger!! Either throw the exception or use conditional statement. 
+                // Try catch is danger!! Either throw the exception or use conditional statement.
 
                 //if (hubID1!=0)
                 //{
@@ -2479,7 +2479,7 @@ namespace Cats.Services.Hub
                 //            FirstOrDefault();
                 //    if (projectCode != null) transaction.ProjectCodeID = projectCode.ProjectCodeID;
 
-                //    //hubID2 = (int)_unitOfWorkNew.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code && 
+                //    //hubID2 = (int)_unitOfWorkNew.TransactionRepository.FindBy(m => m.ProjectCodeID == allocationDetail.Code &&
                 //    //           m.LedgerID == Ledger.Constants.GOODS_ON_HAND).Select(m => m.HubID).FirstOrDefault();
 
                 //}
@@ -2803,7 +2803,7 @@ namespace Cats.Services.Hub
             transactionFromStore.LedgerID = 2;
             transactionFromStore.HubOwnerID = user.DefaultHubObj.HubOwner.HubOwnerID;
             //trasaction.AccountID
-            transactionFromStore.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); // 
+            transactionFromStore.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); //
             transactionFromStore.HubID = user.DefaultHub.Value;
             transactionFromStore.StoreID = viewModel.FromStoreId;  //
             transactionFromStore.Stack = viewModel.FromStackId; //
@@ -2814,7 +2814,7 @@ namespace Cats.Services.Hub
                                                        ? commodity.CommodityID
                                                        : commodity.ParentID.Value;
             transactionFromStore.CommodityID = viewModel.CommodityId;
-            transactionFromStore.CommodityGradeID = null; // How did I get this value ? 
+            transactionFromStore.CommodityGradeID = null; // How did I get this value ?
             transactionFromStore.QuantityInMT = 0 - viewModel.QuantityInMt;
             transactionFromStore.QuantityInUnit = 0 - viewModel.QuantityInUnit;
             transactionFromStore.UnitID = viewModel.UnitId;
@@ -2829,7 +2829,7 @@ namespace Cats.Services.Hub
             transactionToStore.LedgerID = 2;
             transactionToStore.HubOwnerID = user.DefaultHubObj.HubOwner.HubOwnerID;
             //transactionToStore.AccountID
-            transactionToStore.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); // 
+            transactionToStore.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); //
             transactionToStore.HubID = user.DefaultHub.Value;
             transactionToStore.StoreID = viewModel.ToStoreId;  //
             transactionToStore.Stack = viewModel.ToStackId; //
@@ -2841,7 +2841,7 @@ namespace Cats.Services.Hub
                                                        ? commodity.CommodityID
                                                        : commodity.ParentID.Value;
             transactionToStore.CommodityID = viewModel.CommodityId;
-            transactionToStore.CommodityGradeID = null; // How did I get this value ? 
+            transactionToStore.CommodityGradeID = null; // How did I get this value ?
             transactionToStore.QuantityInMT = viewModel.QuantityInMt;
             transactionToStore.QuantityInUnit = viewModel.QuantityInUnit;
             transactionToStore.UnitID = viewModel.UnitId;
@@ -2902,7 +2902,7 @@ namespace Cats.Services.Hub
             transactionOne.TransactionGroupID = transactionGroupId;
             transactionOne.LedgerID = Ledger.Constants.GOODS_ON_HAND;// 2;
             transactionOne.HubOwnerID = user.DefaultHubObj.HubOwner.HubOwnerID;
-            transactionOne.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); // 
+            transactionOne.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); //
             transactionOne.HubID = user.DefaultHub.Value;
             transactionOne.StoreID = viewModel.StoreId;  //
             transactionOne.ProjectCodeID = viewModel.ProjectCodeId;
@@ -2913,7 +2913,7 @@ namespace Cats.Services.Hub
                                                        : commodity.ParentID.Value;
             transactionOne.CommodityID = viewModel.CommodityId;
             transactionOne.ProgramID = viewModel.ProgramId;
-            transactionOne.CommodityGradeID = null; // How did I get this value ? 
+            transactionOne.CommodityGradeID = null; // How did I get this value ?
             transactionOne.QuantityInMT = 0 - viewModel.QuantityInMt;
             transactionOne.QuantityInUnit = 0 - viewModel.QuantityInUint;
             transactionOne.UnitID = viewModel.UnitId;
@@ -2927,7 +2927,7 @@ namespace Cats.Services.Hub
             transactionTwo.TransactionGroupID = transactionGroupId;
             transactionTwo.LedgerID = Ledger.Constants.LOSS_IN_TRANSIT;// 14;
             transactionTwo.HubOwnerID = user.DefaultHubObj.HubOwnerID;
-            transactionTwo.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); // 
+            transactionTwo.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); //
             transactionTwo.HubID = user.DefaultHub.Value;
             transactionTwo.StoreID = viewModel.StoreId;  //
             transactionTwo.ProjectCodeID = viewModel.ProjectCodeId;
@@ -2937,7 +2937,7 @@ namespace Cats.Services.Hub
                                                        : commodity.ParentID.Value;
             transactionTwo.CommodityID = viewModel.CommodityId;
             transactionTwo.ProgramID = viewModel.ProgramId;
-            transactionTwo.CommodityGradeID = null; // How did I get this value ? 
+            transactionTwo.CommodityGradeID = null; // How did I get this value ?
             transactionTwo.QuantityInMT = viewModel.QuantityInMt;
             transactionTwo.QuantityInUnit = viewModel.QuantityInUint;
             transactionTwo.UnitID = viewModel.UnitId;
@@ -2968,6 +2968,8 @@ namespace Cats.Services.Hub
             try
             {
                 _unitOfWork.AdjustmentRepository.Add(lossAndAdjustment);
+                _IWorkflowActivityService.EnterCreateWorkflow(lossAndAdjustment);
+
                 _unitOfWork.Save();
             }
             catch (Exception exp)
@@ -2999,7 +3001,7 @@ namespace Cats.Services.Hub
             transactionOne.TransactionGroupID = transactionGroupId;
             transactionOne.LedgerID = Ledger.Constants.LOSS_IN_TRANSIT;//14;
             transactionOne.HubOwnerID = user.DefaultHubObj.HubOwner.HubOwnerID;
-            transactionOne.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); // 
+            transactionOne.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); //
             transactionOne.HubID = user.DefaultHub.Value;
             transactionOne.StoreID = viewModel.StoreId;  //
             transactionOne.ProjectCodeID = viewModel.ProjectCodeId;
@@ -3009,7 +3011,7 @@ namespace Cats.Services.Hub
                                                        : commodity.ParentID.Value;
             transactionOne.CommodityID = viewModel.CommodityId;
             transactionOne.ProgramID = viewModel.ProgramId;
-            transactionOne.CommodityGradeID = null; // How did I get this value ? 
+            transactionOne.CommodityGradeID = null; // How did I get this value ?
             transactionOne.QuantityInMT = 0 - viewModel.QuantityInMt;
             transactionOne.QuantityInUnit = 0 - viewModel.QuantityInUint;
             transactionOne.UnitID = viewModel.UnitId;
@@ -3023,7 +3025,7 @@ namespace Cats.Services.Hub
             transactionTwo.TransactionGroupID = transactionGroupId;
             transactionTwo.LedgerID = Ledger.Constants.GOODS_ON_HAND;// 2;
             transactionTwo.HubOwnerID = user.DefaultHubObj.HubOwnerID;
-            transactionTwo.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); // 
+            transactionTwo.AccountID = _accountService.GetAccountIdWithCreate(Account.Constants.HUB, user.DefaultHub.Value); //
             transactionTwo.HubID = user.DefaultHub;
             transactionTwo.StoreID = viewModel.StoreId;  //
             transactionTwo.ProjectCodeID = viewModel.ProjectCodeId;
@@ -3033,7 +3035,7 @@ namespace Cats.Services.Hub
                                                        : commodity.ParentID.Value;
             transactionTwo.CommodityID = viewModel.CommodityId;
             transactionTwo.ProgramID = viewModel.ProgramId;
-            transactionTwo.CommodityGradeID = null; // How did I get this value ? 
+            transactionTwo.CommodityGradeID = null; // How did I get this value ?
             transactionTwo.QuantityInMT = viewModel.QuantityInMt;
             transactionTwo.QuantityInUnit = viewModel.QuantityInUint;
             transactionTwo.UnitID = viewModel.UnitId;
@@ -3061,6 +3063,7 @@ namespace Cats.Services.Hub
             try
             {
                 _unitOfWork.AdjustmentRepository.Add(lossAndAdjustment);
+                _IWorkflowActivityService.EnterCreateWorkflow(lossAndAdjustment);
                 _unitOfWork.Save();
             }
             catch (Exception exp)
@@ -3199,7 +3202,7 @@ namespace Cats.Services.Hub
             //                                           ? comm.ParentID.Value
             //                                           : comm.CommodityID;
             transactionTwo.CommodityChildID = startingBalance.CommodityID;
-            transactionTwo.CommodityGradeID = null; // How did I get this value ? 
+            transactionTwo.CommodityGradeID = null; // How did I get this value ?
             transactionTwo.QuantityInMT = startingBalance.QuantityInMT;
             transactionTwo.QuantityInUnit = startingBalance.QuantityInUnit;
             transactionTwo.UnitID = startingBalance.UnitID;

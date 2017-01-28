@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cats.Models.Hubs
 {
-    public partial class Adjustment
+    public partial class Adjustment:IWorkflowHub
     {
         [Key]
         public System.Guid AdjustmentID { get; set; }
@@ -22,5 +22,8 @@ namespace Cats.Models.Hubs
         public virtual AdjustmentReason AdjustmentReason { get; set; }
         public virtual TransactionGroup TransactionGroup { get; set; }
         public virtual UserProfile UserProfile { get; set; }
+        public int BusinessProcessId{ get; set; }
+        public BusinessProcess BusinessProcess { get; set; }
+
     }
 }

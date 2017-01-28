@@ -89,5 +89,8 @@
     <Setting Name="RFQWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">RFQWorkflow</Value>
     </Setting>
+    <Setting Name="AdjustmentWorkflow" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">AdjustmentWorkflow</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
