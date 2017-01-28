@@ -22,6 +22,8 @@ using Kendo.Mvc.UI;
 using log4net;
 using Cats.Services.Workflows;
 using Cats.Services.Hubs;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Cats.Areas.Procurement.Controllers
 {
@@ -213,12 +215,12 @@ namespace Cats.Areas.Procurement.Controllers
 
             var result=    _transportBidQuotationService.DeleteWoreda(id);
 
-        if(!result) return RedirectToAction("Index");
+     /*   if(!result) */return RedirectToAction("Index");
 
 
 
 
-            return RedirectToAction("Details", new { id = transportBidQuatation.TransportBidQuotationHeaderID });
+            //return RedirectToAction("Details", new { id = transportBidQuatation.TransportBidQuotationHeaderID });
 
 
         }
@@ -1178,11 +1180,28 @@ namespace Cats.Areas.Procurement.Controllers
             ViewBag.RegionID = new SelectList(_adminUnitService.GetRegions(), "AdminUnitID", "Name");
             ViewBag.ZoneID = new SelectList(_adminUnitService.FindBy(m => m.AdminUnitTypeID == 3), "AdminUnitID", "Name");
             ViewBag.WoredaID = new SelectList(_adminUnitService.FindBy(m => m.AdminUnitTypeID == 4), "AdminUnitID", "Name");
-            ViewBag.hubID = new SelectList(_hubService.GetAllHub(), "HUBID", "Name");
+            //ViewBag.hubID = new SelectList(_hubService.GetAllHub(), "HUBID", "Name");
+
+            List<Cats.Models.Hub> assignedHubs = new List<Cats.Models.Hub>();
+            var assignedHubIds = _transportBidPlanDetailService.FindBy(o => o.BidPlanID == bidQuotation.Bid.TransportBidPlanID).Select(z => z.SourceID).Distinct();
+
+            foreach (var aid in assignedHubIds)
+            {
+                var hub = _hubService.FindById(aid);
+                 //hub = _hubService.FindById(hub.HubParentID);
+                if (hub != null)
+                    assignedHubs.Add(hub);
+
+            }
+
+
+            ViewBag.hubID = new SelectList(assignedHubs.Distinct().OrderBy(a=>a.Name), "HUBID", "Name");
+
             var addWoredaViewModel = new BidAddWoredaViewModel();
             addWoredaViewModel.TransportBidQuotationHeaderID = id;
             addWoredaViewModel.TransporterID = bidQuotation.Transporter.TransporterID;
             addWoredaViewModel.BidID = bidQuotation.Bid.BidID;
+
             return PartialView(addWoredaViewModel);
         }
         [HttpPost]
@@ -1238,6 +1257,70 @@ namespace Cats.Areas.Procurement.Controllers
             return detail;
         }
 
+        public ContentResult GetAssignedAdminUnits(int id)
+        {
+            var bidQuotation = _transportBidQuotationHeaderService.FindById(id);
+
+            var assignedWoredas = _transportBidPlanDetailService.FindBy(o => o.BidPlanID == bidQuotation.Bid.TransportBidPlanID).Select(zi => zi.DestinationID).Distinct();
+
+            List<AdminUnit> woredas = new List<AdminUnit>();
+            List<AdminUnit> zones = new List<AdminUnit>();
+            List<AdminUnit> regions = new List<AdminUnit>();
+
+            var allAdminUnits = _adminUnitService.GetAllAdminUnit();
+            AdminUnit zone=null;
+            foreach (var assignedw in assignedWoredas)
+            {
+                var woreda = allAdminUnits.Where(p => p.AdminUnitID == assignedw && p.AdminUnitTypeID == 4).FirstOrDefault();
+
+
+                if (woreda != null)
+                {
+                    woredas.Add(woreda);
+                     zone = allAdminUnits.Where(p => p.AdminUnitID == woreda.ParentID && p.AdminUnitTypeID == 3).FirstOrDefault();
+                    if (zone != null) { zones.Add(zone); }
+
+                }
+
+                if (zone!=null)
+
+                {
+                    var region = allAdminUnits.Where(p => p.AdminUnitID == zone.ParentID && p.AdminUnitTypeID == 2).FirstOrDefault();
+                    if(region!=null)
+                    regions.Add(region);
+
+                }
+
+            }
+
+            var w = from wd in woredas.Distinct().OrderBy(a => a.Name) select new { Id = wd.AdminUnitID, Name = wd.Name, parentId = wd.ParentID };
+            var r = from rg in regions.Distinct().OrderBy(a => a.Name) select new { Id = rg.AdminUnitID, Name = rg.Name };
+            var z= from zn in zones.Distinct().OrderBy(a => a.Name) select new { Id = zn.AdminUnitID, Name = zn.Name , parentId=zn.ParentID};
+
+            var result = new
+            {
+                Woredas = w,
+                Zones = z,
+                Regions = r
+
+            };
+            return GetJsonResult(result);
+
+
+        }
+        private ContentResult GetJsonResult(object list)
+        {
+            JsonSerializerSettings camelCaseFormatter = new JsonSerializerSettings();
+            camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+            ContentResult jsonResult = new ContentResult
+            {
+                Content = JsonConvert.SerializeObject(list, camelCaseFormatter),
+                ContentType = "application/json"
+            };
+
+            return jsonResult;
+        }
         public JsonResult GetAdminUnits()
         {
             var r = (from region in _adminUnitService.GetRegions()

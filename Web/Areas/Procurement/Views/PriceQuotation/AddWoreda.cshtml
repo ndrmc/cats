@@ -20,12 +20,12 @@
     <div class="modal-body">
 
         <div class="form-horizontal">
-            
+
             <div class="control-group" id="region">
                 <div class="control-label">
                     @Html.Label(Html.Translate("Source Warehouse"))
                 </div>
-                <div class="controls" id="div_region">
+                <div class="controls" id="div_hubId">
                     @Html.DropDownList("hubID", "--Select Warehouse--")
 
                 </div>
@@ -123,7 +123,7 @@
     var admin_zone_hash = {};
     var id = '@Model.TransportBidQuotationHeaderID';
     $(function () {
-        $.getJSON("@Url.Action("GetAdminUnits", "PriceQuotation", new { Area = "Procurement" })" + "?id=" + id, {}, function (data) {
+        @*$.getJSON("@Url.Action("GetAdminUnits", "PriceQuotation", new { Area = "Procurement" })" + "?id=" + id, {}, function (data) {
 
             document.getElementById("ZoneID").disabled = true;
             document.getElementById("WoredaID").disabled = true;
@@ -141,21 +141,77 @@
                     admin_zone_hash[keyz] = data[i].Zones[j].Woredas;
                 }
             }
+        });*@
+
+        var resultData;
+
+        $("#hubID").change(function () {
+
+            var selectedWarehouse = $("#hubID").val();
+            $("#ZoneID").val("");
+            $("#WoredaID").val("");
+            $("#RegionID").val("");
+
+            document.getElementById("ZoneID").disabled = true;
+            document.getElementById("WoredaID").disabled = true;
+            document.getElementById("RegionID").disabled = true;
+
+            $.get("@Url.Action("GetAssignedAdminUnits", "PriceQuotation", new { Area = "Procurement" })" + "?id=" + id, {}, function (data) {
+
+                resultData = data;
+
+                var htm = "<select name='RegionID' id ='RegionID' > ";
+                htm += "<option  >" + "  " + "</option>";
+
+                $.each(resultData.regions, function (i, r) {
+
+                    htm += "<option value='" + r.id + "'>" + r.name + "</option>";
+
+                });
+
+                htm += "</select>";
+
+                $("#div_region").html(htm);
+
+                document.getElementById("RegionID").disabled = false;
+
+                $("#RegionID").change(function () {
+                    populateZone();
+                });
+
+
+            });
+
+
+
         });
 
-        $("#RegionID").change(function () {
-            var regionId = $("#RegionID").val();
-            var region = admin_region_hash[regionId];
-            var zones = region.Zones;
-            document.getElementById("ZoneID").disabled = false;
+        function populateZone()
+        {
 
-            //var msg = "";
+
+            var regionId = $("#RegionID").val();
+
+            $("#ZoneID").val("");
+            $("#WoredaID").val("");
+
+
+            document.getElementById("ZoneID").disabled = true;
+            document.getElementById("WoredaID").disabled = true;
+
             var htm = "<select name='ZoneID' id ='ZoneID' > ";
-            for (var z in zones) {
-                //htm += "<option value='" + zones[z].AdminUnitID + "'>" + zones[z].Name + "</option>";
-                htm += "<option value='" + zones[z].ZoneID + "'>" + zones[z].ZoneName + "</option>";
-                //msg += "\n" + zones[z].ZoneName;
-            }
+            htm += "<option  >" + "  " + "</option>";
+
+            $.each(resultData.zones, function (i, z) {
+                if(z.parentId==regionId)
+                    {
+                htm += "<option value='" + z.id + "'>" + z.name + "</option>";
+                }
+            });
+
+            document.getElementById("ZoneID").disabled = false;
+            //document.getElementById("WoredaID").disabled = false;
+
 
             htm += "</select>";
             $("#div_zone").html(htm);
@@ -163,23 +219,73 @@
             $("#ZoneID").change(function () {
                 popoulateWoredas();
             });
-        });
 
-        function popoulateWoredas() {
-            document.getElementById("WoredaID").disabled = false;
-            var zoneId = $("#ZoneID").val();
-            //alert(zoneId);
-            var woredas = admin_zone_hash[zoneId];
-            var s = "<select id ='WoredaID' name='WoredaID' >";
-            for (w in woredas) {
-                s += "<option value='" + woredas[w].WoredaID + "'>" + woredas[w].WoredaName + "</option>";
-            }
-            s += "</select>";
-            $("#div_woreda").html(s);
+
         }
 
-        $("#ZoneID").change(function () {
-            popoulateWoredas();
-        });
+        function popoulateWoredas() {
+
+            console.log("Woreda");
+            var zoneId = $("#ZoneID").val();
+            document.getElementById("WoredaID").disabled = true;
+
+            var htm = "<select name='WoredaID' id ='WoredaID' > ";
+            htm += "<option  >" + "  " + "</option>";
+
+
+            $.each(resultData.woredas, function (i, w) {
+                if (w.parentId == zoneId) {
+                    htm += "<option value='" + w.id + "'>" + w.name + "</option>";
+                }
+            });
+
+            document.getElementById("WoredaID").disabled = false;
+
+
+            htm += "</select>";
+            $("#div_woreda").html(htm);
+
+
+
+        }
+
+        //$("#RegionID").change(function () {
+        //    var regionId = $("#RegionID").val();
+        //    var region = admin_region_hash[regionId];
+        //    var zones = region.Zones;
+        //    document.getElementById("ZoneID").disabled = false;
+
+        //    //var msg = "";
+        //    var htm = "<select name='ZoneID' id ='ZoneID' > ";
+        //    for (var z in zones) {
+        //        //htm += "<option value='" + zones[z].AdminUnitID + "'>" + zones[z].Name + "</option>";
+        //        htm += "<option value='" + zones[z].ZoneID + "'>" + zones[z].ZoneName + "</option>";
+        //        //msg += "\n" + zones[z].ZoneName;
+        //    }
+
+        //    htm += "</select>";
+        //    $("#div_zone").html(htm);
+
+        //    $("#ZoneID").change(function () {
+        //        popoulateWoredas();
+        //    });
+        //});
+
+        //function popoulateWoredas() {
+        //    document.getElementById("WoredaID").disabled = false;
+        //    var zoneId = $("#ZoneID").val();
+        //    //alert(zoneId);
+        //    var woredas = admin_zone_hash[zoneId];
+        //    var s = "<select id ='WoredaID' name='WoredaID' >";
+        //    for (w in woredas) {
+        //        s += "<option value='" + woredas[w].WoredaID + "'>" + woredas[w].WoredaName + "</option>";
+        //    }
+        //    s += "</select>";
+        //    $("#div_woreda").html(s);
+        //}
+
+        //$("#ZoneID").change(function () {
+        //    popoulateWoredas();
+        //});
     });
 </script>
