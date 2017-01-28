@@ -26,6 +26,7 @@
             .pdf { background-position: 0 -32px; }
             .html { background-position: 0 -48px; }
             .image { background-position: 0 -64px; }
+            .form-control-static { font-weight: bold;}
     </style>
     <script src="~/Scripts/angular/angular-kendo.js"></script>
 
@@ -86,98 +87,138 @@
             
         </div>
 
-        <div class="col-md-10">
-            <div class="portlet light bordered">
-                <div class="portlet-title">
-                    <div class="caption font-green-sharp">
-                        <i class="fa fa-list font-green-sharp"></i>
-                        <span class="caption-subject bold uppercase">
+    <div class="col-md-10">
+        <div class="portlet solid">
+            <div class="portlet-body row well form-horizontal">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Region:</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static">@ViewBag.Region</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Woreda:</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static" id="_woredaLabel"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Zone:</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static" id="_zoneLabel"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">FDP:</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static" id="_fdpLabel"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+        </div>
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="fa fa-list font-green-sharp"></i>
+                    <span class="caption-subject bold uppercase">
                                 @Html.Translate("Delivery Reconcile")
                             </span>
-                    </div>
-                    <div class="actions">
-                        <a href="#" class="fullscreen" data-original-title="" title=""></a>
-                    </div>
-                    <div class="tools">
-                        <a href="#" class="collapse" data-original-title="" title=""></a>
-                    </div>
                 </div>
-                <div class="portlet-body">
-                    <div style="clear: both;" class="message-window">
-                        <div class="cats_error">@Html.ValidationSummary(true)</div>
-                    </div>
-                    @(Html.Kendo().Grid<DispatchViewModelForReconcile>()
-                          .Name("grid")
-                          .Columns(columns =>
-                          {
-                              columns.Bound(c => c.DeliveryReconcileID).Visible(false);
-                              columns.Bound(c => c.RequisitionNo).Width(30);
-                              columns.Bound(c => c.GIN).Width(25);
-                              columns.Bound(c => c.DispatchDatePref).Width(35).Title("Dis. Date");
-                              columns.Bound(c => c.Commodity).Width(30);
-                              columns.Bound(c => c.Round).Width(20);
-                              columns.Bound(c => c.MonthYear).Width(30);
-                              columns.Bound(c => c.Quantity).Width(40).Title("Dis. Qty. (Qtl)").HtmlAttributes(new {style = "text-align:right"});
-                              columns.Bound(c => c.GRN).Width(25);
-                              if (datepref == "GC" || datepref == "gc")
-                              {
-                                  columns.Bound(c => c.ReceivedDate).Width(40).Format("{0:M/d/yyyy}");
-                              }
-                              else
-                              {
-                                  columns.Bound(c => c.ReceivedDatePref).Width(40).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid"}).EditorTemplateName("AmharicDatePicker");
-                              }
-                              columns.Bound(c => c.ReceivedAmount).Width(45).Title("Rec. Qty. (Qtl)").HtmlAttributes(new {style = "text-align:right"});
-                              columns.Bound(c => c.LossAmount).Width(25).Title("Loss Qty. (Qtl)").HtmlAttributes(new {style = "text-align:right"});
-                              
-                              columns.ForeignKey(c => c.LossReasonId, (System.Collections.IEnumerable) ViewData["LossReasons"], "Id", "name").Title("Loss code - Reason").Width(40);
-                              //columns.Bound(c => c.LossReason).Width(15);
-
-                          })
-                          .ToolBar(toolbar => toolbar.Save())
-                          .Editable(edit => edit.Mode(GridEditMode.InCell))
-                          .Scrollable(t => t.Height(400))
-                          //.Selectable(t => t.Mode(GridSelectionMode.Single))
-                          .Navigatable()
-                          //.Selectable()
-                          //.AutoBind(false)
-                          //.Events(events => events.e("onChange"))
-                          .Filterable()
-                          .DataSource(datasource =>
-                              datasource
-                                  .Ajax()
-                                  .Events(error => error.Error("error_handler").RequestEnd("onRequestEnd"))
-
-                                  .PageSize(10)
-                                  .Model(m =>
-                                  {
-                                      m.Id(p => p.DeliveryReconcileID);
-                                      m.Field(p => p.RequisitionNo).Editable(false);
-                                      m.Field(p => p.GIN).Editable(false);
-                                      m.Field(p => p.DispatchDatePref).Editable(false);
-                                      m.Field(p => p.Commodity).Editable(false);
-                                      m.Field(p => p.Round).Editable(false);
-                                      m.Field(p => p.MonthYear).Editable(false);
-                                      m.Field(p => p.Quantity).Editable(false);
-                                      m.Field(p => p.Round).Editable(false);
-                                      m.Field(p => p.MonthYear).Editable(false);
-                                  })
-                                  //.Model(m => m.Id(t => t.DeliveryReconcileID))
-                                  .Read(read => read.Action("ReadDispatchesNotReconciled", "DeliveryReconcile").Data("selectedFDPID"))
-                                  .Create(create => create.Action("DeliveryReconcileUpdate", "DeliveryReconcile"))
-                                  .Update(update => update.Action("DeliveryReconcileUpdate", "DeliveryReconcile"))
-                          //.Update("ReconciledDeliveryUpdate", "DeliveryReconcile")
-                          //.Destroy("FDP_Destroy","FDP")
-
-                          )
-                          .Events(e => e.Edit("onEdit"))
-                          .Resizable(resize => resize.Columns(true))
-                          )
+                <div class="actions">
+                    <a href="#" class="fullscreen" data-original-title="" title=""></a>
+                </div>
+                <div class="tools">
+                    <a href="#" class="collapse" data-original-title="" title=""></a>
                 </div>
             </div>
+            <div class="portlet-body">
+                <div style="clear: both;" class="message-window">
+                    <div class="cats_error">@Html.ValidationSummary(true)</div>
+                </div>
+                @(Html.Kendo().Grid<DispatchViewModelForReconcile>()
+                      .Name("grid")
+                      .Columns(columns =>
+                      {
+                          columns.Bound(c => c.DeliveryReconcileID).Visible(false);
+                          columns.Bound(c => c.RequisitionNo).Width(30);
+                          columns.Bound(c => c.GIN).Width(25);
+                          columns.Bound(c => c.DispatchDatePref).Width(35).Title("Dis. Date");
+                          columns.Bound(c => c.Commodity).Width(30);
+                          columns.Bound(c => c.Round).Width(20);
+                          columns.Bound(c => c.MonthYear).Width(30);
+                          columns.Bound(c => c.Quantity).Width(40).Title("Dis. Qty. (Qtl)").HtmlAttributes(new {style = "text-align:right"});
+                          columns.Bound(c => c.GRN).Width(25);
+                          if (datepref == "GC" || datepref == "gc")
+                          {
+                              columns.Bound(c => c.ReceivedDate).Width(40).Format("{0:M/d/yyyy}");
+                          }
+                          else
+                          {
+                              columns.Bound(c => c.ReceivedDatePref).Width(40).HeaderHtmlAttributes(new {@class = "cats-date-pref-grid"}).EditorTemplateName("AmharicDatePicker");
+                          }
+                          columns.Bound(c => c.ReceivedAmount).Width(45).Title("Rec. Qty. (Qtl)").HtmlAttributes(new {style = "text-align:right"});
+                          columns.Bound(c => c.LossAmount).Width(25).Title("Loss Qty. (Qtl)").HtmlAttributes(new {style = "text-align:right"});
 
+                          columns.ForeignKey(c => c.LossReasonId, (System.Collections.IEnumerable) ViewData["LossReasons"], "Id", "name").Title("Loss code - Reason").Width(40);
+                          //columns.Bound(c => c.LossReason).Width(15);
 
+                      })
+                      .ToolBar(toolbar => toolbar.Save())
+                      .Editable(edit => edit.Mode(GridEditMode.InCell))
+                      .Scrollable(t => t.Height(400))
+                      //.Selectable(t => t.Mode(GridSelectionMode.Single))
+                      .Navigatable()
+                      //.Selectable()
+                      //.AutoBind(false)
+                      //.Events(events => events.e("onChange"))
+                      .Filterable()
+                      .DataSource(datasource =>
+                          datasource
+                              .Ajax()
+                              .Events(error => error.Error("error_handler").RequestEnd("onRequestEnd"))
+
+                              .PageSize(10)
+                              .Model(m =>
+                              {
+                                  m.Id(p => p.DeliveryReconcileID);
+                                  m.Field(p => p.RequisitionNo).Editable(false);
+                                  m.Field(p => p.GIN).Editable(false);
+                                  m.Field(p => p.DispatchDatePref).Editable(false);
+                                  m.Field(p => p.Commodity).Editable(false);
+                                  m.Field(p => p.Round).Editable(false);
+                                  m.Field(p => p.MonthYear).Editable(false);
+                                  m.Field(p => p.Quantity).Editable(false);
+                                  m.Field(p => p.Round).Editable(false);
+                                  m.Field(p => p.MonthYear).Editable(false);
+                              })
+                              //.Model(m => m.Id(t => t.DeliveryReconcileID))
+                              .Read(read => read.Action("ReadDispatchesNotReconciled", "DeliveryReconcile").Data("selectedFDPID"))
+                              .Create(create => create.Action("DeliveryReconcileUpdate", "DeliveryReconcile"))
+                              .Update(update => update.Action("DeliveryReconcileUpdate", "DeliveryReconcile"))
+                      //.Update("ReconciledDeliveryUpdate", "DeliveryReconcile")
+                      //.Destroy("FDP_Destroy","FDP")
+
+                      )
+                      .Events(e => e.Edit("onEdit"))
+                      .Resizable(resize => resize.Columns(true))
+                      )
+            </div>
         </div>
+
+
+    </div>
 
 
         <input type="hidden" id="dateTransfer"/>
@@ -245,6 +286,17 @@
                 FDPID = id;
                 //alert("FDPID: " + FDPID);
                 if (id != null) {
+                    // set FDP details 
+
+                    var tree = $("#AdminUnitTreeView").data("kendoTreeView");
+                    var _fdp = this.dataItem(e.node);
+                    $("#_fdpLabel").html(_fdp.text);
+                    
+                    var _woreda = tree.parent(e.node);
+                    $("#_woredaLabel").html(this.dataItem(_woreda).text);
+
+                    var _zone = tree.parent(_woreda);
+                    $("#_zoneLabel").html(this.dataItem(_zone).text);
 
                     var grid = $("#grid").data("kendoGrid");
                     grid.dataSource.read();
