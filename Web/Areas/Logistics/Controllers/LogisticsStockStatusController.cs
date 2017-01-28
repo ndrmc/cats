@@ -201,7 +201,7 @@ namespace Cats.Areas.Logistics.Controllers
                             .FirstOrDefault()
                             .ShippingInstructionID;
                     var receiveDetails =
-                        _receiveDetailService.FindBy(s => s.Receive.ReceiptAllocation.SINumber == siNumber);
+                        _receiveDetailService.FindBy(s => s.Receive.ReceiptAllocation.SINumber == siNumber).Distinct();
                     if (receiveDetails.Any())
                         item.Received = receiveDetails.Sum(s => s.SentQuantityInMT);
                     else item.Received = 0;
