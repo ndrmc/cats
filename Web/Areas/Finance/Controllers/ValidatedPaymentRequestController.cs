@@ -82,14 +82,18 @@ namespace Cats.Areas.Finance.Controllers
 
         public ActionResult OLDBidWinningTransporters_read([DataSourceRequest] DataSourceRequest request)
         {
-            var winningTransprters = _bidWinnerService.Get(t => t.Position == 1 && t.Status == 1).Select(t => t.Transporter).Distinct();
+            var winningTransprters =
+                _bidWinnerService.Get(t => t.Position == 1 && t.Status == 1).Select(t => t.Transporter).Distinct();
             var winningTransprterViewModels = TransporterListViewModelBinder(winningTransprters.ToList());
             return Json(winningTransprterViewModels.ToDataSourceResult(request));
         }
 
         public ActionResult BidWinningTransporters_read([DataSourceRequest] DataSourceRequest request)
         {
-            var transprtersWithActiveTO = _transportOrderService.Get(t => t.StatusID > 3, null, "Transporter").Select(t => t.Transporter).Distinct();
+            var transprtersWithActiveTO =
+                _transportOrderService.Get(t => t.StatusID > 3, null, "Transporter")
+                    .Select(t => t.Transporter)
+                    .Distinct();
             var winningTransprterViewModels = TransporterListViewModelBinder(transprtersWithActiveTO.ToList());
             return Json(winningTransprterViewModels.ToDataSourceResult(request));
         }
@@ -97,12 +101,17 @@ namespace Cats.Areas.Finance.Controllers
         public List<TransporterViewModel> TransporterListViewModelBinder(List<Transporter> transporters)
         {
             return (from transporter in transporters
-                    let firstOrDefault = _bidWinnerService.Get(t => t.TransporterID == transporter.TransporterID, null, "Bid").FirstOrDefault()
-                    where firstOrDefault != null
-                    select new TransporterViewModel()
-                               {
-                                   TransporterID = transporter.TransporterID, TransporterName = transporter.Name, BidContract = firstOrDefault.Bid.BidNumber
-                               }).ToList();
+                let firstOrDefault =
+                    _bidWinnerService.Get(t => t.TransporterID == transporter.TransporterID, null, "Bid")
+                        .FirstOrDefault()
+                where firstOrDefault != null
+                select new TransporterViewModel()
+                {
+                    TransporterID = transporter.TransporterID,
+                    TransporterName = transporter.Name,
+                    BidContract = firstOrDefault.Bid.BidNumber
+                }).ToList();
+            ;
 
 
             //return transporters.Select(transporter =>
