@@ -26,6 +26,11 @@
     <a class="btn grey-salt " href='@Url.Action("index", "Receive" )' data-buttontype="btn_cancel"><i class="fa fa-times-circle"></i> @Html.Translate("Back to list")</a>
 
 }
+<style>
+    .k-combobox {
+        width: 100%;
+    }
+</style>
 
 
 @using (Html.BeginForm("Create", "ReceiveNew", FormMethod.Post, new { id = "frm_receive", @class = "form-horizontal" }))

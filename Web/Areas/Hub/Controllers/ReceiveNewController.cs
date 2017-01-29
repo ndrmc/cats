@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Cats.Areas.Hub.Models;
+using Cats.Models;
 using Cats.Models.Constant;
 using Cats.Models.Hubs;
 using Cats.Models.Hubs.ViewModels;
@@ -14,6 +15,8 @@ using Kendo.Mvc.UI;
 using CommoditySource = Cats.Models.Hubs.CommoditySource;
 using Cats.Services;
 using Cats.Services.Hubs;
+using BusinessProcess = Cats.Models.Hubs.BusinessProcess;
+using BusinessProcessState = Cats.Models.Hubs.BusinessProcessState;
 
 namespace Cats.Areas.Hub.Controllers
 {
@@ -843,12 +846,15 @@ namespace Cats.Areas.Hub.Controllers
         [HttpGet]
         public JsonResult GetTransporter()
         {
-            return Json(from c in _transporterService.GetAllTransporter().DefaultIfEmpty().OrderBy(o => o.Name)
-                        select new TransporterViewModel
-                        {
-                            TransporterId = c.TransporterID,
-                            Name = c.Name
-                        }, JsonRequestBehavior.AllowGet);
+            var transporters = new List<TransporterViewModel>();
+            transporters.Add(new TransporterViewModel(){ Name = "-- Select Transporter --", TransporterId = 0 });
+            transporters.AddRange(from c in _transporterService.GetAllTransporter().DefaultIfEmpty().OrderBy(o => o.Name)
+                                  select new TransporterViewModel
+                                  {
+                                      TransporterId = c.TransporterID,
+                                      Name = c.Name
+                                  });
+            return Json(transporters, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
