@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Cats.Rest.Models;
 using Cats.Services.EarlyWarning;
 namespace Cats.Rest.Controllers
 {
@@ -48,7 +49,9 @@ namespace Cats.Rest.Controllers
                         RationID = hrd.RationID,
                         RefrenceNumber = hrd.Ration.RefrenceNumber,
                         UpdatedBy = hrd.Ration.UpdatedBy,
-                        UpdatedDate = hrd.Ration.UpdatedDate
+                        UpdatedDate = hrd.Ration.UpdatedDate,
+                        RationDetail = (from d in hrd.Ration.RationDetails
+                                            select new Models.RationDetail(d.RationDetailID,d.RationID,d.CommodityID,d.Commodity.Name,d.Amount,d.UnitID,"")).ToList()
                     }
                 };
                 hrdList.Add(hrdModel);        

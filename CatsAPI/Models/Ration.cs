@@ -14,5 +14,6 @@ namespace Cats.Rest.Models
         public Nullable<int> UpdatedBy { get; set; }
         public bool? IsDefaultRation { get; set; }
         public string RefrenceNumber { get; set; }
+        public List<RationDetail> RationDetail { get; set; }
     }
 }
