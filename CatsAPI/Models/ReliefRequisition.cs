@@ -66,4 +66,55 @@ namespace Cats.Rest.Models
             ReliefRequisitionDetail = reliefRequisitionDetail;
         }
     }
+
+    public class RequisitionNo
+    {
+        public string Requisition_No { get; set; }
+        public int  RequisitionId   { get; set; }
+
+        public RequisitionNo(string requisitionNo, int requisitionId)
+        {
+            Requisition_No = requisitionNo;
+            RequisitionId = requisitionId;
+        }
+    }
+    ///
+    public class Allocation
+    {
+     
+
+        public int? RegionId { get; set; }
+        public string RegionName { get; set; }
+        public string Status { get; set; }
+        public string Percent { get; set; }
+        
+        public List<CommodityAllocation> Commodities { get; set; }
+
+        public Allocation(int? regionId, string regionName, List<CommodityAllocation> commodities)
+        {
+            RegionId = regionId;
+            RegionName = regionName;
+           Commodities = commodities;
+           
+        }
+
+       
+    }
+    public class CommodityAllocation
+    {
+     
+
+        public CommodityAllocation(int regionId, decimal allocatedAmount, string name, int commodityId)
+        {
+            RegionId = regionId;
+            AllocatedAmount = allocatedAmount;
+            Name = name;
+            CommodityId = commodityId;
+        }
+
+        public int CommodityId { get; set; }
+        public string Name { get; set; }
+        public decimal AllocatedAmount { get; set; }
+        public int RegionId { get; set; }
+    }
 } 

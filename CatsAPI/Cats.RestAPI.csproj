@@ -181,7 +181,7 @@
     <Compile Include="Controllers\LossReasonController.cs" />
     <Compile Include="Controllers\ProgramController.cs" />
     <Compile Include="Controllers\ProjectCodeController.cs" />
-    <Compile Include="Controllers\ReleifRequisitionController.cs" />
+    <Compile Include="Controllers\ReliefRequisitionController.cs" />
     <Compile Include="Controllers\RationController.cs" />
     <Compile Include="Controllers\SupportTypeController.cs" />
     <Compile Include="Controllers\TransactionController.cs" />
