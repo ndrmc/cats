@@ -428,6 +428,26 @@ namespace Cats.Areas.Procurement.Controllers
             
             return View();
         }
+        public ActionResult NoneBidWinningTransporters_read([DataSourceRequest] DataSourceRequest request)
+        {
+            var nonWinnerTransporters =
+                _dispatchService.Get(d => d.BidNumber == "Bid-Number")
+                    .Select(d => d.TransporterID)
+                    .Except(_bidWinnerService.GetAllBidWinner().Select(bw => bw.TransporterID)).ToList();
+
+            var transporters = (from tt in nonWinnerTransporters
+                                join transporter in _transporterService.GetAllTransporter()
+                                    on tt equals transporter.TransporterID
+                                select new TransporterViewModel
+                                {
+                                    TransporterID = tt,
+                                    TransporterName = transporter.Name,
+                                    BidContract = "-"
+                                }).ToList();
+            var noneBidWinningWinnerTransporters = transporters.Distinct().OrderBy(t => t.TransporterName).ToList();
+
+            return Json(noneBidWinningWinnerTransporters.ToDataSourceResult(request));
+        }
 
     }
 }
