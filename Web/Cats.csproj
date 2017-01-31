@@ -3525,6 +3525,9 @@
     <Content Include="Views\Shared\DefaultLayout.cshtml" />
     <Content Include="Views\Shared\_DataActivityIndicator.cshtml" />
     <Content Include="Views\Shared\_DataActivityIndicator - OldTheme.cshtml" />
+    <Content Include="Views\Home\GetUnreadNotificationDetail.cshtml" />
+    <Content Include="Views\Shared\GetUnreadNotificationDetail.cshtml" />
+    <Content Include="Views\Shared\NewTheme _MainLayout_Sidebar.cshtml" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
