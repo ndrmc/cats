@@ -91,10 +91,10 @@ namespace Cats.Areas.Finance.Controllers
         public ActionResult BidWinningTransporters_read([DataSourceRequest] DataSourceRequest request)
         {
             var transprtersWithActiveTO =
-                _transportOrderService.Get(t => t.StatusID > 3, null, "Transporter")
-                    .Select(t => t.Transporter)
-                    .Distinct();
-            var winningTransprterViewModels = TransporterListViewModelBinder(transprtersWithActiveTO.ToList());
+                _transportOrderService.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null, 
+                "Transporter, BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                    .Select(t => t.Transporter).Distinct().ToList();
+            var winningTransprterViewModels = TransporterListViewModelBinder(transprtersWithActiveTO);
             return Json(winningTransprterViewModels.ToDataSourceResult(request));
         }
 
