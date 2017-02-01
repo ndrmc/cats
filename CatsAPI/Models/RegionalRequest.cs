@@ -44,4 +44,27 @@ namespace Cats.Rest.Models
 
         public List<RegionalRequestDetail> RegionalRequestDetails { get; set; }
     }
+
+    public  class Request
+    {
+        public Request(int regionId, string regionName, string status, int beneficiaryNo, DateTime requestedDate, int numberOfFpDs, int numberOfWoredas)
+        {
+            RegionId = regionId;
+            RegionName = regionName;
+            Status = status;
+            BeneficiaryNo = beneficiaryNo;
+            RequestedDate = requestedDate;
+            NumberOfFPDs = numberOfFpDs;
+            NumberOfWoredas = numberOfWoredas;
+
+        }
+
+        public int RegionId { get; set; }
+        public string RegionName { get; set; }
+        public string Status { get; set; }
+        public int BeneficiaryNo { get; set; }
+        public DateTime RequestedDate { get; set; }
+        public int NumberOfFPDs { get; set; }
+        public int NumberOfWoredas { get; set; }
+    }
 }

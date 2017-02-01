@@ -39,7 +39,7 @@ namespace Cats.Rest.Controllers
                     ApprovedBy = rr.ApprovedBy,
                     Contingency = rr.Contingency,
                     DonorID = rr.DonorID,
-                    DonorName = rr.Donor.Name,
+                    DonorName = "",
                     IDPSReasonType = rr.IDPSReasonType,
                     Month = rr.Month,
                     PartitionId = rr.PartitionId,
@@ -91,7 +91,7 @@ namespace Cats.Rest.Controllers
                 ApprovedBy = regionalRequest.ApprovedBy,
                 Contingency = regionalRequest.Contingency,
                 DonorID = regionalRequest.DonorID,
-                DonorName = regionalRequest.Donor.Name,
+                DonorName = "",
                 IDPSReasonType = regionalRequest.IDPSReasonType,
                 Month = regionalRequest.Month,
                 PartitionId = regionalRequest.PartitionId,
@@ -119,6 +119,60 @@ namespace Cats.Rest.Controllers
             };
         }
 
+        [HttpGet]
+        public List<Models.Request> Request(int year, int programId, int planId, int? month,int? round)
+        {
+            var listOfRequests = new List<Models.Request>();
+            List<Cats.Models.RegionalRequest> requests = null;
 
+            if (year != 0 && programId != 0)
+            {
+
+               if (programId == 1 || programId == 3) //relief or idps
+                {
+                     requests = _regionalRequestService.FindBy(r => r.Year == year && r.ProgramId == programId && r.PlanID == planId && r.Round ==round).ToList();
+
+                }
+               else if (programId==2)
+               {
+                   requests = _regionalRequestService.FindBy(r => r.Year == year && r.ProgramId == programId && r.PlanID == planId && r.Month == month).ToList();
+               }
+
+            }
+
+
+            if (requests != null)
+            {
+                foreach (var request in requests)
+                {
+                    var newRequest = new Models.Request(request.RegionID, request.AdminUnit.Name, "",
+                                                        request.RegionalRequestDetails.Sum(b => b.Beneficiaries),
+                                                        request.RequistionDate.Date,
+                                                        request.RegionalRequestDetails.Count(f => f.Fdpid != 0),
+                                                        request.RegionalRequestDetails.Select(w => w.Fdp.AdminUnitID).Distinct().Count());
+
+                    listOfRequests.Add(newRequest);
+                }
+
+                var requestsGroupByRegion = listOfRequests.GroupBy(r => r.RegionId)
+                    .Select(r =>
+                                {
+                                    var firstOrDefault = r.FirstOrDefault();
+                                    return firstOrDefault != null
+                                               ? new Models.Request(firstOrDefault.RegionId,
+                                                                    firstOrDefault.RegionName, "",
+                                                                    r.Sum(b=>b.BeneficiaryNo),
+                                                                    firstOrDefault.RequestedDate.Date,
+                                                                    firstOrDefault.NumberOfFPDs,
+                                                                    firstOrDefault.NumberOfWoredas)
+                                               : null;
+                                });
+                return requestsGroupByRegion.ToList();
+            }
+            return null;
+
+          
+
+        } 
     }
 }

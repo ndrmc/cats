@@ -92,12 +92,66 @@ namespace Cats.Rest.Controllers
                     RationID = hrd.RationID,
                     RefrenceNumber = hrd.Ration.RefrenceNumber,
                     UpdatedBy = hrd.Ration.UpdatedBy,
-                    UpdatedDate = hrd.Ration.UpdatedDate
+                    UpdatedDate = hrd.Ration.UpdatedDate,
+                    RationDetail = (from d in hrd.Ration.RationDetails
+                                    select new Models.RationDetail(d.RationDetailID, d.RationID, d.CommodityID, d.Commodity.Name, d.Amount, d.UnitID, "")).ToList()
                 }
             };
 
             return hrdModel;
         }
-
+        /// <summary>
+        /// Returns list of HRD objects given a plan Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public List<Models.HRD> GetHRDByPlanId(int id)
+        {
+            var hrds = _hrdService.FindBy(d => d.PlanID == id).ToList();
+            var hrdList = new List<Models.HRD>();
+            Models.HRD hrdModel;
+            if (hrds.Count>0)
+           
+            {
+                foreach (var hrd in hrds)
+                {
+                    hrdModel = new Models.HRD()
+                    {
+                        CreatedBY = hrd.CreatedBY,
+                        CreatedDate = hrd.CreatedDate,
+                        HRDDetails = (from d in hrd.HRDDetails
+                                      select new Models.Detail()
+                                      {
+                                          WoredaName = d.AdminUnit.Name,
+                                          DurationOfAssistance = d.DurationOfAssistance,
+                                          HRDDetailID = d.HRDDetailID,
+                                          NumberOfBeneficiaries = d.NumberOfBeneficiaries,
+                                          StartingMonth = d.StartingMonth,
+                                          WoredaID = d.WoredaID
+                                      }).ToList(),
+                        HRDID = hrd.HRDID,
+                        PartitionId = hrd.PartitionId,
+                        PlanID = hrd.PlanID,
+                        PublishedDate = hrd.PublishedDate,
+                        Ration = new Models.Ration()
+                        {
+                            CreatedBy = hrd.Ration.CreatedBy,
+                            CreatedDate = hrd.Ration.CreatedDate,
+                            IsDefaultRation = hrd.Ration.IsDefaultRation,
+                            RationID = hrd.RationID,
+                            RefrenceNumber = hrd.Ration.RefrenceNumber,
+                            UpdatedBy = hrd.Ration.UpdatedBy,
+                            UpdatedDate = hrd.Ration.UpdatedDate,
+                            RationDetail = (from d in hrd.Ration.RationDetails
+                                            select new Models.RationDetail(d.RationDetailID, d.RationID, d.CommodityID, d.Commodity.Name, d.Amount, d.UnitID, "")).ToList()
+                        }
+                    };
+                    hrdList.Add(hrdModel);
+                }
+                return hrdList;
+            }
+            return null;
+        }
     }
 }
