@@ -608,7 +608,7 @@
                                 <div class="col-md-3 form-group">
                                     <!--<label class="control-label col-md-8">Enter number of records to view</label>-->
                                     <div class="col-md-12">
-                                        <input type="text" placeholder="Enter number of records to view" class="form-control" id="takeFirstId" ng-model="search.transportOrderNo" value="10">
+                                        <input type="text" placeholder="Enter number of records to view" class="form-control" id="takeFirstId" ng-change="onChange(transporterValue)" ng-model="search.transportOrderNo" value="10">
                                     </div>
                                 </div>
                             </div>
