@@ -1,8 +1,5 @@
-﻿using System;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Cats.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
 
 namespace Cats.Models
 {
