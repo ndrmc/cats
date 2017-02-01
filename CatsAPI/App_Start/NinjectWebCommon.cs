@@ -143,8 +143,11 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IRegionalPSNPPlanDetailService>().To<RegionalPSNPPlanDetailService>();
             kernel.Bind<ISupportTypeService>().To<SupportTypeService>();
             kernel.Bind<IIDPSReasonTypeServices>().To<IDPSReasonTypeServices>();
+
             kernel.Bind<Cats.Services.Transaction.ITranscationTypeService>().To<Cats.Services.Transaction.TranscationTypeService>();
             kernel.Bind<Services.Hub.IUserHubService>().To<Services.Hub.UserHubService>();
-        }
+            kernel.Bind<ITransportBidQuotationHeaderService>().To<TransportBidQuotationHeaderService>();
+        }        
+
     }
 }
