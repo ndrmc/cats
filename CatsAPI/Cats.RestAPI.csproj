@@ -180,6 +180,7 @@
     <Compile Include="Controllers\LossReasonController.cs" />
     <Compile Include="Controllers\ProgramController.cs" />
     <Compile Include="Controllers\ProjectCodeController.cs" />
+    <Compile Include="Controllers\RegionalPsnpPlanController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Global.asax.cs">
@@ -205,6 +206,9 @@
     <Compile Include="Models\LossReason.cs" />
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\ProjectCode.cs" />
+    <Compile Include="Models\RationDetailViewModel.cs" />
+    <Compile Include="Models\RegionalPsnpPlanDetailViewModel.cs" />
+    <Compile Include="Models\RegionalPsnpPlanViewModel.cs" />
     <Compile Include="Models\ShippingInstruction.cs" />
     <Compile Include="Models\Store.cs" />
     <Compile Include="Models\Unit.cs" />
@@ -353,6 +357,10 @@
     <ProjectReference Include="..\services\Cats.Services.Procurement\Cats.Services.Procurement.csproj">
       <Project>{B0410B11-91E0-40EC-9F16-55FC5E2C4090}</Project>
       <Name>Cats.Services.Procurement</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\Cats.Services.PSNP\Cats.Services.PSNP.csproj">
+      <Project>{8EDA6B56-C5C9-4744-A356-1AF76AD96159}</Project>
+      <Name>Cats.Services.PSNP</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

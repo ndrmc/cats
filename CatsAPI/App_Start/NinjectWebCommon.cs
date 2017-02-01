@@ -30,6 +30,7 @@ using HubOwnerService = Cats.Services.Hub.HubOwnerService;
 using IHubOwnerService = Cats.Services.Hub.IHubOwnerService;
 using IStoreService = Cats.Services.Hub.IStoreService;
 using IUnitService = Cats.Services.EarlyWarning.IUnitService;
+using Cats.Services.PSNP;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(NinjectWebCommon), "Stop")]
@@ -127,6 +128,8 @@ namespace Cats.Rest.App_Start
             kernel.Bind<ILossReasonService>().To<LossReasonService>();
             kernel.Bind<IPlanService>().To<PlanService>();
             kernel.Bind<IRationDetailService>().To<RationDetailService>();
+
+            kernel.Bind<IRegionalPSNPPlanService>().To<RegionalPSNPPlanService>();
         }        
     }
 }
