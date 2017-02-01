@@ -146,7 +146,12 @@ namespace Cats.Areas.Hub.Controllers
         {
             UserProfile user = _userProfileService.GetUser(User.Identity.Name);
             //TODO cascade using allocation id
-            List<ReceiveViewModelDto> receives = ChangeUserPreference(_receiveService.ByHubIdAndAllocationIDetached(user.DefaultHub.Value, Guid.Parse(ReceiptAllocationID), grn),user);
+            List<ReceiveViewModelDto> receives =
+                ChangeUserPreference(
+                    _receiveService.ByHubIdAndAllocationIDetached(user.DefaultHub.Value, Guid.Parse(ReceiptAllocationID),
+                        grn), user);
+
+
             return Json(receives.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 

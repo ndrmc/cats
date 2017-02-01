@@ -319,7 +319,7 @@ namespace Cats.Services.Hub
             dispatch.plannedAmount = dispatchAllocation.Amount;
 
             dispatch.BusinessProcess = dispatchAllocation.BusinessProcess;
-            dispatch.BusinessProcessId = Convert.ToInt16(dispatchAllocation.BusinessProcessId);
+            dispatch.BusinessProcessId = Convert.ToInt32(dispatchAllocation.BusinessProcessId);
 
             return dispatch;
         }

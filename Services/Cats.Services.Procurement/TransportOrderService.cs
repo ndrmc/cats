@@ -879,7 +879,7 @@ namespace Cats.Services.Procurement
                                 t =>
                                 t.TransportOrderID == transportOrderId && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null, "BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
             if (transportOrder == null) return false;
-            int appServId = _applicationSettingService.GetDispatchWorkflow();
+            int appServId = _applicationSettingService.getGlobalWorkflow();
 
 
             var transportOrderDetails =
