@@ -106,7 +106,7 @@
         return toCatsPreferedUnit(kendo.parseFloat(data.Received - data.Dispatched)).toFixed(2);
     }
     function calculateUnCommitedStock(data) {
-        return toCatsPreferedUnit(data.Received - data.Commited).toFixed(2);
+        return toCatsPreferedUnit(data.Received - data.Commited - data.Dispatched).toFixed(2);
     }
     function filterData() {
 
