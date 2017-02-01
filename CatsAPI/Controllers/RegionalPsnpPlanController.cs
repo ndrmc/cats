@@ -55,10 +55,10 @@ namespace Cats.Rest.Controllers
                         RegionalPSNPPlanDetailId = detail.RegionalPSNPPlanDetailID,
                         RegionalPSPNPlanID = detail.RegionalPSNPPlanID,
                         StartingMonth = detail.StartingMonth,
-                        WoredaName = detail.PlanedWoreda.Name
+                        WoredaName = detail.PlanedWoreda.Name,
                     }).ToList(),
                     RegionalPSNPPlanID = item.RegionalPSNPPlanID,
-                    //RegionID = item.RegionID,
+                    //RegionID = item.,
                     StatusId = item.AttachedBusinessProcess.CurrentState.StateID,
                     StatusName = item.AttachedBusinessProcess.CurrentState.BaseStateTemplate.Name,
                     TransactionGroupId = item.TransactionGroupID,

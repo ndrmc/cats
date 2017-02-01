@@ -181,6 +181,7 @@
     <Compile Include="Controllers\LossReasonController.cs" />
     <Compile Include="Controllers\ProgramController.cs" />
     <Compile Include="Controllers\ProjectCodeController.cs" />
+    <Compile Include="Controllers\RegionalPsnpPlanController.cs" />
     <Compile Include="Controllers\ReleifRequisitionController.cs" />
     <Compile Include="Controllers\RationController.cs" />
     <Compile Include="Controllers\SupportTypeController.cs" />
@@ -222,6 +223,9 @@
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\ProjectCode.cs" />
     <Compile Include="Models\RationDetail.cs" />
+    <Compile Include="Models\RationDetailViewModel.cs" />
+    <Compile Include="Models\RegionalPsnpPlanDetailViewModel.cs" />
+    <Compile Include="Models\RegionalPsnpPlanViewModel.cs" />
     <Compile Include="Models\ReliefRequisition.cs" />
     <Compile Include="Models\ReliefRequisitionDetail.cs" />
     <Compile Include="Models\Ration.cs" />
