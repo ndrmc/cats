@@ -1253,11 +1253,11 @@ namespace Cats.Areas.Procurement.Controllers
             return detail;
         }
 
-        public ContentResult GetAssignedAdminUnits(int id)
+        public ContentResult GetAssignedAdminUnits(int id,int wid)
         {
             var bidQuotation = _transportBidQuotationHeaderService.FindById(id);
 
-            var assignedWoredas = _transportBidPlanDetailService.FindBy(o => o.BidPlanID == bidQuotation.Bid.TransportBidPlanID).Select(zi => zi.DestinationID).Distinct();
+            var assignedWoredas = _transportBidPlanDetailService.FindBy(o => o.BidPlanID == bidQuotation.Bid.TransportBidPlanID && o.SourceID== wid).Select(zi => zi.DestinationID).Distinct();
 
             List<AdminUnit> woredas = new List<AdminUnit>();
             List<AdminUnit> zones = new List<AdminUnit>();

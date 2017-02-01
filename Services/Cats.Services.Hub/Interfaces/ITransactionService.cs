@@ -167,5 +167,6 @@ namespace Cats.Services.Hub
            string includeProperties = "");
 
        bool ReceiptTransactionForLoanFromNGOs(ReceiveNewViewModel viewModel, Boolean reverse = false);
+       decimal GetGoodsInTransit(int shippinginstructionId, int hubId, int programId, int donorId);
     }
 }

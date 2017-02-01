@@ -91,10 +91,10 @@ namespace Cats.Areas.Finance.Controllers
         public ActionResult BidWinningTransporters_read([DataSourceRequest] DataSourceRequest request)
         {
             var transprtersWithActiveTO =
-                _transportOrderService.Get(t => t.StatusID > 3, null, "Transporter")
-                    .Select(t => t.Transporter)
-                    .Distinct();
-            var winningTransprterViewModels = TransporterListViewModelBinder(transprtersWithActiveTO.ToList());
+                _transportOrderService.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null, 
+                "Transporter, BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
+                    .Select(t => t.Transporter).Distinct().ToList();
+            var winningTransprterViewModels = TransporterListViewModelBinder(transprtersWithActiveTO);
             return Json(winningTransprterViewModels.ToDataSourceResult(request));
         }
 
@@ -136,7 +136,12 @@ namespace Cats.Areas.Finance.Controllers
                         .Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2 && t.TransportOrder.TransporterID == transporterID, null, "BusinessProcess")
                         .OrderByDescending(t => t.TransporterPaymentRequestID);
             var transporterPaymentRequests = TransporterPaymentRequestViewModelBinder(list.ToList());
-            var transportOrder = _transportOrderService.Get(t => t.TransporterID == transporterID && t.StatusID >= 3, null, "Transporter").FirstOrDefault();
+
+            //Commented out because it uses obsolete status tarcking. Updated to use workflow
+            //var transportOrder = _transportOrderService.Get(t => t.TransporterID == transporterID && t.StatusID >= 3, null, "Transporter").FirstOrDefault();
+            var transportOrder =
+                _transportOrderService.Get(t => t.TransporterID == transporterID && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null,
+                "Transporter, BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
             var transportOrderViewModel = TransportOrderViewModelBinder.BindTransportOrderViewModel(transportOrder, datePref, statuses);
             ViewBag.TransportOrderViewModel = transportOrderViewModel;
             ViewBag.TransporterID = transportOrderViewModel.TransporterID;
@@ -156,8 +161,12 @@ namespace Cats.Areas.Finance.Controllers
                         .Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.StateNo >= 2 && t.TransportOrder.TransporterID == transporterID && t.ReferenceNo == refNo, null, "BusinessProcess")
                         .OrderByDescending(t => t.TransporterPaymentRequestID);
             var transporterPaymentRequests = TransporterPaymentRequestViewModelBinder(list.ToList());
-            var transportOrder = _transportOrderService.Get(t => t.TransporterID == transporterID && t.StatusID >= 3, null, "Transporter").FirstOrDefault();
-            
+
+            //Commented out because it uses obsolete status tarcking. Updated to use workflow
+            //var transportOrder = _transportOrderService.Get(t => t.TransporterID == transporterID && t.StatusID >= 3, null, "Transporter").FirstOrDefault();
+            var transportOrder =
+                _transportOrderService.Get(t => t.TransporterID == transporterID && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null,
+                "Transporter, BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
             var transportOrderViewModel = TransportOrderViewModelBinder.BindTransportOrderViewModel(transportOrder, datePref, statuses);
             var transporterPaymentRequestViewModel = transporterPaymentRequests.FirstOrDefault();
             if (transporterPaymentRequestViewModel != null)
@@ -257,6 +266,7 @@ namespace Cats.Areas.Finance.Controllers
         public ActionResult TransportOrderDetail(int transportOrderID)
         {
             var transportOrder = _transportOrderService.Get(t => t.TransportOrderID == transportOrderID, null, "TransportOrderDetails.FDP,TransportOrderDetails.FDP.AdminUnit,TransportOrderDetails.Commodity,TransportOrderDetails.Hub,TransportOrderDetails.ReliefRequisition").FirstOrDefault();
+
             var datePref = UserAccountHelper.GetUser(User.Identity.Name).DatePreference;
             var statuses = _workflowStatusService.GetStatus(WORKFLOW.TRANSPORT_ORDER);
             var transportOrderViewModel = TransportOrderViewModelBinder.BindTransportOrderViewModel(transportOrder, datePref, statuses);
@@ -670,7 +680,13 @@ namespace Cats.Areas.Finance.Controllers
                 transporterPaymentRequests = (programname == "All") ? TransporterPaymentRequestViewModelBinder(list.ToList()).Where(t => t.ReferenceNo.Contains(refno)).ToList() : TransporterPaymentRequestViewModelBinder(list.ToList()).Where(t => t.ReferenceNo.Contains(refno) && t.Program.Name == programname).ToList();
 
             }
-            var transportOrder = _transportOrderService.Get(t => t.TransporterID == transporterId && t.StatusID >= 3, null, "Transporter").FirstOrDefault();
+
+            //Commented out because it uses obsolete status tarcking. Updated to use workflow
+            //var transportOrder = _transportOrderService.Get(t => t.TransporterID == transporterId && t.StatusID >= 3, null, "Transporter").FirstOrDefault();
+            var transportOrder =
+                _transportOrderService.Get(t => t.TransporterID == transporterId && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null,
+                "Transporter, BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
+
             var transportOrderViewModel = TransportOrderViewModelBinder.BindTransportOrderViewModel(transportOrder, datePref, statuses);
             var TransportOrderViewModel = transportOrderViewModel;
             
@@ -707,7 +723,10 @@ namespace Cats.Areas.Finance.Controllers
 
         public JsonResult GetActiveTosForTransporter(int transporterId)
         {
-            var activeTos = _transporterPaymentRequestService.Get(t => t.TransportOrder.TransporterID == transporterId && t.TransportOrder.StatusID >= 3);
+            //Commented out because it uses obsolete status tarcking. Updated to use workflow
+            //var activeTos = _transporterPaymentRequestService.Get(t => t.TransportOrder.TransporterID == transporterId && t.TransportOrder.StatusID >= 3);
+            var activeTos = _transporterPaymentRequestService.Get(t => t.TransportOrder.TransporterID == transporterId && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null,
+                "TransportOrder, TransportOrder.Transporter, TransportOrder.BusinessProcess, TransportOrder.BusinessProcess.CurrentState, TransportOrder.BusinessProcess.CurrentState.BaseStateTemplate");
             var lists = from to in activeTos
                         group to by to.ReferenceNo
                         into g

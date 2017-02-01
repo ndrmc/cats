@@ -144,7 +144,9 @@
         });*@
 
         var resultData;
-
+        document.getElementById("ZoneID").disabled = true;
+        document.getElementById("WoredaID").disabled = true;
+        document.getElementById("RegionID").disabled = true;
         $("#hubID").change(function () {
 
             var selectedWarehouse = $("#hubID").val();
@@ -156,7 +158,7 @@
             document.getElementById("WoredaID").disabled = true;
             document.getElementById("RegionID").disabled = true;
 
-            $.get("@Url.Action("GetAssignedAdminUnits", "PriceQuotation", new { Area = "Procurement" })" + "?id=" + id, {}, function (data) {
+            $.get("@Url.Action("GetAssignedAdminUnits", "PriceQuotation", new { Area = "Procurement" })" + "?id=" + id + "&wid=" + selectedWarehouse, {}, function (data) {
 
                 resultData = data;
 
