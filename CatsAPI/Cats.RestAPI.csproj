@@ -236,6 +236,7 @@
     <Compile Include="Models\TransportBidPlan.cs" />
     <Compile Include="Models\TransportBidPlanDetail.cs" />
     <Compile Include="Models\TransportBidQuotation.cs" />
+    <Compile Include="Models\TransportRequisition.cs" />
     <Compile Include="Models\Unit.cs" />
     <Compile Include="Models\UserHub.cs" />
     <Compile Include="Models\UserProfile.cs" />
