@@ -112,6 +112,7 @@
     <Compile Include="Mapping\ReceiptPlanDetailMap.cs" />
     <Compile Include="Mapping\ReceiptPlanMap.cs" />
     <Compile Include="Mapping\LoanReciptPlanMap.cs" />
+    <Compile Include="Mapping\TransactionTypeMap.cs" />
     <Compile Include="Mapping\TransferMap.cs" />
     <Compile Include="Mapping\TransporeterChequeMap.cs" />
     <Compile Include="Mapping\TransporterChequeDetailMap.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="OtherDispatchAllocation.cs" />
     <Compile Include="RequisiionNoViewModel.cs" />
     <Compile Include="SupportType.cs" />
+    <Compile Include="TransactionType.cs" />
     <Compile Include="Transfer.cs" />
     <Compile Include="TransporterCheque.cs" />
     <Compile Include="TransporterChequeDetail.cs" />

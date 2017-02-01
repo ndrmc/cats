@@ -189,6 +189,7 @@
     <Compile Include="Controllers\SeasonController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\TransactionGroupController.cs" />
+    <Compile Include="Controllers\TransactionTypeController.cs" />
     <Compile Include="Controllers\TransportBidPlanController.cs" />
     <Compile Include="Controllers\TransportBidPlanDetailController.cs" />
     <Compile Include="Controllers\TransportBidQuotationController.cs" />
@@ -230,6 +231,7 @@
     <Compile Include="Models\ShippingInstruction.cs" />
     <Compile Include="Models\Store.cs" />
     <Compile Include="Models\TransactionGroup.cs" />
+    <Compile Include="Models\TransactionType.cs" />
     <Compile Include="Models\TransportBidPlan.cs" />
     <Compile Include="Models\TransportBidPlanDetail.cs" />
     <Compile Include="Models\TransportBidQuotation.cs" />
@@ -388,6 +390,10 @@
     <ProjectReference Include="..\Services\Cats.Services.PSNP\Cats.Services.PSNP.csproj">
       <Project>{8eda6b56-c5c9-4744-a356-1af76ad96159}</Project>
       <Name>Cats.Services.PSNP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\Cats.Services.Transaction\Cats.Services.Transaction.csproj">
+      <Project>{9B741D92-4B67-4863-BF38-A1ADCAE40870}</Project>
+      <Name>Cats.Services.Transaction</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

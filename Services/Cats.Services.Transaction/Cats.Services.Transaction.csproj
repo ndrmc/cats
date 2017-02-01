@@ -62,9 +62,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ITranscationTypeService.cs" />
     <Compile Include="TransactionService.cs" />
     <Compile Include="ITransactionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TranscationTypeService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Cats.Data.Hub\Cats.Data.Hub.csproj">

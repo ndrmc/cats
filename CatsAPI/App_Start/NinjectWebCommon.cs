@@ -39,20 +39,20 @@ using IUserProfileService = Cats.Services.Administration.IUserProfileService;
 
 namespace Cats.Rest.App_Start
 {
-    public static class NinjectWebCommon 
+    public static class NinjectWebCommon
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
 
         /// <summary>
         /// Starts the application
         /// </summary>
-        public static void Start() 
+        public static void Start()
         {
             DynamicModuleUtility.RegisterModule(typeof(OnePerRequestHttpModule));
             DynamicModuleUtility.RegisterModule(typeof(NinjectHttpModule));
             bootstrapper.Initialize(CreateKernel);
         }
-        
+
         /// <summary>
         /// Stops the application.
         /// </summary>
@@ -60,7 +60,7 @@ namespace Cats.Rest.App_Start
         {
             bootstrapper.ShutDown();
         }
-        
+
         /// <summary>
         /// Creates the kernel that will manage your application.
         /// </summary>
@@ -89,7 +89,7 @@ namespace Cats.Rest.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            
+
             kernel.Bind<Cats.Data.UnitWork.IUnitOfWork>().To<Cats.Data.UnitWork.UnitOfWork>();
 
             kernel.Bind<Data.Hub.UnitWork.IUnitOfWork>().To<Cats.Data.Hub.UnitOfWork>();
@@ -114,7 +114,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<Cats.Services.EarlyWarning.ICommodityTypeService>().To<Cats.Services.EarlyWarning.CommodityTypeService>();
             kernel.Bind<Services.Administration.IContactService>().To<Services.Administration.ContactService>();
             kernel.Bind<Cats.Services.Hub.ICommodityGradeService>().To<Cats.Services.Hub.CommodityGradeService>();
-            
+
             kernel.Bind<IBidService>().To<BidService>();
             kernel.Bind<IBidDetailService>().To<BidDetailService>();
             kernel.Bind<IBidWinnerService>().To<BidWinnerService>();
@@ -143,6 +143,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IRegionalPSNPPlanDetailService>().To<RegionalPSNPPlanDetailService>();
             kernel.Bind<ISupportTypeService>().To<SupportTypeService>();
             kernel.Bind<IIDPSReasonTypeServices>().To<IDPSReasonTypeServices>();
-        }        
+            kernel.Bind<Cats.Services.Transaction.ITranscationTypeService>().To<Cats.Services.Transaction.TranscationTypeService>();
+        }
     }
 }

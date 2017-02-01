@@ -41,6 +41,7 @@ namespace Cats.Data.UnitWork
         private IGenericRepository<Currency> currencyRepository;
         private IGenericRepository<InKindContributionDetail> inKindContributionDetailRepository;
         private IGenericRepository<Store> storeRepository;
+
         private readonly ILog _log;
 
         public Database Database { get { return _context.Database; } }
@@ -66,6 +67,16 @@ namespace Cats.Data.UnitWork
             }
         }
 
+        private IGenericRepository<TransactionType> _TransactionTypeRepository;
+        public IGenericRepository<TransactionType> TransactionTypeRepository
+        {
+            get
+            {
+                return this._TransactionTypeRepository ??
+                       (this._TransactionTypeRepository = new GenericRepository<TransactionType>(_context));
+            }
+        }
+
         private IGenericRepository<TransporterPaymentRequest> _TransporterPaymentRequestRepository;
         public IGenericRepository<TransporterPaymentRequest> TransporterPaymentRequestRepository
         {
@@ -76,7 +87,7 @@ namespace Cats.Data.UnitWork
             }
         }
 
-        private IGenericRepository<TransporterCheque> _TransporterChequeRepository; 
+        private IGenericRepository<TransporterCheque> _TransporterChequeRepository;
         public IGenericRepository<TransporterCheque> TransporterChequeRepository
         {
             get
@@ -127,7 +138,7 @@ namespace Cats.Data.UnitWork
         {
             get { return this._PaymentRequestRepository ?? (this._PaymentRequestRepository = new GenericRepository<PaymentRequest>(_context)); }
         }
-        
+
         private IGenericRepository<WoredaHubLink> _WoredaHubLinkRepository = null;
         public IGenericRepository<WoredaHubLink> WoredaHubLinkRepository
         {
@@ -213,7 +224,7 @@ namespace Cats.Data.UnitWork
         /// <summary>
         /// ReliefRequistionRepository
         /// </summary>
-        /// 
+        ///
         private IGenericRepository<ReceiptAllocation> receiptAllocationReository;
         public IGenericRepository<ReceiptAllocation> ReceiptAllocationReository
         {
@@ -291,7 +302,7 @@ namespace Cats.Data.UnitWork
         {
             get { return this.statusRepository ?? (this.statusRepository = new GenericRepository<Status>(_context)); }
         }
-        
+
         private IGenericRepository<AdminUnit> adminUnitRepository;
 
         public IGenericRepository<AdminUnit> AdminUnitRepository
@@ -300,7 +311,7 @@ namespace Cats.Data.UnitWork
             get { return this.adminUnitRepository ?? (this.adminUnitRepository = new GenericRepository<AdminUnit>(_context)); }
 
         }
-        
+
         private IGenericRepository<AdminUnitType> adminUnitTypeRepository;
 
         public IGenericRepository<AdminUnitType> AdminUnitTypeRepository
@@ -310,7 +321,7 @@ namespace Cats.Data.UnitWork
 
         }
 
-                
+
         private IGenericRepository<Commodity> commodityRepository;
 
         public IGenericRepository<Commodity> CommodityRepository
@@ -378,7 +389,7 @@ namespace Cats.Data.UnitWork
             get { return this.hubRepository ?? (this.hubRepository = new GenericRepository<Hub>(_context)); }
         }
 
-       
+
 
         private IGenericRepository<IDPSReasonType> iDPSReasonTypeRepository;
         public IGenericRepository<IDPSReasonType> IDPSReasonTypeRepository
@@ -386,7 +397,7 @@ namespace Cats.Data.UnitWork
             get { return this.iDPSReasonTypeRepository ?? (this.iDPSReasonTypeRepository = new GenericRepository<IDPSReasonType>(_context)); }
         }
 
-       
+
 
 
         private IGenericRepository<ReliefRequisition> reliefRequistionRepository;
@@ -493,12 +504,12 @@ namespace Cats.Data.UnitWork
 
                 else
                         userName = "Anonymous";
-                
+
                 return userName;
             }
         }
 
-     
+
 
 
         /// <summary>
@@ -522,7 +533,7 @@ namespace Cats.Data.UnitWork
             string tableName = string.Empty;
 
             tableName = ObjectContext.GetObjectType(dbEntry.Entity.GetType()).Name;
-               
+
             if (dbEntry.Entity.GetType().GetProperties().SingleOrDefault(p => p.GetCustomAttributes(typeof(KeyAttribute), true).Any())!= null)
                 keyName = dbEntry.Entity.GetType().GetProperties().SingleOrDefault(p => p.GetCustomAttributes(typeof(KeyAttribute), true).Any()).Name;
 
@@ -645,7 +656,7 @@ namespace Cats.Data.UnitWork
                 //            }
                 //        }
 
-                      
+
                 //    }
 
                 //    // Save First
@@ -667,14 +678,14 @@ namespace Cats.Data.UnitWork
                 //        _context.SaveChanges();
                 //    }
 
-                    
 
-                    
+
+
 
                 //    scope.Complete();
                 //}
 
-               
+
 
 
                 _context.SaveChanges();
@@ -880,7 +891,7 @@ namespace Cats.Data.UnitWork
             get { return this.regionalPSNPPlanDetailRepository ?? (this.regionalPSNPPlanDetailRepository = new GenericRepository<RegionalPSNPPlanDetail>(_context)); }
 
         }
-        //  IGenericRepository<RegionalPSNPPlanDetail> RegionalPSNPPlanDetailRepository { get; } 
+        //  IGenericRepository<RegionalPSNPPlanDetail> RegionalPSNPPlanDetailRepository { get; }
 
 
         private IGenericRepository<NeedAssessment> needAssessmentRepository;
@@ -1070,7 +1081,7 @@ namespace Cats.Data.UnitWork
          {
            get { return this.planRepository ?? (this.planRepository = new GenericRepository<Plan>(_context)); }
          }
-       
+
         private IGenericRepository<PromisedContribution> _PromisedContributionRepository = null;
         public IGenericRepository<PromisedContribution> PromisedContributionRepository
         {
@@ -1104,13 +1115,13 @@ namespace Cats.Data.UnitWork
         public IGenericRepository<Delivery> DeliveryRepository
         {
             get { return this.deliveryRepositiory ?? (this.deliveryRepositiory = new GenericRepository<Delivery>(_context)); }
-      
+
         }
         private IGenericRepository<DeliveryDetail> deliveryDetailRepository;
         public IGenericRepository<DeliveryDetail> DeliveryDetailRepository
         {
             get { return this.deliveryDetailRepository ?? (this.deliveryDetailRepository = new GenericRepository<DeliveryDetail>(_context)); }
-      
+
         }
 
         private IGenericRepository<ActionTypes> actionTypesRepository;
@@ -1120,8 +1131,8 @@ namespace Cats.Data.UnitWork
 
         }
 
-     
-        
+
+
 
 
 
@@ -1183,7 +1194,7 @@ namespace Cats.Data.UnitWork
         }
 
         private IGenericRepository<ReceiptPlan> _receiptPlanRepository;
-        
+
         public IGenericRepository<ReceiptPlan> ReceiptPlanRepository
         {
             get
@@ -1205,7 +1216,7 @@ namespace Cats.Data.UnitWork
 
         }
 
-        private IGenericRepository<DonationPlanHeader> _donationPlanHeaderRepository; 
+        private IGenericRepository<DonationPlanHeader> _donationPlanHeaderRepository;
         public IGenericRepository<DonationPlanHeader> DonationPlanHeaderRepository
         {
             get
@@ -1223,7 +1234,7 @@ namespace Cats.Data.UnitWork
             }
         }
 
-        private IGenericRepository<SupportType> _supportTypeRepository; 
+        private IGenericRepository<SupportType> _supportTypeRepository;
         public IGenericRepository<SupportType> SupportTypeRepository
         {
             get
@@ -1235,8 +1246,8 @@ namespace Cats.Data.UnitWork
         private IGenericRepository<LocalPurchase> _localPurchaseRepositiry;
         public IGenericRepository<LocalPurchase> LocalPurchaseRepository
         {
-            get 
-            { 
+            get
+            {
                 return this._localPurchaseRepositiry ?? (this._localPurchaseRepositiry = new GenericRepository<LocalPurchase>(_context));
             }
         }
@@ -1289,5 +1300,7 @@ namespace Cats.Data.UnitWork
         {
             get { return this._vwRegionalRequestRepository ?? (this._vwRegionalRequestRepository = new GenericRepository<VWRegionalRequest>(_context)); }
         }
+
+
     }
 }

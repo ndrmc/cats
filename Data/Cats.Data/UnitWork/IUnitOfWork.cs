@@ -71,6 +71,7 @@ namespace Cats.Data.UnitWork
         //IGenericRepository<TransportRequisition> TransportRequisitionRepository { get; }
         IGenericRepository<TransportRequisitionDetail> TransportRequisitionDetailRepository { get; }
         IGenericRepository<Transaction> TransactionRepository { get; }
+        IGenericRepository<TransactionType> TransactionTypeRepository { get; }
         IGenericRepository<ReceiptAllocation> ReceiptAllocationReository { get; }
 
         IGenericRepository<WorkflowStatus> WorkflowStatusRepository { get; }

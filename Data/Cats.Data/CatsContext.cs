@@ -40,13 +40,13 @@ namespace Cats.Data
         public DbSet<HubOwner> HubOwners { get; set; }
         public DbSet<DispatchAllocation> DispatchAllocations { get; set; }
         public DbSet<DispatchAllocationDetail> DispatchDetail { get; set; }
-        public DbSet<Bid> Bids { get; set; } 
+        public DbSet<Bid> Bids { get; set; }
         public DbSet<BidDetail> BidDetails { get; set; }
-        public DbSet<Status> Statuses { get; set; } 
+        public DbSet<Status> Statuses { get; set; }
 
         public DbSet<TransportBidPlan> TransportBidPlans { get; set; }
         public DbSet<TransportBidPlanDetail> TransportBidPlanDetails { get; set; }
-       
+
         public DbSet<ProjectCodeAllocation> ProjectCodeAllocation { get; set; }
 
         public DbSet<TransportRequisition> TransportRequisition { get; set; }
@@ -54,17 +54,17 @@ namespace Cats.Data
         public DbSet<ProjectCode> ProjectCode { get; set; }
         public DbSet<ShippingInstruction> ShippingInstruction { get; set; }
 
-       
+
         public DbSet<BidWinner> BidWinners { get; set; }
-      
+
 
         public DbSet<TransportOrder> TransportOrders { get; set; }
         public DbSet<TransportOrderDetail> TransportOrderDetails { get; set; }
         public DbSet<vwTransportOrder> vwTransportOrders { get; set; }
-        
+
         public DbSet<TransportRequisitionDetail> TransportRequisitionDetails { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<ReceiptAllocation> ReceiptAllocation { get; set; } 
+        public DbSet<ReceiptAllocation> ReceiptAllocation { get; set; }
 
 
         public DbSet<Workflow> Workflows { get; set; }
@@ -92,7 +92,7 @@ namespace Cats.Data
         public DbSet<GiftCertificate> GiftCertificates { get; set; }
         public DbSet<GiftCertificateDetail> GiftCertificateDetails { get; set; }
         public DbSet<Unit> Units { get; set; }
-        public DbSet<Season> Seasons { get; set; } 
+        public DbSet<Season> Seasons { get; set; }
 
         public DbSet<ProcessTemplate> ProcessTemplates { get; set; }
         public DbSet<StateTemplate> StateTemplates { get; set; }
@@ -100,7 +100,7 @@ namespace Cats.Data
 
         public DbSet<Contribution> Contributions { get; set; }
         public DbSet<ContributionDetail> ContributionDetails { get; set; }
-        public DbSet<Donor> Donors { get; set; } 
+        public DbSet<Donor> Donors { get; set; }
 
         public DbSet<vwPSNPAnnualPlan> vwPSNPAnnualPlans { get; set; }
         public DbSet<BusinessProcess> BusinessProcesss { get; set; }
@@ -116,7 +116,7 @@ namespace Cats.Data
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<InKindContributionDetail> InKindContributionDetails { get; set; }
         public DbSet<UserHub> UserHub { get; set; }
-        
+
         public DbSet<Store> Stores { get; set; }
 
         public DbSet<Audit> Audits { get; set; }
@@ -164,7 +164,7 @@ namespace Cats.Data
         public DbSet<LossReason> LossReasons { get; set; }
 
         public DbSet<TransporterPaymentRequest> TransporterPaymentRequests { get; set; }
-        public DbSet<VWRegionalRequest> VwRegionalRequests { get; set; } 
+        public DbSet<VWRegionalRequest> VwRegionalRequests { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -215,7 +215,7 @@ namespace Cats.Data
             modelBuilder.Configurations.Add(new ShippingInstructionMap());
 
             modelBuilder.Configurations.Add(new BidWinnerMap());
-           
+
             modelBuilder.Configurations.Add(new TransportOrderMap());
             modelBuilder.Configurations.Add(new TransportOrderDetailMap());
             modelBuilder.Configurations.Add(new vwTransportOrderMap());
@@ -224,7 +224,7 @@ namespace Cats.Data
             modelBuilder.Configurations.Add(new TransactionMap());
             modelBuilder.Configurations.Add(new ReceiptAllocationMap());
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
-           
+
              modelBuilder.Configurations.Add(new WorkflowMap());
             modelBuilder.Configurations.Add(new WorkflowStatusMap());
             modelBuilder.Configurations.Add(new TransportBidQuotationMap());
@@ -305,6 +305,7 @@ namespace Cats.Data
             modelBuilder.Configurations.Add(new LoanReciptPlanMap());
             modelBuilder.Configurations.Add(new LoanReciptPlanDetailMap());
             modelBuilder.Configurations.Add(new TransferMap());
+            modelBuilder.Configurations.Add(new TransactionTypeMap());
             modelBuilder.Configurations.Add(new TransporterChequeMap());
             modelBuilder.Configurations.Add(new LossReasonMap());
 
