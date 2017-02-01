@@ -196,6 +196,7 @@ namespace Cats.Areas.Logistics.Controllers
                 try
                 {
                     var siNumber = item.ShippingInstruction;
+                  
                     var shippingInstructionId =
                         _shippingInstructionService.FindBy(s => s.Value == siNumber)
                             .FirstOrDefault()
@@ -212,9 +213,18 @@ namespace Cats.Areas.Logistics.Controllers
                                 t.ShippingInstructionID == shippingInstructionId &&
                                 t.ProgramID == item.ProgramID &&
                                 //t.DonorID == item.DonorID &&
-                                t.LedgerID == 8);
+                                t.LedgerID == 8); // committed to FDP
 
+                    var amount = _transcationService.GetGoodsInTransit(shippingInstructionId,
+                        item.HubID ?? 0,
+                        item.ProgramID, item.DonorID ?? 0);
+                    //var dispatchedAmount = _transcationService.Get(t =>
+                    //    t.ProgramID == programId && t.HubID == hubId // && t.DonorID == donorId 
+                    //    &&
+                    //    t.ShippingInstructionID == shippingInstructionId &&
+                    //    t.LedgerID == 2).Select(s => s.QuantityInMT).Sum(); // 2 goods in transit
 
+                    item.Dispatched = amount; // dispatchedAmount;
                     var enumerable = committed as IList<Cats.Models.Hubs.Transaction> ?? committed.ToList();
                     item.Commited = 0;
                     if (enumerable.Any())
@@ -229,11 +239,23 @@ namespace Cats.Areas.Logistics.Controllers
                     ;
                 }
             }
+            var result2 = (from d in data2
+                group d by new
+                {
+                    d.ProgramID,
+                    d.DonorID,
+                    d.ShippingInstruction,
+                    d.CommodityID,
+                    d.DonorAll
+                }
+                into grp
+                select grp.First()).ToList();
 
-            return Json(data2.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+            return Json(result2.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
 
         }
 
+       
         private List<VWCommodityReceived> Bind(List<VWCommodityReceived> receiveds )
         {
 

@@ -2362,6 +2362,16 @@ namespace Cats.Services.Hub
 
         }
 
+        public decimal GetGoodsInTransit(int shippinginstructionId, int hubId, int programId, int donorId)
+        {
+            return
+                _unitOfWork.TransactionRepository.Get(
+                    t =>
+                        t.ProgramID == programId && t.HubID == hubId // && t.DonorID == donorId 
+                        &&
+                        t.ShippingInstructionID == shippinginstructionId &&
+                        t.LedgerID == Models.Ledger.Constants.GOODS_IN_TRANSIT).Select(s => s.QuantityInMT).Sum();
+        }
         public bool PostSIAllocationUncommit(int requisitionDetailID, int siID, int newSiIDd)
         {
             var allocationDetail = _unitOfWorkNew.SIPCAllocationRepository.Get(t => t.RequisitionDetailID == requisitionDetailID && t.Code == siID).FirstOrDefault();
