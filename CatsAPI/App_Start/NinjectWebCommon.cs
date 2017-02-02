@@ -154,7 +154,7 @@ namespace Cats.Rest.App_Start
             kernel.Bind<ITransportBidQuotationHeaderService>().To<TransportBidQuotationHeaderService>();
             kernel.Bind<IRegionalPSNPPlanService>().To<RegionalPSNPPlanService>();
             kernel.Bind<ITransportOrderService>().To<TransportOrderService>();
-            //kernel.Bind<IRegionalPSNPPlanDetailService>().To<RegionalPSNPPlanDetailService>();
+            kernel.Bind<ITransportOrderDetailService>().To<TransportOrderDetailService>();
         }        
 
     }
