@@ -194,6 +194,7 @@
     <Compile Include="Controllers\TransportBidPlanDetailController.cs" />
     <Compile Include="Controllers\TransportBidQuotationController.cs" />
     <Compile Include="Controllers\TransportBidQuotationHeaderController.cs" />
+    <Compile Include="Controllers\TransportOrderController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Controllers\UserHubController.cs" />
     <Compile Include="Controllers\UserProfileController.cs" />
@@ -238,6 +239,8 @@
     <Compile Include="Models\TransportBidPlanDetail.cs" />
     <Compile Include="Models\TransportBidQuotation.cs" />
     <Compile Include="Models\TransportBidQuotationHeader.cs" />
+    <Compile Include="Models\TransportOrder.cs" />
+    <Compile Include="Models\TransportOrderDetail.cs" />
     <Compile Include="Models\TransportRequisition.cs" />
     <Compile Include="Models\Unit.cs" />
     <Compile Include="Models\UserHub.cs" />
