@@ -182,6 +182,7 @@
     <Compile Include="Controllers\ProgramController.cs" />
     <Compile Include="Controllers\ProjectCodeController.cs" />
     <Compile Include="Controllers\RegionalPsnpPlanController.cs" />
+    <Compile Include="Controllers\RegionalPSNPPlanDetailController.cs" />
     <Compile Include="Controllers\ReleifRequisitionController.cs" />
     <Compile Include="Controllers\RationController.cs" />
     <Compile Include="Controllers\SupportTypeController.cs" />
