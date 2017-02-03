@@ -6,14 +6,17 @@
 @using GridEditMode = Kendo.Mvc.UI.GridEditMode
 @{
     ViewBag.Title = Html.Translate("New/Edit Dispatch");
-    Layout = "~/Views/Shared/_MainLayoutWide.cshtml";
+
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    //Layout = "~/Views/Shared/_MainLayoutWide.cshtml";
+    ViewBag.PageTitle = Html.Translate("New/Edit Dispatch");
+    ViewBag.PageTitleDescription = "";
 }
-@section Toolbar
-{
-    <a class="btn toolbar-btn " data-buttontype="btn_save" data-submittedform="frmCreate"></a>
-      <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("Index","Dispatch")"></a>
-}
-@using (Html.BeginForm("CreateDispatch","Dispatch",FormMethod.Post,new {id="frmCreate"}))
+<style type="text/css">
+    .help-block {
+        color: red;
+    }</style>
+@using (Html.BeginForm("CreateDispatch","Dispatch",FormMethod.Post,new {id="frmCreate", @class="form-horizontal"}))
 {
     @Html.HiddenFor(model=>model.DispatchAllocationID)
     @Html.HiddenFor(model=>model.ProgramID)
@@ -38,319 +41,336 @@
      @Html.HiddenFor(model => model.Transporter)
       @Html.HiddenFor(model => model.BidNumber)
     @Html.HiddenFor(model=>model.CommodityID)
-    <h6 class="page-header">Dispatch Header</h6>
-    <div class="row-fluid panel-body form-horizontal">
-
-        <div class="span4">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.GIN)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.GIN)
-                    @Html.ValidationMessageFor(model=>model.GIN)
-                </div>
-            </div>
-
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.DispatchDate)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.DispatchDate, new { @class = "cats-datepicker2" })
-                    @Html.ValidationMessageFor(model => model.DispatchDate)
-                </div>
-            </div>
-
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.DispatchedByStoreMan)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.DispatchedByStoreMan)
-                    @Html.ValidationMessageFor(model => model.DispatchedByStoreMan)
-                </div>
-            </div>
-
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="fa fa-credit-card font-green-sharp"></i>
+            <span id="bar-title" class="caption-subject bold uppercase"> Dispatch Details</span>
+            <span class="caption-helper">  </span>
         </div>
-        <div class="span4">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.SINumber)
-                </div>
-                <div class="controls">
-                    @(Html.Kendo().ComboBoxFor(m => m.ShippingInstructionID)
-                              .Placeholder("Select SI Number")
-                              .DataTextField("SIcode")
-                              .DataValueField("siCodeId")
-                              .Filter(FilterType.Contains)
-                              .DataSource(source => source.Read(read => read.Action("AvailableSI", "Dispatch",
-                                  new { @reqDetailId = ViewBag.RequisitionDetailID, @siID = Model.ShippingInstructionID, @ComID = Model.CommodityID, @DaID = Model.DispatchAllocationID }))))
-                    @Html.ValidationMessageFor(model => model.ShippingInstructionID)
-                </div>
-
-            </div>
-
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.Region)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.Region, new { Disabled = true })
-                </div>
-            </div>
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.Woreda)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.Woreda, new { Disabled = true })
-                </div>
-            </div>
+        <div class="tools">
+            <a href="#" class="collapse" data-original-title="" title=""></a>
         </div>
-        <div class="span4">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.ProjectNumber)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.ProjectNumber, new { Disabled = true })
-                </div>
-            </div>
+        <div class="actions">
+            <a class="btn toolbar-btn green " data-buttontype="btn_save" data-submittedform="frmCreate"><i class="fa fa-save"></i> Save</a>
+            <a class="btn toolbar-btn red" data-buttontype="btn_cancel" href="@Url.Action("Index", "Dispatch")"><i class="fa fa-times-circle"></i> Cancel</a>
 
-
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.Zone)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.Zone, new { Disabled = true })
-                </div>
-            </div>
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.FDP)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.FDP, new { Disabled = true })
-                </div>
-            </div>
-
-
+            <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
         </div>
     </div>
-    <h6 class="page-header">Dispatch Quantity</h6>
-    <div class="row form-horizontal">
+<div class="portlet-body">
+    <h4>Dispatch Header</h4>
+<div class="row">
 
-        <div class="span4">
-            <div class="control-group ">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.Commodity)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.Commodity, new { Disabled = true })
-                </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.GIN)
             </div>
-        
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.GIN, new {@class = "form-control"})
+                <span class="help-block">@Html.ValidationMessageFor(model => model.GIN)</span>
+            </div>
+        </div>
 
-        <div class="control-group ">
-            <div class="control-label">
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.DispatchDate)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.DispatchDate, new {@class = "cats-datepicker2 form-control"})
+                <span class="help-block">@Html.ValidationMessageFor(model => model.DispatchDate)</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.DispatchedByStoreMan)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.DispatchedByStoreMan, new {@class = "form-control"})
+                <span class="help-block">@Html.ValidationMessageFor(model => model.DispatchedByStoreMan)</span>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.SINumber)
+            </div>
+            <div class="col-md-8">
+                @(Html.Kendo().ComboBoxFor(m => m.ShippingInstructionID)
+                      .Placeholder("Select SI Number")
+                      .DataTextField("SIcode")
+                      .DataValueField("siCodeId").HtmlAttributes(new {@class = "form-control"})
+                      .Filter(FilterType.Contains)
+                      .DataSource(source => source.Read(read => read.Action("AvailableSI", "Dispatch",
+                          new {@reqDetailId = ViewBag.RequisitionDetailID, @siID = Model.ShippingInstructionID, @ComID = Model.CommodityID, @DaID = Model.DispatchAllocationID}))))
+                <span class="help-block">@Html.ValidationMessageFor(model => model.ShippingInstructionID)</span>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.Region)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.Region, new {Disabled = true, @class = "form-control"})
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.Woreda)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.Woreda, new {Disabled = true, @class = "form-control"})
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.ProjectNumber)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.ProjectNumber, new {Disabled = true, @class = "form-control"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.Zone)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.Zone, new {Disabled = true, @class = "form-control"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.FDP)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.FDP, new {Disabled = true, @class = "form-control"})
+            </div>
+        </div>
+
+    </div>
+</div>
+<hr/>
+    <h4>Dispatch Quantity</h4>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group ">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.Commodity)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.Commodity, new {Disabled = true, @class = "form-control"})
+            </div>
+        </div>
+
+
+        <div class="form-group ">
+            <div class="col-md-4 control-label">
                 @Html.LabelFor(model => model.CommodityChildID)
             </div>
-            <div class="controls">
+            <div class="col-md-8">
                 @(Html.Kendo().ComboBoxFor(m => m.CommodityChildID)
-                          .Placeholder("Select Commodity")
-                          .DataTextField("CommodityName")
-                          .DataValueField("CommodityId")
-                          .Filter(FilterType.Contains)
-                          .DataSource(source => source.Read(read => read.Action("GetCommodities", "Dispatch", new { @dispatchAllocationId = Model.DispatchAllocationID }))))
-
-                @Html.ValidationMessageFor(model => model.CommodityChildID)
-            </div>
-        </div>       
-            
-
-            <div class="control-group ">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.UnitID)
-                </div>
-                <div class="controls">
-                    @(Html.Kendo().ComboBoxFor(m => m.UnitID)
-                              .Placeholder("Select Unit")
-                              .DataTextField("Name")
-                              .DataValueField("UnitId")
-                              .Filter(FilterType.Contains)
-                              .DataSource(source => source.Read(read => read.Action("GetUnities", "Dispatch")))
-                    )
-                    @Html.ValidationMessageFor(model => model.UnitID)
-                    
-                </div>
-            </div>
-            <div class="control-group ">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.QuantityInUnit)
-                </div>
-                <div class="controls">
-                    @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
-                    {
-                        @Html.TextBoxFor(model => model.QuantityInUnit)
-                    }
-                    else
-                    {
-                        @Html.TextBoxFor(model => model.QuantityInUnit)
-                    }
-                    
-                </div>
-            </div>
-            <div class="control-group ">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.QuantityPerUnit,"Quantity in Qtl")
-                </div>
-                <div class="controls">
-                    @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
-                    {
-                        @Html.TextBoxFor(model => model.QuantityPerUnit)
-                    }
-                    else
-                    {
-                        @Html.TextBoxFor(model => model.QuantityPerUnit, new { @id = "txtQtl", @onchange = "onchangeevent();" })
-                    }
-                </div>
-            </div>
-              <div class="control-group ">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.Quantity,"Quantity in MT")
-                </div>
-                  <div class="controls">
-                      @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
-                      {
-                          @Html.TextBoxFor(model => model.Quantity)
-                      }
-                      else
-                      {
-                          @Html.TextBoxFor(model => model.Quantity, new {@readonly = "readonly"})
-                      }
-                  </div>
+                      .Placeholder("Select Commodity")
+                      .DataTextField("CommodityName")
+                      .DataValueField("CommodityId").HtmlAttributes(new {@class = "form-control"})
+                      .Filter(FilterType.Contains)
+                      .DataSource(source => source.Read(read => read.Action("GetCommodities", "Dispatch", new {@dispatchAllocationId = Model.DispatchAllocationID}))))
+                <span class="help-block">@Html.ValidationMessageFor(model => model.CommodityChildID)</span>
             </div>
         </div>
-        <div class="span4">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.RequisitionNo)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.RequisitionNo, new { Disabled = true })
-                </div>
+
+
+        <div class="form-group ">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.UnitID)
             </div>
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.Year)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.Year, new { Disabled = true })
-                </div>
+            <div class="col-md-8">
+                @(Html.Kendo().ComboBoxFor(m => m.UnitID)
+                      .Placeholder("Select Unit")
+                      .DataTextField("Name")
+                      .DataValueField("UnitId")
+                      .Filter(FilterType.Contains).HtmlAttributes(new {@class = "form-control"})
+                      .DataSource(source => source.Read(read => read.Action("GetUnities", "Dispatch")))
+                      )
+                <span class="help-block">@Html.ValidationMessageFor(model => model.UnitID)</span>
+
             </div>
         </div>
-        <div class="span4">
-
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.Month)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.Month, new { Disabled = true })
-                </div>
+        <div class="form-group ">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.QuantityInUnit)
             </div>
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.Round)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.Round, new { Disabled = true })
-                </div>
+            <div class="col-md-8">
+                @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
+                {
+                    @Html.TextBoxFor(model => model.QuantityInUnit, new {@class = "form-control"})
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.QuantityInUnit, new {@class = "form-control"})
+                }
+
+            </div>
+        </div>
+        <div class="form-group ">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.QuantityPerUnit, "Quantity in Qtl")
+            </div>
+            <div class="col-md-8">
+                @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
+                {
+                    @Html.TextBoxFor(model => model.QuantityPerUnit, new {@class = "form-control"})
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.QuantityPerUnit, new {@id = "txtQtl", @onchange = "onchangeevent();", @class = "form-control"})
+                }
+            </div>
+        </div>
+        <div class="form-group ">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.Quantity, "Quantity in MT")
+            </div>
+            <div class="col-md-8">
+                @if (!string.IsNullOrEmpty(Model.DispatchID.ToString()))
+                {
+                    @Html.TextBoxFor(model => model.Quantity, new {@class = "form-control"})
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.Quantity, new {@readonly = "readonly", @class = "form-control"})
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.RequisitionNo)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.RequisitionNo, new {Disabled = true, @class = "form-control"})
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.Year)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.Year, new {Disabled = true, @class = "form-control"})
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.Month)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.Month, new {Disabled = true, @class = "form-control"})
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.Round)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.Round, new {Disabled = true, @class = "form-control"})
+            </div>
+        </div>
+    </div>
+
+</div>
+<hr/>
+    <h4>Transporter Details</h4>
+<div class="row ">
+    
+    <div class="col-md-6">
+
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.Transporter)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.Transporter, new {Disabled = true, @class = "form-control"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.DriverName)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.DriverName, new {@class = "form-control"})
+                <span class="help-block">@Html.ValidationMessageFor(model => model.DriverName)</span>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.PlateNo_Prime)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.PlateNo_Prime, new {@class = "form-control"})
+                <span class="help-block">@Html.ValidationMessageFor(model => model.PlateNo_Prime)</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.Remark)
+            </div>
+            <div class="col-md-8">
+                @Html.TextAreaFor(model => model.Remark, new {@class = "form-control"})
             </div>
         </div>
 
     </div>
-    <h6 class="page-header">Transporter Details</h6>
-    <div class="row form-horizontal ">
-
-        <div class="span4">
-
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.Transporter)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.Transporter, new { Disabled = true })
-                </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.BidNumber)
             </div>
-
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.DriverName)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.DriverName)
-                    @Html.ValidationMessageFor(model => model.DriverName)
-                </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.BidNumber, new {Disabled = true, @class = "form-control"})
             </div>
-
-
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.PlateNo_Prime)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.PlateNo_Prime)
-                    @Html.ValidationMessageFor(model => model.PlateNo_Prime)
-                </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.WeighBridgeTicketNumber)
             </div>
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.Remark)
-                </div>
-                <div class="controls">
-                    @Html.TextAreaFor(model => model.Remark)
-                </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.WeighBridgeTicketNumber, new {@class = "form-control"})
+                <span class="help-block">@Html.ValidationMessageFor(model => model.WeighBridgeTicketNumber)</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                @Html.LabelFor(model => model.PlateNo_Trailer)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.PlateNo_Trailer, new {@class = "form-control"})
+                <span class="help-block">@Html.ValidationMessageFor(model => model.PlateNo_Trailer)</span>
             </div>
 
         </div>
-        <div class="span4">
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.BidNumber)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.BidNumber, new { Disabled = true })
-                </div>
-            </div>
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.WeighBridgeTicketNumber)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.WeighBridgeTicketNumber)
-                    @Html.ValidationMessageFor(model => model.WeighBridgeTicketNumber)
-                </div>
-            </div>
-            <div class="control-group">
-                <div class="control-label">
-                    @Html.LabelFor(model => model.PlateNo_Trailer)
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.PlateNo_Trailer)
-                    @Html.ValidationMessageFor(model => model.PlateNo_Trailer)
-                </div>
-               
-            </div>
 
-        </div>
-        <div class="span4">
-        </div>
     </div>
-   
 
+</div>
+
+</div>
+</div>
 
 }
 <script>
