@@ -155,7 +155,8 @@ namespace Cats.Rest.App_Start
             kernel.Bind<IRegionalPSNPPlanService>().To<RegionalPSNPPlanService>();
             kernel.Bind<ITransportOrderService>().To<TransportOrderService>();
             kernel.Bind<ITransportOrderDetailService>().To<TransportOrderDetailService>();
-        }        
+            kernel.Bind<ITransportRequisitionService>().To<TransportRequisitionService>();
+        }
 
     }
 }

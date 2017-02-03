@@ -198,6 +198,7 @@
     <Compile Include="Controllers\TransportBidQuotationHeaderController.cs" />
     <Compile Include="Controllers\TransportOrderDetailController.cs" />
     <Compile Include="Controllers\TransportOrderController.cs" />
+    <Compile Include="Controllers\TransportRequisitionController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Controllers\UserHubController.cs" />
     <Compile Include="Controllers\UserProfileController.cs" />
@@ -428,7 +429,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>14438</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:59581/</IISUrl>
+          <IISUrl>http://localhost:59581</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
