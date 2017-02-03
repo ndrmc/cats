@@ -26,13 +26,13 @@ namespace Cats.Services.Workflows.Config
             PageNameToWorkflowMappingsList.Add(new Tuple<int, string, string>(Random.Next(), pageName, workflowImplementer));
         }
         // This static method has to called or run always on application startup
-        public static void AddWorkflowToObjectMapping(string pageName, string workflowDefinition, Type type, string searchField, string uri)
-        {
-            WorkflowToObjectMappings.Add(new Tuple<int, string, string, Type, string, string>(Random.Next(), pageName, workflowDefinition, type, searchField, uri));
-            WorkflowToObjectMappings.Add(new Tuple<int, string, string, Type, string, string>(Random.Next(), pageName, workflowDefinition, type, searchField, uri));
-        }
+        //public static void AddWorkflowToObjectMapping(string pageName, string workflowName, string uri)
+        //{
+        //    WorkflowToObjectMappings.Add(new Tuple<int, string, string, Type, string, string>(Random.Next(), pageName, workflowDefinition, type, searchField, uri));
+        //    WorkflowToObjectMappings.Add(new Tuple<int, string, string, Type, string, string>(Random.Next(), pageName, workflowDefinition, type, searchField, uri));
+        //}
 
-        private static Boolean alreadyInitialized=false;
+        private static Boolean alreadyInitialized = false;
         public static void InitializeNonGloablWorkflowList()
         {
 
@@ -54,6 +54,7 @@ namespace Cats.Services.Workflows.Config
             GlobalWorkflowExcluded.Add(ApplicationSettings.Default.NeedAssessmentWorkflow);
             GlobalWorkflowExcluded.Add(ApplicationSettings.Default.BidWinnerWorkflow);
             GlobalWorkflowExcluded.Add(ApplicationSettings.Default.PSNPWorkflow);
+            GlobalWorkflowExcluded.Add(ApplicationSettings.Default.TransportRequisitionWorkflow);
 
             alreadyInitialized = true;
         }
@@ -109,42 +110,23 @@ namespace Cats.Services.Workflows.Config
 
         //public static void WorkflowToObject()
         //{
-        //    //
-        //    AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.GiftCertificateWorkflow, typeof(GiftCertificate), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.ReliefRequisitionWorkflow, typeof(ReliefRequisition), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.NeedAssessmentWorkflow, typeof(NeedAssessment), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.NeedAssessmentPlanWorkflow, typeof(NeedAssessmentHeader), string.Empty, string.Empty); // ?
-        //    AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.HRDWorkflow, typeof(HRD), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.RegionalRequestWorkflow, typeof(RegionalRequest), string.Empty, string.Empty);
 
-        //    AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.NeedAssessmentWorkflow, typeof(NeedAssessment), string.Empty, string.Empty); // ?
-        //    AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.DistributionWorkflow, typeof(WoredaStockDistribution), string.Empty, string.Empty); // ?
-        //    AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.FDPReceiptWorkflow, typeof(DeliveryReconcile), string.Empty, string.Empty); // ?
+        //AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.GiftCertificateWorkflow, typeof(GiftCertificate), string.Empty, string.Empty);
+        //AddWorkflowToObjectMapping(Constants.EarlywarningPage, ApplicationSettings.Default.ReliefRequisitionWorkflow, typeof(ReliefRequisition), string.Empty, string.Empty);
 
-        //    AddWorkflowToObjectMapping(Constants.HubPage, ApplicationSettings.Default.ReceiveHubWorkflow, typeof(Receive), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.HubPage, ApplicationSettings.Default.DispatchWorkflow, typeof(Models.Dispatch), string.Empty, string.Empty); // ?
+        //AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.DistributionWorkflow, typeof(WoredaStockDistribution), string.Empty, string.Empty); // ?
+        //AddWorkflowToObjectMapping(Constants.RegionalPage, ApplicationSettings.Default.FDPReceiptWorkflow, typeof(DeliveryReconcile), string.Empty, string.Empty); // ?
 
-        //    //AddWorkflowToObjectMapping(ApplicationSettings.Default.DispatchWorkflow, typeof(Models.Hubs.Dispatch)); // ?
+        //AddWorkflowToObjectMapping(Constants.HubPage, ApplicationSettings.Default.DispatchWorkflow, typeof(Models.Dispatch), string.Empty, string.Empty); // ?
 
-        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransportOrderWorkflow, typeof(TransportOrder), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransportRequisitionWorkflow, typeof(TransportRequisition), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransporterChequeWorkflow, typeof(TransporterCheque), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransporterPaymentRequestWorkflow, typeof(TransporterPaymentRequest), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TranferReceiptPlanWorkflow, typeof(Transfer), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.SwapWorkflow, typeof(Transfer), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.LocalPurchaseReceiptPlanWorkflow, typeof(LocalPurchase), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.ReciptPlanForLoanWorkflow, typeof(ReceiptPlan), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.DonationPlanHeaderWorkflow, typeof(DonationPlanHeader), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.DeliveryWorkflow, typeof(Delivery), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.BidPlanDetailActionWorkflow, typeof(TransportBidPlan), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.BidPlanWorkflow, typeof(TransportBidPlanDetail), string.Empty, string.Empty);
+        //AddWorkflowToObjectMapping(ApplicationSettings.Default.DispatchWorkflow, typeof(Models.Hubs.Dispatch)); // ?
 
-        //    AddWorkflowToObjectMapping(Constants.PsnpPage, ApplicationSettings.Default.PSNPWorkflow, typeof(RegionalPSNPPlan), string.Empty, string.Empty);
+        //AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransportRequisitionWorkflow, typeof(TransportRequisition), string.Empty, string.Empty);
+        //AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransporterChequeWorkflow, typeof(TransporterCheque), string.Empty, string.Empty);
+        //AddWorkflowToObjectMapping(Constants.LogisticsPage, ApplicationSettings.Default.TransporterPaymentRequestWorkflow, typeof(TransporterPaymentRequest), string.Empty, string.Empty);
 
-        //    AddWorkflowToObjectMapping(Constants.ProcurementPage, ApplicationSettings.Default.BidWinnerWorkflow, typeof(BidWinner), string.Empty, string.Empty);
-        //    AddWorkflowToObjectMapping(Constants.ProcurementPage, ApplicationSettings.Default.TransporterWorkflow, typeof(Models.Transporter), string.Empty, string.Empty);
+        //AddWorkflowToObjectMapping(Constants.ProcurementPage, ApplicationSettings.Default.TransporterWorkflow, typeof(Models.Transporter), string.Empty, string.Empty);
 
-        //    AddWorkflowToObjectMapping(Constants.FinancePage, ApplicationSettings.Default.TransporterPaymentRequestWorkflow, typeof(TransporterPaymentRequest), string.Empty, string.Empty);
 
         //    AddWorkflowToObjectMapping(Constants.FinancePage, ApplicationSettings.Default.TransporterChequeWorkflow, typeof(TransporterCheque), string.Empty, string.Empty);
         //}
@@ -157,7 +139,7 @@ namespace Cats.Services.Workflows.Config
         //    StartupConfiguration_TakeTop("EarlyWarningDashboard", 100);
         //    StartupConfiguration_StartWorkflow("EarlyWarningDashboard", "GiftCertificate");
         //}
-        public static void AddMapping(string pageName,Type workflowImplementer )
+        public static void AddMapping(string pageName, Type workflowImplementer)
         {
 
         }
