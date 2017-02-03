@@ -2,32 +2,39 @@
 @using Kendo.Mvc.UI
 @using Cats.Security
 @{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewBag.Title = Html.Translate("Index");
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("Receive Plan for Donation");
+    ViewBag.PageTitleDescription = "";
+
 }
-@section Toolbar
-{
-    @if (LogisticsConstants.Operation.Add_new_donation.ToString() == "Add_new_donation")
-    {
-    <a data-buttontype="btn_new_record" id="btnAddDonation" class="btn toolbar-btn " href="@Url.Action("AddNewDonation", "Donation")"></a>
-    }
-}
-@section LeftBar
-{}
+
 <style>
     .k-grid td {
         overflow: visible;
     }
 </style>
-<fieldset>
-    
-        <legend>
-            @Html.Translate("Receive Plan for Donation")
-        </legend>
-    
-</fieldset>
-  
-@(Html.Kendo().Grid<Cats.Areas.Logistics.Models.DonationHeaderViewModel>()
+
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="fa fa-list font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("List of Receipt Plan From Transfer")</span>
+            <span class="caption-helper">  </span>
+        </div>
+        <div class="tools">
+                <a href="#" class="collapse" data-original-title="" title=""></a>
+                <a href="javascript:;" class="remove" data-original-title="" title=""></a>
+            </div>
+        <div class="actions">
+            @if (LogisticsConstants.Operation.Add_new_donation.ToString() == "Add_new_donation")
+            {
+                <a data-buttontype="btn_new_record" id="btnAddDonation" class="btn green" href="@Url.Action("AddNewDonation", "Donation")"> @Html.Translate("Add New Receive Plan")</a>
+            }
+        </div>
+    </div>
+    <div class="portlet-body">
+        @(Html.Kendo().Grid<Cats.Areas.Logistics.Models.DonationHeaderViewModel>()
     .Name("grid")
     .Columns(columns =>
     {
@@ -44,17 +51,17 @@
                     "<span href='' onclick='Edit(\"#=SINumber#\")' title='Edit Donation' class='btn btn-xs btn-warning edit_btn'>Edit</span></li>" +
                 " # } #" +
                 "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Revert_Donation).ToString() + "' == 'Revert_Donation' && Status == 'Sent to hub') { #" +
-                    "<span href='' onclick='OnRevert(#=DonationHeaderPlanID#)' title='Revert Donation' class='btn btn-xs btn-error revert_btn'>Revert</span></li>" +
+                    "&nbsp;<span href='' onclick='OnRevert(#=DonationHeaderPlanID#)' title='Revert Donation' class='btn btn-xs btn-error revert_btn'>Revert</span></li>" +
                 " # } #" +
                 "# if ('" + LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Delete_Donation).ToString() + "' == 'Delete_Donation' && Status == 'Draft' || Status == 'Edited') { #" +
-                    "<span href='' onclick='OnDelete(#=DonationHeaderPlanID#)' title='Delete Donation' class='btn btn-xs btn-error delete_btn'>Delete</span></li>" +
+                    "&nbsp;<span href='' onclick='OnDelete(#=DonationHeaderPlanID#)' title='Delete Donation' class='btn btn-xs red delete_btn'>Delete</span></li>" +
                 " # } #" +
                 "</div>" +
                 @"<div class='btn-group'>
                 <button type='button' id='workflow-#=DonationHeaderPlanID#' class='btn btn-default dropdown-toggle btn-xs green-stripe' data-toggle='dropdown'>
                     <i class='fa fa-ellipsis-horizontal'></i>Workflow<i class='fa fa-angle-down'></i>
                 </button>
-                <ul class='dropdown-menu pull-right' style='overflow: visible;'>" +                    
+                <ul class='dropdown-menu pull-right' style='overflow: visible;'>" +
                     " <li class='edit_button'><a href=\"javascript: workflow_history('#=BusinessProcessID#')\"> History </a></li>" +
                 "</ul></div>");
         //columns.Command(p =>
@@ -79,7 +86,7 @@
     .Sortable()
     .Scrollable()
     .HtmlAttributes(new { style = "height:430px;" })
-    .Events(e=>e.DataBound("onDataBound"))
+    .Events(e => e.DataBound("onDataBound"))
     .DataSource(dataSource => dataSource
         .Ajax()
         .PageSize(20)
@@ -90,7 +97,11 @@
         .Update(update => update.Action("EditingInline_Update", "Grid"))
         .Destroy(update => update.Action("EditingInline_Destroy", "Grid"))
     )
-      )
+        )
+
+
+    </div>
+</div>
 
 <div id="modalHistory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
     <div class="modal-dialog">
@@ -104,6 +115,7 @@
         </div>
     </div>
 </div>
+
 @Html.Partial("~/Views/Shared/_PromotWorkflow.cshtml")
 
 <script type="text/javascript">
@@ -213,6 +225,7 @@
     <button id="yes" class="k-button">Yes</button>
     <button id="no" class="k-button">No</button>
 </div>
+
 <script>
     var wnd;
     $(document).ready(function () {
@@ -231,6 +244,7 @@
     <button id="yesRevert" class="k-button">Yes</button>
     <button id="noRevert" class="k-button">No</button>
 </div>
+
 <script>
     var wndRevert;
     $(document).ready(function () {
@@ -244,21 +258,23 @@
     });
 </script>
 
+<div class="modal fade" tabindex="-1" aria-hidden="true" id="dialogDiv"></div>
 
+@*<div id='dialogDiv' class='modal fade in'>
+    <div id='dialogContent'></div>
+</div>*@
 <script type="text/javascript">
     $(function () {
 
         //Optional: turn the chache off
-        $.ajaxSetup({ cache: false });
+        //$.ajaxSetup({ cache: false });
 
-        $('#btnAddDonation').click(function () {
-
+        $('#btnAddDonation').click(function (e) {
+            e.preventDefault();
             // alert("");
-            $('#dialogContent').load(this.href, function () {
-                $('#dialogDiv').modal({
-                    backdrop: 'static',
-                    keyboard: true
-                }, 'show');
+            $.get(this.href, function (data) {
+                $('#dialogDiv').html(data);
+                $('#dialogDiv').modal();
                 //bindForm(this);
             });
             return false;
@@ -268,6 +284,3 @@
     });
 </script>
 
-<div id='dialogDiv' class='modal hide fade in' style="width: 820px;margin-right: 10px">
-    <div id='dialogContent'></div>
-</div>
