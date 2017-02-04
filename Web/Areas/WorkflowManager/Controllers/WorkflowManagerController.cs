@@ -22,6 +22,7 @@ namespace Cats.Areas.WorkflowManager.Controllers
         public WorkflowManagerController()
         {
             if (DashboardMapping.PageNameToWorkflowMappingsList.Count == 0) { DashboardMapping.RegisterDashboardPage(); }
+
             DashboardMapping.InitializeNonGloablWorkflowList();
         }
         public dynamic GetAllListOfFilterObjects(string pageName)
@@ -257,10 +258,13 @@ namespace Cats.Areas.WorkflowManager.Controllers
             AddGlobalWorkflowToWorkflowList(workflowDefs);
 
             Data.Shared.UnitWork.IUnitOfWork unitOfWork = new Data.Shared.UnitWork.UnitOfWork();
-            WorkflowActivityService wfa = new WorkflowActivityService(unitOfWork);
+            Cats.Data.UnitWork.IUnitOfWork unitOfWorkMain = new Cats.Data.UnitWork.UnitOfWork();
+            Cats.Data.Hub.UnitWork.IUnitOfWork unitOfWorkHub = new Cats.Data.Hub.UnitOfWork();
+
+            WorkflowActivityService wfa = new WorkflowActivityService(unitOfWork, unitOfWorkMain, unitOfWorkHub);
 
             // Get aggregated data
-            List<DashboardDataEntry> result = wfa.GetWorkflowActivityAgg(startDate, endDate, workflowDefs, wfusers,                activities);
+            List<DashboardDataEntry> result = wfa.GetWorkflowActivityAgg(startDate, endDate, workflowDefs, wfusers, activities);
 
             List<DashboarDataEntryModel> dashboarDataEntryModels;
             if (result == null) return null;
@@ -292,11 +296,11 @@ namespace Cats.Areas.WorkflowManager.Controllers
 
         private static void AddGlobalWorkflowToWorkflowList(List<string> workflowDefs)
         {
-            if(workflowDefs.Any())
-            if (!DashboardMapping.GlobalWorkflowExcluded.Contains(workflowDefs.FirstOrDefault()))
-            {
-                if (!workflowDefs.Contains(Constants.GlobalWorkflow)) workflowDefs.Add(Constants.GlobalWorkflow);
-            }
+            if (workflowDefs.Any())
+                if (!DashboardMapping.GlobalWorkflowExcluded.Contains(workflowDefs.FirstOrDefault()))
+                {
+                    if (!workflowDefs.Contains(Constants.GlobalWorkflow)) workflowDefs.Add(Constants.GlobalWorkflow);
+                }
         }
 
         public dynamic GetObjectList(DateTime startDate, DateTime endDate, List<string> workflows, string userName, List<string> activities)

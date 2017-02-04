@@ -42,6 +42,9 @@
     .t-grid td {
         font-size: 0.8em;
     }
+    div.t-window-content {
+        overflow: auto !important;
+    }
 </style>
 
 @{
@@ -53,9 +56,9 @@
                 </div>
             </text>)
             .Width(800)
-            .Height(350)
+            .Height(650)
             .Draggable(true)
-            .Modal(true)
+            .Modal(true).Scrollable(true)
             .Visible(false)
             .Render();
 }

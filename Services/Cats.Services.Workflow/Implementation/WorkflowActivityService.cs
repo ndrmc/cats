@@ -29,16 +29,27 @@ namespace Cats.Services.Workflows
     public class WorkflowActivityService : IWorkflowActivityService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly Cats.Data.Hub.UnitWork.IUnitOfWork _hubUnitOfWork;
+        private readonly Cats.Data.UnitWork.IUnitOfWork _UnitOfWorkMain;
+
         #region Constructor
-        public WorkflowActivityService(IBusinessProcessService businessProcessService, IApplicationSettingService applicationSettingService, IHubBusinessProcessService hubBusinessProcessService)
+        public WorkflowActivityService(IBusinessProcessService businessProcessService, Cats.Data.UnitWork.IUnitOfWork _UnitOfWorkMain, Cats.Data.Hub.UnitWork.IUnitOfWork _hubUnitOfWork, IApplicationSettingService applicationSettingService, IHubBusinessProcessService hubBusinessProcessService)
         {
             _businessProcessService = businessProcessService;
             _applicationSettingService = applicationSettingService;
             _hubBusinessProcessService = hubBusinessProcessService;
+            this._hubUnitOfWork = _hubUnitOfWork;
+            this._UnitOfWorkMain = _UnitOfWorkMain;
+
+
+
         }
-        public WorkflowActivityService(IUnitOfWork unitOfWork)
+        public WorkflowActivityService(IUnitOfWork unitOfWork, Cats.Data.UnitWork.IUnitOfWork _UnitOfWorkMain, Cats.Data.Hub.UnitWork.IUnitOfWork _hubUnitOfWork)
         {
             _unitOfWork = unitOfWork;
+            this._hubUnitOfWork = _hubUnitOfWork;
+            this._UnitOfWorkMain = _UnitOfWorkMain;
+
         }
         #endregion
 
@@ -769,7 +780,7 @@ namespace Cats.Services.Workflows
 
 
 
-                var dashboardDataEntries = (from dashEntries in result
+                var dashboardDataEntriesdb = (from dashEntries in result
                                             where dashEntries.DatePerformed >= startDate && dashEntries.DatePerformed <= endDate
                                             group dashEntries by new
                                             {
@@ -780,7 +791,7 @@ namespace Cats.Services.Workflows
                                                 //,
                                                 //dashEntries.SettingName
                                                 //,
-                                                //dashEntries.BusinessProcessID,
+                                                dashEntries.BusinessProcessID,
                                                 //dashEntries.DatePerformed
                                             }
                                             into gTrnsRqst
@@ -794,25 +805,139 @@ namespace Cats.Services.Workflows
                                                 //gTrnsRqst.Key.StateTemplateID,
                                                 //gTrnsRqst.Key.ProcessTemplateID,
                                                 //gTrnsRqst.Key.SettingName,
-                                                Detail = gTrnsRqst
-                                                //gTrnsRqst.Key.BusinessProcessID,
+                                                //Detail = gTrnsRqst,
+                                                gTrnsRqst.Key.BusinessProcessID,
+                                                Detail = gTrnsRqst.ToList(),
+
                                                 //gTrnsRqst.Key.DatePerformed
                                             }).ToList();
 
-                return dashboardDataEntries.Select(dataEntry => new DashboardDataEntry
+            
+                String nonGlobalWf = String.Empty;
+
+                if (workflowDefinitions.Contains(ApplicationSettings.Default.GlobalWorkflow))
+                    foreach (String workflowName in workflowDefinitions)
+                    {
+                        if (workflowName != ApplicationSettings.Default.GlobalWorkflow)
+                        {
+                            nonGlobalWf = workflowName;
+                            break;
+                        }
+
+                    }
+
+                if (nonGlobalWf == String.Empty)//IF GLOBAL WF IMPLEMENTATION IS DONE USING THE OLD WAY
                 {
-                    PerformedBy = dataEntry.PerformedBy!=""?dataEntry.PerformedBy:"No Name",
-                    ActivityCount = dataEntry.ActivityCount,
-                    SettingName = dataEntry.SettingName,
-                    ActivityName = dataEntry.ActivityName,
-                    Detail = dataEntry.Detail
-                }).ToList();
+
+                    return dashboardDataEntriesdb.Select(dataEntry => new DashboardDataEntry
+                    {
+                        PerformedBy = dataEntry.PerformedBy != "" ? dataEntry.PerformedBy : "No Name",
+                        ActivityCount = dataEntry.ActivityCount,
+                        SettingName = dataEntry.SettingName,
+                        ActivityName = dataEntry.ActivityName,
+                        Detail = dataEntry.Detail
+                    }).ToList();
+
+                }
+                else //THE LIST OF WFS CONTAINS A GLOBAL WF , IMPLEMENTATION IS DONE USING THE NEW WAY
+                {
+                    //FILTER FROM THE RETURNED LIST BY BPID
+                    List<int> wfBusinessProcIDs = GetAllBusinessProcessIds(nonGlobalWf);
+
+                    List<DashboardDataEntry> delist = new List<DashboardDataEntry>();
+
+          
+
+                    var dashboardDataEntries = (from de in dashboardDataEntriesdb
+                                                where wfBusinessProcIDs.Contains(de.BusinessProcessID)
+                                                group de by new
+                                                {
+
+                                                    de.PerformedBy,
+                                                    de.ActivityName,
+                                                    //,
+                                                    //dashEntries.SettingName
+                                                    //,
+                                                    //dashEntries.BusinessProcessID,
+                                                    //dashEntries.DatePerformed
+                                                }
+                                        into gTrnsRqst
+                                                select new
+                                                {
+
+                                                    gTrnsRqst.Key.PerformedBy,
+                                                    SettingName = gTrnsRqst.Select(i => i.SettingName).First(),
+                                                    gTrnsRqst.Key.ActivityName,
+                                                    ActivityCount = gTrnsRqst.Count(),
+                                                    //gTrnsRqst.Key.StateTemplateID,
+                                                    //gTrnsRqst.Key.ProcessTemplateID,
+                                                    //gTrnsRqst.Key.SettingName,
+                                                    Detail = gTrnsRqst.ToList(),
+                                                    //dashboardDataEntriesdb.,
+                                                    //gTrnsRqst.Key.DatePerformed
+                                                }).ToList();
+
+                    foreach (var dde in dashboardDataEntries)
+                    {
+
+
+                        delist.Add(new DashboardDataEntry
+                        {
+                            PerformedBy = dde.PerformedBy != "" ? dde.PerformedBy : "No Name",
+                            ActivityCount = dde.ActivityCount,
+                            SettingName = dde.SettingName,
+                            ActivityName = dde.ActivityName
+
+                        });
+
+                    }
+                    return delist;
+
+                }
             }
             catch (Exception exception)
             {
                 return null;
             }
         }
+
+        private List<int> GetAllBusinessProcessIds(string workflowName)
+        {
+            List<int> result = new List<int>();
+
+
+            if (workflowName.Equals(ApplicationSettings.Default.DispatchWorkflow))
+            {
+                result.AddRange(_UnitOfWorkMain.DispatchRepository.GetAll().Select(p => p.BusinessProcessId).ToList<int>());
+            }
+            if (workflowName.Equals(ApplicationSettings.Default.GiftCertificateWorkflow))
+            {
+                result.AddRange(_UnitOfWorkMain.GiftCertificateRepository.GetAll().Select(p => p.BusinessProcessId).ToList<int>());
+            }
+            if (workflowName.Equals(ApplicationSettings.Default.PaymentRequestWorkflow))
+            {
+                result.AddRange(_UnitOfWorkMain.PaymentRequestRepository.GetAll().Select(p => p.BusinessProcessId).ToList<int>());
+            }
+            if (workflowName.Equals(ApplicationSettings.Default.ReliefRequisitionWorkflow))
+            {
+                result.AddRange(_UnitOfWorkMain.ReliefRequisitionRepository.GetAll().Select(p => p.BusinessProcessId).ToList<int>());
+            }
+            if (workflowName.Equals(ApplicationSettings.Default.TransporterChequeWorkflow))
+            {
+                result.AddRange(_UnitOfWorkMain.TransporterChequeRepository.GetAll().Select(p => p.BusinessProcessId).ToList<int>());
+            }
+            if (workflowName.Equals(ApplicationSettings.Default.TransporterPaymentRequestWorkflow))
+            {
+                result.AddRange(_UnitOfWorkMain.TransporterPaymentRequestRepository.GetAll().Select(p => p.BusinessProcessId).ToList<int>());
+            }
+
+
+            return result;
+
+
+        }
+
+
         public void GetMainObject()
         {
 

@@ -3548,7 +3548,6 @@
     <Folder Include="Areas\Settings\Views\Setting\" />
     <Folder Include="Areas\Transaction\Models\" />
     <Folder Include="Areas\Transaction\Views\Shared\" />
-    <Folder Include="bin\" />
     <Folder Include="Content\assetss\admin\img\" />
     <Folder Include="Content\assetss\admin\layout3\img\" />
     <Folder Include="Content\assetss\admin\pages\media\" />

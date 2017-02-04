@@ -192,28 +192,28 @@ namespace Cats.Areas.WorkflowManager.Controllers
 
             return stateTemplates.Distinct().ToArray();
         }
-        public dynamic GetDataEntryStat(DateTime startDate, DateTime endDate, List<string> workflowDefs,
-         List<string> wfusers, List<string> activities)
-        {
-            Data.Shared.UnitWork.IUnitOfWork unitOfWork = new Data.Shared.UnitWork.UnitOfWork();
-            WorkflowActivityService wfa = new WorkflowActivityService(unitOfWork);
-            // Sample data seed
-            //List<string> workflowDefs = new List<string> { "PaymentRequestWorkflow", "TransporterChequeWorkflow" };
-            //List<string> wfusers = new List<string> { "AbebaB", "admin" };
-            //List<string> activities = new List<string> { "Cheque Collected", "Cheque Issued", "Approved by finance", "Closed", "Request Verified" };
+        //public dynamic GetDataEntryStat(DateTime startDate, DateTime endDate, List<string> workflowDefs,
+        // List<string> wfusers, List<string> activities)
+        //{
+        //    //Data.Shared.UnitWork.IUnitOfWork unitOfWork = new Data.Shared.UnitWork.UnitOfWork();
+        //    //WorkflowActivityService wfa = new WorkflowActivityService(unitOfWork);
+        //    //// Sample data seed
+        //    ////List<string> workflowDefs = new List<string> { "PaymentRequestWorkflow", "TransporterChequeWorkflow" };
+        //    ////List<string> wfusers = new List<string> { "AbebaB", "admin" };
+        //    ////List<string> activities = new List<string> { "Cheque Collected", "Cheque Issued", "Approved by finance", "Closed", "Request Verified" };
 
-            List<DashboardDataEntry> result = wfa.GetWorkflowActivityAgg(startDate, endDate, workflowDefs, wfusers,
-                activities);
+        //    //List<DashboardDataEntry> result = wfa.GetWorkflowActivityAgg(startDate, endDate, workflowDefs, wfusers,
+        //    //    activities);
 
-            List<DashboarDataEntryModel> dashboarDataEntryModels = (from user in wfusers
-                let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
-                select new DashboarDataEntryModel
-                {
-                    Name = user,
-                    DashboardDataEntries = dashboardDataEntries
-                }).ToList();
+        //    //List<DashboarDataEntryModel> dashboarDataEntryModels = (from user in wfusers
+        //    //    let dashboardDataEntries = result.Where(u => u.PerformedBy == user).ToList()
+        //    //    select new DashboarDataEntryModel
+        //    //    {
+        //    //        Name = user,
+        //    //        DashboardDataEntries = dashboardDataEntries
+        //    //    }).ToList();
 
-            return dashboarDataEntryModels;
-        }
+        //    //return dashboarDataEntryModels;
+        //}
     }
 }
