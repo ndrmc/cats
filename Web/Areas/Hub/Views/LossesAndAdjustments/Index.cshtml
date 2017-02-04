@@ -1,15 +1,31 @@
 ﻿@model IEnumerable<Cats.Models.Hubs.ViewModels.LossAndAdjustmentLogViewModel>
+@using Cats.Models.Hubs
 @using Cats.Web.Hub.Helpers
 @using Cats.Security
 @{
+    var usr = @Html.GetCurrentUser();
+    var mdl = new CurrentUserModel(usr);
     ViewBag.Title = Html.Translate("Loss or Adjustment");
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+    //Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("Loss or Adjustment");
+    ViewBag.PageTitleDescription = "" +  mdl.Name + Html.Translate(" Hub ");
+
 }
 
-@Html.Partial("DisplayHub")
+<style type="text/css">
+    .t-grid-header .t-header .t-link {
+        height: 27.6px;
+    }
+    div.t-window-content {
+        overflow: auto !important;
+    }
+</style>
+
+@*@Html.Partial("DisplayHub")*@
 
 
-    @if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Record_new_loss) )
+    @*@if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Record_new_loss) )
     {
         
         <p>
@@ -20,7 +36,7 @@
                <p>
                     or @Html.ActionLink("Record new Adjustment", "CreateAdjustment", "LossesAndAdjustments") respectively
                 </p>
-        }
+        }*@
 
 @{Html.Telerik().Window()
             .Name("lossAdjsutmenttWindow")
@@ -28,26 +44,48 @@
             .Draggable(true)
             .Modal(true)
             .Visible(false)
-            .Height(400)
-            .Width(600)
+            .Height(500)
+            .Width(800)
             .Render();
     
 }
 
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="icon-list font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("Loss Or Adjustment") </span>
+        </div>
+        <div class="tools">
+            <a href="#" class="collapse" data-original-title="" title=""></a>
+        </div>
+        <div class="actions">
+            @if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Record_new_loss))
+            {
+                @Html.ActionLink("Record new Loss", "CreateLoss", "LossesAndAdjustments", new {@class = "btn btn-sm green"})
+            }
+            @if (Cats.Helpers.UserAccountHelper.HubOperationCheck(HubConstants.Operation.Record_new_adjustment))
+            {
+                @Html.ActionLink("Record new Adjustment", "CreateAdjustment", "LossesAndAdjustments", new {@class = "btn btn-sm green"})
+            }
+            <a class="btn btn-icon-only btn-default fullscreen"></a>
+        </div>
+    </div>
+    <div class="portlet-body">
 
-@(Html.Telerik().Grid(Model)
+        @(Html.Telerik().Grid(Model)
             .Name("LossesAdjustmentsLogGrid")
             .ToolBar(toolBar => toolBar.Template(
                 @<text>
-<label>Filter:</label>
-@(Html.Telerik().ComboBox()
+                    <label>Filter:</label>
+                    @(Html.Telerik().ComboBox()
                                 .Name("LossAdjustmentFilter")
                                 .DataBinding(binding => binding.Ajax().Select("GetFilters", "LossesAndAdjustments"))
                                 .HtmlAttributes(new { style = "width: 200px;" })
                                 .Placeholder("All")
                                 .ClientEvents(ev => ev.OnChange("onLossAdjustmentFilterChange"))
                     )
-</text>
+                </text>
                 )
              )
             .Columns(columns =>
@@ -63,15 +101,18 @@
                 columns.Bound(o => o.QuantityInMt).Format("{0:N3}").HtmlAttributes(new { align = "right" });
                 columns.Bound(o => o.ApprovedBy);
                 columns.Template(@<text>
-<input type="button" value="Detail" onclick="onDetailClick('@item.TransactionId    ')" />
-</text>);
+            <input class="btn green-stripe btn-sm" type="button" value="Detail" onclick="onDetailClick('@item.TransactionId')" />
+                </text>);
             })
             .ClientEvents(ev => ev.OnDataBinding("dataBinding"))
             .DataBinding(dataBinding => dataBinding.Ajax().Select("FilteredGrid", "LossesAndAdjustments"))
             .Sortable(sorting => sorting.Enabled(true))
             .Pageable(paging => paging.Enabled(true))
             .Footer(true)
-)
+        )
+    </div>
+</div>
+
 
 
 <script type="text/javascript">
