@@ -448,7 +448,7 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     var record = _needAssessmentDetailService.FindById(details.NAId);
                     record.ProjectedFemale = details.ProjectedFemale;
                     record.ProjectedMale = details.ProjectedMale;
-                    deatilUpdated = _needAssessmentDetailService.EditNeedAssessmentDetail(record);
+                    deatilUpdated = deatilUpdated || _needAssessmentDetailService.EditNeedAssessmentDetail(record);
                     //if (record != null)
                     //{
                     //    result.Add(record);
@@ -461,9 +461,23 @@ namespace Cats.Areas.EarlyWarning.Controllers
                     var needAssessmentDetail = needAssessmentlDetails.FirstOrDefault();
                     if (needAssessmentDetail != null)
                     {
-                        var needAssessment = _needAssessmentService.FindById(needAssessmentId);
+                        var needAssessment = _needAssessmentHeaderService.FindById(needAssessmentId);
                         if (needAssessment != null)
-                            _workflowActivityService.EnterEditWorkflow(needAssessment.BusinessProcess);
+                        {
+                           //_workflowActivityService.EnterEditWorkflow(needAssessment.NeedAssessment);
+                            var businessProcessId = needAssessment.NeedAssessment.BusinessProcessID;
+                            var globalEditeStateId = _businessProcessService.GetGlobalEditStateTempId();
+                            var businesProcessState = new BusinessProcessState()
+                            {
+                                Comment = "Detail Edited",
+                                DatePerformed = DateTime.Now,
+                                ParentBusinessProcessID = businessProcessId,
+                                StateID = globalEditeStateId,
+                                PerformedBy = User.Identity.Name
+                            };
+                            _businessProcessService.InsertBusinessProcessState(businesProcessState);
+                        }
+
                     }
                 }
             }

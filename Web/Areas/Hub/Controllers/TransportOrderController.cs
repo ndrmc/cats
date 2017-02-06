@@ -65,11 +65,14 @@ namespace Cats.Areas.Hub.Controllers
                 : 0;
 
             var transportOrders = id == 0
-                ? _transportOrderService.GetByHub(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name =="Signed",
+                ? _transportOrderService.GetByHub(
+                    t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed",
                     includeProperties: "TransportOrderDetails", hubId: hubId, statusId: (int) TransportOrderStatus.Draft)
                     .OrderByDescending(m => m.TransportOrderID)
                     .ToList()
-                : _transportOrderService.GetByHub(t => t.StatusID == id, includeProperties: "TransportOrderDetails",
+                : _transportOrderService.GetByHub(
+                    t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed",
+                    includeProperties: "TransportOrderDetails",
                     hubId: hubId, statusId: id).ToList();
 
             //var transportOrders = id == 0 ? _transportOrderService.Get(t => t.StatusID == (int)TransportOrderStatus.Draft, includeProperties: "TransportOrderDetails")

@@ -277,7 +277,7 @@ namespace Cats.Infrastructure
             kernel.Bind<ILgDashboardService>().To<LgDashboardService>();
 
             kernel.Bind<IWorkflowActivityService>().To<WorkflowActivityService>();
-            kernel.Bind<Services.Workflows.Config.IApplicationSettingService>().To<Services.Workflows.Config.ApplicationSettingService>();
+            kernel.Bind<IApplicationSettingService>().To<ApplicationSettingService>();
 
         }
         private void AddBindingsHub()
