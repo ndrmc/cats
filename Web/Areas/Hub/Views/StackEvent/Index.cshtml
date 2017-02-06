@@ -1,65 +1,71 @@
 ﻿@model Cats.Models.Hubs.ViewModels.StackEventViewModel
+@using Cats.Models.Hubs
 @using Cats.Web.Hub.Helpers
 @{
     ViewBag.Title = Html.Translate("Stack Events");
-   
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("Stack Events");
+    ViewBag.PageTitleDescription = "";
 }
 
-<h2>@Html.Translate("Basic Stack Events")</h2>
-<p>
-    @Html.Translate("Please use this form to record and view basic stack events.") @Html.Translate("Basic stack events are events like Fumigation, Quality Assesment etc.")
-</p>
-<table class="borderless fromTable" style="vertical-align:middle">
-    <tbody>
-                <tr>
-                    <td style="width:150px;">@Html.LabelFor(model => model.Stores)</td>
-                    <td>
-                        @(Html.Telerik().ComboBoxFor(model => model.Stores)
+<div class="well">
+    <div class="row">
+        <div class="col-md-3 form-group">
+            <div class="col-md-4 control-label">@Html.LabelFor(model => model.Stores)</div>
+            <div class="col-md-8">@(Html.Telerik().ComboBoxFor(model => model.Stores)
                                     .Name("StoreId")
                                     .BindTo(new SelectList(Model.Stores, "StoreId", "StoreName"))
                                     .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
                                     .HighlightFirstMatch(true)
                                     .CascadeTo("StackId")
-                        )
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width:150px;" >@Html.LabelFor(model => model.Stacks)</td>
-                    <td>
-                        @(Html.Telerik().ComboBoxFor(model => model.Stacks)
+            )</div>
+        </div>
+        <div class="col-md-3 form-group">
+            <div class="col-md-4 control-label">@Html.LabelFor(model => model.Stacks)</div>
+            <div class="col-md-8">@(Html.Telerik().ComboBoxFor(model => model.Stacks)
                                     .Name("StackId")
                                     .BindTo(new SelectList(Model.Stacks))
                                     .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
                                     .HighlightFirstMatch(true)
                                     .DataBinding(binding => binding.Ajax().Select("GetStacksFromStore", "StackEvent"))
                                     .ClientEvents(ev => ev.OnChange("onStackChange"))
-                        )
-                    </td>
-                </tr>
-        <tr>
-            <td colspan="2">@Html.Translate("Please select store and stack above to filter the events for the specific stack.")</td>
-        </tr>
-            </tbody>
-</table>
+            )</div>
+        </div>
+    </div>
+</div>
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="icon-list font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("Basic Stack Events")</span>
+        </div>
+        <div class="tools">
+            <a href="#" class="collapse" data-original-title="" title=""></a>
+        </div>
+        <div class="actions">
+            <a class="btn btn-icon-only btn-default fullscreen"></a>
+        </div>
+    </div>
+    <div class="portlet-body">
+        @{
+            Html.Telerik().TabStrip()
+                .Name("StackEvent")
+                .Items(parent =>
+                {
+                    parent.Add()
+                        .Text("Event Log")
+                        .LoadContentFrom("EventLog", "StackEvent")
+                        .Selected(true);
+                    @*  parent.Add()
+                        .Text("Stack Card")
+                        .Content(@<text>loading....</text>);*@
+                })
+                .Render();
+        }
 
 
-<div style="margin-top:50px;">
-@{ Html.Telerik().TabStrip()
-            .Name("StackEvent")
-            .Items(parent =>
-            {
-                parent.Add()
-                    .Text("Event Log")
-                    .LoadContentFrom("EventLog", "StackEvent")
-                    .Selected(true);
-              @*  parent.Add()
-                    .Text("Stack Card")
-                    .Content(@<text>loading....</text>);*@
-            })
-            .Render();
- }
-
- </div>
+    </div>
+</div>
 
 
  <script type="text/javascript">
