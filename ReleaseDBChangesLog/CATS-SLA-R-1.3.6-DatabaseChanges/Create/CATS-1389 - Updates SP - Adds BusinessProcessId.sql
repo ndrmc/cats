@@ -1,4 +1,4 @@
-USE [Cats-v-1-3-1]
+USE [Cats-v-1-3-2]
 GO
 
 /****** Object:  StoredProcedure [dbo].[SPReceiveAllocationAggr]    Script Date: 11/30/2016 8:51:59 AM ******/
@@ -13,7 +13,7 @@ GO
 -- Create date: July 31, 2016
 -- Description:	Stored procedure that selects ReceiveAllocations with their respective aggregated received quantities
 -- =============================================
-CREATE PROCEDURE [dbo].[SPReceiveAllocationAggr] 
+ALTER PROCEDURE [dbo].[SPReceiveAllocationAggr] 
 	-- Add the parameters for the stored procedure here
 	(
 	  @hubID int,

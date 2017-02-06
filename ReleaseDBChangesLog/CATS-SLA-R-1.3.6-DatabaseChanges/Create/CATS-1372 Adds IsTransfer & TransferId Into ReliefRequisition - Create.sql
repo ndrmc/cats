@@ -1,3 +1,5 @@
+use [Cats-v-1-3-2]
+go
 
 ALTER TABLE  Earlywarning.ReliefRequisition
 ADD IsTransfer bit NULL
