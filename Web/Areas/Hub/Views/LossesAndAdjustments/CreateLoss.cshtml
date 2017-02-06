@@ -1,13 +1,21 @@
 ﻿@*@model Cats.Models.Hubs.ViewModels.LossesAndAdjustmentsViewModel*@
+@using Cats.Models.Hubs
 @using Cats.Web.Hub.Helpers
 
 @{
+    //ViewBag.Title = Html.Translate("Record new Loss");
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+
     ViewBag.Title = Html.Translate("Record new Loss");
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+    var usr = @Html.GetCurrentUser();
+    var mdl = new CurrentUserModel(usr);
+    ViewBag.PageTitle = Html.Translate("Record new Loss");
+    ViewBag.PageTitleDescription = "" + mdl.Name + Html.Translate(" Hub ");
 }
 
-@Html.Partial("DisplayHub")
-<p>
-    @Html.Translate("Please use this form to record losses")
-</p>
+@*@Html.Partial("DisplayHub")*@
+
 @Html.Partial("LossEditPartial")

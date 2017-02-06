@@ -1,15 +1,19 @@
 ﻿@*@model Cats.Models.Hubs.ViewModels.LossesAndAdjustmentsViewModel*@
+@using Cats.Models.Hubs
 @using Cats.Web.Hub.Helpers
 @{
     ViewBag.Title = Html.Translate("Record new Adjustment");
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+    var usr = @Html.GetCurrentUser();
+    var mdl = new CurrentUserModel(usr);
+    ViewBag.PageTitle = Html.Translate("Record new Adjustment");
+    ViewBag.PageTitleDescription = "" + mdl.Name + Html.Translate(" Hub ");
+
 }
 
-@Html.Partial("DisplayHub")
-
-<p>
-    @Html.Translate("Please use this form to record adjustments")
-</p>
+@*@Html.Partial("DisplayHub")*@
 
 
 @Html.Partial("AdjustmentEditPartial")
