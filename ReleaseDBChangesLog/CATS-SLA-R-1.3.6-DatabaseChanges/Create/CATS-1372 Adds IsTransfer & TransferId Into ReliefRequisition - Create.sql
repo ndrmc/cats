@@ -1,5 +1,3 @@
-use CatsDrmfss
-go
 
 ALTER TABLE  Earlywarning.ReliefRequisition
 ADD IsTransfer bit NULL
