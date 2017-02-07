@@ -17,13 +17,13 @@ namespace Cats.Services.Logistics
     public class TransportRequisitionDetailService : ITransportRequisitionDetailService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly INotificationService _notificationService;
+        //private readonly INotificationService _notificationService;
      
 
-        public TransportRequisitionDetailService(IUnitOfWork unitOfWork, INotificationService notificationService)
+        public TransportRequisitionDetailService(IUnitOfWork unitOfWork)
         {
             this._unitOfWork = unitOfWork;
-            _notificationService = notificationService;
+            //_notificationService = notificationService;
         }
 
         #region Default Service Implementation
