@@ -466,7 +466,8 @@ namespace Cats.Areas.Logistics.Controllers
                     region = (p.Transporter.Region != 0) ? _adminUnitService.FindById(p.Transporter.Region).Name : "",
                     zone = (p.Transporter.Zone != 0) ? _adminUnitService.FindById(p.Transporter.Zone).Name : "",
                     transportOrderNo = p.TransportOrderNo,
-                    mobileNo = p.Transporter.MobileNo ?? ""
+                    mobileNo = p.Transporter.MobileNo ?? "",
+                    transporterId = p.TransporterID
                 });
             return Json(transporters, JsonRequestBehavior.AllowGet);
         }
@@ -635,7 +636,7 @@ namespace Cats.Areas.Logistics.Controllers
             var query = (from r in incommingGrns
                          select new
                          {
-                             r.ReceivedDate,
+                             ReceivedDate = r.ReceivedDate.Value.ToShortDateString(),
                              GRN = r.ReceivingNumber,
                              r.DriverName,
                              r.DispatchID,
@@ -645,7 +646,7 @@ namespace Cats.Areas.Logistics.Controllers
                              r.PlateNoPrimary,
                              r.PlateNoTrailler,
                              r.ReceivedBy,
-                             r.DeliveryDate,
+                             DeliveryDate = r.DeliveryDate.Value.ToShortDateString(),
                              GIN = r.InvoiceNo
                          }).OrderBy(o => o.ReceivedDate).ToList();
 

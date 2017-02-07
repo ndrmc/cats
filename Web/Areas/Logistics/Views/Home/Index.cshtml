@@ -678,14 +678,14 @@
                                                 @*<th class="hidden-xs">Number</th>*@
                                                 <th>Received Date</th>
                                                 <th>Requisition No.</th>
-                                                <th>Grn</th>
-                                                <th>Driver Name</th>
-                                                <th>@*Received By*@</th>
+                                                <th>GRN</th>
+                                                <th>GIN</th>
+                                                <th>Driver Name</th>                                                
                                                 <th>Plate No. Prime</th>
                                                 <th>Plate No. Trailer</th>
                                                 <th>Delivery Date</th>
                                                 <th>FDP</th>
-                                                <th>Bill No.</th>
+                                                <th>@*Bill No.*@</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -693,15 +693,14 @@
                                                 @*<td class="hidden-xs">{{$index + 1}}</td>*@
                                                 <td>{{req.ReceivedDate}}</td>
                                                 <th>{{req.RequisitionNo}}</th>
-                                                <td>{{req.ReceivingNumber}}</td>
+                                                <td>{{req.GRN}}</td>
                                                 <td>{{req.GIN}}</td>
-                                                <th>{{req.DriverName}}</th>
-                                                <td>@*{{req.ReceivedBy}}*@</td>
+                                                <th>{{req.DriverName}}</th>                                                
                                                 <td>{{req.PlateNoPrimary}}</td>
                                                 <th>{{req.PlateNoTrailler}}</th>
                                                 <th>{{req.DeliveryDate}}</th>
                                                 <th>{{req.FdpName}}</th>
-                                                <th>{{req.BillNumber}}</th>
+                                                <th>@*{{req.BillNumber}}*@</th>
                                                 @*<th>{{req.DispatchID}}</th>*@
                                             </tr>
                                         </tbody>
