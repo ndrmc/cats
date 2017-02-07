@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Cats.Services.Common {
+namespace Cats.Services.Workflows.Config {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -245,6 +245,51 @@ namespace Cats.Services.Common {
         public string DeliveryWorkflow {
             get {
                 return ((string)(this["DeliveryWorkflow"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("TransporterWorkflow")]
+        public string TransporterWorkflow {
+            get {
+                return ((string)(this["TransporterWorkflow"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DistributionWorkflow")]
+        public string DistributionWorkflow {
+            get {
+                return ((string)(this["DistributionWorkflow"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("FDPReceiptWorkflow")]
+        public string FDPReceiptWorkflow {
+            get {
+                return ((string)(this["FDPReceiptWorkflow"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("RFQWorkflow")]
+        public string RFQWorkflow {
+            get {
+                return ((string)(this["RFQWorkflow"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("AdjustmentWorkflow")]
+        public string AdjustmentWorkflow {
+            get {
+                return ((string)(this["AdjustmentWorkflow"]));
             }
         }
     }

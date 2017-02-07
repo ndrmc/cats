@@ -931,11 +931,6 @@ namespace Cats.Services.Workflows
                 result.AddRange(_UnitOfWorkMain.TransporterPaymentRequestRepository.GetAll().Select(p => p.BusinessProcessId).ToList<int>());
             }
 
-            if (workflowName.Equals(ApplicationSettings.Default.AdjustmentWorkflow))
-            {
-                result.AddRange(_UnitOfWorkMain.TransporterPaymentRequestRepository.GetAll().Select(p => p.BusinessProcessId).ToList<int>());
-            }
-
 
             return result;
 
