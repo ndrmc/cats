@@ -629,9 +629,19 @@ namespace Cats.Areas.Logistics.Controllers
 
         public JsonResult GetIncommingGrns(DateTime startDate, DateTime endDate, string transporterName, int takeTheFirst)
         {
-            var dispatchs = _dispatchService.GetIncommingGrn(transporterName, startDate, endDate, takeTheFirst);
+            var incommingGrns = _deliveryService.GetAllDelivery().Where(
+                    t => (t.ReceivedDate >= startDate && t.ReceivedDate <= endDate) && t.TransporterID == transporterId).Take(takeTheFirst);
 
-            return Json(dispatchs, JsonRequestBehavior.AllowGet);
+            var query = (from r in incommingGrns
+                         select new
+                         {
+                             ReceivedDate = r.ReceivedDate,
+                             GRN = r.ReceivingNumber,
+                             DriverName = r.DriverName,
+                             DispatchID = r.DispatchID
+                         }).OrderBy(o => o.ReceivedDate).ToList();
+
+            return Json(query, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

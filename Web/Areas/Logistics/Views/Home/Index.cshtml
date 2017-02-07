@@ -666,7 +666,7 @@
                                 <div class="col-md-3 form-group">
                                     <!--<label class="control-label col-md-8">Enter number of records to view</label>-->
                                     <div class="col-md-12">
-                                        <input type="text" placeholder="Enter number of records to view" class="form-control" id="takeFirstId" ng-model="search.transportOrderNo" value="10">
+                                        <input type="text" placeholder="Enter number of records to view" class="form-control" id="takeFirstId" ng-model="search.transportOrderNo" value="10" >
                                     </div>
                                 </div>
                             </div>
@@ -676,20 +676,32 @@
                                         <thead>
                                             <tr>
                                                 @*<th class="hidden-xs">Number</th>*@
-                                                <th style="overflow: visible; white-space: normal;" scope="col" data-title="Dispatched Date" data-field="DispatchDate" class="cats-date-pref-grid">
-                                                    <span>Dispatched Date</span>
-                                                </th>
-
-                                                <th>GIN</th>
-                                                <th>Dispatched by Store Man</th>
+                                                <th>Received Date</th>
+                                                <th>Requisition No.</th>
+                                                <th>Grn</th>
+                                                <th>Driver Name</th>
+                                                <th>@*Received By*@</th>
+                                                <th>Plate No. Prime</th>
+                                                <th>Plate No. Trailer</th>
+                                                <th>Delivery Date</th>
+                                                <th>FDP</th>
+                                                <th>Bill No.</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr ng-repeat="req in IncommingGrns">
                                                 @*<td class="hidden-xs">{{$index + 1}}</td>*@
-                                                <td>{{req.DispatchDate}}</td>
+                                                <td>{{req.ReceivedDate}}</td>
+                                                <th>{{req.RequisitionNo}}</th>
+                                                <td>{{req.ReceivingNumber}}</td>
                                                 <td>{{req.GIN}}</td>
-                                                <th>{{req.DispatchedByStoreMan}}</th>
+                                                <th>{{req.DriverName}}</th>
+                                                <td>@*{{req.ReceivedBy}}*@</td>
+                                                <td>{{req.PlateNoPrimary}}</td>
+                                                <th>{{req.PlateNoTrailler}}</th>
+                                                <th>{{req.DeliveryDate}}</th>
+                                                <th>{{req.FdpName}}</th>
+                                                <th>{{req.BillNumber}}</th>
                                                 @*<th>{{req.DispatchID}}</th>*@
                                             </tr>
                                         </tbody>
