@@ -2,14 +2,17 @@
  using System.Collections.Generic;
  using System.Linq;
  using System.Web;
- using Cats.Models;
+
 
  namespace Cats.Rest.Models
  {
      public class TransportRequisition
  		{
-
-		 public TransportRequisition(int TransportRequisitionId , string TransportRequisitionNo , int RegionId , string RegionName , int ProgramId , string ProgramName , int RequestedBy , DateTime RequestedDate , int CertifiedBy , DateTime CertifiedDate , string Remark , int Status , string StatusName   )
+         public TransportRequisition()
+         {
+             
+         }
+         public TransportRequisition(int TransportRequisitionId , string TransportRequisitionNo , int RegionId , string RegionName , int ProgramId , string ProgramName , int RequestedBy , DateTime RequestedDate , int CertifiedBy , DateTime CertifiedDate , string Remark , int Status , string StatusName   )
 			{
 				this.TransportRequisitionId = TransportRequisitionId;
 				this.TransportRequisitionNo = TransportRequisitionNo;
