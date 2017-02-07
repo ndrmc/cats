@@ -52,7 +52,7 @@ namespace Cats.Rest.Controllers
                                               {
                                                   AccountNumber = gcd.AccountNumber,
                                                   BillOfLoading = gcd.BillOfLoading,
-                                                  //BudgetTypeName = ,
+                                                  //BudgetTypeName = gcd.,
                                                   CommodityID = gcd.CommodityID,
                                                   CommodityName = gcd.Commodity.Name,
                                                   //CurrencyName = gcd
