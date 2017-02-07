@@ -3,6 +3,7 @@ using Cats.Services.EarlyWarning;
 using System;
 using System.Web;
 using Cats.Services.Administration;
+using Cats.Services.Common;
 using Cats.Services.Hub;
 using Cats.Services.Logistics;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
@@ -36,6 +37,8 @@ using IUnitService = Cats.Services.EarlyWarning.IUnitService;
 using IUserProfileService = Cats.Services.Administration.IUserProfileService;
 
 using Cats.Services.PSNP;
+using ILedgerService = Cats.Services.Hub.ILedgerService;
+using LedgerService = Cats.Services.Hub.LedgerService;
 
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
@@ -156,7 +159,10 @@ namespace Cats.Rest.App_Start
             kernel.Bind<ITransportOrderService>().To<TransportOrderService>();
             kernel.Bind<ITransportOrderDetailService>().To<TransportOrderDetailService>();
             kernel.Bind<ITransportRequisitionService>().To<TransportRequisitionService>();
-        }
+            kernel.Bind<IReliefRequisitionDetailService>().To<ReliefRequisitionDetailService>();
+            kernel.Bind<Cats.Services.Procurement.ITransporterService>().To<Cats.Services.Procurement.TransporterService>();
+            kernel.Bind<INotificationService>().To<NotificationService>();
+    }
 
     }
 }

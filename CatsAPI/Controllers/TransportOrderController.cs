@@ -44,18 +44,18 @@ namespace Cats.Rest.Controllers
                     TransportOrderDetails = (from d in to.TransportOrderDetails
                         select new TransportOrderDetail()
                         {
-                            CommodityName = d.Commodity.Name,
+                            CommodityName = d.Commodity!=null?d.Commodity.Name:string.Empty,
                             CommodityID = d.FdpID,
-                            FdpName = d.FDP.Name,
+                            FdpName = d.FDP!=null?d.FDP.Name:string.Empty,
                             BidID = d.BidID,
                             TransportOrderID = d.TransportOrderID,
                             DonorID = d.DonorID,
                             FdpID = d.FdpID,
                             RequisitionNo = d.ReliefRequisition.RequisitionNo,
-                            ZoneName = d.AdminUnit.Name,
+                            ZoneName = d.AdminUnit!=null?d.AdminUnit.Name:string.Empty,
                             RequisitionID = d.RequisitionID,
                             DistanceFromOrigin = d.DistanceFromOrigin,
-                            DonorNamae = d.Donor.Name,
+                            DonorNamae = d.Donor!=null?d.Donor.Name:String.Empty,
                             IsChanged = d.IsChanged,
                             QuantityQuintal = d.QuantityQtl,
                             SourceWarehouseID = d.SourceWarehouseID,
@@ -72,6 +72,7 @@ namespace Cats.Rest.Controllers
         public TransportOrder GetTransportOrder(int id)
         {
             var to = _transportOrderService.FindById(id);
+            if (to == null) return null;
             return new TransportOrder()
             {
                 BidDocumentNo = to.BidDocumentNo,
@@ -96,18 +97,18 @@ namespace Cats.Rest.Controllers
                 TransportOrderDetails = (from d in to.TransportOrderDetails
                     select new TransportOrderDetail()
                     {
-                        CommodityName = d.Commodity.Name,
+                        CommodityName = d.Commodity != null ? d.Commodity.Name : string.Empty,
                         CommodityID = d.FdpID,
-                        FdpName = d.FDP.Name,
+                        FdpName = d.FDP != null ? d.FDP.Name : string.Empty,
                         BidID = d.BidID,
                         TransportOrderID = d.TransportOrderID,
                         DonorID = d.DonorID,
                         FdpID = d.FdpID,
                         RequisitionNo = d.ReliefRequisition.RequisitionNo,
-                        ZoneName = d.AdminUnit.Name,
+                        ZoneName = d.AdminUnit != null ? d.AdminUnit.Name : string.Empty,
                         RequisitionID = d.RequisitionID,
                         DistanceFromOrigin = d.DistanceFromOrigin,
-                        DonorNamae = d.Donor.Name,
+                        DonorNamae = d.Donor != null ? d.Donor.Name : String.Empty,
                         IsChanged = d.IsChanged,
                         QuantityQuintal = d.QuantityQtl,
                         SourceWarehouseID = d.SourceWarehouseID,
