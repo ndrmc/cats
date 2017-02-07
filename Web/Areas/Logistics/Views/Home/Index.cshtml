@@ -658,7 +658,7 @@
                                 <div class="col-md-3 form-group">
                                     <label class="control-label col-md-4">Transporter</label>
                                     <div class="col-md-8">
-                                        <select class="form-control" id="idTransporterid" ng-change="onChange(transporterValue)" ng-model="transporterValue" ng-options="r.name as r.name for r in Transporters">
+                                        <select class="form-control" id="idTransporterid" ng-change="onChange(transporterValue)" ng-model="transporterValue" ng-options="r.transporterId as r.name for r in Transporters">
                                             <option value=''> Select Transporter </option>
                                         </select>
                                     </div>
@@ -1247,7 +1247,7 @@
         myApp.controller('IncommingGrnController', [
     '$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
         $scope.Transporters = [];
-        $scope.reqParam = { startDate: new Date(), endDate: new Date(), transporterName: '', takeTheFirst: 10 };
+        $scope.reqParam = { startDate: new Date(), endDate: new Date(), transporterId: '', takeTheFirst: 10 };
         $scope.IncommingGrns = [];
 
         var onIncommingGrns = function (data) {
@@ -1258,8 +1258,8 @@
             .error(function (data, status, headers, config) {
             });
 
-        $scope.onChange = function (transporter) {
-            $scope.reqParam.transporterName = transporter;
+        $scope.onChange = function (transporterId) {
+            $scope.reqParam.transporterId = transporterId;
             $scope.reqParam.takeTheFirst = $("#takeFirstId").val();
 
             var takeTheFirst = $("#takeFirstId").val();
