@@ -27,7 +27,7 @@ namespace Cats.Rest.Controllers
         [HttpGet]
         public dynamic GetDonors()
         {
-            var bids = _idonorService.GetAllDonor().Select(item => new
+            var donors = _idonorService.GetAllDonor().Select(item => new
             {
                 item.DonorID,
                 item.Name,
@@ -37,7 +37,7 @@ namespace Cats.Rest.Controllers
                 item.LongName
             }).ToList();
 
-            return bids;
+            return donors;
         }
         /// <summary>
         /// Given an id returns a Donor object

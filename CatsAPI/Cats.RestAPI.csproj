@@ -209,6 +209,8 @@
     </Compile>
     <Compile Include="Models\AdminUnit.cs" />
     <Compile Include="Models\AdminUnitType.cs" />
+    <Compile Include="Models\BidDetailModelView.cs" />
+    <Compile Include="Models\BidModelView.cs" />
     <Compile Include="Models\Commodity.cs" />
     <Compile Include="Models\CommodityGrade.cs" />
     <Compile Include="Models\CommodityType.cs" />

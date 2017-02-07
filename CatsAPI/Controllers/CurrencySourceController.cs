@@ -27,14 +27,14 @@ namespace Cats.Rest.Controllers
         [HttpGet]
         public dynamic GetCurrencies()
         {
-            var bids = _icurrencyService.GetAllCurrency().Select(item => new
+            var currencies = _icurrencyService.GetAllCurrency().Select(item => new
             {
              item.CurrencyID,
              item.Code,
              item.Name
             }).ToList();
 
-            return bids;
+            return currencies;
         }
         /// <summary>
         /// Given an id returns a Currency object

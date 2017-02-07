@@ -27,13 +27,13 @@ namespace Cats.Rest.Controllers
         [HttpGet]
         public dynamic GetCommoditySources()
         {
-            var bids = _icommoditySourceService.GetAllCommoditySource().Select(item => new
+            var commoditySources = _icommoditySourceService.GetAllCommoditySource().Select(item => new
             {
               item.CommoditySourceID,
               item.Name
             }).ToList();
 
-            return bids;
+            return commoditySources;
         }
         /// <summary>
         /// Given an id returns a CommoditySource object
