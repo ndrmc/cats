@@ -1,4 +1,5 @@
-﻿using Cats.Services.Procurement;
+﻿using Cats.Rest.Models;
+using Cats.Services.Procurement;
 using System.Linq;
 using System.Web.Http;
 
@@ -34,22 +35,29 @@ namespace Cats.Rest.Controllers
         [HttpGet]
         public dynamic GetBids()
         {
-            var bids = _ibidService.GetAllBid().Select(item => new
+            var bids = _ibidService.GetAllBid().Select(item => new BidModelView
             {
-                item.BidID,
-                item.RegionID,
-                item.StartDate,
-                item.EndDate,
-                item.BidNumber,
-                item.OpeningDate,
-                item.StatusID,
-                item.Status,
-                item.TransportBidPlanID,
-                item.BidBondAmount,
-                item.startTime,
-                item.endTime,
-                item.BidOpeningTime,
-                item.BidDetails
+                BidID = item.BidID,
+                RegionID = item.RegionID,
+                StartDate = item.StartDate,
+                EndDate = item.EndDate,
+                BidNumber = item.BidNumber,
+                OpeningDate = item.OpeningDate,
+                StatusID = item.StatusID,
+                Status = item.Status == null ? string.Empty : item.Status.Name,
+                TransportBidPlanID = item.TransportBidPlanID,
+                BidBondAmount = item.BidBondAmount,
+                startTime = item.startTime,
+                endTime = item.endTime,
+                BidOpeningTime = item.BidOpeningTime,
+                BidDetails = item.BidDetails.Select(detail => new BidDetailModelView
+                {
+                    BidDetailId = detail.BidDetailID,
+                    AmountForReliefProgram = detail.AmountForReliefProgram,
+                    AmountForPSNPProgram = detail.AmountForPSNPProgram,
+                    BidDocumentPrice = detail.BidDocumentPrice,
+                    CPO = detail.CPO
+                }).ToList(),
             }).ToList();
 
             return bids;
@@ -65,20 +73,27 @@ namespace Cats.Rest.Controllers
             var obj = _ibidService.FindById(id);
             var element = new
             {
-                obj.BidID,
-                obj.RegionID,
-                obj.StartDate,
-                obj.EndDate,
-                obj.BidNumber,
-                obj.OpeningDate,
-                obj.StatusID,
-                obj.Status,
-                obj.TransportBidPlanID,
-                obj.BidBondAmount,
-                obj.startTime,
-                obj.endTime,
-                obj.BidOpeningTime,
-                obj.BidDetails
+                BidID = obj.BidID,
+                RegionID = obj.RegionID,
+                StartDate = obj.StartDate,
+                EndDate = obj.EndDate,
+                BidNumber = obj.BidNumber,
+                OpeningDate = obj.OpeningDate,
+                StatusID = obj.StatusID,
+                Status = obj.Status == null ? string.Empty : obj.Status.Name,
+                TransportBidPlanID = obj.TransportBidPlanID,
+                BidBondAmount = obj.BidBondAmount,
+                startTime = obj.startTime,
+                endTime = obj.endTime,
+                BidOpeningTime = obj.BidOpeningTime,
+                BidDetails = obj.BidDetails.Select(detail => new BidDetailModelView
+                {
+                    BidDetailId = detail.BidDetailID,
+                    AmountForReliefProgram = detail.AmountForReliefProgram,
+                    AmountForPSNPProgram = detail.AmountForPSNPProgram,
+                    BidDocumentPrice = detail.BidDocumentPrice,
+                    CPO = detail.CPO
+                }).ToList(),
             };
 
             return element;

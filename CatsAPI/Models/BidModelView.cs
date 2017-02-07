@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 
 namespace Cats.Rest.Models
 {
@@ -18,5 +18,6 @@ namespace Cats.Rest.Models
         public string startTime { get; set; }
         public string endTime { get; set; }
         public string BidOpeningTime { get; set; }
+        public List<BidDetailModelView> BidDetails { get; set; }
     }
 }
