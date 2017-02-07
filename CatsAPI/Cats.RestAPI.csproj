@@ -185,6 +185,7 @@
     <Compile Include="Controllers\RegionalPSNPPlanDetailController.cs" />
     <Compile Include="Controllers\ReleifRequisitionController.cs" />
     <Compile Include="Controllers\RationController.cs" />
+    <Compile Include="Controllers\ReliefRequistionDetailController.cs" />
     <Compile Include="Controllers\SupportTypeController.cs" />
     <Compile Include="Controllers\TransactionController.cs" />
     <Compile Include="Controllers\RegionalRequestController.cs" />
