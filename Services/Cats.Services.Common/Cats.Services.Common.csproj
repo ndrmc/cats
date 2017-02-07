@@ -75,10 +75,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationSettings.cs" />
     <Compile Include="ApplicationSettings.Designer.cs">
-      <DependentUpon>ApplicationSettings.settings</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>ApplicationSettings.settings</DependentUpon>
     </Compile>
     <Compile Include="ApplicationSettingService.cs" />
     <Compile Include="CommonService.cs" />
