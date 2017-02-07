@@ -20,7 +20,7 @@
                 </div>
                 <div class="actions">
                     <input type="submit" class="btn btn-sm green" value="@Html.Translate("Save")" />
-                    <a href='@Html.Action("CreateLoss", "LossesAndAdjustments")' class="btn btn-sm red">@Html.Translate("Cancel")</a>
+                    <a href='@Html.Action("Index", "LossesAndAdjustments")' class="btn btn-sm red">@Html.Translate("Cancel")</a>
                     <a class="btn btn-icon-only btn-default fullscreen"></a>
                 </div>
             </div>
@@ -83,7 +83,7 @@
                 </td>*@
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <div class="col-md-4 control-label">@Html.LabelFor(model => model.ShippingInstructions)</div>
@@ -209,7 +209,7 @@
                 </div>
             </div>
         </div>
-    
+
         @*<div style="margin-left: 100px; margin-top: 50px;">
             <input type="submit" class="t-button" value="@Html.Translate("Save")" />
             <input type="button" value="@Html.Translate("Cancel")" class="t-button"/>
