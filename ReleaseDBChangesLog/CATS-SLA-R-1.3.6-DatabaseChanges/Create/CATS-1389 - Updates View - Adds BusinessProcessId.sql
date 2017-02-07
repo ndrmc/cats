@@ -1,14 +1,7 @@
-USE [Cats-v-1-3-1]
+USE [Cats-v-1-3-2]
 GO
 
-/****** Object:  View [dbo].[VWReceiptAllocation]    Script Date: 11/30/2016 8:55:18 AM ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE VIEW [dbo].[VWReceiptAllocation]
+ALTER VIEW [dbo].[VWReceiptAllocation]
 AS
 SELECT        dbo.ReceiptAllocation.ReceiptAllocationID, dbo.ReceiptAllocation.CommoditySourceID, dbo.ReceiptAllocation.SINumber, dbo.ReceiptAllocation.ProjectNumber, 
                          dbo.ReceiptAllocation.QuantityInMT AS AllocatedQuantityInMT, dbo.[Transaction].QuantityInMT AS ReceivedQuantityInMT, dbo.[Transaction].LedgerID, dbo.Receive.GRN, dbo.ReceiptAllocation.HubID, 

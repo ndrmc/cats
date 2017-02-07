@@ -1,4 +1,5 @@
-
+use [Cats-v-1-3-2]
+go
 
 declare @ProcessTemplateID  int;
 declare @draft int;

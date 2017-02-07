@@ -812,7 +812,7 @@ namespace Cats.Services.Workflows
                                                 //gTrnsRqst.Key.DatePerformed
                                             }).ToList();
 
-            
+
                 String nonGlobalWf = String.Empty;
 
                 if (workflowDefinitions.Contains(ApplicationSettings.Default.GlobalWorkflow))
@@ -846,7 +846,7 @@ namespace Cats.Services.Workflows
 
                     List<DashboardDataEntry> delist = new List<DashboardDataEntry>();
 
-          
+
 
                     var dashboardDataEntries = (from de in dashboardDataEntriesdb
                                                 where wfBusinessProcIDs.Contains(de.BusinessProcessID)
@@ -926,6 +926,7 @@ namespace Cats.Services.Workflows
             {
                 result.AddRange(_UnitOfWorkMain.TransporterChequeRepository.GetAll().Select(p => p.BusinessProcessId).ToList<int>());
             }
+
             if (workflowName.Equals(ApplicationSettings.Default.TransporterPaymentRequestWorkflow))
             {
                 result.AddRange(_UnitOfWorkMain.TransporterPaymentRequestRepository.GetAll().Select(p => p.BusinessProcessId).ToList<int>());
@@ -933,9 +934,8 @@ namespace Cats.Services.Workflows
 
             if (workflowName.Equals(ApplicationSettings.Default.AdjustmentWorkflow))
             {
-                result.AddRange(_UnitOfWorkMain.TransporterPaymentRequestRepository.GetAll().Select(p => p.BusinessProcessId).ToList<int>());
+                result.AddRange(_hubUnitOfWork.AdjustmentRepository.GetAll().Select(p => p.BusinessProcessId).ToList<int>());
             }
-
 
             return result;
 

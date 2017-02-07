@@ -14,7 +14,6 @@ using IUnitOfWork = Cats.Data.UnitWork.IUnitOfWork;
 using UnitOfWork = Cats.Data.UnitWork.UnitOfWork;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Cats.Services.Common;
 
 namespace Cats.Areas.WorkflowManager.Controllers
 {

@@ -1,4 +1,5 @@
-
+use [Cats-v-1-3-2]
+go
     DECLARE @h int
     EXECUTE sp_xml_preparedocument @h OUTPUT, N'<Data> 
     <ProcessTemplate Name="ReceiveHubWorkflow" Description="Workflow for Donation receive hub." GraphicsData="NULL" PartitionId="0" />

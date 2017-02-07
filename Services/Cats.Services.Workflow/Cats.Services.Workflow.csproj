@@ -67,6 +67,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Config\ApplicationSettings.Designer.cs">
+      <DependentUpon>ApplicationSettings.settings</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Config\ApplicationSettingService.cs" />
     <Compile Include="Config\DashboardMapping.cs" />
     <Compile Include="Config\IApplicationSettingService.cs" />
     <Compile Include="Enum\WorkflowState.cs" />
@@ -156,6 +162,14 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Config\ApplicationSettings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>ApplicationSettings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

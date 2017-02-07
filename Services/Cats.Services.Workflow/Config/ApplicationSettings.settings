@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Cats.Services.Common" GeneratedClassName="ApplicationSettings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Cats.Services.Workflows.Config" GeneratedClassName="ApplicationSettings">
   <Profiles />
   <Settings>
     <Setting Name="PSNPWorkflow" Type="System.String" Scope="Application">
@@ -76,6 +76,18 @@
     </Setting>
     <Setting Name="DeliveryWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">DeliveryWorkflow</Value>
+    </Setting>
+    <Setting Name="TransporterWorkflow" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">TransporterWorkflow</Value>
+    </Setting>
+    <Setting Name="DistributionWorkflow" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">DistributionWorkflow</Value>
+    </Setting>
+    <Setting Name="FDPReceiptWorkflow" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">FDPReceiptWorkflow</Value>
+    </Setting>
+    <Setting Name="RFQWorkflow" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">RFQWorkflow</Value>
     </Setting>
     <Setting Name="AdjustmentWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">AdjustmentWorkflow</Value>

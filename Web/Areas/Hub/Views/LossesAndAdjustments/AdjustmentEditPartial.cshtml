@@ -8,152 +8,188 @@
         <div class="alert-error">
             @Html.ValidationSummary("")
         </div>
-   
-        <table class="container grid-table">
-            <tbody>
-                <tr>
-                    <td>@Html.LabelFor(model => model.Commodities)</td>
-                    <td>
-                        @(Html.Telerik().ComboBoxFor(model => model.Commodities)
-                                .Name("CommodityId")
-                                .BindTo(new SelectList(Model.Commodities, "CommodityId", "Name"))
-                                .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
-                                .HighlightFirstMatch(true)
-                                .CascadeTo("ProjectCodeId")
-                    )
-                        @Html.ValidationMessageFor(model => model.Commodities)
-                    </td>
-                    <td>@Html.LabelFor(model => model.SelectedDate)</td>
-                    <td>
-                        @Html.EditorFor(model => model.SelectedDate)
-                        @Html.ValidationMessageFor(model => model.SelectedDate)
-                    </td>
-                </tr>
-                <tr>
-                    <td>@Html.LabelFor(model => model.ProjectCodes)</td>
-                    <td>
-                        @(Html.Telerik().ComboBoxFor(model => model.ProjectCodes)
-                                .Name("ProjectCodeId")
-                                .AutoFill(true)
-                                .BindTo(new SelectList(Model.ProjectCodes))
-                                .HighlightFirstMatch(true)
-                                .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
-                                .DataBinding(binding => binding.Ajax().Select("GetProjecCodetForCommodity", "LossesAndAdjustments"))
-                                .CascadeTo("ShippingInstructionId")
-                      )
-                        @Html.ValidationMessageFor(model => model.ProjectCodes)
-                    </td>
-                    <td>@Html.LabelFor(model => model.MemoNumber)</td>
-                    <td>
-                        @Html.EditorFor(model => model.MemoNumber)
-                        @Html.ValidationMessageFor(model => model.MemoNumber)
-                    </td>
-                </tr>
-                <tr>
-                    <td>@Html.LabelFor(model => model.ShippingInstructions)</td>
-                    <td>
-                        @(Html.Telerik().ComboBoxFor(model => model.ShippingInstructions)
-                                .Name("ShippingInstructionId")
-                                .BindTo(new SelectList(Model.ShippingInstructions))
-                                .AutoFill(true)
-                                .HighlightFirstMatch(true)
-                                .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
-                                .DataBinding(binding => binding.Ajax().Select("GetAdjustmentsSINumberForProjectCode", "LossesAndAdjustments"))
-                    )
-                        @Html.ValidationMessageFor(model => model.ShippingInstructions)
-                    </td>
-                    <td>@Html.LabelFor(model => model.Programes)</td>
-                    <td>@(Html.Telerik().ComboBox()
-                                .Name("ProgramId")
-                                .BindTo(new SelectList(Model.Programes, "ProgramId", "ProgramName"))
-                                .AutoFill(true)
-                                .HighlightFirstMatch(true)
-                                .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
-                )
-                    </td>
-                </tr>
-                <tr>
-                    <td>@Html.LabelFor(model => model.Stores)</td>
-                    <td>
-                        @(Html.Telerik().ComboBoxFor(model => model.Stores)
-                                .Name("StoreId")
-                                .BindTo(new SelectList(Model.Stores, "StoreId", "StoreName"))
-                                .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
-                                .HighlightFirstMatch(true)
-                                .Placeholder("Select Store")
-                                .SelectedIndex(0)
-                                .ClientEvents(ev => ev.OnChange("onStoreComboChange"))
-                    )
-                        @Html.ValidationMessageFor(model => model.Stores)
-                    </td>
-                </tr>
-                <tr>
-                    <td>@Html.LabelFor(model => model.StoreMan)</td>
-                    <td>
-                        @Html.EditorFor(model => model.StoreMan)
-                        @Html.ValidationMessageFor(model => model.StoreMan)
-                    </td>
-                </tr>
-                <tr>
-                    <td>@Html.LabelFor(model => model.Reasons)</td>
-                    <td>
-                        @(Html.Telerik().ComboBoxFor(model => model.Reasons)
-                                .Name("ReasonId")
-                                .BindTo(new SelectList(Model.Reasons, "AdjustmentReasonId", "Name"))
-                                .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
-                                .HighlightFirstMatch(true)
-                    )
 
-                        @Html.ValidationMessageFor(model => model.Reasons)
-                    </td>
-                </tr>
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="icon-list font-green-sharp"></i>
+                    <span class="caption-subject bold uppercase"> Stock Status</span>
+                </div>
+                <div class="tools">
+                    <a href="#" class="collapse" data-original-title="" title=""></a>
+                </div>
+                <div class="actions">
+                    <input type="submit" class="btn btn-sm green" value="@Html.Translate("Save")" />
+                    <a href='@Html.Action("CreateAdjustment", "LossesAndAdjustments")' class="btn btn-sm red">@Html.Translate("Cancel")</a>
+                    <a class="btn btn-icon-only btn-default fullscreen"></a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="form-horizontal">
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.Commodities)</div>
+                            <div class="col-md-8">
+                                @(Html.Telerik().ComboBoxFor(model => model.Commodities)
+                                      .Name("CommodityId")
+                                      .BindTo(new SelectList(Model.Commodities, "CommodityId", "Name"))
+                                      .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
+                                      .HighlightFirstMatch(true)
+                                      .CascadeTo("ProjectCodeId")
+                                      )
+                                <span class="help-block">@Html.ValidationMessageFor(model => model.Commodities)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.SelectedDate)</div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.SelectedDate)
+                                <span class="help-block">@Html.ValidationMessageFor(model => model.SelectedDate)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.ProjectCodes)</div>
+                            <div class="col-md-8">
+                                @(Html.Telerik().ComboBoxFor(model => model.ProjectCodes)
+                                      .Name("ProjectCodeId")
+                                      .AutoFill(true)
+                                      .BindTo(new SelectList(Model.ProjectCodes))
+                                      .HighlightFirstMatch(true)
+                                      .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
+                                      .DataBinding(binding => binding.Ajax().Select("GetProjecCodetForCommodity", "LossesAndAdjustments"))
+                                      .CascadeTo("ShippingInstructionId")
+                                      )
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.ProjectCodes)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.MemoNumber)</div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.MemoNumber)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.MemoNumber)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.ShippingInstructions)</div>
+                            <div class="col-md-8">
+                                @(Html.Telerik().ComboBoxFor(model => model.ShippingInstructions)
+                                      .Name("ShippingInstructionId")
+                                      .BindTo(new SelectList(Model.ShippingInstructions))
+                                      .AutoFill(true)
+                                      .HighlightFirstMatch(true)
+                                      .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
+                                      .DataBinding(binding => binding.Ajax().Select("GetAdjustmentsSINumberForProjectCode", "LossesAndAdjustments"))
+                                      )
+                                <span class="help-block">@Html.ValidationMessageFor(model => model.ShippingInstructions)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.Programes)</div>
+                            <div class="col-md-8">
+                                @(Html.Telerik().ComboBox()
+                                      .Name("ProgramId")
+                                      .BindTo(new SelectList(Model.Programes, "ProgramId", "ProgramName"))
+                                      .AutoFill(true)
+                                      .HighlightFirstMatch(true)
+                                      .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
+                                      )
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.Stores)</div>
+                            <div class="col-md-8">
+                                @(Html.Telerik().ComboBoxFor(model => model.Stores)
+                                      .Name("StoreId")
+                                      .BindTo(new SelectList(Model.Stores, "StoreId", "StoreName"))
+                                      .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
+                                      .HighlightFirstMatch(true)
+                                      .Placeholder("Select Store")
+                                      .SelectedIndex(0)
+                                      .ClientEvents(ev => ev.OnChange("onStoreComboChange"))
+                                      )
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.Stores)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.StoreMan)</div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.StoreMan)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.StoreMan)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.Reasons)</div>
+                            <div class="col-md-8">
+                                @(Html.Telerik().ComboBoxFor(model => model.Reasons)
+                                      .Name("ReasonId")
+                                      .BindTo(new SelectList(Model.Reasons, "AdjustmentReasonId", "Name"))
+                                      .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
+                                      .HighlightFirstMatch(true)
+                                      )
 
-                <tr>
-                    <td>@Html.LabelFor(model => model.Units)</td>
-                    <td>
-                        @(Html.Telerik().ComboBoxFor(model => model.Units)
-                                .Name("UnitId")
-                                .BindTo(new SelectList(Model.Units, "UnitId", "Name"))
-                                .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
-                                .HighlightFirstMatch(true)
-                    )
-                        @Html.ValidationMessageFor(model => Model.Units)
-                    </td>
-                </tr>
-                <tr>
-                    <td>@Html.LabelFor(model => model.QuantityInUint)</td>
-                    <td>
-                        @Html.EditorFor(model => model.QuantityInUint)
-                        @Html.ValidationMessageFor(model => model.QuantityInUint)
-                    </td>
-                </tr>
-                <tr>
-                    <td>@Html.LabelFor(model => model.QuantityInMt)</td>
-                    <td>
-                        @Html.EditorFor(model => model.QuantityInMt)
-                        @Html.ValidationMessageFor(model => model.QuantityInMt)
-                    </td>
-                </tr>
-                <tr>
-                    <td>@Html.LabelFor(model => model.ApprovedBy)</td>
-                    <td>
-                        @Html.EditorFor(model => model.ApprovedBy)
-                        @Html.ValidationMessageFor(model => model.ApprovedBy)
-                    </td>
-                </tr>
-                <tr>
-                    <td>@Html.LabelFor(model => model.Description)</td>
-                    <td>
-                        @Html.EditorFor(model => model.Description)
-                        @Html.ValidationMessageFor(model => model.Description)
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    
-        <div style="margin-left: 100px; margin-top: 10px;">
-            <input type="submit" class="t-button" value="@Html.Translate("Save")" />
-            <input type="button" value="@Html.Translate("Cancel")" class="t-button"/>
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.Reasons)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.Units)</div>
+                            <div class="col-md-8">
+                                @(Html.Telerik().ComboBoxFor(model => model.Units)
+                                      .Name("UnitId")
+                                      .BindTo(new SelectList(Model.Units, "UnitId", "Name"))
+                                      .Filterable(filtering => { filtering.FilterMode(AutoCompleteFilterMode.StartsWith); })
+                                      .HighlightFirstMatch(true)
+                                      )
+                                <span class="help-block"> @Html.ValidationMessageFor(model => Model.Units)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.QuantityInUint)</div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.QuantityInUint)
+                                <span class="help-block">@Html.ValidationMessageFor(model => model.QuantityInUint)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.QuantityInMt)</div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.QuantityInMt)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.QuantityInMt)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.ApprovedBy)</div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.ApprovedBy)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.ApprovedBy)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <div class="col-md-4 control-label">@Html.LabelFor(model => model.Description)</div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.Description)
+                                <span class="help-block"> @Html.ValidationMessageFor(model => model.Description)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+           @* <div style="margin-left: 100px; margin-top: 10px;">
+                <input type="submit" class="t-button" value="@Html.Translate("Save")"/>
+                <input type="button" value="@Html.Translate("Cancel")" class="t-button"/>
+            </div>*@
         </div>
     }
 
