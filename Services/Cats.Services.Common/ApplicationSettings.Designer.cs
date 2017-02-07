@@ -247,5 +247,14 @@ namespace Cats.Services.Common {
                 return ((string)(this["DeliveryWorkflow"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("AdjustmentWorkflow")]
+        public string AdjustmentWorkflow {
+            get {
+                return ((string)(this["AdjustmentWorkflow"]));
+            }
+        }
     }
 }

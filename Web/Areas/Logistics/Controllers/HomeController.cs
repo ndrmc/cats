@@ -466,7 +466,8 @@ namespace Cats.Areas.Logistics.Controllers
                     region = (p.Transporter.Region != 0) ? _adminUnitService.FindById(p.Transporter.Region).Name : "",
                     zone = (p.Transporter.Zone != 0) ? _adminUnitService.FindById(p.Transporter.Zone).Name : "",
                     transportOrderNo = p.TransportOrderNo,
-                    mobileNo = p.Transporter.MobileNo ?? ""
+                    mobileNo = p.Transporter.MobileNo ?? "",
+                    transporterId = p.TransporterID
                 });
             return Json(transporters, JsonRequestBehavior.AllowGet);
         }
@@ -627,11 +628,29 @@ namespace Cats.Areas.Logistics.Controllers
             return Json(dashboardUserViewModels, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetIncommingGrns(DateTime startDate, DateTime endDate, string transporterName, int takeTheFirst)
+        public JsonResult GetIncommingGrns(DateTime startDate, DateTime endDate, int transporterId, int takeTheFirst)
         {
-            var dispatchs = _dispatchService.GetIncommingGrn(transporterName, startDate, endDate, takeTheFirst);
+            var incommingGrns = _deliveryService.GetAllDelivery().Where(
+                    t => (t.ReceivedDate >= startDate && t.ReceivedDate <= endDate) && t.TransporterID == transporterId).Take(takeTheFirst);
 
-            return Json(dispatchs, JsonRequestBehavior.AllowGet);
+            var query = (from r in incommingGrns
+                         select new
+                         {
+                             ReceivedDate = r.ReceivedDate.Value.ToShortDateString(),
+                             GRN = r.ReceivingNumber,
+                             r.DriverName,
+                             r.DispatchID,
+                             r.RequisitionNo,
+                             FdpName = r.FDP.Name,
+                             BillNumber = r.WayBillNo,
+                             r.PlateNoPrimary,
+                             r.PlateNoTrailler,
+                             r.ReceivedBy,
+                             DeliveryDate = r.DeliveryDate.Value.ToShortDateString(),
+                             GIN = r.InvoiceNo
+                         }).OrderBy(o => o.ReceivedDate).ToList();
+
+            return Json(query, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

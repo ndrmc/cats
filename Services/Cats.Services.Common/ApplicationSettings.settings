@@ -77,5 +77,8 @@
     <Setting Name="DeliveryWorkflow" Type="System.String" Scope="Application">
       <Value Profile="(Default)">DeliveryWorkflow</Value>
     </Setting>
+    <Setting Name="AdjustmentWorkflow" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">AdjustmentWorkflow</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
