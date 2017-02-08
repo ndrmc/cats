@@ -22,7 +22,7 @@ namespace Cats.Rest.Controllers
                 select new TransportBidPlan
                 {
                     Year = tbp.Year,
-                    ProgramName = tbp.Program.Name,
+                    ProgramName = tbp.Program!=null? tbp.Program.Name:string.Empty,
                     ProgramID = tbp.ProgramID,
                     TransportBidPlanID = tbp.TransportBidPlanID,
                     YearHalf = tbp.YearHalf,
@@ -47,7 +47,7 @@ namespace Cats.Rest.Controllers
             return new TransportBidPlan
             {
                 Year = tranportBidPlan.Year,
-                ProgramName = tranportBidPlan.Program.Name,
+                ProgramName = tranportBidPlan.Program!=null? tranportBidPlan.Program.Name:string.Empty,
                 ProgramID = tranportBidPlan.ProgramID,
                 TransportBidPlanID = tranportBidPlan.TransportBidPlanID,
                 YearHalf = tranportBidPlan.YearHalf,

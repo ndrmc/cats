@@ -157,6 +157,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AdminUnitController.cs" />
     <Compile Include="Controllers\AdminUnitTypeController.cs" />
+    <Compile Include="Controllers\BidWinnerController.cs" />
     <Compile Include="Controllers\IDPSReasonTypeController.cs" />
     <Compile Include="Controllers\RationDetailController.cs" />
     <Compile Include="Controllers\PlanController.cs" />
@@ -208,6 +209,7 @@
     </Compile>
     <Compile Include="Models\AdminUnit.cs" />
     <Compile Include="Models\AdminUnitType.cs" />
+    <Compile Include="Models\BidWinner.cs" />
     <Compile Include="Models\Commodity.cs" />
     <Compile Include="Models\CommodityGrade.cs" />
     <Compile Include="Models\CommodityType.cs" />
