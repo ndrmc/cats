@@ -152,17 +152,18 @@ namespace Cats.Rest.App_Start
             kernel.Bind<ISupportTypeService>().To<SupportTypeService>();
             kernel.Bind<IIDPSReasonTypeServices>().To<IDPSReasonTypeServices>();
 
-            kernel.Bind<Cats.Services.Transaction.ITranscationTypeService>().To<Cats.Services.Transaction.TranscationTypeService>();
+            kernel.Bind<Services.Transaction.ITranscationTypeService>().To<Cats.Services.Transaction.TranscationTypeService>();
             kernel.Bind<Services.Hub.IUserHubService>().To<Services.Hub.UserHubService>();
             kernel.Bind<ITransportBidQuotationHeaderService>().To<TransportBidQuotationHeaderService>();
             kernel.Bind<IRegionalPSNPPlanService>().To<RegionalPSNPPlanService>();
             kernel.Bind<ITransportOrderService>().To<TransportOrderService>();
             kernel.Bind<ITransportOrderDetailService>().To<TransportOrderDetailService>();
             kernel.Bind<ITransportRequisitionService>().To<TransportRequisitionService>();
+
             kernel.Bind<IReliefRequisitionDetailService>().To<ReliefRequisitionDetailService>();
             kernel.Bind<Cats.Services.Procurement.ITransporterService>().To<Cats.Services.Procurement.TransporterService>();
             kernel.Bind<INotificationService>().To<NotificationService>();
-    }
-
+            kernel.Bind<ITransportRequisitionDetailService>().To<TransportRequisitionDetailService>();
+        }
     }
 }

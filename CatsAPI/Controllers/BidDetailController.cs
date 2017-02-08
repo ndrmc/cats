@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Web.Http;
 using Cats.Services.Procurement;
+using Cats.Models.ViewModels.Bid;
+using Cats.Rest.Models;
 
 namespace Cats.Rest.Controllers
 {
@@ -9,22 +11,16 @@ namespace Cats.Rest.Controllers
     /// </summary>
     public class BidDetailController : ApiController
     {
-        private readonly IBidService _ibidService;
+        //private readonly IBidService _ibidService;
         private readonly IBidDetailService _ibidDetailService;
-        private readonly IBidWinnerService _ibidWinnerService;
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="ibidService"></param>
         /// <param name="ibidDetailService"></param>
-        /// <param name="ibidWinnerService"></param>
-        public BidDetailController(IBidService ibidService,
-                             IBidDetailService ibidDetailService,
-                             IBidWinnerService ibidWinnerService)
+        public BidDetailController(IBidDetailService ibidDetailService)
         {
-            _ibidService = ibidService;
+            //_ibidService = ibidService;
             _ibidDetailService = ibidDetailService;
-            _ibidWinnerService = ibidWinnerService;
         }
 
         /// <summary>
@@ -34,15 +30,16 @@ namespace Cats.Rest.Controllers
         [HttpGet]
         public dynamic GetBidDetails()
         {
-            var bids = _ibidDetailService.GetAllBidDetail().Select(item => new
+            var bidDetails = _ibidDetailService.GetAllBidDetail().Select(item => new BidDetailModelView
             {
-                item.AmountForReliefProgram,
-                item.AmountForPSNPProgram,
-                item.BidDocumentPrice,
-                item.CPO
+                BidDetailId = item.BidDetailID,
+                AmountForReliefProgram = item.AmountForReliefProgram,
+                AmountForPSNPProgram = item.AmountForPSNPProgram,
+                BidDocumentPrice = item.BidDocumentPrice,
+                CPO = item.CPO
             }).ToList();
 
-            return bids;
+            return bidDetails;
         }
         /// <summary>
         /// Given an id returns a BidDetail object
@@ -53,12 +50,13 @@ namespace Cats.Rest.Controllers
         public dynamic GetBidDetail(int id)
         {
             var obj = _ibidDetailService.FindById(id);
-            var element = new
+            var element = new BidDetailModelView
             {
-                obj.AmountForReliefProgram,
-                obj.AmountForPSNPProgram,
-                obj.BidDocumentPrice,
-                obj.CPO
+                BidDetailId = obj.BidDetailID,
+                AmountForReliefProgram = obj.AmountForReliefProgram,
+                AmountForPSNPProgram = obj.AmountForPSNPProgram,
+                BidDocumentPrice = obj.BidDocumentPrice,
+                CPO = obj.CPO
             };
 
             return element;
