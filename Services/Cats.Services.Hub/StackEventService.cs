@@ -85,7 +85,9 @@ namespace Cats.Services.Hub
 
 
             var StackEvents = _unitOfWork.StackEventRepository.Get();
-            var events = (from c in StackEvents select new StackEventLogViewModel { EventDate = c.EventDate, StackEventType = c.StackEventType.Name, Description = c.Description, Recommendation = c.Recommendation, FollowUpDate = c.FollowUpDate.Value }).ToList();
+            var events = (from c in StackEvents select new StackEventLogViewModel {
+                EventDate = c.EventDate, StackEventType = c.StackEventType.Name, Description = c.Description,
+                Recommendation = c.Recommendation, FollowUpDate = c.FollowUpDate.Value }).ToList();
 
             return events;
         }

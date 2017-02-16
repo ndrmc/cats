@@ -11,6 +11,7 @@ namespace Cats.Models.Mapping
             this.Property(t => t.TransportBidPlanDetailID).HasColumnName("TransportBidPlanDetailID");
 
             this.Property(t => t.Quantity).HasColumnName("Quantity");
+            this.Property(t => t.BusinessProcessID).HasColumnName("BusinessProcessID");
             this.Property(t => t.PartitionId).HasColumnName("PartitionId");
 
             // Relationships
@@ -26,7 +27,7 @@ namespace Cats.Models.Mapping
                 .WithMany(t => t.TransportBidPlanDestinations)
                 .HasForeignKey(d => d.DestinationID);
 
-            
+
         }
     }
 }
