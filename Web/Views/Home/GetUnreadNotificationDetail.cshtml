@@ -2,49 +2,60 @@
 @using Kendo.Mvc.UI
 @using Cats.Helpers
 @{
-    ViewBag.Title = "GetUnreadNotificationDetail";
-    Layout = "~/Views/Shared/_MainLayout.cshtml";
+  
+    ViewBag.Title = "Unread Notifications";
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("List of Notifications");
+    ViewBag.PageTitleDescription = "";
 }
 
-<fieldset>
-    <legend>
-        List of Notifications
-    </legend>
-</fieldset> 
 
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption font-green-sharp">
+            <i class="icon-list font-green-sharp"></i>
+            <span class="caption-subject bold uppercase"> @Html.Translate("List of Notifications")</span>
+        </div>
+        <div class="tools">
+            <a href="#" class="collapse" data-original-title="" title=""></a>
+        </div>
+        <div class="actions">
+            <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;"></a>
+        </div>
+    </div>
+    <div class="portlet-body">
+        @(Html.Kendo().Grid<Cats.Models.NotificationViewModel>()
+            .Name("NotificationGrid")
+            .Columns(columns =>
+            {
+                columns.Bound(e => e.Text).Width(100).Title("Notification");
+                columns.Bound(e => e.TypeOfNotification).Width(100).Title("Type");
+                columns.Bound(e => e.StrCreatedDate).Width(100).Title("Created Date");
+                columns.Command(p => p.Custom("View").Click("DetailNotification")).Width(100).HtmlAttributes("border-left: 3px solid #26a69a");
 
+            })
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Read(read => read.Action("GetUnreadNotification", "Home"))
 
-
-@(Html.Kendo().Grid<Cats.Models.NotificationViewModel>()
-    .Name("NotificationGrid")
-    .Columns(columns =>
-    {
-        columns.Bound(e => e.Text).Width(100).Title("Notification");
-        columns.Bound(e => e.TypeOfNotification).Width(100).Title("Type");
-        columns.Bound(e => e.StrCreatedDate).Width(100).Title("Created Date");
-        columns.Command(p => p.Custom("View").Click("DetailNotification")).Width(100);   
-       
-    })
-    .DataSource(dataSource => dataSource
-        .Ajax()
-        .Read(read => read.Action("GetUnreadNotification", "Home"))
-       
-        .PageSize(10)
-     )
-     .Scrollable(scroll => scroll.Height(200))
-     .Selectable(select => select.Mode(GridSelectionMode.Single))
-     .Navigatable()
-     .Filterable()
-     .Sortable()
-     .Pageable()
-)
+                .PageSize(10)
+             )
+             .Scrollable(scroll => scroll.Height(400))
+             .Selectable(select => select.Mode(GridSelectionMode.Single))
+             .Navigatable()
+             .Filterable()
+             .Sortable()
+             .Pageable()
+        )
+    </div>
+</div>
 
 <script>
     function DetailNotification(e) {
         e.preventDefault();
 
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var url = this.dataItem($(e.currentTarget).closest("tr")).Url;
 
-        window.location = dataItem.Url;         
+        window.location.href = "../" + url;
     }
 </script>
