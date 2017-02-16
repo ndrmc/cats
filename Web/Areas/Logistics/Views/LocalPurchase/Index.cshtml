@@ -52,28 +52,28 @@
               .Name("grid")
               .Columns(columns =>
               {
-                  if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Local_purchase_link).ToString() == "Local_purchase_link")
-                  {
-                      columns.Bound(m => m.SiNumber).Title(Html.Translate("SI Number")).
-                  ClientTemplate("<a href='" + Url.Action("Details", "LocalPurchase", new { id = "#=LocalPurchaseID#" }) + " '>#=SiNumber#</a>  ");
-                  }
+              if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Local_purchase_link).ToString() == "Local_purchase_link")
+              {
+                  columns.Bound(m => m.SiNumber).Title(Html.Translate("SI Number")).
+              ClientTemplate("<a href='" + Url.Action("Details", "LocalPurchase", new { id = "#=LocalPurchaseID#" }) + " '>#=SiNumber#</a>  ");
+              }
 
-                  columns.Bound(m => m.Program).Title(Html.Translate("Program"));
-                  columns.Bound(m => m.DonorName).Width(200).Title(Html.Translate("Donor"));
-                  columns.Bound(m => m.SupplierName).Width(200).Title(Html.Translate("Supplier Name"));
-                  columns.Bound(m => m.Commodity).Width(200).Title(Html.Translate("Commodity"));
-                  columns.Bound(m => m.ReferenceNumber).Title(Html.Translate("Reference Number"));
-                  columns.Bound(m => m.Quantity).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Quantity"));
-                  columns.Bound(m => m.Status).Title(Html.Translate("Status"));
+              columns.Bound(m => m.Program).Title(Html.Translate("Program"));
+              columns.Bound(m => m.DonorName).Width(200).Title(Html.Translate("Donor"));
+              columns.Bound(m => m.SupplierName).Width(200).Title(Html.Translate("Supplier Name"));
+              columns.Bound(m => m.Commodity).Width(200).Title(Html.Translate("Commodity"));
+              columns.Bound(m => m.ReferenceNumber).Title(Html.Translate("Reference Number"));
+              columns.Bound(m => m.Quantity).HtmlAttributes(new { align = "right" }).Title(Html.Translate("Quantity"));
+              columns.Bound(m => m.Status).Title(Html.Translate("Status"));
 
-                  if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Remove_Local_Purchase).ToString() == "Remove_Local_Purchase")
-                  {
-                      columns.Command(m => m.Custom("Revert").Click("OnRevert"));
-                  }
-                  if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Remove_Local_Purchase).ToString() == "Remove_Local_Purchase")
-                  {
-                      columns.Command(m => m.Custom("Delete").Click("OnDelete"));
-                  }
+              if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Remove_Local_Purchase).ToString() == "Remove_Local_Purchase")
+              {
+                  columns.Command(m => m.Custom("Revert").Click("OnRevert"));
+              }
+              //if (LogisticsConstants.isValidOperation(LogisticsConstants.Operation.Remove_Local_Purchase).ToString() == "Remove_Local_Purchase")
+              {
+                  columns.Command(m => m.Custom("Delete").Click("OnDelete"));
+              }
 
                   columns.Command(m => m.Custom("History").Click("OnHistoryClicked"));
               }
@@ -92,7 +92,7 @@
                                             .Read(read => read.Action("LocalPurchase_Read", "LocalPurchase"))
               //.Update(update => update.Action("Commodity_Update", "Request"))
               )
-            )
+)
         </div>
     </div>
 </div>

@@ -476,9 +476,9 @@ namespace Cats.Areas.Logistics.Controllers
 
             if (localPurchase != null)
             {
-                switch (localPurchase.StatusID)
+                switch (localPurchase.BusinessProcess.CurrentState.BaseStateTemplate.Name)
                 {
-                    case (int)LocalPurchaseStatus.Approved:
+                    case "Approved":
 
                         if (!_localPurchaseService.DelteLocalPurchaseAllocation(localPurchase))
                         {
@@ -489,7 +489,13 @@ namespace Cats.Areas.Logistics.Controllers
                         isDeleted = _localPurchaseService.DeleteLocalPurchae(localPurchase);
 
                         break;
-                    case (int)LocalPurchaseStatus.Draft:
+                    case "Draft":
+                        {
+                            isDeleted = _localPurchaseService.DeleteLocalPurchae(localPurchase);
+
+                            return RedirectToAction("Index");
+                        }
+                    case "Edited":
                         {
                             isDeleted = _localPurchaseService.DeleteLocalPurchae(localPurchase);
 
