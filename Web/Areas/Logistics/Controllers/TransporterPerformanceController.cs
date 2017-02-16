@@ -61,52 +61,60 @@ namespace Cats.Areas.Logistics.Controllers
         private IEnumerable<TransporterPerformanceViewModel> GetTransportOrder(IEnumerable<TransportOrder> transportOrders)
         {
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
+            var deliveries = _deliveryService.Get(null, null, "DeliveryDetails");
+
             return (from transportOrder in transportOrders
-                    select new TransporterPerformanceViewModel
-                    {
-                        TransporterID = transportOrder.TransporterID,
-                        TransporterName = transportOrder.Transporter.Name,
-                        TransporterOrderID = transportOrder.TransportOrderID,
-                        ContractNumber = transportOrder.ContractNumber,
-                        TransportOrderNumber = transportOrder.TransportOrderNo,
-                        StartDate = transportOrder.StartDate.ToCTSPreferedDateFormat(datePref),
-                        TotalQuantity = transportOrder.TransportOrderDetails.Sum(m => m.QuantityQtl),
-                        NoOfDaysToComplete =(int) (transportOrder.EndDate.Subtract(transportOrder.StartDate)).TotalDays,
-                        PickedUpSofar = GetDispatchAllocation(transportOrder.TransportOrderID)*10, 
-                        Delivered = GetDelivered(transportOrder.TransportOrderID),
-                        ElapsedDays =(int)(DateTime.Now.Subtract(transportOrder.StartDate)).TotalDays,
-                    });
-                
-            
-           
+                    select CreateTransporterPerformanceVM(datePref, deliveries, transportOrder));
+
         }
+
+        private TransporterPerformanceViewModel CreateTransporterPerformanceVM(string datePref,IEnumerable<Delivery> delivery, TransportOrder transportOrder)
+        {
+            var dispatches = _dispatchService.Get(t => t.DispatchAllocation.TransportOrderID == transportOrder.TransportOrderID).ToList();
+
+            return new TransporterPerformanceViewModel
+            {
+                TransporterID = transportOrder.TransporterID,
+                TransporterName = transportOrder.Transporter.Name,
+                TransporterOrderID = transportOrder.TransportOrderID,
+                ContractNumber = transportOrder.ContractNumber,
+                TransportOrderNumber = transportOrder.TransportOrderNo,
+                StartDate = transportOrder.StartDate.ToCTSPreferedDateFormat(datePref),
+                TotalQuantity = transportOrder.TransportOrderDetails.Sum(m => m.QuantityQtl),
+                NoOfDaysToComplete = (int)(transportOrder.EndDate.Subtract(transportOrder.StartDate)).TotalDays,
+                PickedUpSofar = GetDispatchAllocation(dispatches,transportOrder.TransportOrderID) * 10,
+                Delivered = GetDelivered(dispatches, delivery,transportOrder.TransportOrderID),
+                ElapsedDays = (int)(DateTime.Now.Subtract(transportOrder.StartDate)).TotalDays,
+            };
+        }
+
         public JsonResult GetContractNumbers()
         {
 
 
             var contractNumbers = (from contractNumber in _transportOrderService.GetAllTransportOrder()
-                                   where contractNumber.StatusID == (int) TransportOrderStatus.Closed 
+                                   where contractNumber.StatusID == (int) TransportOrderStatus.Closed
                                    select contractNumber.ContractNumber).Distinct().ToList();
-          
+
 
             return Json(contractNumbers, JsonRequestBehavior.AllowGet);
         }
 
-        private Decimal GetDispatchAllocation(int transportOrderID)
+        private Decimal GetDispatchAllocation(List<Dispatch> dispatches, int transportOrderID)
         {
-            var dispatches = _dispatchService.Get(t => t.DispatchAllocation.TransportOrderID == transportOrderID).ToList();
             var totaldispatched= dispatches.Sum(dispatch => dispatch.DispatchDetails.Sum(m => m.DispatchedQuantityInMT));
 
             return totaldispatched;
         }
 
-        private decimal GetDelivered(int transportOrderID)
+        private decimal GetDelivered(List<Dispatch> dispatches , IEnumerable<Delivery> delivery, int transportOrderID)
         {
-            var dispatchIds = _dispatchService.Get(t => t.DispatchAllocation.TransportOrderID == transportOrderID).Select(t => t.DispatchID).ToList();
-            var deliveries = _deliveryService.Get(t => dispatchIds.Contains(t.DispatchID.Value), null, "DeliveryDetails");
-            return deliveries.Sum(delivery => delivery.DeliveryDetails.Sum(m => m.ReceivedQuantity));
+            
+            var dispatchIds = dispatches.Select(t => t.DispatchID).ToList();
+            var deliveries = delivery.Where(t => dispatchIds.Contains(t.DispatchID.Value));
+            return deliveries.Sum(de => de.DeliveryDetails.Sum(m => m.ReceivedQuantity));
         }
-     
+
 
         #region transporter performance detail
 

@@ -15,17 +15,17 @@ namespace Cats.Areas.Hub.Controllers
 {
     public class StackEventController : BaseController
     {
-        
+
         //
         // GET: /StackEvent/
-       
+
         private readonly IStackEventService _stackEventService;
         private readonly IUserProfileService _userProfileService;
         private readonly IStoreService _storeService;
         private readonly IHubService _hubService;
-        private readonly IStackEventTypeService _StackEventTypeService; 
+        private readonly IStackEventTypeService _StackEventTypeService;
 
-        public StackEventController(IStackEventService stackeventService, 
+        public StackEventController(IStackEventService stackeventService,
                                     IUserProfileService userProfileService,
                                     IHubService hubService,
                                     IStackEventTypeService stackEventTypeService, IStoreService storeService)
@@ -47,17 +47,17 @@ namespace Cats.Areas.Hub.Controllers
             stackEventType = _StackEventTypeService.GetAllStackEventType();
             store = _hubService.GetAllStoreByUser(user);
 
-           
+
             StackEventViewModel viewModel = new StackEventViewModel(stackEventType, store);
             return View(viewModel );
         }
-        
+
         public ActionResult EventLog()
         {
 
             UserProfile user = _userProfileService.GetUser(User.Identity.Name);
             List<StackEventLogViewModel> viewModel = new List<StackEventLogViewModel>();
-                //repository.StackEvent.GetAllStackEvents(user);
+            viewModel=_stackEventService.GetAllStackEvents(user);
             return PartialView(viewModel);
         }
 
@@ -82,7 +82,7 @@ namespace Cats.Areas.Hub.Controllers
             stackEventType = _StackEventTypeService.GetAllStackEventType();
             store = _hubService.GetAllStoreByUser(user);
 
-            
+
             StackEventViewModel viewModel = new StackEventViewModel(stackEventType,store);
             return PartialView(viewModel);
         }
@@ -90,8 +90,8 @@ namespace Cats.Areas.Hub.Controllers
         public ActionResult EditStackEvent(StackEventViewModel viewModel)
         {
             UserProfile user = _userProfileService.GetUser(User.Identity.Name);
-            _stackEventService.AddStackEvent(new StackEvent 
-            { 
+            _stackEventService.AddStackEvent(new StackEvent
+            {
                 StackEventID=Guid.NewGuid(),
                 EventDate = viewModel.EventDate,
                 StoreID = viewModel.StoreIdTwo,

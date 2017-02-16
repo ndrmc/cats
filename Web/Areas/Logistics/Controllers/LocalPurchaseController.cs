@@ -291,7 +291,7 @@ namespace Cats.Areas.Logistics.Controllers
                 }
                 catch (Exception exc)
                 {
-                    
+
                 }
 
                 TempData["success"] = "Local Purchase Sucessfully Updated";
@@ -472,26 +472,52 @@ namespace Cats.Areas.Logistics.Controllers
         public ActionResult Delete(int id)
         {
             var localPurchase = _localPurchaseService.FindById(id);
+            bool isDeleted = false;
 
             if (localPurchase != null)
             {
                 switch (localPurchase.StatusID)
                 {
                     case (int)LocalPurchaseStatus.Approved:
+
                         if (!_localPurchaseService.DelteLocalPurchaseAllocation(localPurchase))
                         {
                             TempData["Received"] = "local Purchase can not be Deleted. It has already been Received!";
                             return RedirectToAction("Index");
                         }
 
-                        _localPurchaseService.DeleteLocalPurchae(localPurchase);
+                        isDeleted = _localPurchaseService.DeleteLocalPurchae(localPurchase);
+
                         break;
                     case (int)LocalPurchaseStatus.Draft:
                         {
-                            _localPurchaseService.DeleteLocalPurchae(localPurchase);
+                            isDeleted = _localPurchaseService.DeleteLocalPurchae(localPurchase);
+
                             return RedirectToAction("Index");
                         }
+                }
 
+                BusinessProcessState bps = localPurchase.BusinessProcess.CurrentState;
+                StateTemplate stateTemplate = _stateTemplateService.FindBy(p => p.Name == ConventionalAction.Deleted &&
+                p.ParentProcessTemplateID == bps.BaseStateTemplate.ParentProcessTemplateID).FirstOrDefault();
+
+                if (stateTemplate != null)
+                {
+                    var businessProcessState = new BusinessProcessState()
+                    {
+                        StateID = stateTemplate.StateTemplateID, // mark as deleted
+                        PerformedBy = HttpContext.User.Identity.Name,
+                        DatePerformed = DateTime.Now,
+                        Comment = "Local purchase is deleted, a system internally captured data.",
+                        ParentBusinessProcessID = bps.ParentBusinessProcessID
+                    };
+
+                    if (_businessProcessService.PromotWorkflow(businessProcessState))
+                    {
+                        TempData["Deleted"] = "Local purchase has been deleted!";
+
+                        return RedirectToAction("Index");
+                    }
                 }
             }
             return RedirectToAction("Index");
