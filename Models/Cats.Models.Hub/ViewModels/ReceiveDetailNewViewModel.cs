@@ -39,21 +39,26 @@ namespace Cats.Models.Hubs.ViewModels
 
         [Required(ErrorMessage = "Sent quantity required")]
         [Range(1, 9999999.9)]
+        //[Range(typeof(decimal), "0", "999999")]
         [Display(Name = "Sent Quantity (Unit)")]
         public decimal SentQuantityInUnit { get; set; }
 
         [Required(ErrorMessage = "Recieved quantity is required")]
-        [Range(1, 9999999.9)]
+        //[Range(1, 9999999.9)]
+        [Range(typeof(decimal), "0", "999999")]
         [Display(Name = "Received Quantity (Unit)")]
         public decimal ReceivedQuantityInUnit { get; set; }
 
         [Required(ErrorMessage = "required")]
-        [Range(0.1, 999999.99)]
+        //[Range(0.1, 999999.99)]
+        [Range(typeof(decimal), "0", "999999")]
         [Display(Name = "Received Quantity (MT)")]
         public decimal ReceivedQuantityInMt { get; set; }
 
         [Required(ErrorMessage = "required")]
-        [Range(0.1, 999999.99)]
+        //[RegularExpression(@"^\d+(\.\d)?$", ErrorMessage = "It cannot have more than one decimal point value")]
+        //[Range(0.1, 999999.99)]
+        [Range(typeof(decimal), "0", "999999")]
         [Display(Name = "Sent Quantity (MT)")]
         public decimal SentQuantityInMt { get; set; }
 
