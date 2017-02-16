@@ -486,7 +486,7 @@ namespace Cats.Areas.Logistics.Controllers
                             return RedirectToAction("Index");
                         }
 
-                        isDeleted = _localPurchaseService.DeleteLocalPurchae(localPurchase);
+                        //isDeleted = _localPurchaseService.DeleteLocalPurchae(localPurchase);
 
                         break;
                     case "Draft":
@@ -496,6 +496,12 @@ namespace Cats.Areas.Logistics.Controllers
                             return RedirectToAction("Index");
                         }
                     case "Edited":
+                        {
+                            isDeleted = _localPurchaseService.DeleteLocalPurchae(localPurchase);
+
+                            return RedirectToAction("Index");
+                        }
+                    case "Reverted":
                         {
                             isDeleted = _localPurchaseService.DeleteLocalPurchae(localPurchase);
 
