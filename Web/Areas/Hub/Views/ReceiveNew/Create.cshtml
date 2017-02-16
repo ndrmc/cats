@@ -35,7 +35,16 @@
 
 @using (Html.BeginForm("Create", "ReceiveNew", FormMethod.Post, new { id = "frm_receive", @class = "form-horizontal" }))
 {
-    @Html.ValidationSummary(true)
+
+    if (ViewBag.hasError != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            @Html.ValidationSummary(true)
+        </div>
+    }
+
+
     @Html.ValidationMessageFor(m => m.ReceiveId)
     @Html.HiddenFor(model => model.ReceiveId)
     @Html.HiddenFor(model => model.ReceiptAllocationId)

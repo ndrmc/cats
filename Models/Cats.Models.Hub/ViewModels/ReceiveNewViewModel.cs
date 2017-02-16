@@ -35,11 +35,11 @@ namespace Cats.Models.Hubs.ViewModels
         [Display(Name = "Project Code")]
         public string ProjectCode { get; set; }
 
-        [Required]
+        //[Required]
         [Display(Name = "Purchase Order")]
         public String PurchaseOrder { get; set; }
 
-        [Required]
+        //[Required]
         [Display(Name = "Supplier Name")]
         public String SupplierName { get; set; }
 
