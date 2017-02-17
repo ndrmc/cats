@@ -540,12 +540,14 @@ namespace Cats.Areas.Hub.Controllers
 
             #endregion
 
-            //if (!ModelState.IsValid)
-            //{
-            //    viewModel.AllocationStatusViewModel = _receiveService.GetAllocationStatus(_receiptAllocationId);
-            //    viewModel.IsTransporterDetailVisible = !hubOwner.HubOwner.Name.Contains("WFP");
-            //    return View(viewModel);
-            //}
+            if (!ModelState.IsValid)
+            {
+                viewModel.AllocationStatusViewModel = _receiveService.GetAllocationStatus(_receiptAllocationId);
+                viewModel.IsTransporterDetailVisible = !hubOwner.HubOwner.Name.Contains("WFP");
+                ViewBag.hasError = true;
+                ModelState.AddModelError(string.Empty, "Invalid data. Please fill all the required data.");
+                return View(viewModel);
+            }
 
             var recieveUpdated = false;
             //check if the detail are not null 

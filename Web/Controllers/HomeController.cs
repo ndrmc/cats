@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.WebPages;
 using Cats.Data.UnitWork;
 using Cats.Services.Common;
 using Kendo.Mvc.Extensions;
@@ -275,14 +276,39 @@ namespace Cats.Controllers
             var notificationViewModel = Cats.ViewModelBinder.NotificationViewModelBinder.ReturnNotificationViewModel(totallUnread.ToList());
             return Json(notificationViewModel.ToDataSourceResult(request));
         }
+
+        public static IEnumerable<string> MatchingStrings(string haystack, IEnumerable<string> needles)
+        {
+            return needles.Where(haystack.Contains);
+        } 
         public static string GetRelativeURL(string AbsURL)
         {
-            var extractedUrl = AbsURL.Substring(AbsURL.IndexOf("//", StringComparison.Ordinal) + 1);
-            extractedUrl = extractedUrl.Substring(extractedUrl.IndexOf("//", StringComparison.Ordinal) + 1);
-            string local = System.Web.HttpContext.Current.Request.Url.ToString();
-            if (local.Contains("/trunk"))
-                extractedUrl = "/trunk" + extractedUrl;
-            return extractedUrl;
+
+            // return empity string if the url fetched is empity 
+            if (AbsURL.IsEmpty()) return "";
+
+            // URL fetched from the database 
+            // Example: 1. http://172.16.1.5//Logistics/DispatchAllocation/IndexFromNotification?paramRegionId=10&recordId=18402
+            //          2. http://cats.dppc.gov.et//Logistics/DispatchAllocation/IndexFromNotification?paramRegionId=2&recordId=5421
+            //          3. http://cats.dppc.gov.et//EarlyWarning/Request/IndexFromNotification?recordId=17078
+            //          4. http://172.16.1.5/CATSV6/Hub/TransportOrder/NotificationIndex?recordId=10952
+            // We have to search for the caseteams from the absolute URL, since that is the where the relative path begins
+            // Get a caseteam that exists on the URL path
+            var matchCaseTeams = MatchingStrings(AbsURL, new [] {"Logistics", "Hub", "EarlyWarning", "Procurement", "Finance", "PSNP", "Regional", "Home"}).ToList();
+            // check of a case team exists on the absolute URL
+            if (matchCaseTeams.Count() > 0)
+            {
+                // search for the matching caseteam on the absolute path and get the index
+                var caseteamIndex = AbsURL.IndexOf(matchCaseTeams[0], 0, StringComparison.Ordinal);
+                // get the string starting from the caseteam to the end
+                var relativeUrl = AbsURL.Substring(caseteamIndex);
+                // return the relative url
+                return ((System.Web.HttpContext.Current.Request.ApplicationPath == "/") ? "" : System.Web.HttpContext.Current.Request.ApplicationPath) + relativeUrl;
+            }
+            else
+            {
+                return "";
+            }
         }
         public ActionResult GetUnreadNotificationDetail([DataSourceRequest] DataSourceRequest request)
         {
