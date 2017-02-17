@@ -3,138 +3,160 @@
 @using Cats.Models;
 @{
     ViewBag.Title = Html.Translate("hub");
-    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
 
+    ViewBag.PageTitle = Html.Translate("Hub Allocation");
+    ViewBag.PageTitleDescription = "";
 }
 
 
 @section Toolbar
 {
-  @* <a class="btn toolbar-btn "  id="btnToggle">Hub</a>*@
-   <a class="btn toolbar-btn " data-buttontype="btn_save" href="javascript:onsaveAllocation()"></a>
-   <a class="btn toolbar-btn " data-buttontype="btn_cancel" href="@Url.Action("Hub", "DispatchAllocation",new {regionId= Request.QueryString["regionid"]})" title="Cancel"></a>
-   <a class="btn toolbar-btn " data-buttontype="btn_back_to_list" href="@Url.Action("Index","DispatchAllocation",new {regionId= Request.QueryString["regionid"]})"></a>
+  <a class="btn grey-salt" data-buttontype="btn_back_to_list" href="@Url.Action("Index","DispatchAllocation",new {regionId= Request.QueryString["regionid"]})"><i class="fa fa-list"></i> @Html.Translate("Back to List")</a>
 }
+<div class="" ng-app="dragDrop" ng-controller="DragDroController">
+    @*<div class="note note-success">
+        <p><ng-pluralize count="Requisitions.length" when="newRequisitions"></ng-pluralize></p>
+    </div>*@
+    <div class="row">
+        <div class="col-md-3">
+            <div class="portlet light bordered bg-inverse">
+                <div class="portlet-title">
+                    <div class="caption font-green-sharp">
+                        <i class="fa fa-list font-green-sharp"></i>
+                        <span class="caption-subject bold uppercase"><ng-pluralize count="Requisitions.length" when="newRequisitions"></ng-pluralize></span>
+                    </div>
+                    <div class="tools">
+                        <a href="#" class="collapse" data-original-title="" title=""></a>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div ng-model='Requisitions' id="container" style="overflow-y: scroll; height: 800px">
+                        <div class="btn-draggable " id="{{item.RequisitionId}}" draggable="" ng-repeat="item in Requisitions">
 
-      <div class="row">
-      <div ng-app="dragDrop"  ng-controller="DragDroController">
-          <fieldset style="left: 120px">
-              <legend> <ng-pluralize style="left: 120px" count="Requisitions.length" when="newRequisitions"></ng-pluralize></legend>
-          </fieldset>
+                            <i style="border: none; display: none;margin-right: 6px;margin-top: 4px;cursor: pointer" id="Remove" data-toggle="tooltip" data-placement="left" title="Remove" ng-click="RemoveRequisitionFromStore(item.RequisitionId)" class="icon-remove-circle fa fa-times pull-right"></i>
 
-              <div class="span3" >
-                  @*<div ng-model="allocated" ng-repeat="item in allocated">
-
-                            ReqId: {{item.reqId}} | HubId: {{item.HubId}}
-                            <button ng-click='saveAllocation()' id="save">save</button>
-                        </div>*@
-
-
-
-                      <div  ng-model='Requisitions' id="container" style=" overflow-y:scroll;height: 800px" >
-                          <div  class="btn btn-navbar btn-draggable " id="{{item.RequisitionId}}"  draggable=""   ng-repeat="item in Requisitions" >
-
-                              <i  style="border:none;display: none;" id="Remove" data-toggle="tooltip" data-placement="left" title="Remove" ng-click="RemoveRequisitionFromStore(item.RequisitionId)"  class="icon-remove-circle"></i>
-
-                              <div class="accordion" id="accordion2">
-                                  <div class="accordion-group">
-                                      <div class="accordion-heading">
-                                          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#acc_{{item.RequisitionId}}" style="font-size: small ">
-                                              Req.No: {{item.RequisitionNo}}  from : {{WarehouseName}}
-                                          </a>
-                                      </div>
-                                      <div id="acc_{{item.RequisitionId}}" class="accordion-body collapse">
-                                          <div class="accordion-inner" style="font-size: small">
-                                              <br />Commodity: {{item.Commodity}}
-                                              <br />Benficiary: {{item.BenficiaryNo}}
-                                              <br />Amount: {{item.Amount}}
-                                              <br />Region: {{item.Region}}
-                                              <br />Zone: {{item.Zone}}
-                                          </div>
-                                      </div>
-                                  </div>
-
-
-                              </div>
-
-                          </div>
-                      </div>
-                  </div>
-
-              <div class="span8">
-
-                    @{
-
-                        var enumerable = ViewData["Hubs"] as IEnumerable<Hub>;
+                            <div class="accordion note note-success" id="accordion2" style="margin-bottom: 10px;">
+                                <div class="accordion-group">
+                                    <div class="accordion-heading">
+                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#acc_{{item.RequisitionId}}" style="font-size: small">
+                                            Req.No: <b>{{item.RequisitionNo}}</b> from : {{WarehouseName}}
+                                        </a>
+                                    </div>
+                                    <div id="acc_{{item.RequisitionId}}" class="accordion-body collapse">
+                                        <div class="accordion-inner" style="font-size: small">
+                                            <br/><span>  Commodity: <b>{{item.Commodity}}</b></span>
+                                            <br/><span> Benficiary: <b>{{item.BenficiaryNo}}</b></span>
+                                            <br/><span>     Amount: <b>{{item.Amount}}</b></span>
+                                            <br/><span>     Region: <b>{{item.Region}}</b></span>
+                                            <br/><span>       Zone: <b>{{item.Zone}}</b></span>
+                                        </div>
+                                    </div>
+                                </div>
 
 
-                        if (enumerable != null)
-                        {
-                            var hubs = enumerable as Hub[] ?? enumerable.ToArray();
+                            </div>
 
-                             <div id="Hub">
-                            @foreach (var hub in  hubs)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="portlet light bordered bg-inverse">
+                <div class="portlet-title">
+                    <div class="caption font-green-sharp">
+                        <i class="fa fa-building font-green-sharp"></i>
+                        <span class="caption-subject bold uppercase">@Html.Translate("Hubs")</span>
+                    </div>
+                    <div class="tools">
+                        <a href="#" class="collapse" data-original-title="" title=""></a>
+                    </div>
+                    <div class="actions">
+                        <a class="btn btn-sm green" data-buttontype="btn_save" href="javascript:onsaveAllocation()"><i class="fa fa-save"></i> @Html.Translate("Save")</a>
+                        <a class="btn btn-sm red " data-buttontype="btn_cancel" href="@Url.Action("Hub", "DispatchAllocation", new {regionId = Request.QueryString["regionid"]})" title="Cancel"><i class="fa fa-times-circle"></i> @Html.Translate("Cancel")</a>
+
+                        @*<a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>*@
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row">
+                        @{
+
+                            var enumerable = ViewData["Hubs"] as IEnumerable<Hub>;
+
+
+                            if (enumerable != null)
                             {
-                                if (hub.HubOwnerID == 1 && hub.HubParentID == hub.HubID)
-                                {
-                                    <div class="thumbnail span4" droppable="true" drop="handleDrop('@hub.HubID')" style="overflow-y:scroll; overflow-x:hidden" id="@hub.HubID">
-                                        <div class="btn btn-navbar btn-droppable"  >@hub.Name (@hub.HubOwner.Name)  </div>
+                                var hubs = enumerable as Hub[] ?? enumerable.ToArray();
+
+                                <div id="Hub">
+                                    @foreach (var hub in hubs)
+                                    {
+                                        if (hub.HubOwnerID == 1 && hub.HubParentID == hub.HubID)
+                                        {
+                                            <div class="thumbnail col-md-4" droppable="true" drop="handleDrop('@hub.HubID')" style="overflow-y: scroll; overflow-x: hidden" id="@hub.HubID">
+                                                <fieldset>
+                                                    <legend>
+                                                        <b class="btn btn-navbar btn-droppable" style="font-weight: bold;">@hub.Name (@hub.HubOwner.Name) </b>
+                                                    </legend>
+                                                </fieldset> 
+                                            </div>
+                                        }
+                                        @*else if (hub.HubOwnerID == 2)
+                            {
+                                <div class="thumbnail span4" droppable="true" drop="handleDrop('@hub.HubID')" style=" grid-column-align; overflow-y:scroll; overflow-x:hidden" id="@hub.HubID">
+                                    <div class="btn btn-navbar btn-droppable"  >@hub.Name (@hub.HubOwner.Name)</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="thumbnail span4" droppable="true" drop="handleDrop('@hub.HubID')" style="overflow-y:scroll; overflow-x:hidden" id="@hub.HubID">
+                                    <div class="btn btn-navbar btn-droppable"  >@hub.Name (@hub.HubOwner.Name)</div>
+                                </div>
+                            }*@
+
+                                    }
+                                </div>
+                                @*<div id="Store">
+                         @foreach (var store in hubs)
+                         {
+                             foreach (var eachStore in store.Stores)
+                             {
+                                    <div class="thumbnail span4" droppable="true" drop="handleDrop('@eachStore.Hub.HubID _ @eachStore.StoreID')" style="overflow-y:scroll; overflow-x:hidden" id="@eachStore.StoreID _ @eachStore.Hub.HubID" >
+                                    <div class="btn btn-navbar btn-droppable"  >@eachStore.Name (@eachStore.Hub.Name)</div>
                                     </div>
-                                }
-                                @*else if (hub.HubOwnerID == 2)
-                                {
-                                    <div class="thumbnail span4" droppable="true" drop="handleDrop('@hub.HubID')" style=" grid-column-align; overflow-y:scroll; overflow-x:hidden" id="@hub.HubID">
-                                        <div class="btn btn-navbar btn-droppable"  >@hub.Name (@hub.HubOwner.Name)</div>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="thumbnail span4" droppable="true" drop="handleDrop('@hub.HubID')" style="overflow-y:scroll; overflow-x:hidden" id="@hub.HubID">
-                                        <div class="btn btn-navbar btn-droppable"  >@hub.Name (@hub.HubOwner.Name)</div>
-                                    </div>
-                                }*@
+                             }
+                         }
+
+                    </div>*@
 
                             }
-                            </div>
-                            @*<div id="Store">
-                                 @foreach (var store in hubs)
-                                 {
-                                     foreach (var eachStore in store.Stores)
-                                     {
-                                            <div class="thumbnail span4" droppable="true" drop="handleDrop('@eachStore.Hub.HubID _ @eachStore.StoreID')" style="overflow-y:scroll; overflow-x:hidden" id="@eachStore.StoreID _ @eachStore.Hub.HubID" >
-                                            <div class="btn btn-navbar btn-droppable"  >@eachStore.Name (@eachStore.Hub.Name)</div>
-                                            </div>
-                                     }
-                                 }
-
-                            </div>*@
 
                         }
-
-                    }
-
+                    </div>
                 </div>
-
-         <modal title="Satellite Warehouse " visible="showModal">
-    <form role="form">
-      <div class="form-group">
-          <label for="SatelliteWarehouse">Satellite Warehouse</label>
-
-
-           <select data-ng-model="s.selected"
-                data-ng-options="s.Id as s.Name for s in WarehouseList">
-                <option value="">--Select Warehouse--</option>
-            </select>
-          {{s.Id}}
-      </div>
-
-      <button type="submit" class="btn btn-default" ng-click="saveWarehouse(s.selected)">Select</button>
-    </form>
-  </modal>
-
-                </div>
-
             </div>
+        </div>
+    </div>
+    <modal title="Satellite Warehouse " visible="showModal">
+        <form role="form">
+            <div class="form-group">
+                <label for="SatelliteWarehouse">Satellite Warehouse</label>
+
+
+                <select data-ng-model="s.selected"
+                        data-ng-options="s.Id as s.Name for s in WarehouseList">
+                    <option value="">--Select Warehouse--</option>
+                </select>
+                {{s.Id}}
+            </div>
+
+            <button type="submit" class="btn btn-default" ng-click="saveWarehouse(s.selected)">Select</button>
+        </form>
+    </modal>
+</div>
+      
 
    <script src="~/Scripts/angular/allocation-angular.js"></script>
     <script>
@@ -162,13 +184,16 @@
 
     </script>
     <style>
-        .thumbnail { height: 280px; }
+        .thumbnail { height: 280px; padding: 0px 15px;}
         .btn-droppable { width: 180px; height: 30px; padding-left: 4px; }
-        .btn-draggable { width: 150px; }
+        /*.btn-draggable { width: 150px; }*/
         .span4 {
             margin: 0px !important;
         }
 
-
+        .accordion-heading {
+            background: none;
+            color: black;
+        }
 
     </style>
