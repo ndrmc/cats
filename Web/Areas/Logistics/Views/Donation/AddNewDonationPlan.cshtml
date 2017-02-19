@@ -5,45 +5,27 @@
 @model Cats.Areas.Logistics.Models.DonationViewModel
 
 @{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_MainLayout.cshtml";
-
+    ViewBag.Title = "Receive Plan for Donation";
+   
     var headerId = 0;
     if(Model!=null)
     {
         headerId = Model.DonationHeaderPlanID;
     }
-    
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = Html.Translate("Receive Plan for Donation");
+    ViewBag.PageTitleDescription = "";
 }
 
 
 @section Toolbar{
     
-    <div class="btn-group" style="margin-right: 8px;">
-        <button class="btn dropdown-toggle " data-toggle="dropdown"> @Html.Translate("Actions") 
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-             <li><a id="btnReceiptDispatch"  href="@Url.Action("CloseLocalPlan", "Donation", new { donationPlanHeaderId = @headerId })" >@Html.Translate("Send to Hub")</a></li>
-            
-        </ul>
-
-    </div>
    
-    <a class="btn toolbar-btn "  data-buttontype="btn_save" data-submittedform="frmDonation"></a>
-    <a id="btnAddProposal" data-buttontype="btn_back_to_list" class="btn toolbar-btn " href="@Url.Action("Index", "Donation")"></a>
-}
-
-@section LeftBar {
+@*    <a class="btn green" id="btnReceiptDispatch" href="@Url.Action("CloseLocalPlan", "Donation", new { donationPlanHeaderId = @headerId })">@Html.Translate("Send to Hub")</a>*@
     
-
+@*    <a class="btn toolbar-btn "  data-buttontype="btn_save" data-submittedform="frmDonation"></a>*@
+    <a id="btnAddProposal" data-buttontype="btn_back_to_list" class="btn btn-default btn-fit-height" href="@Url.Action("Index", "Donation")"><i class="fa fa-list"></i> @Html.Translate("Back to List")</a>
 }
-  
-<fieldset>
-    <legend>
-        @Html.Translate("Receive Plan for Donation")
-    </legend>
-</fieldset>  
 
 
 
@@ -55,121 +37,158 @@
      @Html.HiddenFor(h=>h.ProgramID)
      @Html.HiddenFor(h=>h.CommodityTypeID)
      @Html.HiddenFor(h=>h.DonorID)
-    
-    <table border="0" class="form-horizontal">
-        <tr style="width: 500px">
-            <td  style="width:50%" >
-                
-                <div class="control-label">
-                    @Html.LabelFor(model => model.SINumber, @Html.Translate("SI / Batch Number"))
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.SINumber, "SINumber",new { @readonly = "readonly" })
-                    @Html.ValidationMessageFor(model => model.SINumber)
-                </div>
 
-                <div class="control-label">
-                    @Html.LabelFor(model => model.ETA, @Html.Translate("ETA"))
-                </div>
-                <div class="controls" >
-                    @(Html.TextBoxFor(model => model.ETA, new { @readonly = "readonly", @class = "cats-datepicker2" }))
-                    @Html.ValidationMessageFor(model => model.ETA)
-                </div>
-            
-                <div class="control-label">
-                    @Html.Label(@Html.Translate("Donor")) 
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.DonorName,new { @readonly = "readonly" })
-                    @*  @(Html.DropDownListFor(model => model.DonorID, new SelectList(Model.Donors, "DonorID", "Name"),new { @readonly = "readonly" }))*@
-                </div>
-            </td>
-            
-            <td style="width:50%">
-                
-                
-            <div class="control-label">
-                @Html.Label(@Html.Translate("Commodity Type")) 
+    <div class="portlet light bordered bg-inverse form-horizontal">
+        <div class="portlet-title">
+            <div class="caption font-green-sharp">
+                <i class="fa fa-list font-green-sharp"></i>
+                <span class="caption-subject bold uppercase"> @Html.Translate("Receive Plan for Donation")</span>
+                <span class="caption-helper">  </span>
             </div>
-                <div class="controls" >
-                    @Html.TextBoxFor(model => model.CommomdityTypeName,new { @readonly = "readonly" })
-                    @* @(Html.DropDownListFor(model => model.CommodityTypeID, new SelectList(Model.CommodityTypes, "CommodityTypeID", "Name"),new { @readonly = "readonly" }))*@
+            <div class="tools">
+                <a href="#" class="collapse" data-original-title="" title=""></a>
+                @*                <a href="javascript:;" class="remove" data-original-title="" title=""></a>*@
+            </div>
+            <div class="actions">
+                <a class="btn green-stripe btn-default" id="btnReceiptDispatch" href="@Url.Action("CloseLocalPlan", "Donation", new {donationPlanHeaderId = @headerId})"><i class="fa fa-send-o"></i> @Html.Translate("Send to Hub")</a>
+                <button class="btn toolbar-btn green" data-buttontype="btn_save" data-submittedform="frmDonation" type="submit"><i class="fa fa-save"></i> @Html.Translate("Save")</button>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4 control-label">
+                        @Html.LabelFor(model => model.SINumber, @Html.Translate("SI / Batch Number"))
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.SINumber, "SINumber", new {@readonly = "readonly", @class = "form-control"})
+                        <span class="help-block"> @Html.ValidationMessageFor(model => model.SINumber)</span>
+                    </div>
                 </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4 control-label">
+                        @Html.Label(@Html.Translate("Commodity Type"))
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.CommomdityTypeName, new {@readonly = "readonly", @class = "form-control"})
+                        @*  @(Html.DropDownListFor(model => model.DonorID, new SelectList(Model.Donors, "DonorID", "Name"),new { @readonly = "readonly" }))*@
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4 control-label">
+                        @Html.LabelFor(model => model.ETA, @Html.Translate("ETA"))
+                    </div>
+                    <div class="col-md-8">
+                        @(Html.TextBoxFor(model => model.ETA, new {@readonly = "readonly", @class = "cats-datepicker2 form-control"}))
+                        <span class="help-block"> @Html.ValidationMessageFor(model => model.ETA) </span>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4 control-label">
+                        @Html.Label(@Html.Translate("Commodity"))
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.CommodityName, new {@readonly = "readonly", @class = "form-control"})
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4 control-label">
+                        @Html.Label(@Html.Translate("Program"))
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.DonorName, new {@readonly = "readonly", @class = "form-control"})
+                        @*  @(Html.DropDownListFor(model => model.DonorID, new SelectList(Model.Donors, "DonorID", "Name"),new { @readonly = "readonly" }))*@
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4 control-label">
+                        @Html.Label(@Html.Translate("Donor"))
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.ProgramName, new {@readonly = "readonly", @class = "form-control"})
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4 control-label">
+                        @Html.LabelFor(model => model.WieghtInMT, @Html.Translate("Gift Certificate Amount"))
+                    </div>
+                    <div class="col-md-4">
+                        @(Html.TextBoxFor(model => model.WieghtInMT, new {@readonly = "readonly", @class = "form-control"}))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                <div class="control-label">
-                    @Html.Label(@Html.Translate("Commodity")) 
-                </div>
-                <div class="controls" >
-                    @Html.TextBoxFor(model=>model.CommodityName,new { @readonly = "readonly" })
-                    @*@(Html.DropDownListFor(model => model.CommodityID, new SelectList(Model.Commodities, "CommodityID", "Name"),new { @readonly = "readonly" }))*@
-                </div>
-               
+  
+    <div class="portlet light bordered">
+        <div class="portlet-title">
+            <div class="caption font-green-sharp">
+                <i class="fa fa-list font-green-sharp"></i>
+                <span class="caption-subject bold uppercase"> @Html.Translate("Hubs")</span>
+                <span class="caption-helper">  </span>
+            </div>
+            <div class="tools">
+                <a href="#" class="collapse" data-original-title="" title=""></a>
+@*                <a href="javascript:;" class="remove" data-original-title="" title=""></a>*@
+            </div>
+            <div class="actions">
                 
-                <div class="control-label">
-                    @Html.Label(@Html.Translate("Program")) 
-                </div>
-                <div class="controls">
-                    @Html.TextBoxFor(model=>model.ProgramName,new { @readonly = "readonly" })
-                    @* @(Html.DropDownListFor(model => model.ProgramID, new SelectList(Model.Programs, "ProgramID", "Name"),new { @readonly = "readonly" }))*@
-                </div>
-                
-                 <div class="control-label">
-                    @Html.LabelFor(model => model.WieghtInMT, @Html.Translate("Gift Certificate Amount")) 
-                </div>
-                <div class="controls" >
-                    @(Html.TextBoxFor(model => model.WieghtInMT,new { @readonly = "readonly" }))
-                </div>
-
-            </td>
-            
-        </tr>
-       
-
-    </table>
-   
-    <h4> @Html.Translate("Hubs") </h4>
-    
-    @(Html.Kendo().Grid(Model.DonationPlanDetails)
+            </div>
+        </div>
+        <div class="portlet-body">
+            @(Html.Kendo().Grid(Model.DonationPlanDetails)
           .Name("grid")
           .Columns(columns =>
-                       {
-                           columns.Bound(p => p.HubID).Title(Html.Translate("Hub Id")).Width(100).Hidden(true).ClientTemplate("#= HubID #" +
-                    "<input type='hidden' name='DonationPlanDetails[#= index(data)#].HubID' value='#= HubID #' />");
-                           columns.Bound(p => p.Hub).Title(Html.Translate("Hub")).Width(100).ClientTemplate("#= Hub #" +
-                   "<input type='hidden' name='DonationPlanDetails[#= index(data)#].Hub' value='#= Hub #' />");
+          {
+              columns.Bound(p => p.HubID).Title(Html.Translate("Hub Id")).Width(100).Hidden(true).ClientTemplate("#= HubID #" +
+       "<input type='hidden' name='DonationPlanDetails[#= index(data)#].HubID' value='#= HubID #' />");
+              columns.Bound(p => p.Hub).Title(Html.Translate("Hub")).Width(100).ClientTemplate("#= Hub #" +
+      "<input type='hidden' name='DonationPlanDetails[#= index(data)#].Hub' value='#= Hub #' />");
 
-                           columns.Bound(p => p.AllocatedAmount).Title(Html.Translate("Allocated Amount")).Width(30).Format("{0:n2}").ClientFooterTemplate("<div style='text-align: right'> Sum: #=sum#</div>").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).ClientTemplate("#= AllocatedAmount #" +
-                    "<input type='hidden' name='DonationPlanDetails[#= index(data)#].AllocatedAmount' value='#= AllocatedAmount #' />"); 
+              columns.Bound(p => p.AllocatedAmount).Title(Html.Translate("Allocated Amount")).Width(30).Format("{0:n2}").ClientFooterTemplate("<div style='text-align: right'> Sum: #=sum#</div>").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).ClientTemplate("#= AllocatedAmount #" +
+       "<input type='hidden' name='DonationPlanDetails[#= index(data)#].AllocatedAmount' value='#= AllocatedAmount #' />");
 
-                   //        columns.Bound(p => p.ReceivedAmount).Title("Received").Width(30).Format("{0:n2}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).ClientTemplate("#= ReceivedAmount #" +
-                   // "<input type='hidden' name='DonationPlanDetails[#= index(data)#].ReceivedAmount' value='#= ReceivedAmount #' />"); 
+              //        columns.Bound(p => p.ReceivedAmount).Title("Received").Width(30).Format("{0:n2}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).ClientTemplate("#= ReceivedAmount #" +
+              // "<input type='hidden' name='DonationPlanDetails[#= index(data)#].ReceivedAmount' value='#= ReceivedAmount #' />");
 
-                   //        columns.Bound(p => p.Balance).Title("Balance").Width(30).Format("{0:n2}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).ClientTemplate("#= Balance #" +
-                   //"<input type='hidden' name='DonationPlanDetails[#= index(data)#].Balance' value='#= Balance #' />");
-                           
-                       })
+              //        columns.Bound(p => p.Balance).Title("Balance").Width(30).Format("{0:n2}").HtmlAttributes(new { align = "Right" }).HtmlAttributes(new { style = "text-align: right; font-size: 12px; " }).ClientTemplate("#= Balance #" +
+              //"<input type='hidden' name='DonationPlanDetails[#= index(data)#].Balance' value='#= Balance #' />");
+
+          })
 
           .Editable(editable => editable.Mode(GridEditMode.InCell))
           .Sortable()
           .Scrollable()
           .Events(events => events.DataBound("onDataBound"))
-   
-          .HtmlAttributes(new { style = "height:150px;" })
+
+          .HtmlAttributes(new { style = "height:250px;" })
           .DataSource(dataSource => dataSource
                                         .Ajax()
                                         .Aggregates(aggregates => aggregates.Add(p => p.AllocatedAmount).Sum())
                                         .PageSize(20)
                                         .Events(events => events.Error("error_handler"))
-                                       
-                                       
+
+
                                         .ServerOperation(false)
                                         .Model(model => model.Id(p => p.DonationDetailPlanID))
                                         .Model(model => model.Field(p => p.Hub).Editable(false))
-                                       
-                                        
+
+
           )
-          )
+            )
+        </div>
+    </div>
+    
 }
+
+
 <script>
       
 

@@ -53,7 +53,7 @@ namespace Cats.Models.Hubs
         {
             if (this.TransactionGroup != null)
             {
-                if (this.TransactionGroup.Transactions.Any())
+                //if (this.TransactionGroup.Transactions.Any())
                     return this.TransactionGroup.Transactions.FirstOrDefault(p => p.QuantityInMT > 0 || p.QuantityInUnit > 0);
 
             }
