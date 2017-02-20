@@ -55,7 +55,7 @@ namespace Cats.Areas.Logistics.Controllers
         {
             var transportOrder = _transportOrderService.Get(m => m.ContractNumber.Contains(searchIndex))
                                .Where(m=>m.StatusID==(int)TransportOrderStatus.Closed && m.TransportOrderDetails.Sum(s=>s.QuantityQtl)>0)
-                               .OrderByDescending(m=>m.TransportOrderID).Take(100);
+                               .OrderByDescending(m=>m.TransportOrderID);
             var transportOrderToDisplay = GetTransportOrder(transportOrder);
             return Json(transportOrderToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
