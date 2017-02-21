@@ -49,27 +49,30 @@
             @(Html.Kendo().Grid<TransporterPerformanceViewModel>()
 .Name("Grid")
 .Columns(columns =>
-  {
+{
 
-      columns.Bound(m => m.TransportOrderNumber).Title(@Html.Translate("Transport Order Number")).ClientTemplate("<a href='" + Url.Action("TransportOrderPerformanceDetail", "TransporterPerformance", new { Area = "Logistics", id = "#=TransporterOrderID#" }) + " '>#=TransportOrderNumber#</a>  ");
-      columns.Bound(m => m.TransporterName).Title(@Html.Translate("Transporter Name"));
-      columns.Bound(m => m.TotalQuantity).Title(@Html.Translate("Total Quantity in QTL")).HtmlAttributes(new { align = "Right" });
-      columns.Bound(m => m.PickedUpSofar).Title(@Html.Translate("Picked Up Sofar in QTL")).HtmlAttributes(new { align = "Right" });
-      columns.Bound(m => m.Delivered).Title(@Html.Translate("Delivered in QTL")).HtmlAttributes(new { align = "Right" });
-      columns.Bound(m => m.StartDate).Title(@Html.Translate("Start Date")).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
-      columns.Bound(m => m.NoOfDaysToComplete).Title(@Html.Translate("Agreed to complete (days)")).HtmlAttributes(new { align = "Right" });
-      columns.Bound(m => m.ElapsedDays).Title(@Html.Translate("Elapsed Time(in Days)")).HtmlAttributes(new { align = "Right" });
-      columns.Bound(m => m.Percentage).Title(@Html.Translate("Percentage Completed")).HtmlAttributes(new { align = "Center" }).Format("{0:N0}%");
-  })
-    .Sortable()
-    .Scrollable()
-                    //.HtmlAttributes(new { style = "height:430px;" })
+    columns.Bound(m => m.TransportOrderNumber).Title(@Html.Translate("Transport Order Number")).ClientTemplate("<a href='" + Url.Action("TransportOrderPerformanceDetail", "TransporterPerformance", new { Area = "Logistics", id = "#=TransporterOrderID#" }) + " '>#=TransportOrderNumber#</a>  ");
+    columns.Bound(m => m.TransporterName).Title(@Html.Translate("Transporter Name"));
+    columns.Bound(m => m.TotalQuantity).Title(@Html.Translate("Total Quantity in QTL")).HtmlAttributes(new { align = "Right" });
+    columns.Bound(m => m.PickedUpSofar).Title(@Html.Translate("Picked Up Sofar in QTL")).HtmlAttributes(new { align = "Right" });
+    columns.Bound(m => m.Delivered).Title(@Html.Translate("Delivered in QTL")).HtmlAttributes(new { align = "Right" });
+    columns.Bound(m => m.StartDate).Title(@Html.Translate("Start Date")).HeaderHtmlAttributes(new { @class = "cats-date-pref-grid" });
+    columns.Bound(m => m.NoOfDaysToComplete).Title(@Html.Translate("Agreed to complete (days)")).HtmlAttributes(new { align = "Right" });
+    columns.Bound(m => m.ElapsedDays).Title(@Html.Translate("Elapsed Time(in Days)")).HtmlAttributes(new { align = "Right" });
+    columns.Bound(m => m.Percentage).Title(@Html.Translate("Percentage Completed")).HtmlAttributes(new { align = "Center" }).Format("{0:N0}%");
+})
+
+
     .DataSource(dataSource => dataSource
         .Ajax()
-        //.PageSize(20)
+        .PageSize(10)
         .Model(model => model.Id(p => p.TransporterOrderID))
         .Read(read => read.Action("TransporterPerformance_Read", "TransporterPerformance").Data("searchIndexObj"))
-    )
+    ).Selectable(select => select.Mode(GridSelectionMode.Single))
+             .Navigatable()
+             .Filterable()
+             .Sortable()
+             .Pageable()
             )
         </div>
     </div>
