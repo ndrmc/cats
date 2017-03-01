@@ -16,6 +16,7 @@ using Kendo.Mvc.UI;
 using Dispatch = Cats.Models.Hubs.Dispatch;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using IHubService = Cats.Services.EarlyWarning.IHubService;
+using System.Diagnostics;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -63,14 +64,17 @@ namespace Cats.Areas.Logistics.Controllers
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
             var deliveries = _deliveryService.Get(null, null, "DeliveryDetails");
 
+
+
             return (from transportOrder in transportOrders
                     select CreateTransporterPerformanceVM(datePref, deliveries, transportOrder));
 
         }
-
         private TransporterPerformanceViewModel CreateTransporterPerformanceVM(string datePref,IEnumerable<Delivery> delivery, TransportOrder transportOrder)
         {
-            var dispatches = _dispatchService.Get(t => t.DispatchAllocation.TransportOrderID == transportOrder.TransportOrderID).ToList();
+            var dispatches = _dispatchService.Get(t => t.DispatchAllocation.TransportOrderID == transportOrder.TransportOrderID,null , "DispatchDetails").ToList();
+
+
 
             return new TransporterPerformanceViewModel
             {
@@ -102,14 +106,24 @@ namespace Cats.Areas.Logistics.Controllers
 
         private Decimal GetDispatchAllocation(List<Dispatch> dispatches, int transportOrderID)
         {
-            var totaldispatched= dispatches.Sum(dispatch => dispatch.DispatchDetails.Sum(m => m.DispatchedQuantityInMT));
+            decimal totaldispatched = 0;
+
+            try
+            {
+
+                totaldispatched = dispatches.Sum(dispatch => dispatch.DispatchDetails.Sum(m => m.DispatchedQuantityInMT));
+
+        } catch(Exception e)
+            {
+
+            }
 
             return totaldispatched;
         }
 
         private decimal GetDelivered(List<Dispatch> dispatches , IEnumerable<Delivery> delivery, int transportOrderID)
         {
-            
+
             var dispatchIds = dispatches.Select(t => t.DispatchID).ToList();
             var deliveries = delivery.Where(t => dispatchIds.Contains(t.DispatchID.Value));
             return deliveries.Sum(de => de.DeliveryDetails.Sum(m => m.ReceivedQuantity));
