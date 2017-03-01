@@ -666,8 +666,9 @@ namespace Cats.Areas.EarlyWarning.Controllers
                 _planService.AddPlan(planName, startDate, endDate);
                 plan = _planService.Get(p => p.PlanName == planName).Single();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+
             }
 
             HRDPSNPPlanInfo psnphrdPlanInfo = _regionalRequestService.PlanToRequest(hrdpsnpPlan);

@@ -91,7 +91,7 @@ namespace Cats.Areas.Finance.Controllers
         public ActionResult BidWinningTransporters_read([DataSourceRequest] DataSourceRequest request)
         {
             var transprtersWithActiveTO =
-                _transportOrderService.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null, 
+                _transportOrderService.Get(t => t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed" || t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Closed", null, 
                 "Transporter, BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate")
                     .Select(t => t.Transporter).Distinct().ToList();
             var winningTransprterViewModels = TransporterListViewModelBinder(transprtersWithActiveTO);
@@ -140,7 +140,8 @@ namespace Cats.Areas.Finance.Controllers
             //Commented out because it uses obsolete status tarcking. Updated to use workflow
             //var transportOrder = _transportOrderService.Get(t => t.TransporterID == transporterID && t.StatusID >= 3, null, "Transporter").FirstOrDefault();
             var transportOrder =
-                _transportOrderService.Get(t => t.TransporterID == transporterID && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null,
+                _transportOrderService.Get(t => t.TransporterID == transporterID && (t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed" || 
+                t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Closed"), null,
                 "Transporter, BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
             var transportOrderViewModel = TransportOrderViewModelBinder.BindTransportOrderViewModel(transportOrder, datePref, statuses);
             ViewBag.TransportOrderViewModel = transportOrderViewModel;
@@ -165,7 +166,8 @@ namespace Cats.Areas.Finance.Controllers
             //Commented out because it uses obsolete status tarcking. Updated to use workflow
             //var transportOrder = _transportOrderService.Get(t => t.TransporterID == transporterID && t.StatusID >= 3, null, "Transporter").FirstOrDefault();
             var transportOrder =
-                _transportOrderService.Get(t => t.TransporterID == transporterID && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null,
+                _transportOrderService.Get(t => t.TransporterID == transporterID && (t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed" || 
+                t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Closed"), null,
                 "Transporter, BusinessProcess, BusinessProcess.CurrentState, BusinessProcess.CurrentState.BaseStateTemplate").FirstOrDefault();
             var transportOrderViewModel = TransportOrderViewModelBinder.BindTransportOrderViewModel(transportOrder, datePref, statuses);
             var transporterPaymentRequestViewModel = transporterPaymentRequests.FirstOrDefault();
@@ -725,7 +727,8 @@ namespace Cats.Areas.Finance.Controllers
         {
             //Commented out because it uses obsolete status tarcking. Updated to use workflow
             //var activeTos = _transporterPaymentRequestService.Get(t => t.TransportOrder.TransporterID == transporterId && t.TransportOrder.StatusID >= 3);
-            var activeTos = _transporterPaymentRequestService.Get(t => t.TransportOrder.TransporterID == transporterId && t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed", null,
+            var activeTos = _transporterPaymentRequestService.Get(t => t.TransportOrder.TransporterID == transporterId && (t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Signed" ||
+                            t.BusinessProcess.CurrentState.BaseStateTemplate.Name == "Closed"), null,
                 "TransportOrder, TransportOrder.Transporter, TransportOrder.BusinessProcess, TransportOrder.BusinessProcess.CurrentState, TransportOrder.BusinessProcess.CurrentState.BaseStateTemplate");
             var lists = from to in activeTos
                         group to by to.ReferenceNo
