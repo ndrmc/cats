@@ -7,8 +7,10 @@
     const string PAGE_NAME = "Request.Index.RequestFilter";
 }
 
-@using (Html.BeginForm())
-{
+@*@using (Html.BeginForm())*@
+    @using (Html.BeginForm(null, null, FormMethod.Post,
+                        new { @class = "form", id = "frm_approve_requisition" }))
+    {
     <div class="row">
         <div class="col-md-3">
             <div class="form-group form-md-line-input">
@@ -25,7 +27,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-3">Region</label>
                         <div class="col-md-9">
-                            @Html.DropDownList("RegionID", null, new {@class = "form-control"})
+                            @Html.DropDownList("RegionID", null, new { @class = "form-control" })
                         </div>
                     </div>
                 </div>
@@ -33,7 +35,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-4">Program</label>
                         <div class="col-md-8">
-                            @Html.DropDownList("ProgramID", null, new {@class = "form-control"})
+                            @Html.DropDownList("ProgramID", null, new { @class = "form-control" })
                         </div>
                     </div>
                 </div>
@@ -41,7 +43,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-3">Status</label>
                         <div class="col-md-9">
-                            @Html.DropDownList("StatusID", null, new {@class = "form-control"})
+                            @Html.DropDownList("StatusID", null, new { @class = "form-control" })
                         </div>
                     </div>
                 </div>
@@ -74,5 +76,5 @@
     </div>
         <div style="clear:both;">
         </div>
-   
-    }
+
+}
