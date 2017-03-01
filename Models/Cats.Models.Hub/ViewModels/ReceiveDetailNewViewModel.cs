@@ -15,7 +15,7 @@ namespace Cats.Models.Hubs.ViewModels
 
         }
 
-        #region Properties 
+        #region Properties
 
         public int ReceiveDetailId2 { get; set; }
         public Guid ReceiveDetailId { get; set; }
@@ -25,7 +25,7 @@ namespace Cats.Models.Hubs.ViewModels
         [Display(Name = "Commodity")]
         public int CommodityId { get; set; }
 
-        [Display(Name="Sub Commodity")]
+        [Display(Name = "Sub Commodity")]
         public int? CommodityChildID { get; set; }
 
 
@@ -38,8 +38,8 @@ namespace Cats.Models.Hubs.ViewModels
         public int UnitId { get; set; }
 
         [Required(ErrorMessage = "Sent quantity required")]
-        [Range(1, 9999999.9)]
-        //[Range(typeof(decimal), "0", "999999")]
+        //[Range(1, 9999999.9)]
+        [Range(typeof(decimal), "0", "999999")]
         [Display(Name = "Sent Quantity (Unit)")]
         public decimal SentQuantityInUnit { get; set; }
 
@@ -63,10 +63,10 @@ namespace Cats.Models.Hubs.ViewModels
         public decimal SentQuantityInMt { get; set; }
 
         public int Storeid { get; set; }
-        
+
         public int StackNumber { get; set; }
-    
-           
+
+
 
 
         #endregion
