@@ -4,7 +4,9 @@
 @using Cats.Models
 @{
     ViewBag.Title = "Preference";
-    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    Layout = "~/Views/Shared/NewTheme _MainLayout.cshtml";
+    ViewBag.PageTitle = "Preferences";//@Html.Translate((string)@ViewBag.Title);
+    ViewBag.PageTitleDescription = "";
 }
 
 <style>
@@ -83,54 +85,34 @@
         }, 5000);
     }
 </script>
-<h4>Preference</h4>
-<div>
-    <div id="tabs">
-        <ul>
-            
-            <li><a href="#tabs-1">General</a></li>
-            @*<li><a href="#tabs-2">Dashboard</a></li>*@
-            <!--<li><a href="#tabs-3">Advanced</a></li>-->
-        </ul>
-        <div id="tabs-1">
 
-                    @Html.Partial("Edit",Model)
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption font-green-haze">
+            <i class="icon-edit font-green-haze"></i>
+            <span class="caption-subject bold uppercase"> Preference</span>
         </div>
-        @*<div id="tabs-2">
-            <table>
-                <tr>
-                    <td style="vertical-align: top">
-                        <div class="unselectedTitle">Unselected Dashboards</div>
-                        <ul id="sortable1" class="droptrue" style="width:400px">
-                            @foreach (DashboardWidget dashboardWidget1 in ViewBag.UnselectedDashbaords)
-                            {
-                                <li class="ui-state-default unselected" style="width:350px" id="@dashboardWidget1.DashboardWidgetID">@dashboardWidget1.Title</li>
-                            }
-                        </ul>
-                    </td>
-                    <td>
-                        <img src="../../Content/images/exchange.png" width="50px" height="50px" alt="<-->"/>
-                    </td>
-                    <td style="vertical-align: top">
-                        <div class="selectedTitle">Selected Dashboards (Viewed in this Order)</div>
-                        <ul id="sortable2" class="droptrue" style="width:400px">
-                            @foreach (DashboardWidget dashboardWidget2 in ViewBag.SelectedDashboards)
-                            {
-                                <li class="ui-state-default selected" style="width:350px" id="@dashboardWidget2.DashboardWidgetID">@dashboardWidget2.Title</li>
-                            }
-                        </ul>
-                    </td>
-                </tr>
-            </table>
-            <div class="controls">
-                <input type="button" class="btn btn-primary" value="Save Preference" onclick="saveChanges()"/>
-                <a href="@Url.Action("Index", "Home")" class="btn" id="cancel">Cancel</a>
-            </div>
-        </div>*@
-        
-
-        <div id="tabs-3"></div>
+        <div class="actions">
+            <a href="JavaScript:" class="btn green" id="save"><i class="fa fa-save"></i> Save</a>
+            <a href="JavaScript:" class="btn red" id="cancel"><i class="fa fa-times-circle"></i> Cancel</a>
+            <a class="btn btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+        </div>
     </div>
-    
+    <div class="portlet-body">
+        <div class="tabbable-custom ">
+            <ul class="nav nav-tabs ">
+                <li class="active">
+                    <a href="#general_tab" data-toggle="tab">
+                        General
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="general_tab">
+                    @Html.Partial("Edit", Model)
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 

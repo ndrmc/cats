@@ -14,6 +14,7 @@ namespace Cats.Models.Mapping
 
             this.Property(t => t.YearHalf).HasColumnName("YearHalf");
             this.Property(t => t.PartitionId).HasColumnName("PartitionId");
+            this.Property(t => t.BusinessProcessID).HasColumnName("BusinessProcessID");
 
             //this.Property(t => t.RegionID).HasColumnName("RegionID");
 
