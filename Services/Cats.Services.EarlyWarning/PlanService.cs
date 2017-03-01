@@ -138,8 +138,8 @@ namespace Cats.Services.EarlyWarning
                     StartDate = startDate,
                     EndDate = endDate,
                     Program = reliefProgram,
-                    Status = (int)PlanStatus.Draft
-
+                    Status = (int)PlanStatus.Draft,
+                    BusinessProcessID = 0
                 };
                 _unitOfWork.PlanRepository.Add(plan);
                 _unitOfWork.Save();

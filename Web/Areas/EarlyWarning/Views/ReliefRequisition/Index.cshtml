@@ -54,9 +54,13 @@ Requistions
 
 <script type="text/javascript">
     function PromotTo(promotTo) {
+        //var data = $('#frm_approve_requisition').serializeArray().map(function(x){data[x.name] = x.value;});
 
-        var regionId = @Html.Raw(ViewBag.Filter.RegionID);
-        var programId = @Html.Raw(ViewBag.Filter.ProgramID);
+        var data = {};
+        $('#frm_approve_requisition').serializeArray().map(function(x){data[x.name] = x.value;});
+
+        var regionId = data["RegionID"];
+        var programId = data["ProgramID"];
         var url = '@Url.Action("PromotThese", "ReliefRequisition")?regionId=' + regionId + "&programId=" + programId + "&promotTo=" + promotTo;
 
         //Optional: turn the chache off

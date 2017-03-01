@@ -16,7 +16,6 @@ using Kendo.Mvc.UI;
 using Dispatch = Cats.Models.Hubs.Dispatch;
 using IAdminUnitService = Cats.Services.EarlyWarning.IAdminUnitService;
 using IHubService = Cats.Services.EarlyWarning.IHubService;
-using System.Diagnostics;
 
 namespace Cats.Areas.Logistics.Controllers
 {
@@ -55,80 +54,59 @@ namespace Cats.Areas.Logistics.Controllers
         {
             var transportOrder = _transportOrderService.Get(m => m.ContractNumber.Contains(searchIndex))
                                .Where(m=>m.StatusID==(int)TransportOrderStatus.Closed && m.TransportOrderDetails.Sum(s=>s.QuantityQtl)>0)
-                               .OrderByDescending(m=>m.TransportOrderID);
+                               .OrderByDescending(m=>m.TransportOrderID).Take(100);
             var transportOrderToDisplay = GetTransportOrder(transportOrder);
             return Json(transportOrderToDisplay.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
         private IEnumerable<TransporterPerformanceViewModel> GetTransportOrder(IEnumerable<TransportOrder> transportOrders)
         {
             var datePref = _userAccountService.GetUserInfo(HttpContext.User.Identity.Name).DatePreference;
-            var deliveries = _deliveryService.Get(null, null, "DeliveryDetails");
-
-
-
             return (from transportOrder in transportOrders
-                    select CreateTransporterPerformanceVM(datePref, deliveries, transportOrder));
-
+                    select new TransporterPerformanceViewModel
+                    {
+                        TransporterID = transportOrder.TransporterID,
+                        TransporterName = transportOrder.Transporter.Name,
+                        TransporterOrderID = transportOrder.TransportOrderID,
+                        ContractNumber = transportOrder.ContractNumber,
+                        TransportOrderNumber = transportOrder.TransportOrderNo,
+                        StartDate = transportOrder.StartDate.ToCTSPreferedDateFormat(datePref),
+                        TotalQuantity = transportOrder.TransportOrderDetails.Sum(m => m.QuantityQtl),
+                        NoOfDaysToComplete =(int) (transportOrder.EndDate.Subtract(transportOrder.StartDate)).TotalDays,
+                        PickedUpSofar = GetDispatchAllocation(transportOrder.TransportOrderID)*10, 
+                        Delivered = GetDelivered(transportOrder.TransportOrderID),
+                        ElapsedDays =(int)(DateTime.Now.Subtract(transportOrder.StartDate)).TotalDays,
+                    });
+                
+            
+           
         }
-        private TransporterPerformanceViewModel CreateTransporterPerformanceVM(string datePref,IEnumerable<Delivery> delivery, TransportOrder transportOrder)
-        {
-            var dispatches = _dispatchService.Get(t => t.DispatchAllocation.TransportOrderID == transportOrder.TransportOrderID,null , "DispatchDetails").ToList();
-
-
-
-            return new TransporterPerformanceViewModel
-            {
-                TransporterID = transportOrder.TransporterID,
-                TransporterName = transportOrder.Transporter.Name,
-                TransporterOrderID = transportOrder.TransportOrderID,
-                ContractNumber = transportOrder.ContractNumber,
-                TransportOrderNumber = transportOrder.TransportOrderNo,
-                StartDate = transportOrder.StartDate.ToCTSPreferedDateFormat(datePref),
-                TotalQuantity = transportOrder.TransportOrderDetails.Sum(m => m.QuantityQtl),
-                NoOfDaysToComplete = (int)(transportOrder.EndDate.Subtract(transportOrder.StartDate)).TotalDays,
-                PickedUpSofar = GetDispatchAllocation(dispatches,transportOrder.TransportOrderID) * 10,
-                Delivered = GetDelivered(dispatches, delivery,transportOrder.TransportOrderID),
-                ElapsedDays = (int)(DateTime.Now.Subtract(transportOrder.StartDate)).TotalDays,
-            };
-        }
-
         public JsonResult GetContractNumbers()
         {
 
 
             var contractNumbers = (from contractNumber in _transportOrderService.GetAllTransportOrder()
-                                   where contractNumber.StatusID == (int) TransportOrderStatus.Closed
+                                   where contractNumber.StatusID == (int) TransportOrderStatus.Closed 
                                    select contractNumber.ContractNumber).Distinct().ToList();
-
+          
 
             return Json(contractNumbers, JsonRequestBehavior.AllowGet);
         }
 
-        private Decimal GetDispatchAllocation(List<Dispatch> dispatches, int transportOrderID)
+        private Decimal GetDispatchAllocation(int transportOrderID)
         {
-            decimal totaldispatched = 0;
-
-            try
-            {
-
-                totaldispatched = dispatches.Sum(dispatch => dispatch.DispatchDetails.Sum(m => m.DispatchedQuantityInMT));
-
-        } catch(Exception e)
-            {
-
-            }
+            var dispatches = _dispatchService.Get(t => t.DispatchAllocation.TransportOrderID == transportOrderID).ToList();
+            var totaldispatched= dispatches.Sum(dispatch => dispatch.DispatchDetails.Sum(m => m.DispatchedQuantityInMT));
 
             return totaldispatched;
         }
 
-        private decimal GetDelivered(List<Dispatch> dispatches , IEnumerable<Delivery> delivery, int transportOrderID)
+        private decimal GetDelivered(int transportOrderID)
         {
-
-            var dispatchIds = dispatches.Select(t => t.DispatchID).ToList();
-            var deliveries = delivery.Where(t => dispatchIds.Contains(t.DispatchID.Value));
-            return deliveries.Sum(de => de.DeliveryDetails.Sum(m => m.ReceivedQuantity));
+            var dispatchIds = _dispatchService.Get(t => t.DispatchAllocation.TransportOrderID == transportOrderID).Select(t => t.DispatchID).ToList();
+            var deliveries = _deliveryService.Get(t => dispatchIds.Contains(t.DispatchID.Value), null, "DeliveryDetails");
+            return deliveries.Sum(delivery => delivery.DeliveryDetails.Sum(m => m.ReceivedQuantity));
         }
-
+     
 
         #region transporter performance detail
 
