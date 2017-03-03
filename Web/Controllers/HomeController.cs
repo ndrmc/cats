@@ -296,14 +296,19 @@ namespace Cats.Controllers
             // Get a caseteam that exists on the URL path
             var matchCaseTeams = MatchingStrings(AbsURL, new [] {"Logistics", "Hub", "EarlyWarning", "Procurement", "Finance", "PSNP", "Regional", "Home"}).ToList();
             // check of a case team exists on the absolute URL
-            if (matchCaseTeams.Count() > 0)
+            if (matchCaseTeams.Any())
             {
                 // search for the matching caseteam on the absolute path and get the index
                 var caseteamIndex = AbsURL.IndexOf(matchCaseTeams[0], 0, StringComparison.Ordinal);
                 // get the string starting from the caseteam to the end
                 var relativeUrl = AbsURL.Substring(caseteamIndex);
+                // get the subdirectory and host address
+                var originalUrl = System.Web.HttpContext.Current.Request.Url.OriginalString;
+                var appPathUrl = originalUrl.Substring(0,
+                    (originalUrl.IndexOf(System.Web.HttpContext.Current.Request.Url.LocalPath)+1));
+                
                 // return the relative url
-                return ((System.Web.HttpContext.Current.Request.ApplicationPath == "/") ? "" : System.Web.HttpContext.Current.Request.ApplicationPath) + relativeUrl;
+                return appPathUrl + relativeUrl;
             }
             else
             {
